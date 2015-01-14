@@ -109,7 +109,7 @@ $(function() {
     <?php } ?>
     /*第1个参数是加载编辑器div容器，第2个参数是编辑器类型，第3个参数是div容器宽，第4个参数是div容器高*/
     xiuxiu.embedSWF("PhotoEditor",3,"100%","630");
-    xiuxiu.setUploadURL("<?php echo ACP_HOST;?>/admincp.php?app=files&do=IO&format=json&id=<?php echo $file_id;?>");//修改为您自己的上传接收图片程序
+    xiuxiu.setUploadURL("<?php echo ACP_HOST;?><?php echo __ADMINCP__; ?>=files&do=IO&format=json&id=<?php echo $file_id;?>");//修改为您自己的上传接收图片程序
     xiuxiu.onInit = function (id){
       <?php if($src){ ?>
         <?php if(is_array($src)){ ?>
