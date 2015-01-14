@@ -934,8 +934,12 @@ class spiderApp {
         }
 
         if ($data['json_decode']) {
-            $content = preg_replace('/&#\d{2,5};/ue', "utf8_entity_decode('\\0')", $content);
-            $content = preg_replace(array('/&#x([a-fA-F0-7]{2,8});/ue', '/%u([a-fA-F0-7]{2,8})/ue', '/\\\u([a-fA-F0-7]{2,8})/ue'), "utf8_entity_decode('&#'.hexdec('\\1').';')", $content);
+            $content = preg_replace_callback('/&#\d{2,5};/u','utf8_num_decode',$content);
+            $content = preg_replace_callback(array(
+                '/&#x([a-fA-F0-7]{2,8});/u',
+                '/%u([a-fA-F0-7]{2,8})/u',
+                '/\\\u([a-fA-F0-7]{2,8})/u'
+                ),'utf8_entity_decode',$content);
             $content = htmlspecialchars_decode($content);
         }
         if ($data['cleanafter']) {
@@ -1518,7 +1522,12 @@ function str_cut($str, $start, $end) {
     return $content;
 }
 
+function utf8_num_decode($entity) {
+    $convmap = array(0x0, 0x10000, 0, 0xfffff);
+    return mb_decode_numericentity($entity, $convmap, 'UTF-8');
+}
 function utf8_entity_decode($entity) {
+    $entity  = '&#'.hexdec($entity).';';
     $convmap = array(0x0, 0x10000, 0, 0xfffff);
     return mb_decode_numericentity($entity, $convmap, 'UTF-8');
 }

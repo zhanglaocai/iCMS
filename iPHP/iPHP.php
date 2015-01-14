@@ -20,7 +20,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 header('Content-Type: text/html; charset=utf-8');
 header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
-version_compare('5.1',phpversion(),'>') && die('您的服务器运行的 PHP 版本是'.phpversion().' 但 iPHP 要求至少 5.1。');
+version_compare('5.1',PHP_VERSION,'>') && die('您的服务器运行的 PHP 版本是'.PHP_VERSION.' 但 iPHP 要求至少 5.1。');
 @ini_set('magic_quotes_sybase', 0);
 @ini_set("magic_quotes_runtime",0);
 
@@ -42,14 +42,17 @@ set_error_handler('iPHP_ERROR_HANDLER');
 
 iPHP::timer_start();
 //security
-iPHP::LoadClass("Security");
+iPHP::LoadClass("Security",'S');
 iS::filter();
 iS::gp('page','GP',2);
 
 define('__SELF__',	$_SERVER['PHP_SELF']);
 define('__REF__', 	$_SERVER['HTTP_REFERER']);
 
-iPHP::loadClass("Mysql");		//加载数据库操作类
-iPHP::loadClass("FileSystem");	//加载文件操作类
-iPHP::loadClass('Cache');		//加载缓存操作类
-iPHP::loadClass("Template");	//加载模板操作类
+$iDB_CLASS = 'Mysql';
+version_compare(PHP_VERSION,'5.5','>=') && $iDB_CLASS='Mysqli';
+
+iPHP::loadClass($iDB_CLASS,'DB'); //加载数据库操作类
+iPHP::loadClass("FileSystem",'FS');	//加载文件操作类
+iPHP::loadClass('Cache');			//加载缓存操作类
+iPHP::loadClass("Template");		//加载模板操作类

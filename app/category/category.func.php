@@ -17,6 +17,7 @@ function category_list($vars){
 	$status     = isset($vars['status'])?(int)$vars['status']:"1";
 	$where_sql  =" WHERE `appid`='$appid' AND `status`='$status'";
 	$resource   = array();
+
 	isset($vars['mode']) && $where_sql.=" AND `mode` = '{$vars['mode']}'";
 
 	if (stripos($vars['cid'],',') !== false){
@@ -71,13 +72,15 @@ function category_list($vars){
 			$value['child'] = $rootid_array[$value['cid']]?true:false;
 			$value['url']   = iURL::get('category',$value)->href;
 			$value['link']  = "<a href='{$value['url']}'>{$value['name']}</a>";
+
 	        if($value['metadata']){
-	        	$mdArray=array();
-	        	$value['metadata']=unserialize($value['metadata']);
-	        	foreach($value['metadata'] AS $mdval){
-	        		$mdArray[$mdval['key']]=$mdval['value'];
-	        	}
-	        	$value['metadata']=$mdArray;
+				$mdArray   = array();
+				$_metadata = unserialize($value['metadata']);
+		    	foreach((array)$_metadata as $mkey => $md){
+		    		$mdArray[$mkey] = $md;
+		    	}
+	        	$value['metadata'] = $mdArray;
+	        	unset($_metadata);
 	        }
 	        unset($value['contentprop']);
 	        $resource[$key] = $value;

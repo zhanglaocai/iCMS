@@ -97,6 +97,9 @@ class iDB {
             // If there is an error then take note of it..
             return self::print_error();
         }
+        self::$num_queries++;
+
+        SAVEQUERIES && self::$queries[] = array( $query, self::timer_stop());
 
         if($QT=='get') return $result;
 
@@ -307,7 +310,6 @@ class iDB {
 
         if(!$show) echo '<!--';
         echo self::$last_query."\n";
-        var_dump(self::$queries);
         $explain    = self::row('EXPLAIN EXTENDED '.self::$last_query);
         var_dump($explain);
         if(!$show) echo "-->\n";

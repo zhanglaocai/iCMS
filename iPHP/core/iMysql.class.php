@@ -332,9 +332,9 @@ class iDB{
      * @return int total time spent on the query, in milliseconds
      */
     public static function timer_stop() {
-        $mtime = microtime();
-        $mtime = explode(' ', $mtime);
-        $time_end = $mtime[1] + $mtime[0];
+        $mtime      = microtime();
+        $mtime      = explode(' ', $mtime);
+        $time_end   = $mtime[1] + $mtime[0];
         $time_total = $time_end - self::$time_start;
         return $time_total;
     }

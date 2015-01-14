@@ -136,7 +136,7 @@ class iCache{
     	return self::get($keys,$ckey);
     }
     public static function sysCache(){
-        iPHP::loadClass('FileCache');
+        iPHP::loadClass('FileCache','FS');
 	    self::$link	= new iFC(array(
             'dirs'     => '',
             'level'    => 0,

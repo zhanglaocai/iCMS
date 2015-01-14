@@ -426,7 +426,7 @@ class articleApp{
         if(iCMS::$config['publish']['autodesc'] && iCMS::$config['publish']['descLen'] && empty($description) && empty($url)) {
             $body_text   = implode("\n",$body);
             $body_text   = str_replace('#--iCMS.PageBreak--#',"\n",$body_text);
-            $body_text   = preg_replace(array('/<p[^>]*>/is','/<[\/\!]*?[^<>]*?>/is',"/\n+/","/　+/","/^\n/"),array("\n\n",'',"\n",'',''),$body_text);
+            $body_text   = preg_replace(array('/<[\/\!]*?[^<>]*?>/is',"/\n+/","/　+/","/^\n/"),array('',"\n",'',''),$body_text);
             $description = csubstr($body_text,iCMS::$config['publish']['descLen']);
             $description = addslashes($description);
             $description = str_replace('#--iCMS.PageBreak--#','',$description);
