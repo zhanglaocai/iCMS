@@ -74,7 +74,7 @@ class iDB {
 
         // filter the query, if filters are available
         // NOTE: some queries are made before the plugins have been loaded, and thus cannot be filtered with this method
-        $query  = str_replace(iPHP_DB_PREFIX_TAG,iPHP_DB_PREFIX, $query);
+        $query  = str_replace(iPHP_DB_PREFIX_TAG,iPHP_DB_PREFIX, trim($query));
 
         // initialise return
         $return_val = 0;
