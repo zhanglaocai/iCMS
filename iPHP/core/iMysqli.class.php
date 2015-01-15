@@ -51,6 +51,7 @@ class iDB {
 
         if (defined('iPHP_DB_CHARSET') && version_compare(self::$link->server_info, '4.1.0', '>=')){
             self::$link->set_charset(iPHP_DB_CHARSET);
+            self::$link->query("SET @@sql_mode =''");
         }
 
 

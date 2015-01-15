@@ -17,6 +17,9 @@ class htmlApp{
 		$this->CP        = iCMS::$config['router']['speed'];
 		$this->alltime   = $_GET['alltime']?$_GET['alltime']:0;
     }
+    function do_all(){
+    	include iACP::view("html.all");
+    }
     function do_index(){
     	include iACP::view("html.index");
     }
