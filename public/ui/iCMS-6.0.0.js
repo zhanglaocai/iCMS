@@ -33,26 +33,25 @@
             iCMS.dialog({title: '用户登陆',content:box,elemBack:'remove'});
         },
         hover: function(a, t, l) {
-            var timeOutID = null,t = t || 0, l = l || 0,
-            pop = a.parent().find('.popover');
+            var pop,timeOutID = null,t = t || 0, l = l || 0;
             a.hover(function() {
+                pop = $(".popover",$(this).parent());
                 $(".popover").hide();
                 var position = $(this).position();
                 pop.show().css({
                     top: position.top + t,
                     left: position.left + l
+                }).hover(function() {
+                    window.clearTimeout(timeOutID);
+                    $(this).show();
+                }, function() {
+                    $(this).hide();
                 });
                 window.clearTimeout(timeOutID);
             }, function() {
                 timeOutID = window.setTimeout(function() {
                     pop.hide();
                 }, 2500);
-            });
-            pop.hover(function() {
-                window.clearTimeout(timeOutID);
-                $(this).show();
-            }, function() {
-                $(this).hide();
             });
         }
     };
