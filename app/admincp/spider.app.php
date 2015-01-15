@@ -1332,9 +1332,9 @@ class spiderApp {
         $poid       = iS::escapeStr($_POST['poid']);
         $checker    = iS::escapeStr($_POST['checker']);
         $self       = isset($_POST['self'])?'1':'0';
-        $sleep      = iS::escapeStr($_POST['sleep']);
+        $sleep      = (int) $_POST['sleep'];
         $auto       = iS::escapeStr($_POST['auto']);
-        $psleep     = iS::escapeStr($_POST['psleep']);
+        $psleep     = (int) $_POST['psleep'];
         $lastupdate = $_POST['lastupdate']?iPHP::str2time($_POST['lastupdate']):'';
         empty($name)&& iPHP::alert('名称不能为空！');
         empty($cid) && iPHP::alert('请选择绑定的栏目');

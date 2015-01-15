@@ -49,6 +49,7 @@ iACP::head(false);
       <span class="add-on">.jpg</span>
     </div>
   </div>
+  <div class="clearfloat mb10"></div>
   <div class="input-prepend input-append">
     <span class="add-on">保存后关闭对话框</span>
     <div class="switch">

@@ -43,7 +43,7 @@ class category {
     	}
 
     	if($appid===null){
-	    	foreach($appidArray AS $_appid) {
+	    	foreach((array)$appidArray AS $_appid) {
 		        iCache::set('iCMS/category.'.$_appid.'/cache',$cache[$_appid],0);
 		        iCache::set('iCMS/category.'.$_appid.'/array',$array[$_appid],0);
 	    	}
@@ -68,7 +68,7 @@ class category {
 	    if($C['metadata']){
 	    	$mdArray	= array();
 	    	$_metadata	= unserialize($C['metadata']);
-	    	foreach($_metadata as $key => $value){
+	    	foreach((array)$_metadata as $key => $value){
 	    		$mdArray[$key] = $value;
 	    	}
 	    	$C['metadata']=$mdArray;

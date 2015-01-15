@@ -624,6 +624,7 @@ class articleApp{
             $picurl = $this->remotepic($body,'autopic',$aid);
             $this->pic($picurl,$aid);
         }
+        $this->pic_indexid($body,$aid);
     }
     function pic($picurl,$aid){
         $uri = parse_url(iCMS_FS_URL);
@@ -678,6 +679,29 @@ class articleApp{
             $content = str_replace($array, $fArray, $content);
         }
         return addslashes($content);
+    }
+    function pic_indexid($content,$aid) {
+        if(empty($content)){
+            return;
+        }
+        $content = stripslashes($content);
+        preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
+        $array  = array_unique($match[1]);
+        $uri    = parse_url(iCMS_FS_URL);
+        $fArray = array();
+        $fpArray= array();
+        foreach ($array as $key => $value) {
+            $value = trim($value);
+            if (stripos($value,$uri['host']) !== false){
+                $filepath = iFS::fp($value,'-http');
+                if($filepath){
+                    $filename = basename($filepath);
+                    $filename = substr($filename,0, 32);
+                    $faid     = articleTable::filedata_value($filename);
+                    empty($faid) && articleTable::filedata_update_indexid($aid,$filename);
+                }
+            }
+        }
     }
     function picdata($pic='',$mpic='',$spic=''){
         $picdata = array();

@@ -68,7 +68,7 @@ if($action=='install'){
 	$parse   = parse_url($router_url);
 	$host    = $parse['host'];
 	preg_match("/[^\.\/][\w\-]+\.[^\.\/]+$/", $host, $matches);
-	$domain  = $matches[0]?'.'.$matches[0]:"";
+	$domain  = $matches[0]?'.'.get_domain($router_url):"";
 	$content = preg_replace("/define\(\'iPHP_COOKIE_DOMAIN\',\s*\'.*?\'\)/is","define('iPHP_COOKIE_DOMAIN','$domain')",$content);
 	iFS::write($config,$content,false);
 //开始安装 数据库
@@ -142,3 +142,20 @@ function run_query($sql,$mysql_link) {
     }
 }
 
+function get_domain($url) {
+	$parseUrl  = parse_url(trim($url));
+	$host      = trim($parseUrl['host'] ? $parseUrl['host'] : array_shift(explode('/', $parseUrl['path'], 2)));
+	$parts     = explode( '.', $host );
+	$num_parts = count($parts);
+
+    if ($parts[0] == "www") {
+        for ($i=1; $i < $num_parts; $i++) {
+            $h .= $parts[$i] . '.';
+        }
+    }else {
+        for ($i=0; $i < $num_parts; $i++) {
+            $h .= $parts[$i] . '.';
+        }
+    }
+    return substr($h,0,-1);
+}

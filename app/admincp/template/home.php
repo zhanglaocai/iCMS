@@ -195,6 +195,7 @@ iACP::head();
 iCMS 版本号:iCMS <?php echo iCMS_VER ; ?>[<?php echo iCMS_RELEASE ; ?>]
 服务器操作系统:<?php echo PHP_OS ; ?>;
 WEB服务器版本:<?php echo $_SERVER['SERVER_SOFTWARE'] ; ?>;
+MYSQL版本:<?php echo iDB::version() ; ?>;
 浏览器版本:<?php echo $_SERVER['HTTP_USER_AGENT'] ; ?>;
 出问题的URL:
 问题描述:</textarea>

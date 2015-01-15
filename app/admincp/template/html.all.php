@@ -24,7 +24,7 @@ iACP::head();
       <p>
         <strong>iCMS</strong> 不是很支持全站静态这种模式，推荐使用伪静态方式<br />
         所说的不支持不是指技术上不支持。<br />
-        有人说纯静态对搜索引擎比较有好友<br />
+        有人说纯静态对搜索引擎比较友好<br />
         百度站长学院 http://zhanzhang.baidu.com/college/documentinfo?id=193&page=6<br />
         已经说明 URL是动态还是静态，对百度没有影响<br />
         而且生成静态期间对服务器性能有很大的影响<br />
