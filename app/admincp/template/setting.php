@@ -20,6 +20,7 @@ iACP::head();
   color: #696969;
   text-shadow: 0 1px 0 #FFF;
   border-radius: 4px 4px 0px 0px;width: 330px;
+  font-size: 16px;
 }
 </style>
 <script type="text/javascript">

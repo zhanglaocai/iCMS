@@ -42,11 +42,36 @@ class publicApp {
             $FromUserName = $xml->FromUserName;
             $ToUserName   = $xml->ToUserName;
             $content      = trim($xml->Content);
+            $msgType      = $xml->MsgType;
+            $event        = $xml->Event;
+            $eventKey     = $xml->EventKey;
             $CreateTime   = time();
             $dayline      = get_date('','Y-m-d H:i:s');
+
+            if($msgType!="text"){
+                $content = $event;
+            }
+
             $fields       = array('ToUserName', 'FromUserName', 'CreateTime', 'content', 'dayline');
             $data         = compact($fields);
             $content && iDB::insert('weixin_api_log',$data);
+
+            $site_name = addslashes(iCMS::$config['site']['name']);
+            $site_desc = addslashes(iCMS::$config['site']['description']);
+            $site_key  = addslashes(iCMS::$config['site']['keywords']);
+            $site_host = str_replace('http://', '', iCMS_URL);
+
+            if (in_array($event,array('subscribe','unsubscribe'))) {
+                if ($event=='subscribe') {
+                    weixin_msg($site_name.' ('.$site_host.') '.$site_desc."\n\n回复:".$site_key.' 将会收到我们最新为您准备的信息',$FromUserName,$ToUserName);
+                }
+            }
+
+            if (in_array($content,array("1", "2", "3", "？","?","你好"))) {
+                weixin_msg($site_name.' ('.$site_host.') '.$site_desc."\n\n回复:".$site_key.' 将会收到我们最新为您准备的信息',$FromUserName,$ToUserName);
+            }
+
+
             iPHP::assign('weixin',$data);
             iPHP::view("iCMS://weixin.api.htm");
         }
