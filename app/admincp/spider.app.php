@@ -705,7 +705,9 @@ class spiderApp {
             }
             gc_collect_cycles();
         }
-        empty($responses['title']) && $responses['title'] = $title;
+        if(empty($responses['title']) && $responses['title']!==false){
+            $responses['title'] = $title;
+        }
         unset($this->allHtml,$html);
         gc_collect_cycles();
 
@@ -1027,6 +1029,15 @@ class spiderApp {
                     return false;
                 }
             }
+            if(strpos($_pattern, 'IMG::')!==false){
+                $img_count = str_replace('IMG::','', $_pattern);
+                preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
+                $img_array  = array_unique($match[1]);
+                if(count($img_array)<$img_count){
+                    return false;
+                }
+            }
+
             if(strpos($_pattern, 'DOM::')!==false){
                 $doc      = phpQuery::newDocumentHTML($content,'UTF-8');
                 //echo 'dataClean:getDocumentID:'.$doc->getDocumentID()."\n";
@@ -1213,7 +1224,7 @@ class spiderApp {
 
     function do_post() {
         if ($_GET['keywords']) {
-            $sql = " WHERE `keyword` REGEXP '{$_GET['keywords']}'";
+            $sql = " WHERE `name` REGEXP '{$_GET['keywords']}'";
         }
         $orderby = $_GET['orderby'] ? $_GET['orderby'] : "id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
@@ -1278,7 +1289,7 @@ class spiderApp {
 
         $sql = "where 1=1";
         if ($_GET['keywords']) {
-            $sql.= " and `keyword` REGEXP '{$_GET['keywords']}'";
+            $sql.= " and `name` REGEXP '{$_GET['keywords']}'";
         }
         $sql.= $categoryApp->search_sql($this->cid);
 
