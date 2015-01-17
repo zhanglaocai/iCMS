@@ -9,6 +9,25 @@
 defined('iPHP') OR exit('What are you doing?');
 
 iPHP::app('user.class','static');
+function user_data($vars=null){
+	$vars['uid']   OR iPHP::warning('iCMS&#x3a;user&#x3a;data 标签出错! 缺少"uid"属性或"uid"值为空.');
+	$uid = $vars['uid'];
+	if(strpos($uid, ',')){
+		$uid_array = explode(',', $uid);
+		foreach ($uid_array as $key => $value) {
+			$user[$key] = (array)user::get($uid);
+			if($vars['data']){
+				$user[$key]+= (array)user::data($uid);
+			}
+		}
+	}else{
+		$user = (array)user::get($uid);
+		if($vars['data']){
+			$user+= (array)user::data($uid);
+		}
+	}
+	return (array)$user;
+}
 
 function user_list($vars=null){
 	$maxperpage = isset($vars['row'])?(int)$vars['row']:"100";

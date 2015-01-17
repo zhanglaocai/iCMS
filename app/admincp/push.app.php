@@ -157,10 +157,10 @@ class pushApp{
 		$uri 	= parse_url(iCMS_FS_URL);
         $pic	= iS::escapeStr($path);
 
-	    if(strstr(strtolower($pic),$uri['host'])){
-	    	$pic = iFS::fp($pic,"-http");
+	    if(stripos($pic,$uri['host'])===false){
+            stripos($pic, 'http://')===false OR $pic = iFS::http($pic);
 	    }else{
-			strstr($pic, 'http://') && $pic = iFS::http($pic);
+            $pic = iFS::fp($pic,"-http");
 		}
 		return $pic;
 	}

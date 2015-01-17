@@ -44,6 +44,9 @@ $(function() {
     <?php
 	  	foreach ($lists AS $lkey => $row) {
         list($title,$url) = $this->title_url($row,$rule);
+        if($url===false){
+            continue;
+        }
 				$hash = md5($url);
 				if(!$sArray[$hash]){
 		?>

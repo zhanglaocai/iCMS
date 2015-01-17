@@ -512,15 +512,15 @@ class spiderApp {
 
                 $list_area = null;
                 unset($list_area);
+                if ($rule['sort'] == "1") {
+                    //arsort($lists);
+                } elseif ($rule['sort'] == "2") {
+                    asort($lists);
+                } elseif ($rule['sort'] == "3") {
+                    shuffle($lists);
+                }
             }
             //
-            if ($rule['sort'] == "1") {
-                //arsort($lists);
-            } elseif ($rule['sort'] == "2") {
-                asort($lists);
-            } elseif ($rule['sort'] == "3") {
-                shuffle($lists);
-            }
 
             if ($this->ruleTest) {
                 echo iS::escapeStr($rule['list_url_rule']);

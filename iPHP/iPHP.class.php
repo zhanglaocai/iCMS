@@ -311,7 +311,7 @@ class iPHP{
 		return $url;
 	}
 
-    public static function lang($string='') {
+    public static function lang($string='',$throw=true) {
     	if(empty($string)) return false;
 
 		$keyArray  = explode(':',$string);
@@ -321,7 +321,13 @@ class iPHP{
 		$fname     = $app.'.lang.php';
 		$path      = iPHP_APP_CORE.'/lang/'.$fname;
 
-		@is_file($path) OR self::throwException($fname.' not exist',0015);
+		if(!@is_file($path)){
+			if($throw){
+				self::throwException($fname.' not exist',0015);
+			}else{
+				return $string;
+			}
+		}
 
 		$langArray = self::import($path,true);
 
@@ -439,7 +445,7 @@ class iPHP{
     	exit;
     }
     public static function code($code=0,$msg='',$forward='',$format=''){
-    	strstr($msg,':') && $msg = self::lang($msg);
+    	strstr($msg,':') && $msg = self::lang($msg,false);
     	$a = array('code'=>$code,'msg'=>$msg,'forward'=>$forward);
     	if($format=='json'){
     		self::json($a);
@@ -453,8 +459,8 @@ class iPHP{
     	list($label,$icon,$content)= explode(':#:',$info);
     	$msg = '<div class="iPHP-msg"><span class="label label-'.$label.'">';
     	$icon && $msg.= '<i class="fa fa-'.$icon.'"></i> ';
-    	if(preg_match('/([a-zA-Z]+):([a-zA-Z]+)/i', $content)){
-    		$lang = self::lang($content);
+    	if(strpos($content,':')!==false){
+    		$lang = self::lang($content,false);
     		$lang && $content = $lang;
     	}
     	$msg.= $content.'</span></div>';
