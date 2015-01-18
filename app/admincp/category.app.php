@@ -150,7 +150,8 @@ class categoryApp extends category{
         	foreach($nameArray AS $nkey=>$_name){
         		$_name	= trim($_name);
                 if(empty($_name)) continue;
-                if($_count==1){
+
+                if($_count=="1"){
                     if(empty($dir) && empty($url)) {
                         $dir = strtolower(pinyin($_name));
                     }
@@ -158,6 +159,7 @@ class categoryApp extends category{
                     empty($url) && $dir = strtolower(pinyin($_name));
                 }
                 $this->check_dir($dir,$appid,$url);
+            var_dump($dir);
                 $data['name']       = $_name;
                 $data['dir']        = $dir;
                 $data['userid']     = iMember::$userid;
@@ -166,12 +168,11 @@ class categoryApp extends category{
                 $data['count']      = '0';
                 $data['comments']   = '0';
 
-             //    $cid = iDB::insert('category',$data);
-             //    $pid && map::add($pid,$cid);
-	            // $this->cache(false,$this->appid);
-	            // $this->cahce_one($cid);
+                $cid = iDB::insert('category',$data);
+                $pid && map::add($pid,$cid);
+	            $this->cache(false,$this->appid);
+	            $this->cahce_one($cid);
             }
-            exit;
             $msg=$this->name_text."添加完成!";
         }else {
             if(empty($dir) && empty($url)) {
