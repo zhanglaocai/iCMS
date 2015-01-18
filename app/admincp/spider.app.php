@@ -236,8 +236,8 @@ class spiderApp {
         $title = iS::escapeStr($_POST['title']);
         $url   = iS::escapeStr($_POST['reurl']);
         if(empty($this->sid)){
-            $spider_url = iDB::row("SELECT `id`,`publish` FROM `#iCMS@__spider_url` where `url`='$url'",ARRAY_A);
-            if(empty($spider_url['publish'])){
+            $spider_url = iDB::row("SELECT `id`,`publish`,`indexid` FROM `#iCMS@__spider_url` where `url`='$url'",ARRAY_A);
+            if(empty($spider_url)){
                 $spider_url_data = array(
                     'cid'     => $project['cid'],
                     'rid'     => $this->rid,
@@ -253,7 +253,11 @@ class spiderApp {
                 );
                 $suid = iDB::insert('spider_url',$spider_url_data);
             }else{
-                empty($spider_url['publish']) && $suid = $spider_url['id'];
+                if($spider_url['indexid']){
+                    $_POST['aid']  = $spider_url['indexid'];
+                    $_POST['adid'] = iDB::value("SELECT `id` FROM `#iCMS@__article_data` WHERE aid='".$spider_url['indexid']."'");
+                }
+                $suid = $spider_url['id'];
             }
         }else{
             $suid = $this->sid;
@@ -262,14 +266,19 @@ class spiderApp {
         iS::slashes($_POST);
         $app      = iACP::app($postRs->app);
         $fun      = $postRs->fun;
+
+        $app->callback['primary'] = array(
+            array($this,'update_spider_url_indexid'),
+            array('suid'=>$suid)
+        );//主表 回调 更新关联ID
+
+        $app->callback['data'] = array(
+            array($this,'update_spider_url_publish'),
+            array('suid'=>$suid)
+        );//数据表 回调 成功发布
+
         $callback = $app->$fun("1001");
         if ($callback['code'] == "1001") {
-            iDB::update('spider_url',array(
-                'publish' => '1',
-                'indexid' => $callback['indexid'],
-                'pubdate' => time()
-            ),array('id'=>$suid));
-
             if ($this->sid) {
                 $work===NULL && iPHP::success("发布成功!",'js:1');
             } else {
@@ -280,6 +289,19 @@ class spiderApp {
             $callback['work']=$work;
         	return $callback;
         }
+    }
+    function update_spider_url_indexid($suid,$indexid){
+        iDB::update('spider_url',array(
+            //'publish' => '1',
+            'indexid' => $indexid,
+            //'pubdate' => time()
+        ),array('id'=>$suid));
+    }
+    function update_spider_url_publish($suid){
+        iDB::update('spider_url',array(
+            'publish' => '1',
+            'pubdate' => time()
+        ),array('id'=>$suid));
     }
     function mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse) {
         $urls = "";
@@ -944,9 +966,6 @@ class spiderApp {
                 ),'utf8_entity_decode',$content);
             $content = htmlspecialchars_decode($content);
         }
-        if ($data['cleanafter']) {
-            $content = $this->dataClean($data['cleanafter'], $content);
-        }
         if ($data['mergepage']) {
             $_content = $content;
             preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is", $_content, $picArray);
@@ -970,6 +989,10 @@ class spiderApp {
                 unset($newcontent);
             }
         }
+        if ($data['cleanafter']) {
+            $content = $this->dataClean($data['cleanafter'], $content);
+        }
+        $data['trim'] && $content = trim($content);
         if ($data['empty'] && empty($content)) {
             if($this->work){
                 echo "\n[".$name . "内容为空!请检查,规则是否正确!]\n";
@@ -979,9 +1002,6 @@ class spiderApp {
                 iPHP::alert($name . '内容为空!请检查,规则是否正确!!');
             }
         }
-
-        $data['trim'] && $content = trim($content);
-
         if($data['array']){
         	return array($content);
         }

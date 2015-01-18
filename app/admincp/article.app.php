@@ -13,6 +13,8 @@ defined('iPHP') OR exit('What are you doing?');
 
 iPHP::app('article.table');
 class articleApp{
+    public $callback = array();
+
     function __construct() {
         $this->appid       = iCMS_APP_ARTICLE;
         $this->id          = (int)$_GET['id'];
@@ -467,6 +469,15 @@ class articleApp{
 
             $aid  = articleTable::insert(compact($fields));
 
+            if ($this->callback['primary']) {
+                $PCB = $this->callback['primary'];
+                $handler = $PCB[0];
+                $params  = (array)$PCB[1]+array('indexid'=>$aid);
+                if (is_callable($handler)){
+                    call_user_func_array($handler,$params);
+                }
+            }
+
             if($tags){
                 iPHP::app('tag.class','static');
                 tag::add($tags,$userid,$aid,$cid);
@@ -504,6 +515,15 @@ class articleApp{
             $picdata = $this->picdata($pic,$mpic,$spic);
 
             articleTable::update(compact($fields),array('id'=>$aid));
+
+            if ($this->callback['primary']) {
+                $PCB = $this->callback['primary'];
+                $handler = $PCB[0];
+                $params  = (array)$PCB[1]+array('indexid'=>$aid);
+                if (is_callable($handler)){
+                    call_user_func_array($handler,$params);
+                }
+            }
 
             map::init('prop',$this->appid);
             map::diff($pid,$_pid,$aid);
@@ -606,6 +626,15 @@ class articleApp{
             articleTable::data_update($data,compact('id'));
         }else{
             $id = articleTable::data_insert($data);
+        }
+
+        if ($this->callback['data']) {
+            $DCB     = $this->callback['data'];
+            $handler = $DCB[0];
+            $params  = (array)$DCB[1];
+            if (is_callable($handler)){
+                call_user_func_array($handler,$params);
+            }
         }
 
         $_POST['isredirect'] && iFS::$redirect  = true;

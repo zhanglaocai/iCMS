@@ -67,9 +67,9 @@ $(function(){
               <th>ID</th>
               <th>内容</th>
               <th>栏目</th>
-              <th class="span2">采集时间</th>
-              <th class="span2">发布时间</th>
-              <th>状态</th>
+              <th class="span2">采集/发布时间</th>
+              <th>文章ID</th>
+              <th>状态/发布</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -86,16 +86,23 @@ $(function(){
               <td>
                 <a href="<?php echo APP_URI; ?>&do=manage&cid=<?php echo $rs[$i]['cid']; ?>&<?php echo $uri; ?>"><?php echo $C['name']; ?></a> <br />
                 <a href="<?php echo APP_URI; ?>&do=manage&rid=<?php echo $rs[$i]['rid']; ?>&<?php echo $uri; ?>"><?php echo $ruleArray[$rs[$i]['rid']]; ?></a></td>
-              <td><?php echo get_date($rs[$i]['addtime'], 'Y-m-d H:i'); ?></td>
-              <td><?php echo $rs[$i]['pubdate'] ? get_date($rs[$i]['pubdate'], 'Y-m-d H:i') : '未发布' ?></td>
+              <td><?php echo get_date($rs[$i]['addtime'], 'Y-m-d H:i'); ?>
+                <br />
+                <?php echo $rs[$i]['pubdate'] ? get_date($rs[$i]['pubdate'], 'Y-m-d H:i') : '未发布' ?>
+              </td>
+              <td><?php echo $rs[$i]['indexid']; ?></td>
               <td><?php echo $rs[$i]['status']; ?>/<?php echo $rs[$i]['publish']; ?></td>
               <td>
-                <?php if($rs[$i]['publish']){?>
+                <?php if($rs[$i]['indexid']){?>
                 <a href="<?php echo __ADMINCP__; ?>=article&do=add&id=<?php echo $rs[$i]['indexid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑内容</a>
-                <a href="<?php echo APP_FURI; ?>&do=publish&sid=<?php echo $rs[$i]['id']; ?>&pid=<?php echo $rs[$i]['pid']; ?>&indexid=<?php echo $rs[$i]['indexid'] ; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-edit"></i> 重新发布</a>
+                  <?php if(empty($rs[$i]['publish'])){?>
+                  <a href="<?php echo APP_FURI; ?>&do=update&sid=<?php echo $rs[$i]['id']; ?>&iDT=publish:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-flag"></i> 标识发布</a>
+                  <?php }else{?>
+                  <a href="<?php echo APP_FURI; ?>&do=publish&sid=<?php echo $rs[$i]['id']; ?>&pid=<?php echo $rs[$i]['pid']; ?>&indexid=<?php echo $rs[$i]['indexid'] ; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-edit"></i> 重新发布</a>
+                  <?php }?>
                 <?php }else{?>
                 <a href="<?php echo APP_FURI; ?>&do=publish&sid=<?php echo $rs[$i]['id']; ?>&pid=<?php echo $rs[$i]['pid']; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-edit"></i> 发布</a>
-                <a href="<?php echo APP_FURI; ?>&do=update&sid=<?php echo $rs[$i]['id']; ?>&iDT=publish:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-fla"></i> 标识发布</a>
+                <a href="<?php echo APP_FURI; ?>&do=update&sid=<?php echo $rs[$i]['id']; ?>&iDT=publish:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-flag"></i> 标识发布</a>
                 <?php }?>
                 <a href="<?php echo APP_URI; ?>&do=testcont&rid=<?php echo $rs[$i]['rid']; ?>&url=<?php echo $rs[$i]['url']; ?>" class="btn btn-small" data-toggle="modal" title="测试内容规则"><i class="fa fa-keyboard-o"></i> 测试</a>
                 <a href="<?php echo APP_FURI; ?>&do=delspider&sid=<?php echo $rs[$i]['id']; ?>" target="iPHP_FRAME" class="del btn btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>

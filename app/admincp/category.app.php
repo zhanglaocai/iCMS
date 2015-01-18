@@ -145,15 +145,18 @@ class categoryApp extends category{
 
         if(empty($cid)) {
             iACP::CP($rootid,'a','alert');
-        	$nameArray	= explode("\n",$name);
+            $nameArray = explode("\n",$name);
+            $_count    = count($nameArray);
         	foreach($nameArray AS $nkey=>$_name){
         		$_name	= trim($_name);
                 if(empty($_name)) continue;
-
-                if(empty($dir) && empty($url)) {
-                    $dir = strtolower(pinyin($_name));
+                if($_count==1){
+                    if(empty($dir) && empty($url)) {
+                        $dir = strtolower(pinyin($_name));
+                    }
+                }else{
+                    empty($url) && $dir = strtolower(pinyin($_name));
                 }
-
                 $this->check_dir($dir,$appid,$url);
                 $data['name']       = $_name;
                 $data['dir']        = $dir;
@@ -163,11 +166,12 @@ class categoryApp extends category{
                 $data['count']      = '0';
                 $data['comments']   = '0';
 
-                $cid = iDB::insert('category',$data);
-                $pid && map::add($pid,$cid);
-	            $this->cache(false,$this->appid);
-	            $this->cahce_one($cid);
+             //    $cid = iDB::insert('category',$data);
+             //    $pid && map::add($pid,$cid);
+	            // $this->cache(false,$this->appid);
+	            // $this->cahce_one($cid);
             }
+            exit;
             $msg=$this->name_text."添加完成!";
         }else {
             if(empty($dir) && empty($url)) {
