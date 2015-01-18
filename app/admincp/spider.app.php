@@ -709,7 +709,7 @@ class spiderApp {
                     if(is_array($responses[$f_key][$s_key])){
                         $responses[$f_key][$s_key] = array_merge($responses[$f_key][$s_key],$content);
                     }else{
-                        $responses[$f_key][$s_key].= $content;
+                        $responses[$f_key][$s_key].= '~BREAK~'.$content;
                     }
                 }else{
                     $responses[$f_key][$s_key] = $content;
@@ -719,7 +719,7 @@ class spiderApp {
                     if(is_array($responses[$dname])){
                         $responses[$dname] = array_merge($responses[$dname],$content);
                     }else{
-                        $responses[$dname].= $content;
+                        $responses[$dname].='~BREAK~'.$content;
                     }
                 }else{
                     $responses[$dname] = $content;
