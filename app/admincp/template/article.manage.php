@@ -190,7 +190,7 @@ $(function(){
               <th class="span2">日期</th>
               <th style="width:80px;">栏目</th>
               <th style="width:60px;">编辑</th>
-              <th class="span1">信息</th>
+              <th class="span1">点/评</th>
               <th style="width:120px;">操作</th>
             </tr>
           </thead>
@@ -267,7 +267,19 @@ $(function(){
                 ?>
                 <?php echo iACP::getProp("pid",$value['pid'],'text',APP_DOURI.'&pid={PID}&'.$uri) ; ?></td>
               <td><a href="<?php echo APP_DOURI; ?>&userid=<?php echo $value['userid'] ; ?>&<?php echo $uri ; ?>"><?php echo $value['editor'] ; ?></a><br /><?php echo $value['author'] ; ?></td>
-              <td><?php echo $value['hits']; ?>/<?php echo _int($value['weight']); ?></td>
+              <td>
+                <a class="tip" href="javascript:;" title="
+                总点击:<?php echo $value['hits'] ; ?><br />
+                今日点击:<?php echo $value['hits_today'] ; ?><br />
+                昨日点击:<?php echo $value['hits_yday'] ; ?><br />
+                周点击:<?php echo $value['hits_week'] ; ?><br />
+                收藏:<?php echo $value['favorite'] ; ?><br />
+                评论:<?php echo $value['comments'] ; ?><br />
+                赞:<?php echo $value['good'] ; ?><br />
+                ">
+                  <?php echo $value['hits']; ?>/<?php echo $value['comments']; ?>
+                </a>
+              </td>
               <td><?php if($value['status']=="1"){ ?>
                 <a href="<?php echo $value['url']; ?>" class="btn btn-success btn-mini" target="_blank">查看</a>
                 <?php } ?>
