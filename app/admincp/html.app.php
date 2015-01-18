@@ -39,7 +39,7 @@ class htmlApp{
 		$query['indexTPL']	= $indexTPL;
 		$query['indexName']	= $indexName;
 
-		$htm	= iCMS::run('index','iCMS',array($indexTPL,$indexName));
+		$htm	= iCMS::run('index','iCMS',array(array($indexTPL,$indexName)));
 		$fpath	= iPHP::p2num($htm[1]->pagepath);
 		$total	= $GLOBALS['iPage']['total'];
 		iFS::filterExt($fpath,true) OR iPHP::alert("文件后缀不安全,禁止生成!<hr />请更改系统设置->网站URL->文件后缀");
@@ -85,15 +85,15 @@ class htmlApp{
 		$category	= $this->PG['cid'];
 		$rootid		= $this->PG['rootid'];
 		$k			= (int)$this->PG['k'];
-		if(!$k && $this->page){
+		if($k>0||empty($category)){
 			$category = iCache::get('iCMS/create.category');
 		}
-		if(!$k && empty($category)){
+		if(empty($category)){
 			iPHP::alert('请选择需要生成静态的栏目!');
 		}
 		$category[0]=='all' && $category = $this->get_category(iCMS_APP_ARTICLE);
 
-		$k OR iCache::set('iCMS/create.category',$category,0);
+		$k===0 && iCache::set('iCMS/create.category',$category,0);
 
 		$_GET['loop'] && $loop=0;
 		$GLOBALS['page'] = $p+$this->page;
@@ -101,10 +101,8 @@ class htmlApp{
 		$len = count($category)-1;
 		$cid = $category[$k];
 
-		$htm = iCMS::run('category','category',$cid,false);
-
+		$htm = iCMS::run('category','category',$cid,null);
 		$htm OR iPHP::alert("栏目[cid:$cid] URL规则设置问题! 此栏目不能生成静态");
-
 		$fpath = iPHP::p2num($htm[1]['iurl']['pagepath']);
 		$total = $GLOBALS['iPage']['total'];
 		iFS::filterExt($fpath,true) OR iPHP::alert("文件后缀不安全,禁止生成!<hr />请更改栏目->URL规则设置->栏目规则");

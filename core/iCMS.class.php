@@ -220,7 +220,7 @@ class iCMS {
                 if($args==='object'){
                     return self::$app;
                 }
-				return self::$app->$method($args);
+				return call_user_func_array(array(self::$app,$method), (array)$args);
 			}else{
 				return self::$app->$method();
 			}

@@ -159,7 +159,6 @@ class categoryApp extends category{
                     empty($url) && $dir = strtolower(pinyin($_name));
                 }
                 $this->check_dir($dir,$appid,$url);
-            var_dump($dir);
                 $data['name']       = $_name;
                 $data['dir']        = $dir;
                 $data['userid']     = iMember::$userid;
@@ -456,7 +455,7 @@ class categoryApp extends category{
     function recount(){
         $rs = iDB::all("SELECT `cid` FROM `#iCMS@__category` where `appid`='$this->appid'");
         foreach ((array)$rs as $key => $value) {
-            $this->update_count($value[$i]['cid']);
+            $this->update_count($value['cid']);
         }
     }
     function get_ids($cid = "0",$all=true,$root_array=null) {
