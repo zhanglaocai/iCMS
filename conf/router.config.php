@@ -5,6 +5,7 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: user.tpl.php 1392 2013-05-20 12:28:08Z coolmoo $
+ * 此配置禁止修改
  */
 //$iURL.user.bind
 defined('iPHP') OR exit('What are you doing?');

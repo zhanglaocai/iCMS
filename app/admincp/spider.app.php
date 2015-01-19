@@ -1389,16 +1389,18 @@ class spiderApp {
 
         $ch = curl_init();
         $options = array(
-            CURLOPT_URL            => $url,
-            CURLOPT_ENCODING       => $this->encoding,
-            CURLOPT_REFERER        => $this->referer,
-            CURLOPT_USERAGENT      => $this->useragent,
-            CURLOPT_TIMEOUT        => 3,
-            CURLOPT_CONNECTTIMEOUT => 3,
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_FAILONERROR    => 1,
-            CURLOPT_HEADER         => 0,
-            CURLOPT_NOSIGNAL       => true,
+            CURLOPT_URL                  => $url,
+            CURLOPT_ENCODING             => $this->encoding,
+            CURLOPT_REFERER              => $this->referer,
+            CURLOPT_USERAGENT            => $this->useragent,
+            CURLOPT_TIMEOUT              => 10,
+            CURLOPT_CONNECTTIMEOUT       => 10,
+            CURLOPT_RETURNTRANSFER       => 1,
+            CURLOPT_FAILONERROR          => 1,
+            CURLOPT_HEADER               => 0,
+            CURLOPT_NOSIGNAL             => true,
+            CURLOPT_DNS_USE_GLOBAL_CACHE => true,
+            CURLOPT_DNS_CACHE_TIMEOUT    => 86400,
             // CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
             // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
         );
