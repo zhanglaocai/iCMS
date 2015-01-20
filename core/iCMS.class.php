@@ -146,6 +146,7 @@ class iCMS {
             "res"    => iCMS_FS_URL,
             "ui"     => iCMS_PUBLIC_URL.'/ui',
             "avatar" => iCMS_FS_URL.'avatar/',
+            "mobile" => self::$config['template']['mobile']['domain'],
         );
         iPHP::assign('site',$site);
         iPHP::$dialog['title']  = self::$config['site']['name'];

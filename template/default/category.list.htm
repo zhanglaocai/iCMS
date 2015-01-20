@@ -5,7 +5,8 @@
   <title><!--{$category.name}-->_<!--{$site.title}-->_<!--{$site.seotitle}--></title>
   <meta name="keywords" content="<!--{$category.keywords}-->" />
   <meta name="description" content="<!--{$category.description}-->"/>
-  <meta name="mobile-agent" content="format=html5;url=<!--{$category.url}-->"/>
+  <meta name="mobile-agent" content="format=xhtml;url=<!--{$category.url|replace:$site.url:$site.urls.mobile}-->">
+  <meta name="mobile-agent" content="format=html5;url=<!--{$category.url|replace:$site.url:$site.urls.mobile}-->">
   <!--{iCMS:public:ui}-->
 </head>
 <body>
