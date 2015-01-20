@@ -11,9 +11,9 @@
 * @$Id: iSQLite.class.php 2412 2014-05-04 09:52:07Z coolmoo $
 */
 
-define('OBJECT', 'OBJECT', true);
-define('ARRAY_A', 'ARRAY_A', false);
-define('ARRAY_N', 'ARRAY_N', false);
+define('OBJECT', 'OBJECT');
+define('ARRAY_A', 'ARRAY_A');
+define('ARRAY_N', 'ARRAY_N');
 
 defined('SAVEQUERIES') OR define('SAVEQUERIES', true);
 

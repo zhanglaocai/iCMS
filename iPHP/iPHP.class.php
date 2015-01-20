@@ -743,7 +743,6 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline){
     if(function_exists('debug_backtrace')){
         //print "backtrace:\n";
         $backtrace = debug_backtrace();
-        array_shift($backtrace);
         foreach($backtrace as $i=>$l){
             $html.="[$i] in function <b>{$l['class']}{$l['type']}{$l['function']}</b>";
             $l['file'] && $html.=" in <b>{$l['file']}</b>";
