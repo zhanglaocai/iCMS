@@ -33,6 +33,7 @@ class accountApp{
         if($this->uid) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `uid`='$this->uid' LIMIT 1;");
             $rs->info && $rs->info = unserialize($rs->info);
+            $rs->info = (array)$rs->info;
         }
         include iACP::view("account.add");
     }

@@ -647,8 +647,8 @@ class iTemplate_Compiler extends iTemplate {
 					$this->_vars[\'' . $_args['value'] . '\'][\'last\']=false;
 					$this->_vars[\'' . $_args['value'] . '\'][\'first\']=false;
 					foreach ((array)' . $_args['from'] . ' as ' . $keystr . '$this->_vars[\'' . $_args['value'] . '\']){
-						$fec_'.$hash.'==1 && $this->_vars[\'' . $_args['value'] . '\'][\'first\']=true;
-						$fec_'.$hash.'==$_count_'.$hash.' && $this->_vars[\'' . $_args['value'] . '\'][\'last\']=true;
+						$fec_'.$hash.'==1 && @$this->_vars[\'' . $_args['value'] . '\'][\'first\']=true;
+						$fec_'.$hash.'==$_count_'.$hash.' && @$this->_vars[\'' . $_args['value'] . '\'][\'last\']=true;
 				';
 				if(isset($_args['start'])){
 					$_result.='if($fec_'.$hash.'<'.$_args['start'].'){

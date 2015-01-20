@@ -11,7 +11,7 @@ function compile_iPHP($arguments, &$object){
 	$hash    = substr(uniqid(rand()), -4);
 	$props   = "\$_iPHP_{$hash}";
 	$props_a = "\$_iPHP_{$hash}_a";
-	$output  = "<?php if (isset($props)) unset($props);\n";
+	$output  = "<?php if (isset($props)){unset($props);}\n$props = array();\n";
 	foreach ($attrs as $attr_name => $attr_value){
 		switch ($attr_name){
 			case 'app':
