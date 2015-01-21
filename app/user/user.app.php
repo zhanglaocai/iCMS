@@ -114,14 +114,14 @@ class userApp {
         iPHP::assign('status',isset($_GET['status'])?(int)$_GET['status']:'1');
         iPHP::assign('cid',(int)$_GET['cid']);
         iPHP::assign('article',array(
-            'manage' => iPHP::router('/user/article'),
-            'edit'   => iPHP::router('/user/publish'),
+            'manage' => iPHP::router('/user/article',iCMS_REWRITE,'?&'),
+            'edit'   => iPHP::router('/user/publish',iCMS_REWRITE,'?&'),
         ));
     }
     private function __do_manage_favorite(){
         iPHP::assign('favorite',array(
             'fid'    => (int)$_GET['fid'],
-            'manage' => iPHP::router('/user/manage/favorite'),
+            'manage' => iPHP::router('/user/manage/favorite',iCMS_REWRITE,'?&'),
         ));
     }
 
@@ -266,7 +266,7 @@ class userApp {
                 '3'=>'user:article:update_examine',
             );
         }
-        $url = str_replace(iCMS_URL,'',iPHP::router('/user/article'));
+        $url = iPHP::router('/user/article',iCMS_REWRITE);
         iPHP::success($lang[$status],'url:'.$url);
     }
     private function __action_manage_article(){
@@ -275,12 +275,12 @@ class userApp {
         if (in_array ($act,$actArray)){
             $id = (int)$_POST['id'];
             $id OR iPHP::code(0,'iCMS:error',0,'json');
-            $status = '0';
-            $act =="renew" && $status = '1';
-            $act =="trash" && $status = '2';
-            iDB::query("
+            $act =="delete" && $sql = "`status` ='2',`postype`='3'";
+            $act =="renew"  && $sql = "`status` ='1'";
+            $act =="trash"  && $sql = "`status` ='2'";
+            $sql && iDB::query("
                 UPDATE `#iCMS@__article`
-                SET `status` ='$status'
+                SET $sql
                 WHERE `userid` = '".user::$userid."'
                 AND `id`='$id'
                 LIMIT 1;

@@ -72,14 +72,14 @@
           <div class="form-group">
             <!-- <label for="iCMS-reg-seccode">验证码</label> -->
             <input type="text" placeholder="验证码" maxlength="4" data-container=".seccode_tip" name="seccode" id="iCMS-reg-seccode" class="iCMS_seccode form-control">
-            <img src="<!--{iCMS:router url='/api/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
+            <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
             <a href="javascript:;" class="iCMS_seccode_text" style="float: none">换一张</a>
             <span class="help-block seccode_tip">请输入图片中的字符!</span>
           </div>
           <!--{/if}-->
           <div class="checkbox">
             <label for="reg_agreement">
-              <input type="checkbox" name="agreement" id="reg_agreement" checked="checked"><span>我已看过并同意《<a href="<!--{iCMS:router url='/api/agreement'}-->" target="_blank"><!--{$site.title}-->网络服务使用协议</a>》</span>
+              <input type="checkbox" name="agreement" id="reg_agreement" checked="checked"><span>我已看过并同意《<a href="<!--{iCMS:router url='/api/public/agreement'}-->" target="_blank"><!--{$site.title}-->网络服务使用协议</a>》</span>
             </label>
           </div>
           <button type="submit" class="btn btn-primary btn-lg btn-block iCMS_register_btn">注 册</button>

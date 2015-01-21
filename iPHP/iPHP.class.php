@@ -284,7 +284,7 @@ class iPHP{
 		return str_replace('{P}',$page,$path);
 	}
 
-	public static function router($key,$static=false){
+	public static function router($key,$static=false,$var=null){
 		if($static){
 			$router = false;
 		}else{
@@ -307,7 +307,9 @@ class iPHP{
 		}else{
 			$url = $router?$router[$key]:$key;
 		}
-
+		if($var=='?&'){
+			$url.= iCMS_REWRITE?'?':'&';
+		}
 		return $url;
 	}
 
@@ -467,20 +469,21 @@ class iPHP{
     	if($ret) return $msg;
     	echo $msg;
     }
-	public static function js($js="js:",$ret=false) {
-        $A		= explode(':',$js);
-        switch ($A[0]){
+	public static function js($str="js:",$ret=false) {
+		$type = substr($str,0,strpos($str,':'));
+		$act  = substr($str,strpos($str, ':')+1);
+        switch ($type){
         	case 'js':
-				$A[1] 		&& $code	= $A[1];
-				$A[1]=="0"	&& $code	= 'iTOP.history.go(-1);';
-				$A[1]=="1"	&& $code	= 'iTOP.location.reload();';
+				$act && $code	= $act;
+				$act =="0" && $code	= 'iTOP.history.go(-1);';
+				$act =="1" && $code	= 'iTOP.location.href=iTOP.location.href;';
         	break;
         	case 'url':
-				$A[1]=="1" && $A[1]	= __REF__;
-	        	$code = "iTOP.location.href='".$A[1]."';";
+				$act=="1" && $act = __REF__;
+	        	$code = "iTOP.location.href='".$act."';";
         	break;
-        	case 'src':	$code = "iTOP.$('#iPHP_FRAME').attr('src','".$A[1]."');";break;
-        	default:	$code = '';
+        	case 'src':	$code = "iTOP.$('#iPHP_FRAME').attr('src','".$act."');";break;
+        	default: $code = '';
         }
 
         if($ret) return $code;

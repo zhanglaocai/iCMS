@@ -13,7 +13,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 
 //require_once iPHP_APP_DIR.'/user/msg.class.php';
-define("USER_LOGIN_URL",    iPHP::router('/api/user/login'));
+define("USER_LOGIN_URL",    iPHP::router('/api/user/login',iCMS_REWRITE));
 define("USER_AUTHASH",      '#=(iCMS@'.iPHP_KEY.'@iCMS)=#');
 class user {
 	public static $userid     = 0;

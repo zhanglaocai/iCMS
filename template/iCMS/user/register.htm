@@ -54,13 +54,13 @@
               <!--{if $iCMS.CONFIG.user.regseccode }-->
               <div class="reg_check"> <span>验证码：</span>
                 <input id="iCMS-reg-seccode" type="text" maxlength="4" name="seccode" class="iCMS_seccode">
-                <img src="<!--{iCMS:router url='/api/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
+                <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
                 <a href="javascript:;" class="iCMS_seccode_text" style="float: none">换一张</a>
               </div>
               <!--{/if}-->
               <div class="reg_box">
                 <input class="agreement fl" name="agreement" type="checkbox" checked="checked">
-                <span class="fl">我已看过并同意《<a href="<!--{iCMS:router url='/api/agreement'}-->" target="_blank"><!--{$site.title}-->网络服务使用协议</a>》</span> </div>
+                <span class="fl">我已看过并同意《<a href="<!--{iCMS:router url='/api/public/agreement'}-->" target="_blank"><!--{$site.title}-->网络服务使用协议</a>》</span> </div>
                 <div class="reg_submit">
                   <button class="submit iCMS_register_btn"></button>
                 </div>

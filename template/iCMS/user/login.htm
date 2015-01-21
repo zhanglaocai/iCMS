@@ -40,7 +40,7 @@
               <!--{if $iCMS.CONFIG.user.loginseccode }-->
               <div class="lg_check"><span>验证码：</span>
                 <input type="text" maxlength="4" name="seccode" class="iCMS_login_seccode iCMS_seccode">
-                <img src="<!--{iCMS:router url='/api/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
+                <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
                 <a href="javascript:;" class="iCMS_seccode_text" style="float: none">换一张</a>
               </div>
               <div class="err_seccode"><span><i class="fa fa-minus-circle"></i> 请输入验证码</span></div>

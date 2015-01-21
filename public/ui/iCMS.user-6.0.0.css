@@ -1,4 +1,4 @@
-body { background-color: #fff; background-image: url(img/bg-v6.png); _background-attachment: fixed; }
+body { background: #fff url(img/bg-v6.png); _background-attachment: fixed; }
 #footer{margin-top:0px;}
 /* userApp */
 .userApp_home { margin: 0 auto; width: 960px; background-color: #fff; }
@@ -47,7 +47,7 @@ body { background-color: #fff; background-image: url(img/bg-v6.png); _background
 .userApp_header .card_avatar { padding: 4px; overflow: hidden; background: #FFF; z-index: 9; top: auto; bottom: -5px; border-color: #CCC; margin: 20px }
 .userApp_header .card_avatar, .userApp_header .card_avatar_img { width: 150px; height: 150px }
 .userApp_header .card_data { padding: 15px 0 15px; float: right; width: 360px; text-align: center; }
-.userApp_header .card_banner { display: block; position: relative; min-height: 150px; max-height: 300px; margin: 0; overflow: hidden; _zoom: 1 }
+.userApp_header .card_banner {border-radius: 3px 3px 0px 0px;display: block; position: relative; min-height: 150px; max-height: 300px; margin: 0; overflow: hidden; _zoom: 1 }
 .userApp_header .card_banner img { width: 100%; vertical-align: top }
 .userApp_header .card_top { padding-left: 200px; border-top: 1px solid #CCC; background-color: #F8F8F8; _background: #F8F8F8 }
 .userApp_header .card_title_name { margin-right: 0; }
