@@ -122,7 +122,7 @@ class articleApp {
 
         if($category['status']==0) return false;
 
-        if(iPHP::$iTPL_MODE=="html" && $tpl && (strstr($category['contentRule'],'{PHP}')||$category['outurl'])) return false;
+        if(iPHP::$iTPL_MODE=="html" && $tpl && (strstr($category['contentRule'],'{PHP}')||$category['outurl']||$category['mode']=="0")) return false;
 
         $_iurlArray      = array($article,$category);
         $article['iurl'] = iURL::get('article',$_iurlArray,$page);

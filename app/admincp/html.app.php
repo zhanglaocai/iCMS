@@ -230,6 +230,7 @@ class htmlApp{
     function Article($id){
 		$app   = iCMS::run('article','article','object');
 		$htm   = $app->article($id);
+		$htm OR iPHP::alert("文章所属栏目URL规则设置问题! 此栏目下的文章不能生成静态,请修改栏目的访问模式和URL规则");
 		$total = $htm[1]['page']['total'];
 		$title = $htm[1]['title'];
 

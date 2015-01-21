@@ -215,8 +215,6 @@ class iCMS {
         self::$app = iPHP::app($app);
 		if(self::$app_do && self::$app->methods){
 			in_array(self::$app_do, self::$app->methods) OR iPHP::throw404('运行出错！ <b>' .self::$app_name. '</b> 类中找不到方法定义: <b>'.self::$app_method.'</b>', '0003');
-            method_exists(self::$app,self::$app_method) OR iPHP::throw404('运行出错！ <b>' .self::$app_name. '</b> 类中 <b>'. self::$app_method.'</b> 方法不存在', '0004');
-
             $method = self::$app_method;
             $args===null && $args = self::$app_args;
 			if($args){
@@ -225,6 +223,7 @@ class iCMS {
                 }
 				return call_user_func_array(array(self::$app,$method), (array)$args);
 			}else{
+                method_exists(self::$app,self::$app_method) OR iPHP::throw404('运行出错！ <b>' .self::$app_name. '</b> 类中 <b>'. self::$app_method.'</b> 方法不存在', '0004');
 				return self::$app->$method();
 			}
 		}else{
