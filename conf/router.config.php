@@ -63,13 +63,4 @@ return array(
 
 	'/favorite/{id}/' => iCMS_API.'?app=favorite&id={id}',
 	'/comment/{id}/'  => iCMS_API.'?app=comment&id={id}',
-//taobaoke
-	'/api/taobao'                 => iCMS_API.'?app=taobao',
-	'/api/taobao/publish'         => iCMS_API.'?app=taobao&do=publish',
-	'/api/taobao/manage'          => iCMS_API.'?app=taobao&do=manage',
-	'/api/taobao/manage/status/0' => iCMS_API.'?app=taobao&do=manage&status=0',
-	'/api/taobao/manage/status/2' => iCMS_API.'?app=taobao&do=manage&status=2',
-	'/api/taobao/manage/status/3' => iCMS_API.'?app=taobao&do=manage&status=3',
-	'/api/taobao/manage/status/4' => iCMS_API.'?app=taobao&do=manage&status=4',
-
 );

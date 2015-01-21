@@ -141,6 +141,7 @@ class iCMS {
         $site['url']   = iCMS_URL;
         $site['tpl']   = iPHP_DEFAULT_TPL;
         $site['urls']  = array(
+            "tpl"    => iCMS_URL.'/template/'.iPHP_DEFAULT_TPL,
             "public" => iCMS_PUBLIC_URL,
             "user"   => iCMS_USER_URL,
             "res"    => iCMS_FS_URL,
