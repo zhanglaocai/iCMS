@@ -51,13 +51,11 @@ function article_list($vars){
             $map_where+=map::where($cids);
         }
     }
-    if($vars['pid'] && !isset($vars['pids'])){
-        $pid = explode(',',$vars['pid']);
-        $vars['sub'] && $pid+=iCMS::get_category_ids($pid,true);
-        $where_sql.= iPHP::where($pid,'pid');
+    if(isset($vars['pid']) && !isset($vars['pids'])){
+        $where_sql.= iPHP::where($vars['pid'],'pid');
     }
 
-    if(isset($vars['pids']) && !$vars['pid']){
+    if(isset($vars['pids']) && !isset($vars['pid'])){
         iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
         map::init('prop',iCMS_APP_ARTICLE);
         $map_where+=map::where($vars['pids']);

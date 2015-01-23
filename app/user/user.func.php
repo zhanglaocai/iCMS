@@ -39,8 +39,10 @@ function user_list($vars=null){
 	isset($vars['gid'])   && $where_sql.= " AND `gid` ='{$vars['gid']}'";
 
 	isset($vars['type'])  && $where_sql.= " AND `type` ='{$vars['type']}'";
-
-    if($vars['pid']){
+    if(isset($vars['pid']) && !isset($vars['pids'])){
+        $where_sql.= iPHP::where($vars['pid'],'pid');
+    }
+    if(isset($vars['pids']) && !isset($vars['pid'])){
         iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
         map::init('prop',iCMS_APP_USER);
         //$where_sql.= map::exists($vars['pid'],'`#iCMS@__user`.uid'); //map 表大的用exists

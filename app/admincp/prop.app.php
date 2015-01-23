@@ -114,6 +114,10 @@ class propApp{
         $_count = count($rs);
     	include iACP::view("prop.manage");
     }
+    function do_cache(){
+        $this->cache();
+        iPHP::success('缓存更新完成!','js:1');
+    }
     function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__prop`",ARRAY_A);
     	foreach((array)$rs AS $row) {
@@ -123,10 +127,10 @@ class propApp{
     		$ctfA['c'.$row['cid'].'.'.$row['type'].'.'.$row['field']][]=$row;
     		$tfA[$row['type'].'.'.$row['field']][$row['pid']]=$row;
     	}
-    	foreach($ctfA AS $k=>$a){
+    	foreach((array)$ctfA AS $k=>$a){
     		iCache::set('iCMS/prop/'.$k,$a,0);
     	}
-    	foreach($tfA AS $k=>$a){
+    	foreach((array)$tfA AS $k=>$a){
     		iCache::set('iCMS/prop/'.$k,$a,0);
     	}
     	iCache::set('iCMS/prop/cid.cache',$cidA,0);

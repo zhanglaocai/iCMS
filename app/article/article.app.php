@@ -225,8 +225,10 @@ class articleApp {
             if(empty($prev)){
                 $prers = iDB::row("SELECT * FROM `#iCMS@__article` WHERE `id` < '{$article['id']}' AND `cid`='{$article['cid']}' AND `status`='1' order by id DESC LIMIT 1;");
                 if($prers){
-                    $prev  = '<a href="'.iURL::get('article',array((array)$prers,$category))->href.'" class="prev" target="_self">'.$prers->title.'</a>';
+                    $prev_url = iURL::get('article',array((array)$prers,$category))->href;
+                    $prev     = '<a href="'.$prev_url.'" class="prev" target="_self">'.$prers->title.'</a>';
                     iCache::set($prev_cache_name,$prev);
+                    $article['prev_url'] = $prev_url;
                 }
             }
             $article['prev'] = $prev?$prev:iPHP::lang('iCMS:article:first');
@@ -236,8 +238,10 @@ class articleApp {
             if(empty($next)){
                 $nextrs = iDB::row("SELECT * FROM `#iCMS@__article` WHERE `id` > '{$article['id']}'  and `cid`='{$article['cid']}' AND `status`='1' order by id ASC LIMIT 1;");
                 if($nextrs){
-                    $next  = '<a href="'.iURL::get('article',array((array)$nextrs,$category))->href.'" class="next" target="_self">'.$nextrs->title.'</a>';
+                    $next_url = iURL::get('article',array((array)$nextrs,$category))->href;
+                    $next     = '<a href="'.$next_url.'" class="next" target="_self">'.$nextrs->title.'</a>';
                     iCache::set($next_cache_name,$next);
+                    $article['next_url'] = $next_url;
                 }
             }
             $article['next'] = $next?$next:iPHP::lang('iCMS:article:last');;

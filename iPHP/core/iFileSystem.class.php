@@ -744,7 +744,7 @@ class iFS {
         }
     }
 
-    function a($a,$break=false) {
+    public static function a($a,$break=false) {
 		$stateMap = array(
             "UPLOAD_MAX"    => "文件大小超出 upload_max_filesize 限制" ,
             "MAX_FILE_SIZE" => "文件大小超出 MAX_FILE_SIZE 限制" ,
