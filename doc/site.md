@@ -18,8 +18,9 @@ Array(
     [title]       => 网站名称 (name的别名)
     [404]         => 404页面 网址
     [url]         => 网站网址
-    [tpl]         => 桌面端模板目录
+    [tpl]         => 当前模板目录
     [urls]        => Array(
+        [tpl]    => 当前模板目录URL
         [public] => 公共资源URL
         [user]   => 用户URL
         [res]    => 附件URL

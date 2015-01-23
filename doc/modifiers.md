@@ -39,6 +39,12 @@
 <!--{$article_list.description|cut:'50':'...'}-->
 ```
 
+- 内容替换
+
+```html
+<!--{$article.description|replace:'被替换字符':'替换字符'}-->
+```
+
 - 清除html格式
 
 ```html
@@ -55,5 +61,5 @@
 - 多调节器 (先清除html格式然后在截取长度50 超过部分显示...)
 
 ```html
-<!--{$article_list.description|html2txt||cut:'50':'...'}-->
+<!--{$article_list.description|html2txt|cut:'50':'...'}-->
 ```

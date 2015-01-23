@@ -5,6 +5,9 @@ iCMS模板标签
 ```
 <!--{iCMS:article:list
   loop      = "true"
+  user      = "true"
+  tags      = "true"
+  meta      = "true"
   row       = "10"
   cid       = "1"
   cid      != "1"
@@ -70,6 +73,9 @@ iCMS模板标签
 |属性|可选值|说明
 |-|-|-|
 |loop|true|循环标记
+|user|true|是否调用用户数据
+|tags|true|是否调用TAG数据
+|meta|true|是否调用扩展属性数据
 |row|10|返回行数
 |cid|1｜1,2,3|栏目ID,多项请用**,**隔开
 |cid!|1｜1,2,3|排除的栏目ID,多项请用**,**隔开
@@ -164,10 +170,11 @@ iCMS模板标签
 <!--{$article_list[1].title}--> 第二条标题 以些类推
 ```
 
-- 搭配 foreach 使用
+- 不使用 loop="true" 搭配 foreach 使用
 
 ```
 全部循环
+<!--{iCMS:article:list pic="true" row="10"}-->
 <!--{foreach value=alist from="$article_list"}-->
     <a href="<!--{$alist.url}-->"><!--{$alist.title}--></a>
 <!--{/foreach}-->

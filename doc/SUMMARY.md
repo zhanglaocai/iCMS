@@ -1,3 +1,5 @@
+* [使用常见问题](faq.md)
+* [相关设置](setting.md)
 * [模板基本](basic.md)
  - [文件及目录结构](directory.md)
  - [模板标签简介](description.md)
@@ -22,3 +24,5 @@
  - [TAG](tag_array.md)
  - [列表](tag_list.md)
 * [用户标签](user.md)
+* [高级应用](grade.md)
+ - [router.config.php对应的REWRITE规则](router_config.md)
