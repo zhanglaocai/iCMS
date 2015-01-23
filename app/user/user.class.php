@@ -12,9 +12,13 @@
 defined('iPHP') OR exit('What are you doing?');
 
 
-//require_once iPHP_APP_DIR.'/user/msg.class.php';
-define("USER_LOGIN_URL",    iPHP::router('/api/user/login',iCMS_REWRITE));
-define("USER_AUTHASH",      '#=(iCMS@'.iPHP_KEY.'@iCMS)=#');
+$USER_LOGIN_URL = iPHP::router('/api/user/login',iCMS_REWRITE);
+if(iCMS_REWRITE){
+	$USER_LOGIN_URL = iFS::fp($USER_LOGIN_URL,'+http');
+}
+define("USER_LOGIN_URL",$USER_LOGIN_URL);
+define("USER_AUTHASH",'#=(iCMS@'.iPHP_KEY.'@iCMS)=#');
+
 class user {
 	public static $userid     = 0;
 	public static $nickname   = '';
