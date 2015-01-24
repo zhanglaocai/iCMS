@@ -71,6 +71,10 @@ class commentApp {
 
     }
     public function ACTION_add(){
+        if(!iCMS::$config['comment']['enable']){
+            iPHP::code(0,'iCMS:comment:close',0,'json');
+        }
+
         iPHP::app('user.class','static');
         user::get_cookie() OR iPHP::code(0,'iCMS:!login',0,'json');
         $seccode = iS::escapeStr($_POST['seccode']);
@@ -78,6 +82,7 @@ class commentApp {
         if(iCMS::$config['comment']['seccode']){
             iPHP::seccode($seccode) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
         }
+
 
         iPHP::app('user.msg.class','static');
 

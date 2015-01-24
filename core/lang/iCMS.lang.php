@@ -60,6 +60,7 @@ return array(
 		'error' =>'收藏失败！',
 	),
 	'comment'=> array(
+		'close'   =>'评论已关闭！',
 		'empty'   =>'请输入内容！',
 		'success' =>'感谢您的评论！',
 		'examine' =>'您的评论已经提交，请等待管理审核通过后方可显示 ！',

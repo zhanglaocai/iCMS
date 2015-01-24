@@ -24,16 +24,6 @@
 <script src="<!--{$site.urls.ui}-->/iCMS.user-6.0.0.js"></script>
 <script src="<!--{$site.urls.ui}-->/iCMS.mobile-6.0.0.js"></script>
 <script src="<!--{$site.urls.ui}-->/jquery.infinitescroll.min.js"></script>
-<script>
-window.iCMS.init({
-	API:"<!--{iCMS:router url='/api'}-->",
-	PUBLIC:"<!--{$site.urls.public}-->",
-	COOKIE:'<!--{$iCMS.COOKIE_PRE}-->',
-	COMMENT:{seccode:<!--{if $iCMS.CONFIG.comment.seccode }-->true<!--{else}-->false<!--{/if}-->}
-});
-$(function(){
-	iCMS.run();
-})
-</script>
+<!--{include file="/iCMS/init.js.htm"}-->
 <!--{/if}-->
 <link href="<!--{$site.urls.ui}-->/iCMS.mobile-6.0.0.css" type="text/css" rel="stylesheet"/>
