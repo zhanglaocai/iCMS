@@ -268,7 +268,7 @@ class iPHP{
 		//}
 
 		if(!$mail->Send()) {
-		  echo "Mailer Error: " . $mail->ErrorInfo;
+		  return "Mailer Error: " . $mail->ErrorInfo;
 		} else {
 		  return true;
 		}
@@ -387,6 +387,7 @@ class iPHP{
 	public static function seccode($seccode,$type='F') {
 	    $_seccode = self::get_cookie('seccode');
 	    $_seccode && $cookie_seccode = authcode($_seccode, 'DECODE');
+	    self::set_cookie('seccode', '',-31536000);
 	    if(empty($cookie_seccode) || strtolower($cookie_seccode) != strtolower($seccode)) {
 	        return false;
 	    }else {

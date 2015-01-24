@@ -517,6 +517,7 @@ class userApp {
     public function ACTION_findpwd(){
         $seccode  = iS::escapeStr($_POST['seccode']);
         iPHP::seccode($seccode) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
+
         $uid  = (int)$_POST['uid'];
         $auth = iS::escapeStr($_POST['auth']);
         if($auth && $uid){
@@ -578,7 +579,7 @@ class userApp {
             );
             //var_dump(iCMS::$config);
             $result = iPHP::sendmail($config);
-            if($result){
+            if($result===true){
                 iPHP::code(1,'user:findpwd:send:success','mail','json');
             }else{
                 iPHP::code(0,'user:findpwd:send:failure','mail','json');
