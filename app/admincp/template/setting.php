@@ -80,6 +80,7 @@ function modal_tplfile(el,a){
         <li><a href="#setting-other" data-toggle="tab">其它</a></li>
         <li><a href="#setting-patch" data-toggle="tab">更新</a></li>
         <li><a href="#setting-grade" data-toggle="tab">高级</a></li>
+        <li><a href="#setting-mail" data-toggle="tab">邮件</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding iCMS-setting">
@@ -802,6 +803,33 @@ function modal_tplfile(el,a){
               <input type="text" name="config[api][weixin][token]" class="span3" id="weixin_token" value="<?php echo $config['api']['weixin']['token'] ; ?>"/>
             </div>
             <span class="help-inline">公共平台接口URL:<?php echo $config['router']['public_url'] ; ?>/api.php?app=public&do=weixin&api_token=Token(令牌)</span>
+            <hr />
+            <h3>百度站长平台 Sitemap 实时推送</h3>
+            <span class="help-inline">申请地址:http://zhanzhang.baidu.com/ (需要权限)</span>
+            <div class="clearfloat"></div>
+            <div class="input-prepend"> <span class="add-on">站点</span>
+              <input type="text" name="config[api][baidu][sitemap][site]" class="span3" id="baidu_sitemap_site" value="<?php echo $config['api']['baidu']['sitemap']['site'] ; ?>"/>
+            </div>
+            <span class="help-inline">在站长平台验证的站点，比如www.example.com</span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">数据名称</span>
+              <input type="text" name="config[api][baidu][sitemap][resource_name]" class="span3" id="baidu_sitemap_resource_name" value="<?php echo $config['api']['baidu']['sitemap']['resource_name']?$config['api']['baidu']['sitemap']['resource_name']:'sitemap'; ?>"/>
+            </div>
+            <span class="help-inline">你被允许推送的数据名称，比如sitemap</span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">准入密钥</span>
+              <input type="text" name="config[api][baidu][sitemap][access_token]" class="span3" id="baidu_sitemap_access_token" value="<?php echo $config['api']['baidu']['sitemap']['access_token'] ; ?>"/>
+            </div>
+            <span class="help-inline">在站长平台申请的推送用的准入密钥</span>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">同步推送</span>
+              <div class="switch" data-on-label="启用" data-off-label="关闭">
+                <input type="checkbox" data-type="switch" name="config[api][baidu][sitemap][sync]" id="baidu_sitemap_sync" <?php echo $config['api']['baidu']['sitemap']['sync']?'checked':''; ?>/>
+              </div>
+            </div>
+            <span class="help-inline">启用文章发布时同步推送 如果发布文章无法正常返回 建议关闭</span>
+
+
             <!--
             <hr />
             <h3>淘宝联盟</h3>
@@ -889,6 +917,44 @@ index iCMS_article_delta : iCMS_article
 }
 ##sphinx使用问题,请自行Google上百度一下
           </pre>
+          </div>
+          <div id="setting-mail" class="tab-pane hide">
+            <div class="input-prepend"> <span class="add-on">SMTP 主机</span>
+              <input type="text" name="config[mail][host]" class="span3" id="mail_host" value="<?php echo $config['mail']['host']; ?>"/>
+            </div>
+            <span class="help-inline">发送邮件的服务器.例如:smtp.qq.com</span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">安全协议</span>
+              <input type="text" name="config[mail][secure]" class="span3" id="mail_secure" value="<?php echo $config['mail']['secure']; ?>"/>
+            </div>
+            <span class="help-inline">发送邮件的服务器使用的安全协议.默认为空.可选项"ssl" 或者 "tls"</span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">SMTP 端口</span>
+              <input type="text" name="config[mail][port]" class="span3" id="mail_port" value="<?php echo $config['mail']['port']?$config['mail']['port']:'25'; ?>"/>
+            </div>
+            <span class="help-inline">发送邮件的服务器的端口,默认:25</span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">SMTP 账号</span>
+              <input type="text" name="config[mail][username]" class="span3" id="mail_username" value="<?php echo $config['mail']['username']; ?>"/>
+            </div>
+            <span class="help-inline">登陆邮件的服务器的账号</span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">账号密码</span>
+              <input type="text" name="config[mail][password]" class="span3" id="mail_password" value="<?php echo $config['mail']['password']; ?>"/>
+            </div>
+            <span class="help-inline">登陆邮件的服务器的账号密码</span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">发送账号</span>
+              <input type="text" name="config[mail][setfrom]" class="span3" id="mail_setfrom" value="<?php echo $config['mail']['setfrom']; ?>"/>
+            </div>
+            <span class="help-inline">用于发送邮件的账号</span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">联系Email</span>
+              <input type="text" name="config[mail][replyto]" class="span3" id="mail_replyto" value="<?php echo $config['mail']['replyto']; ?>"/>
+            </div>
+            <span class="help-inline">用于邮件中回复Email的账号</span>
+            <div class="clearfloat mt10"></div>
+
           </div>
           <div class="form-actions">
             <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>

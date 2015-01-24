@@ -230,6 +230,49 @@ class iPHP{
 		$content   = str_replace('@--iCMS.PageBreak--@','#--iCMS.PageBreak--#',$content);
     	return $content;
     }
+    public static function sendmail($config){
+    	if(empty($config)){
+    		return false;
+    	}
+    	self::import(iPHP_LIB.'/PHPMailer/PHPMailerAutoload.php');
+
+		$mail = new PHPMailer();
+		$mail->SetLanguage('zh_cn',iPHP_LIB.'/PHPMailer/language/');
+		$mail->IsHTML(true);
+		$mail->IsSMTP(); // telling the class to use SMTP
+
+		$mail->CharSet   = 'utf-8';
+		$mail->AltBody   = 'text/html'; // optional, comment out and test
+		$mail->SMTPDebug = 0;                     // enables SMTP debug information (for testing)
+		                                           // 1 = errors and messages
+		                                           // 2 = messages only
+		$mail->SMTPAuth   = true;                  // enable SMTP authentication
+		$mail->SMTPSecure = $config['secure'];                 // sets the prefix to the servier
+		$mail->Host       = $config['host'];      // sets GMAIL as the SMTP server
+		$mail->Port       = $config['port'];                   // set the SMTP port for the GMAIL server
+		$mail->Username   = $config['username'];  // GMAIL username
+		$mail->Password   = $config['password'];            // GMAIL password
+		$mail->SetFrom($config['setfrom'],$config['title']);
+		$mail->AddReplyTo($config['replyto'],$config['title']);
+		$mail->Subject    = $config['subject'];
+		$mail->MsgHTML($config['body']);
+		foreach ((array)$config['address'] as $key => $value) {
+			$mail->AddAddress($value[0],$value[1]);
+		}
+
+		//function_exists('date_default_timezone_set') && date_default_timezone_set('Asia/Chongqing');
+		//$H=date("H");
+		//if(in_array($H,array("23","00","01","02","03","04","05","06","07"))){
+			// $mail->AddAddress("13599438781@139.com", "13599438781");
+			// $mail->AddAddress("13338433013@189.cn", "13338433013");
+		//}
+
+		if(!$mail->Send()) {
+		  echo "Mailer Error: " . $mail->ErrorInfo;
+		} else {
+		  return true;
+		}
+    }
     public static function cleanHtml($content){
     	$content = stripslashes($content);
 

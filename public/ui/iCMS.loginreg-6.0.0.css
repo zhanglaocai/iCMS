@@ -1,9 +1,9 @@
 body { color: #2a2a2a; font-size: 14px; background-color: #f2f2f2; background-image: url(img/bg-v6.png); _background-attachment: fixed; }
 #header, #footer { margin: 0 auto; width: 984px; }
-.iCMS_register_wrap, .iCMS_login_wrap { margin: 0 auto; width: 984px; }
+.iCMS_register_wrap, .iCMS_login_wrap,.iCMS_findpwd_wrap { margin: 0 auto; width: 984px; }
 .logo { height: 106px; background: url(img/iCMS.logo-6.0.png) no-repeat 0 30px; _background-image: none; _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='img/login-reg-logo.png', sizingMethod="crop"); }
 .logo .iCMS { overflow: hidden; margin-right: 10px; width: 220px; height: 75px; text-indent: -999em; }
-.iCMS_login_wrap .content, .iCMS_register_wrap .content {background-color: #fff; border: 1px solid #CECECE; box-shadow: 0 0 3px #fff inset, 0 1px 1px rgba(0, 0, 0, .1); }
+.iCMS_login_wrap .content, .iCMS_register_wrap .content , .iCMS_findpwd_wrap .content {background-color: #fff; border: 1px solid #CECECE; box-shadow: 0 0 3px #fff inset, 0 1px 1px rgba(0, 0, 0, .1); }
 /*.iCMS_register_wrap .content*/
 .content { padding-left: 55px; }
 .content .tooltip.right .tooltip-arrow {border-right-color: #fff;}
@@ -16,10 +16,11 @@ body { color: #2a2a2a; font-size: 14px; background-color: #f2f2f2; background-im
 .content .rl_center { position: relative; width: 644px; zoom: 1; }
 .content .rl_form { position: absolute; z-index: 1; float: left; width: 544px; }
 .content .rl_form span { float: left; color: #333; vertical-align: middle; text-align: center; font-size: 14px; }
-.content .rl_form .text { float: left; margin-left: 5px; padding: 0 8px; width: 238px; height: 30px; line-height: 30px; }
+.content .rl_form .text { float: left; margin-left: 5px; padding: 0 8px; width: 238px; height: 30px; line-height: 100%; }
 .submit { display: block; width: 131px; height: 35px; border: 0;  cursor: pointer; }
 .lg_login .submit, .lg_reg .reg, .reg_submit .submit, .rst_login a { background: url(img/login_reg_icon.png) no-repeat 0 0; }
 
+.iCMS_findpwd_wrap .btn-large{margin-left: 95px;margin-top: 10px;}
 /*======register======*/
 .right-col .rst_login { margin-top: 38px; margin-left: 32px; }
 .right-col .rst_login span { color: #999; }

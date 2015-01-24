@@ -11,7 +11,7 @@ defined('iPHP') OR exit('What are you doing?');
 iPHP::app('user.class','static');
 iPHP::app('user.msg.class','static');
 class userApp {
-    public $methods = array('iCMS','home','favorite','article','publish','manage','profile','data','hits','check','follow','follower','fans','login','logout','register','add_category','upload','mobileUp','config','uploadvideo','uploadimage','catchimage','report','fav_category','ucard','pm');
+    public $methods = array('iCMS','home','favorite','article','publish','manage','profile','data','hits','check','follow','follower','fans','login','findpwd','logout','register','add_category','upload','mobileUp','config','uploadvideo','uploadimage','catchimage','report','fav_category','ucard','pm');
     public $openid  = null;
     public $user    = array();
     public $me      = array();
@@ -160,21 +160,19 @@ class userApp {
         $cid_array  = (array)$_POST['_cid'];
         foreach ($name_array as $cid => $name) {
             $name = iS::escapeStr($name);
-            iDB::query("
-                UPDATE `#iCMS@__user_category`
-                SET `name` = '$name'
-                WHERE `cid` = '{$cid}'
-                AND `uid`='".user::$userid."'
-                AND `appid`='".iCMS_APP_ARTICLE."'
-            ;");
+            iDB::update("user_category",array('name'=>$name),
+                array(
+                'cid'   => $cid,
+                'uid'   => user::$userid,
+                'appid' => iCMS_APP_ARTICLE
+                )
+            );
         }
         foreach ($cid_array as $key => $_cid) {
             if(!$name_array[$_cid]){
-                iDB::query("
-                    UPDATE `#iCMS@__article`
-                    SET `ucid` = '0'
-                    WHERE `userid`='".user::$userid."';");
-
+                iDB::update("article",array('ucid'=>'0'),
+                    array('userid'=> user::$userid)
+                );
                 iDB::query("
                     DELETE FROM `#iCMS@__user_category`
                     WHERE `cid` = '$_cid'
@@ -224,6 +222,11 @@ class userApp {
         $fwd = iCMS::filter($body);
         $fwd && iPHP::alert('user:publish:filter_body');
 
+        $articleApp = iPHP::app("admincp.article.app");
+
+        if(empty($description)) {
+            $description = $articleApp->autodesc($body);
+        }
 
         $pubdate  = time();
         $postype  = "0";
@@ -511,7 +514,77 @@ class userApp {
         iDB::query("UPDATE `#iCMS@__user` SET `password` = '$newPwd1' WHERE `uid` = '".user::$userid."';");
         iPHP::alert("user:password:modified",'js:parent.location.reload();');
     }
+    public function ACTION_findpwd(){
+        $seccode  = iS::escapeStr($_POST['seccode']);
+        iPHP::seccode($seccode) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
+        $uid  = (int)$_POST['uid'];
+        $auth = iS::escapeStr($_POST['auth']);
+        if($auth && $uid){
+            //print_r($_POST);
+            $authcode = rawurldecode($auth);
+            $authcode = base64_decode($authcode);
+            $authcode = authcode($authcode);
 
+            if(empty($authcode)){
+                iPHP::code(0,'user:findpwd:error','uname','json');
+            }
+            list($uid,$username,$password,$timeline) = explode(USER_AUTHASH, $authcode);
+            $now = time();
+            if($now-$timeline>86400){
+                iPHP::code(0,'user:findpwd:error','time','json');
+            }
+            $user = user::get($uid,false);
+            if($username!=$user->username||$password!=$user->password){
+                iPHP::code(0,'user:findpwd:error','user','json');
+            }
+            $rstpassword = md5(trim($_POST['rstpassword']));
+            if($rstpassword==$user->password){
+                iPHP::code(0,'user:findpwd:same','password','json');
+            }
+            iDB::update("user",array('password'=>$rstpassword),array('uid'=>$uid));
+            iPHP::code(1,'user:findpwd:success',0,'json');
+        }else{
+            $uname = iS::escapeStr($_POST['uname']);
+            $uname OR iPHP::code(0,'user:findpwd:username:empty','uname','json');
+            $uid   = user::check($uname,'username');
+            $uid OR iPHP::code(0,'user:findpwd:username:noexist','uname','json');
+            $user = user::get($uid,false);
+            $user OR iPHP::code(0,'user:findpwd:username:noexist','uname','json');
+
+            $authcode = authcode($uid.USER_AUTHASH.$user->username.USER_AUTHASH.$user->password.USER_AUTHASH.time(),'ENCODE');
+            $authcode = base64_encode($authcode);
+            $authcode = rawurlencode($authcode);
+            $find_url = iPHP::router('/api/user/findpwd',iCMS_REWRITE,'?&');
+            if(iCMS_REWRITE){
+                $find_url = iFS::fp($find_url,'+http');
+            }
+            $find_url.= 'auth='.$authcode;
+            $config            = iCMS::$config['mail'];
+            $config['title']   = iCMS::$config['site']['name'];
+            $config['subject'] = '['.$config['title'].'] 找回密码（重要）！';
+            $config['body']    = '
+            <p>尊敬的凉茶，您好：</p>
+            <br />
+            <p>您在'.$config['title'].'申请找回密码，重设密码地址：</p>
+            <a href="'.$find_url.'" target="_blank">'.$find_url.'</a>
+            <p>本链接将在24小时后失效！</p>
+            <p>如果上面的链接无法点击，您也可以复制链接，粘贴到您浏览器的地址栏内，然后按“回车”打开重置密码页面。</p>
+            <p>如果您有其他问题，请联系我们：'.$config['replyto'].'。</p>
+            <p>如果您没有进行过找回密码的操作，请不要点击上述链接，并删除此邮件。</p>
+            <p>谢谢！</p>
+            ';
+            $config['address'] = array(
+                array($user->username,$user->nickname)
+            );
+            //var_dump(iCMS::$config);
+            $result = iPHP::sendmail($config);
+            if($result){
+                iPHP::code(1,'user:findpwd:send:success','mail','json');
+            }else{
+                iPHP::code(0,'user:findpwd:send:failure','mail','json');
+            }
+        }
+    }
     public function ACTION_login(){
         iCMS::$config['user']['login'] OR iPHP::code(0,'user:login:forbidden','uname','json');
 
@@ -793,7 +866,33 @@ class userApp {
         user::logout();
         iPHP::code(1,0,$this->forward,'json');
     }
+    public function API_findpwd(){
+        $auth = iS::escapeStr($_GET['auth']);
+        if($auth){
+            $authcode = rawurldecode($auth);
+            $authcode = base64_decode($authcode);
+            $authcode = authcode($authcode);
 
+            if(empty($authcode)){
+                exit;
+            }
+            list($uid,$username,$password,$timeline) = explode(USER_AUTHASH, $authcode);
+            $now = time();
+            if($now-$timeline>86400){
+                exit;
+            }
+            $user = user::get($uid,false);
+            if($username!=$user->username||$password!=$user->password){
+                exit;
+            }
+            unset($user->password);
+            iPHP::assign('auth',$auth);
+            iPHP::assign('user',(array)$user);
+            iPHP::view('iCMS://user/resetpwd.htm');
+        }else{
+            iPHP::view('iCMS://user/findpwd.htm');
+        }
+    }
     public function API_login(){
         if(iCMS::$config['user']['login']){
             $this->openid();

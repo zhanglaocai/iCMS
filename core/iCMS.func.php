@@ -32,34 +32,39 @@ function small($sfp,$w='',$h='',$scale=true) {
     }
     echo $sfp.'_'.$w.'x'.$h.'.jpg';
 }
-function baiduping($href) {
-    $url    ='http://ping.baidu.com/ping/RPC2';
-    $postvar='<methodCall>
-<methodName>weblogUpdates.extendedPing</methodName>
-<params>
-<param>
-<value><string>'.iCMS::$config['site']['name'].'</string></value>
-</param>
-<param>
-<value><string>'.iCMS_URL.'</string></value>
-</param>
-<param>
-<value><string>'.$href.'</string></value>
-</param>
-<param>
-<value><string>'.iCMS_API.'?app=rss</string></value>
-</param>
-</params>
-</methodCall>';
+function baidu_ping($urls) {
+    $site          = iCMS::$config['api']['baidu']['sitemap']['site'];
+    $resource_name = iCMS::$config['api']['baidu']['sitemap']['resource_name'];
+    $access_token  = iCMS::$config['api']['baidu']['sitemap']['access_token'];
+    if(empty($site)||empty($access_token)){
+        return false;
+    }
+    $ping     ='http://ping.baidu.com/sitemap?site='.$site.'&resource_name='.$resource_name.'&access_token='.$access_token;
+    $postvar ='<?xml version="1.0" encoding="UTF-8"?>';
+    $postvar.='<urlset>';
+    foreach ((array)$urls as $key => $url) {
+        $postvar.='<url>
+            <loc><![CDATA['.$url.']]></loc>
+            <lastmod>'.get_date(0,'Y-m-d').'</lastmod>
+            <changefreq>daily</changefreq>
+            <priority>0.8</priority>
+        </url>';
+    }
+    $postvar.='</urlset>';
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_URL, $ping);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $postvar);
+    curl_setopt($ch, CURLOPT_TIMEOUT,10);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT,10);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: text/xml"));
     $res = curl_exec ($ch);
     curl_close ($ch);
-    var_dump($res);
+    $xml = simplexml_load_string($res, 'SimpleXMLElement', LIBXML_NOCDATA);
+    if($xml->params->param->value->int=="200"){
+        return true;
+    }
     return $res;
 }
 function get_pic($src,$size=0,$thumb=0){

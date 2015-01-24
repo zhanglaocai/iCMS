@@ -26,11 +26,11 @@ class iDB {
     public static $last_result;
     public static $num_rows;
     public static $insert_id;
+    public static $link;
 
     private static $collate;
     private static $time_start;
     private static $last_error ;
-    private static $link;
     private static $result;
 
     public static function connect() {
@@ -106,7 +106,7 @@ class iDB {
 
 
         $QH = strtoupper(substr($query,0,strpos($query, ' ')));
-        if (in_array($QH,array("INSERT","DELETE","UPDATE","REPLACE"))) {
+        if (in_array($QH,array('INSERT','DELETE','UPDATE','REPLACE','SET'))) {
             // Take note of the insert_id
             if (in_array($QH,array("INSERT","REPLACE"))) {
                 self::$insert_id = self::$link->insert_id;

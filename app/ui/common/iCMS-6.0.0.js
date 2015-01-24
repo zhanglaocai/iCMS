@@ -86,7 +86,7 @@
             placement = placement||el.attr('data-placement');
             var container = el.attr('data-container');
             if(container){
-                $(container).empty();
+                $(container).html('');
             }
             el.tooltip({
               html: true,container:container||false,

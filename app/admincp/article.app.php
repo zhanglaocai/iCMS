@@ -425,14 +425,8 @@ class articleApp{
 			articleTable::check_title($title) && iPHP::alert('该标题的文章已经存在!请检查是否重复');
 		}
 
-        if(iCMS::$config['publish']['autodesc'] && iCMS::$config['publish']['descLen'] && empty($description) && empty($url)) {
-            $body_text   = implode("\n",$body);
-            $body_text   = str_replace('#--iCMS.PageBreak--#',"\n",$body_text);
-            $body_text   = preg_replace(array('/<[\/\!]*?[^<>]*?>/is',"/\n+/","/　+/","/^\n/"),array('',"\n",'',''),$body_text);
-            $description = csubstr($body_text,iCMS::$config['publish']['descLen']);
-            $description = addslashes($description);
-            $description = str_replace('#--iCMS.PageBreak--#','',$description);
-            unset($body_text);
+        if(empty($description) && empty($url)) {
+            $description = $this->autodesc($body);
         }
 
         stripos($pic, 'http://') ===false OR $pic  = iFS::http($pic);
@@ -495,11 +489,16 @@ class articleApp{
 
             $url OR $this->article_data($body,$aid,$haspic);
             $this->categoryApp->update_count_one($cid);
+
+            $article_url = iURL::get('article',array(array('id'=>$aid,'url'=>$url,'cid'=>$cid,'pubdate'=>$pubdate),$this->category[$cid]))->href;
+
+            iCMS::$config['api']['baidu']['sitemap']['sync'] && baidu_ping($article_url);
+
             if($callback){
             	return array("code"=>$callback,'indexid'=>$aid);
             }
             $moreBtn = array(
-                    array("text" =>"查看该文章","target"=>'_blank',"url"=>iURL::get('article',array(array('id'=>$aid,'url'=>$url,'cid'=>$cid,'pubdate'=>$pubdate),$this->category[$cid]))->href,"o"=>'target="_blank"'),
+                    array("text" =>"查看该文章","target"=>'_blank',"url"=>$article_url,"o"=>'target="_blank"'),
                     array("text" =>"编辑该文章","url"=>APP_URI."&do=add&id=".$aid),
                     array("text" =>"继续添加文章","url"=>APP_URI."&do=add&cid=".$cid),
                     array("text" =>"返回文章列表","url"=>$SELFURL),
@@ -654,6 +653,18 @@ class articleApp{
             $this->pic($picurl,$aid);
         }
         $this->pic_indexid($body,$aid);
+    }
+    function autodesc($body){
+        if(iCMS::$config['publish']['autodesc'] && iCMS::$config['publish']['descLen']) {
+            $body_text   = implode("\n",$body);
+            $body_text   = str_replace('#--iCMS.PageBreak--#',"\n",$body_text);
+            $body_text   = preg_replace(array('/<[\/\!]*?[^<>]*?>/is',"/\n+/","/　+/"),array('',"\n",''),$body_text);
+            $description = csubstr($body_text,iCMS::$config['publish']['descLen']);
+            $description = addslashes(trim($description));
+            $description = str_replace('#--iCMS.PageBreak--#','',$description);
+            unset($body_text);
+            return $description;
+        }
     }
     function pic($picurl,$aid){
         $uri = parse_url(iCMS_FS_URL);

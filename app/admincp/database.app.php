@@ -132,30 +132,52 @@ class databaseApp{
         $this->tableid= $this->tableid?$this->tableid-1:0;
         $this->stop	= 0;
         $t_count	= count($tabledb);
-        
+
         for($i=$this->tableid;$i<$t_count;$i++){
             $ts		= iDB::row("SHOW TABLE STATUS LIKE '$tabledb[$i]'");
             $this->rows	= $ts->Rows;
 
             $limit	= "LIMIT $start,100000";
-            $query	= mysql_query("SELECT * FROM $tabledb[$i] $limit");
-            $fnum	= mysql_num_fields($query);
-
-            while ($datadb = mysql_fetch_row($query)) {
-                $start++;
-                //$table		= str_replace(iPHP_DB_PREFIX,'iCMS_',$tabledb[$i]);
-                $table		= $tabledb[$i];
-                $bakupdata .= "INSERT INTO $table VALUES("."'".addslashes($datadb[0])."'";
-                $tempdb		= '';
-                for($j=1;$j<$fnum;$j++){
-                    $tempdb.=",'".addslashes($datadb[$j])."'";
+            if(version_compare(PHP_VERSION,'5.5','>=')){
+                $result = mysqli_query(iDB::$link,"SELECT * FROM $tabledb[$i] $limit");
+                $fnum   = iDB::$link->field_count;
+                if(!$result){
+                    continue;
                 }
-                $bakupdata .= $tempdb.");\n";
-                if($this->sizelimit && strlen($bakupdata)>$this->sizelimit*1000) {
-                    break;
+                while ($datadb = $result->fetch_row()) {
+                    $start++;
+                    //$table        = str_replace(iPHP_DB_PREFIX,'iCMS_',$tabledb[$i]);
+                    $table      = $tabledb[$i];
+                    $bakupdata .= "INSERT INTO $table VALUES("."'".addslashes($datadb[0])."'";
+                    $tempdb     = '';
+                    for($j=1;$j<$fnum;$j++){
+                        $tempdb.=",'".addslashes($datadb[$j])."'";
+                    }
+                    $bakupdata .= $tempdb.");\n";
+                    if($this->sizelimit && strlen($bakupdata)>$this->sizelimit*1000) {
+                        break;
+                    }
                 }
+                $result->close();
+            }else{
+                $query	= mysql_query("SELECT * FROM $tabledb[$i] $limit");
+                $fnum	= mysql_num_fields($query);
+                while ($datadb = mysql_fetch_row($query)) {
+                    $start++;
+                    //$table		= str_replace(iPHP_DB_PREFIX,'iCMS_',$tabledb[$i]);
+                    $table		= $tabledb[$i];
+                    $bakupdata .= "INSERT INTO $table VALUES("."'".addslashes($datadb[0])."'";
+                    $tempdb		= '';
+                    for($j=1;$j<$fnum;$j++){
+                        $tempdb.=",'".addslashes($datadb[$j])."'";
+                    }
+                    $bakupdata .= $tempdb.");\n";
+                    if($this->sizelimit && strlen($bakupdata)>$this->sizelimit*1000) {
+                        break;
+                    }
+                }
+                mysql_free_result($query);
             }
-            mysql_free_result($query);
             if($start>=$this->rows) {
                 $start	= 0;
                 $this->rows	= 0;

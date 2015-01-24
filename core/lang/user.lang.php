@@ -52,6 +52,19 @@ return array(
 		'filter_desc'  =>'简介中包含被系统屏蔽的字符，请重新填写。',
 		'filter_body'  =>'内容中包含被系统屏蔽的字符，请重新填写。',
 	),
+	'findpwd'=>array(
+		'success' =>'您的密码已经修改成功！请重新登陆。',
+		'error'   =>'您的链接已经过时，请重新申请找回密码。',
+		'same'    =>'您的新密码与旧密码一样。请重新设置新密码。',
+		'send'    => array(
+			'success' =>'重设密码的邮件发送成功！请登陆您的邮箱查收相关邮件。',
+			'failure' =>'重设密码的邮件发送失败请稍后在重试。',
+		),
+		'username'=> array(
+			'empty'   =>'请填写电子邮箱！',
+			'noexist' =>'邮件地址不存在,请换个邮件再试试。',
+		),
+	),
 	'register' => array(
 		'forbidden'=>'系统已经关闭注册功能！',
 		'nickname'=> array(
