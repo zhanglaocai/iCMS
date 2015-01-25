@@ -11,10 +11,11 @@
 // );
 defined('iPHP') OR exit('What are you doing?');
 
-
 $USER_LOGIN_URL = iPHP::router('/api/user/login',iCMS_REWRITE);
 if(iCMS_REWRITE){
-	$USER_LOGIN_URL = iFS::fp($USER_LOGIN_URL,'+http');
+	if(stripos($USER_LOGIN_URL, 'http://')!==false){
+		$USER_LOGIN_URL = rtrim(iCMS_URL,'/').$USER_LOGIN_URL;
+	}
 }
 define("USER_LOGIN_URL",$USER_LOGIN_URL);
 define("USER_AUTHASH",'#=(iCMS@'.iPHP_KEY.'@iCMS)=#');
