@@ -108,7 +108,7 @@ td.ordernum input { width: 30px; text-align: center; padding: 2px; margin-bottom
 .sidebar-mini #sidebar #mini .fa:before { content: "\f0a9" }
 .sidebar-mini #sidebartop { display: none; }
 /* sidebar */
-#sidebar { height: 100%; min-height: 740px; position: fixed; top: 0; left: 0; z-index: 16; width: 160px; display: block; overflow: hidden; background: -webkit-gradient(linear, left top, right top, color-stop(93%, #3a3633), color-stop(100%, #2a2725)); background: -webkit-linear-gradient(left, #3a3633 93%, #2a2725 100%); background: -webkit-gradient(linear, top left, top right, from(#3a3633), to(#2a2725)); background: -webkit-linear-gradient(left, #3a3633 93%, #2a2725 100%); background: linear-gradient(to right, #3a3633 93%, #2a2725 100%); }
+#sidebar { height: 100%; min-height: 740px; position: fixed; top: 0; left: 0; z-index: 16; width: 160px; display: block; overflow: hidden; background: -webkit-gradient(linear, left top, right top, color-stop(93%, #3a3633), color-stop(100%, #2a2725)); background: -webkit-linear-gradient(left, #3a3633 93%, #2a2725 100%); background: -webkit-gradient(linear, top left, top right, from(#3a3633), to(#2a2725)); background: -webkit-linear-gradient(left, #3a3633 93%, #2a2725 100%); background: linear-gradient(to right, #3a3633 93%, #2a2725 100%);background-color:#2A2A2A\9\0; }
 #sidebar > ul { list-style: none; margin: 0px; padding: 0; position: relative; width: 100%; }
 #sidebar > ul i { font-size: 1.3333333333333333em; line-height: .75em; vertical-align: -15%; }
 #sidebar > ul > li { display: block; position: relative; line-height: 24px; /* border-bottom: 1px solid #000; border-top: 1px solid #5e5e5e;  */ }

@@ -666,7 +666,17 @@ class iFS {
 
         $sql = self::$userid === false ? '' : " AND `userid`='" . self::$userid . "'";
         $rs = iDB::row("SELECT * FROM ".iPHP_DB_PREFIX.self::$TABLE." WHERE `$f`='$v' {$sql} LIMIT 1");
-        $rs && $rs->filepath = $rs->path . $rs->filename . '.' . $rs->ext;
+        if($rs){
+            $rs->filepath = $rs->path . $rs->filename . '.' . $rs->ext;
+            if($f=='ofilename'){
+                $filepath = self::fp($rs->filepath,'+iPATH');
+                if(is_file($filepath)){
+                    return $rs;
+                }else{
+                    return false;
+                }
+            }
+        }
         return $rs;
     }
 
@@ -692,6 +702,7 @@ class iFS {
                 $FilePath     = $frs->filepath;
                 $FileRootPath = iFS::fp($FilePath,"+iPATH");
                 if(!is_file($FileRootPath)){
+                    self::mkdir(dirname($FileRootPath));
                     self::write($FileRootPath, $fileresults);
                     self::watermark($FileExt,$FileRootPath);
                     self::yun_write($FileRootPath);
