@@ -15,10 +15,10 @@ class iSeccode {
     public static $code   = null;
     public static $color  = null;
     public static $config = array (
-        'width'      => 80,
-        'height'     => 30,
-        'angle'      => '0',//随机倾斜度
-        'shadow'     => '0',//阴影
+        'line'   => 4,
+        'size'   => 24,
+        'width'  => 80,
+        'height' => 30
     );
     public static function run(){
         self::$code OR self::$code = self::__mkcode();
@@ -27,13 +27,8 @@ class iSeccode {
         self::__image();
     }
     private static function __image(){
-        if(function_exists('imagecreate') && function_exists('imagecolorset') && function_exists('imagecopyresized') &&
-                function_exists('imagecolorallocate') && function_exists('imagechar') && function_exists('imagecolorsforindex') &&
-                function_exists('imageline') && function_exists('imagecreatefromstring') && (function_exists('imagegif') || function_exists('imagepng') || function_exists('imagejpeg'))) {
-
-            $bgcontent = self::__background();
-
-            self::$im = imagecreatefromstring($bgcontent);
+        if(extension_loaded('gd')) {
+            self::__background();
             self::__adulterate();
             self::__giffont();
             if(function_exists('imagepng')) {
@@ -44,9 +39,7 @@ class iSeccode {
                 imagejpeg(self::$im, '', 100);
             }
             imagedestroy(self::$im);
-
         } else {
-
             $numbers = array(
                     'B' => array('00','fc','66','66','66','7c','66','66','fc','00'),
                     'C' => array('00','38','64','c0','c0','c0','c4','64','3c','00'),
@@ -108,32 +101,27 @@ class iSeccode {
     }
     //生成随机
     private static function __mkcode() {
-        $seccode      = random(6, 1);
-        $s            = sprintf('%04s', base_convert($seccode, 10, 24));
-        $seccode      = '';
-        $seccodeunits = 'BCEFGHJKMPQRTVWXY2346789';
-        for($i = 0; $i < 4; $i++) {
-            $unit = ord($s{$i});
-            $seccode .= ($unit >= 0x30 && $unit <= 0x39) ? $seccodeunits[$unit - 0x30] : $seccodeunits[$unit - 0x57];
+        $charset = '123456789abcdefghijkmnpqrstuvwxyzABCDEFGHIJKMNPQRSTUOVWXYZ';
+        $_len = strlen($charset)-1;
+        for ($i=0;$i<4;$i++) {
+            $code.= $charset[rand(0,$_len)];
         }
-        return $seccode;
+        return $code;
     }
 
     //背景
     private static function __background() {
-        $im = imagecreatetruecolor(self::$config['width'], self::$config['height']);
-        $backgroundcolor = imagecolorallocate($im, 255, 255, 255);
-
+        self::$im = imagecreatetruecolor(self::$config['width'], self::$config['height']);
         for($i = 0;$i < 3;$i++) {
             $start[$i]       = rand(200, 255);
-            $end[$i]         = rand(100, 245);
+            $end[$i]         = rand(100, 200);
             $step[$i]        = ($end[$i] - $start[$i]) / self::$config['width'];
             self::$color[$i] = $start[$i];
         }
-        //$color = imagecolorallocate($im, 235, 235, 235);
+
         for($i = 0;$i < self::$config['width'];$i++) {
-            $color = imagecolorallocate($im, self::$color[0], self::$color[1], self::$color[2]);
-            imageline($im, $i, 0, $i-$angle, self::$config['height'], $color);
+            $color = imagecolorallocate(self::$im, self::$color[0], self::$color[1], self::$color[2]);
+            imageline(self::$im, $i, 0, $i, self::$config['height'], $color);
             self::$color[0] += $step[0];
             self::$color[1] += $step[1];
             self::$color[2] += $step[2];
@@ -141,93 +129,54 @@ class iSeccode {
         self::$color[0] -= 20;
         self::$color[1] -= 20;
         self::$color[2] -= 20;
-
-        self::__obclean();
-        if(function_exists('imagepng')) {
-            imagepng($im);
-        } else {
-            imagejpeg($im, '', 100);
-        }
-        imagedestroy($im);
-        $bgcontent = ob_get_contents();
-        self::__obclean();
-
-        return $bgcontent;
     }
 
     private static function __adulterate() {
-        $linenums = rand(4, 8);
-        for($i=0; $i <= $linenums; $i++) {
+        $linenums = self::$config['line'];
+        for($i=0; $i<$linenums; $i++) {
             $color = imagecolorallocate(self::$im, self::$color[0], self::$color[1], self::$color[2]);
-            $x  = rand(0, self::$config['width']-10);
+            $x  = rand(0, self::$config['width']);
             $y  = 0;
             $x2 = rand(0,self::$config['width']);
             $y2 = self::$config['height'];
 
             if($i%2) {
                 imagearc(self::$im, $x, $y, $x2,$y2,rand(0, 360), rand(0, 360), $color);
+                imagearc(self::$im, $x+1, $y,$x2+1,$y2,rand(0, 360), rand(0, 360), $color);
             } else {
                 imageline(self::$im, $x, $y,$x2,$y2, $color);
                 imageline(self::$im, $x+1, $y,$x2+1,$y2, $color);
             }
         }
+        for ($i=0; $i < 150; $i++) {
+            $color = imagecolorallocate(self::$im, self::$color[0], self::$color[1], self::$color[2]);
+            $x = rand(0,self::$config['width']);
+            $y = rand(0,self::$config['height']);
+            imagesetpixel(self::$im,$x,$y,$color);
+            //imagefilledrectangle(self::$im,$x,$y, $x-1, $y-1, $color);
+        }
     }
 
     private static function __giffont() {
-
-        $seccodedir = array();
-        if(function_exists('imagecreatefromgif')) {
-            $seccoderoot = iPHP_CORE.'/seccode/';
-            $dirs = opendir($seccoderoot);
-            while($dir = readdir($dirs)) {
-                if($dir != '.' && $dir != '..' && file_exists($seccoderoot.$dir.'/9.gif')) {
-                    $seccodedir[] = $dir;
-                }
-            }
-        }
+        $font_file  = iPHP_CORE.'/seccode.otf';
         $widthtotal = 0;
-        for($i = 0; $i <= 3; $i++) {
-            $imcodefile = $seccodedir ? $seccoderoot.$seccodedir[array_rand($seccodedir)].'/'.strtolower(self::$code[$i]).'.gif' : '';
-            if(!empty($imcodefile) && file_exists($imcodefile)) {
-                $font[$i]['file'] = $imcodefile;
-                $font[$i]['data'] = getimagesize($imcodefile);
-                $font[$i]['width'] = $font[$i]['data'][0] + rand(0, 6) - 4;
-                $font[$i]['height'] = $font[$i]['data'][1] + rand(0, 6) - 4;
-                $font[$i]['width'] += rand(0, self::$config['width'] / 5 - $font[$i]['width']);
-                $widthtotal += $font[$i]['width'];
-            } else {
-                $font[$i]['file'] = '';
-                $font[$i]['width'] = 8 + rand(0, self::$config['width'] / 5 - 5);
-                $widthtotal += $font[$i]['width'];
+        $font       = array();
+        $x          = 2;
+        $font_size  = self::$config['size'];
+        for ($i=0; $i <=3; $i++) {
+            $y = $font_size+rand(0, self::$config['height'] - $font_size);
+            $f_color = imagecolorallocate(self::$im,self::$color[0],self::$color[1],255);
+            //imagettftext(self::$im,$font_size,0, $x, $y, $f_color,$font_file,self::$code[$i]);
+            $text_color = imagecolorallocate(self::$im, self::$color[0], self::$color[1], self::$color[2]);
+            imagettftext(self::$im,$font_size,0,$x+1, $y+1,$text_color,$font_file,self::$code[$i]);
+            $x+=$font_size-rand(4,10);
+            if($x>self::$config['width']){
+                $x = self::$config['width']-$font_size-5;
             }
+            $x2 = rand(0,self::$config['width']);
+            $y2 = self::$config['height'];
+            //imageline(self::$im, $x,0,$x2,$y2, $f_color);
+            // imageline(self::$im, $x+1,0,$x2+1,$y2, $f_color);
         }
-        $x = rand(1, self::$config['width'] - $widthtotal);
-        for($i = 0; $i <= 3; $i++) {
-            if($font[$i]['file']) {
-                $imcode = imagecreatefromgif($font[$i]['file']);
-                $y = rand(0, self::$config['height'] - $font[$i]['height']);
-                if(self::$config['shadow']) {
-                    $imcodeshadow = $imcode;
-                    imagecolorset($imcodeshadow, 0 , 255 - self::$color[0], 255 - self::$color[1], 255 - self::$color[2]);
-                    imagecopyresized(self::$im, $imcodeshadow, $x + 1, $y + 1, 0, 0, $font[$i]['width'], $font[$i]['height'], $font[$i]['data'][0], $font[$i]['data'][1]);
-                }
-                imagecolorset($imcode, 0 , self::$color[0], self::$color[1], self::$color[2]);
-                imagecopyresized(self::$im, $imcode, $x, $y, 0, 0, $font[$i]['width'], $font[$i]['height'], $font[$i]['data'][0], $font[$i]['data'][1]);
-            } else {
-                $y = rand(0, self::$config['height'] - 20);
-                if(self::$config['shadow']) {
-                    $text_shadowcolor = imagecolorallocate(self::$im, 255 - self::$color[0], 255 - self::$color[1], 255 - self::$color[2]);
-                    imagechar(self::$im, 5, $x + 1, $y + 1, self::$code[$i], $text_shadowcolor);
-                }
-                $text_color = imagecolorallocate(self::$im, self::$color[0], self::$color[1], self::$color[2]);
-                imagechar(self::$im, 5, $x, $y, self::$code[$i], $text_color);
-            }
-            $x += $font[$i]['width'];
-        }
-    }
-    //ob
-    private static function __obclean() {
-        ob_end_clean();
-        function_exists('ob_gzhandler')?ob_start('ob_gzhandler'):ob_start();
     }
 }
