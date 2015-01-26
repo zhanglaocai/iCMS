@@ -33,14 +33,14 @@ class patchApp{
 					$json      = array(
 						'code' => "1",
 						'url'  => __ADMINCP__.'=patch&do=install',
-						'msg'  => "发现iCMS最新版本<span class='label label-warning'>iCMS ".$this->patch[0]." [".$this->patch[1]."]</span><br />".$this->patch[3]."<hr />您当前使用的版本<span class='label label-info'>iCMS ".iCMS_VER." [".iCMS_RELEASE."]</span><br /><br />新版本已经下载完成!! 是否现在更新?",
+						'msg'  => "发现iCMS最新版本<br /><span class='label label-warning'>iCMS ".$this->patch[0]." [".$this->patch[1]."]</span><br />".$this->patch[3]."<hr />您当前使用的版本<br /><span class='label label-info'>iCMS ".iCMS_VER." [".iCMS_RELEASE."]</span><br /><br />新版本已经下载完成!! 是否现在更新?",
 		    		);
 	    		break;
 	    		case "2"://不自动下载更新,有更新时提示
 		    		$json	= array(
 						'code' => "2",
 						'url'  => __ADMINCP__.'=patch&do=update',
-						'msg'  => "发现iCMS最新版本<span class='label label-warning'>iCMS ".$this->patch[0]." [".$this->patch[1]."]</span><br />".$this->patch[3]."<hr />您当前使用的版本<span class='label label-info'>iCMS ".iCMS_VER." [".iCMS_RELEASE."]</span><br /><br />请马上更新您的iCMS!!!",
+						'msg'  => "发现iCMS最新版本<br /><span class='label label-warning'>iCMS ".$this->patch[0]." [".$this->patch[1]."]</span><br />".$this->patch[3]."<hr />您当前使用的版本<br /><span class='label label-info'>iCMS ".iCMS_VER." [".iCMS_RELEASE."]</span><br /><br />请马上更新您的iCMS!!!",
 		    		);
 	    		break;
 	    	}

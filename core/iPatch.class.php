@@ -23,31 +23,33 @@ class iPatch {
 	public static $release	= '';
 	public static $zipName	= '';
     public static function init($force=false){
-    	$verList	= self::getVersion($force);
-    	foreach((array)$verList AS $key=>$version){
-    		list(self::$version,$release,$installFile,$changelog)=explode("||",$version);//版本||发布日期||升级文件||升级说明
-    		if(self::$version==iCMS_VER && $release>iCMS_RELEASE){
-    			self::$release	= $release;
-    			self::$zipName	= 'iCMS.'.self::$version.'.patch.'.self::$release.'.zip';
-    			return array(self::$version,$release,$installFile,$changelog);
-    		}
+		$info = self::getVersion($force);
+    	if($info->app==iPHP_APP &&
+    		version_compare($info->version,iCMS_VER,'>=') &&
+    		$info->release > iCMS_RELEASE)
+    	{
+			self::$version = $info->version;
+			self::$release = $info->release;
+			self::$zipName = 'iCMS.'.self::$version.'.patch.'.self::$release.'.zip';
+    		return array(self::$version,self::$release,$info->update,$info->changelog);
     	}
     }
     public static function getVersion($force=false) {
     	iFS::mkdir(PATCH_DIR);
-	    $tFilePath		= PATCH_DIR.'version.txt';//临时文件夹
+	    $tFilePath = PATCH_DIR.'version.json';//临时文件夹
 	    if(iFS::ex($tFilePath) && time()-iFS::mtime($tFilePath) < 3600 && !$force){
-	    	$FileData	= iFS::read($tFilePath);
+	    	$FileData = iFS::read($tFilePath);
 	    }else{
-	    	$FileData	= iFS::remote(PATCH_URL.'/version.txt');
+			$url      = PATCH_URL.'/version.'.iPHP_APP.'.'.iCMS_VER.'.patch.'.iCMS_RELEASE.'?t='.time();
+			$FileData = iFS::remote($url);
 	    	iFS::write($tFilePath,$FileData);
 	    }
-    	return explode("\n",$FileData);//版本列表
+    	return json_decode($FileData);//版本列表
     }
     public static function download(){
-	    $zipFile	= PATCH_DIR.self::$zipName;//临时文件
-	    $zipHttp	= PATCH_URL.'/'.self::$zipName;
-		$msg		= '正在下载 ['.self::$release.'] 更新包 '.$zipHttp.'<iCMS>下载完成....<iCMS>';
+		$zipFile = PATCH_DIR.self::$zipName;//临时文件
+		$zipHttp = PATCH_URL.'/'.self::$zipName;
+		$msg     = '正在下载 ['.self::$release.'] 更新包 '.$zipHttp.'<iCMS>下载完成....<iCMS>';
 	    if(iFS::ex($zipFile)){
 	    	return $msg;
 	    }
