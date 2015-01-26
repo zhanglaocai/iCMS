@@ -18,12 +18,13 @@ if (!function_exists('gc_collect_cycles')) {
 		return false;
 	}
 }
-
-function days_in_month($year,$month) {
-    if (!function_exists('cal_days_in_month')) {
-        return date('t',mktime(0,0,0,$month+1,0,$year));
-    } else {
-        return cal_days_in_month(CAL_GREGORIAN,$month,$year);
+if (!function_exists('days_in_month')) {
+    function days_in_month($year,$month) {
+        if (!function_exists('cal_days_in_month')) {
+            return date('t',mktime(0,0,0,$month+1,0,$year));
+        } else {
+            return cal_days_in_month(CAL_GREGORIAN,$month,$year);
+        }
     }
 }
 function count_days($formdate,$todate){
