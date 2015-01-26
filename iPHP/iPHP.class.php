@@ -582,10 +582,11 @@ class iPHP{
         if(is_array($buttons)) {
             $okbtn ="{value:'确 定',callback:function(){".$func."},autofocus: true}";
             foreach($buttons as $key=>$val) {
-                $val['id']	 && $id   = "id:'".$val['id']."',";
-            	$val['url']  && $func = "iTOP.location.href='{$val['url']}';";
-            	$val['src']  && $func = "iTOP.$('#iPHP_FRAME').attr('src','{$val['src']}');return false;";
-                $val['target'] && $func = "iTOP.window.open('{$val['url']}','_blank');";
+				$val['id']    && $id   = "id:'".$val['id']."',";
+				$val['js']    && $func = $val['js'].';';
+				$val['url']   && $func = "iTOP.location.href='{$val['url']}';";
+				$val['src']   && $func = "iTOP.$('#iPHP_FRAME').attr('src','{$val['src']}');return false;";
+				$val['target']&& $func = "iTOP.window.open('{$val['url']}','_blank');";
 
                 $buttonA[]="{".$id."value:'".$val['text']."',callback:function(){".$func."}}";
                 $val['next'] && $auto_func = $func;

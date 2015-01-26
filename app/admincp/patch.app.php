@@ -49,9 +49,9 @@ class patchApp{
 	    	}
 		    $moreBtn=array(
 		            array("text"=>"马上更新","url"=>$json['url']),
-		            array("text"=>"以后在说"),
+		            array("text"=>"以后在说","js" =>'return true'),
 		    );
-    		iPHP::dialog($json['msg'],0,30,$moreBtn);
+    		iPHP::dialog('success:#:check:#:'.$json['msg'],0,30,$moreBtn);
 		}
     }
     function do_install(){
