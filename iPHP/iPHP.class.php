@@ -204,8 +204,8 @@ class iPHP{
 
     	if($args==="include"||$args==="static") return;
 
-    	if($args){
-			return new $obj_name($args);
+    	if ($arg !== NULL) {
+			return call_user_func_array($obj_name, (array)$args);
 		}
 		return new $obj_name();
     }

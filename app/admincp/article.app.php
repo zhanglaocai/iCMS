@@ -19,7 +19,7 @@ class articleApp{
         $this->appid       = iCMS_APP_ARTICLE;
         $this->id          = (int)$_GET['id'];
         $this->dataid      = (int)$_GET['dataid'];
-        $this->categoryApp = iACP::app('category',$this->appid);
+        $this->categoryApp = iPHP::app('admincp.category.app',$this->appid);
         $this->category    = $this->categoryApp->category;
         $this->_postype    = '1';
         $this->_status     = '1';
@@ -31,8 +31,11 @@ class articleApp{
         $rs      = array();
         if($this->id){
             list($rs,$adRs) = articleTable::data($this->id,$this->dataid);
-            $bodyArray      = explode('#--iCMS.PageBreak--#',$adRs['body']);
-            $bodyCount      = count($bodyArray);
+            if($adRs){
+                $adRs['body'] = htmlspecialchars($adRs['body']);
+                $bodyArray    = explode('#--iCMS.PageBreak--#',$adRs['body']);
+                $bodyCount    = count($bodyArray);
+            }
             iACP::CP($rs['cid'],'ce','page');//编辑权限
         }
 
@@ -656,7 +659,7 @@ class articleApp{
     }
     function autodesc($body){
         if(iCMS::$config['publish']['autodesc'] && iCMS::$config['publish']['descLen']) {
-            $body_text   = implode("\n",$body);
+            is_array($body) && $body_text   = implode("\n",$body);
             $body_text   = str_replace('#--iCMS.PageBreak--#',"\n",$body_text);
             $body_text   = preg_replace(array('/<[\/\!]*?[^<>]*?>/is',"/\n+/","/　+/"),array('',"\n",''),$body_text);
             $description = csubstr($body_text,iCMS::$config['publish']['descLen']);
