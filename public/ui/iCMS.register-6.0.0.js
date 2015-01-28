@@ -29,7 +29,7 @@
         if (ret.code) {
           window.location.href = ret.forward;
         } else {
-          iCMS.seccode();
+          iCMS.seccode(0,register);
           var a = document.getElementById('iCMS-reg-' + ret.forward);
           msg(a, ret.msg);
         }
@@ -126,11 +126,6 @@
       var info = info[c + '_' + n] || c;
       iCMS.tip(b, '<i class="fa fa-times-circle"></i> '+info);
       $(e).data('check', false);
-    }
-    if (n == 'seccode') {
-      b.next('.tooltip').css({
-        'margin-left': '186px'
-      });
     }
   }
 

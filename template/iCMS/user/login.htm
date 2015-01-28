@@ -39,7 +39,7 @@
               <div class="clear"></div>
               <!--{if $iCMS.CONFIG.user.loginseccode }-->
               <div class="lg_check"><span>验证码：</span>
-                <input type="text" maxlength="4" name="seccode" class="iCMS_login_seccode iCMS_seccode">
+                <input type="text" maxlength="4" name="seccode" class="iCMS_login_seccode iCMS_seccode" data-placement="bottom">
                 <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
                 <a href="javascript:;" class="iCMS_seccode_text" style="float: none">换一张</a>
               </div>
@@ -48,6 +48,7 @@
               <div class="clear"></div>
               <div class="lg_remember">
                 <label><input type="checkbox" value="1" name="remember" class="iCMS_login_remember check" checked="checked"><span>记住我（两周免登录）</span></label>
+                <div class="clearfix"></div>
               </div>
               <div class="clear"></div>
               <div class="lg_login">

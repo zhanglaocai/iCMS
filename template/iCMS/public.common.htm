@@ -1,55 +1,56 @@
-
 <div id="iCMS-login-box">
-    <div class="iCMS_login_dialog">
-      <div class="login_box">
-        <p class="login_fail"></p>
-        <div class="login_form">
-          <dl>
-            <dd>用户名：</dd>
-            <dt>
-              <input type="text" name="uname" data-container=".login_fail" class="iCMS_login_uname" placeholder="邮箱 或 昵称">
-            </dt>
-            <div class="clearfix"></div>
-            <dd>密 码：</dd>
-            <dt>
-              <input type="password" name="pass" data-container=".login_fail" class="iCMS_login_pass">
-            </dt>
-            <div class="clearfix"></div>
-            <!--{if $iCMS.CONFIG.user.loginseccode}-->
-            <dd>验证码：</dd>
-            <dt>
-              <input type="text" maxlength="4" name="seccode" data-container=".login_fail" class="iCMS_login_seccode iCMS_seccode">
-              <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/> <a href="javascript:;" class="iCMS_seccode_text" style="float: none">换一张</a> </dt>
-            <!--{/if}-->
-            <dd class="clearfix mb5"></dd>
-            <dt class="mb5">
-              <input type="checkbox" name="remember" class="iCMS_login_remember checkbox" value="1">
-              两周内免登录 </dt>
-            <dd class="clearfix mb5"></dd>
-            <dt>
-              <button class="iCMS_login_btn btn btn-primary">登 陆</button>
-              <a href="<!--{iCMS:router url='/api/user/findpwd'}-->">忘记密码？</a></dt>
-          </dl>
+  <div class="iCMS_login_dialog">
+    <div class="login_box">
+      <p class="login_fail"></p>
+      <div class="login_form">
+        <dl>
+          <dd>用户名：</dd>
+          <dt>
+          <input type="text" name="uname" data-container=".login_fail" class="iCMS_login_uname" placeholder="邮箱 或 昵称">
+          </dt>
+          <div class="clearfix"></div>
+          <dd>密 码：</dd>
+          <dt>
+          <input type="password" name="pass" data-container=".login_fail" class="iCMS_login_pass">
+          </dt>
+          <div class="clearfix"></div>
+          <!--{if $iCMS.CONFIG.user.loginseccode}-->
+          <dd>验证码：</dd>
+          <dt>
+          <input type="text" maxlength="4" name="seccode" data-container=".login_fail" class="iCMS_login_seccode iCMS_seccode">
+          <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/> <a href="javascript:;" class="iCMS_seccode_text" style="float: none">换一张</a> </dt>
+          <!--{/if}-->
+          <dd class="clearfix mb5"></dd>
+          <dt class="mb5">
+          <input type="checkbox" name="remember" class="iCMS_login_remember checkbox" value="1">
+          两周内免登录 </dt>
+          <dd class="clearfix mb5"></dd>
+          <dt>
+          <button class="iCMS_login_btn btn btn-primary">登 陆</button>
+          <a href="<!--{iCMS:router url='/api/user/findpwd'}-->">忘记密码？</a></dt>
+        </dl>
+        <div class="clearfix"></div>
+      </div>
+      <div class="reg_or_weibo">
+        <div class="register_box">
+          还没有<!--{$site.title}-->账号？
+          <!--{if $iCMS.CONFIG.open.QQ.enable }-->
+          <a href="<!--{iCMS:router url='/api/user/login/qq'}-->" style="display:block; margin:10px 0 20px">
+          <img src="<!--{$site.urls.ui}-->/img/login_for_qq_v3.png">
+          </a>
+          <!--{/if}-->
         </div>
-        <div class="reg_or_weibo">
-          <div class="register_box">
-            还没有<!--{$site.title}-->账号？
-            <!--{if $iCMS.CONFIG.open.QQ.enable }-->
-            <a href="<!--{iCMS:router url='/api/user/login/qq'}-->" style="display:block; margin:10px 0 20px">
-              <img src="<!--{$site.urls.ui}-->/img/login_for_qq_v3.png">
-            </a>
-            <!--{/if}-->
-          </div>
-          <div class="l_o mb10">
-            <!--{if $iCMS.CONFIG.open.WX.enable }-->
-            <a class="iCMS_open_icon icon_wx" href="<!--{iCMS:router url='/api/user/login/wx'}-->">用微信帐号登录</a>
-            <!--{/if}-->
-            <!--{if $iCMS.CONFIG.open.WB.enable }-->
-            <a class="iCMS_open_icon icon_wb" href="<!--{iCMS:router url='/api/user/login/wb'}-->">用微博帐号登录</a>
-            <!--{/if}-->
-          </div>
-          <a href="<!--{iCMS:router url='/api/user/register'}-->" style="font-size:14px; text-decoration:underline;">直接注册<!--{$site.title}-->帐号</a> </div>
+        <div class="l_o mb10">
+          <!--{if $iCMS.CONFIG.open.WX.enable }-->
+          <a class="iCMS_open_icon icon_wx" href="<!--{iCMS:router url='/api/user/login/wx'}-->">用微信帐号登录</a>
+          <!--{/if}-->
+          <!--{if $iCMS.CONFIG.open.WB.enable }-->
+          <a class="iCMS_open_icon icon_wb" href="<!--{iCMS:router url='/api/user/login/wb'}-->">用微博帐号登录</a>
+          <!--{/if}-->
+        </div>
+        <a href="<!--{iCMS:router url='/api/user/register'}-->" style="font-size:14px; text-decoration:underline;">直接注册<!--{$site.title}-->帐号</a> </div>
+        <div class="clearfix"></div>
       </div>
     </div>
-</div>
+  </div>
 <!--{include file="/iCMS/public.dialog.htm"}-->

@@ -63,8 +63,9 @@
             $(".tip").tooltip();
             $("img.lazy").lazyload();
         },
-        seccode:function() {
-            $(".iCMS_seccode_img").attr('src', iCMS.api('public', '&do=seccode&') + Math.random());
+        seccode:function(a,b) {
+            a = a||'.iCMS_seccode_img';
+            $(a,b).attr('src', iCMS.api('public', '&do=seccode&') + Math.random());
         },
         api: function(app, _do) {
             return iCMS.config.API + '?app=' + app + (_do || '');
@@ -85,12 +86,13 @@
             if (!param) return {};
             return $.parseJSON(param);
         },
-        tip: function(el, title,placement) {
+        tip: function(el,title,placement) {
             placement = placement||el.attr('data-placement');
             var container = el.attr('data-container');
             if(container){
                 $(container).html('');
             }
+            el.tooltip('destroy');
             el.tooltip({
               html: true,container:container||false,
               placement: placement||'right',

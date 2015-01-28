@@ -19,6 +19,8 @@ body { color: #2a2a2a; font-size: 14px; background-color: #f2f2f2; background-im
 .content .rl_form .text { float: left; margin-left: 5px; padding: 0 8px; width: 238px; height: 30px; line-height: 100%; }
 .submit { display: block; width: 131px; height: 35px; border: 0;  cursor: pointer; }
 .lg_login .submit, .lg_reg .reg, .reg_submit .submit, .rst_login a { background: url(img/login_reg_icon.png) no-repeat 0 0; }
+.content .tooltip.bottom .tooltip-arrow{display: none;}
+.content .tooltip.bottom{margin-left: 80px;margin-top: -5px;}
 
 .iCMS_findpwd_wrap .btn-large{margin-left: 95px;margin-top: 10px;}
 /*======register======*/
@@ -54,7 +56,7 @@ body { color: #2a2a2a; font-size: 14px; background-color: #f2f2f2; background-im
 .lg_pass { margin-top: 18px; margin-left: 48px; line-height: 30px; float: left; margin-left: 14px\9; _margin-left: 7px; }
 .lg_pass .text { margin-left: 7px; }
 .lg_check { float: left; }
-.lg_remember { margin-top: 10px; margin-left: 60px; }
+.lg_remember { margin-top: 18px; margin-left: 90px; }
 .lg_remember .check { float: left; vertical-align: middle; text-align: center; margin: 4px 2px 0px 0px !important; }
 .lg_remember span { font-size: 12px !important; color: #999; cursor: pointer; }
 .lg_login { margin-top: 10px; margin-left: 60px; font-size: 12px !important; }

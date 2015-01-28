@@ -28,8 +28,9 @@
         if (ret.code) {
           window.top.location.href = ret.forward;
         } else {
-          iCMS.seccode();
-          iCMS.alert(ret.msg);
+          iCMS.seccode(0,login);
+          var b = $(".iCMS_login_" + ret.forward,login);
+          iCMS.tip(b, '<i class="fa fa-times-circle"></i> '+ret.msg);
         }
       }, 'json');
     })
@@ -46,11 +47,6 @@
       if (val == def) {
         b.focus();
         iCMS.tip(b, '<i class="fa fa-times-circle"></i> '+info[el]);
-        if (el == 'seccode') {
-          b.next('.tooltip').css({
-            'margin-left': '186px'
-          });
-        }
         return true;
       } else {
         if (typeof(success) === "function") {
