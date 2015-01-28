@@ -50,7 +50,7 @@
             });
             $(".iCMS_seccode_img,.iCMS_seccode_text").click(function(event) {
                 event.preventDefault();
-                $(".iCMS_seccode_img").attr('src', iCMS.api('public', '&do=seccode&') + Math.random());
+                iCMS.seccode();
             });
             $(".iCMS_search_btn").click(function(event) {
                 var q = $('[name="q"]',"#iCMS-search-box").val();
@@ -62,6 +62,9 @@
 
             $(".tip").tooltip();
             $("img.lazy").lazyload();
+        },
+        seccode:function() {
+            $(".iCMS_seccode_img").attr('src', iCMS.api('public', '&do=seccode&') + Math.random());
         },
         api: function(app, _do) {
             return iCMS.config.API + '?app=' + app + (_do || '');

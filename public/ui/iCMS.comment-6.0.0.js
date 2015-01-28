@@ -119,6 +119,7 @@
                     textarea.val("");
                     iCMS.comment.iframe_height('list');
                 } else {
+                    iCMS.seccode();
                     iCMS.alert(c.msg);
                 }
             }, 'json');

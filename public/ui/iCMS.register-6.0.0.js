@@ -29,6 +29,7 @@
         if (ret.code) {
           window.location.href = ret.forward;
         } else {
+          iCMS.seccode();
           var a = document.getElementById('iCMS-reg-' + ret.forward);
           msg(a, ret.msg);
         }

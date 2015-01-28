@@ -28,6 +28,7 @@
         if (ret.code) {
           window.top.location.href = ret.forward;
         } else {
+          iCMS.seccode();
           iCMS.alert(ret.msg);
         }
       }, 'json');
