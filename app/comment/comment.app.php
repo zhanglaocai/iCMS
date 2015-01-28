@@ -80,7 +80,7 @@ class commentApp {
         $seccode = iS::escapeStr($_POST['seccode']);
 
         if(iCMS::$config['comment']['seccode']){
-            iPHP::seccode($seccode) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
+            iPHP::seccode($seccode,true) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
         }
 
 

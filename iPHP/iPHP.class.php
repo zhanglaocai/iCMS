@@ -384,10 +384,10 @@ class iPHP{
 		}
     }
 	//检查验证码
-	public static function seccode($seccode,$type='F') {
+	public static function seccode($seccode,$destroy=false) {
 	    $_seccode = self::get_cookie('seccode');
 	    $_seccode && $cookie_seccode = authcode($_seccode, 'DECODE');
-	    self::set_cookie('seccode', '',-31536000);
+	    $destroy && self::set_cookie('seccode', '',-31536000);
 	    if(empty($cookie_seccode) || strtolower($cookie_seccode) != strtolower($seccode)) {
 	        return false;
 	    }else {

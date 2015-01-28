@@ -501,7 +501,7 @@ class userApp {
 
     private function __action_profile_setpassword(){
 
-        iPHP::seccode($_POST['seccode']) OR iPHP::alert('iCMS:seccode:error');
+        iPHP::seccode($_POST['seccode'],true) OR iPHP::alert('iCMS:seccode:error');
 
         $oldPwd     = md5($_POST['oldPwd']);
         $newPwd1    = md5($_POST['newPwd1']);
@@ -516,7 +516,7 @@ class userApp {
     }
     public function ACTION_findpwd(){
         $seccode  = iS::escapeStr($_POST['seccode']);
-        iPHP::seccode($seccode) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
+        iPHP::seccode($seccode,true) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
 
         $uid  = (int)$_POST['uid'];
         $auth = iS::escapeStr($_POST['auth']);
@@ -598,7 +598,7 @@ class userApp {
         $platform = iS::escapeStr($_POST['platform']);
 
         if(iCMS::$config['user']['loginseccode']){
-            iPHP::seccode($seccode) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
+            iPHP::seccode($seccode,true) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
         }
         $remember && user::$cookietime = 14*86400;
         $user = user::login($uname,$pass,(strpos($uname,'@')===false?'nk':'un'));
@@ -652,7 +652,7 @@ class userApp {
         $password==$rstpassword OR iPHP::code(0,'user:password:unequal','password','json');
 
         if(iCMS::$config['user']['regseccode']){
-            iPHP::seccode($seccode) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
+            iPHP::seccode($seccode,true) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
         }
 
         $regip   = iS::escapeStr(iPHP::getIp());
