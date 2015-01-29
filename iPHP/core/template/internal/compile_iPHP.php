@@ -8,7 +8,7 @@
 
 function compile_iPHP($arguments, &$object){
 	$attrs   = $object->_parse_arguments($arguments);
-	$hash    = substr(uniqid(rand()), -4);
+	$hash    = substr(md5(uniqid(true).rand(1,1000)), -4);
 	$props   = "\$_iPHP_{$hash}";
 	$props_a = "\$_iPHP_{$hash}_a";
 	$output  = "<?php if (isset($props)){unset($props);}\n$props = array();\n";

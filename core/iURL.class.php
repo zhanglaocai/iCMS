@@ -165,6 +165,7 @@ class iURL {
             }
 
 	        if($uri=="http"||strstr($url,'http://')){
+                $hi          = new stdClass();
                 $hi->href    = $url;
                 $hi->ext     = $i->ext;
                 $hi->pageurl = $hi->href.'/'.$i->pfile ;
