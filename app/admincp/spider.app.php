@@ -1401,6 +1401,8 @@ class spiderApp {
             CURLOPT_NOSIGNAL             => true,
             CURLOPT_DNS_USE_GLOBAL_CACHE => true,
             CURLOPT_DNS_CACHE_TIMEOUT    => 86400,
+            CURLOPT_SSL_VERIFYPEER       => false,
+            CURLOPT_SSL_VERIFYHOST       => false
             // CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
             // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
         );
