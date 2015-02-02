@@ -1036,12 +1036,12 @@ class spiderApp {
                     return false;
                 }
             }
-            // if(strpos($_pattern, 'NOT::')!==false){
-            //     $not = str_replace('NOT::','', $_pattern);
-            //     if(strpos($content,$not)!==false){
-            //         return false;
-            //     }
-            // }
+            if(strpos($_pattern, 'NOT::')!==false){
+                $not = str_replace('NOT::','', $_pattern);
+                if(strpos($content,$not)!==false){
+                    return false;
+                }
+            }
             if(strpos($_pattern, 'LEN::')!==false){
                 $len        = str_replace('LEN::','', $_pattern);
                 $len_content = preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$content);
