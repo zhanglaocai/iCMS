@@ -1003,7 +1003,7 @@ class userApp {
             $api = new $class_name;
             $api->appid  = iCMS::$config['open'][$class_name]['appid'];
             $api->appkey = iCMS::$config['open'][$class_name]['appkey'];
-            $api->url    = USER_LOGIN_URL.'&sign='.$sign;
+            $api->url    = USER_LOGIN_URL.'sign='.$sign;
             if(isset($_GET['bind']) && $_GET['bind']==$sign){
                 $api->get_openid();
             }else{
