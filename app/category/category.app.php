@@ -67,8 +67,10 @@ class categoryApp{
 	        	exit;
         	}
         }
-
-        $category['hasbody'] && $category['body'] = iCache::get('iCMS/category/'.$category['cid'].'.body');
+        if($category['hasbody']){
+           $category['body'] = iCache::get('iCMS/category/'.$category['cid'].'.body');
+           $category['body'] && $category['body'] = stripslashes($category['body']);
+        }
         $category['appid']  = iCMS_APP_CATEGORY;
         $category['pic']  = get_pic($category['pic']);
         $category['mpic'] = get_pic($category['mpic']);

@@ -34,6 +34,10 @@ iCMS模板标签
   nopic     = "true"
   where     = ""
 
+  tags = "true"
+  user = "true"
+  meta = "true"
+
   as        = ""
   start     = "0"
   step      = ""
@@ -98,6 +102,9 @@ iCMS模板标签
 |weight|权重|文章的权重
 |nopic|true|无缩略图
 |where|SQL语句|如果你觉得上面的条件不够用,那自己写吧
+|tags|true|默认不调用标签 true 开启标签调用功能
+|user|true|默认不调用用户详细 true 开启用户详细调用功能
+|meta|true|默认不调用附加属性 true 开启附加属性调用功能
 |as|无|变量别名
 |start|0|开始索引号
 |step|1|步进值
@@ -108,6 +115,21 @@ iCMS模板标签
 ```
 <!--{$iCMS.PAGE.NAV}-->
 ```
+其它分页样式
+##<!--{$iCMS.PAGES|method:'show(1-9)'}-->
+试试要哪个
+```
+<!--{$iCMS.PAGES|method:'show(1)'}-->
+<!--{$iCMS.PAGES|method:'show(2)'}-->
+<!--{$iCMS.PAGES|method:'show(3)'}-->
+<!--{$iCMS.PAGES|method:'show(4)'}-->
+<!--{$iCMS.PAGES|method:'show(5)'}-->
+<!--{$iCMS.PAGES|method:'show(6)'}-->
+<!--{$iCMS.PAGES|method:'show(7)'}-->
+<!--{$iCMS.PAGES|method:'show(8)'}-->
+<!--{$iCMS.PAGES|method:'show(9)'}-->
+```
+
 
 ###常用示例
 
@@ -158,7 +180,8 @@ iCMS模板标签
 嵌套循环时要使用 as 属性来改变嵌套里的变量赋值,赋值给$cate
 所以子分类的数据调用变成了 $cate.title , $cate.cid
 
-####不使用 loop="true"
+####不使用 loop="true" (以下属特殊调用示例 正常情况请使用上面的方法)
+
 
 - 最新 10条 有缩略图的文章
 

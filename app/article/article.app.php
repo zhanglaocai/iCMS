@@ -226,6 +226,7 @@ class articleApp {
                 $prev_array = array(
                     'empty' => true,
                     'title' => iPHP::lang('iCMS:article:first'),
+                    'pic'   => array(),
                     'url'   => 'javascript:;',
                 );
                 $prevrs = iDB::row("SELECT * FROM `#iCMS@__article` WHERE `id` < '{$article['id']}' AND `cid`='{$article['cid']}' AND `status`='1' order by id DESC LIMIT 1;");
@@ -233,6 +234,7 @@ class articleApp {
                     $prev_array = array(
                         'empty' => false,
                         'title' => $prevrs->title,
+                        'pic'   => get_pic($prevrs->pic),
                         'url'   => iURL::get('article',array((array)$prevrs,$category))->href,
                     );
                 }
@@ -246,6 +248,7 @@ class articleApp {
                 $next_array = array(
                     'empty' => true,
                     'title' => iPHP::lang('iCMS:article:last'),
+                    'pic'   => array(),
                     'url'   => 'javascript:;',
                 );
                 $nextrs = iDB::row("SELECT * FROM `#iCMS@__article` WHERE `id` > '{$article['id']}'  and `cid`='{$article['cid']}' AND `status`='1' order by id ASC LIMIT 1;");
@@ -253,6 +256,7 @@ class articleApp {
                     $next_array = array(
                         'empty' => false,
                         'title' => $nextrs->title,
+                        'pic'   => get_pic($nextrs->pic),
                         'url'   => iURL::get('article',array((array)$nextrs,$category))->href,
                     );
                 }

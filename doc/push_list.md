@@ -68,8 +68,6 @@ iCMS模板标签
 <!--{$push_list.description}-->   简介
 <!--{$push_list.description2}-->  简介
 <!--{$push_list.description3}-->  简介
-<!--{$push_list.metadata.自定义KEY}-->  自定义KEY
-
 ```
 
 ```
@@ -87,7 +85,9 @@ iCMS模板标签
 
 ```
 <!--{iCMS:push:list loop="true" row="10"}-->
- <a href="<!--{$push_list.url}-->"><!--{$push_list.title}--></a>
+<img src="<!--{$push_list.pic}-->" alt="<!--{$push_list.title}-->">
+<a href="<!--{$push_list.url}-->"><!--{$push_list.title}--></a>
+<p><!--{$push_list.description}--></p>
 <!--{/iCMS}-->
 ```
 

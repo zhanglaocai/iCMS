@@ -41,8 +41,8 @@ $(function(){
         <li><a href="#category-add-tpl" data-toggle="tab"><i class="fa fa-columns"></i> 模版设置</a></li>
         <li><a href="#category-add-user" data-toggle="tab"><i class="fa fa-user"></i> 用户设置</a></li>
         <li><a href="#category-add-prop" data-toggle="tab"><i class="fa fa-wrench"></i> <?php echo $this->name_text;?>附加属性</a></li>
-        <li><a href="#category-add-body" data-toggle="tab"><i class="fa fa-wrench"></i> HTML</a></li>
         <li><a href="#category-add-art" data-toggle="tab"><i class="fa fa-wrench"></i> 内容扩展属性</a></li>
+        <li><a href="#category-add-body" data-toggle="tab"><i class="fa fa-wrench"></i> HTML</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">

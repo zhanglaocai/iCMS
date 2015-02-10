@@ -10,7 +10,10 @@ http://www.idreamsoft.com/a/20.html
 
 ##iCMS 栏目 文章 标签 伪静态(rewrite)设置
 
-http://www.idreamsoft.com/a/16.html
+ - [router.config.php对应的REWRITE规则](router_config.md)
+ - [栏目/文章/标签 Rewrite规则说明](act_rewrite.md)
+ - [栏目/文章/标签 Rewrite规则示例](act_rewrite_example.md)
+
 
 ##百度SITEMAP怎么制作
 

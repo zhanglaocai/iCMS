@@ -26,3 +26,5 @@
 * [用户标签](user.md)
 * [高级应用](grade.md)
  - [router.config.php对应的REWRITE规则](router_config.md)
+ - [栏目/文章/标签 Rewrite规则说明](act_rewrite.md)
+ - [栏目/文章/标签 Rewrite规则示例](act_rewrite_example.md)

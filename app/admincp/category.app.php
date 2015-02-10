@@ -25,9 +25,10 @@ class categoryApp extends category{
             iACP::CP($this->cid,'e','page');
             $rs		= iDB::row("SELECT * FROM `#iCMS@__category` WHERE `cid`='$this->cid' LIMIT 1;",ARRAY_A);
             $rootid	= $rs['rootid'];
-            $rs['metadata'] && $rs['metadata']=unserialize($rs['metadata']);
-            $rs['contentprop'] && $rs['contentprop']=unserialize($rs['contentprop']);
+            $rs['metadata']   && $rs['metadata']    = unserialize($rs['metadata']);
+            $rs['contentprop']&& $rs['contentprop'] = unserialize($rs['contentprop']);
             $rs['body'] = iCache::get('iCMS/category/'.$this->cid.'.body');
+            $rs['body'] && $rs['body'] = stripslashes($rs['body']);
         }else {
             $rootid = (int)$_GET['rootid'];
             $rootid && iACP::CP($rootid,'a','page');
