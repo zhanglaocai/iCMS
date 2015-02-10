@@ -328,11 +328,16 @@ class tagsApp{
     			}
     		break;
     		default:
-                iPHP::alert('请选择要操作项!','js:1');
-				// $data = iACP::fields($batch);
-    //             foreach($idArray AS $id) {
-    //                 $data && iDB::update("tags",$data,array('id'=>$id));
-    //             }
+                if(strpos($batch, ':')){
+                    $data = iACP::fields($batch);
+                    foreach($idArray AS $id) {
+                        $data && iDB::update("tags",$data,array('id'=>$id));
+                    }
+                    iPHP::success('操作成功!','js:1');
+                }else{
+                    iPHP::alert('请选择要操作项!','js:1');
+                }
+
 		}
         $sql && iDB::query("UPDATE `#iCMS@__tags` SET {$sql} WHERE `id` IN ($ids)");
 		iPHP::success('操作成功!','js:1');

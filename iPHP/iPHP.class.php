@@ -211,13 +211,22 @@ class iPHP{
     }
     public static function QRcode($content){
         self::import(iPHP_LIB.'/phpqrcode.php');
-		$content = iS::escapeStr($content);
-		$expires = 86400;
+		$content  = iS::escapeStr($content);
+		$expires  = 86400;
         header("Cache-Control: maxage=".$expires);
         header('Last-Modified: '.gmdate('D, d M Y H:i:s',time()).' GMT');
         header('Expires: '.gmdate('D, d M Y H:i:s',time()+$expires).' GMT');
         header('Content-type: image/png');
-        QRcode::png($content, false, 'L', 6, 2);
+		$filepath = false;
+		if(isset($_GET['cache'])){
+			$name     = substr(md5($content), 8,16);
+			$filepath = iPHP_APP_CACHE.'/QRcode.'.$name.'.png';
+		}
+		@is_file($filepath) OR QRcode::png($content,$filepath,'L', 6, 2);
+		if($filepath){
+			$png = readfile($filepath);
+			exit($png);
+		}
     }
     public static function Markdown($content){
     	self::import(iPHP_LIB.'/Parsedown.php');
