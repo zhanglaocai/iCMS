@@ -639,22 +639,18 @@ class iTemplate_Compiler extends iTemplate {
 				$hash    = rand(1,999);
 				$keystr  = "\$this->_vars['".$this->_dequote($_args['key'])."'] => ";
 				$_result = '<?php
-				unset(' . $_args['from'] . '[\'first\'],' . $_args['from'] . '[\'last\']);
 				$_count_'.$hash.' = count((array)' . $_args['from'] . ');
+				$this->_vars[\'' . $_args['value'] . '_first\'] = false;
+				$this->_vars[\'' . $_args['value'] . '_last\']  = false;
+				$this->_vars[\'' . $_args['value'] . '_count\'] = $_count_'.$hash.';
 				$fec_'.$hash.' = 1;
 				if ($_count_'.$hash.'){
-					$this->_vars[\'' . $_args['value'] . '\'] = array();
-					$this->_vars[\'' . $_args['value'] . '\'][\'last\']=false;
-					$this->_vars[\'' . $_args['value'] . '\'][\'first\']=false;
 					foreach ((array)' . $_args['from'] . ' as ' . $keystr . '$this->_vars[\'' . $_args['value'] . '\']){
-						$fec_'.$hash.'==1 && @$this->_vars[\'' . $_args['value'] . '\'][\'first\']=true;
-						$fec_'.$hash.'==$_count_'.$hash.' && @$this->_vars[\'' . $_args['value'] . '\'][\'last\']=true;
+						$fec_'.$hash.' == 1 && $this->_vars[\'' . $_args['value'] . '_first\'] = true;
+						$fec_'.$hash.' == $_count_'.$hash.' && $this->_vars[\'' . $_args['value'] . '_last\'] = true;
 				';
 				if(isset($_args['start'])){
-					$_result.='if($fec_'.$hash.'<'.$_args['start'].'){
-						$fec_'.$hash.'++;
-						continue;
-					}';
+					$_result.='if($fec_'.$hash.'<'.$_args['start'].'){$fec_'.$hash.'++;continue;}';
 				}
 				if(isset($_args['end'])){
 					$_result.='if($fec_'.$hash.'>'.$_args['end'].'){break;}';

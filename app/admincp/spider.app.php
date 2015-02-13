@@ -164,8 +164,8 @@ class spiderApp {
         $project = $this->project($pid);
         $hash    = md5($this->url);
         if($project['checker'] && empty($_GET['indexid'])){
-            $title = $this->title;
-            $url   = $this->url;
+            $title = iS::escapeStr($this->title);
+            $url   = iS::escapeStr($this->url);
             switch ($project['checker']) {
                 case '1'://按网址检查
                     $sql ="`url` = '$url'";
@@ -607,7 +607,7 @@ class spiderApp {
                     }
                     $hash  = md5($url);
                     if ($this->ruleTest) {
-                        echo $title . ' (<a href="' . APP_URI . '&do=testcont&url=' . $url . '&rid=' . $rid . '&pid=' . $pid . '&title=' . urlencode($title) . '" target="_blank">测试内容规则</a>) <br />';
+                        echo $title . ' (<a href="' . APP_URI . '&do=testcont&url=' . urlencode($url) . '&rid=' . $rid . '&pid=' . $pid . '&title=' . urlencode($title) . '" target="_blank">测试内容规则</a>) <br />';
                         echo $url . "<br />";
                         echo $hash . "<br /><br />";
                     } else {
