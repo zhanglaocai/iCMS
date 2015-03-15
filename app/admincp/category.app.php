@@ -348,9 +348,9 @@ class categoryApp extends category{
 		$expanded=$_GET['expanded']?true:false;
 	 	echo $this->tree($_GET["root"],$expanded);
     }
-    function do_cache(){
+    function do_cache($dialog=true){
         $this->cache(true,$this->appid);
-        iPHP::success('更新完成');
+        $dialog && iPHP::success('更新完成');
     }
     function search_sql($cid,$field='cid'){
         if($cid){

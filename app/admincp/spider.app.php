@@ -699,7 +699,7 @@ class spiderApp {
         $this->allHtml = "";
         $responses['reurl'] = $url;
         $rule['__url__']	= $url;
-        foreach ($dataArray AS $key => $data) {
+        foreach ((array)$dataArray AS $key => $data) {
             $content = $this->content($html,$data,$rule);
             $dname   = $data['name'];
             if (strpos($dname,'.')!== false){
