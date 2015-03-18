@@ -49,10 +49,21 @@ class spiderApp {
  				iDB::query("delete from `#iCMS@__spider_rule` where `id` IN($ids);");
    			break;
             default:
-                $data = iACP::fields($batch);
+                if(strpos($batch, '#')!==false){
+                    list($table,$_batch) = explode('#',$batch);
+                    if(in_array($table, array('url','post','project','rul'))){
+                        if(strpos($_batch, ':')!==false){
+                            $data = iACP::fields($_batch);
+                            foreach($idArray AS $id) {
+                                $data && iDB::update("spider_".$table,$data,array('id'=>$id));
+                            }
+                            iPHP::success('操作成功!','js:1');
+                        }
+                    }
+                }
+                iPHP::alert('参数错误!','js:1');
 		}
-        $data && articleTable::batch($data,$ids);
-		iPHP::success('操作成功!','js:1');
+		iPHP::success('全部删除成功!','js:1');
 	}
     function do_delspider() {
     	$this->sid OR iPHP::alert("请选择要删除的项目");

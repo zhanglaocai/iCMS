@@ -117,8 +117,8 @@ $(function(){
                   </span>
                   <div class="btn-group dropup" id="iCMS-batch"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-wrench"></i> 批 量 操 作 </a><a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a data-toggle="batch" data-action="auto:1"><i class="fa fa-check-square"></i> 标识自动采集</a></li>
-                      <li><a data-toggle="batch" data-action="auto:0"><i class="fa fa-circle-o"></i> 取消自动采集</a></li>
+                      <li><a data-toggle="batch" data-action="project#auto:1"><i class="fa fa-check-square"></i> 标识自动采集</a></li>
+                      <li><a data-toggle="batch" data-action="project#auto:0"><i class="fa fa-circle-o"></i> 取消自动采集</a></li>
                       <li class="divider"></li>
                       <li><a data-toggle="batch" data-action="delproject"><i class="fa fa-trash-o"></i> 删除</a></li>
                     </ul>
