@@ -54,7 +54,7 @@ function modal_tplfile(el,a){
   if(!a.checked) return;
 
   var e   = $('#'+el)||$('.'+el);
-  var def = $("#template_pc").val();
+  var def = $("#template_desktop_tpl").val();
   var val = a.value.replace(def+'/', "{iTPL}/");
   e.val(val);
   return 'off';
@@ -252,11 +252,6 @@ function modal_tplfile(el,a){
             </div>
             <span class="help-inline">CMS安装目录，如：http：//www.idreamsoft.com/iCMS/ 则安装目录为:iCMS/ 根目录请输入<span class="label label-info">/</span></span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">网站URL</span>
-              <input type="text" name="config[router][URL]" class="span4" id="router_URL" value="<?php echo $config['router']['URL'] ; ?>"/>
-            </div>
-            <span class="help-inline">网站网址</span>
-            <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">404页面</span>
               <input type="text" name="config[router][404]" class="span4" id="router_404" value="<?php echo $config['router']['404'] ; ?>"/>
             </div>
@@ -355,8 +350,9 @@ function modal_tplfile(el,a){
             unix:///tmp/redis.sock@db:1 <br />
             127.0.0.1:6379@db:1</span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">缓存时间</span>
-              <input type="text" name="config[cache][time]" class="span4" id="cache_time" value="<?php echo $config['cache']['time'] ; ?>"/>
+            <div class="input-prepend input-append"> <span class="add-on">缓存时间</span>
+              <input type="text" name="config[cache][time]" class="span1" id="cache_time" value="<?php echo $config['cache']['time'] ; ?>"/>
+              <span class="add-on" style="width:24px;">秒</span>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">数据压缩</span>
