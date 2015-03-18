@@ -275,7 +275,7 @@ $(function(){
                 <tr>
                   <td><input name="metadata[key][]" type="text" value="<?php echo $mKey;?>" class="span3" /></td>
                   <td><input name="metadata[value][]" type="text" value="<?php echo $mvalue;?>" class="span6" />
-                    <a class="btn delAttr"><i class="fa fa-trash-o"></i> 删除</a></td>
+                    <a class="btn delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
                 </tr>
                 <?php }?>
               </tbody>
@@ -304,7 +304,7 @@ $(function(){
                 <tr>
                   <td><input name="contentprop[name][]" type="text" value="<?php echo $caname;?>" class="span3"/></td>
                   <td><input name="contentprop[key][]" type="text" value="<?php echo $caKey;?>" class="span3"/>
-                    <a class="btn delAttr"><i class="fa fa-trash-o"></i> 删除</a></td>
+                    <a class="btn delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
                 </tr>
                 <?php }?>
               </tbody>
