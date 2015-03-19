@@ -45,7 +45,7 @@
             <input type="password" placeholder="请输入您的密码" data-container=".pass_tip" name="pass" id="login_pass" class="iCMS_login_pass form-control">
             <span class="help-block pass_tip"></span>
           </div>
-          <!--{if $iCMS.CONFIG.user.loginseccode }-->
+          <!--{if $iCMS.CONFIG.user.login.seccode }-->
           <div class="form-group">
             <input type="text" maxlength="4" name="seccode" class="iCMS_login_seccode iCMS_seccode form-control" placeholder="验证码"  data-container=".seccode_tip" >
             <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>

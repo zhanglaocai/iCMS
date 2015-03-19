@@ -23,7 +23,7 @@ iCMS.config.UI = '<!--{$iCMS.UI}-->';
         </select>
       </div>
       <div class="input-prepend input-append"> <span class="add-on">快捷</span>
-        <button class="btn btn-primary" type="submit" id="iCMS-article"><i class="fa fa-check"></i> 提交</button>
+        <button class="btn btn-primary iCMS_user_publish" type="submit"><i class="fa fa-check"></i> 提交</button>
       </div>
       <div class="clearfix mb10"></div>
       <div class="input-prepend input-append"> <span class="add-on">标 题</span>
@@ -57,9 +57,17 @@ iCMS.config.UI = '<!--{$iCMS.UI}-->';
       </div>
       <div class="clearfix mb10"></div>
       <script type="text/plain" id="editor" style="width:100%;height:360px;"><!--{$article_data.body}--></script>
-      <div class="clearfix"></div>
+      <div class="clearfix mb10"></div>
+      <!--{if $iCMS.CONFIG.user.post.seccode }-->
+      <div class="input-prepend"> <span class="add-on">验证码</span>
+        <input type="text" maxlength="4" name="seccode" class="iCMS_post_seccode iCMS_seccode" data-placement="bottom">
+        <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
+      </div>
+      <a href="javascript:;" class="iCMS_seccode_text">换一张</a>
+      <!--{/if}-->
+      <div class="clearfix mb10"></div>
       <div class="form-actions">
-        <button class="btn btn-large btn-primary" type="submit" id="iCMS-article"><i class="fa fa-check"></i> 提交</button>
+        <button class="btn btn-large btn-primary iCMS_user_publish" type="submit"><i class="fa fa-check"></i> 提交</button>
       </div>
     </div>
   </form>
@@ -78,7 +86,7 @@ $(function(){
 	$("#uc_select").text(uc.text());
 	<!--{/if}-->
 
-	$("#iCMS-article").click(function(){
+	$(".iCMS_user_publish").click(function(){
 		if($("#cid option:selected").val()=="0"){
 			$("#cid").focus();
 			iCMS.alert("请选择所属栏目");
@@ -89,6 +97,13 @@ $(function(){
 			iCMS.alert("标题不能为空!");
 			return false;
 		}
+    <!--{if $iCMS.CONFIG.user.post.seccode }-->
+    if($(".iCMS_post_seccode").val()==''){
+      $(".iCMS_post_seccode").focus();
+      iCMS.alert("验证码不能为空!");
+      return false;
+    }
+    <!--{/if}-->
 		if(!ed.hasContents()){
 			ed.focus();
 			iCMS.alert("内容不能为空!");
