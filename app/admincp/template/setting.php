@@ -539,8 +539,8 @@ function modal_tplfile(el,a){
               </div>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">注册间隔</span>
-              <input type="text" name="config[user][register][interval]" class="span4" id="user_register_interval" value="<?php echo @(int)$config['user']['register']['interval'] ; ?>"/>
+            <div class="input-prepend input-append"> <span class="add-on">注册间隔</span>
+              <input type="text" name="config[user][register][interval]" class="span1" id="user_register_interval" value="<?php echo @(int)$config['user']['register']['interval'] ; ?>"/>
               <span class="add-on">秒</span>
             </div>
             <div class="clearfloat mb10"></div>
@@ -556,8 +556,8 @@ function modal_tplfile(el,a){
               </div>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">登陆间隔</span>
-              <input type="text" name="config[user][login][interval]" class="span4" id="user_login_interval" value="<?php echo @(int)$config['user']['login']['interval'] ; ?>"/>
+            <div class="input-prepend input-append"> <span class="add-on">登陆间隔</span>
+              <input type="text" name="config[user][login][interval]" class="span1" id="user_login_interval" value="<?php echo @(int)$config['user']['login']['interval'] ; ?>"/>
               <span class="add-on">秒</span>
             </div>
             <span class="help-inline">登陆错误5次后,重试间隔</span>
@@ -568,8 +568,8 @@ function modal_tplfile(el,a){
               </div>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">发贴间隔</span>
-              <input type="text" name="config[user][post][interval]" class="span4" id="user_post_interval" value="<?php echo (int)$config['user']['post']['interval'] ; ?>"/>
+            <div class="input-prepend input-append"> <span class="add-on">发贴间隔</span>
+              <input type="text" name="config[user][post][interval]" class="span1" id="user_post_interval" value="<?php echo (int)$config['user']['post']['interval'] ; ?>"/>
               <span class="add-on">秒</span>
             </div>
             <div class="clearfloat mb10"></div>
