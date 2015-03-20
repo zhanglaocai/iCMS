@@ -134,8 +134,8 @@ class categoryApp extends category{
         	if(strpos($categoryRule,'{CDIR}')=== FALSE && strpos($categoryRule,'{CID}')=== FALSE){
         		iPHP::alert('伪静态模式下版块URL规则<hr />必需要有<br />{CDIR}版块目录<br />或者<br />{CID}版块ID');
         	}
-        	if(strpos($contentRule,'{ID}')=== FALSE && strpos($contentRule,'{0xID}')=== FALSE){
-        		iPHP::alert('伪静态模式下内容URL规则<hr />必需要有<br />{ID}文章ID <br />或者<br />{0xID}文章ID补零<br />');
+        	if(strpos($contentRule,'{ID}')=== FALSE && strpos($contentRule,'{0xID}')=== FALSE && strpos($contentRule,'{LINK}')=== FALSE){
+        		iPHP::alert('伪静态模式下内容URL规则<hr />必需要有<br />{ID}文章ID <br />或者<br />{0xID}文章ID补零<br />或者<br />{LINK}文章自定义链接');
         	}
         }
         iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');

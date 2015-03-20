@@ -197,7 +197,7 @@ $(function(){
                   <li><a href="{0x3,2ID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{0x3,2ID}</span> 文章ID补零(8位从第3位起两位)</a></li>
                   <li class="divider"></li>
                   <li><a href="{TITLE}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{TITLE}</span> 文章标题</a></li>
-                  <li><a href="{LINK}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{LINK}</span> 文章自定义链接</a></li>
+                  <li><a href="{LINK}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-important">{LINK}</span> 文章自定义链接</a></li>
                   <li><a href="{MD5}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{MD5}</span> 文章ID(16位)</a></li>
                   <li class="divider"></li>
                   <li><a href="{P}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{P}</span> 分页数</a></li>
@@ -207,7 +207,7 @@ $(function(){
                 </ul>
               </div>
             </div>
-            <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{ID}</span>或<span class="label label-important">{0xID}</span></span>
+            <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{ID}</span>或<span class="label label-important">{0xID}</span>或<span class="label label-important">{LINK}</span></span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">其它规则</span>
               <input type="text" name="urlRule" class="span5" id="urlRule" value="<?php echo $rs['urlRule'] ; ?>"/>
