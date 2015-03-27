@@ -1396,6 +1396,7 @@ class spiderApp {
     }
 
     function remote($url, $_count = 0) {
+        $url = str_replace('&amp;', '&', $url);
         if(empty($this->referer)){
             $uri = parse_url($url);
             $this->referer = $uri['scheme'] . '://' . $uri['host'];
