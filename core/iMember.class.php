@@ -32,7 +32,7 @@ class iMember{
         self::$data->info && self::$data->info	= unserialize(self::$data->info);
         self::$userid   = self::$data->uid;
         self::$nickname = self::$data->nickname?self::$data->nickname:self::$data->username;
-        
+
         self::$group  = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='".self::$data->gid."' LIMIT 1;");
         self::$mpower = (array)self::use_power(self::$group->power,self::$data->power);
         self::$cpower = (array)self::use_power(self::$group->cpower,self::$data->cpower);
@@ -72,6 +72,7 @@ class iMember{
 	//注销
 	public static function logout(){
 		iPHP::set_cookie(self::$AUTH,'',-31536000);
+        iPHP::set_cookie('seccode', '',-31536000);
 	}
     public static function check_power($p,$power){
         return is_array($p)?array_intersect($p,(array)$power):in_array($p,(array)$power);
