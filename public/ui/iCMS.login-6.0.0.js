@@ -1,6 +1,7 @@
 (function($) {
   iCMS.user.login = function(boxid,success) {
     var login = $(boxid);
+    iCMS.seccode(0,login);
     login.on("click", '.iCMS_login_btn',function(){
       var param = {'action': 'login'};
       param.uname = $(".iCMS_login_uname", login).val();
