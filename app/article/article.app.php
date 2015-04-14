@@ -201,7 +201,6 @@ class articleApp {
                 'last'    => ($page==$count?true:false),//实际最后一页
                 'end'     => ($page==$total?true:false)
             );
-            var_dump($article['page']);
             unset($index_nav,$prev_nav,$num_nav,$next_nav,$end_nav,$pagenav);
             //var_dump($page,$total,$count);
             if($pic_array[0]){
