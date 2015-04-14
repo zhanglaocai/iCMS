@@ -81,6 +81,7 @@ function modal_tplfile(el,a){
         <li><a href="#setting-patch" data-toggle="tab">更新</a></li>
         <li><a href="#setting-grade" data-toggle="tab">高级</a></li>
         <li><a href="#setting-mail" data-toggle="tab">邮件</a></li>
+        <li><a href="#setting-weixin" data-toggle="tab">微信</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding iCMS-setting">
@@ -795,6 +796,14 @@ function modal_tplfile(el,a){
             <hr />
             <h3>文章显示相关设置</h3>
             <div class="clearfloat"></div>
+            <div class="input-prepend"> <span class="add-on">文章图片居中</span>
+              <div class="switch" data-on-label="启用" data-off-label="关闭">
+                <input type="checkbox" data-type="switch" name="config[article][pic_center]" id="article_pic_center" <?php echo $config['article']['pic_center']?'checked':''; ?>/>
+              </div>
+            </div>
+            <span class="help-inline">启用后文章内的图片会自动居中</span>
+            <div class="clearfloat mb10"></div>
+
             <div class="input-prepend"> <span class="add-on">文章图片链接</span>
               <div class="switch" data-on-label="启用" data-off-label="关闭">
                 <input type="checkbox" data-type="switch" name="config[article][pic_next]" id="article_pic_next" <?php echo $config['article']['pic_next']?'checked':''; ?>/>
@@ -813,14 +822,6 @@ function modal_tplfile(el,a){
               </div>
             </div>
             <span class="help-inline">启用文章上下文(内容页的上一篇/下一篇) 这个比较耗性能 如果访问量较大 建议关闭</span>
-            <hr />
-            <h3>微信公众平台</h3>
-            <span class="help-inline">申请地址:https://mp.weixin.qq.com/</span>
-            <div class="clearfloat"></div>
-            <div class="input-prepend"> <span class="add-on">Token(令牌)</span>
-              <input type="text" name="config[api][weixin][token]" class="span3" id="weixin_token" value="<?php echo $config['api']['weixin']['token'] ; ?>"/>
-            </div>
-            <span class="help-inline">公共平台接口URL:<?php echo $config['router']['public_url'] ; ?>/api.php?app=public&do=weixin&api_token=Token(令牌)</span>
             <hr />
             <h3>百度站长平台 Sitemap 实时推送</h3>
             <span class="help-inline">申请地址:http://zhanzhang.baidu.com/ (需要权限)</span>
@@ -973,6 +974,15 @@ index iCMS_article_delta : iCMS_article
             <span class="help-inline">用于邮件中回复Email的账号</span>
             <div class="clearfloat mt10"></div>
 
+          </div>
+          <div id="setting-weixin" class="tab-pane hide">
+            <h3>微信公众平台</h3>
+            <span class="help-inline">申请地址:https://mp.weixin.qq.com/</span>
+            <div class="clearfloat"></div>
+            <div class="input-prepend"> <span class="add-on">Token(令牌)</span>
+              <input type="text" name="config[api][weixin][token]" class="span3" id="weixin_token" value="<?php echo $config['api']['weixin']['token'] ; ?>"/>
+            </div>
+            <span class="help-inline">公共平台接口URL:<?php echo $config['router']['public_url'] ; ?>/api.php?app=public&do=weixin&api_token=Token(令牌)</span>
           </div>
           <div class="form-actions">
             <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>

@@ -201,16 +201,28 @@ class articleApp {
                 'last'    => ($page==$count?true:false),//实际最后一页
                 'end'     => ($page==$total?true:false)
             );
+            var_dump($article['page']);
             unset($index_nav,$prev_nav,$num_nav,$next_nav,$end_nav,$pagenav);
             //var_dump($page,$total,$count);
             if($pic_array[0]){
                 $img_array = array_unique($pic_array[0]);
                 foreach($img_array as $key =>$img){
                     $img = str_replace('<img', '<img title="'.$article['title'].'" alt="'.$article['title'].'"', $img);
-                    $img_replace[$key] = '<p align="center">'.$img.'</p>';
-                    if(iCMS::$config['article']['pic_next'] && $count<$total){
-                        $img_replace[$key] = '<p align="center"><a href="'.$next_url.'"><b>'.iPHP::lang('iCMS:article:clicknext').'</b></a></p>
-                        <p align="center"><a href="'.$next_url.'" title="'.$article['title'].'">'.$img.'</a></p>';
+                    if(iCMS::$config['article']['pic_center']){
+                        $img_replace[$key] = '<p align="center">'.$img.'</p>';
+                    }else{
+                        $img_replace[$key] = $img;
+                    }
+                    if(iCMS::$config['article']['pic_next'] && $count>1){
+                        $clicknext = '<a href="'.$next_url.'"><b>'.iPHP::lang('iCMS:article:clicknext').'</b></a>';
+                        $clickimg  = '<a href="'.$next_url.'" title="'.$article['title'].'" class="img">'.$img.'</a>';
+                        if(iCMS::$config['article']['pic_center']){
+                            $img_replace[$key] = '<p align="center">'.$clicknext.'</p>';
+                            $img_replace[$key].= '<p align="center">'.$clickimg.'</p>';
+                        }else{
+                            $img_replace[$key] = '<p>'.$clicknext.'</p>';
+                            $img_replace[$key].= '<p>'.$clickimg.'</p>';
+                        }
                     }
                 }
                 $article['body'] = str_replace($img_array,$img_replace,$article['body']);

@@ -475,6 +475,7 @@ class spiderApp {
 
         $pubArray = array();
         $pubCount = array();
+        $this->curl_proxy = $rule['proxy'];
         foreach ($urlsArray AS $key => $url) {
             $url = trim($url);
             if($work=='shell'){
@@ -693,8 +694,9 @@ class spiderApp {
             echo "</pre><hr />";
         }
 
+        $this->curl_proxy = $rule['proxy'];
         $responses = array();
-        $html = $this->remote($url);
+        $html      = $this->remote($url);
         if(empty($html)){
             if($this->work=='shell'){
                 echo '错误:001..采集 ' . $url . "文件内容为空!请检查采集规则\n";
@@ -849,6 +851,7 @@ class spiderApp {
 				}
 		        $this->content_right_code = trim($rule['page_url_right']);
 		        $this->content_error_code = trim($rule['page_url_error']);
+                $this->curl_proxy = $rule['proxy'];
 
                 $pcontent = '';
                 $pcon     = '';
@@ -1394,7 +1397,80 @@ class spiderApp {
         }
         iPHP::success('完成', 'url:' . APP_URI . '&do=project');
     }
+    function do_proxy_test(){
+       $a = $this->_proxy_test();
+       var_dump($a);
+    }
+    function _proxy_test(){
+        $options = array(
+            CURLOPT_URL                  => 'http://www.baidu.com',
+            CURLOPT_REFERER              => 'http://www.baidu.com',
+            CURLOPT_USERAGENT            => 'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
+            CURLOPT_TIMEOUT              => 10,
+            CURLOPT_CONNECTTIMEOUT       => 8,
+            CURLOPT_RETURNTRANSFER       => 1,
+            CURLOPT_HEADER               => 0,
+            CURLOPT_NOSIGNAL             => true,
+            CURLOPT_DNS_USE_GLOBAL_CACHE => true,
+            CURLOPT_DNS_CACHE_TIMEOUT    => 86400,
+            CURLOPT_SSL_VERIFYPEER       => false,
+            CURLOPT_SSL_VERIFYHOST       => false
+            // CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
+            // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
+        );
+        if(empty($this->proxy_array)){
+            if(empty($this->curl_proxy)){
+                return false;
+            }
+            $this->proxy_array = explode("\n", $this->curl_proxy); // socks5://127.0.0.1:1080@username:password
+        }
+        if(empty($this->proxy_array)){
+            return false;
+        }
+        $rand_keys   = array_rand($this->proxy_array,1);
+        $proxy       = $this->proxy_array[$rand_keys];
+        $proxy       = trim($proxy);
+        $options     = $this->_proxy($options,$proxy);
 
+        $ch        = curl_init();
+        curl_setopt_array($ch,$options);
+        curl_exec($ch);
+        $info      = curl_getinfo($ch);
+        curl_close($ch);
+        if($info['http_code']==200){
+            return $proxy;
+        }else{
+            unset($this->proxy_array[$rand_keys]);
+            return $this->_proxy_test();
+        }
+    }
+    function _proxy($options='',$proxy){
+        if($proxy){
+            // $proxy_array = explode("\n", $this->proxy); // socks5://127.0.0.1:1080@username:password
+            // $rand_keys   = array_rand($proxy_array,1);
+            // $proxy       = $proxy_array[$rand_keys];
+            // if(empty($proxy)){
+            //     return $options;
+            // }
+            //foreach ($proxy_array as $key => $proxy) {
+                $proxy   = trim($proxy);
+                $matches = strpos($proxy,'socks5://');
+                if($matches===false){
+                    // $options[CURLOPT_HTTPPROXYTUNNEL] = true;//HTTP代理开关
+                    $options[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP;//使用http代理模式
+                }else{
+                    $options[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
+                }
+                list($url,$auth) = explode('@', $proxy);
+                $url = str_replace(array('http://','socks5://'), '', $url);
+                $options[CURLOPT_PROXY] = $url;
+                $auth && $options[CURLOPT_PROXYUSERPWD] = $auth;//代理验证格式  username:password
+                $options[CURLOPT_PROXYAUTH] = CURLAUTH_BASIC; //代理认证模式
+            //}
+        }
+
+        return $options;
+    }
     function remote($url, $_count = 0) {
         $url = str_replace('&amp;', '&', $url);
         if(empty($this->referer)){
@@ -1402,7 +1478,6 @@ class spiderApp {
             $this->referer = $uri['scheme'] . '://' . $uri['host'];
         }
 
-        $ch = curl_init();
         $options = array(
             CURLOPT_URL                  => $url,
             CURLOPT_ENCODING             => $this->encoding,
@@ -1422,7 +1497,12 @@ class spiderApp {
             // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
         );
         $this->cookie && $options[CURLOPT_COOKIE] = $this->cookie;
-        curl_setopt_array ( $ch ,  $options );
+        if($this->curl_proxy){
+            $proxy   = $this->_proxy_test();
+            $proxy && $options = $this->_proxy($options,$proxy);
+        }
+        $ch = curl_init();
+        curl_setopt_array($ch,$options);
         $responses = curl_exec($ch);
         $info = curl_getinfo($ch);
         if ($this->contTest || $this->ruleTest) {

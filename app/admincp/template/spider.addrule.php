@@ -81,7 +81,8 @@ $(function(){
         <li class="active"><a href="#spider-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本设置</a></li>
         <li><a href="#spider-data" data-toggle="tab"><i class="fa fa-truck"></i> 数据项</a></li>
         <li><a href="#spider-page" data-toggle="tab"><i class="fa fa-columns"></i> 分页设置</a></li>
-        <li><a href="#spider-pic" data-toggle="tab"><i class="fa fa-columns"></i> 图片下载设置</a></li>
+        <li><a href="#spider-pic" data-toggle="tab"><i class="fa fa-cog"></i> 图片下载设置</a></li>
+        <li><a href="#spider-proxy" data-toggle="tab"><i class="fa fa-cog"></i> 代理设置</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -412,6 +413,17 @@ $(function(){
             </div>
             <span class="help-inline">水印图片存放路径：conf/iCMS/watermark.png， 如果水印图片不存在，则使用文字水印</span>
             <div class="clearfloat mb10"></div>
+          </div>
+          <div id="spider-proxy" class="tab-pane">
+            <div class="input-prepend"><span class="add-on">代理IP</span>
+              <textarea name="rule[proxy]" id="rule_proxy" class="span6" style="height:150px;"><?php echo $rule['proxy'] ; ?></textarea>
+            </div>
+            <span class="help-inline">
+              每行一个<br />
+              socks5格式:socks5://127.0.0.1:1080@username:password<br />
+              http格式:http://127.0.0.1:1080@username:password<br />
+              例:127.0.0.1:1080 (默认为http模式 无验证信息)
+            </span>
           </div>
         </div>
         <div class="form-actions">

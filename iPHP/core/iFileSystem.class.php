@@ -46,6 +46,8 @@ class iFS {
     public static $watermark_config = null;
 
     public static $CURL_COUNT             = 3;
+    public static $CURL_PROXY             = null;
+    public static $CURL_PROXY_ARRAY       = array();
     public static $CURLOPT_ENCODING       = '';
     public static $CURLOPT_REFERER        = null;
     public static $CURLOPT_TIMEOUT        = 10; //数据传输的最大允许时间
@@ -220,7 +222,67 @@ class iFS {
         $rtrim && $path = rtrim($path,'/').'/';
         return $path;
     }
+    public static function proxy_test(){
+        $options = array(
+            CURLOPT_URL                  => 'http://www.baidu.com',
+            CURLOPT_REFERER              => 'http://www.baidu.com',
+            CURLOPT_USERAGENT            => 'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
+            CURLOPT_TIMEOUT              => 10,
+            CURLOPT_CONNECTTIMEOUT       => 8,
+            CURLOPT_RETURNTRANSFER       => 1,
+            CURLOPT_HEADER               => 0,
+            CURLOPT_NOSIGNAL             => true,
+            CURLOPT_DNS_USE_GLOBAL_CACHE => true,
+            CURLOPT_DNS_CACHE_TIMEOUT    => 86400,
+            CURLOPT_SSL_VERIFYPEER       => false,
+            CURLOPT_SSL_VERIFYHOST       => false
+            // CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
+            // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
+        );
+        if(empty(self::$CURL_PROXY_ARRAY)){
+            if(empty(self::$CURL_PROXY)){
+                return false;
+            }
+            self::$CURL_PROXY_ARRAY = explode("\n", self::$CURL_PROXY); // socks5://127.0.0.1:1080@username:password
+        }
+        if(empty(self::$CURL_PROXY_ARRAY)){
+            return false;
+        }
+        $rand_keys   = array_rand(self::$CURL_PROXY_ARRAY,1);
+        $proxy       = self::$CURL_PROXY_ARRAY[$rand_keys];
+        $proxy       = trim($proxy);
+        $options     = self::proxy($options,$proxy);
 
+        $ch        = curl_init();
+        curl_setopt_array($ch,$options);
+        curl_exec($ch);
+        $info      = curl_getinfo($ch);
+        curl_close($ch);
+        if($info['http_code']==200){
+            return $proxy;
+        }else{
+            unset(self::$CURL_PROXY_ARRAY[$rand_keys]);
+            return self::proxy_test();
+        }
+    }
+    public static function proxy($options=array(),$proxy){
+        if($proxy){
+            $proxy   = trim($proxy);
+            $matches = strpos($proxy,'socks5://');
+            if($matches===false){
+                // $options[CURLOPT_HTTPPROXYTUNNEL] = true;//HTTP代理开关
+                $options[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP;//使用http代理模式
+            }else{
+                $options[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
+            }
+            list($url,$auth) = explode('@', $proxy);
+            $url = str_replace(array('http://','socks5://'), '', $url);
+            $options[CURLOPT_PROXY] = $url;
+            $auth && $options[CURLOPT_PROXYUSERPWD] = $auth;//代理验证格式  username:password
+            $options[CURLOPT_PROXYAUTH] = CURLAUTH_BASIC; //代理认证模式
+        }
+        return $options;
+    }
     //获取远程页面的内容
     public static function remote($url,$_count = 0) {
         if (function_exists('curl_init')) {
@@ -233,17 +295,30 @@ class iFS {
                 $uri                   = parse_url($url);
                 self::$CURLOPT_REFERER = $uri['scheme'] . '://' . $uri['host'];
             }
+            $options = array(
+                CURLOPT_URL                  => $url,
+                CURLOPT_REFERER              => self::$CURLOPT_REFERER,
+                CURLOPT_USERAGENT            => self::$CURLOPT_USERAGENT,
+                CURLOPT_ENCODING             => self::$CURLOPT_ENCODING,
+                CURLOPT_TIMEOUT              => self::$CURLOPT_TIMEOUT, //数据传输的最大允许时间
+                CURLOPT_CONNECTTIMEOUT       => self::$CURLOPT_CONNECTTIMEOUT,//连接超时时间
+                CURLOPT_RETURNTRANSFER       => 1,
+                CURLOPT_FAILONERROR          => 0,
+                CURLOPT_HEADER               => 0,
+                CURLOPT_NOSIGNAL             => true,
+                CURLOPT_DNS_USE_GLOBAL_CACHE => true,
+                CURLOPT_DNS_CACHE_TIMEOUT    => 86400,
+                CURLOPT_SSL_VERIFYPEER       => false,
+                CURLOPT_SSL_VERIFYHOST       => false
+                // CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
+                // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
+            );
+            if(self::$CURL_PROXY){
+                $proxy   = self::proxy_test();
+                $proxy && $options = self::proxy($options,$proxy);
+            }
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_ENCODING,self::$CURLOPT_ENCODING);
-            curl_setopt($ch, CURLOPT_TIMEOUT, self::$CURLOPT_TIMEOUT); //数据传输的最大允许时间
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, self::$CURLOPT_CONNECTTIMEOUT); //连接超时时间
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-            curl_setopt($ch, CURLOPT_REFERER,self::$CURLOPT_REFERER);
-            curl_setopt($ch, CURLOPT_USERAGENT,self::$CURLOPT_USERAGENT);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_NOSIGNAL, true);
+            curl_setopt_array($ch,$options);
             $responses	= curl_exec($ch);
             $info 		= curl_getinfo($ch);
             $errno 		= curl_errno($ch);

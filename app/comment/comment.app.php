@@ -45,7 +45,7 @@ class commentApp {
         $like && iPHP::code(0,'iCMS:comment:!like',0,'json');
         //$ip = iPHP::getIp();
         iDB::query("UPDATE `#iCMS@__comment` SET `up`=up+1 WHERE `id`='$this->id'");
-        iPHP::set_cookie($lckey,time(),86400);
+        iPHP::set_cookie($lckey,$_SERVER['REQUEST_TIME'],86400);
         iPHP::code(1,'iCMS:comment:like',0,'json');
     }
     public function API_json(){
@@ -102,7 +102,7 @@ class commentApp {
         $fwd && iPHP::code(0,'iCMS:comment:filter',0,'json');
 
         $appid OR $appid = iCMS_APP_ARTICLE;
-        $addtime  = time();
+        $addtime  = $_SERVER['REQUEST_TIME'];
         $ip       = iPHP::getIp();
         $userid   = user::$userid;
         $username = user::$nickname;
