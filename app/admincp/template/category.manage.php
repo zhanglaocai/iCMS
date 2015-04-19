@@ -115,11 +115,12 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
-          <a class="btn" href="<?php echo APP_FURI; ?>&do=cache" target="iPHP_FRAME"><i class="fa fa-refresh"></i> 更新缓存</a>
+          <a class="btn btn-inverse" href="<?php echo APP_FURI; ?>&do=cache" target="iPHP_FRAME"><i class="fa fa-refresh"></i> 更新缓存</a>
           <div id="treecontrol">
-            <a href="javascript:;" class="btn"><i class="fa fa-angle-double-up"></i> 全部折叠</a>
-            <a href="javascript:;" class="btn"><i class="fa fa-angle-double-down"></i> 全部展开</a>
+            <a href="javascript:;" class="btn btn-info"><i class="fa fa-angle-double-up"></i> 全部折叠</a>
+            <a href="javascript:;" class="btn btn-info"><i class="fa fa-angle-double-down"></i> 全部展开</a>
           </div>
+          <a class="btn btn-success" href="http://www.idreamsoft.com/doc/iCMS/act_rewrite.html" target="_blank"><i class="fa fa-question-circle"></i> 伪静态规则</a>
         </div>
       </form>
       <?php } ?>

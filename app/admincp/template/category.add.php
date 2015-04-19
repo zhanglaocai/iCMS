@@ -162,7 +162,7 @@ $(function(){
                 <ul class="dropdown-menu">
                   <li><a href="{CID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{CID}</span> <?php echo $this->name_text;?>ID</a></li>
                   <li><a href="{CDIR}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{CDIR}</span> <?php echo $this->name_text;?>目录</a></li>
-                  <li><a href="{0xCID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{0xCID}</span> <?php echo $this->name_text;?>ID补零（8位）</a></li>
+                  <li><a href="{0xCID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{0xCID}</span> <?php echo $this->name_text;?>ID补零（8位）</a></li>
                   <li class="divider"></li>
                   <li><a href="{MD5}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{MD5}</span> 文章ID(16位)</a></li>
                   <li class="divider"></li>
@@ -173,7 +173,7 @@ $(function(){
                 </ul>
               </div>
             </div>
-            <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{CID}</span>或<span class="label label-important">{CDIR}</span>或直接填写URL</span>
+            <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{CID}</span>或<span class="label label-important">{0xCID}</span>或<span class="label label-important">{CDIR}</span>或直接填写URL</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">内容规则</span>
               <input type="text" name="contentRule" class="span5" id="contentRule" value="<?php echo $rs['contentRule'] ; ?>"/>

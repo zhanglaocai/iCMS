@@ -288,6 +288,7 @@ function modal_tplfile(el,a){
                 <input type="checkbox" data-type="switch" name="config[router][rewrite]" id="router_rewrite" <?php echo $config['router']['rewrite']?'checked':''; ?>/>
               </div>
             </div>
+            <a class="btn btn-small btn-success" href="http://www.idreamsoft.com/doc/iCMS/router_config.html" target="_blank"><i class="fa fa-question-circle"></i> 查看帮助</a>
             <span class="help-inline">此选项只对 conf 目录下 router.config.php 里的配置有效</span>
           </div>
           <div id="setting-tag" class="tab-pane hide">
@@ -316,7 +317,7 @@ function modal_tplfile(el,a){
                 </ul>
               </div>
             </div>
-            <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{ID}</span>或<span class="label label-important">{NAME}</span>或<span class="label label-important">{ZH_CN}</span></span>
+            <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{ID}</span>或<span class="label label-important">{NAME}</span>或<span class="label label-important">{ZH_CN}</span>或<span class="label label-important">{TKEY}</span></span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">标签目录</span>
               <input type="text" name="config[router][tag_dir]" class="span4" id="router_tag_dir" value="<?php echo $config['router']['tag_dir'] ; ?>"/>
