@@ -19,7 +19,8 @@ iACP::head();
   font-weight: bold;
   color: #696969;
   text-shadow: 0 1px 0 #FFF;
-  border-radius: 4px 4px 0px 0px;width: 330px;
+  border-radius: 4px 4px 0px 0px;
+  width: 350px;
   font-size: 16px;
 }
 </style>
@@ -46,7 +47,14 @@ $(function(){
     tdc.appendTo(TD);
     return false;
   });
-
+  $("#weixin_token_make").click(function(event) {
+    var token = iCMS.random(20);
+    $("#weixin_token").val(token);
+    $("#wx_api_token").text(token);
+  });
+  $("#weixin_token").keypress(function(event) {
+    $("#wx_api_token").text(this.value);
+  });
 });
 function modal_tplfile(el,a){
 
@@ -824,18 +832,13 @@ function modal_tplfile(el,a){
             </div>
             <span class="help-inline">启用文章上下文(内容页的上一篇/下一篇) 这个比较耗性能 如果访问量较大 建议关闭</span>
             <hr />
-            <h3>百度站长平台 Sitemap 实时推送</h3>
+            <h3>百度站长平台 主动推送(实时)</h3>
             <span class="help-inline">申请地址:http://zhanzhang.baidu.com/ (需要权限)</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on">站点</span>
               <input type="text" name="config[api][baidu][sitemap][site]" class="span3" id="baidu_sitemap_site" value="<?php echo $config['api']['baidu']['sitemap']['site'] ; ?>"/>
             </div>
             <span class="help-inline">在站长平台验证的站点，比如www.example.com</span>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">数据名称</span>
-              <input type="text" name="config[api][baidu][sitemap][resource_name]" class="span3" id="baidu_sitemap_resource_name" value="<?php echo $config['api']['baidu']['sitemap']['resource_name']?$config['api']['baidu']['sitemap']['resource_name']:'sitemap'; ?>"/>
-            </div>
-            <span class="help-inline">你被允许推送的数据名称，比如sitemap</span>
             <div class="clearfloat mt10"></div>
             <div class="input-prepend"> <span class="add-on">准入密钥</span>
               <input type="text" name="config[api][baidu][sitemap][access_token]" class="span3" id="baidu_sitemap_access_token" value="<?php echo $config['api']['baidu']['sitemap']['access_token'] ; ?>"/>
@@ -980,10 +983,19 @@ index iCMS_article_delta : iCMS_article
             <h3>微信公众平台</h3>
             <span class="help-inline">申请地址:https://mp.weixin.qq.com/</span>
             <div class="clearfloat"></div>
-            <div class="input-prepend"> <span class="add-on">Token(令牌)</span>
-              <input type="text" name="config[api][weixin][token]" class="span3" id="weixin_token" value="<?php echo $config['api']['weixin']['token'] ; ?>"/>
+            <div class="input-prepend"> <span class="add-on">appID</span>
+              <input type="text" name="config[api][weixin][appid]" class="span3" id="weixin_appid" value="<?php echo $config['api']['weixin']['appid'] ; ?>"/>
             </div>
-            <span class="help-inline">公共平台接口URL:<?php echo $config['router']['public_url'] ; ?>/api.php?app=public&do=weixin&api_token=Token(令牌)</span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">appsecret</span>
+              <input type="text" name="config[api][weixin][appsecret]" class="span3" id="weixin_appsecret" value="<?php echo $config['api']['weixin']['appsecret'] ; ?>"/>
+            </div>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend input-append"> <span class="add-on">Token(令牌)</span>
+              <input type="text" name="config[api][weixin][token]" class="span3" id="weixin_token" value="<?php echo $config['api']['weixin']['token'] ; ?>"/>
+              <a class="btn" id="weixin_token_make" data-toggle="createpass" data-len="20" data-target="#weixin_token">生成令牌</a>
+            </div>
+            <span class="help-inline">公共平台接口URL:<?php echo $config['router']['public_url'] ; ?>/api.php?app=public&do=weixin&api_token=<span id="wx_api_token">Token(令牌)</span></span>
           </div>
           <div class="form-actions">
             <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>

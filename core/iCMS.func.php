@@ -32,37 +32,26 @@ function small($sfp,$w='',$h='',$scale=true) {
     }
     echo $sfp.'_'.$w.'x'.$h.'.jpg';
 }
+
 function baidu_ping($urls) {
     $site          = iCMS::$config['api']['baidu']['sitemap']['site'];
-    $resource_name = iCMS::$config['api']['baidu']['sitemap']['resource_name'];
     $access_token  = iCMS::$config['api']['baidu']['sitemap']['access_token'];
     if(empty($site)||empty($access_token)){
         return false;
     }
-    $ping     ='http://ping.baidu.com/sitemap?site='.$site.'&resource_name='.$resource_name.'&access_token='.$access_token;
-    $postvar ='<?xml version="1.0" encoding="UTF-8"?>';
-    $postvar.='<urlset>';
-    foreach ((array)$urls as $key => $url) {
-        $postvar.='<url>
-            <loc><![CDATA['.$url.']]></loc>
-            <lastmod>'.get_date(0,'Y-m-d').'</lastmod>
-            <changefreq>daily</changefreq>
-            <priority>0.8</priority>
-        </url>';
-    }
-    $postvar.='</urlset>';
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $ping);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $postvar);
-    curl_setopt($ch, CURLOPT_TIMEOUT,10);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT,10);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: text/xml"));
-    $res = curl_exec ($ch);
-    curl_close ($ch);
-    $xml = simplexml_load_string($res, 'SimpleXMLElement', LIBXML_NOCDATA);
-    if($xml->params->param->value->int=="200"){
+    $api     ='http://data.zz.baidu.com/urls?site='.$site.'&token='.$access_token;
+    $ch      = curl_init();
+    $options =  array(
+        CURLOPT_URL            => $api,
+        CURLOPT_POST           => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POSTFIELDS     => implode("\n",(array)$urls),
+        CURLOPT_HTTPHEADER     => array('Content-Type: text/plain'),
+    );
+    curl_setopt_array($ch, $options);
+    $result = curl_exec($ch);
+    $json   = json_decode($result);
+    if($json->success){
         return true;
     }
     return $res;
