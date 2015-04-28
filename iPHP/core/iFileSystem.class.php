@@ -195,7 +195,7 @@ class iFS {
         }
         $o[0] == 'http:' && $o[0] = 'http:/';
 
-        return ($p{0} == '/' ? '/' : '').implode('/', $o).($end == '/' ? '/':'');
+        return ($p[0] == '/' ? '/' : '').implode('/', $o).($end == '/' ? '/':'');
     }
 
     public static function path_is_absolute($path) {
@@ -203,7 +203,7 @@ class iFS {
         if (@realpath($path) == $path)
             return true;
 
-        if (strlen($path) == 0 || $path{0} == '.')
+        if (strlen($path) == 0 || $path[0]== '.')
             return false;
 
         // windows allows absolute paths like this

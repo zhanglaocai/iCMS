@@ -544,7 +544,7 @@ class iTemplate_Compiler extends iTemplate {
 		// extract the tag command, modifier and arguments
 		preg_match_all('/(?:(' . $this->_var_regexp . '|' . $this->_svar_regexp . '|\/?' . $this->_func_regexp . ')(' . $this->_mod_regexp . '*)(?:\s*[,\.]\s*)?)(?:\s+(.*))?/xs', $tag, $_match);
 
-		if ($_match[1][0]{0} == '$' || $_match[1][0]{0} == "'" || $_match[1][0]{0} == '"' || $_match[1][0]{0} == '%'){
+		if ($_match[1][0][0] == '$' || $_match[1][0][0] == "'" || $_match[1][0][0] == '"' || $_match[1][0][0] == '%'){
 			$_result = $this->_parse_variables($_match[1], $_match[2]);
 			return "<?php echo $_result; ?>";
 		}
@@ -806,7 +806,7 @@ class iTemplate_Compiler extends iTemplate {
 	}
 
 	function _dequote($string){
-		if (($string{0} == "'" || $string{0} == '"') && $string{strlen($string)-1} == $string{0}){
+		if (($string[0] == "'" || $string[0] == '"') && $string{strlen($string)-1} == $string[0]){
 			return substr($string, 1, -1);
 		}else{
 			return $string;
@@ -904,10 +904,10 @@ class iTemplate_Compiler extends iTemplate {
 
 	function _parse_variable($variable){
 		// replace variable with value
-		if ($variable{0} == '$'){
+		if ($variable[0] == '$'){
 			// replace the variable
 			return $this->_compile_variable($variable);
-		}elseif ($variable{0} == '"'){
+		}elseif ($variable[0] == '"'){
 			// expand the quotes to pull any variables out of it
 			// fortunately variables inside of a quote aren't fancy, no modifiers, no quotes
 			//   just get everything from the $ to the ending space and parse it
@@ -934,10 +934,10 @@ class iTemplate_Compiler extends iTemplate {
 			}
 			$_result = str_replace("`", "", $_result);
 			return $_result;
-		}elseif ($variable{0} == "'"){
+		}elseif ($variable[0] == "'"){
 			// return the value just as it is
 			return $variable;
-		}elseif ($variable{0} == "%"){
+		}elseif ($variable[0] == "%"){
 			return $this->_parse_section_prop($variable);
 		}else{
 			// return it as is; i believe that there was a reason before that i did not just return it as is,
@@ -973,7 +973,7 @@ class iTemplate_Compiler extends iTemplate {
 		$var_name = array_shift($variable);
 
 		if ($var_name == $this->reserved_template_varname){
-			if ($variable[0]{0} == '[' || $variable[0]{0} == '.'){
+			if ($variable[0][0] == '[' || $variable[0][0] == '.'){
 				$find = array("[", "]", ".");
 				switch(strtoupper(str_replace($find, "", $variable[0]))){
 					case 'SELF':		$_result = "\$_SERVER['PHP_SELF']";break;
@@ -1008,11 +1008,11 @@ class iTemplate_Compiler extends iTemplate {
 		}
 
 		foreach ($variable as $var){
-			if ($var{0} == '['){
+			if ($var[0] == '['){
 				$var = substr($var, 1, -1);
 				if (is_numeric($var)){
 					$_result .= "[$var]";
-				}elseif ($var{0} == '$'){
+				}elseif ($var[0] == '$'){
 					$_result .= "[" . $this->_compile_variable($var) . "]";
 				}else{
 //					$_result .= "['$var']";
@@ -1021,8 +1021,8 @@ class iTemplate_Compiler extends iTemplate {
 					$section_prop = isset($parts[1]) ? $parts[1] : 'index';
 					$_result      .= "[\$this->_sections['$section']['$section_prop']]";
 				}
-			}else if ($var{0} == '.'){
-   				if ($var{1} == '$'){
+			}else if ($var[0] == '.'){
+   				if ($var[0] == '$'){
 	   				$_result .= "[\$this->_TPL['" . substr($var, 2) . "']]";
 				}else{
 			   		$_result .= "['" . substr($var, 1) . "']";
@@ -1053,7 +1053,7 @@ class iTemplate_Compiler extends iTemplate {
 			preg_match_all('!:(' . $this->_qstr_regexp . '|[^:]+)!', $_args[$i], $_match);
 			$_arg       = $_match[1];
 			$_map_array = 1;
-			if ($_mods[$i]{0} == '@'){
+			if ($_mods[$i][0] == '@'){
 				$_mods[$i]  = substr($_mods[$i], 1);
 				$_map_array = 0;
 			}

@@ -1027,7 +1027,7 @@ class spiderApp {
     function _url_complement($baseUrl,$href){
         $href = trim($href);
         if (stripos($href,'http://') === false){
-            if ($href{0}=='/'){
+            if ($href[0]=='/'){
                 $base_uri  = parse_url($baseUrl);
                 $base_host = $base_uri['scheme'].'://'.$base_uri['host'];
                 return $base_host.'/'.ltrim($href,'/');

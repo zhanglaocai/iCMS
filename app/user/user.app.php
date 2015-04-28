@@ -864,7 +864,7 @@ class userApp {
                 }
                 break;
             case 'nickname':
-                if(preg_match("/\d/", $value{0})||cstrlen($value)>20||cstrlen($value)<4){
+                if(preg_match("/\d/", $value[0])||cstrlen($value)>20||cstrlen($value)<4){
                     $a = iPHP::code(0,'user:register:nickname:error','nickname');
                 }else{
                     user::check($value,'nickname') && $a = iPHP::code(0,'user:register:nickname:exist','nickname');
