@@ -27,6 +27,7 @@ $(function(){
           <div class="input-prepend"><span class="add-on">应用</span>
             <select name="app" id="app" class="chosen-select span2">
               <option value="article"> 文章系统 </option>
+              <option value="tags"> 标签系统 </option>
             </select>
           </div>
           <div class="clearfloat mb10"></div>

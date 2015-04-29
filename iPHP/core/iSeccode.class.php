@@ -11,10 +11,6 @@
 // seccode::run();
 
 class iSeccode {
-    public static $noGD   = false;
-    public static $im     = null;
-    public static $code   = null;
-    public static $color  = null;
     public static $config = array (
         'size'   => 24,//字体大小
         'width'  => 80,//图片宽度
@@ -22,6 +18,11 @@ class iSeccode {
         'line'   => 5, //干扰线数量
         'pixel'  => 150 //干扰点数量
     );
+    protected static $noGD   = false;
+    protected static $im     = null;
+    protected static $code   = null;
+    protected static $color  = null;
+
     public static function run(){
         (extension_loaded('gd') && function_exists('gd_info')) OR self::$noGD = true;
         self::$code OR self::$code = self::__mkcode();
