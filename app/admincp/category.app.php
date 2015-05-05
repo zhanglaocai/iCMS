@@ -278,6 +278,7 @@ class categoryApp extends category{
                 foreach($id_array AS $cid){
                     iACP::CP($cid,'d','alert');
                     $this->do_del($cid,false);
+                    $this->cahce_one($cid);
                 }
                 iPHP::$break    = true;
                 iPHP::success('全部删除完成!','js:1');
