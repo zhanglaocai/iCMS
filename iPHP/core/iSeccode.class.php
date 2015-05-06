@@ -23,12 +23,14 @@ class iSeccode {
     protected static $code   = null;
     protected static $color  = null;
 
-    public static function run(){
+    public static function run($pre=null){
         (extension_loaded('gd') && function_exists('gd_info')) OR self::$noGD = true;
         self::$code OR self::$code = self::__mkcode();
         self::$noGD && self::$code = 'iCMS';
+        $name = 'seccode';
+        $pre && $name = $pre.'_seccode';
         //设定cookie
-        iPHP::set_cookie('seccode', authcode(self::$code, 'ENCODE'));
+        iPHP::set_cookie($name, authcode(self::$code, 'ENCODE'));
         self::__image();
     }
     private static function __image(){

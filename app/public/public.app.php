@@ -133,7 +133,8 @@ class publicApp {
         @header("Cache-Control: no-store, private, post-check=0, pre-check=0, max-age=0", FALSE);
         @header("Pragma: no-cache");
         iPHP::loadClass("Seccode");
-        iSeccode::run();
+        $_GET['pre'] && $pre = iS::escapeStr($_GET['pre']);
+        iSeccode::run($pre);
     }
 
     public function API_qrcode(){

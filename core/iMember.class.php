@@ -72,7 +72,6 @@ class iMember{
 	//注销
 	public static function logout(){
 		iPHP::set_cookie(self::$AUTH,'',-31536000);
-        iPHP::set_cookie('seccode', '',-31536000);
 	}
     public static function check_power($p,$power){
         return is_array($p)?array_intersect($p,(array)$power):in_array($p,(array)$power);

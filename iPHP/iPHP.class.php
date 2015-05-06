@@ -393,10 +393,10 @@ class iPHP{
 		}
     }
 	//检查验证码
-	public static function seccode($seccode,$destroy=false) {
-	    $_seccode = self::get_cookie('seccode');
+	public static function seccode($seccode,$destroy=false,$cookie_name='seccode') {
+	    $_seccode = self::get_cookie($cookie_name);
 	    $_seccode && $cookie_seccode = authcode($_seccode, 'DECODE');
-	    $destroy && self::set_cookie('seccode', '',-31536000);
+	    $destroy && self::set_cookie($cookie_name, '',-31536000);
 	    if(empty($cookie_seccode) || strtolower($cookie_seccode) != strtolower($seccode)) {
 	        return false;
 	    }else {

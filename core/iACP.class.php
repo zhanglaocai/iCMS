@@ -50,9 +50,12 @@ class iACP {
     }
     public static function seccode(){
         if($_POST['username'] && $_POST['password']){
-            $seccode = iS::escapeStr($_POST['seccode']);
-            iPHP::seccode($seccode,true) OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
+            $seccode = iS::escapeStr($_POST['iACP_seccode']);
+            iPHP::seccode($seccode,true,'iACP_seccode') OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
         }
+    }
+    public static function destroy_seccode(){
+        iPHP::set_cookie('iACP_seccode', '',-31536000);
     }
 	public static function frame(){
 		self::$frames	= $_GET['frames']?$_GET['frames']:$_POST['frames'];

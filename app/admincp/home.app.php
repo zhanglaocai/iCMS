@@ -13,6 +13,7 @@ class homeApp{
     function __construct() {}
     function do_logout(){
     	iMember::logout();
+        iACP::destroy_seccode();
     	iPHP::success('注销成功!','url:'.__SELF__);
     }
     function do_iCMS(){

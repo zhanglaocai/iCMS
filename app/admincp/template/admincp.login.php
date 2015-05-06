@@ -6,7 +6,7 @@
  * @$Id: login.php 2379 2014-03-19 02:37:47Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-$seccode_url = iPHP::router('/api/public/seccode',iCMS_REWRITE,'?&');
+$seccode_url = iPHP::router('/api/public/seccode',false).'&pre=iACP&t=';
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -75,7 +75,7 @@ $(function(){
       var param={
         username:$("#username").val(),
         password:$("#password").val(),
-        seccode :$("#seccode").val(),
+        iACP_seccode :$("#seccode").val(),
         ajax:1
       };
 
