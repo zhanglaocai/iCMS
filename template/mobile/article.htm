@@ -100,6 +100,7 @@
         $(".article_pagenav").html(pages_nav);
       },function(path, page){
         return function(curPage) {
+          path = path.replace(/p=\d+/,'p='+curPage);
           return path.replace(/_\d+/,'_'+curPage);
         };
       });
