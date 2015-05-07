@@ -112,7 +112,7 @@ class iFS {
         } else {
             if ($handle = fopen($fn, $method)) {
                 flock($handle, LOCK_SH);
-                $filedata = fread($handle, filesize($fn));
+                $filedata = @fread($handle, (int)filesize($fn));
                 fclose($handle);
             }
         }
