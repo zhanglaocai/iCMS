@@ -626,6 +626,8 @@ class articleApp{
         $body     = preg_replace(array('/<script.+?<\/script>/is','/<form.+?<\/form>/is'),'',$body);
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
 
+        iCMS::$config['publish']['autoformat'] && $body = autoformat($body);
+
         articleTable::$ID = $aid;
 
         $fields = articleTable::data_fields($id);
