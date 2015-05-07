@@ -106,7 +106,7 @@ class iDB {
 
 
         $QH = strtoupper(substr($query,0,strpos($query, ' ')));
-        if (in_array($QH,array('INSERT','DELETE','UPDATE','REPLACE','SET'))) {
+        if (in_array($QH,array('INSERT','DELETE','UPDATE','REPLACE','SET','CREATE','DROP','ALTER'))) {
             // Take note of the insert_id
             if (in_array($QH,array("INSERT","REPLACE"))) {
                 self::$insert_id = self::$link->insert_id;

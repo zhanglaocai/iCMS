@@ -104,7 +104,7 @@ class iDB{
             return self::$result;
         }
         $QH = strtoupper(substr($query,0,strpos($query, ' ')));
-        if (in_array($QH,array("INSERT","DELETE","UPDATE","REPLACE"))) {
+        if (in_array($QH,array('INSERT','DELETE','UPDATE','REPLACE','SET','CREATE','DROP','ALTER'))) {
             $rows_affected = mysql_affected_rows(self::$link);
             // Take note of the insert_id
             if (in_array($QH,array("INSERT","REPLACE"))) {
