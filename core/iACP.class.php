@@ -11,20 +11,19 @@
  * @$Id: admincp.class.php 2361 2014-02-22 01:52:39Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-
-define('__ADMINCP__',	__SELF__ . '?app');
-define('ACP_PATH',      iPHP_APP_DIR . '/admincp');
-define('ACP_HOST',      "http://".$_SERVER['HTTP_HOST']);
+iDB::$show_errors      = true;
+iPHP::$dialog['title'] = 'iCMS';
 
 define('iCMS_SUPERADMIN_UID', '1');
-require iPHP_APP_CORE.'/iMember.class.php';
-require iPHP_APP_CORE.'/iMenu.class.php';
+define('__ADMINCP__',__SELF__ . '?app');
+define('ACP_PATH',iPHP_APP_DIR . '/admincp');
+define('ACP_HOST',"http://".$_SERVER['HTTP_HOST']);
 
-iDB::$show_errors      = true;
+require iPHP_APP_CORE.'/iMenu.class.php';
+require iPHP_APP_CORE.'/iMember.class.php';
 iMember::$LOGIN_TPL    = ACP_PATH;
 iMember::$AUTH         = 'ADMIN_AUTH';
 iMember::$AJAX         = iPHP::PG('ajax');
-iPHP::$dialog['title'] = 'iCMS';
 
 class iACP {
     public static $apps       = NULL;
@@ -40,15 +39,15 @@ class iACP {
     public static $app_file   = NULL;
 
     public static function init() {
-        self::seccode();
-        iMember::checkLogin();
-        self::$menu = new iMenu();
+        self::check_seccode();//验证码验证
+        iMember::checkLogin();//用户登陆验证
+        self::$menu = new iMenu();//初始化菜单
         self::MP('ADMINCP','page'); //检查是否有后台权限
         self::MP('__MID__','page'); //检查菜单ID
         self::$apps  = array('home', 'category', 'pushcategory','tagcategory', 'article', 'push', 'prop', 'setting', 'filter', 'cache','tags','editor');
         iFS::$userid = iMember::$userid;
     }
-    public static function seccode(){
+    public static function check_seccode(){
         if($_POST['username'] && $_POST['password']){
             $seccode = iS::escapeStr($_POST['iACP_seccode']);
             iPHP::seccode($seccode,true,'iACP_seccode') OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
@@ -57,6 +56,7 @@ class iACP {
     public static function destroy_seccode(){
         iPHP::set_cookie('iACP_seccode', '',-31536000);
     }
+
 	public static function frame(){
 		self::$frames	= $_GET['frames']?$_GET['frames']:$_POST['frames'];
 		if(empty($_GET['app']) || self::$frames) {
@@ -93,6 +93,7 @@ class iACP {
         in_array(self::$app_method, $app_methods) OR iPHP::throwException('运行出错！ <b>' . self::$app_name . '</b> 类中找不到方法定义: <b>' . self::$app_method . '</b>', 1003);
         $method = self::$app_method;
         $args===null && $args = self::$app_args;
+
         if($args){
             if($args==='object'){
                 return self::$app;

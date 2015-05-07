@@ -6,7 +6,7 @@
  * @$Id: login.php 2379 2014-03-19 02:37:47Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-$seccode_url = iPHP::router('/api/public/seccode',false).'&pre=iACP&t=';
+$seccode_url = './public/api.php?app=public&do=seccode&pre=iACP&t=';
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
