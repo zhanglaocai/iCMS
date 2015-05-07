@@ -15,8 +15,8 @@ class iSeccode {
         'size'   => 24,//字体大小
         'width'  => 80,//图片宽度
         'height' => 30,//图片高度
-        'line'   => 5, //干扰线数量
-        'pixel'  => 150 //干扰点数量
+        'line'   => 3, //干扰线数量
+        'pixel'  => 90 //干扰点数量
     );
     protected static $noGD   = false;
     protected static $im     = null;

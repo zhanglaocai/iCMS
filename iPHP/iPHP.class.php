@@ -209,6 +209,11 @@ class iPHP{
 		}
 		return new $obj_name();
     }
+
+    public static function domain($url){
+    	self::import(iPHP_LIB.'/DomainParser.php');
+    	return LtDomainParser::getRootDomain($url);
+    }
     public static function QRcode($content){
         self::import(iPHP_LIB.'/phpqrcode.php');
 		$content  = iS::escapeStr($content);
