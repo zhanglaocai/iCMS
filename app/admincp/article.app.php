@@ -88,6 +88,12 @@ class articleApp{
 		        }
 		        iPHP::success('排序已更新!','js:1');
     		break;
+            case 'baiduping':
+                foreach((array)$_POST['id'] AS $id) {
+                    $this->do_baiduping($id);
+                }
+                iPHP::success('推送完成!','js:1');
+            break;
     		case 'move':
 		        $_POST['cid'] OR iPHP::alert("请选择目标栏目!");
                 iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
@@ -186,6 +192,17 @@ class articleApp{
     	}
         $data && articleTable::batch($data,$ids);
 		iPHP::success('操作成功!','js:1');
+    }
+    function do_baiduping($id = null,$dialog=true){
+        $id===null && $id=$this->id;
+        $id OR iPHP::alert('请选择要推送的文章!');
+        $rs   = articleTable::row($id);
+        $C    = $this->category[$rs['cid']];
+        $iurl = iURL::get('article',array($rs,$C));
+        $url  = $iurl->href;
+        if(baidu_ping($url)===true){
+            $dialog && iPHP::success('推送完成','js:1');
+        }
     }
     function do_getjson(){
         $id = (int)$_GET['id'];
