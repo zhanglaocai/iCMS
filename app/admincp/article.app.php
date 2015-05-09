@@ -90,7 +90,7 @@ class articleApp{
     		break;
             case 'baiduping':
                 foreach((array)$_POST['id'] AS $id) {
-                    $this->do_baiduping($id);
+                    $this->do_baiduping($id,false);
                 }
                 iPHP::success('推送完成!','js:1');
             break;
@@ -200,8 +200,11 @@ class articleApp{
         $C    = $this->category[$rs['cid']];
         $iurl = iURL::get('article',array($rs,$C));
         $url  = $iurl->href;
-        if(baidu_ping($url)===true){
+        $res  = baidu_ping($url);
+        if($res===true){
             $dialog && iPHP::success('推送完成','js:1');
+        }else{
+            iPHP::alert('推送失败！['.$res->message.']','js:1');
         }
     }
     function do_getjson(){
