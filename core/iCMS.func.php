@@ -54,7 +54,7 @@ function baidu_ping($urls) {
     if($json->success){
         return true;
     }
-    return $res;
+    return $json;
 }
 function get_pic($src,$size=0,$thumb=0){
     if(empty($src)) return array();
@@ -195,15 +195,4 @@ function cnum($subject){
 
     return $subject;
 }
-function weixin_msg($text,$FromUserName,$ToUserName){
-$CreateTime = time();
-echo "<xml>
-<ToUserName><![CDATA[".$FromUserName."]]></ToUserName>
-<FromUserName><![CDATA[".$ToUserName."]]></FromUserName>
-<CreateTime>".$CreateTime."</CreateTime>
-<MsgType><![CDATA[text]]></MsgType>
-<Content><![CDATA[".$text."]]></Content>
-<FuncFlag>0</FuncFlag>
-</xml>";
-exit;
-}
+
