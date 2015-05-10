@@ -581,7 +581,7 @@ class userApp {
             $config['title']   = iCMS::$config['site']['name'];
             $config['subject'] = '['.$config['title'].'] 找回密码（重要）！';
             $config['body']    = '
-            <p>尊敬的凉茶，您好：</p>
+            <p>尊敬的'.$user->nickname.'，您好：</p>
             <br />
             <p>您在'.$config['title'].'申请找回密码，重设密码地址：</p>
             <a href="'.$find_url.'" target="_blank">'.$find_url.'</a>
