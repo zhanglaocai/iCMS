@@ -63,12 +63,12 @@ class publicApp {
 
             if (in_array($event,array('subscribe','unsubscribe'))) {
                 if ($event=='subscribe') {
-                    weixin_msg($site_name.' ('.$site_host.') '.$site_desc."\n\n回复:".$site_key.' 将会收到我们最新为您准备的信息',$FromUserName,$ToUserName);
+                    $this->weixin_msg($site_name.' ('.$site_host.') '.$site_desc."\n\n回复:".$site_key.' 将会收到我们最新为您准备的信息',$FromUserName,$ToUserName);
                 }
             }
 
             if (in_array($content,array("1", "2", "3", "？","?","你好"))) {
-                weixin_msg($site_name.' ('.$site_host.') '.$site_desc."\n\n回复:".$site_key.' 将会收到我们最新为您准备的信息',$FromUserName,$ToUserName);
+                $this->weixin_msg($site_name.' ('.$site_host.') '.$site_desc."\n\n回复:".$site_key.' 将会收到我们最新为您准备的信息',$FromUserName,$ToUserName);
             }
 
 
@@ -104,6 +104,18 @@ class publicApp {
         }else{
             return false;
         }
+    }
+    private function weixin_msg($text,$FromUserName,$ToUserName){
+        $CreateTime = time();
+        echo "<xml>
+        <ToUserName><![CDATA[".$FromUserName."]]></ToUserName>
+        <FromUserName><![CDATA[".$ToUserName."]]></FromUserName>
+        <CreateTime>".$CreateTime."</CreateTime>
+        <MsgType><![CDATA[text]]></MsgType>
+        <Content><![CDATA[".$text."]]></Content>
+        <FuncFlag>0</FuncFlag>
+        </xml>";
+        exit;
     }
     public function API_crontab(){
         $timeline = iCMS::timeline();
