@@ -9,5 +9,5 @@
 * @version 6.0.1
 * @$Id: iCMS.version.php 2006 2013-07-22 09:18:24Z coolmoo $
 */
-define('iCMS_VER', 'V6.0.3');//当前版本
-define('iCMS_RELEASE', '20150429');
+define('iCMS_VER', 'V6.0.4');//当前版本
+define('iCMS_RELEASE', '20150511');
