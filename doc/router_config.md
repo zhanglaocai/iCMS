@@ -26,6 +26,8 @@ RewriteRule ^u/(\d+)/(\w+)/$ 			user.php?do=$2&uid=$1 [L]
 
 RewriteRule ^user$ 						user.php [QSA,L]
 RewriteRule ^user/home$ 				user.php?do=home [L]
+RewriteRule ^user/manage$ 				user.php?do=manage [L]
+RewriteRule ^user/profile$ 				user.php?do=profile [L]
 RewriteRule ^user/([^\/]\w+)$ 			user.php?do=manage&pg=$1 [QSA,L]
 RewriteRule ^user/manage/(\w+)$ 		user.php?do=manage&pg=$1 [QSA,L]
 RewriteRule ^user/inbox/(\d+)$ 			user.php?do=manage&pg=inbox&user=$1 [L]
@@ -47,6 +49,8 @@ rewrite "^/u/(\d+)/(\w+)/$" 		/user.php?do=$2&uid=$1 last;
 
 rewrite "^/user$" 					/user.php last;
 rewrite "^/user/home$" 				/user.php?do=home last;
+rewrite "^/user/manage$" 				/user.php?do=manage last;
+rewrite "^/user/profile$" 				/user.php?do=profile last;
 rewrite "^/user/([^\/]\w+)$" 		/user.php?do=manage&pg=$1 last;
 rewrite "^/user/manage/(\w+)$" 		/user.php?do=manage&pg=$1 last;
 rewrite "^/user/inbox/(\d+)$" 		/user.php?do=manage&pg=inbox&user=$1 last;

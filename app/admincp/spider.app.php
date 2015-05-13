@@ -713,8 +713,8 @@ class spiderApp {
 //    	}
 //		$content		= $http['content'];
         $this->allHtml = "";
-        $responses['reurl'] = $url;
-        $rule['__url__']	= $url;
+        $responses['reurl'] = $this->url;
+        $rule['__url__']	= $this->url;
         foreach ((array)$dataArray AS $key => $data) {
             $content = $this->content($html,$data,$rule);
             $dname   = $data['name'];
@@ -1531,7 +1531,7 @@ class spiderApp {
 	        $newurl	= trim($newurl);
 			curl_close($ch);
 			unset($responses,$info);
-            return $this->remote($url, $_count);
+            return $this->remote($newurl, $_count);
         }
         if (in_array($info['http_code'],array(404,500))) {
 			curl_close($ch);
@@ -1562,6 +1562,7 @@ class spiderApp {
             print_r(htmlspecialchars(substr($responses,0,500)));
             echo '</pre><hr />';
         }
+        $this->url = $url;
         return $responses;
     }
     function charsetTrans($html,$content_charset,$encode, $out = 'UTF-8') {

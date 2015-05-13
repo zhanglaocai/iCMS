@@ -79,7 +79,7 @@ function modal_tplfile(el,a){
         <li><a href="#setting-tag" data-toggle="tab">标签</a></li>
         <li><a href="#setting-cache" data-toggle="tab">缓存</a></li>
         <li><a href="#setting-file" data-toggle="tab">附件</a></li>
-        <!-- <li><a href="#setting-thumb" data-toggle="tab">缩略图</a></li> -->
+        <li><a href="#setting-thumb" data-toggle="tab">缩略图</a></li>
         <li><a href="#setting-watermark" data-toggle="tab">水印</a></li>
         <li><a href="#setting-user" data-toggle="tab">用户</a></li>
         <li><a href="#setting-publish" data-toggle="tab">发布</a></li>
@@ -446,22 +446,21 @@ function modal_tplfile(el,a){
             </div>
             <div class="clearfloat mb10"></div>
           </div>
-          <!--
+
           <div id="setting-thumb" class="tab-pane hide">
-            <div class="input-prepend"> <span class="add-on">缩略图</span>
+<!--             <div class="input-prepend"> <span class="add-on">缩略图</span>
               <div class="switch">
                 <input type="checkbox" data-type="switch" name="config[thumb][enable]" id="thumb_enable" <?php echo $config['thumb']['enable']?'checked':''; ?>/>
               </div>
             </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">缩略图尺寸</span><span class="add-on" style="width:24px;">宽度</span>
-              <input type="text" name="config[thumb][width]" class="span1" id="thumb_width" value="<?php echo $config['thumb']['width'] ; ?>"/>
-              <span class="add-on" style="width:24px;">高度</span>
-              <input type="text" name="config[thumb][height]" class="span1" id="thumb_height" value="<?php echo $config['thumb']['height'] ; ?>"/>
+            <div class="clearfloat mb10"></div> -->
+            <div class="input-prepend"> <span class="add-on">缩略图尺寸</span>
+              <textarea name="config[thumb][size]" id="thumb_size" class="span6" style="height: 90px;"><?php echo $config['thumb']['size'] ; ?></textarea>
             </div>
-            <span class="help-inline">px</span>
+            <div class="clearfloat mb10"></div>
+            <span class="help-inline"><a class="btn btn-small btn-success" href="http://www.idreamsoft.com/doc/iCMS/thumb.html" target="_blank"><i class="fa fa-question-circle"></i> 缩略图配置帮助</a>　每行一个尺寸；格式:300x300．没有在本列表中的缩略图尺寸，都将直接返回原图！防止空间被刷暴</span>
           </div>
-          -->
+
           <div id="setting-watermark" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">水印</span>
               <div class="switch">
@@ -995,7 +994,37 @@ index iCMS_article_delta : iCMS_article
               <input type="text" name="config[api][weixin][token]" class="span3" id="weixin_token" value="<?php echo $config['api']['weixin']['token'] ; ?>"/>
               <a class="btn" id="weixin_token_make" data-toggle="createpass" data-len="20" data-target="#weixin_token">生成令牌</a>
             </div>
-            <span class="help-inline">公共平台接口URL:<?php echo $config['router']['public_url'] ; ?>/api.php?app=public&do=weixin&api_token=<span id="wx_api_token">Token(令牌)</span></span>
+            <span class="help-inline">公共平台接口URL:<?php echo $config['router']['public_url'] ; ?>/api.php?app=weixin&do=interface&api_token=<span id="wx_api_token">Token(令牌)</span></span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">名称</span>
+              <input type="text" name="config[api][weixin][name]" class="span3" id="weixin_name" value="<?php echo $config['api']['weixin']['name'] ; ?>"/>
+            </div>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">微信号</span>
+              <input type="text" name="config[api][weixin][account]" class="span3" id="weixin_account" value="<?php echo $config['api']['weixin']['account'] ; ?>"/>
+            </div>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">二维码</span>
+              <input type="text" name="config[api][weixin][qrcode]" class="span3" id="weixin_qrcode" value="<?php echo $config['api']['weixin']['qrcode'] ; ?>"/>
+            </div>
+            <span class="help-inline">公众号的二维码链接</span>
+            <hr />
+            <div class="input-prepend"> <span class="add-on">关注事件</span>
+              <textarea name="config[api][weixin][subscribe]" id="weixin_subscribe" class="span6" style="height: 90px;"><?php echo $config['api']['weixin']['subscribe'] ; ?></textarea>
+            </div>
+            <span class="help-inline">用户未关注时，进行关注后的信息回复，留空将使用系统默认信息回复</span>
+            <div class="clearfloat mt10"></div>
+            <div class="input-prepend"> <span class="add-on">取消关注</span>
+              <textarea name="config[api][weixin][unsubscribe]" id="weixin_unsubscribe" class="span6" style="height: 90px;"><?php echo $config['api']['weixin']['unsubscribe'] ; ?></textarea>
+            </div>
+            <span class="help-inline">用户取消关注后的信息回复，留空将使用系统默认信息回复</span>
+
+            <div class="mt20"></div>
+            <div class="alert alert-block">
+              <h4>注意事项</h4>
+              微信功能目前只能接收关键字并自动回复相关信息．其它功能在开发中．．．．
+            </div>
+
           </div>
           <div class="form-actions">
             <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
