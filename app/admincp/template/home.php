@@ -89,7 +89,13 @@ iACP::head();
         </tr>
         <tr>
           <td>服务器剩余空间</td>
-          <td><?php echo intval(diskfreespace(".") / (1024 * 1024))."M" ; ?></td>
+          <td><?php
+            if(function_exists('diskfreespace')){
+              echo intval(diskfreespace(".") / (1024 * 1024))."M" ;
+            }else{
+              echo '∞';
+            }
+           ?></td>
           <td>服务器时间</td>
           <td><?php echo get_date(0,"Y-n-j H:i:s"); ?></td>
         </tr>
