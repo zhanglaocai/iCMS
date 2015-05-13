@@ -87,7 +87,7 @@ class iPatch {
 				iFS::mkdir(dirname($bfp));
 				if(iFS::ex($fp)){
 					$msg.= '备份 ['.$fp.'] 文件 到 ['.$bfp.']<iCMS>';
-					rename($fp,$bfp);//备份旧文件
+					@rename($fp,$bfp);//备份旧文件
 				}
 				$msg.= '更新 ['.$fp.'] 文件<iCMS>';
 				iFS::write($fp, $file['content']);
