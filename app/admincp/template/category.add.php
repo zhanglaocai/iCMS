@@ -323,12 +323,38 @@ $(function(){
           <div id="category-add-body" class="tab-pane hide">
             <script type="text/javascript" charset="utf-8" src="./app/ui/common/iCMS.editor-6.0.0.js"></script>
             <script type="text/javascript" charset="utf-8" src="./app/ui/common/ueditor/ueditor.all.min.js"></script>
-            <span class="help-inline">大文本段,支持HTML,至于干嘛用,我也不知道...你爱怎么用就怎么用!!</span>
-            <a class="btn" href="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</a>
+            <a class="btn btn-inverse" href="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</a>
+            <a class="btn btn-success" href="javascript:createEditor();"><i class="fa fa-times"></i> 使用编辑器</a>
+            <a class="btn btn-inverse" href="javascript:deleteEditor();"><i class="fa fa-times"></i> 关闭编辑器</a>
+            <div class="clearfix mt10"></div>
+            <input name="hasbody" id="hasbody" type="hidden" value="<?php echo $rs['hasbody'] ; ?>" />
             <textarea type="text/plain" id="iCMS-editor-1" name="body"><?php echo $rs['body'] ; ?></textarea>
+            <div class="clearfix mt10"></div>
+            <div class="alert alert-block">
+              <h4>注意事项</h4>
+              大文本段,支持HTML,至于干嘛用,我也不知道...你爱怎么用就怎么用!!
+              <br />
+              注:编辑器会把div转换成p
+            </div>
             <script type="text/javascript">
+            <?php if($rs['hasbody']=="1"){ ?>
             iCMS.editor.create();
+            <?php } ?>
+            function deleteEditor() {
+                ed = iCMS.editor.get(1);
+                ed.destroy();
+                $("#hasbody").val('2');
+            }
+            function createEditor() {
+                iCMS.editor.create();
+                $("#hasbody").val('0');
+            }
             </script>
+            <?php if($rs['hasbody']=="2"){ ?>
+            <style>
+              #iCMS-editor-1 {height: 600px;width: 98%;}
+            </style>
+            <?php } ?>
           </div>
         </div>
         <div class="form-actions">

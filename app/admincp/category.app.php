@@ -99,7 +99,8 @@ class categoryApp extends category{
         $metadata     = iS::escapeStr($_POST['metadata']);
         $contentprop  = iS::escapeStr($_POST['contentprop']);
         $body         = $_POST['body'];
-        $hasbody      = $body?1:0;
+        $hasbody      = (int)$_POST['hasbody'];
+        $hasbody OR $hasbody = $body?1:0;
 
         if($_rootid_hash){
             $_rootid = authcode($_rootid_hash);
