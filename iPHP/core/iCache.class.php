@@ -93,7 +93,7 @@ class iCache{
         }
         return $keys;
     }
-    public static function get($keys,$ckey=NULL){
+    public static function get($keys,$ckey=NULL, $unserialize = true){
         $keys = self::prefix($keys,self::$config['prefix']);
         $_keys=implode('',(array)$keys);
         if(!self::$config['enable']){
@@ -105,8 +105,8 @@ class iCache{
         }
         if(!isset($GLOBALS['iCache'][$_keys])){
             $GLOBALS['iCache'][$_keys]=is_array($keys)?
-                    self::$link->get_multi($keys):
-                    self::$link->get($keys);
+                    self::$link->get_multi($keys,$unserialize):
+                    self::$link->get($keys,$unserialize);
         }
         return $ckey===NULL?$GLOBALS['iCache'][$_keys]:$GLOBALS['iCache'][$_keys][$ckey];
     }

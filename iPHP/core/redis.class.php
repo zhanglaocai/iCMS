@@ -10,6 +10,7 @@
 * @package Redis
 * @$Id: redis.class.php 2134 2013-10-14 05:25:17Z coolmoo $
 */
+
 class Redis{
     const TIMEOUT     = 200;
     protected $host   = '127.0.0.1';
@@ -174,9 +175,7 @@ class Redis{
         return $this->flush(true);
     }
 
-    /*
-      Commands operating on string values
-    */
+
     public function add($name, $value, $exp=0){
         $value = is_scalar($value) ? (string) $value : serialize($value);
         if ($this->_have_zlib && $this->compress){
@@ -186,33 +185,36 @@ class Redis{
         $exp && $this->expire($name, $exp);
         return $this->get_response();
     }
-    public function get($name){
+    public function get($name, $unserialize = true){
         $this->write('GET', $name);
         $response = $this->get_response();
         if ($this->_have_zlib && $this->compress){
             $response = @gzuncompress($response);
         }
-        return $response?unserialize($response):false;
+        return ($unserialize && $response )
+            ? unserialize($response)
+            : $response;
     }
+    public function get_multi($keys, $unserialize = true){
+        $this->write('MGET', $keys);
+        $response = $this->get_response();
+        $unserialize && $response = array_map('unserialize',$response);
+        foreach($keys as $i =>$key){
+            if ($this->_have_zlib && $this->compress){
+                $response[$i] = @gzuncompress($res[$i]);
+            }
+            $value[$key] = $response[$i];
+        }
+        return $value;
+    }
+    /*
+      Commands operating on string values
+    */
     public function set($name, $value, $preserve=false)
     {
         $value = is_scalar($value) ? (string) $value : serialize($value);
-        if ($this->_have_zlib && $this->compress){
-            $value = gzcompress($value, 9);
-        }
         $this->write(($preserve ? 'SETNX' : 'SET') ,$name, $value);
         return $this->get_response();
-    }
-    public function get_multi($keys){
-        $this->write('MGET', $keys);
-    	$res	= array_map('unserialize', $this->get_response());
-        foreach($keys as $i =>$key){
-            if ($this->_have_zlib && $this->compress){
-                $res[$i] = @gzuncompress($res[$i]);
-            }
-            $value[$key] = $res[$i];
-        }
-        return $value;
     }
 
     public function Rget($name, $unserialize = true)
