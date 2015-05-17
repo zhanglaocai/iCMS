@@ -34,12 +34,12 @@ class iDB{
     private static $link;
     private static $result;
 
-    function __construct() {
-        if (!self::$link)
-            self::connect();
-    }
-    function connect() {
-		extension_loaded('pgsql') OR die('您的 PHP 安装看起来缺少 PostgreSQL 数据库部分，这对 iPHP 来说是必须的。');
+    // public static function __construct() {
+    //     if (!self::$link)
+    //         self::connect();
+    // }
+    public static function connect() {
+		extension_loaded('pgsql') OR die('您的 PHP 环境看起来缺少 PostgreSQL 数据库部分，这对 iPHP 来说是必须的。');
 
         defined('iPHP_DB_COLLATE') && self::$collate = iPHP_DB_COLLATE;
 
@@ -47,12 +47,11 @@ class iDB{
         self::$link OR self::bail("<h1>数据库链接失败</h1><p>请检查 <em><strong>config.php</strong></em> 的配置是否正确!</p><ul><li>请确认主机支持PostgreSQL?</li><li>请确认用户名和密码正确?</li><li>请确认主机名正确?(一般为localhost)</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
         defined('iPHP_DB_CHARSET') && self::query("set client_encoding to '".iPHP_DB_CHARSET."'");
        //@mysql_select_db(iPHP_DB_NAME, self::$link) OR self::bail("<h1>链接到<em><strong>".iPHP_DB_NAME."</strong></em>数据库失败</h1><p>我们能连接到数据库服务器（即数据库用户名和密码正确） ，但是不能链接到<em><strong>$db</strong></em>数据库.</p><ul><li>你确定<em><strong>$db</strong></em>存在?</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
-
     }
     // ==================================================================
     //	Print SQL/DB error.
 
-    function print_error($str = '') {
+    public static function print_error($str = '') {
         if (!$str)
             $str = pg_result_error(self::$link);
 
@@ -74,7 +73,7 @@ class iDB{
     // ==================================================================
     //	Kill cached query results
 
-    function flush() {
+    public static function flush() {
         self::$last_result	= array();
         self::$col_info		= null;
         self::$last_query	= null;
@@ -83,13 +82,14 @@ class iDB{
     // ==================================================================
     //	Basic Query	- see docs for more detail
 
-    function query($query,$QT=NULL) {
+    public static function query($query,$QT=NULL) {
         if (!self::$link) {
             self::connect();
         }
         // filter the query, if filters are available
         // NOTE: some queries are made before the plugins have been loaded, and thus cannot be filtered with this method
-        $query=str_replace(iPHP_DB_PREFIX_TAG,iPHP_DB_PREFIX, $query);
+        $query = str_replace(iPHP_DB_PREFIX_TAG,iPHP_DB_PREFIX, $query);
+        $query = str_replace('`','', $query);
 
         // initialise return
         $return_val = 0;
@@ -117,7 +117,7 @@ class iDB{
             return false;
         }
         $QH	= strtoupper(substr($query,0,strpos($query, ' ')));
-        if (in_array($QH,array("INSERT","DELETE","UPDATE","REPLACE"))) {
+        if (in_array($QH,array('INSERT','DELETE','UPDATE','REPLACE','SET','CREATE','DROP','ALTER'))) {
             $rows_affected = pg_affected_rows (self::$result);
             // Take note of the insert_id
             if (in_array($QH,array("INSERT","REPLACE"))) {
@@ -155,7 +155,7 @@ class iDB{
      * @param array $data should not already be SQL-escaped
      * @return mixed results of self::query()
      */
-    function insert($table, $data) {
+    public static function insert($table, $data) {
 //		$data = add_magic_quotes($data);
         $fields = array_keys($data);
         return self::query("INSERT INTO ".iPHP_DB_PREFIX_TAG."{$table} (`" . implode('`,`',$fields) . "`) VALUES ('".implode("','",$data)."')");
@@ -168,7 +168,7 @@ class iDB{
      * @param array $where a named array of WHERE column => value relationships.  Multiple member pairs will be joined with ANDs.  WARNING: the column names are not currently sanitized!
      * @return mixed results of self::query()
      */
-    function update($table, $data, $where) {
+    public static function update($table, $data, $where) {
 //		$data = add_magic_quotes($data);
         $bits = $wheres = array();
         foreach ( array_keys($data) as $k )
@@ -188,7 +188,7 @@ class iDB{
      * @param int $y = 0 col num to return
      * @return mixed results
      */
-    function value($query=null, $x = 0, $y = 0) {
+    public static function value($query=null, $x = 0, $y = 0) {
         self::$func_call = __CLASS__."::value(\"$query\",$x,$y)";
         if ( $query )
             self::query($query);
@@ -208,7 +208,7 @@ class iDB{
      * @param int $y row num to return
      * @return mixed results
      */
-    function row($query = null, $output = OBJECT, $y = 0) {
+    public static function row($query = null, $output = OBJECT, $y = 0) {
         self::$func_call = __CLASS__."::row(\"$query\",$output,$y)";
         if ( $query )
             self::query($query);
@@ -233,7 +233,7 @@ class iDB{
      * @param string $output ARRAY_A | ARRAY_N | OBJECT
      * @return mixed results
      */
-    function all($query = null, $output = ARRAY_A) {
+    public static function all($query = null, $output = ARRAY_A) {
         self::$func_call = __CLASS__."::array(\"$query\", $output)";
 
         if ( $query )
@@ -268,7 +268,7 @@ class iDB{
      * @param int $x col num to return
      * @return array results
      */
-    function col($query = null , $x = 0) {
+    public static function col($query = null , $x = 0) {
         if ( $query )
             self::query($query);
 
@@ -286,7 +286,7 @@ class iDB{
      * @param int $col_offset 0: col name. 1: which table the col's in. 2: col's max length. 3: if the col is numeric. 4: col's type
      * @return mixed results
      */
-    function col_info($query = null ,$info_type = 'name', $col_offset = -1) {
+    public static function col_info($query = null ,$info_type = 'name', $col_offset = -1) {
         if ( $query )
             self::query($query,"field");
 
@@ -303,7 +303,7 @@ class iDB{
             }
         }
     }
-    function version() {
+    public static function version() {
         // Make sure the server has PostgreSQL 4.0
         $v = pg_version(self::$link);
 		return $v['client'];
@@ -312,7 +312,7 @@ class iDB{
     /**
      * Starts the timer, for debugging purposes
      */
-    function timer_start() {
+    public static function timer_start() {
         $mtime = microtime();
         $mtime = explode(' ', $mtime);
         self::$time_start = $mtime[1] + $mtime[0];
@@ -323,7 +323,7 @@ class iDB{
      * Stops the debugging timer
      * @return int total time spent on the query, in milliseconds
      */
-    function timer_stop() {
+    public static function timer_stop() {
         $mtime = microtime();
         $mtime = explode(' ', $mtime);
         $time_end = $mtime[1] + $mtime[0];
@@ -335,7 +335,7 @@ class iDB{
      * Wraps fatal errors in a nice header and footer and dies.
      * @param string $message
      */
-    function bail($message){ // Just wraps errors in a nice header and footer
+    public static function bail($message){ // Just wraps errors in a nice header and footer
         if ( !self::$show_errors ) {
             return false;
         }
