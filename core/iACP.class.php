@@ -105,15 +105,16 @@ class iACP {
     }
 
     public static function app($app = NULL, $arg = NULL) {
-        iPHP::import(ACP_PATH . '/' . $app . '.app.php');
-        if ($arg === 'import'||$arg === 'static') {
-            return;
-        }
-        $appName = $app . 'App';
-        if ($arg !== NULL) {
-            return new $appName($arg);
-        }
-        return new $appName();
+        return iPHP::app('admincp.'.$app.'.app',$arg);
+        // iPHP::import(ACP_PATH . '/' . $app . '.app.php');
+        // if ($arg === 'import'||$arg === 'static') {
+        //     return;
+        // }
+        // $appName = $app . 'App';
+        // if ($arg !== NULL) {
+        //     return new $appName($arg);
+        // }
+        // return new $appName();
     }
 
     public static function view($p = NULL) {
@@ -237,16 +238,16 @@ class iACP {
     public static function propBtn($field, $type = "") {
         $type OR $type = self::$app_name;
         $propArray = iCache::get("iCMS/prop/{$type}.{$field}");
-        echo '<div class="btn-group">';
-        echo '<a class="btn dropdown-toggle iCMS-default" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>';
+        echo '<div class="btn-group">'.
+        '<a class="btn dropdown-toggle iCMS-default" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>'.
+        '<ul class="dropdown-menu">';
         if ($propArray) {
-            echo '<ul class="dropdown-menu">';
             foreach ($propArray as $prop) {
                 echo '<li><a href="javascript:;" data-toggle="insert" data-target="#' . $field . '">' . $prop['val'] . '</a></li>';
             }
-            echo '</ul>';
         }
-        echo '</div>';
+        echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&type='.$type.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
+        echo '</ul></div>';
     }
 
     public static function getProp($field, $val = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {

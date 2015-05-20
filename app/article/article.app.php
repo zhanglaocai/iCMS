@@ -15,7 +15,7 @@ class articleApp {
     }
     public function do_clink($a = null) {
         $clink = iS::escapeStr($_GET['clink']);
-        $id    = iDB::value("SELECT * FROM `#iCMS@__article` WHERE `clink`='".$clink."' AND `status` ='1';");
+        $id    = iDB::value("SELECT `id` FROM `#iCMS@__article` WHERE `clink`='".$clink."' AND `status` ='1';");
         return $this->article((int)$id,isset($_GET['p'])?(int)$_GET['p']:1);
     }
     public function API_iCMS(){

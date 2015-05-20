@@ -16,10 +16,14 @@ class propApp{
         $this->pid         = (int)$_GET['pid'];
     }
     function do_add(){
-        $this->pid && $rs	= iDB::row("SELECT * FROM `#iCMS@__prop` WHERE `pid`='$this->pid' LIMIT 1;",ARRAY_A);
+        $this->pid && $rs = iDB::row("SELECT * FROM `#iCMS@__prop` WHERE `pid`='$this->pid' LIMIT 1;",ARRAY_A);
         if($_GET['act']=="copy"){
             $this->pid = 0;
             $rs['val'] = '';
+        }
+        if(empty($rs)){
+            $_GET['type'] && $rs['type']  = iS::escapeStr($_GET['type']);
+            $_GET['field']&& $rs['field'] = iS::escapeStr($_GET['field']);
         }
         include iACP::view("prop.add");
     }

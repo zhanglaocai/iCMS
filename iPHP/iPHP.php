@@ -50,7 +50,9 @@ define('__SELF__',	$_SERVER['PHP_SELF']);
 define('__REF__', 	$_SERVER['HTTP_REFERER']);
 
 $iDB_CLASS = 'Mysql';
-version_compare(PHP_VERSION,'5.5','>=') && $iDB_CLASS='Mysqli';
+(iPHP_DB_TYPE =='mysql'  && version_compare(PHP_VERSION,'5.5','>=')) && $iDB_CLASS='Mysqli';
+iPHP_DB_TYPE  =='pgsql'  && $iDB_CLASS = 'Pgsql';
+iPHP_DB_TYPE  =='sqlite' && $iDB_CLASS = 'SQLite';
 
 iPHP::loadClass($iDB_CLASS,'DB'); //加载数据库操作类
 iPHP::loadClass("FileSystem",'FS');	//加载文件操作类

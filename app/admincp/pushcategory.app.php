@@ -13,38 +13,33 @@ defined('iPHP') OR exit('What are you doing?');
 
 iACP::app('category','import');
 class pushcategoryApp extends categoryApp {
+    protected $name_text;
+    protected $_uri;
+    protected $_name;
+    protected $_table;
+    protected $_primary;
+
     function __construct() {
         parent::__construct(iCMS_APP_PUSH);
         $this->name_text = "版块";
+        $this->_uri      = "push";
+        $this->_name     = "推送";
+        $this->_table    = "push";
+        $this->_primary  = "cid";
     }
-    // function do_add(){
-    //     if($this->cid) {
-    //         iACP::CP($this->cid,'e','page');
-    //         $rs		= iDB::row("SELECT * FROM `#iCMS@__category` WHERE `cid`='$this->cid' LIMIT 1;",ARRAY_A);
-    //         $rootid	= $rs['rootid'];
-    //     }else {
-    //         $rootid=(int)$_GET['rootid'];
-    //         $rootid && iACP::CP($rootid,'a','page');;
-    //     }
-    //     if(empty($rs)) {
-    //         $rs=array();
-    //         $rs['status']		= '1';
-    //         $rs['ordernum']		= '0';
-    //     }
-    //     include iACP::view("pushcategory.add");
-    // }
     function merge($tocid,$cid){
-        iDB::query("UPDATE `#iCMS@__push` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
+        iDB::query("UPDATE `#iCMS@__".$this->_table."` SET `".$this->_primary."` ='$tocid' WHERE `".$this->_primary."` ='$cid'");
     }
     function update_count($cid){
-        $cc = iDB::value("SELECT count(*) FROM `#iCMS@__push` where `cid`='$cid'");
-        iDB::query("UPDATE `#iCMS@__category` SET `count` ='$cc' WHERE `cid` ='$cid'");
+        $cc = iDB::value("SELECT count(*) FROM `#iCMS@__".$this->_table."` where `".$this->_primary."`='$cid'");
+        iDB::query("UPDATE `#iCMS@__category` SET `count` ='$cc' WHERE `".$this->_primary."` ='$cid'");
     }
     function listbtn($C){
         return $this->treebtn($C);
     }
     function treebtn($C){
-        return '<a href="'.__ADMINCP__.'=push&do=add&cid='.$C['cid'].'" class="btn btn-small"><i class="fa fa-edit"></i> 推送</a> <a href="'.__ADMINCP__.'=push&do=manage&cid='.$C['cid'].'&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> 推送管理</a> ';
+        return '<a href="'.__ADMINCP__.'='.$this->_uri.'&do=add&'.$this->_primary.'='.$C['cid'].'" class="btn btn-small"><i class="fa fa-edit"></i> '.$this->_name.'</a>
+        <a href="'.__ADMINCP__.'='.$this->_uri.'&do=manage&'.$this->_primary.'='.$C['cid'].'&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> '.$this->_name.'管理</a> ';
     }
     function batchbtn(){}
 }

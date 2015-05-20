@@ -144,6 +144,9 @@ class menuApp{
     	}
         $fields = array('rootid', 'ordernum', 'app', 'name', 'title', 'href', 'icon', 'class', 'a_class', 'target', 'caret', 'data-toggle', 'data-meta', 'data-target');
         $data   = compact ($fields);
+        $data['data-toggle'] = $data_toggle;
+        $data['data-meta']   = $data_meta;
+        $data['data-target'] = $data_target;
 
 		if($id){
             iDB::update('menu', $data, array('id'=>$id));
