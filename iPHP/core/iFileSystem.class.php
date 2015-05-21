@@ -41,6 +41,7 @@ class iFS {
     public static $config           = null;
     public static $userid           = 0;
     public static $callback         = false;
+    public static $ERROR            = null;
     public static $FileData         = null;
     public static $watermark        = true;
     public static $watermark_config = null;
@@ -130,13 +131,13 @@ class iFS {
         $chmod && @chmod($fn, 0777);
     }
 
-    public static function escapeDir($dir) {
+    public static function escape_dir($dir) {
         $dir = str_replace(array("'",'#','=','`','$','%','&',';'), '', $dir);
         return rtrim(preg_replace('/(\/){2,}|(\\\){1,}/', '/', $dir), '/');
     }
     //创建目录
     public static function mkdir($d) {
-        $d = self::escapeDir($d) ;
+        $d = self::escape_dir($d) ;
         $d = str_replace('//', '/', $d);
         if (file_exists($d))
             return @is_dir($d);
@@ -389,7 +390,7 @@ class iFS {
     }
 
     // 获得文件扩展名
-    public static function getExt($fn) {
+    public static function get_ext($fn) {
         return pathinfo($fn, PATHINFO_EXTENSION);
         //return substr(strrchr($fn, "."), 1);
     }
@@ -406,7 +407,7 @@ class iFS {
     }
 
     public static function icon($fn, $icondir = '') {
-        $ext = strtoupper(self::getExt($fn));
+        $ext = strtoupper(self::get_ext($fn));
         $extArray = array(
             "TXT" => "txt.gif", "XLS" => "xls.gif", "XML" => "xls.gif",
             "CHM" => "hlp.gif", "HLP" => "hlp.gif",
@@ -463,10 +464,10 @@ class iFS {
                 @fclose($fp);
                 @chmod($fp, 0777);
             } else {
-                return self::a(array('code'=>0,'state'=>'Error'));
+                return self::_error(array('code'=>0,'state'=>'Error'));
             }
         } else {
-            return self::a(array('code'=>0,'state'=>'UNKNOWN'));
+            return self::_error(array('code'=>0,'state'=>'UNKNOWN'));
         }
     }
     public static function _array($code,$frs,$RP){
@@ -508,7 +509,7 @@ class iFS {
         $res    = $client->uploadFile($frp,self::$config['yun'][$provider]['Bucket'],$fp);
         $res    = json_decode($res,true);
         if($res['error']){
-            return self::a(array('code'=>0,'state'=>'Error'));
+            return self::_error(array('code'=>0,'state'=>'Error'));
         }
         return true;
     }
@@ -516,13 +517,14 @@ class iFS {
     public static function IO($FileName='',$udir='',$FileExt='jpg'){
         list($RootPath,$FileDir) = self::mk_udir($udir); // 文件保存目录方式
         $filedata = file_get_contents('php://input');
-        if(empty($filedata)){ return false; }
+        if(empty($filedata)) return false;
 
         $file_md5 = md5($filedata);
         $FileName OR $FileName = $file_md5;
         $FileSize = strlen($filedata);
-        $FileExt  = self::CheckValidExt($FileName . "." . $FileExt); //判断文件类型
-        if(self::$callback && is_array($FileExt) && $FileExt['code']=="0") return $FileExt;
+        $FileExt  = self::valid_ext($FileName . "." . $FileExt); //判断文件类型
+        if($FileExt===false) return false;
+
         $FilePath     = $FileDir . $FileName . "." . $FileExt;
         $FileRootPath = $RootPath . $FileName . "." . $FileExt;
         self::write($FileRootPath,$filedata);
@@ -558,8 +560,9 @@ class iFS {
         $file_md5 = md5($filedata);
         $FileName = $file_md5;
         $FileSize = strlen($filedata);
-        $FileExt  = self::CheckValidExt($FileName . "." . $FileExt); //判断文件类型
-        if(self::$callback && is_array($FileExt) && $FileExt['code']=="0") return $FileExt;
+        $FileExt  = self::valid_ext($FileName . "." . $FileExt); //判断文件类型
+        if($FileExt===false) return false;
+
         $FilePath     = $FileDir . $FileName . "." . $FileExt;
         $FileRootPath = $RootPath . $FileName . "." . $FileExt;
 		self::write($FileRootPath,$filedata);
@@ -595,60 +598,63 @@ class iFS {
         if ($_FILES[$field]['name']) {
             $tmp_file = $_FILES[$field]['tmp_name'];
             if(!is_uploaded_file($tmp_file)){
-            	return self::a(array('code'=>0,'state'=>'UNKNOWN'));
+            	return self::_error(array('code'=>0,'state'=>'UNKNOWN'));
             }
             if ($_FILES[$field]['error'] > 0) {
                 switch ((int) $_FILES[$field]['error']) {
                     case UPLOAD_ERR_NO_FILE:
                         @unlink($tmp_file);
-                        return self::a(array('code'=>0,'state'=>'NOFILE'));
+                        return self::_error(array('code'=>0,'state'=>'NOFILE'));
                         break;
                     case UPLOAD_ERR_FORM_SIZE:
                         @unlink($tmp_file);
-                        return self::a(array('code'=>0,'state'=>'UPLOAD_MAX'));
+                        return self::_error(array('code'=>0,'state'=>'UPLOAD_MAX'));
                         break;
                 }
-                return self::a(array('code'=>0,'state'=>'UNKNOWN'));
+                return self::_error(array('code'=>0,'state'=>'UNKNOWN'));
             }
             $oFileName = $_FILES[$field]['name'];
-            $FileExt   = self::CheckValidExt($oFileName); //判断文件类型
-            if(self::$callback && is_array($FileExt) && $FileExt['code']=="0") return $FileExt;
+            $FileExt   = self::valid_ext($oFileName); //判断文件类型
+            if($FileExt===false) return false;
+
             if(self::$FileData){
-                $fid                   = self::$FileData->id;
-                $file_md5              = self::$FileData->filename;
-                $oFileName             = self::$FileData->ofilename;
-                $FileDir               = self::$FileData->path;
-                $FileExt               = self::$FileData->ext;
-                $FileSize              = self::$FileData->size;
-                $FileName OR $FileName = $file_md5;
-                $FilePath              = self::$FileData->filepath;
-                $FileRootPath          = self::fp($FilePath,"+iPATH");
+                $fid        = self::$FileData->id;
+                $file_md5   = self::$FileData->filename;
+                $oFileName  = self::$FileData->ofilename;
+                $FileDir    = self::$FileData->path;
+                // $FileExt = self::$FileData->ext;
+                $FileSize   = self::$FileData->size;
             }else{
                 $file_md5 = md5_file($tmp_file);
                 $frs      = self::getFileData('filename', $file_md5);
 	            if ($frs) {
 	                return self::_array(1,$frs,$RootPath);
 	            }
-                $FileName OR $FileName = $file_md5;
                 $ext && $FileExt       = $ext;
-                $FileSize     = @filesize($tmp_file);
-                $FilePath     = $FileDir . $FileName . "." . $FileExt;
-                $FileRootPath = $RootPath . $FileName . "." . $FileExt;
+                $FileSize = @filesize($tmp_file);
             }
+            $FileName OR $FileName = $file_md5;
+            $FilePath     = $FileDir . $FileName . "." . $FileExt;
+            $FileRootPath = self::fp($FilePath,"+iPATH");
             $ret = self::save_ufile($tmp_file, $FileRootPath);
             @unlink($tmp_file);
-            if(self::$callback && is_array($ret) && $ret['code']=="0") return $ret;
-
             self::watermark($FileExt,$FileRootPath);
             self::yun_write($FileRootPath);
-
-            $fid OR $fid = self::insFileData(array(
-                'filename'  => $file_md5,
+            if($fid){
+                self::upFileData(array(
                 'ofilename' => $oFileName,
-                'path'      => $FileDir,
                 'ext'       => $FileExt,
                 'size'      => $FileSize
-            ), 0);
+                ),$fid);
+            }else{
+                $fid = self::insFileData(array(
+                    'filename'  => $file_md5,
+                    'ofilename' => $oFileName,
+                    'path'      => $FileDir,
+                    'ext'       => $FileExt,
+                    'size'      => $FileSize
+                ), 0);
+            }
             return array('code' =>1,
                 'fid'         => $fid,
                 'md5'         => $file_md5,
@@ -666,34 +672,45 @@ class iFS {
         }
     }
 
-    public static function filterExt($ext, $check = false) {
-        if ($check) {
-            $ext = strtolower(self::getExt($ext));
-            if (stristr($ext, 'ph') || in_array($ext, array('cer', 'htr', 'cdx', 'asa', 'asp', 'jsp', 'aspx', 'cgi'))) {
+    public static function allow_files($exts){
+        $files = array(
+            "png","jpg","jpeg","gif","bmp","webp","psd","tif",
+            "flv","swf","mkv","avi","rm","rmvb","mpeg","mpg","mp4",
+            "ogg","ogv","mov","wmv","webm","mp3","wav","mid","amr",
+            "rar","zip","tar","gz","7z","bz2","cab","iso",
+            "doc","docx","xls","xlsx","ppt","pptx","pdf","txt","md","xml",
+            "apk","ipa",
+            "html","htm","shtml",
+        );
+        $exts_array = explode(',', $exts);
+        foreach ($exts_array as $key => $ext) {
+            if(!in_array($exts,$files)){
                 return false;
-            } else {
-                return true;
             }
         }
-        stristr($ext, 'ph') && $ext = "phpfile";
-        in_array($ext, array('cer', 'htr', 'cdx', 'asa', 'asp', 'jsp', 'aspx', 'cgi')) && $ext = "file";
-        return $ext;
+        return true;
     }
-
-    public static function CheckValidExt($fn) {
-        $FileExt = strtolower(self::getExt($fn));
+    public static function check_ext($ext,$path=true) {
+        $path && $ext = self::get_ext($ext);
+        $ext   = strtolower($ext);
+        $allow = self::allow_files($ext);
+        return $allow?true:false;
+    }
+    public static function valid_ext($fn) {
+        $ext = strtolower(self::get_ext($fn));
         if (self::$forceExt !== false) {
-            (empty($FileExt) || strlen($FileExt) > 4) && $FileExt = self::$forceExt;
-            return $FileExt;
+            (empty($ext) || strlen($ext) > 4) && $ext = self::$forceExt;
+            return $ext;
         }
         if (!self::$validext)
-            return $FileExt;
+            return $ext;
 
-        $aExt = explode(',', strtolower(self::$config['allow_ext']));
-        if (in_array($FileExt, $aExt)) {
-            return self::filterExt($FileExt);
+        $ext_array = explode(',', strtolower(self::$config['allow_ext']));
+        if (in_array($ext, $ext_array)) {
+            return self::check_ext($ext,0)?$ext:'file';
         } else {
-            return self::a(array('code'=>0,'state'=>'TYPE'));
+            self::$ERROR = self::_error(array('code'=>0,'state'=>'TYPE'));
+            return false;
         }
     }
 
@@ -725,6 +742,7 @@ class iFS {
     }
 
 //--------upload---end-------------------------------
+//
     public static function insFileData($data, $type = 0) {
         if (!self::$checkFileData) return;
 
@@ -735,7 +753,14 @@ class iFS {
         iDB::insert(self::$TABLE,$data);
         return iDB::$insert_id;
     }
+    public static function upFileData($data, $fid = 0) {
+        if (empty($fid)) return;
 
+        $userid = self::$userid === false ? 0 : self::$userid;
+        $data['userid'] = $userid;
+        $data['time']   = time();
+        iDB::update(self::$TABLE,$data,array('id'=>$fid));
+    }
     public static function getFileData($f, $v) {
         if (!self::$checkFileData) return;
 
@@ -765,20 +790,19 @@ class iFS {
             }
             return $frs->filepath;
         }
+        $FileExt = self::valid_ext($http); //判断过滤文件类型
+        if($FileExt===false) return false;
 
-        $FileExt = self::CheckValidExt($http); //判断过滤文件类型
-		if(self::$callback && is_array($FileExt) && $FileExt['code']=="0") return $FileExt;
-        $fileresults = self::remote($http);
-
-        if ($fileresults) {
-            $file_md5 = md5($fileresults);
+        $fdata = self::remote($http);
+        if ($fdata) {
+            $file_md5 = md5($fdata);
             $frs = self::getFileData('filename', $file_md5);
             if($frs){
                 $FilePath     = $frs->filepath;
                 $FileRootPath = iFS::fp($FilePath,"+iPATH");
                 if(!is_file($FileRootPath)){
                     self::mkdir(dirname($FileRootPath));
-                    self::write($FileRootPath, $fileresults);
+                    self::write($FileRootPath, $fdata);
                     self::watermark($FileExt,$FileRootPath);
                     self::yun_write($FileRootPath);
                 }
@@ -789,7 +813,7 @@ class iFS {
                 $FileName = $file_md5 . "." . $FileExt;
                 $FilePath = $FileDir .$FileName;
                 $FileRootPath = $RootPath .$FileName;
-                self::write($FileRootPath, $fileresults);
+                self::write($FileRootPath, $fdata);
                 self::watermark($FileExt,$FileRootPath);
                 self::yun_write($FileRootPath);
                 $FileSize = @filesize($FileRootPath);
@@ -830,8 +854,8 @@ class iFS {
         }
     }
 
-    public static function a($a,$break=false) {
-		$stateMap = array(
+    public static function _error($e,$break=false) {
+        $stateMap    = array(
             "UPLOAD_MAX"    => "文件大小超出 upload_max_filesize 限制" ,
             "MAX_FILE_SIZE" => "文件大小超出 MAX_FILE_SIZE 限制" ,
             "文件未被完整上传" ,
@@ -846,13 +870,14 @@ class iFS {
             "Error"         => "Upload Unknown Error (fopen)" ,
             "MOVE"          => "文件保存时出错"
 	    );
-		$msg	= $stateMap[$a['state']];
-    	if(self::$callback){
-    		$a['state']	= $msg;
-    		return $a;
-        }else if($_GET['format']=='json'){
-            return json_encode($a);
-    	}else{
+		$msg = $stateMap[$e['state']];
+        if(self::$callback){
+            $e['state'] = $msg;
+            if(self::$callback==='json'){
+               return json_encode($e);
+            }
+            return $e;
+        }else{
         	exit('<script type="text/javascript">window.top.alert("' . $msg . '");</script>');
         }
     }

@@ -11,11 +11,11 @@
 */
 class filesApp{
     function __construct() {
-	    $this->from		= $_GET['from'];
-	    $this->callback	= $_GET['callback'];
-		$this->click	= $_GET['click'];
-        $this->target   = $_GET['target'];
-        $this->format   = $_GET['format'];
+	    $this->from		= iS::escapeStr($_GET['from']);
+	    $this->callback	= iS::escapeStr($_GET['callback']);
+		$this->click	= iS::escapeStr($_GET['click']);
+        $this->target   = iS::escapeStr($_GET['target']);
+        $this->format   = iS::escapeStr($_GET['format']);
     	$this->id		= (int)$_GET['id'];
 	    $this->callback OR $this->callback	= 'icms';
         $this->upload_max_filesize = get_cfg_var("upload_max_filesize");
@@ -56,7 +56,7 @@ class filesApp{
 
         isset($_GET['userid']) 	&& $uri.='&userid='.(int)$_GET['userid'];
 
-        $orderby	= $_GET['orderby']?$_GET['orderby']:"id DESC";
+        $orderby	= $_GET['orderby']?iS::escapeStr($_GET['orderby']):"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
 		$total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__filedata` {$sql}","G");
         iPHP::pagenav($total,$maxperpage,"个文件");
@@ -65,12 +65,40 @@ class filesApp{
     	include iACP::view("files.manage");
     }
     function do_IO(){
-        $udir      = $_GET['udir'];
-        $name      = $_GET['name'];
-        $ext       = $_GET['ext'];
+        $udir      = iS::escapeStr($_GET['udir']);
+        $name      = iS::escapeStr($_GET['name']);
+        $ext       = iS::escapeStr($_GET['ext']);
+        iFS::check_ext($ext,0) OR iPHP::json(array('state'=>'ERROR','msg'=>'不允许的文件类型'));
+        iFS::$callback = true;
         $_GET['watermark'] OR iFS::$watermark = false;
-        $F         = iFS::IO($name,$udir,$ext);
-        $array     = array(
+        $F = iFS::IO($name,$udir,$ext);
+        $F ===false && iPHP::json(iFS::$ERROR);
+        iPHP::json(array(
+            "value"    => $F["path"],
+            "url"      => iFS::fp($F['path'],'+http'),
+            "fid"      => $F["fid"],
+            "fileType" => $F["ext"],
+            "image"    => in_array($F["ext"],array('gif','jpg','jpeg','png'))?1:0,
+            "original" => $F["oname"],
+            "state"    => ($F['code']?'SUCCESS':$F['state'])
+        ));
+    }
+    function do_upload(){
+        iACP::MP('FILE.UPLOAD','alert');
+//iFS::$checkFileData = true;
+    	$_POST['watermark'] OR iFS::$watermark = false;
+        iFS::$callback = true;
+    	if($this->id){
+            iFS::$FileData = iFS::getFileData('id',$this->id);
+            $F = iFS::upload('upfile');
+            if($F && $F['size']!=iFS::$FileData->size){
+                iDB::query("update `#iCMS@__filedata` SET `size`='".$F['size']."' WHERE `id` = '$this->id'");
+            }
+    	}else{
+            $udir = ltrim($_POST['udir'],'/');
+            $F    = iFS::upload('upfile',$udir);
+    	}
+        $array = ($F===false)?iFS::$ERROR:array(
             "value"    => $F["path"],
             "url"      => iFS::fp($F['path'],'+http'),
             "fid"      => $F["fid"],
@@ -79,31 +107,6 @@ class filesApp{
             "original" => $F["oname"],
             "state"    => ($F['code']?'SUCCESS':$F['state'])
         );
-        iPHP::json($array);
-    }
-    function do_upload(){
-        iACP::MP('FILE.UPLOAD','alert');
-//iFS::$checkFileData = true;
-    	$_POST['watermark'] OR iFS::$watermark = false;
-    	if($this->id){
-            iFS::$FileData = iFS::getFileData('id',$this->id);
-            $F             = iFS::upload('upfile');
-    		if($F['size']!=$rs->size){
-	    		iDB::query("update `#iCMS@__filedata` SET `size`='".$F['size']."' WHERE `id` = '$this->id'");
-    		}
-    	}else{
-            $udir = ltrim($_POST['udir'],'/');
-            $F    = iFS::upload('upfile',$udir);
-    	}
-		$array	= array(
-            "value"    => $F["path"],
-            "url"      => iFS::fp($F['path'],'+http'),
-            "fid"      => $F["fid"],
-            "fileType" => $F["ext"],
-            "image"    => in_array($F["ext"],array('gif','jpg','jpeg','png'))?1:0,
-            "original" => $F["oname"],
-            "state"    => ($F['code']?'SUCCESS':$F['state'])
-		);
 		if($this->format=='json'){
 	    	iPHP::json($array);
 		}else{
@@ -114,6 +117,8 @@ class filesApp{
         $rs            = iFS::getFileData('id',$this->id);
         iFS::$redirect = true;
         $FileRootPath  = iFS::fp($rs->filepath,"+iPATH");
+        iFS::check_ext($rs->filepath,true) OR iPHP::alert('文件类型不合法!');
+
         $fileresults   = iFS::remote($rs->ofilename);
     	if($fileresults){
     		iFS::mkdir(dirname($FileRootPath));
@@ -208,7 +213,7 @@ class filesApp{
     }
     function do_editpic(){
         iACP::MP('FILE.EDIT','page');
-        $pic       = $_GET['pic'];
+        $pic       = iS::escapeStr($_GET['pic']);
         //$pic OR iPHP::alert("请选择图片!");
         if($pic){
             $src       = iFS::fp($pic,'+http')."?".time();
@@ -271,7 +276,6 @@ class filesApp{
         iACP::MP('FILE.DELETE','alert');
         $_GET['path'] OR iPHP::alert("请选择要删除的文件");
         strpos($_GET['path'], '..') !== false && iPHP::alert("文件路径中带有..");
-        iFS::CheckValidExt($_GET['path']); //判断过滤文件类型
 
         $hash         = md5($_GET['path']);
         $FileRootPath = iFS::fp($_GET['path'],'+iPATH');

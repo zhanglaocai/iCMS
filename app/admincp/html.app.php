@@ -27,7 +27,7 @@ class htmlApp{
 		$indexTPL  = iCMS::$config['template']['index']	= $this->PG['indexTPL'];
 		$indexName = iCMS::$config['template']['index_name'] = $this->PG['indexName'];
     	$indexName OR $indexName ="index".iCMS::$config['router']['html_ext'];
-    	iFS::filterExt($indexName,true) OR iPHP::alert('文件名后缀不合法!');
+    	iFS::check_ext($indexName) OR iPHP::alert('文件类型不合法!');
     	//iCMS::$config['template']['index_mode'] = 1;
 		iACP::updateConfig('template');
     	$this->CreateIndex($indexTPL,$indexName);
@@ -42,7 +42,7 @@ class htmlApp{
 		$htm	= iCMS::run('index','iCMS',array(array($indexTPL,$indexName)));
 		$fpath	= iPHP::p2num($htm[1]->pagepath);
 		$total	= $GLOBALS['iPage']['total'];
-		iFS::filterExt($fpath,true) OR iPHP::alert("文件后缀不安全,禁止生成!<hr />请更改系统设置->网站URL->文件后缀");
+		iFS::check_ext($fpath) OR iPHP::alert("文件类型不合法,禁止生成!<hr />请更改系统设置->网站URL->文件后缀");
 		iFS::mkdir($htm[1]->dir);
 		iFS::write($fpath,$htm[0]);
 		$_total = $total?$total:"1";
@@ -105,7 +105,7 @@ class htmlApp{
 		$htm OR iPHP::alert("栏目[cid:$cid] URL规则设置问题! 此栏目不能生成静态");
 		$fpath = iPHP::p2num($htm[1]['iurl']['pagepath']);
 		$total = $GLOBALS['iPage']['total'];
-		iFS::filterExt($fpath,true) OR iPHP::alert("文件后缀不安全,禁止生成!<hr />请更改栏目->URL规则设置->栏目规则");
+		iFS::check_ext($fpath) OR iPHP::alert("文件类型不合法,禁止生成!<hr />请更改栏目->URL规则设置->栏目规则");
 		iFS::mkdir($htm[1]['iurl']['dir']);
 		iFS::write($fpath,$htm[0]);
 		$_total = $total?$total:"1";
@@ -234,7 +234,7 @@ class htmlApp{
 		$total = $htm[1]['page']['total'];
 		$title = $htm[1]['title'];
 
-		iFS::filterExt($htm[1]['iurl']->path,true) OR iPHP::alert("文件后缀不安全,禁止生成!<hr />请更改栏目->URL规则设置->内容规则");
+		iFS::check_ext($htm[1]['iurl']->path) OR iPHP::alert("文件类型不合法,禁止生成!<hr />请更改栏目->URL规则设置->内容规则");
 		iFS::mkdir($htm[1]['iurl']->dir);
 		iFS::write($htm[1]['iurl']->path,$htm[0]);
 		if($total>=2){

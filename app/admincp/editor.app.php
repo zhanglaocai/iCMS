@@ -11,8 +11,7 @@
 */
 class editorApp{
     function __construct() {
-		$this->stateInfo = 'SUCCESS';
-		iFS::$callback   = true;
+		iFS::$callback   = 'json';
     }
     function do_config(){
     	$config_json ='
@@ -113,12 +112,12 @@ class editorApp{
         }
     }
     function do_imageManager(){
-		$res               = iPHP::folder(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
+		$res = iPHP::folder(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
 		$res['public_url'] = iCMS_PUBLIC_URL;
 		iPHP::json($res);
     }
     function do_fileManager(){
-        $res               = iPHP::folder(iCMS::$config['FS']['dir']);
+        $res = iPHP::folder(iCMS::$config['FS']['dir']);
         $res['public_url'] = iCMS_PUBLIC_URL;
         iPHP::json($res);
     }
@@ -132,17 +131,21 @@ class editorApp{
 				unset($_array[$_k]);
 			}
 
-			$F = iFS::http($imgurl,'array');
-	    	$F['code'] OR $this->stateInfo = $F['state'];
-	    	$F['path'] && $url = iFS::fp($F['path'],'+http');
-		    array_push($list, array(
-				"state"    => $this->stateInfo,
-				"url"      => $url,
-				"size"     => $F["size"],
-				"title"    => iS::escapeStr($info["title"]),
-				"original" => iS::escapeStr($F["oname"]),
-				"source"   => iS::escapeStr($imgurl)
-		    ));
+            $F = iFS::http($imgurl,'array');
+            if($F===false){
+                $a = iFS::$ERROR;
+            }else{
+                $F['path'] && $url = iFS::fp($F['path'],'+http');
+                $a = array(
+                    "state"    => 'SUCCESS',
+                    "url"      => $url,
+                    "size"     => $F["size"],
+                    "title"    => iS::escapeStr($info["title"]),
+                    "original" => iS::escapeStr($F["oname"]),
+                    "source"   => iS::escapeStr($imgurl)
+                );
+            };
+		    array_push($list,$a);
 		}
 		/* 返回抓取数据 */
 		iPHP::json(array(
@@ -152,54 +155,56 @@ class editorApp{
 		));
     }
     function do_uploadimage(){
-		$F = iFS::upload('upfile');
-    	$F['code'] OR $this->stateInfo = $F['state'];
+        $F = iFS::upload('upfile');
+        $F===false && exit(iFS::$ERROR);
     	$F['path'] && $url = iFS::fp($F['path'],'+http');
 		iPHP::json(array(
 			'title'    => iS::escapeStr($_POST['pictitle']),
 			'original' => $F['oname'],
 			'url'      => $url,
 			'code'     => $F['code'],
-			'state'    => $this->stateInfo
+			'state'    => 'SUCCESS'
 		));
     }
     function do_uploadfile(){
-		$F	= iFS::upload('upfile');
-		$F['code']	OR	$this->stateInfo = $F['state'];
+        $F = iFS::upload('upfile');
+        $F===false && exit(iFS::$ERROR);
 		$F['path'] && $url	= iFS::fp($F['path'],'+http');
     	iPHP::json(array(
 			"url"      =>$url,
 			"fileType" =>$F["ext"],
 			"original" =>$F["oname"],
-			"state"    =>$this->stateInfo
+			"state"    =>'SUCCESS'
 		));
     }
     function do_uploadvideo(){
-        $F  = iFS::upload('upfile');
-        $F['code']  OR  $this->stateInfo = $F['state'];
+        $F = iFS::upload('upfile');
+        $F===false && exit(iFS::$ERROR);
         $F['path'] && $url  = iFS::fp($F['path'],'+http');
         iPHP::json(array(
             "url"      =>$url,
             "fileType" =>$F["ext"],
             "original" =>$F["oname"],
-            "state"    =>$this->stateInfo
+            "state"    =>'SUCCESS'
         ));
     }
     function do_uploadscrawl(){
 		if ($_GET[ "action" ] == "tmpImg") { // 背景上传
-			$F		= iFS::upload('upfile','scrawl/tmp');
-			$F['code']	OR	$this->stateInfo = $F['state'];
+            iFS::$callback  = false;
+            $F = iFS::upload('upfile','scrawl/tmp');
+            $F===false && exit();
 			$F['path'] && $url	= iFS::fp($F['path'],'+http');
-			echo "<script>parent.ue_callback('" .$url. "','" .$this->stateInfo. "')</script>";
+			echo "<script>parent.ue_callback('" .$url. "','SUCCESS')</script>";
 		} else {
-			$F		= iFS::base64ToFile($_POST['upfile'],'scrawl/'.get_date(0,'Y/md'));
-			$F['code']	OR	$this->stateInfo = $F['state'];
+            iFS::$callback  = true;
+            $F = iFS::base64ToFile($_POST['upfile'],'scrawl/'.get_date(0,'Y/md'));
+            $F===false && exit(iFS::$ERROR);
 			$F['path'] && $url	= iFS::fp($F['path'],'+http');
 			$tmp 	= iFS::get_dir()."scrawl/tmp/";
 			iFS::rmdir($tmp);
 	    	iPHP::json(array(
 				"url"   =>$url,
-				"state" =>$this->stateInfo
+				"state" =>'SUCCESS'
 			));
 		}
     }

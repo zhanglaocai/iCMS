@@ -747,7 +747,7 @@ class iPHP{
                     );
                 }
                 if ($sFileType	=="file" && !in_array($rs,array('..','.iPHP'))) {
-                	$filext		= iFS::getExt($rs);
+                	$filext		= iFS::get_ext($rs);
 	                $fileinfo	= array(
 							'path'     =>$path,
 							'dir'      =>dirname($path),
