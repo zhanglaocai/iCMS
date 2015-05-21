@@ -697,17 +697,19 @@ class iFS {
         return $allow?true:false;
     }
     public static function valid_ext($fn) {
-        $ext = strtolower(self::get_ext($fn));
+        $_ext      = strtolower(self::get_ext($fn));
+        $ext       = self::check_ext($_ext,0)?$ext:'file';
+
         if (self::$forceExt !== false) {
-            (empty($ext) || strlen($ext) > 4) && $ext = self::$forceExt;
+            (empty($_ext) || strlen($_ext) > 4) && $ext = self::$forceExt;
             return $ext;
         }
         if (!self::$validext)
             return $ext;
 
         $ext_array = explode(',', strtolower(self::$config['allow_ext']));
-        if (in_array($ext, $ext_array)) {
-            return self::check_ext($ext,0)?$ext:'file';
+        if (in_array($_ext, $ext_array)) {
+            return $ext;
         } else {
             self::$ERROR = self::_error(array('code'=>0,'state'=>'TYPE'));
             return false;
