@@ -697,11 +697,11 @@ class iFS {
         return $allow?true:false;
     }
     public static function valid_ext($fn) {
-        $_ext      = strtolower(self::get_ext($fn));
-        $ext       = self::check_ext($_ext,0)?$ext:'file';
+        $_ext = strtolower(self::get_ext($fn));
+        $ext  = self::check_ext($_ext,0)?$_ext:'file';
 
         if (self::$forceExt !== false) {
-            (empty($_ext) || strlen($_ext) > 4) && $ext = self::$forceExt;
+            (empty($_ext) || strlen($_ext) > 4|| $ext=='file') && $ext = self::$forceExt;
             return $ext;
         }
         if (!self::$validext)
@@ -794,7 +794,8 @@ class iFS {
         }
         $FileExt = self::valid_ext($http); //判断过滤文件类型
         if($FileExt===false) return false;
-
+var_dump($FileExt);
+exit;
         $fdata = self::remote($http);
         if ($fdata) {
             $file_md5 = md5($fdata);
