@@ -105,16 +105,15 @@ class iACP {
     }
 
     public static function app($app = NULL, $arg = NULL) {
-        return iPHP::app('admincp.'.$app.'.app',$arg);
-        // iPHP::import(ACP_PATH . '/' . $app . '.app.php');
-        // if ($arg === 'import'||$arg === 'static') {
-        //     return;
-        // }
-        // $appName = $app . 'App';
-        // if ($arg !== NULL) {
-        //     return new $appName($arg);
-        // }
-        // return new $appName();
+        iPHP::import(ACP_PATH . '/' . $app . '.app.php');
+        if ($arg === 'import'||$arg === 'static') {
+            return;
+        }
+        $appName = $app . 'App';
+        if ($arg !== NULL) {
+            return new $appName($arg);
+        }
+        return new $appName();
     }
 
     public static function view($p = NULL) {
