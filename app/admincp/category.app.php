@@ -339,11 +339,12 @@ class categoryApp extends category{
             iDB::query("DELETE FROM `#iCMS@__category` WHERE `cid` = '$cid'");
             iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `node` = '$cid' AND `appid` = '".$this->appid."';");
             iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$cid' AND `appid` = '".iCMS_APP_CATEGORY."' ;");
-            $dialog && $this->cache(true,$this->appid);
+            $this->del_cahce($cid);
             $msg = '删除成功!';
         }else {
             $msg = '请先删除本'.$this->name_text.'下的子'.$this->name_text.'!';
         }
+        $this->do_cache(false);
         $dialog && iPHP::success($msg,'js:parent.$("#'.$cid.'").remove();');
     }
     function do_ajaxtree(){
@@ -445,7 +446,7 @@ class categoryApp extends category{
         iACP::CP($C['cid'],'a')  && $html.='<a href="'.APP_URI.'&do=add&rootid='.$C['cid'].'" class="btn btn-small"><i class="fa fa-plus-square"></i> 添加子'.$this->name_text.'</a> ';
         $html.=$this->treebtn($C);
         iACP::CP($C['cid'],'e') && $html.='<a href="'.APP_URI.'&do=add&cid='.$C['cid'].'" title="编辑'.$this->name_text.'设置"  class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a> ';
-        iACP::CP($C['cid'],'d') && $html.='<a href="'.APP_FURI.'&do=del&cid='.$C['cid'].'" class="btn btn-small" onClick="return confirm(\'确定要删除此'.$this->name_text.'和'.$this->name_text.'下的所有内容?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a>';
+        iACP::CP($C['cid'],'d') && $html.='<a href="'.APP_FURI.'&do=del&cid='.$C['cid'].'" class="btn btn-small" onClick="return confirm(\'确定要删除此'.$this->name_text.'?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a>';
         $html.='</span></div>';
         return $html;
     }

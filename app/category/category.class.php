@@ -64,6 +64,12 @@ class category {
 		iCache::delete('iCMS/category/'.$C['cid']);
 		iCache::set('iCMS/category/'.$C['cid'],$C,0);
     }
+    public function del_cahce($cid=null){
+        if(empty($cid)){
+            return;
+        }
+        iCache::delete('iCMS/category/'.$cid);
+    }
     public function C($C){
 	    if($C['metadata']){
 	    	$mdArray	= array();
