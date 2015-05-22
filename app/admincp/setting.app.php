@@ -31,10 +31,10 @@ class settingApp{
     function do_save(){
         $config = iS::escapeStr($_POST['config']);
 
-        $config['router']['html_ext'] = '.'.trim($config['router']['html_ext'],'.');
-        iFS::allow_files($config['FS']['allow_ext']) OR iPHP::alert("系统设置 > 附件设置 > 允许上传类型 设置不合法!");
-		iFS::allow_files($config['router']['html_ext']) OR iPHP::alert('系统设置 > URL设置 > 文件后缀 设置不合法!');
+        iFS::allow_files($config['FS']['allow_ext']) OR iPHP::alert("附件设置 > 允许上传类型设置不合法!");
+        iFS::allow_files(trim($config['router']['html_ext'],'.')) OR iPHP::alert('URL设置 > 文件后缀设置不合法!');
 
+        $config['router']['html_ext']   = '.'.trim($config['router']['html_ext'],'.');
         $config['router']['URL']        = trim($config['router']['URL'],'/');
         $config['router']['public_url'] = trim($config['router']['public_url'],'/');
         $config['router']['user_url']   = trim($config['router']['user_url'],'/');

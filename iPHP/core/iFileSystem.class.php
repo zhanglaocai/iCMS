@@ -684,7 +684,7 @@ class iFS {
         );
         $exts_array = explode(',', $exts);
         foreach ($exts_array as $key => $ext) {
-            if(!in_array($exts,$files)){
+            if(!in_array($ext,$files)){
                 return false;
             }
         }
