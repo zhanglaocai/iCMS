@@ -794,8 +794,7 @@ class iFS {
         }
         $FileExt = self::valid_ext($http); //判断过滤文件类型
         if($FileExt===false) return false;
-var_dump($FileExt);
-exit;
+
         $fdata = self::remote($http);
         if ($fdata) {
             $file_md5 = md5($fdata);
