@@ -19,6 +19,9 @@ $(function() {
     })
 })
 function callback(obj) {
+  if(obj.code==0){
+    return iCMS.alert(obj.state);
+  }
 	var state	= window.top.modal_<?php echo $this->callback;?>('<?php echo $this->target;?>',obj);
 	if(!state){
 		window.top.iCMS_MODAL.destroy();
