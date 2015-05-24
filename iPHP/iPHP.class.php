@@ -130,12 +130,15 @@ class iPHP{
 	}
 	//设置COOKIE
 	public static function set_cookie($name, $value = "", $time = 0) {
-	    $cookiedomain	= iPHP_COOKIE_DOMAIN;
-	    $cookiepath		= iPHP_COOKIE_PATH;
-	    $cookietime		= ($time?$time:iPHP_COOKIE_TIME);
-	    $name 			= iPHP_COOKIE_PRE.'_'.$name;
-	    $_COOKIE[$name] = $value;
+		// $cookiedomain = iPHP_COOKIE_DOMAIN;
+		$cookiedomain = '';
+		$cookiepath   = iPHP_COOKIE_PATH;
+		$cookietime   = ($time?$time:iPHP_COOKIE_TIME);
+		$name         = iPHP_COOKIE_PRE.'_'.$name;
 	    setcookie($name, $value,time()+$cookietime,$cookiepath, $cookiedomain, $_SERVER['SERVER_PORT'] == 443 ? 1 : 0);
+		if($value==''){
+			unset($_COOKIE[$name]);
+		}
 	}
 	//取得COOKIE
 	public static function get_cookie($name) {
@@ -145,6 +148,7 @@ class iPHP{
 	    }
 	    return FALSE;
 	}
+
     public static function getUniCookie($s){
 		$s = str_replace('\\\u','\\u',self::get_cookie($s));
 		$u = json_decode('["'.$s.'"]');
