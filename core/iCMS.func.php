@@ -114,21 +114,25 @@ function autoformat($html){
     ),array('','','','',"\n","$1\n","$1\n","\n[img]$1[/img]"),$html);
 
     if (stripos($html,'<embed') !== false){
-        iPHP::import(iPHP_LIB.'/phpQuery.php');
-        $doc = phpQuery::newDocumentHTML($html,'UTF-8');
-        foreach ($doc['embed'] as $embed_key => $embed) {
-            $obj          = phpQuery::pq($embed);
-            $embed_src    = $obj->attr("src");
-            $embed_width  = $obj->attr("width");
-            $embed_height = $obj->attr("height");
-            empty($embed_width) && $embed_width = "500";
-            empty($embed_height) && $embed_height = "450";
-
-            $embed_htm    = (string)$obj;
-            $html         = str_replace($embed_htm,'[video='.$embed_width.','.$embed_height.']'.$embed_src.'[/video]',$html);
+        preg_match_all("/<embed[^>]*>/is", $html, $embed_match);
+        foreach ((array)$embed_match[0] as $key => $value) {
+            preg_match("/.*?src\s*=[\"|'|](.*?)[\"|'|]/is", $value, $src_match);
+            preg_match("/.*?class\s*=[\"|'|](.*?)[\"|'|]/is", $value, $class_match);
+            preg_match("/.*?width\s*=[\"|'|](\d+)[\"|'|]/is", $value, $width_match);
+            preg_match("/.*?height\s*=[\"|'|](\d+)[\"|'|]/is", $value, $height_match);
+            $embed_width = $width_match[1];
+            $embed_height = $height_match[1];
+            if($class_match[1]=='edui-faked-music'){
+                empty($embed_width) && $embed_width = "400";
+                empty($embed_height) && $embed_height = "95";
+                $html = str_replace($value,'[music='.$embed_width.','.$embed_height.']'.$src_match[1].'[/music]',$html);
+            }else{
+                empty($embed_width) && $embed_width = "500";
+                empty($embed_height) && $embed_height = "450";
+                $html = str_replace($value,'[video='.$embed_width.','.$embed_height.']'.$src_match[1].'[/video]',$html);
+            }
         }
     }
-
     $html = str_replace(array("&nbsp;","　"),'',$html);
     $html = preg_replace(array(
     '/<b[^>]*>(.*?)<\/b>/i',
@@ -146,9 +150,11 @@ function ubb2html($content){
     '/\[b\](.*?)\[\/b\]/is',
     '/\[url=([^\]]+)\](.*?)\[\/url\]/is',
     '/\[url=([^\]|#]+)\](.*?)\[\/url\]/is',
+    '/\[music=(\d+),(\d+)\](.*?)\[\/music\]/is',
     '/\[video=(\d+),(\d+)\](.*?)\[\/video\]/is',
     ),array(
     '<img src="$1" />','<strong>$1</strong>','<a target="_blank" href="$1">$2</a>','$2',
+    '<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>',
     '<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>'
     ),$content);
 }
