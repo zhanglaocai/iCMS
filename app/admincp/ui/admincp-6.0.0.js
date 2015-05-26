@@ -59,8 +59,11 @@ $(function() {
         return false;
     });
     doc.on("click",'[data-toggle="createpass"]',function() {
-        var a = $(this),target = a.attr('data-target');
-        $(target).val(iCMS.random(8));
+        var a = $(this),
+        target = a.attr('data-target'),
+        len = a.attr('data-len')||8;
+
+        $(target).val(iCMS.random(len));
         return false;
     });
     doc.on("click",'[data-toggle="insertContent"]',function(event) {
