@@ -20,7 +20,7 @@ class groupsApp{
     		$this->type = $type;
     		$sql=" and `type`='$type'";
     	}
-		$rs		= iDB::all("SELECT * FROM `#iCMS@__group` where 1=1{$sql} ORDER BY `ordernum` , `gid` ASC",ARRAY_A);
+		$rs		= iDB::all("SELECT * FROM `#iCMS@__group` where 1=1{$sql} ORDER BY `ordernum` , `gid` ASC");
 		$_count	= count($rs);
 		for ($i=0;$i<$_count;$i++){
 			$this->array[$rs[$i]['gid']]    = $rs[$i];
@@ -41,7 +41,7 @@ class groupsApp{
 		return $option;
 	}
     function do_iCMS(){
-    	$rs		= iDB::all("SELECT * FROM `#iCMS@__group` ORDER BY `type` , `gid` ASC",ARRAY_A);
+    	$rs		= iDB::all("SELECT * FROM `#iCMS@__group` ORDER BY `type` , `gid` ASC");
 		$_count	= count($rs);
     	include iACP::view("groups.manage");
     }

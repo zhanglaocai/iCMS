@@ -45,9 +45,9 @@ class categoryApp extends category{
                 'categoryURI'  => 'category',
                 'categoryRule' => '{CDIR}/index{EXT}',
                 'contentRule'  => '{CDIR}/{YYYY}/{MM}{DD}/{ID}{EXT}',
-                'indexTPL'     => '{iTPL}/category.index.htm',
-                'listTPL'      => '{iTPL}/category.list.htm',
-                'contentTPL'   => '{iTPL}/article.htm',
+                'indexTPL'     => $this->def_indexTPL?$this->def_indexTPL:'{iTPL}/category.index.htm',
+                'listTPL'      => $this->def_listTPL?$this->def_listTPL:'{iTPL}/category.list.htm',
+                'contentTPL'   => $this->def_contentTPL?$this->def_contentTPL:'{iTPL}/article.htm',
                 'metadata'     => '',
                 'contentprop'  => '',
             );

@@ -289,14 +289,4 @@ function __article_array($vars,$variable){
     return $resource;
 }
 
-function _archive_date($date){
-    $limit = time() - $date;
-    if($limit <= 86400){
-        return '今天';
-    }else if($limit > 86400 && $limit<=172800){
-        return '昨天';
-    }else{
-        //return get_date($date,'dm');
-        return '<span class="day">'.get_date($date,'d').'</span><span class="mon">'.get_date($date,'m').'月</span>';
-    }
-}
+

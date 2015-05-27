@@ -14,7 +14,7 @@ class category {
         $this->appid = $appid;
         $sql         = "WHERE `appid`='$this->appid'";
         $this->appid === 'all' && $sql='';
-        $rs          = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} ORDER BY `ordernum` , `cid` ASC",ARRAY_A);
+        $rs          = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} ORDER BY `ordernum` , `cid` ASC");
         foreach((array)$rs AS $C) {
 			$C['iurl']	= iURL::get('category',$C);
             $this->_array[$C['rootid']][$C['cid']] = $C;
@@ -28,7 +28,7 @@ class category {
         }
     }
     public function cache($one=false,$appid=null) {
-    	$rs	= iDB::all("SELECT * FROM `#iCMS@__category` ORDER BY `ordernum` , `cid` ASC",ARRAY_A);
+    	$rs	= iDB::all("SELECT * FROM `#iCMS@__category` ORDER BY `ordernum` , `cid` ASC");
     	foreach((array)$rs AS $C) {
 	        $C = $this->C($C);
 			$one && $this->cahce_one($C);

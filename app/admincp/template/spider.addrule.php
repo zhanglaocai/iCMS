@@ -329,11 +329,13 @@ $(function(){
                   <textarea name="rule[page_area_rule]" id="page_area_rule" class="span6"><?php echo $rule['page_area_rule'] ; ?></textarea>
                   <div class="btn-group btn-group-vertical"> <a class="btn" href="<%content%>" data-toggle="insertContent" data-target="#page_area_rule">内容标识</a> <a class="btn" href="<%var%>" data-toggle="insertContent" data-target="#page_area_rule">变量标识</a> </div>
                 </div>
+                <span class="help-inline">支持phpQuery,格式DOM::选择器</span>
                 <div class="clearfloat mb10"></div>
                 <div class="input-prepend input-sp"><span class="add-on">分页链接规则</span>
                   <textarea name="rule[page_url_rule]" id="page_url_rule" class="span6"><?php echo $rule['page_url_rule'] ; ?></textarea>
                   <div class="btn-group btn-group-vertical"> <a class="btn" href="<%url%>" data-toggle="insertContent" data-target="#page_url_rule">网址</a> <a class="btn" href="<%var%>" data-toggle="insertContent" data-target="#page_url_rule">变量标识</a> </div>
                 </div>
+                <span class="help-inline">过滤网址</span>
               </div>
               <div id="spider-page-url-parse" class="tab-pane">
                 <div class="input-prepend input-append"><span class="add-on">当前网址分解</span>

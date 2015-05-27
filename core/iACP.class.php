@@ -231,47 +231,21 @@ class iACP {
     public static function foot() {
         include self::view("admincp.footer");
     }
-    public static function picBtnGroup($callback,$indexid=0) {
+    public static function picBtnGroup($callback,$indexid=0,$type='pic') {
         include self::view("admincp.picBtnGroup");
     }
-    public static function propBtn($field, $type = "") {
-        $type OR $type = self::$app_name;
-        $propArray = iCache::get("iCMS/prop/{$type}.{$field}");
-        echo '<div class="btn-group">'.
-        '<a class="btn dropdown-toggle iCMS-default" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>'.
-        '<ul class="dropdown-menu">';
-        if ($propArray) {
-            foreach ($propArray as $prop) {
-                echo '<li><a href="javascript:;" data-toggle="insert" data-target="#' . $field . '">' . $prop['val'] . '</a></li>';
-            }
-        }
-        echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&type='.$type.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
-        echo '</ul></div>';
+
+    public static function propBtn($field, $type = null,$target = null) {
+        $propApp = iACP::app('prop');
+        $propApp->btn_group($field, $type,$target);
     }
 
     public static function getProp($field, $val = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {
-        $type OR $type = self::$app_name;
-        $propArray = iCache::get("iCMS/prop/{$type}.{$field}");
-        $valArray  = explode(',', $val);
-        if ($propArray){
-            foreach ($propArray AS $k => $P) {
-                if ($out == 'option') {
-                    $opt.="<option value='{$P['val']}'" . (array_search($P['val'],$valArray)!==FALSE ? " selected='selected'" : '') . ">{$P['name']}[pid='{$P['val']}'] </option>";
-                } elseif ($out == 'text') {
-                    if (array_search($P['val'],$valArray)!==FALSE) {
-                        $flag = '<i class="fa fa-flag"></i> '.$P['name'];
-                        $opt .= ($url?'<a href="'.str_replace('{PID}',$P['val'],$url).'">'.$flag.'</a>':$flag).'<br />';
-                    }
-                }
-            }
-        }
-        // $opt.='</select>';
-        return $opt;
+        $propApp = iACP::app('prop');
+        return $propApp->get_prop($field, $val,$out,$url,$type);
     }
     public static function files_modal_btn($title='',$click='file',$target='template_index',$callback='',$do='seltpl',$from='modal') {
-        $href = __ADMINCP__."=files&do={$do}&from={$from}&click={$click}&target={$target}&callback={$callback}";
-        $_title=$title.'文件';
-        $click=='dir' && $_title=$title.'目录';
-        echo '<a href="'.$href.'" class="btn files_modal" data-toggle="modal" title="选择'.$_title.'"><i class="fa fa-search"></i> 选择</a>';
+        $filesApp = iACP::app('files');
+        $filesApp->modal_btn($title,$click,$target,$callback,$do,$from);
     }
 }

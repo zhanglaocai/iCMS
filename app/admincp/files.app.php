@@ -288,4 +288,10 @@ class filesApp{
         }
         iPHP::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
     }
+    function modal_btn($title='',$click='file',$target='template_index',$callback='',$do='seltpl',$from='modal'){
+        $href = __ADMINCP__."=files&do={$do}&from={$from}&click={$click}&target={$target}&callback={$callback}";
+        $_title=$title.'文件';
+        $click=='dir' && $_title=$title.'目录';
+        echo '<a href="'.$href.'" class="btn files_modal" data-toggle="modal" title="选择'.$_title.'"><i class="fa fa-search"></i> 选择</a>';
+    }
 }

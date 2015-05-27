@@ -41,7 +41,7 @@ class iMenu {
 	}
 
 	function get_array($cache=false){
-		$rs	= iDB::all("SELECT * FROM `#iCMS@__menu` ORDER BY `ordernum` , `id` ASC",ARRAY_A);
+		$rs	= iDB::all("SELECT * FROM `#iCMS@__menu` ORDER BY `ordernum` , `id` ASC");
 		$this->menu_array  = array();
 		$this->root_array  = array();
 		$this->parent      = array();

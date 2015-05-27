@@ -152,9 +152,13 @@
             ed.setContent(html);
             ed.focus();
         },
-        cleanup:function() {
-            var ed = this.container[this.id],
-            html = iCMS.format(ed.getContent());
+        cleanup:function(eid) {
+            if(eid){
+                var ed = UE.getEditor('iCMS-editor-'+eid);
+            }else{
+                var ed = this.container[this.id];
+            }
+            var html = iCMS.format(ed.getContent());
             ed.setContent(html);
             //ed.execCommand("autoTypeset");
             ed.focus();

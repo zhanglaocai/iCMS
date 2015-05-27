@@ -14,7 +14,15 @@ class iURL {
     public static $config   = null;
     public static $uriArray = null;
 	public static function init($config){
+        $config['router']= array(
+            'http'     => array('rule'=>'0','PRI'=>''),
+            'category' => array('rule'=>'1','PRI'=>'cid'),
+            'article'  => array('rule'=>'2','PRI'=>'id'),
+            'software' => array('rule'=>'2','PRI'=>'id'),
+            'tag'      => array('rule'=>'3','PRI'=>'id'),
+        );
         self::$config = $config;
+        //var_dump($config);
 	}
     private static function CPDIR($cid="0") {
         $C    = iCache::get('iCMS/category/'.$cid);
@@ -36,7 +44,7 @@ class iURL {
             $ii->dmpath = $dm->dmpath.'/'.$C[$akey];
         }else {
             $ii->pd     = $ii->pdir   = $ii->sdir;
-            $ii->dmpath = $ii->domain = $C['domain']?(strstr($C['domain'],'http://')?$C['domain']:'http://'.$C['domain']):'';
+            $ii->dmpath = $ii->domain = $C['domain']?('http://'.ltrim($C['domain'],'http://')):'';
         }
         return $ii;
     }
@@ -83,51 +91,72 @@ class iURL {
         $i        = new stdClass();
         $sURL     = self::$config['URL'];
         $html_dir = self::$config['html_dir'];
+        $router   = self::$config['router'];
         $category = array();
         $array    = $a;
-        switch($uri) {
-            case 'http':
+        $PRI      = $router[$uri]['PRI'];
+        $rule     = $router[$uri]['rule'];
+        switch($rule) {
+            case '0':
                 $i->href = $array['url'];
                 $url     = $array['urlRule'];
                 break;
-            case 'category':
+            case '1':
                 $category = $array;
                 $i->href  = $category['url'];
-                $url      = $category['mode']==0?'{PHP}':$category['categoryRule'];
-                ($category['password'] && $category['mode'] ==1) && $url = '{PHP}';
+                $url      = $category['mode']?$category['categoryRule']:'{PHP}';
+                ($category['password'] && $category['mode']=="1") && $url = '{PHP}';
+                if($url=='{PHP}'){
+                    $document_uri = $uri.'.php?';
+                    $category['categoryURI'] && $document_uri = $category['categoryURI'].'.php?';
+                    $document_uri.= $PRI.'='.$category[$PRI];
+                }
                 break;
-            case in_array($uri,array('article','content')):
+            case '2':
                 $array    = (array)$a[0];
                 $category = (array)$a[1];
                 $i->href  = $array['url'];
                 $url      = $category['mode']?$category['contentRule']:'{PHP}';
                 ($category['password'] && $category['mode']=="1") && $url = '{PHP}';
+                if($url=='{PHP}'){
+                    $document_uri = $uri.'.php?';
+                    $document_uri.= $PRI.'='.$array[$PRI];
+                    $i->pageurl = $document_uri.'&p={P}';
+                    strpos($i->pageurl,'http://')===false && $i->pageurl = rtrim($sURL,'/').'/'.$i->pageurl;
+                }
                 break;
-            case 'tag':
-                $array    = (array)$a[0];
-                $category = (array)$a[1];
-                $tag_cate = (array)$a[2];
-                $html_dir = self::$config['tag_dir'];
-                $sURL     = self::$config['tag_url'];
-                $i->href  = $array['url'];
-                //$a      = array_merge_recursive((array)$a[0],$category);
-                $url      = $category['urlRule'];
-                $tag_cate['urlRule'] && $url = $tag_cate['urlRule'];
+            case '3':
+                $array     = (array)$a[0];
+                $category  = (array)$a[1];
+                $_category = (array)$a[2];
+                $html_dir  = self::$config['tag_dir'];
+                $sURL      = self::$config['tag_url'];
+                $i->href   = $array['url'];
+                //$a       = array_merge_recursive((array)$a[0],$category);
+                $url       = $category['urlRule'];
+                $_category['urlRule'] && $url = $_category['urlRule'];
                 $url OR $url = self::$config['tag_rule'];
+                if($url=='{PHP}'){
+                    $document_uri = $uri.'.php?';
+                    $document_uri.= $PRI.'='.$array[$PRI];
+                }
                 break;
              default:
                 $url = $array['urlRule'];
         }
-//var_dump($a);
+        if($url=='{PHP}'){
+            strpos($document_uri,'http://')===false && $document_uri = rtrim($sURL,'/').'/'.$document_uri;
+            $i->href = $document_uri;
+        }
         if($i->href) return $i;
 
-        if(strstr($url,'{PHP}')===false) {
-        	self::$uriArray	= array($array,$category,(array)$tag_cate);
+        if(strpos($url,'{PHP}')===false) {
+        	self::$uriArray	= array($array,$category,(array)$_category);
 
-        	strstr($url,'{') && $url = preg_replace_callback ("/\{(.*?)\}/",'__iurl_rule__',$url);
+        	strpos($url,'{')===false OR $url = preg_replace_callback ("/\{(.*?)\}/",'__iurl_rule__',$url);
 
             $i->path = rtrim(iFS::path(iPATH.$html_dir.$url),'/') ;
-            if(strstr($html_dir,'..')===false) {
+            if(strpos($html_dir,'..')===false) {
                 $i->href = rtrim($sURL,'/').'/'.ltrim(iFS::path($html_dir.$url),'/') ;
             }else{
                 $i->href = rtrim($sURL,'/').'/'.ltrim(iFS::path($url),'/') ;
@@ -158,13 +187,13 @@ class iURL {
                 $i->hdir = dirname($i->href.'/'.$i->file);
             }
 //var_dump($i);
-            if(strstr($i->file,'{P}')===false) {
+            if(strpos($i->file,'{P}')===false) {
                 $i->pfile = $i->name."_{P}".$i->ext;
 			}else{
                 $i->pfile = $i->file;
             }
 
-	        if($uri=="http"||strstr($url,'http://')){
+	        if($rule=='0'||strpos($url,'http://')!==false){
                 $hi          = new stdClass();
                 $hi->href    = $url;
                 $hi->ext     = $i->ext;
@@ -173,7 +202,7 @@ class iURL {
 	        }
 //var_dump($i);
 //exit;
-			if($uri=='category') {
+			if($rule=='1') {
                 $m    = self::domain($array['cid']);
                 if($m->domain) {
                     $i->href   = str_replace($i->hdir,$m->dmpath,$i->href);
@@ -188,7 +217,7 @@ class iURL {
                     $i->dmdir  = iFS::path(iPATH.$html_dir);
                     $i->domain = $sURL;
                 }
-		        if(strstr($array['domain'],'http://')){
+		        if(strpos($array['domain'],'http://')!==false){
                     $i->href = $array['domain'];
 		        }
             }
@@ -202,23 +231,6 @@ class iURL {
            $i->name	= str_replace('{P}',1,$i->name);
 //var_dump($i);
 //exit;
-        }else {
-            $url = $uri.'.php?';
-	        switch($uri){
-	            case 'category':
-		            $array['categoryURI'] && $url = $array['categoryURI'].'.php?';
-		            $url.='cid='.$array['cid'];
-		            //$a['type'] && $url.="&type=".$a['type'];
-	            break;
-	            case 'article':
-	            	$url.='id='.$array['id'];
-	            	$i->pageurl	= $url.'&p={P}';
-					strstr($i->pageurl,'http://') OR $i->pageurl = rtrim($sURL,'/').'/'.$i->pageurl;
-	            break;
-	            case 'tag':$url.='id='.$array['id'];break;
-	        }
-			strstr($url,'http://') OR $url	= rtrim($sURL,'/').'/'.$url;
-            $i->href = $url;
         }
         return $i;
     }

@@ -75,7 +75,14 @@ class categoryApp{
         $category['pic']  = get_pic($category['pic']);
         $category['mpic'] = get_pic($category['mpic']);
         $category['spic'] = get_pic($category['spic']);
-
+        $category['hooks'] = array(
+            "appid" => $category['appid'],
+            "iid"   => $category['cid'],
+            "cid"   => $category['rootid'],
+            "suid"  => $category['userid'],
+            "title" => $category['name'],
+            "url"   => $category['url']
+        );
         if($tpl) {
             $category['mode'] && iCMS::set_html_url($iurl);
             iCMS::hooks('enable_comment',true);

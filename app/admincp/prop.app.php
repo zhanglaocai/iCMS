@@ -123,21 +123,50 @@ class propApp{
         iPHP::success('缓存更新完成!','js:1');
     }
     function cache(){
-    	$rs	= iDB::all("SELECT * FROM `#iCMS@__prop`",ARRAY_A);
+    	$rs	= iDB::all("SELECT * FROM `#iCMS@__prop`");
+        var_dump($rs);
     	foreach((array)$rs AS $row) {
-            $pkey = $row['cid'].$row['type'].$row['field'];
-            $cidA[$row['cid']][]   = $row;
-            $typeA[$row['type']][] = $row;
-    		$ctfA['c'.$row['cid'].'.'.$row['type'].'.'.$row['field']][]=$row;
-    		$tfA[$row['type'].'.'.$row['field']][$row['pid']]=$row;
+            $type_field_id[$row['type'].'/'.$row['field']][$row['pid']] =
+            $type_field_val[$row['type']][$row['field']][$row['val']]   = $row;
     	}
-    	foreach((array)$ctfA AS $k=>$a){
+        // prop/article/author
+        foreach((array)$type_field_id AS $key=>$a){
+            iCache::set('iCMS/prop/'.$key,$a,0);
+        }
+        // prop/article
+    	foreach((array)$type_field_val AS $k=>$a){
     		iCache::set('iCMS/prop/'.$k,$a,0);
     	}
-    	foreach((array)$tfA AS $k=>$a){
-    		iCache::set('iCMS/prop/'.$k,$a,0);
-    	}
-    	iCache::set('iCMS/prop/cid.cache',$cidA,0);
-    	iCache::set('iCMS/prop/type.cache',$typeA,0);
     }
+    function btn_group($field, $type = null,$target = null){
+        $type OR $type = iACP::$app_name;
+        $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
+        $target OR $target = $field;
+        echo '<div class="btn-group">'.
+        '<a class="btn dropdown-toggle iCMS-default" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>'.
+        '<ul class="dropdown-menu">';
+        foreach ((array)$propArray as $prop) {
+            echo '<li><a href="javascript:;" data-toggle="insert" data-target="#' . $target . '" data-value="' . $prop['val'] . '">' . $prop['name'] . '</a></li>';
+        }
+        echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&type='.$type.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
+        echo '</ul></div>';
+    }
+    function get_prop($field, $val = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {
+        $type OR $type = iACP::$app_name;
+        $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
+        $valArray  = explode(',', $val);
+        foreach ((array)$propArray AS $k => $P) {
+            if ($out == 'option') {
+                $opt.="<option value='{$P['val']}'" . (array_search($P['val'],$valArray)!==FALSE ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";
+            } elseif ($out == 'text') {
+                if (array_search($P['val'],$valArray)!==FALSE) {
+                    $flag = '<i class="fa fa-flag"></i> '.$P['name'];
+                    $opt .= ($url?'<a href="'.str_replace('{PID}',$P['val'],$url).'">'.$flag.'</a>':$flag).'<br />';
+                }
+            }
+        }
+        // $opt.='</select>';
+        return $opt;
+    }
+
 }

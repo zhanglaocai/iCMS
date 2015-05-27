@@ -277,43 +277,7 @@ class iCMS {
     public static function app_ref($app_name=true,$out=false) {
         $app_name===true && $app_name = self::$app_name;
         $rs    = iPHP::get_vars($app_name);
-        $param = array();
-        switch ($app_name) {
-            case 'article':
-                $param = array(
-                    'suid'  => (int)$rs['userid'],
-                    'iid'   => (int)$rs['id'],
-                    'cid'   => (int)$rs['cid'],
-                    'appid' => iCMS_APP_ARTICLE,
-                    'title' => $rs['title'],
-                );
-            break;
-            case 'category':
-                $param = array(
-                    'suid'  => (int)$rs['userid'],
-                    'iid'   => (int)$rs['cid'],
-                    'cid'   => (int)$rs['rootid'],
-                    'appid' => iCMS_APP_CATEGORY,
-                    'title' => $rs['name'],
-                );
-            break;
-            case 'tag':
-                $param = array(
-                    'suid'  => (int)$rs['uid'],
-                    'iid'   => (int)$rs['id'],
-                    'cid'   => (int)$rs['cid'],
-                    'appid' => iCMS_APP_TAG,
-                    'title' => $rs['name'],
-                );
-            break;
-        }
-        // if($out==='js'){
-        //     if($param){
-        //          echo '<script type="text/javascript"> var comment_param = '.json_encode($param).';</script>';
-        //     }
-        //     return;
-        // }
-        return $param;
+        return $rs['hooks'];
     }
 
     public static function get_category_ids($cid = "0",$all=true,$root_array=null) {
