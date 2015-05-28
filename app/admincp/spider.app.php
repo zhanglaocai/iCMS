@@ -1062,6 +1062,12 @@ class spiderApp {
         iPHP::import(iPHP_LIB.'/phpQuery.php');
         $ruleArray = explode("\n", $rules);
         foreach ($ruleArray AS $key => $rule) {
+            $rule = trim($rule);
+            if(strpos($rule, '<%SELF%>')!==false){
+              $content = str_replace('<%SELF%>',$content, $rule);
+              continue;
+            }
+
             list($_pattern, $_replacement) = explode("==", $rule);
             $_pattern     = trim($_pattern);
             $_replacement = trim($_replacement);
@@ -1126,6 +1132,7 @@ class spiderApp {
                 if(strpos($_replacement, '~S~')!==false){
                     $_replacement = str_replace('~S~',' ', $_replacement);
                 }
+
                 $replacement[$key] = $_replacement;
                 $pattern[$key] = '|' . $this->pregTag($_pattern) . '|is';
             }
