@@ -994,13 +994,14 @@ class spiderApp {
         }
 
         if ($data['json_decode']) {
-            $content = preg_replace_callback('/&#\d{2,5};/u','utf8_num_decode',$content);
-            $content = preg_replace_callback(array(
-                '/&#x([a-fA-F0-7]{2,8});/u',
-                '/%u([a-fA-F0-7]{2,8})/u',
-                '/\\\u([a-fA-F0-7]{2,8})/u'
-                ),'utf8_entity_decode',$content);
-            $content = htmlspecialchars_decode($content);
+            $content = json_decode($content);
+            // $content = preg_replace_callback('/&#\d{2,5};/u','utf8_num_decode',$content);
+            // $content = preg_replace_callback(array(
+            //     '/&#x([a-fA-F0-7]{2,8});/u',
+            //     '/%u([a-fA-F0-7]{2,8})/u',
+            //     '/\\\u([a-fA-F0-7]{2,8})/u'
+            //     ),'utf8_entity_decode',$content);
+            // $content = htmlspecialchars_decode($content);
         }
         if ($data['mergepage']) {
             $_content = $content;
