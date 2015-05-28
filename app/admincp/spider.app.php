@@ -1034,7 +1034,7 @@ class spiderApp {
             }
         }
         if ($data['json_decode']) {
-            $content = json_decode($content);
+            $content = json_decode($content,true);
             // $content = preg_replace_callback('/&#\d{2,5};/u','utf8_num_decode',$content);
             // $content = preg_replace_callback(array(
             //     '/&#x([a-fA-F0-7]{2,8});/u',
@@ -1044,7 +1044,7 @@ class spiderApp {
             // $content = htmlspecialchars_decode($content);
         }
         if($data['array']){
-        	return array($content);
+        	return (array)$content;
         }
         return $content;
     }
