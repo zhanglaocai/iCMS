@@ -935,29 +935,33 @@ class spiderApp {
             phpQuery::unloadDocuments($doc->getDocumentID());
             unset($doc);
         }else{
-            $data_rule = $this->pregTag($data['rule']);
-            if ($this->contTest) {
-                print_r(iS::escapeStr($data_rule));
-                echo "<hr />";
-            }
-            if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $data_rule)) {
-                if ($data['multi']) {
-                    preg_match_all('|' . $data_rule . '|is', $html, $matches, PREG_SET_ORDER);
-                    $conArray = array();
-                    foreach ((array) $matches AS $mkey => $mat) {
-                        $conArray[] = $mat['content'];
-                    }
-                    $content = implode('#--iCMS.PageBreak--#', $conArray);
-                    if ($this->contTest) {
-                        print_r(htmlspecialchars($content));
-                        echo "<hr />";
+            if(trim($data['rule'])=='<%content%>'){
+                $content = $html;
+            }else{
+                $data_rule = $this->pregTag($data['rule']);
+                if ($this->contTest) {
+                    print_r(iS::escapeStr($data_rule));
+                    echo "<hr />";
+                }
+                if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $data_rule)) {
+                    if ($data['multi']) {
+                        preg_match_all('|' . $data_rule . '|is', $html, $matches, PREG_SET_ORDER);
+                        $conArray = array();
+                        foreach ((array) $matches AS $mkey => $mat) {
+                            $conArray[] = $mat['content'];
+                        }
+                        $content = implode('#--iCMS.PageBreak--#', $conArray);
+                        if ($this->contTest) {
+                            print_r(htmlspecialchars($content));
+                            echo "<hr />";
+                        }
+                    } else {
+                        preg_match('|' . $data_rule . '|is', $html, $matches, $PREG_SET_ORDER);
+                        $content = $matches['content'];
                     }
                 } else {
-                    preg_match('|' . $data_rule . '|is', $html, $matches, $PREG_SET_ORDER);
-                    $content = $matches['content'];
+                    $content = $data_rule;
                 }
-            } else {
-                $content = $data_rule;
             }
         }
 		$html = null;
