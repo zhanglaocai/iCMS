@@ -993,16 +993,6 @@ class spiderApp {
             }
         }
 
-        if ($data['json_decode']) {
-            $content = json_decode($content);
-            // $content = preg_replace_callback('/&#\d{2,5};/u','utf8_num_decode',$content);
-            // $content = preg_replace_callback(array(
-            //     '/&#x([a-fA-F0-7]{2,8});/u',
-            //     '/%u([a-fA-F0-7]{2,8})/u',
-            //     '/\\\u([a-fA-F0-7]{2,8})/u'
-            //     ),'utf8_entity_decode',$content);
-            // $content = htmlspecialchars_decode($content);
-        }
         if ($data['mergepage']) {
             $_content = $content;
             preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is", $_content, $picArray);
@@ -1042,6 +1032,16 @@ class spiderApp {
                 $this->contTest && iPHP::$dialog['alert']='window';
                 iPHP::alert($name . '内容为空!请检查,规则是否正确!!');
             }
+        }
+        if ($data['json_decode']) {
+            $content = json_decode($content);
+            // $content = preg_replace_callback('/&#\d{2,5};/u','utf8_num_decode',$content);
+            // $content = preg_replace_callback(array(
+            //     '/&#x([a-fA-F0-7]{2,8});/u',
+            //     '/%u([a-fA-F0-7]{2,8})/u',
+            //     '/\\\u([a-fA-F0-7]{2,8})/u'
+            //     ),'utf8_entity_decode',$content);
+            // $content = htmlspecialchars_decode($content);
         }
         if($data['array']){
         	return array($content);
