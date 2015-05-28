@@ -249,7 +249,10 @@ $(function(){
                       <div class="clearfloat mb10"></div>
                     <label class="checkbox">
                       <input type="checkbox" name="rule[data][<?php echo $dkey;?>][dom]" value="1"<?php if($data['dom']){ echo ' checked="true"';};?>>
-                      使用phpQuery匹配</label>
+                      phpQuery匹配</label>
+                    <label class="checkbox">
+                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][capture]" value="1"<?php if($data['capture']){ echo ' checked="true"';};?>>
+                      抓取结果</label>
                     <div class="clearfloat mb10"></div></td>
                   <td><a class="btn btn-small delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
                 </tr>
@@ -306,7 +309,10 @@ $(function(){
                     <div class="clearfloat mb10"></div>
                     <label class="checkbox">
                       <input type="checkbox" name="rule[data][__NO__][dom]" value="1">
-                      使用phpQuery匹配</label>
+                      phpQuery匹配</label>
+                    <label class="checkbox">
+                      <input type="checkbox" name="rule[data][__NO__][capture]" value="1">
+                      抓取结果</label>
                     <div class="clearfloat mb10"></div></td>
                   <td><a class="btn btn-small delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
                 </tr>

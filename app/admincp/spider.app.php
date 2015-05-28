@@ -716,8 +716,23 @@ class spiderApp {
         $responses['reurl'] = $this->url;
         $rule['__url__']	= $this->url;
         foreach ((array)$dataArray AS $key => $data) {
-            $content = $this->content($html,$data,$rule);
-            $dname   = $data['name'];
+            $content_html = $html;
+            $dname = $data['name'];
+
+            if (strpos($dname,'DATA:')!== false){
+                $dname = str_replace('DATA:', '', $dname);
+                $content_html = $responses[$dname];
+                unset($responses[$dname]);
+            }else{
+                $url_dkey = 'PRE:'.$dname;
+                if(isset($responses[$url_dkey])){
+                    $content_html = $responses[$url_dkey];
+                    unset($responses[$url_dkey]);
+                }
+            }
+            $content = $this->content($content_html,$data,$rule);
+            unset($content_html);
+
             if (strpos($dname,'.')!== false){
                 $f_key = substr($dname,0,stripos($dname, "."));
                 $s_key = substr(strrchr($dname, "."), 1);
@@ -1006,10 +1021,14 @@ class spiderApp {
                 unset($newcontent);
             }
         }
+        $data['trim'] && $content = trim($content);
+        if ($data['capture']) {
+            $capture = str_replace ('\\','',$content);
+            $content = $this->remote($capture);
+        }
         if ($data['cleanafter']) {
             $content = $this->dataClean($data['cleanafter'], $content);
         }
-        $data['trim'] && $content = trim($content);
         if ($data['empty'] && empty($content)) {
             if($this->work){
                 echo "\n[".$name . "内容为空!请检查,规则是否正确!]\n";
