@@ -79,7 +79,7 @@ class iPatch {
 			$dp		= iPATH.$folder;
 			if(!iFS::ex($dp)){
 				$msg.= '创建 ['.$dp.'] 文件夹<iCMS>';
-				//self::mkdir($path.'/'.$folder);
+				iFS::mkdir($dp);
 			}
 			if (empty($file['folder'])){
 				$fp	= iPATH.$file['filename'];
