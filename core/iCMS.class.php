@@ -60,9 +60,9 @@ class iCMS {
 
         //config.php 中开启iPHP_APP_CONF后 此处设置无效,
         define('iPHP_APP_CONF', iPHP_CONF_DIR.'/'.$site);//网站配置目录
-        $app_config_file = iPHP_APP_CONF.'/config.php'; //网站配置文件
-        @is_file($app_config_file) OR exit('<h1>'.iPHP_APP.' 运行出错.找不到"'.$site.'"网站的配置文件!(code:002)</h1>');
-        $config = require $app_config_file;
+        define('iPHP_APP_CONFIG', iPHP_APP_CONF.'/config.php');//网站配置文件
+        @is_file(iPHP_APP_CONFIG) OR exit('<h1>'.iPHP_APP.' 运行出错.找不到"'.$site.'"网站的配置文件!(code:002)</h1>');
+        $config = require iPHP_APP_CONFIG;
 
         //config.php 中开启后 此处设置无效
         defined('iPHP_DEBUG')        OR define('iPHP_DEBUG', $config['debug']['php']);       //程序调试模式
