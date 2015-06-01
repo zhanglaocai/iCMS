@@ -220,7 +220,6 @@ class iPHP{
     }
     public static function QRcode($content){
         self::import(iPHP_LIB.'/phpqrcode.php');
-		$content  = iS::escapeStr($content);
 		$expires  = 86400;
         header("Cache-Control: maxage=".$expires);
         header('Last-Modified: '.gmdate('D, d M Y H:i:s',time()).' GMT');
@@ -231,7 +230,7 @@ class iPHP{
 			$name     = substr(md5($content), 8,16);
 			$filepath = iPHP_APP_CACHE.'/QRcode.'.$name.'.png';
 		}
-		@is_file($filepath) OR QRcode::png($content,$filepath,'L', 6, 2);
+		@is_file($filepath) OR QRcode::png($content,$filepath,'L', 4, 2);
 		if($filepath){
 			$png = readfile($filepath);
 			exit($png);
