@@ -809,6 +809,7 @@ class spiderApp {
                                         continue;
                                     }
                                 }
+                                $href = str_replace('<%url%>',$href, $rule['page_url']);
                                 $page_url_array[$pn] = $this->_url_complement($rule['__url__'],$href);
                             }
                         }
