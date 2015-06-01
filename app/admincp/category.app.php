@@ -12,14 +12,27 @@
 defined('iPHP') OR exit('What are you doing?');
 iPHP::app('category.class','include');
 class categoryApp extends category{
-    function __construct($appid = 1) {
-        $this->name_text = "栏目";
-        $this->appid     = iCMS_APP_ARTICLE;
+    protected $category_uri    = APP_URI;
+    protected $category_furi   = APP_FURI;
+    protected $category_name   = "栏目";
+    protected $_app            = 'article';
+    protected $_app_name       = '文章';
+    protected $_app_table      = 'article';
+    protected $_app_cid        = 'cid';
+    protected $_app_indexTPL   = '{iTPL}/category.index.htm';
+    protected $_app_listTPL    = '{iTPL}/category.list.htm';
+    protected $_app_contentTPL = '{iTPL}/article.htm';
+
+    function __construct($appid = null) {
         $this->cid       = (int)$_GET['cid'];
+        $this->appid     = iCMS_APP_ARTICLE;
         $appid          && $this->appid = $appid;
         $_GET['appid']  && $this->appid = (int)$_GET['appid'];
+        $this->category_uri .='&appid='.$this->appid;
+        $this->category_furi.='&appid='.$this->appid;
         parent::__construct($this->appid);
     }
+
     function do_add(){
         if($this->cid) {
             iACP::CP($this->cid,'e','page');
@@ -39,15 +52,16 @@ class categoryApp extends category{
                 'status'       => '1',
                 'isexamine'    => '1',
                 'issend'       => '1',
+                'hasbody'      => '2',
                 'ordernum'     => '0',
                 'mode'         => '0',
-                'htmlext'      => '.html',
+                'htmlext'      => iCMS::$config['router']['html_ext'],
                 'categoryURI'  => 'category',
-                'categoryRule' => '{CDIR}/index{EXT}',
-                'contentRule'  => '{CDIR}/{YYYY}/{MM}{DD}/{ID}{EXT}',
-                'indexTPL'     => $this->def_indexTPL?$this->def_indexTPL:'{iTPL}/category.index.htm',
-                'listTPL'      => $this->def_listTPL?$this->def_listTPL:'{iTPL}/category.list.htm',
-                'contentTPL'   => $this->def_contentTPL?$this->def_contentTPL:'{iTPL}/article.htm',
+                'categoryRule' => '/{CDIR}/index'.iCMS::$config['router']['html_ext'],
+                'contentRule'  => '/{CDIR}/{YYYY}/{MM}{DD}/{ID}'.iCMS::$config['router']['html_ext'],
+                'indexTPL'     => $this->_app_indexTPL,
+                'listTPL'      => $this->_app_listTPL,
+                'contentTPL'   => $this->_app_contentTPL,
                 'metadata'     => '',
                 'contentprop'  => '',
             );
@@ -111,12 +125,12 @@ class categoryApp extends category{
                 exit;
             }
         }
-        ($cid && $cid==$rootid) && iPHP::alert('不能以自身做为上级'.$this->name_text);
-        empty($name) && iPHP::alert($this->name_text.'名称不能为空!');
+        ($cid && $cid==$rootid) && iPHP::alert('不能以自身做为上级'.$this->category_name);
+        empty($name) && iPHP::alert($this->category_name.'名称不能为空!');
 		if($metadata){
 	        $md	= array();
 			foreach($metadata['key'] AS $_mk=>$_mval){
-				!preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iPHP::alert($this->name_text.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
+				!preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iPHP::alert($this->category_name.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
 				$md[$_mval] = $metadata['value'][$_mk];
 			}
 			$metadata = addslashes(serialize($md));
@@ -136,7 +150,7 @@ class categoryApp extends category{
         		iPHP::alert('伪静态模式下版块URL规则<hr />必需要有<br />{CDIR}版块目录<br />或者<br />{CID},{0xCID}版块ID');
         	}
         	if(strpos($contentRule,'{ID}')=== FALSE && strpos($contentRule,'{0xID}')=== FALSE && strpos($contentRule,'{LINK}')=== FALSE){
-        		iPHP::alert('伪静态模式下内容URL规则<hr />必需要有<br />{ID}文章ID <br />或者<br />{0xID}文章ID补零<br />或者<br />{LINK}文章自定义链接');
+        		iPHP::alert('伪静态模式下内容URL规则<hr />必需要有<br />{ID}'.$this->_app_name.'ID <br />或者<br />{0xID}'.$this->_app_name.'ID补零<br />或者<br />{LINK}'.$this->_app_name.'自定义链接');
         	}
         }
         iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
@@ -174,7 +188,7 @@ class categoryApp extends category{
 	            $this->cache(false,$this->appid);
 	            $this->cahce_one($cid);
             }
-            $msg=$this->name_text."添加完成!";
+            $msg = $this->category_name."添加完成!";
         }else {
             if(empty($dir) && empty($url)) {
                 $dir = strtolower(pinyin($name));
@@ -186,10 +200,10 @@ class categoryApp extends category{
             iDB::update('category', $data, array('cid'=>$cid));
             map::diff($pid,$_pid,$cid);
             $this->cahce_one($cid);
-            $msg=$this->name_text."编辑完成!";
+            $msg = $this->category_name."编辑完成!";
         }
         $hasbody && iCache::set('iCMS/category/'.$cid.'.body',$body,0);
-        iPHP::success($msg,'url:'.APP_URI);
+        iPHP::success($msg,'url:'.$this->category_uri);
     }
 
     function do_update(){
@@ -201,7 +215,7 @@ class categoryApp extends category{
     	iPHP::success('更新完成');
     }
     function do_batch(){
-        $_POST['id'] OR iPHP::alert("请选择要操作的".$this->name_text);
+        $_POST['id'] OR iPHP::alert("请选择要操作的".$this->category_name);
         $id_array = (array)$_POST['id'];
         $ids      = implode(',',$id_array);
         $batch    = $_POST['batch'];
@@ -332,17 +346,17 @@ class categoryApp extends category{
     function do_del($cid = null,$dialog=true){
         $cid===null && $cid=(int)$_GET['cid'];
         iACP::CP($cid,'d','alert');
-        $msg    = '请选择要删除的'.$this->name_text.'!';
+        $msg    = '请选择要删除的'.$this->category_name.'!';
 
         if(empty($this->_array[$cid])) {
-            $this->delcontent($cid);
+            $this->del_content($cid);
             iDB::query("DELETE FROM `#iCMS@__category` WHERE `cid` = '$cid'");
             iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `node` = '$cid' AND `appid` = '".$this->appid."';");
             iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$cid' AND `appid` = '".iCMS_APP_CATEGORY."' ;");
             $this->del_cahce($cid);
             $msg = '删除成功!';
         }else {
-            $msg = '请先删除本'.$this->name_text.'下的子'.$this->name_text.'!';
+            $msg = '请先删除本'.$this->category_name.'下的子'.$this->category_name.'!';
         }
         $this->do_cache(false);
         $dialog && iPHP::success($msg,'js:parent.$("#'.$cid.'").remove();');
@@ -388,7 +402,7 @@ class categoryApp extends category{
             <span class="add-on">'.$app_array[$C['appid']].'</span>
             <span class="add-on">'.$C['name'].'</span>
             <span class="add-on"><input type="checkbox" name="cpower[]" value="'.$C['cid'].'"> 查询</span>
-            <span class="add-on tip" title="添加子'.$this->name_text.'的权限"><input type="checkbox" name="cpower[]" value="'.$C['cid'].':a" /> 添加</span>
+            <span class="add-on tip" title="添加子'.$this->category_name.'的权限"><input type="checkbox" name="cpower[]" value="'.$C['cid'].':a" /> 添加</span>
             <span class="add-on"><input type="checkbox" name="cpower[]" value="'.$C['cid'].':e" /> 编辑</span>
             <span class="add-on"><input type="checkbox" name="cpower[]" value="'.$C['cid'].':d" /> 删除</span>
         </div>';
@@ -432,10 +446,11 @@ class categoryApp extends category{
     }
 
     function li($C) {
-        $html='<div class="row-fluid status'.$C['status'].'"><span class="ordernum"><input'.$readonly.' type="text" cid="'.$C['cid'].'" name="ordernum['.$C['cid'].']" value="'.$C['ordernum'].'" style="width:32px;"/></span>';
+        $html='<div class="row-fluid status'.$C['status'].'">';
+        $html.='<span class="ordernum"><input'.$readonly.' type="text" cid="'.$C['cid'].'" name="ordernum['.$C['cid'].']" value="'.$C['ordernum'].'" style="width:32px;"/></span>';
         $html.='<span class="name">';
         $html.='<input'.$readonly.($C['rootid']==0?' style="font-weight:bold"':'').' type="text" name="name['.$C['cid'].']" value="'.$C['name'].'"/> ';
-        $C['status'] OR $html.=' <i class="fa fa-eye-slash" title="隐藏'.$this->name_text.'"></i> ';
+        $C['status'] OR $html.=' <i class="fa fa-eye-slash" title="隐藏'.$this->category_name.'"></i> ';
         $html.='<span class="label label-success">cid:<a href="'.$C['iurl']->href.'" target="_blank">'.$C['cid'].'</a></span> ';
         $C['url'] && $html.=' <span class="label label-warning">∞</span>';
         $C['pid'] && $html.=' <span class="label label-inverse">pid:'.$C['pid'].'</span>';
@@ -443,17 +458,17 @@ class categoryApp extends category{
         $html.=' <span class="label label-info">'.$C['count'].'条记录</span>';
         $C['creator'] && $html.=' <span class="label">创建者:'.$C['creator'].'</span>';
         $html.='</span><span class="operation">';
-        iACP::CP($C['cid'],'a')  && $html.='<a href="'.APP_URI.'&do=add&rootid='.$C['cid'].'" class="btn btn-small"><i class="fa fa-plus-square"></i> 添加子'.$this->name_text.'</a> ';
+        iACP::CP($C['cid'],'a')  && $html.='<a href="'.$this->category_uri.'&do=add&rootid='.$C['cid'].'" class="btn btn-small"><i class="fa fa-plus-square"></i> 添加子'.$this->category_name.'</a> ';
         $html.=$this->treebtn($C);
-        iACP::CP($C['cid'],'e') && $html.='<a href="'.APP_URI.'&do=add&cid='.$C['cid'].'" title="编辑'.$this->name_text.'设置"  class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a> ';
-        iACP::CP($C['cid'],'d') && $html.='<a href="'.APP_FURI.'&do=del&cid='.$C['cid'].'" class="btn btn-small" onClick="return confirm(\'确定要删除此'.$this->name_text.'?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a>';
+        iACP::CP($C['cid'],'e') && $html.='<a href="'.$this->category_uri.'&do=add&cid='.$C['cid'].'" title="编辑'.$this->category_name.'设置"  class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a> ';
+        iACP::CP($C['cid'],'d') && $html.='<a href="'.$this->category_furi.'&do=del&cid='.$C['cid'].'" class="btn btn-small" onClick="return confirm(\'确定要删除此'.$this->category_name.'?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a>';
         $html.='</span></div>';
         return $html;
     }
     function check_dir($dir,$appid,$url,$cid=0){
         $sql ="SELECT `dir` FROM `#iCMS@__category` where `dir` ='$dir' AND `appid`='$appid'";
         $cid && $sql.=" AND `cid` !='$cid'";
-        iDB::value($sql) && empty($url) && iPHP::alert('该'.$this->name_text.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
+        iDB::value($sql) && empty($url) && iPHP::alert('该'.$this->category_name.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
     }
 
     function recount(){
@@ -495,23 +510,23 @@ class categoryApp extends category{
     }
 
     //接口
-    function delcontent($cid){
+    function del_content($cid){
 
     }
     function merge($tocid,$cid){
-        iDB::query("UPDATE `#iCMS@__article` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
+        iDB::query("UPDATE `#iCMS@__".$this->_app_table."` SET `".$this->_app_cid."` ='$tocid' WHERE `".$this->_app_cid."` ='$cid'");
         iDB::query("UPDATE `#iCMS@__tags` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
         //iDB::query("UPDATE `#iCMS@__push` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
         iDB::query("UPDATE `#iCMS@__prop` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
     }
     function update_count($cid){
-        $cc = iDB::value("SELECT count(*) FROM `#iCMS@__article` where `cid`='$cid'");
+        $cc = iDB::value("SELECT count(*) FROM `#iCMS@__".$this->_app_table."` where `".$this->_app_cid."`='$cid'");
         iDB::query("UPDATE `#iCMS@__category` SET `count` ='$cc' WHERE `cid` ='$cid'");
     }
     function listbtn($rs){
         $a='<a href="'.iURL::get('category',$rs)->href.'" class="btn btn-small"><i class="fa fa-link"></i> 访问</a> ';
-        iACP::CP($rs['cid'],'ca') && $a.='<a href="'.__ADMINCP__.'=article&do=add&cid='.$rs['cid'] .'" class="btn btn-small"><i class="fa fa-edit"></i> 添加文章</a> ';
-        iACP::CP($rs['cid'],'cs') && $a.='<a href="'.__ADMINCP__.'=article&cid='.$rs['cid'] .'&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> 文章管理</a> ';
+        iACP::CP($rs['cid'],'ca') && $a.='<a href="'.__ADMINCP__.'='.$this->_app.'&do=add&'.$this->_app_cid.'='.$rs['cid'] .'" class="btn btn-small"><i class="fa fa-edit"></i> 添加'.$this->_app_name.'</a> ';
+        iACP::CP($rs['cid'],'cs') && $a.='<a href="'.__ADMINCP__.'='.$this->_app.'&'.$this->_app_cid.'='.$rs['cid'] .'&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> '.$this->_app_name.'管理</a> ';
         return $a;
     }
     function treebtn($rs){
@@ -520,7 +535,7 @@ class categoryApp extends category{
     function batchbtn(){
         return '<li><a data-toggle="batch" data-action="mode"><i class="fa fa-cogs"></i> 访问模式</a></li>
                 <li class="divider"></li>
-                <li><a data-toggle="batch" data-action="categoryRule"><i class="fa fa-link"></i> '.$this->name_text.'规则</a></li>
+                <li><a data-toggle="batch" data-action="categoryRule"><i class="fa fa-link"></i> '.$this->category_name.'规则</a></li>
                 <li><a data-toggle="batch" data-action="contentRule"><i class="fa fa-link"></i> 内容规则</a></li>
                 <li><a data-toggle="batch" data-action="urlRule"><i class="fa fa-link"></i> 其它规则</a></li>
                 <li class="divider"></li>

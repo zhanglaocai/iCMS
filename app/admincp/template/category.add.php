@@ -34,27 +34,27 @@ $(function(){
 <div class="iCMS-container">
   <div class="widget-box">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-plus-square"></i> </span>
-      <h5 class="brs"><?php echo empty($this->cid)?'添加':'修改' ; ?><?php echo $this->name_text;?></h5>
+      <h5 class="brs"><?php echo empty($this->cid)?'添加':'修改' ; ?><?php echo $this->category_name;?></h5>
       <ul class="nav nav-tabs" id="category-add-tab">
         <li class="active"><a href="#category-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
         <li><a href="#category-add-url" data-toggle="tab"><i class="fa fa-link"></i> URL规则设置</a></li>
         <li><a href="#category-add-tpl" data-toggle="tab"><i class="fa fa-columns"></i> 模版设置</a></li>
         <li><a href="#category-add-user" data-toggle="tab"><i class="fa fa-user"></i> 用户设置</a></li>
-        <li><a href="#category-add-prop" data-toggle="tab"><i class="fa fa-wrench"></i> <?php echo $this->name_text;?>附加属性</a></li>
+        <li><a href="#category-add-prop" data-toggle="tab"><i class="fa fa-wrench"></i> <?php echo $this->category_name;?>附加属性</a></li>
         <li><a href="#category-add-art" data-toggle="tab"><i class="fa fa-wrench"></i> 内容扩展属性</a></li>
         <li><a href="#category-add-body" data-toggle="tab"><i class="fa fa-wrench"></i> HTML</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
-      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-category" target="iPHP_FRAME">
+      <form action="<?php echo $this->category_furi; ?>&do=save" method="post" class="form-inline" id="iCMS-category" target="iPHP_FRAME">
         <input name="cid" type="hidden" value="<?php echo $rs['cid']  ; ?>" />
         <input name="_pid" type="hidden" value="<?php echo $rs['pid']  ; ?>" />
         <div id="category-add" class="tab-content">
           <div id="category-add-base" class="tab-pane active">
-            <div class="input-prepend"> <span class="add-on">上级<?php echo $this->name_text;?></span>
+            <div class="input-prepend"> <span class="add-on">上级<?php echo $this->category_name;?></span>
               <?php if(iACP::CP($rootid) || empty($rootid)) {   ?>
               <select name="rootid" class="span3 chosen-select">
-                <option value="0">======顶级<?php echo $this->name_text;?>=====</option>
+                <option value="0">======顶级<?php echo $this->category_name;?>=====</option>
                 <?php echo $this->select('a',$rootid,0,1,true);?>
               </select>
               <?php }else { ?>
@@ -63,16 +63,16 @@ $(function(){
               <input readonly="true" value="<?php echo $this->category[$rootid]['name'] ; ?>" type="text" class="txt" />
               <?php } ?>
             </div>
-            <span class="help-inline">本<?php echo $this->name_text;?>的上级<?php echo $this->name_text;?>或分类</span>
+            <span class="help-inline">本<?php echo $this->category_name;?>的上级<?php echo $this->category_name;?>或<?php echo $this->category_name;?></span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on"><?php echo $this->name_text;?>属性</span>
-              <select name="pid[]" id="pid" class="chosen-select span6" data-placeholder="请选择<?php echo $this->name_text;?>属性..." multiple="multiple">
-                <option value="0">普通<?php echo $this->name_text;?>[pid='0']</option>
+            <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>属性</span>
+              <select name="pid[]" id="pid" class="chosen-select span6" data-placeholder="请选择<?php echo $this->category_name;?>属性..." multiple="multiple">
+                <option value="0">普通<?php echo $this->category_name;?>[pid='0']</option>
                 <?php echo iACP::getProp("pid") ; ?>
               </select>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on"><?php echo $this->name_text;?>名称</span>
+            <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>名称</span>
               <?php if(empty($this->cid)){?>
               <textarea name="name" id="name" class="span6" style="height: 150px;width:600;"><?php echo $rs['name'] ; ?></textarea>
               <?php }else{?>
@@ -80,10 +80,10 @@ $(function(){
               <?php }?>
             </div>
             <?php if(empty($this->cid)){?>
-            <span class="help-inline"><span class="label label-important">可批量添加<?php echo $this->name_text;?>,每行一个</span></span>
+            <span class="help-inline"><span class="label label-important">可批量添加<?php echo $this->category_name;?>,每行一个</span></span>
             <?php }?>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on"><?php echo $this->name_text;?>别名</span>
+            <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>别名</span>
               <input type="text" name="subname" class="span6" id="subname" value="<?php echo $rs['subname'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
@@ -110,20 +110,20 @@ $(function(){
               <input type="text" name="keywords" class="span6" id="keywords" value="<?php echo $rs['keywords'] ; ?>" onkeyup="javascript:this.value=this.value.replace(/，/ig,',');"/>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend" style="width:100%;"><span class="add-on"><?php echo $this->name_text;?>简介</span>
+            <div class="input-prepend" style="width:100%;"><span class="add-on"><?php echo $this->category_name;?>简介</span>
               <textarea name="description" id="description" class="span6" style="height: 150px;width:600;"><?php echo $rs['description'] ; ?></textarea>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">外部链接</span>
               <input type="text" name="url" class="span6" id="url" value="<?php echo $rs['url'] ; ?>"/>
             </div>
-            <span class="help-inline"><span class="label label-important">外部链接设置后所有项目无效,此<?php echo $this->name_text;?>仅为一个链接.不设置请留空</span></span>
+            <span class="help-inline"><span class="label label-important">外部链接设置后所有项目无效,此<?php echo $this->category_name;?>仅为一个链接.不设置请留空</span></span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on"><?php echo $this->name_text;?>排序</span>
+            <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>排序</span>
               <input id="ordernum" class="span1" value="<?php echo $rs['ordernum'] ; ?>" name="ordernum" type="text"/>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on"><?php echo $this->name_text;?>状态</span>
+            <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>状态</span>
               <div class="switch" data-on-label="显示" data-off-label="隐藏">
                 <input type="checkbox" data-type="switch" name="status" id="status" <?php echo $rs['status']?'checked':''; ?>/>
               </div>
@@ -156,13 +156,13 @@ $(function(){
               <input type="text" name="htmlext" class="span3" id="htmlext" value="<?php echo $rs['htmlext'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on"><?php echo $this->name_text;?>规则</span>
+            <div class="input-prepend input-append"> <span class="add-on"><?php echo $this->category_name;?>规则</span>
               <input type="text" name="categoryRule" class="span5" id="categoryRule" value="<?php echo $rs['categoryRule'] ; ?>"/>
               <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
                 <ul class="dropdown-menu">
-                  <li><a href="{CID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{CID}</span> <?php echo $this->name_text;?>ID</a></li>
-                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{CDIR}</span> <?php echo $this->name_text;?>目录</a></li>
-                  <li><a href="{0xCID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{0xCID}</span> <?php echo $this->name_text;?>ID补零（8位）</a></li>
+                  <li><a href="{CID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{CID}</span> <?php echo $this->category_name;?>ID</a></li>
+                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{CDIR}</span> <?php echo $this->category_name;?>目录</a></li>
+                  <li><a href="{0xCID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{0xCID}</span> <?php echo $this->category_name;?>ID补零（8位）</a></li>
                   <li class="divider"></li>
                   <li><a href="{MD5}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{MD5}</span> 文章ID(16位)</a></li>
                   <li class="divider"></li>
@@ -179,9 +179,9 @@ $(function(){
               <input type="text" name="contentRule" class="span5" id="contentRule" value="<?php echo $rs['contentRule'] ; ?>"/>
               <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
                 <ul class="dropdown-menu">
-                  <li><a href="{CID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CID}</span> <?php echo $this->name_text;?>ID</a></li>
-                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CDIR}</span> <?php echo $this->name_text;?>目录</a></li>
-                  <li><a href="{CPDIR}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CPDIR}</span> <?php echo $this->name_text;?>目录(含父目录)</a></li>
+                  <li><a href="{CID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CID}</span> <?php echo $this->category_name;?>ID</a></li>
+                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CDIR}</span> <?php echo $this->category_name;?>目录</a></li>
+                  <li><a href="{CPDIR}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CPDIR}</span> <?php echo $this->category_name;?>目录(含父目录)</a></li>
                   <li class="divider"></li>
                   <li><a href="{YYYY}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{YYYY}</span> 4位数年份2012</a></li>
                   <li><a href="{YY}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{YY}</span> 2位数年份12</a></li>
@@ -218,9 +218,9 @@ $(function(){
                   <li><a href="{ZH_CN}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-important">{ZH_CN}</span> 标签名(中文)</a></li>
                   <li><a href="{NAME}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-important">{NAME}</span> 标签名</a></li>
                   <li class="divider"></li>
-                  <li><a href="{TCID}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{TCID}</span> 分类ID</a></li>
-                  <li><a href="{TCDIR}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{TCDIR}</span> 分类目录</a></li>
-                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{CDIR}</span> <?php echo $this->name_text;?>目录</a></li>
+                  <li><a href="{TCID}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{TCID}</span> <?php echo $this->category_name;?>ID</a></li>
+                  <li><a href="{TCDIR}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{TCDIR}</span> <?php echo $this->category_name;?>目录</a></li>
+                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{CDIR}</span> <?php echo $this->category_name;?>目录</a></li>
                   <li class="divider"></li>
                   <li><a href="{P}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{P}</span> 分页数</a></li>
                   <li><a href="{EXT}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{EXT}</span> 后缀</a></li>
