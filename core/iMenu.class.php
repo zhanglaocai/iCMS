@@ -29,8 +29,11 @@ class iMenu {
 
 		$app           = $_GET['app']?$_GET['app']:'home';
 		$this->app_uri = $this->menu_uri[$app];
-		$_GET['do'] && $this->do_uri = $app.'&do='.$_GET['do'];
-		$_GET['tab']&& $this->do_uri = $app.'&tab='.$_GET['tab'];
+		$this->do_uri  = $app;
+		$_GET['appid']&& $this->do_uri.= '&appid='.(int)$_GET['appid'];
+		$_GET['do']   && $this->do_uri.= '&do='.$_GET['do'];
+		$_GET['tab']  && $this->do_uri.= '&tab='.$_GET['tab'];
+
 		$this->do_mid = $this->app_uri[$this->do_uri];
 		$this->do_mid OR $this->do_mid = $this->app_uri[$app];
 		$this->do_mid OR $this->do_mid = $this->app_uri['#'];
