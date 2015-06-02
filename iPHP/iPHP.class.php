@@ -35,6 +35,7 @@ class iPHP{
         self::$iTPL->register_modifier("htmlcut","htmlcut");
         self::$iTPL->register_modifier("cnlen","cstrlen");
         self::$iTPL->register_modifier("html2txt","html2text");
+        self::$iTPL->register_modifier("key2num","key2num");
         //self::$iTPL->register_modifier("pinyin","GetPinyin");
         self::$iTPL->register_modifier("unicode","get_unicode");
         //self::$iTPL->register_modifier("small","gethumb");

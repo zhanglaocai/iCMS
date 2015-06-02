@@ -218,7 +218,7 @@ function cnum($subject){
 
     return $subject;
 }
-function _archive_date($date){
+function archive_date($date){
     $limit = time() - $date;
     if($limit <= 86400){
         return '今天';
@@ -228,4 +228,14 @@ function _archive_date($date){
         //return get_date($date,'dm');
         return '<span class="day">'.get_date($date,'d').'</span><span class="mon">'.get_date($date,'m').'月</span>';
     }
+}
+function key2num($resource){
+    $sort_key = 0;
+    // $_release = array();
+    foreach ((array)$resource as $key => $value) {
+        $_resource[$sort_key]= $value;
+        // $_release[$sort_key] = $value['items'][0];
+        ++$sort_key;
+    }
+    return $_resource;
 }

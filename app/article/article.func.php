@@ -275,7 +275,7 @@ function __article_array($vars,$variable){
                 $value['total'] = $total;
             }
             if($vars['archive']=="date"){
-                $_date = _archive_date($value['postime']);
+                $_date = archive_date($value['postime']);
                 //var_dump($_date);
                 //$_date = get_date($value['postime'],'Ymd');
                 unset($resource[$key]);
