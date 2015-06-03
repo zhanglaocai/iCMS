@@ -486,10 +486,14 @@ class iFS {
         );
     }
     public static function watermark($ext,$frp){
-        if (in_array($ext, array('gif', 'jpg', 'jpeg', 'png')) && self::$watermark) {
-            iPHP::LoadClass('Pic');
-            iPic::init(self::$watermark_config);
-            iPic::watermark($frp);
+        if (self::$watermark) {
+            $allow_ext = explode(',', self::$watermark_config['allow_ext']);
+            empty($allow_ext) && $allow_ext = array('jpg', 'jpeg', 'png');
+            if(in_array($ext, $allow_ext)){
+                iPHP::LoadClass('Pic');
+                iPic::init(self::$watermark_config);
+                iPic::watermark($frp);
+            }
         }
     }
     public static function yun_write($frp){
