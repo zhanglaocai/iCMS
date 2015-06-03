@@ -123,38 +123,7 @@ class iACP {
         }
         return ACP_PATH . '/template/' . $p . '.php';
     }
-    public static function getConfig($tid = 0, $n = NULL) {
-        if ($n === NULL) {
-            $rs = iDB::all("SELECT * FROM `#iCMS@__config` WHERE `tid`='$tid'");
-            foreach ($rs AS $c) {
-                $value = $c['value'];
-                strstr($c['value'], 'a:') && $value = unserialize($c['value']);
-                $config[$c['name']] = $value;
-            }
-            return $config;
-        } else {
-            $value = iDB::value("SELECT `value` FROM `#iCMS@__config` WHERE `tid`='$tid' AND `name` ='$n'");
-            strstr($value, 'a:') && $value = unserialize($value);
-            return $value;
-        }
-    }
 
-    public static function setConfig($v, $n, $tid, $cache = false) {
-        $cache && iCache::set('iCMS/' . $n, $v, 0);
-        is_array($v) && $v = addslashes(serialize($v));
-        iDB::query("UPDATE `#iCMS@__config` SET `value` = '$v' WHERE `tid` ='$tid' AND `name` ='$n'");
-    }
-    public static function cacheConfig($config=null){
-    	$config===null && $config = iACP::getConfig(0);
-     	$output = "<?php\ndefined('iPHP') OR exit('Access Denied');\nreturn ";
-    	$output.= var_export($config,true);
-    	$output.= ';';
-    	iFS::write(iPHP_APP_CONFIG,$output);
-	}
-	public static function updateConfig($k){
-		iACP::setConfig(iCMS::$config[$k],$k,0);
-		iACP::cacheConfig();
-	}
     public static function fields($data='') {
         $fields = array();
         $dA     = explode(',', $data);

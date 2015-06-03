@@ -10,29 +10,31 @@
 * @$Id: filter.app.php 2372 2014-03-16 07:24:56Z coolmoo $
 */
 class filterApp{
+    private $setting;
     function __construct() {
+        $this->setting = iACP::app('setting');
     }
     function do_iCMS(){
-        $filter = iACP::getConfig(1,'word.filter');
-        $disable = iACP::getConfig(1,'word.disable');
+        $filter  = $this->setting->get(0,'word.filter');
+        $disable = $this->setting->get(0,'word.disable');
         foreach((array)$filter AS $k=>$val) {
             $filterArray[$k]=implode("=",(array)$val);
         }
     	include iACP::view("filter");
     }
     function do_save(){
-        $disable	= explode("\n",iS::escapeStr($_POST['disable']));
-        $filter		= explode("\n",iS::escapeStr($_POST['filter']));
+        $disable = explode("\n",iS::escapeStr($_POST['disable']));
+        $filter  = explode("\n",iS::escapeStr($_POST['filter']));
         foreach($filter AS $k=> $val) {
-            $filterArray[$k]=explode("=",$val);
+            $filterArray[$k] = explode("=",$val);
         }
-        iACP::setConfig($filterArray,'word.filter',1,true);
-        iACP::setConfig($disable,'word.disable',1,true);
+        $this->setting->set($filterArray,'word.filter',0,true);
+        $this->setting->set($disable,'word.disable',0,true);
         iPHP::success('更新完成');
     }
     function cache(){
-        $filter		= iACP::getConfig(1,'word.filter');
-        $disable 	= iACP::getConfig(1,'word.disable');
+        $filter  = $this->setting->get(0,'word.filter');
+        $disable = $this->setting->get(0,'word.disable');
         foreach((array)$filter AS $k=>$val) {
             $filterArray[$k]=implode("=",(array)$val);
         }

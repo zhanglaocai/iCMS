@@ -22,12 +22,16 @@ class settingApp{
 		}
     }
     function do_iCMS(){
-    	$config	= iACP::getConfig(0);
+    	$config	= $this->get();
     	$config['site']['indexName'] OR $config['site']['indexName'] = 'index';
         //$redis    = extension_loaded('redis');
         $memcache = extension_loaded('memcache');
     	include iACP::view("setting");
     }
+    /**
+     * [do_save 保存配置]
+     * @return [type] [description]
+     */
     function do_save(){
         $config = iS::escapeStr($_POST['config']);
 
@@ -39,10 +43,10 @@ class settingApp{
         $config['router']['public_url'] = trim($config['router']['public_url'],'/');
         $config['router']['user_url']   = trim($config['router']['user_url'],'/');
         $config['router']['tag_url']    = trim($config['router']['tag_url'],'/');
-        $config['FS']['url']            = trim($config['FS']['url'],'/').'/';
         $config['router']['DIR']        = rtrim($config['router']['DIR'],'/').'/';
         $config['router']['html_dir']   = rtrim($config['router']['html_dir'],'/').'/';
         $config['router']['tag_dir']    = rtrim($config['router']['tag_dir'],'/').'/';
+        $config['FS']['url']            = trim($config['FS']['url'],'/').'/';
 
         foreach ((array)$config['open'] as $platform => $value) {
             if($value['appid'] && $value['appkey']){
@@ -52,14 +56,101 @@ class settingApp{
 
         $config['apps']	= $this->apps;
     	foreach($config AS $n=>$v){
-    		iACP::setConfig($v,$n,0);
+    		$this->set($v,$n,0);
     	}
-    	iACP::cacheConfig($config);
+    	$this->write($config);
     	iPHP::success('更新完成','js:1');
     }
+    /**
+     * [cache 更新配置]
+     * @return [type] [description]
+     */
     public function cache(){
-        $config         = iACP::getConfig(0);
+        $config         = $this->get();
         $config['apps'] = $this->apps;
-        iACP::cacheConfig($config);
+        $this->write($config);
+    }
+    /**
+     * [app 其它应用配置接口]
+     * @param  integer $appid [应用ID]
+     * @param  [sting] $name   [应用名]
+     */
+    function app($appid=0,$name=null){
+        $name===null && $name = iACP::$app_name;
+        $config = $this->get($appid,$name);
+        include iACP::view($name.".config");
+    }
+    /**
+     * [save 其它应用配置保存]
+     * @param  integer $appid [应用ID]
+     * @param  [sting] $app   [应用名]
+     */
+    function save($appid=0,$name=null){
+        $name===null   && $name = iACP::$app_name;
+        empty($appid) && iPHP::alert("配置程序出错缺少APPID!");
+        $config = iS::escapeStr($_POST['config']);
+        $this->set($config,$name,$appid);
+        iPHP::success('配置更新完成','js:1');
+    }
+    /**
+     * [get 获取配置]
+     * @param  integer $appid [应用ID]
+     * @param  [type]  $name   [description]
+     * @return [type]       [description]
+     */
+    public static function get($appid = 0, $name = NULL) {
+        if ($name === NULL) {
+            $rs = iDB::all("SELECT * FROM `#iCMS@__config` WHERE `appid`='$appid'");
+            foreach ($rs AS $c) {
+                $value = $c['value'];
+                strpos($c['value'], 'a:')===false OR $value = unserialize($c['value']);
+                $config[$c['name']] = $value;
+            }
+            return $config;
+        } else {
+            $value = iDB::value("SELECT `value` FROM `#iCMS@__config` WHERE `appid`='$appid' AND `name` ='$name'");
+            strpos($value, 'a:')===false OR $value = unserialize($value);
+            return $value;
+        }
+    }
+    /**
+     * [set 更新配置]
+     * @param [type]  $v     [description]
+     * @param [type]  $n     [description]
+     * @param [type]  $appid   [description]
+     * @param boolean $cache [description]
+     */
+    public static function set($value, $name, $appid, $cache = false) {
+        $cache && iCache::set('iCMS/' . $name, $value, 0);
+        is_array($value) && $value = addslashes(serialize($value));
+        $check  = iDB::value("SELECT `name` FROM `#iCMS@__config` WHERE `appid` ='$appid' AND `name` ='$name'");
+        $fields = array('appid','name','value');
+        $data   = compact ($fields);
+        if($check===null){
+            iDB::insert('config',$data);
+        }else{
+            iDB::update('config', $data, array('appid'=>$appid,'name'=>$name));
+        }
+    }
+    /**
+     * [write 配置写入文件]
+     * @param  [type] $config [description]
+     * @return [type]         [description]
+     */
+    public static function write($config=null){
+        $config===null && $config = $this->get();
+        $output = "<?php\ndefined('iPHP') OR exit('Access Denied');\nreturn ";
+        $output.= var_export($config,true);
+        $output.= ';';
+        iFS::write(iPHP_APP_CONFIG,$output);
+    }
+    /**
+     * [update 单个配置更新]
+     * @param  [type] $k [description]
+     * @return [type]    [description]
+     */
+    public static function update($k){
+        $this->set(iCMS::$config[$k],$k,0);
+        $this->write();
     }
 }
