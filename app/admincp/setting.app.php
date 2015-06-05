@@ -65,7 +65,7 @@ class settingApp{
      * [cache 更新配置]
      * @return [type] [description]
      */
-    public function cache(){
+    function cache(){
         $config         = $this->get();
         $config['apps'] = $this->apps;
         $this->write($config);
@@ -89,7 +89,7 @@ class settingApp{
         $name===null   && $name = iACP::$app_name;
         empty($appid) && iPHP::alert("配置程序出错缺少APPID!");
         $config = iS::escapeStr($_POST['config']);
-        $this->set($config,$name,$appid);
+        $this->set($config,$name,$appid,true);
         iPHP::success('配置更新完成','js:1');
     }
     /**
@@ -98,7 +98,7 @@ class settingApp{
      * @param  [type]  $name   [description]
      * @return [type]       [description]
      */
-    public static function get($appid = 0, $name = NULL) {
+    function get($appid = 0, $name = NULL) {
         if ($name === NULL) {
             $rs = iDB::all("SELECT * FROM `#iCMS@__config` WHERE `appid`='$appid'");
             foreach ($rs AS $c) {
@@ -120,8 +120,8 @@ class settingApp{
      * @param [type]  $appid   [description]
      * @param boolean $cache [description]
      */
-    public static function set($value, $name, $appid, $cache = false) {
-        $cache && iCache::set('iCMS/' . $name, $value, 0);
+    function set($value, $name, $appid, $cache = false) {
+        $cache && iCache::set('iCMS/config/' . $name, $value, 0);
         is_array($value) && $value = addslashes(serialize($value));
         $check  = iDB::value("SELECT `name` FROM `#iCMS@__config` WHERE `appid` ='$appid' AND `name` ='$name'");
         $fields = array('appid','name','value');
@@ -137,7 +137,7 @@ class settingApp{
      * @param  [type] $config [description]
      * @return [type]         [description]
      */
-    public static function write($config=null){
+    function write($config=null){
         $config===null && $config = $this->get();
         $output = "<?php\ndefined('iPHP') OR exit('Access Denied');\nreturn ";
         $output.= var_export($config,true);
@@ -149,7 +149,7 @@ class settingApp{
      * @param  [type] $k [description]
      * @return [type]    [description]
      */
-    public static function update($k){
+    function update($k){
         $this->set(iCMS::$config[$k],$k,0);
         $this->write();
     }
