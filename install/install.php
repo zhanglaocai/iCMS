@@ -90,7 +90,7 @@ if($action=='install'){
 	");
 
 //配置程序
-	$result = mysql_query("SELECT * FROM `{$db_prefix}config` WHERE `tid`='0'",$mysql_link);
+	$result = mysql_query("SELECT * FROM `{$db_prefix}config` WHERE `appid`='0'",$mysql_link);
     while ($c = mysql_fetch_array($result)) {
         $value = $c['value'];
         strstr($c['value'], 'a:') && $value = unserialize($c['value']);
@@ -112,7 +112,7 @@ if($action=='install'){
 
 	foreach($setting AS $n=>$v){
         is_array($v) && $v = addslashes(serialize($v));
-        mysql_query("UPDATE `{$db_prefix}config` SET `value` = '$v' WHERE `tid` ='0' AND `name` ='$n'",$mysql_link);
+        mysql_query("UPDATE `{$db_prefix}config` SET `value` = '$v' WHERE `appid` ='0' AND `name` ='$n'",$mysql_link);
 	}
 
  	$output = "<?php\ndefined('iPHP') OR exit('Access Denied');\nreturn ";
