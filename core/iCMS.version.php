@@ -9,4 +9,4 @@
 * @version 6.0
 */
 define('iCMS_VER', 'V6.0.6');//当前版本
-define('iCMS_RELEASE', '20150608');
+define('iCMS_RELEASE', '20150609');
