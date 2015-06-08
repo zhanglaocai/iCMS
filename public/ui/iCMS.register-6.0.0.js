@@ -117,7 +117,7 @@
       'def_rstpassword': '这里要重复输入一下你的密码',
       'def_seccode': '请输入图片中的字符!',
     }
-    var n = e.name,b = $('#iCMS-reg-' + n);
+    var n = $(e).attr('name'),b = $('#iCMS-reg-' + n);
     b.tooltip('destroy');
     if (c == "ok") {
       iCMS.tip(b, '<i class="fa fa-check-circle" style="color: #33B800;"></i>');

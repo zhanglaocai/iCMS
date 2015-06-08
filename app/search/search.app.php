@@ -11,7 +11,7 @@ class searchApp {
 	public function API_iCMS(){
         return $this->search();
 	}
-    public function search($a = null) {
+    public function search($tpl=false) {
         $q  = htmlspecialchars(rawurldecode($_GET['q']));
         $encode = mb_detect_encoding($q, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
         if(strtoupper($encode)!='UTF-8'){
@@ -29,7 +29,7 @@ class searchApp {
 
         $search['title']   = stripslashes($q);
         $search['keyword'] = $q;
-        $tpl = '{iTPL}/search.htm';
+        $tpl===false && $tpl = '{iTPL}/search.htm';
         $q && $this->slog($q);
         iPHP::assign("search",$search);
         return iPHP::view($tpl,'search');
