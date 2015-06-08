@@ -276,8 +276,8 @@ class iCMS {
     }
     public static function app_ref($app_name=true,$out=false) {
         $app_name===true && $app_name = self::$app_name;
-        $rs    = iPHP::get_vars($app_name);
-        return $rs['hooks'];
+        $rs = iPHP::get_vars($app_name);
+        return $rs['param'];
     }
 
     public static function get_category_ids($cid = "0",$all=true,$root_array=null) {

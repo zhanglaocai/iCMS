@@ -49,7 +49,7 @@ class tagApp {
             }
         }
         $tag = $this->value($tag);
-        $tag['hooks'] = array(
+        $tag['param'] = array(
             "appid" => $tag['appid'],
             "iid"   => $tag['id'],
             "cid"   => $tag['cid'],
@@ -57,6 +57,7 @@ class tagApp {
             "title" => $tag['name'],
             "url"   => $tag['url']
         );
+
         if ($tpl) {
             iCMS::hooks('enable_comment',true);
             iPHP::assign('category',$tag['category']);

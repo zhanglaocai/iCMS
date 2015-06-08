@@ -90,18 +90,8 @@ class articleApp {
         );
         $article = $this->value($article,$article_data,$vars,$page,$tpl);
 
-        if($article===false) return false;
-
         unset($article_data);
-
-        $article['hooks'] = array(
-            "appid" => $article['appid'],
-            "iid"   => $article['id'],
-            "cid"   => $article['cid'],
-            "suid"  => $article['userid'],
-            "title" => $article['title'],
-            "url"   => $article['url']
-        );
+        if($article===false) return false;
 
         if($tpl) {
             iCMS::hooks('enable_comment',true);
@@ -349,6 +339,14 @@ class articleApp {
         $article['pic']   = get_pic($article['pic'],$picdata['b'],get_twh($vars['btw'],$vars['bth']));
         $article['mpic']  = get_pic($article['mpic'],$picdata['m'],get_twh($vars['mtw'],$vars['mth']));
         $article['spic']  = get_pic($article['spic'],$picdata['s'],get_twh($vars['stw'],$vars['sth']));
+        $article['param'] = array(
+            "appid" => $article['appid'],
+            "iid"   => $article['id'],
+            "cid"   => $article['cid'],
+            "suid"  => $article['userid'],
+            "title" => $article['title'],
+            "url"   => $article['url']
+        );
         return $article;
     }
     public function ubb($content){
