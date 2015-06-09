@@ -15,9 +15,9 @@ iACP::app('category','import');
 class tagcategoryApp extends categoryApp {
     function __construct() {
         parent::__construct(iCMS_APP_TAG);
-        $this->category_name   = "分类";
+        $this->category_name   = "鍒嗙被";
         $this->_app            = 'tags';
-        $this->_app_name       = '标签';
+        $this->_app_name       = '鏍囩';
         $this->_app_table      = 'tags';
         $this->_app_cid        = 'tcid';
         // $this->_app_indexTPL   = '';
