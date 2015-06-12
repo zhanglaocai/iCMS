@@ -388,7 +388,7 @@ class iTemplate_Compiler extends iTemplate {
 	public $_obj_params_regexp        = null;
 	public $_iTPL_VARS                =	array();
 
-	function iTemplate_Compiler(){
+	function __construct(){
 		// matches double quoted strings:
 		// "foobar"
 		// "foo\"bar"
