@@ -487,8 +487,8 @@ class iFS {
     }
     public static function watermark($ext,$frp){
         if (self::$watermark) {
-            $allow_ext = explode(',', self::$watermark_config['allow_ext']);
-            empty($allow_ext) && $allow_ext = array('jpg', 'jpeg', 'png');
+            $allow_ext = array('jpg', 'jpeg', 'png');
+            self::$watermark_config['allow_ext'] && $allow_ext = explode(',',self::$watermark_config['allow_ext']);
             if(in_array($ext, $allow_ext)){
                 iPHP::LoadClass('Pic');
                 iPic::init(self::$watermark_config);

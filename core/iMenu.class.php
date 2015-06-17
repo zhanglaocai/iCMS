@@ -159,7 +159,9 @@ class iMenu {
 			$a['class']	= 'submenu';
 			$label		= '<span class="label">'.$this->subcount($id).'</span>';
 		}
-
+		if($mType=='tab'){
+			$href = "#".$a['href'];
+		}
 		$li = '<li class="'.$a['class'].'" title="'.$a['name'].'" data-level="'.$level.'" data-menu="m'.$id.'">';
 
 		$link = '<a href="'.$href.'"';
@@ -171,7 +173,10 @@ class iMenu {
 			$link.= ' data-toggle="'.$a['data-toggle'].'"';
 		}elseif($mType=='nav'){
 			$a['data-toggle'] 	&& $link.= ' data-toggle="'.$a['data-toggle'].'"';
+		}elseif($mType=='tab'){
+			$link.= ' data-toggle="tab"';
 		}
+
 		$a['data-target']&& $link.= ' data-target="'.$a['data-target'].'"';
 		$a['data-meta']  && $link.= " data-meta='".$a['data-meta']."'";
 		$link.=">";
