@@ -522,7 +522,9 @@ class articleApp{
 
             $article_url = iURL::get('article',array(array('id'=>$aid,'url'=>$url,'cid'=>$cid,'pubdate'=>$pubdate),$this->category[$cid]))->href;
 
-            iCMS::$config['api']['baidu']['sitemap']['sync'] && baidu_ping($article_url);
+            if($status && iCMS::$config['api']['baidu']['sitemap']['sync']){
+                baidu_ping($article_url);
+            }
 
             if($callback){
             	return array("code"=>$callback,'indexid'=>$aid);
