@@ -1000,6 +1000,14 @@ class spiderApp {
             }
         }
 
+        $data['trim'] && $content = trim($content);
+        if ($data['capture']) {
+            $capture = str_replace ('\\','',$content);
+            $content = $this->remote($capture);
+        }
+        if ($data['cleanafter']) {
+            $content = $this->dataClean($data['cleanafter'], $content);
+        }
         if ($data['mergepage']) {
             $_content = $content;
             preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is", $_content, $picArray);
@@ -1015,21 +1023,14 @@ class spiderApp {
                 if (is_array($newcontent)) {
                     $content = array_filter($newcontent);
                     $content = implode('#--iCMS.PageBreak--#', $content);
-                    //$content		= addslashes($content);
+                    //$content      = addslashes($content);
                 } else {
-                    //$content		= addslashes($newcontent);
+                    //$content      = addslashes($newcontent);
                     $content = $newcontent;
                 }
-                unset($newcontent);
+                unset($newcontent,$contentA);
             }
-        }
-        $data['trim'] && $content = trim($content);
-        if ($data['capture']) {
-            $capture = str_replace ('\\','',$content);
-            $content = $this->remote($capture);
-        }
-        if ($data['cleanafter']) {
-            $content = $this->dataClean($data['cleanafter'], $content);
+            unset($_content);
         }
         if ($data['empty'] && empty($content)) {
             if($this->work){
