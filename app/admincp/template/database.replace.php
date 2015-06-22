@@ -13,9 +13,7 @@ iACP::head();
     <div class="widget-title"> <span class="icon"> <i class="fa fa-cloud"></i> </span>
       <h5 class="brs">数据库</h5>
       <ul class="nav nav-tabs" id="html-tab">
-        <li><a href="<?php echo APP_URI; ?>&do=backup"><i class="fa fa-cloud-download"></i> <b>备份/优化/修复</b></a></li>
-        <li><a href="<?php echo APP_URI; ?>&do=recover"><i class="fa fa-upload"></i> <b>备份管理</b></a></li>
-        <li class="active"><a href="<?php echo APP_URI; ?>&do=replace"><i class="fa fa-retweet"></i> <b>数据替换</b></a></li>
+        <?php echo iACP::$menu->show("tabs",iACP::$menu->parentid); ?>
       </ul>
     </div>
     <div class="widget-content nopadding">
