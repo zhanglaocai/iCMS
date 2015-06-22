@@ -95,9 +95,15 @@ $(function(){
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id']; ?>" /></td>
               <td><?php echo $rs[$i]['id']; ?></td>
               <td><a href="<?php echo APP_URI; ?>&do=inbox&pid=<?php echo $rs[$i]['id']; ?>"><?php echo $rs[$i]['name']; ?></a></td>
-              <td><a href="<?php echo APP_URI; ?>&do=project&rid=<?php echo $rs[$i]['rid']; ?>&<?php echo $uri; ?>"><?php echo $ruleArray[$rs[$i]['rid']]; ?></a></td>
+              <td>
+                <a href="<?php echo APP_URI; ?>&do=project&rid=<?php echo $rs[$i]['rid']; ?>&<?php echo $uri; ?>"><?php echo $ruleArray[$rs[$i]['rid']]; ?></a>
+                <a href="<?php echo APP_URI; ?>&do=addrule&rid=<?php echo $rs[$i]['rid']; ?>" target="_blank"><i class="fa fa-edit"></i></a>
+              </td>
               <td><a href="<?php echo APP_URI; ?>&do=project&cid=<?php echo $rs[$i]['cid']; ?>&<?php echo $uri; ?>"><?php echo $C['name']; ?></a><?php echo $rs[$i]['auto']?'<i class="fa fa-rocket"></i>':''; ?></td>
-              <td><a href="<?php echo APP_URI; ?>&do=project&poid=<?php echo $rs[$i]['poid']; ?>&<?php echo $uri; ?>"><?php echo $postArray[$rs[$i]['poid']]; ?></a></td>
+              <td>
+                <a href="<?php echo APP_URI; ?>&do=project&poid=<?php echo $rs[$i]['poid']; ?>&<?php echo $uri; ?>"><?php echo $postArray[$rs[$i]['poid']]; ?></a>
+                <a href="<?php echo APP_URI; ?>&do=addpost&poid=<?php echo $rs[$i]['poid']; ?>" target="_blank"><i class="fa fa-edit"></i></a>
+              </td>
               <td><a href="<?php echo APP_FURI; ?>&do=copyproject&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-copy"></i> 复制</a>
                 <a href="<?php echo APP_URI; ?>&do=testrule&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试</a>
                 <a href="<?php echo APP_URI; ?>&do=listpub&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small btn-primary" data-toggle="modal" title="采集列表,手动发布"><i class="fa fa-hand-o-up"></i> 手动采集</a>

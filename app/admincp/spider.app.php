@@ -833,7 +833,8 @@ class spiderApp {
                             $page_url_rule = $this->pregTag($rule['page_url_rule']);
                             preg_match_all('|' .$page_url_rule. '|is', $page_area, $page_url_matches, PREG_SET_ORDER);
                             foreach ($page_url_matches AS $pn => $row) {
-                                $page_url_array[$pn] = str_replace('<%url%>', $row['url'], $rule['page_url']);
+                                $href = str_replace('<%url%>', $row['url'], $rule['page_url']);
+                                $page_url_array[$pn] = $this->_url_complement($rule['__url__'],$href);
                                 gc_collect_cycles();
                             }
                         }
@@ -1633,21 +1634,34 @@ class spiderApp {
     }
     function check_content_code($content) {
         if ($this->content_right_code) {
-	        $matches = strpos($content, $this->content_right_code);
+            if(strpos($this->content_right_code, 'DOM::')!==false){
+                iPHP::import(iPHP_LIB.'/phpQuery.php');
+                $doc     = phpQuery::newDocumentHTML($content,'UTF-8');
+                $pq_dom  = str_replace('DOM::','', $this->content_right_code);
+                $matches = (bool)(string)phpQuery::pq($pq_dom);
+            }else{
+                $matches = strpos($content, $this->content_right_code);
+            }
 	        if ($matches===false) {
 	            $match = false;
 	            return false;
 	        }
         }
         if ($this->content_error_code) {
-            $_matches = strpos($content, $this->content_error_code);
+            if(strpos($this->content_right_code, 'DOM::')!==false){
+                iPHP::import(iPHP_LIB.'/phpQuery.php');
+                $doc      = phpQuery::newDocumentHTML($content,'UTF-8');
+                $pq_dom   = str_replace('DOM::','', $this->content_right_code);
+                $_matches = (bool)(string)phpQuery::pq($pq_dom);
+            }else{
+                $_matches = strpos($content, $this->content_error_code);
+            }
             if ($_matches!==false) {
                 $match = false;
                 return false;
             }
         }
         $match = true;
-        usleep(10);
         return compact('content', 'match');
     }
 
