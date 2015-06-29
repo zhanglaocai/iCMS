@@ -34,7 +34,7 @@ class iDB{
     private static $link;
     private static $result;
 
-    public static function connect() {
+    public static function connect($break=null) {
         extension_loaded('mysql') OR die('您的 PHP 环境看起来缺少 MySQL 数据库部分，这对 iPHP 来说是必须的。');
 
         defined('iPHP_DB_COLLATE') &&self::$collate = iPHP_DB_COLLATE;
@@ -48,16 +48,28 @@ class iDB{
         }
 
         self::$link = @mysql_connect(iPHP_DB_HOST, iPHP_DB_USER, iPHP_DB_PASSWORD);
+
+        if($break==='link'){
+            return self::$link;
+        }
+
         self::$link OR self::bail("<h1>数据库连接失败</h1><p>请检查 <em><strong>config.php</strong></em> 的配置是否正确!</p><ul><li>请确认主机支持MySQL?</li><li>请确认用户名和密码正确?</li><li>请确认主机名正确?(一般为localhost)</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
 
         $GLOBALS['iPHP_DB'] = self::$link;
+        self::pre_set();
+        if($break===null){
+            self::select_db();
+        }
 
-        if (defined('iPHP_DB_CHARSET') && version_compare(mysql_get_server_info(), '4.1.0', '>='))
-            self::query("SET NAMES '".iPHP_DB_CHARSET."'");
-            self::query("SET @@sql_mode = ''");
-
-        @mysql_select_db(iPHP_DB_NAME, self::$link) OR self::bail("<h1>数据库连接失败</h1><p>我们能连接到数据库服务器（即数据库用户名和密码正确） ，但是不能链接到<em><strong> ".iPHP_DB_NAME." </strong></em>数据库.</p><ul><li>你确定<em><strong> ".iPHP_DB_NAME." </strong></em>存在?</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
-
+    }
+    public static function pre_set() {
+        self::query("SET NAMES '".iPHP_DB_CHARSET."'");
+        self::query("SET @@sql_mode = ''");
+    }
+    public static function select_db($var=false) {
+        $sel = @mysql_select_db(iPHP_DB_NAME, self::$link)
+        if($var) return $sel;
+        $sel OR self::bail("<h1>数据库连接失败</h1><p>我们能连接到数据库服务器（即数据库用户名和密码正确） ，但是不能链接到<em><strong> ".iPHP_DB_NAME." </strong></em>数据库.</p><ul><li>你确定<em><strong> ".iPHP_DB_NAME." </strong></em>存在?</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
     }
     // ==================================================================
     //  Basic Query - see docs for more detail
