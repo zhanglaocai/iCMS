@@ -305,9 +305,22 @@ $lock_file = iPATH.'cache/install.lock';
 							<td>GD库</td>
 							<td>支持</td>
 							<td><?php
-											$gd_info = @gd_info ();
+											$gd_info = @gd_info();
 											if($gd_info){
 												echo $gd_info['GD Version'];
+											}else{
+												echo '<font style="color:red;">× 不支持</font>';
+											}
+							?></td>
+						</tr>
+						<tr>
+							<td>6</td>
+							<td>CURL</td>
+							<td>支持</td>
+							<td><?php
+											$curl_version = @curl_version();
+											if($curl_version){
+												echo $curl_version['version'];
 											}else{
 												echo '<font style="color:red;">× 不支持</font>';
 											}
@@ -418,7 +431,13 @@ $lock_file = iPATH.'cache/install.lock';
 					<div class="control-group">
 						<label class="control-label" for="DB_NAME">数据库名</label>
 						<div class="controls">
-							<input type="text" class="span4" id="DB_NAME" name="DB_NAME" placeholder="数据库名">
+							<div class="input-append">
+								<input type="text" class="span3" id="DB_NAME" name="DB_NAME" placeholder="数据库名">
+								<span class="add-on" style="height: 30px;line-height: 30px;">
+									<input type="checkbox" id="CREATE_DATABASE" name="CREATE_DATABASE" > 创建数据库
+								</span>
+							</div>
+							<span class="help-block">数据库用户需要拥有创建数据库权限才能自动创建数据库,如果没有权限请先创建</span>
 						</div>
 					</div>
 					<div class="control-group">
