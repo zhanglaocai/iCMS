@@ -16,6 +16,7 @@ class commentApp {
     public function API_goto(){
         $appid = (int)$_GET['appid'];
         $iid   = (int)$_GET['iid'];
+        $_GET  = iS::escapeStr($_GET);
 
         iPHP::import(iPHP_APP_CORE .'/iAPP.class.php');
         $url = app::get_url($appid,$iid);
@@ -24,12 +25,14 @@ class commentApp {
     public function API_list(){
         $_GET['_display'] = $_GET['display'];
         $_GET['display']  = 'default';
+        $_GET = iS::escapeStr($_GET);
         iPHP::app('comment.func');
         return comment_list($_GET);
     }
     public function API_form(){
         $_GET['_display'] = $_GET['display'];
         $_GET['display']  = 'default';
+        $_GET = iS::escapeStr($_GET);
         iCMS::hooks('enable_comment',true);
         iPHP::app('comment.func');
         return comment_form($_GET);
