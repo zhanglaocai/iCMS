@@ -88,7 +88,7 @@ $(function(){
           </thead>
           <tbody>
             <?php for($i=0;$i<$_count;$i++){
-              $filepath = $rs[$i]['path'].$rs[$i]['filename'].'.'.$rs[$i]['ext'];
+              $filepath = $rs[$i]['path'].'/'.$rs[$i]['filename'].'.'.$rs[$i]['ext'];
               $href     = iFS::fp($filepath,"+http");
             ?>
             <tr id="tr<?php echo $rs[$i]['id'] ; ?>">
