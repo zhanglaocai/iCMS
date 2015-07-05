@@ -21,6 +21,7 @@ class iMenu {
 	private $do_uri    = '';
 
 	function __construct() {
+		iCache::sysCache();
 		$this->menu_array  = iCache::get('iCMS/iMenu/menu_array');
 		$this->root_array  = iCache::get('iCMS/iMenu/root_array');
 		$this->child_array = iCache::get('iCMS/iMenu/child_array');

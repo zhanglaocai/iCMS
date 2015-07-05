@@ -40,7 +40,7 @@ class iCache{
         		case 'memcached':
         			require iPHP_CORE.'/memcached.class.php';
                     $_servers   = explode("\n",str_replace(array("\r"," "),"",self::$config['host']));
-                    self::$link = new memcached(array(
+                    self::$link = new memcached_client(array(
                         'servers'            => $_servers,
                         'compress_threshold' => 10240,
                         'persistant'         => false,
@@ -79,6 +79,7 @@ class iCache{
         	}
         	$GLOBALS['iCache']['link'] = self::$link;
         }
+        return self::$link;
 	}
     public static function prefix($keys,$prefix=NULL){
         if($prefix){

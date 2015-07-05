@@ -93,7 +93,7 @@ define("COMPRESSION_SAVINGS", 0.20);
  * @author  Ryan T. Dean <rtdean@cytherianage.net>
  * @package memcached-client
  */
-class memcached
+class memcached_client
 {
    // {{{ properties
    // {{{ public
@@ -104,7 +104,7 @@ class memcached
     * @var     array
     * @access  public
     */
-   var $stats;
+   public $stats;
 
    // }}}
    // {{{ private
@@ -115,7 +115,7 @@ class memcached
     * @var     array
     * @access  private
     */
-   var $_cache_sock;
+   private $_cache_sock;
 
    /**
     * Current debug status; 0 - none to 9 - profiling
@@ -123,7 +123,7 @@ class memcached
     * @var     boolean
     * @access  private
     */
-   var $_debug;
+   private $_debug;
 
    /**
     * Dead hosts, assoc array, 'host'=>'unixtime when ok to check again'
@@ -131,7 +131,7 @@ class memcached
     * @var     array
     * @access  private
     */
-   var $_host_dead;
+   private $_host_dead;
 
    /**
     * Is compression available?
@@ -139,7 +139,7 @@ class memcached
     * @var     boolean
     * @access  private
     */
-   var $_have_zlib;
+   private $_have_zlib;
 
    /**
     * Do we want to use compression?
@@ -147,7 +147,7 @@ class memcached
     * @var     boolean
     * @access  private
     */
-   var $_compress_enable;
+   private $_compress_enable;
 
    /**
     * At how many bytes should we compress?
@@ -155,7 +155,7 @@ class memcached
     * @var     interger
     * @access  private
     */
-   var $_compress_threshold;
+   private $_compress_threshold;
 
    /**
     * Are we using persistant links?
@@ -163,7 +163,7 @@ class memcached
     * @var     boolean
     * @access  private
     */
-   var $_persistant;
+   private $_persistant;
 
    /**
     * If only using one server; contains ip:port to connect to
@@ -171,7 +171,7 @@ class memcached
     * @var     string
     * @access  private
     */
-   var $_single_sock;
+   private $_single_sock;
 
    /**
     * Array containing ip:port or array(ip:port, weight)
@@ -179,7 +179,7 @@ class memcached
     * @var     array
     * @access  private
     */
-   var $_servers;
+   private $_servers;
 
    /**
     * Our bit buckets
@@ -187,7 +187,7 @@ class memcached
     * @var     array
     * @access  private
     */
-   var $_buckets;
+   private $_buckets;
 
    /**
     * Total # of bit buckets we have
@@ -195,7 +195,7 @@ class memcached
     * @var     interger
     * @access  private
     */
-   var $_bucketcount;
+   private $_bucketcount;
 
    /**
     * # of total servers we have
@@ -203,7 +203,7 @@ class memcached
     * @var     interger
     * @access  private
     */
-   var $_active;
+   private $_active;
 
    // }}}
    // }}}
@@ -219,7 +219,7 @@ class memcached
     * @return  mixed
     * @access  public
     */
-   function memcached ($args)
+   public function __construct($args)
    {
       $this->set_servers($args['servers']);
       $this->_debug              = isset($args['debug']) ? $args['debug'] : false;
@@ -247,7 +247,7 @@ class memcached
     * @return  boolean
     * @access  public
     */
-   function add ($key, $val, $exp = 0)
+   public function add ($key, $val, $exp = 0)
    {
       return $this->_set('add', $key, $val, $exp);
    }
@@ -264,7 +264,7 @@ class memcached
     * @return  mixed    FALSE on failure, value on success
     * @access  public
     */
-   function decr ($key, $amt=1)
+   public function decr ($key, $amt=1)
    {
       return $this->_incrdecr('decr', $key, $amt);
    }
@@ -281,7 +281,7 @@ class memcached
     * @return  boolean  TRUE on success, FALSE on failure
     * @access  public
     */
-   function delete ($key, $time = 0)
+   public function delete ($key, $time = 0)
    {
       if (!$this->_active)
          return false;
@@ -317,7 +317,7 @@ class memcached
     *
     * @access  public
     */
-   function disconnect_all ()
+   public function disconnect_all ()
    {
       foreach ($this->_cache_sock as $sock)
          fclose($sock);
@@ -335,7 +335,7 @@ class memcached
     *
     * @access  public
     */
-   function enable_compress ($enable)
+   public function enable_compress ($enable)
    {
       $this->_compress_enable = $enable;
    }
@@ -348,7 +348,7 @@ class memcached
     *
     * @access  public
     */
-   function forget_dead_hosts ()
+   public function forget_dead_hosts ()
    {
       $this->_host_dead = array();
    }
@@ -364,7 +364,7 @@ class memcached
     * @return  mixed
     * @access  public
     */
-   function get ($key)
+   public function get ($key)
    {
       if (!$this->_active)
          return false;
@@ -403,7 +403,7 @@ class memcached
     * @return  array
     * @access  public
     */
-   function get_multi ($keys)
+   public function get_multi ($keys)
    {
       if (!$this->_active)
          return false;
@@ -467,7 +467,7 @@ class memcached
     * @return  interger New key value?
     * @access  public
     */
-   function incr ($key, $amt=1)
+   public function incr ($key, $amt=1)
    {
       return $this->_incrdecr('incr', $key, $amt);
    }
@@ -485,7 +485,7 @@ class memcached
     * @return  boolean
     * @access  public
     */
-   function replace ($key, $value, $exp=0)
+   public function replace ($key, $value, $exp=0)
    {
       return $this->_set('replace', $key, $value, $exp);
    }
@@ -509,7 +509,7 @@ class memcached
     * @return  array    Output array
     * @access  public
     */
-   function run_command ($sock, $cmd)
+   public function run_command ($sock, $cmd)
    {
       if (!is_resource($sock))
          return array();
@@ -543,7 +543,7 @@ class memcached
     * @return  boolean  TRUE on success
     * @access  public
     */
-   function set ($key, $value, $exp=0)
+   public function set ($key, $value, $exp=0)
    {
       return $this->_set('set', $key, $value, $exp);
    }
@@ -558,7 +558,7 @@ class memcached
     *
     * @access  public
     */
-   function set_compress_threshold ($thresh)
+   public function set_compress_threshold ($thresh)
    {
       $this->_compress_threshold = $thresh;
    }
@@ -575,7 +575,7 @@ class memcached
     *
     * @see     memcahced::memcached
     */
-   function set_debug ($dbg)
+   public function set_debug ($dbg)
    {
       $this->_debug = $dbg;
    }
@@ -592,7 +592,7 @@ class memcached
     *
     * @see     memcached::memcached()
     */
-   function set_servers ($list)
+   public function set_servers ($list)
    {
       $this->_servers = $list;
       $this->_active = count($list);
@@ -616,7 +616,7 @@ class memcached
     *
     * @access  private
     */
-   function _close_sock ($sock)
+   private function _close_sock ($sock)
    {
       $host = array_search($sock, $this->_cache_sock);
       fclose($this->_cache_sock[$host]);
@@ -636,7 +636,7 @@ class memcached
     * @return  boolean
     * @access  private
     */
-   function _connect_sock (&$sock, $host, $timeout = 0.25)
+   private function _connect_sock (&$sock, $host, $timeout = 0.25)
    {
       list ($ip, $port) = explode(":", $host);
       if ($this->_persistant == 1)
@@ -646,6 +646,7 @@ class memcached
       {
          $sock = @fsockopen($ip, $port, $errno, $errstr, $timeout);
       }
+        var_dump('asd');
 
       if (!$sock)
          return false;
@@ -662,7 +663,7 @@ class memcached
     *
     * @access  private
     */
-   function _dead_sock ($sock)
+   private function _dead_sock ($sock)
    {
       $host = array_search($sock, $this->_cache_sock);
       list ($ip, $port) = explode(":", $host);
@@ -682,7 +683,7 @@ class memcached
     * @return  mixed    resource on success, false on failure
     * @access  private
     */
-   function get_sock (&$key)
+   private function get_sock (&$key)
    {
       if (!$this->_active)
          return false;
@@ -734,7 +735,7 @@ class memcached
     * @return  interger Hash value
     * @access  private
     */
-   function _hashfunc ($key)
+   private function _hashfunc ($key)
    {
       $hash = 0;
       for ($i=0; $i<strlen($key); $i++)
@@ -758,7 +759,7 @@ class memcached
     * @return  interger    New value of $key
     * @access  private
     */
-   function _incrdecr ($cmd, $key, $amt=1)
+   private function _incrdecr ($cmd, $key, $amt=1)
    {
       if (!$this->_active)
          return null;
@@ -790,7 +791,7 @@ class memcached
     *
     * @access  private
     */
-   function _load_items ($sock, &$ret)
+   private function _load_items ($sock, &$ret)
    {
       while (1)
       {
@@ -859,7 +860,7 @@ class memcached
     * @return  boolean
     * @access  private
     */
-   function _set ($cmd, $key, $val, $exp)
+   private function _set ($cmd, $key, $val, $exp)
    {
       if (!$this->_active)
          return false;
@@ -924,7 +925,7 @@ class memcached
     * @return  mixed    IO Stream or false
     * @access  private
     */
-   function sock_to_host ($host)
+   private function sock_to_host ($host)
    {
       if (isset($this->_cache_sock[$host]))
          return $this->_cache_sock[$host];
@@ -945,9 +946,13 @@ class memcached
 
       return $this->_cache_sock[$host];
    }
-   function _key($key,$cmd="add"){
+
+   private function _key($key,$cmd="add"){
    	  $hash = md5('___iPHP___'.iPHP_KEY);
 		  return $cmd=="add" ? $key.$hash:str_replace($hash,'',$key);
+   }
+   public function ping(){
+      return $this->_connect_sock($sock, $this->_single_sock);
    }
    // }}}
    // }}}

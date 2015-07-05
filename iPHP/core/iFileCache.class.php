@@ -17,15 +17,17 @@ class iFC {
 	protected $_dirs;
 	protected $_file;
 
-	function __construct($args=array('dirs'=> '','level'=>'0','compress'=>'9')){
+	public function __construct($args=array('dirs'=> '','level'=>'0','compress'=>'9')){
 		$this->_dirs            = rtrim(iPHP_APP_CACHE.'/'.$args['dirs'],'/').'/';
 		$this->_dir_level       = empty($args['level']) ? -1 : floor(32/$args['level']);
 		$this->_compress_enable = $args['compress'];
 		$this->_have_zlib       = function_exists("gzcompress");
 		$this->_cache_sock      = array();
 	}
-
-	function add ($key, $val, $exp = 0){
+    public function ping (){
+        return true;
+    }
+	public function add ($key, $val, $exp = 0){
 		$this->_file = $this->get_file($key,'add');
 		$value       = array(
 			"Time"    =>time(),
@@ -41,7 +43,7 @@ class iFC {
 		}
 		return $this->write($this->_file,$this->_cache_sock);
 	}
-	function get ($key){
+	public function get ($key){
 		$this->_file = $this->get_file($key,'get');
 		if(!file_exists($this->_file)) return NULL;
 		$D     = file_get_contents($this->_file);
@@ -54,23 +56,23 @@ class iFC {
 			return ($_time-$value['Time']<$value['Expires'])?$value['Data']:false;
 		}
 	}
-	function get_multi ($keys){
+	public function get_multi ($keys){
 		foreach ($keys as $key){
 			$value[$key]=$this->get ($key);
 		}
 		return $value;
 	}
-	function replace ($key, $value, $exp=0){}
-	function delete ($key='', $time = 0){
+	public function replace ($key, $value, $exp=0){}
+	public function delete ($key='', $time = 0){
 		$this->_file = $this->get_file($key,'get');
 		return $this->del($this->_file);
 	}
-   	function get_file($key,$method){
+   	public function get_file($key,$method){
 		$key     = str_replace(':','/',$key);
 		$dirPath = $this->_dirs.(strpos($key,'/')!==false?dirname($key):'');
    		if($this->_dir_level!=-1){
 			$md5_array  = $this->str_split(md5($key),$this->_dir_level);
-			$dirPath   .= '/'.implode('/',$md5_array).'/';
+			$md5_array && $dirPath   .= '/'.implode('/',$md5_array).'/';
 		}
 		if (!file_exists($dirPath) && $method=='add'){
 			$this->mkdir($dirPath);
@@ -123,7 +125,7 @@ class iFC {
 
         return false;
     }
-	function str_split($str,$level = 1) {
+	private function str_split($str,$level = 1) {
 		if ($level < 1) return false;
 
         if ($level == 1) {
