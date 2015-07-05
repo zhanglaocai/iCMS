@@ -9,13 +9,10 @@ defined('iPHP') OR exit('What are you doing?');
 ?>
 <script type="text/javascript">
 $(function(){
-  var a = $("#iCMS-menu"),b = $("#sidebar");
-  $("[data-menu='m<?php echo iACP::$menu->rootid; ?>']",a).addClass("active");
-  $("[data-menu='m<?php echo iACP::$menu->parentid; ?>']",a).addClass("active");
-  $("[data-menu='m<?php echo iACP::$menu->do_mid; ?>']",a).addClass("active");
-
-  $("[data-menu='m<?php echo iACP::$menu->do_mid; ?>']",b).addClass("active");
-  var c = $("[data-menu='m<?php echo iACP::$menu->parentid; ?>']",b).addClass("active");
+  $("[data-menu='m<?php echo iACP::$menu->rootid; ?>']").addClass("active");
+  $("[data-menu='m<?php echo iACP::$menu->parentid; ?>']").addClass("active");
+  $("[data-menu='m<?php echo iACP::$menu->do_mid; ?>']").addClass("active");
+  var c = $("[data-menu='m<?php echo iACP::$menu->parentid; ?>']","#sidebar");
   if(c.hasClass("submenu")){
     c.addClass("open");
     $("ul",c).show();

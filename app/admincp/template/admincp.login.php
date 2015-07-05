@@ -101,8 +101,8 @@ $(function(){
 				if(json.code=="1"){
 					window.location.href ='<?php echo __SELF__; ?>';
 				}else{
+          $(".iCMS_seccode_img").attr('src','<?php echo $seccode_url;?>'+ Math.random());
           if(json.msg){
-            $(".iCMS_seccode_img").attr('src','<?php echo $seccode_url;?>'+ Math.random());
             iCMS.alert(json.msg);
           }else{
             iCMS.alert("账号或密码错误!!");
