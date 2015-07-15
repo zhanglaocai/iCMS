@@ -213,10 +213,10 @@ class userApp {
 
         if(iCMS::$config['user']['post']['interval']){
             $last_postime = iDB::value("
-                SELECT `postime`
+                SELECT MAX(postime)
                 FROM `#iCMS@__article`
-                WHERE userid='".user::$userid."'
-                ORDER BY `id` DESC");
+                WHERE userid='".user::$userid."'");
+
             if($_SERVER['REQUEST_TIME']-$last_postime<iCMS::$config['user']['post']['interval']){
                 iPHP::alert('user:publish:interval');
             }
@@ -273,8 +273,9 @@ class userApp {
                 '3'=>'user:article:add_examine',
             );
         }else{
-            articleTable::update(compact($fields),array('id'=>$aid));
-            articleTable::data_update(compact ($data_fields),array('aid'=>$aid));
+            if(articleTable::update(compact($fields),array('id'=>$aid,'userid'=>user::$userid))){
+                articleTable::data_update(compact ($data_fields),array('aid'=>$aid));
+            }
             map::init('category',iCMS_APP_ARTICLE);
             map::diff($cid,$_cid,$aid);
             if($ucid!=$_ucid){
