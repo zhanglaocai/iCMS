@@ -46,7 +46,22 @@ function tag_list($vars){
             $map_where+=map::where($cids);
         }
     }
-	$maxperpage	= isset($vars['row'])?(int)$vars['row']:"10";
+    if(isset($vars['keywords'])){//最好使用 iCMS:tag:search
+        if(empty($vars['keywords'])) return;
+
+        if(strpos($vars['keywords'],',')===false){
+            $vars['keywords'] = str_replace(array('%','_'),array('\%','\_'),$vars['keywords']);
+            $where_sql.= " AND CONCAT(tkey,name,seotitle,keywords) like '%".addslashes($vars['keywords'])."%'";
+        }else{
+            $kws = explode(',',$vars['keywords']);
+            foreach($kws AS $kwv){
+                $keywords.= addslashes($kwv)."|";
+            }
+            $keywords = substr($keywords,0,-1);
+            $where_sql.= " AND CONCAT(tkey,name,seotitle,keywords) REGEXP '$keywords' ";
+        }
+    }
+    $maxperpage	= isset($vars['row'])?(int)$vars['row']:"10";
 	$cache_time	= isset($vars['time'])?(int)$vars['time']:-1;
 	$by			= $vars['by']=='ASC'?"ASC":"DESC";
 	switch ($vars['orderby']) {
