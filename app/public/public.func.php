@@ -27,6 +27,9 @@ function public_crontab(){
 }
 
 function public_qrcode($vars=null){
-	$data = urlencode($vars['data']);
-	echo iCMS::$config['router']['public_url'].'/api.php?app=public&do=qrcode&url='.$data;
+	$data  = $vars['data'];
+	$query = array('app'=>'public','do'=>'qrcode','url'=>$data);
+	isset($vars['cache']) && $query['cache'] = true;
+	$url = iPHP::router('/api',iCMS_REWRITE);
+	echo buildurl($url,$query);
 }
