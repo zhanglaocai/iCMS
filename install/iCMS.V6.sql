@@ -694,6 +694,19 @@ CREATE TABLE `#iCMS@__weixin_api_log` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+CREATE TABLE `#iCMS@__marker` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `cid` int(10) unsigned NOT NULL DEFAULT '0',
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `key` varchar(255) NOT NULL DEFAULT '',
+  `data` mediumtext NOT NULL,
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `marker` (`key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
 
 INSERT INTO `#iCMS@__config` (`appid`, `name`, `value`) values('0','site','a:5:{s:4:\"name\";s:4:\"iCMS\";s:8:\"seotitle\";s:23:\"iCMS 内容管理系统\";s:8:\"keywords\";s:28:\"iCMS,idreamsoft,艾梦软件\";s:11:\"description\";s:132:\"iCMS 是一套采用 PHP 和 MySQL 构建的高效简洁的内容管理系统,为您的网站提供一个完美的开源解决方案\";s:3:\"icp\";s:0:\"\";}');
 INSERT INTO `#iCMS@__config` (`appid`, `name`, `value`) values('0','router','a:12:{s:3:\"URL\";s:25:\"http://www.idreamsoft.com\";s:3:\"DIR\";s:1:\"/\";i:404;s:40:\"http://www.idreamsoft.com/public/404.htm\";s:10:\"public_url\";s:32:\"http://www.idreamsoft.com/public\";s:8:\"user_url\";s:30:\"http://www.idreamsoft.com/user\";s:8:\"html_dir\";s:6:\"/html/\";s:8:\"html_ext\";s:5:\".html\";s:5:\"speed\";s:1:\"5\";s:7:\"rewrite\";s:1:\"0\";s:7:\"tag_url\";s:25:\"http://www.idreamsoft.com\";s:8:\"tag_rule\";s:5:\"{PHP}\";s:7:\"tag_dir\";s:1:\"/\";}');
