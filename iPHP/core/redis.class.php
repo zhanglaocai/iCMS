@@ -11,7 +11,7 @@
 * @$Id: redis.class.php 2134 2013-10-14 05:25:17Z coolmoo $
 */
 
-class Redis{
+class Redis_client{
     const TIMEOUT     = 200;
     protected $host   = '127.0.0.1';
     protected $port   = 6379;

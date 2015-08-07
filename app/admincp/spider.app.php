@@ -375,7 +375,7 @@ class spiderApp {
         }
         return $urls;
     }
-    function title_url($row,$rule){
+    function title_url($row,$rule,$baseUrl=null){
         if($rule['mode']=="2"){
             $pq    = phpQuery::pq($row);
             list($title_attr,$url_attr) = explode("\n", $rule['list_url_rule']);
@@ -397,6 +397,10 @@ class spiderApp {
         $url   = trim($url);
         //_url_complement($baseUrl,$href)
         $url   = str_replace('<%url%>',$url, $rule['list_url']);
+        if(strpos($url, 'AUTO::')!==false && $baseUrl){
+            $url = str_replace('AUTO::','',$url);
+            $url = $this->_url_complement($baseUrl,$url);
+        }
         $rule['list_url_clean'] && $url = $this->dataClean($rule['list_url_clean'],$url);
         $title = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $title);
         $this->title = $title;
@@ -573,7 +577,7 @@ class spiderApp {
                     $pubCount[$url]['count'] = count($lists);
                     echo "开始采集:".$url." 列表 ".$pubCount[$url]['count']."条记录\n";
                     foreach ($lists AS $lkey => $row) {
-                        list($this->title,$this->url) = $this->title_url($row,$rule,$lists);
+                        list($this->title,$this->url) = $this->title_url($row,$rule,$url);
                         if($this->url===false){
                             continue;
                         }
@@ -616,19 +620,19 @@ class spiderApp {
                 }
             } else {
                 foreach ($lists AS $lkey => $row) {
-                    list($title,$url) = $this->title_url($row,$rule,$lists);
-                    if($url===false){
+                    list($title,$turl) = $this->title_url($row,$rule,$url);
+                    if($turl===false){
                         continue;
                     }
-                    $hash  = md5($url);
+                    $hash  = md5($turl);
                     if ($this->ruleTest) {
-                        echo $title . ' (<a href="' . APP_URI . '&do=testcont&url=' . urlencode($url) . '&rid=' . $rid . '&pid=' . $pid . '&title=' . urlencode($title) . '" target="_blank">测试内容规则</a>) <br />';
-                        echo $url . "<br />";
+                        echo $title . ' (<a href="' . APP_URI . '&do=testcont&url=' . urlencode($turl) . '&rid=' . $rid . '&pid=' . $pid . '&title=' . urlencode($title) . '" target="_blank">测试内容规则</a>) <br />';
+                        echo $turl . "<br />";
                         echo $hash . "<br /><br />";
                     } else {
-                        //iDB::query("INSERT INTO `#iCMS@__spider_url` (`cid`, `rid`,`pid`, `hash`, `title`, `url`, `status`, `publish`, `addtime`, `pubdate`) VALUES ('$cid', '$rid','$pid','$hash','$title', '$url', '0', '0', '" . time() . "', '0');");
+                        //iDB::query("INSERT INTO `#iCMS@__spider_url` (`cid`, `rid`,`pid`, `hash`, `title`, `url`, `status`, `publish`, `addtime`, `pubdate`) VALUES ('$cid', '$rid','$pid','$hash','$title', '$turl', '0', '0', '" . time() . "', '0');");
                         $checker = $this->checker($work);
-                        $checker===true && $pubArray[] = array('sid'=>iDB::$insert_id,'url'=>$url,'title'=>$title,'cid'=>$cid,'rid'=>$rid,'pid'=>$pid,'hash'=>$hash);
+                        $checker===true && $pubArray[] = array('sid'=>iDB::$insert_id,'url'=>$turl,'title'=>$title,'cid'=>$cid,'rid'=>$rid,'pid'=>$pid,'hash'=>$hash);
                     }
                 }
             }

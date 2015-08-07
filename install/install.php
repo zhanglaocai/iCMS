@@ -19,9 +19,6 @@ if($_POST['action']=='install'){
 	$db_password = trim($_POST['DB_PASSWORD']);
 	$db_name     = trim($_POST['DB_NAME']);
 	$db_prefix   = trim($_POST['DB_PREFIX']);
-	$router_dir  = rtrim($_POST['ROUTER_DIR'],'/').'/';
-	$router_url  = trim($_POST['ROUTER_URL'],'/');
-
 
 	define('iPHP_DB_HOST',$db_host);	// 服务器名或服务器ip,一般为localhost
 	define('iPHP_DB_USER',$db_user);		// 数据库用户
@@ -32,8 +29,10 @@ if($_POST['action']=='install'){
 
 	require iPATH.'iPHP/iPHP.php';//iPHP框架文件
 
-	$admin_name     = trim($_POST['ADMIN_NAME']);
-	$admin_password = trim($_POST['ADMIN_PASSWORD']);
+    $router_dir     = rtrim($_POST['ROUTER_DIR'],'/').'/';
+    $router_url     = trim($_POST['ROUTER_URL'],'/');
+    $admin_name     = trim($_POST['ADMIN_NAME']);
+    $admin_password = trim($_POST['ADMIN_PASSWORD']);
 	$lock_file      = iPATH.'cache/install.lock';
 
 	file_exists($lock_file) && iPHP::alert('请先删除 cache/install.lock 这个文件。','js:top.callback();');

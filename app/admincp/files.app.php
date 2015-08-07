@@ -114,11 +114,12 @@ class filesApp{
 		}
     }
     function do_download(){
+        iFS::$userid   = false;
         $rs            = iFS::getFileData('id',$this->id);
         iFS::$redirect = true;
         $FileRootPath  = iFS::fp($rs->filepath,"+iPATH");
         iFS::check_ext($rs->filepath,true) OR iPHP::alert('文件类型不合法!');
-
+        iFS::$userid = iMember::$userid;
         $fileresults   = iFS::remote($rs->ofilename);
     	if($fileresults){
     		iFS::mkdir(dirname($FileRootPath));

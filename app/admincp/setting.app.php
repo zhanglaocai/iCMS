@@ -40,8 +40,8 @@ class settingApp{
 
         $config['router']['html_ext']   = '.'.trim($config['router']['html_ext'],'.');
         $config['router']['URL']        = trim($config['router']['URL'],'/');
-        $config['router']['public_url'] = trim($config['router']['public_url'],'/');
-        $config['router']['user_url']   = trim($config['router']['user_url'],'/');
+        $config['router']['public_url'] = rtrim($config['router']['public_url'],'/');
+        $config['router']['user_url']   = rtrim($config['router']['user_url'],'/');
         $config['router']['tag_url']    = trim($config['router']['tag_url'],'/');
         $config['router']['DIR']        = rtrim($config['router']['DIR'],'/').'/';
         $config['router']['html_dir']   = rtrim($config['router']['html_dir'],'/').'/';
@@ -89,7 +89,8 @@ class settingApp{
         $name===null   && $name = iACP::$app_name;
         empty($appid) && iPHP::alert("配置程序出错缺少APPID!");
         $config = iS::escapeStr($_POST['config']);
-        $this->set($config,$name,$appid,true);
+        $this->set($config,$name,$appid,false);
+        $this->cache();
         iPHP::success('配置更新完成','js:1');
     }
     /**
@@ -98,9 +99,10 @@ class settingApp{
      * @param  [type]  $name   [description]
      * @return [type]       [description]
      */
-    function get($appid = 0, $name = NULL) {
+    function get($appid = NULL, $name = NULL) {
         if ($name === NULL) {
-            $rs = iDB::all("SELECT * FROM `#iCMS@__config` WHERE `appid`='$appid'");
+            $sql = $appid === NULL?'':"WHERE `appid`='$appid'";
+            $rs  = iDB::all("SELECT * FROM `#iCMS@__config` $sql");
             foreach ($rs AS $c) {
                 $value = $c['value'];
                 strpos($c['value'], 'a:')===false OR $value = unserialize($c['value']);

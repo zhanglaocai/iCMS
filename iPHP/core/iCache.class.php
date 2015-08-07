@@ -57,9 +57,9 @@ class iCache{
         				$host	= $hosts;
         				$port	= 0;
         			}
-                    $db         = (int)str_replace('db:','',$db);
+                    $db = (int)str_replace('db:','',$db);
                     $db=='' && $db = 1;
-                    self::$link = new Redis(array(
+                    self::$link = new Redis_client(array(
 					    'host'     => $host,
 					    'port'     => $port,
 					    'db'       => $db,
