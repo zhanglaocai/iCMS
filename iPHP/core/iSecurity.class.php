@@ -198,6 +198,7 @@ class iS {
 	 * @return string
 	 */
 	public static function escapeStr($string) {
+		// var_dump($string);
 	    if(is_array($string)) {
 	        foreach($string as $key => $val) {
 	            $string[$key] = iS::escapeStr($val);
@@ -206,6 +207,7 @@ class iS {
 			$string = str_replace(array('%00','\\0'), '', $string); //modified@2010-7-5
 			$string = str_replace(array('&', '"',"'", '<', '>'), array('&amp;', '&quot;','&#039;', '&lt;', '&gt;'), $string);
 			$string = preg_replace('/&amp;((#(\d{3,5}|x[a-fA-F0-9]{4})|[a-zA-Z][a-z0-9]{2,5});)/', '&\\1',$string);
+	    	$string = str_replace('\\\\', '&#92;', $string);
 	    }
 	    return $string;
 	}
