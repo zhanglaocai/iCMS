@@ -21,13 +21,7 @@ class iMenu {
 	private $do_uri    = '';
 
 	function __construct() {
-		iCache::sysCache();
-		$this->menu_array  = iCache::get('iCMS/iMenu/menu_array');
-		$this->root_array  = iCache::get('iCMS/iMenu/root_array');
-		$this->child_array = iCache::get('iCMS/iMenu/child_array');
-		$this->parent      = iCache::get('iCMS/iMenu/parent');
-		$this->menu_uri    = iCache::get('iCMS/iMenu/menu_uri');
-
+		$this->getAllCache();
 		$app           = $_GET['app']?$_GET['app']:'home';
 		$this->app_uri = $this->menu_uri[$app];
 		$this->do_uri  = $app;
@@ -42,6 +36,7 @@ class iMenu {
 		$this->rootid   = $this->rootid($this->do_mid);
 		$this->parentid = $this->parent[$this->do_mid];
 		$this->menu_array OR $this->cache();
+
 	}
 
 	function get_array($cache=false){
@@ -68,12 +63,23 @@ class iMenu {
 			$this->root_array[$rid] = $array;
 		}
 		if($cache){
-			iCache::set('iCMS/iMenu/menu_array',	$this->menu_array,0);
-	        iCache::set('iCMS/iMenu/root_array',	$this->root_array,0);
-	        iCache::set('iCMS/iMenu/child_array',	$this->child_array,0);
-	        iCache::set('iCMS/iMenu/parent',		$this->parent,0);
-	        iCache::set('iCMS/iMenu/menu_uri',		$this->menu_uri,0);
+			$cache = iCache::sysCache();
+			$cache->add('iCMS/iMenu/menu_array',	$this->menu_array,0);
+	        $cache->add('iCMS/iMenu/root_array',	$this->root_array,0);
+	        $cache->add('iCMS/iMenu/child_array',	$this->child_array,0);
+	        $cache->add('iCMS/iMenu/parent',		$this->parent,0);
+	        $cache->add('iCMS/iMenu/menu_uri',		$this->menu_uri,0);
+	        // iCache::destroy();
 		}
+	}
+	function getAllCache(){
+		$cache = iCache::sysCache();
+		$this->menu_array  = $cache->get('iCMS/iMenu/menu_array');
+		$this->root_array  = $cache->get('iCMS/iMenu/root_array');
+		$this->child_array = $cache->get('iCMS/iMenu/child_array');
+		$this->parent      = $cache->get('iCMS/iMenu/parent');
+		$this->menu_uri    = $cache->get('iCMS/iMenu/menu_uri');
+		// iCache::destroy();
 	}
 	function cache(){
 		$this->get_array(true);

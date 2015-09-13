@@ -32,13 +32,16 @@ class iCache{
 			self::$link	= $GLOBALS['iCache']['link'];
 			return self::$link;
 		}
-		self::$config['engine'] OR self::$config['engine']='file';
-		self::$config['reset']	&& self::$link	= null;
-
+        self::$config['engine'] OR self::$config['engine']='file';
+        self::$config['reset']  && self::$link  = null;
+        self::connect();
+        return self::$link;
+	}
+    public static function connect(){
         if(self::$link===null){
-        	switch(self::$config['engine']){
-        		case 'memcached':
-        			require iPHP_CORE.'/memcached.class.php';
+            switch(self::$config['engine']){
+                case 'memcached':
+                    require_once iPHP_CORE.'/memcached.class.php';
                     $_servers   = explode("\n",str_replace(array("\r"," "),"",self::$config['host']));
                     self::$link = new memcached_client(array(
                         'servers'            => $_servers,
@@ -46,41 +49,40 @@ class iCache{
                         'persistant'         => false,
                         'debug'              => false,
                         'compress'           => self::$config['compress']
-	                ));
-	                unset($_servers);
-        		break;
-        		case 'redis':
-        			require iPHP_CORE.'/redis.class.php';
+                    ));
+                    unset($_servers);
+                break;
+                case 'redis':
+                    require_once iPHP_CORE.'/redis.class.php';
                     list($hosts,$db)  = explode('@',trim(self::$config['host']));
                     list($host,$port) = explode(':',$hosts);
-        			if(strstr($hosts, 'unix:')){
-        				$host	= $hosts;
-        				$port	= 0;
-        			}
+                    if(strstr($hosts, 'unix:')){
+                        $host   = $hosts;
+                        $port   = 0;
+                    }
                     $db = (int)str_replace('db:','',$db);
                     $db=='' && $db = 1;
                     self::$link = new Redis_client(array(
-					    'host'     => $host,
-					    'port'     => $port,
-					    'db'       => $db,
+                        'host'     => $host,
+                        'port'     => $port,
+                        'db'       => $db,
                         'compress' => self::$config['compress']
-					));
-        		break;
-        		case 'file':
-        			require iPHP_CORE.'/iFileCache.class.php';
+                    ));
+                break;
+                case 'file':
+                    require_once iPHP_CORE.'/iFileCache.class.php';
                     list($dirs,$level) = explode(':',self::$config['host']);
                     $level OR $level   = 0;
                     self::$link = new iFC(array(
-						'dirs'    => $dirs,
-						'level'   => $level,
-						'compress'=> self::$config['compress']
-	                ));
-        		break;
-        	}
-        	$GLOBALS['iCache']['link'] = self::$link;
+                        'dirs'    => $dirs,
+                        'level'   => $level,
+                        'compress'=> self::$config['compress']
+                    ));
+                break;
+            }
+            $GLOBALS['iCache']['link'] = self::$link;
         }
-        return self::$link;
-	}
+    }
     public static function prefix($keys,$prefix=NULL){
         if($prefix){
             if(is_array($keys)){
@@ -96,13 +98,15 @@ class iCache{
     }
     public static function get($keys,$ckey=NULL, $unserialize = true){
         $keys = self::prefix($keys,self::$config['prefix']);
-        $_keys=implode('',(array)$keys);
+        $_keys= implode('',(array)$keys);
         if(!self::$config['enable']){
-        	if(strpos($_keys,iPHP_APP)===false){
-        		return NULL;
-        	}else{
-        		self::sysCache();
-        	}
+            if(strpos($keys,iPHP_APP)===false){
+                return NULL;
+            }else{
+                return self::sysCache();
+            }
+        }else{
+            self::connect();
         }
         if(!isset($GLOBALS['iCache'][$_keys])){
             $GLOBALS['iCache'][$_keys]=is_array($keys)?
@@ -113,13 +117,14 @@ class iCache{
     }
     public static function set($keys,$res,$cachetime="-1") {
         $keys = self::prefix($keys,self::$config['prefix']);
-
         if(!self::$config['enable']){
-        	if(strpos($keys,iPHP_APP)===false){
-        		return NULL;
-        	}else{
-        		self::sysCache();
-        	}
+            if(strpos($keys,iPHP_APP)===false){
+                return NULL;
+            }else{
+                return self::sysCache();
+            }
+        }else{
+            self::connect();
         }
         if(self::$config['engine']=='memcached') {
             self::$link->delete($keys);
@@ -138,7 +143,7 @@ class iCache{
     }
     public static function sysCache(){
         iPHP::loadClass('FileCache','FC');
-	    self::$link	= new iFC(array(
+	    return new iFC(array(
             'dirs'     => '',
             'level'    => 0,
             'compress' => 1
@@ -155,4 +160,7 @@ class iCache{
             ));
 		}
 	}
+    public static function destroy(){
+        self::$link = null;
+    }
 }

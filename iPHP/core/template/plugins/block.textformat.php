@@ -19,18 +19,19 @@
  */
 function tpl_block_textformat($params, $content, &$template_object)
 {
-	$style = null;
-	$indent = 0;
+
+	$style        = null;
+	$indent       = 0;
 	$indent_first = 0;
-	$indent_char = ' ';
-	$wrap = 80;
-	$wrap_char = "\n";
-	$wrap_cut = false;
-	$assign = null;
-	
+	$indent_char  = ' ';
+	$wrap         = 80;
+	$wrap_char    = "\n";
+	$wrap_cut     = false;
+	$assign       = null;
+
 	if($content == null)
 	{
-		return true;
+		return false;
 	}
 
     extract($params);
@@ -39,7 +40,7 @@ function tpl_block_textformat($params, $content, &$template_object)
 	{
 		$wrap = 72;
 	}
-	// split into paragraphs	
+	// split into paragraphs
 	$paragraphs = preg_split('![\r\n][\r\n]!',$content);
 
 	foreach($paragraphs as $paragraph)

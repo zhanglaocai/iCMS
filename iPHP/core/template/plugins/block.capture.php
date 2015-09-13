@@ -8,6 +8,8 @@
  */
 function tpl_block_capture($params, $content, &$tpl)
 {
+    if($content===null) return false;
+
 	extract($params);
 
 	if (isset($name)){

@@ -41,7 +41,9 @@ class iPHP{
         //self::$iTPL->register_modifier("small","gethumb");
         self::$iTPL->register_modifier("thumb","small");
         self::$iTPL->register_modifier("random","random");
+        self::$iTPL->register_block("cache",array("iPHP","tpl_block_cache"));
 	}
+
     public static function get_vars($key=null){
         return self::$iTPL->get_template_vars($key);
     }
@@ -77,6 +79,28 @@ class iPHP{
         $tpl OR self::throw404('运行出错！ 请设置模板文件', '001','TPL');
         return self::pl($tpl);
 
+    }
+    public static function tpl_block_cache($vars, $content, &$tpl){
+        $vars['id'] OR iPHP::warning('cache 标签出错! 缺少"id"属性或"id"值为空.');
+        $cache_time = isset($vars['time'])?(int)$vars['time']:-1;
+        $cache_name = iPHP_DEVICE.'/part/'.$vars['id'];
+        $cache      = iCache::get($cache_name);
+        if(empty($cache)){
+            if($content===null){
+                return false;
+            }
+            $cache = $content;
+            iCache::set($cache_name,$content,$cache_time);
+            unset($content);
+        }
+        if($vars['assign']){
+            $tpl->assign($vars['assign'], $cache);
+            return;
+        }
+        if($content===null){
+            return $cache;
+        }
+        // return $cache;
     }
 	public static function tpl_path($tpl){
         if(strpos($tpl,iPHP_APP.':/') !==false){

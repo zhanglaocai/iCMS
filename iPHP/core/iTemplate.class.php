@@ -143,6 +143,13 @@ class iTemplate {
 	function clear_compiled_tpl($file = null){
 		$this->_destroy_dir($file);
 	}
+	function register_block($block, $implementation){
+		$this->_plugins['block'][$block] = $implementation;
+	}
+
+	function unregister_block($block){
+		unset($this->_plugins['block'][$block]);
+	}
 
 	function register_modifier($modifier, $implementation){
 		$this->_plugins['modifier'][$modifier] = $implementation;
@@ -1077,8 +1084,19 @@ class iTemplate_Compiler extends iTemplate {
 		// check for object functions
 		//var_dump($this->_plugins);
 		$_plugins_fun = $this->_plugins[$type][$function];
-		if (isset($_plugins_fun) && is_array($_plugins_fun) && is_object($_plugins_fun[0]) && method_exists($_plugins_fun[0], $_plugins_fun[1])){
-			return '$this->_plugins[\'' . $type . '\'][\'' . $function . '\'][0]->' . $_plugins_fun[1];
+
+		// var_dump($_plugins_fun[0],class_exists($_plugins_fun[0]));
+
+		if (isset($_plugins_fun) &&
+			is_array($_plugins_fun) &&
+			class_exists($_plugins_fun[0]) &&
+			method_exists($_plugins_fun[0], $_plugins_fun[1])){
+
+			if(is_object($_plugins_fun[0])){
+				return $_plugins_fun[0].'->'.$_plugins_fun[1];
+			}else{
+				return $_plugins_fun[0].'::'.$_plugins_fun[1];
+			}
 		}
 		// check for standard functions
 		if (isset($_plugins_fun) && function_exists($_plugins_fun)){
