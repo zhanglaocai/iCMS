@@ -13,16 +13,184 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class iPHP{
-	public static $pagenav    = NULL;
-	public static $offset     = NULL;
-	public static $break      = true;
-	public static $dialog     = array();
-	public static $iTPL       = NULL;
-	public static $iTPL_MODE  = null;
-	public static $mobile     = false;
-	public static $time_start = false;
+    public static $apps       = null;
+    public static $app        = null;
+    public static $app_name   = null;
+    public static $app_do     = null;
+    public static $app_method = null;
+    public static $app_tpl    = null;
+    public static $app_path   = null;
+    public static $app_file   = null;
+    public static $app_args   = null;
+    public static $app_vars   = null;
+    public static $config     = array();
+    public static $hooks      = array();
 
+    public static $pagenav    = NULL;
+    public static $offset     = NULL;
+    public static $break      = true;
+    public static $dialog     = array();
+    public static $iTPL       = NULL;
+    public static $iTPL_MODE  = null;
+    public static $mobile     = false;
+    public static $time_start = false;
 
+    public static function run($app = NULL,$do = NULL,$args = NULL,$prefix="do_") {
+        //empty($app) && $app   = $_GET['app']; //单一入口
+        if(empty($app)){
+            $fi  = iFS::name(__SELF__);
+            $app = $fi['name'];
+        }
+        if (!in_array($app, self::$apps) && iPHP_DEBUG){
+            iPHP::throw404('运行出错！找不到应用程序: <b>' . $app.'</b>', '0001');
+        }
+        self::$app_path   = iPHP_APP_DIR.'/'.$app;
+        self::$app_file   = self::$app_path.'/'.$app.'.app.php';
+        is_file(self::$app_file) OR iPHP::throw404('运行出错！找不到文件: <b>' . $app.'.app.php</b>', '0002');
+        if($do===NULL){
+            $do = iPHP_APP;
+            $_GET['do'] && $do = iS::escapeStr($_GET['do']);
+        }
+        if($_POST['action']){
+            $do     = iS::escapeStr($_POST['action']);
+            $prefix = 'ACTION_';
+        }
+
+        self::$app_name   = $app;
+        self::$app_do     = $do;
+        self::$app_method = $prefix.$do;
+        self::$app_tpl    = iPHP_APP_DIR.'/'.$app.'/template';
+        self::$app_vars   = array(
+            "MOBILE"     => iPHP::$mobile,
+            'COOKIE_PRE' => iPHP_COOKIE_PRE,
+            'REFER'      => __REF__,
+            'CONFIG'     => self::$config,
+            "APP"        => array(
+                'NAME'   => self::$app_name,
+                'DO'     => self::$app_do,
+                'METHOD' => self::$app_method
+            )
+        );
+        iPHP::$iTPL->_iTPL_VARS['SAPI'].= self::$app_name;
+        iPHP::$iTPL->_iTPL_VARS+=self::$app_vars;
+        self::$app = iPHP::app($app);
+        if(self::$app_do && self::$app->methods){
+            in_array(self::$app_do, self::$app->methods) OR iPHP::throw404('运行出错！ <b>' .self::$app_name. '</b> 类中找不到方法定义: <b>'.self::$app_method.'</b>', '0003');
+            $method = self::$app_method;
+            $args===null && $args = self::$app_args;
+            if($args){
+                if($args==='object'){
+                    return self::$app;
+                }
+                return call_user_func_array(array(self::$app,$method), (array)$args);
+            }else{
+                method_exists(self::$app,self::$app_method) OR iPHP::throw404('运行出错！ <b>' .self::$app_name. '</b> 类中 <b>'. self::$app_method.'</b> 方法不存在', '0004');
+                return self::$app->$method();
+            }
+        }else{
+            iPHP::throw404('运行出错！ <b>' .self::$app_name. '</b> 类中 <b>'. self::$app_method.'</b> 方法不存在', '0005');
+        }
+    }
+
+    public static function config(){
+        $site   = iPHP_MULTI_SITE ? $_SERVER['HTTP_HOST']:iPHP_APP;
+        if(iPHP_MULTI_DOMAIN){ //只绑定主域
+            preg_match("/[^\.\/][\w\-]+\.[^\.\/]+$/", $site, $matches);
+            $site = $matches[0];
+        }
+        iPHP_MULTI_SITE && define('iPHP_APP_SITE',$site);
+        strpos($site, '..') === false OR exit('<h1>What are you doing?(code:001)</h1>');
+
+        //config.php 中开启iPHP_APP_CONF后 此处设置无效,
+        define('iPHP_APP_CONF', iPHP_CONF_DIR.'/'.$site);//网站配置目录
+        define('iPHP_APP_CONFIG', iPHP_APP_CONF.'/config.php');//网站配置文件
+        @is_file(iPHP_APP_CONFIG) OR exit('<h1>'.iPHP_APP.' 运行出错.找不到"'.$site.'"网站的配置文件!(code:002)</h1>');
+        $config = require iPHP_APP_CONFIG;
+
+        //config.php 中开启后 此处设置无效
+        defined('iPHP_DEBUG')          OR define('iPHP_DEBUG',$config['debug']['php']);       //程序调试模式
+        defined('iPHP_TPL_DEBUG')      OR define('iPHP_TPL_DEBUG',$config['debug']['tpl']);    //模板调试
+        defined('iPHP_SQL_DEBUG')      OR define('iPHP_SQL_DEBUG',$config['debug']['sql']);    //模板调试
+        defined('iPHP_TIME_CORRECT')   OR define('iPHP_TIME_CORRECT',$config['time']['cvtime']);
+        defined('iPHP_ROUTER_REWRITE') OR define('iPHP_ROUTER_REWRITE', $config['router']['rewrite']);
+        defined('iPHP_APP_SITE')       && $config['cache']['prefix'] = iPHP_APP_SITE;
+
+        define('iPHP_ROUTER_USER',    $config['router']['user_url']);
+        define('iPHP_URL_404',        $config['router']['404']);      //404定义
+       //config.php --END--
+
+        ini_set('display_errors','OFF');
+        error_reporting(0);
+
+        if(iPHP_DEBUG||iPHP_TPL_DEBUG){
+            ini_set('display_errors','ON');
+            error_reporting(E_ALL & ~E_NOTICE);
+        }
+
+        $timezone = $config['time']['zone'];
+        $timezone OR $timezone = 'Asia/Shanghai';//设置中国时区
+        @ini_set('date.timezone',$timezone);
+        function_exists('date_default_timezone_set') && @date_default_timezone_set($timezone);
+
+        self::multiple_device($config);
+        iFS::init($config['FS'],$config['watermark'],'filedata');
+        iCache::init($config['cache']);
+        iURL::init($config['router']);
+        self::iTemplate();
+
+        iPHP_DEBUG      && iDB::$show_errors = true;
+        iPHP_TPL_DEBUG  && self::clear_compiled_tpl();
+
+        self::$apps = $config['apps'];
+
+        return $config;
+    }
+
+    //多终端适配
+    private static function multiple_device(&$config){
+        $template = $config['template'];
+        foreach ((array)$template['device'] as $key => $device) {
+            if($device['tpl'] && self::device_agent($device['ua'])){
+                $device_name = $device['name'];
+                $device_tpl  = $device['tpl'];
+                $domain      = $device['domain'];
+                break;
+            }
+        }
+        iPHP::$mobile = false;
+        //检查是否移动设备
+        if(self::device_agent($template['mobile']['agent'])){
+            iPHP::$mobile = true;
+            $mobile_tpl   = $template['mobile']['tpl'];
+            $domain       = $template['mobile']['domain'];
+        }
+
+        if($device_tpl){ //设备模板
+            $def_tpl = $device_tpl;
+        }else{
+            if(iPHP::$mobile){//没有设置设备模板 但是移动设备
+                $device_name = 'mobile';
+                $def_tpl     = $mobile_tpl;
+            }
+        }
+
+        if(empty($def_tpl)){
+            $device_name = 'desktop';
+            $def_tpl     = $template['desktop']['tpl'];
+            $domain      = false;
+        }
+        $domain && $config['router'] = str_replace($config['router']['URL'], $domain, $config['router']);
+        define('iPHP_DEFAULT_TPL',$def_tpl);
+        define('iPHP_MOBILE_TPL',$mobile_tpl);
+        define('iPHP_DEVICE',$device_name);
+        define('iPHP_HOST', $config['router']['URL']);
+        header("Access-Control-Allow-Origin: ".iPHP_HOST);
+        header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
+    }
+    private static function device_agent($user_agent){
+        $user_agent = str_replace(',','|',preg_quote($user_agent));
+        return ($user_agent && preg_match('/'.$user_agent.'/i',$_SERVER["HTTP_USER_AGENT"]));
+    }
 	public static function iTemplate(){
         self::$iTPL = new iTemplate();
         self::$iTPL->template_callback = array("iPHP","tpl_path");
@@ -41,9 +209,12 @@ class iPHP{
         //self::$iTPL->register_modifier("small","gethumb");
         self::$iTPL->register_modifier("thumb","small");
         self::$iTPL->register_modifier("random","random");
-        self::$iTPL->register_block("cache",array("iPHP","tpl_block_cache"));
 	}
-
+    public static function app_ref($app_name=true,$out=false) {
+        $app_name===true && $app_name = self::$app_name;
+        $rs = iPHP::get_vars($app_name);
+        return $rs['param'];
+    }
     public static function get_vars($key=null){
         return self::$iTPL->get_template_vars($key);
     }
@@ -79,28 +250,6 @@ class iPHP{
         $tpl OR self::throw404('运行出错！ 请设置模板文件', '001','TPL');
         return self::pl($tpl);
 
-    }
-    public static function tpl_block_cache($vars, $content, &$tpl){
-        $vars['id'] OR iPHP::warning('cache 标签出错! 缺少"id"属性或"id"值为空.');
-        $cache_time = isset($vars['time'])?(int)$vars['time']:-1;
-        $cache_name = iPHP_DEVICE.'/part/'.$vars['id'];
-        $cache      = iCache::get($cache_name);
-        if(empty($cache)){
-            if($content===null){
-                return false;
-            }
-            $cache = $content;
-            iCache::set($cache_name,$content,$cache_time);
-            unset($content);
-        }
-        if($vars['assign']){
-            $tpl->assign($vars['assign'], $cache);
-            return;
-        }
-        if($content===null){
-            return $cache;
-        }
-        // return $cache;
     }
 	public static function tpl_path($tpl){
         if(strpos($tpl,iPHP_APP.':/') !==false){
@@ -265,11 +414,11 @@ class iPHP{
     	self::import(iPHP_LIB.'/Parsedown.php');
 		$Parsedown = new Parsedown();
 		$content   = str_replace(array(
-		'#--iCMS.Markdown--#',
-		'#--iCMS.PageBreak--#'
-		),array('','@--iCMS.PageBreak--@'),$content);
+		'#--'.iPHP_APP.'.Markdown--#',
+		'#--'.iPHP_APP.'.PageBreak--#'
+		),array('','@--'.iPHP_APP.'.PageBreak--@'),$content);
 		$content   = $Parsedown->text($content);
-		$content   = str_replace('@--iCMS.PageBreak--@','#--iCMS.PageBreak--#',$content);
+		$content   = str_replace('@--'.iPHP_APP.'.PageBreak--@','#--'.iPHP_APP.'.PageBreak--#',$content);
     	return $content;
     }
     public static function sendmail($config){
@@ -380,7 +529,7 @@ class iPHP{
 		if(is_array($key)){
 			$url = $router?$router[$key[0]]:$key[0];
 			if($static && stripos($url, '/{uid}/')===0){
-				$url = rtrim(iCMS_USER_URL,'/').$url;
+				$url = rtrim(iPHP_ROUTER_USER,'/').$url;
 			}
 			if(is_array($key[1])){ /* 多个{} 例:/{uid}/{cid}/ */
 				preg_match_all('/\{(\w+)\}/i',$url, $matches);
@@ -393,7 +542,7 @@ class iPHP{
 			$url = $router?$router[$key]:$key;
 		}
 		if($var=='?&'){
-			$url.= iCMS_REWRITE?'?':'&';
+			$url.= iPHP_ROUTER_USER?'?':'&';
 		}
 		return $url;
 	}
@@ -466,6 +615,47 @@ class iPHP{
 	    }
 	}
 
+    public static function map_sql($where,$type=null,$field='iid') {
+        if(empty($where)){
+            return false;
+        }
+        $i=0;
+        foreach ($where as $key => $value) {
+            $as = ' map';
+            $i && $as.=$i;
+            $_FROM[]  = $key.$as;
+            $_WHERE[] = str_replace($key,$as,$value);
+            $_FIELD[] = $as.".`{$field}`";
+            $i++;
+        }
+        $_field = $_FIELD[0];
+        $_count = count($_FIELD);
+        if($_count>1){
+            foreach ($_FIELD as $fkey => $fd) {
+                $fkey && array_push($_WHERE,$_field.' = '.$fd);
+            }
+        }
+        if($type=='join'){
+            return array('from' =>implode(',', $_FROM),'where'=>implode(' AND ', $_WHERE) );
+        }
+        return 'SELECT '.$_field.' AS '.$field.' FROM '.implode(',', $_FROM).' WHERE '.implode(' AND ', $_WHERE);
+    }
+    public static function get_ids($rs,$field='id') {
+        if(empty($rs)){
+            return false;
+        }
+        $resource = array();
+        foreach((array)$rs AS $_vars) {
+            $resource[] = "'".$_vars[$field]."'";
+        }
+        unset($rs);
+        if($resource){
+            $resource = array_unique ($resource);
+            $resource = implode(',',$resource);
+            return $resource;
+        }
+        return false;
+    }
 	public static function where($vars,$field,$not=false,$noand=false,$table='') {
 		if (is_bool($vars)||empty($vars)) return '';
 
@@ -602,10 +792,7 @@ class iPHP{
 		$content = $info[0];
         strstr($content,':#:') && $content=self::msg($content,true);
 		$content = addslashes('<table class="ui-dialog-table" align="center"><tr><td valign="middle">'.$content.'</td></tr></table>');
-//		$content = addslashes($content);
 
-//		$dialog = "var options = {id:'iPHP-DIALOG',width:320,height:110,autofocus:false,";
-		//print_r(self::$dialog);
 		$options = array(
 			"id:'iPHP-DIALOG'","time:null",
 			"title:'".(self::$dialog['title']?self::$dialog['title']:iPHP_APP)." - {$title}'",
@@ -641,7 +828,7 @@ class iPHP{
 			$dialog   .= "d = iTOP.dialog.get('iPHP-DIALOG');";
 			$auto_func = $func;
 		}else{
-			$dialog.= 'options = {'.implode(',', $options).'},d = iTOP.iCMS.dialog(options);';
+			$dialog.= 'options = {'.implode(',', $options).'},d = iTOP.'.iPHP_APP.'.dialog(options);';
 	        // if(self::$dialog_lock){
 	        // 	$dialog.='d.showModal();';
 	        // }else{
@@ -662,8 +849,26 @@ class iPHP{
 		echo self::$dialog['code']?$dialog:'<script>'.$dialog.'</script>';
         self::$break && exit();
     }
-
-	//翻页函数
+    //模板翻页函数
+    public static function page($a) {
+        iPHP::loadClass("Pages");
+        $lang   = iPHP::lang(iPHP_APP.':page');
+        $iPages = new iPages($a,$lang);
+        if($iPages->totalpage>1) {
+            $pagenav = $a['pagenav']?strtoupper($a['pagenav']):'NAV';
+            $pnstyle = $a['pnstyle']?$a['pnstyle']:0;
+            iPHP::$iTPL->_iTPL_VARS['PAGE']  = array(
+                $pagenav  =>$iPages->show($pnstyle),
+                'COUNT'   =>$a['total'],
+                'TOTAL'   =>$iPages->totalpage,
+                'CURRENT' =>$iPages->nowindex,
+                'NEXT'    =>$iPages->next_page()
+            );
+            iPHP::$iTPL->_iTPL_VARS['PAGES'] = $iPages;
+        }
+        return $iPages;
+    }
+	//动态翻页函数
 	public static function pagenav($total,$displaypg=20,$unit="条记录",$url='',$target='') {
 		$displaypg = intval($displaypg);
 		$page      = $GLOBALS["page"]?intval($GLOBALS["page"]):1;
@@ -726,85 +931,7 @@ class iPHP{
 	    }
 		exit;
 	}
-    //获取文件夹列表
-    public static function folder($dir='',$type=NULL) {
-    	$dir	= trim($dir,'/');
-    	$sDir	= $dir;
-    	$_GET['dir'] && $gDir	= trim($_GET['dir'],'/');
 
-
-
-    	// print_r('$dir='.$dir.'<br />');
-    	// print_r('$gDir='.$gDir.'<br />');
-
-    	//$gDir && $dir	= $gDir;
-
-        //strstr($dir,'.')!==false	&& self::alert('What are you doing?','',1000000);
-        //strstr($dir,'..')!==false	&& self::alert('What are you doing?','',1000000);
-
-
-        $sDir_PATH	= iFS::path_join(iPATH,$sDir);
-        $iDir_PATH	= iFS::path_join($sDir_PATH,$gDir);
-
-   	// print_r('$sDir_PATH='.$sDir_PATH."\n");
-   	// print_r('$iDir_PATH='.$iDir_PATH."\n");
-
-		strpos($iDir_PATH,$sDir_PATH)===false && self::alert("对不起!您访问的目录有问题!");
-
-        if (!is_dir($iDir_PATH)) {
-            return false;
-        }
-
-		$url	= buildurl(false,'dir');
-        if ($handle = opendir($iDir_PATH)) {
-            while (false !== ($rs = readdir($handle))) {
-				// print_r('$rs='.$rs."\n");
-            	$filepath	= iFS::path_join($iDir_PATH,$rs);
-				$filepath	= rtrim($filepath,'/');
-//				print_r('$filepath='.$filepath."\n");
-                $sFileType 	= @filetype($filepath);
-//				print_r('$sFileType='.$sFileType."\n");
-				// var_dump($sDir_PATH,$filepath);
-				$path = str_replace($sDir_PATH, '', $filepath);
-				$path = ltrim($path,'/');
-                if ($sFileType	=="dir" && !in_array($rs,array('.','..','admincp'))) {
-                    $dirArray[]	= array(
-						'path' =>$path,
-						'name' =>$rs,
-						'url'  =>$url.urlencode($path)
-                    );
-                }
-                if ($sFileType	=="file" && !in_array($rs,array('..','.iPHP'))) {
-                	$filext		= iFS::get_ext($rs);
-	                $fileinfo	= array(
-							'path'     =>$path,
-							'dir'      =>dirname($path),
-							'url'      =>iFS::fp($path,'+http'),
-							'name'     =>$rs,
-							'modified' =>get_date(filemtime($filepath),"Y-m-d H:i:s"),
-							'md5'      =>md5_file($filepath),
-							'ext'      =>$filext,
-							'size'     =>iFS::sizeUnit(filesize($filepath))
-	                );
-	                if($type){
-	                	 in_array(strtolower($filext),$type) && $fileArray[] = $fileinfo;
-	                }else{
-	                	$fileArray[] = $fileinfo;
-	                }
-                }
-            }
-        }
-		$a['DirArray']  = (array)$dirArray;
-		$a['FileArray'] = (array)$fileArray;
-		$a['pwd']       = str_replace($sDir_PATH, '', $iDir_PATH);
-		$a['pwd']       = trim($a['pwd'],'/');
-		$pos            = strripos($a['pwd'],'/');
-		$a['parent']    = ltrim(substr($a['pwd'],0,$pos), '/');
-		$a['URI']       = $url;
-   	// var_dump($a);
-//    	exit;
-        return $a;
-    }
 }
 
 function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline){

@@ -113,13 +113,13 @@ class categoryApp{
         $category['description'] = $C['description'];
         $category['subname']     = $C['subname'];
         $category['sname']       = $C['subname'];
-        $category['pic']         = $C['pic'];
+        // $category['pic']         = $C['pic'];
         $category['navArray']    = $this->get_nav($C);
         $category['url']         = $C['iurl']['href'];
         $category['link']        = "<a href='{$C['url']}'>{$C['name']}</a>";
-        $category['pic']         = get_pic($C['pic']);
-        $category['mpic']        = get_pic($C['mpic']);
-        $category['spic']        = get_pic($C['spic']);
+        $category['pic']         = is_array($C['pic'])?$C['pic']:get_pic($C['pic']);
+        $category['mpic']        = is_array($C['mpic'])?$C['mpic']:get_pic($C['mpic']);
+        $category['spic']        = is_array($C['spic'])?$C['spic']:get_pic($C['spic']);
 
         if($C['rootid']){
             $_parent            = iCache::get('iCMS/category/'.$C['rootid']);

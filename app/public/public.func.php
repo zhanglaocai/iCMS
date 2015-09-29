@@ -30,6 +30,6 @@ function public_qrcode($vars=null){
 	$data  = $vars['data'];
 	$query = array('app'=>'public','do'=>'qrcode','url'=>$data);
 	isset($vars['cache']) && $query['cache'] = true;
-	$url = iPHP::router('/api',iCMS_REWRITE);
+	$url = iPHP::router('/api',iPHP_ROUTER_REWRITE);
 	echo buildurl($url,$query);
 }

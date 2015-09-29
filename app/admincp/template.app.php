@@ -13,7 +13,7 @@ class templateApp{
     function __construct() {
     }
     function do_iCMS(){
-        $res       = iPHP::folder('template',array('htm','css','js','png','jpg','gif'));
+        $res       = iFS::folder('template',array('htm','css','js','png','jpg','gif'));
         $dirRs     = $res['DirArray'];
         $fileRs    = $res['FileArray'];
         $pwd       = $res['pwd'];
@@ -21,7 +21,7 @@ class templateApp{
         $URI       = $res['URI'];
         $navbar    = true;
         $file_edit = true;
-	    
+
     	include iACP::view("files.explorer");
     }
 

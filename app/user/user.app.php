@@ -114,14 +114,14 @@ class userApp {
         iPHP::assign('status',isset($_GET['status'])?(int)$_GET['status']:'1');
         iPHP::assign('cid',(int)$_GET['cid']);
         iPHP::assign('article',array(
-            'manage' => iPHP::router('/user/article',iCMS_REWRITE,'?&'),
-            'edit'   => iPHP::router('/user/publish',iCMS_REWRITE,'?&'),
+            'manage' => iPHP::router('/user/article',iPHP_ROUTER_REWRITE,'?&'),
+            'edit'   => iPHP::router('/user/publish',iPHP_ROUTER_REWRITE,'?&'),
         ));
     }
     private function __do_manage_favorite(){
         iPHP::assign('favorite',array(
             'fid'    => (int)$_GET['fid'],
-            'manage' => iPHP::router('/user/manage/favorite',iCMS_REWRITE,'?&'),
+            'manage' => iPHP::router('/user/manage/favorite',iPHP_ROUTER_REWRITE,'?&'),
         ));
     }
 
@@ -287,7 +287,7 @@ class userApp {
                 '3'=>'user:article:update_examine',
             );
         }
-        $url = iPHP::router('/user/article',iCMS_REWRITE);
+        $url = iPHP::router('/user/article',iPHP_ROUTER_REWRITE);
         iPHP::success($lang[$status],'url:'.$url);
     }
     private function __action_manage_article(){
@@ -573,8 +573,8 @@ class userApp {
             $authcode = authcode($uid.USER_AUTHASH.$user->username.USER_AUTHASH.$user->password.USER_AUTHASH.time(),'ENCODE');
             $authcode = base64_encode($authcode);
             $authcode = rawurlencode($authcode);
-            $find_url = iPHP::router('/api/user/findpwd',iCMS_REWRITE,'?&');
-            if(iCMS_REWRITE){
+            $find_url = iPHP::router('/api/user/findpwd',iPHP_ROUTER_REWRITE,'?&');
+            if(iPHP_ROUTER_REWRITE){
                 $find_url = iFS::fp($find_url,'+http');
             }
             $find_url.= 'auth='.$authcode;

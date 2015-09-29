@@ -15,6 +15,7 @@ define('ARRAY_A', 'ARRAY_A');
 define('ARRAY_N', 'ARRAY_N');
 
 defined('SAVEQUERIES') OR define('SAVEQUERIES', true);
+defined('iPHP_DB_PORT') OR define('iPHP_DB_PORT', '3306');
 
 class iDB {
     public static $show_errors = false;
@@ -27,13 +28,14 @@ class iDB {
     public static $num_rows;
     public static $insert_id;
     public static $link;
+    public static $config = null;
 
     private static $collate;
     private static $time_start;
     private static $last_error ;
     private static $result;
 
-    public static function connect($break=null) {
+    public static function connect($flag=null) {
         extension_loaded('mysqli') OR die('您的 PHP 环境看起来缺少 MySQL 数据库部分，这对 iPHP 来说是必须的。');
 
         if(isset($GLOBALS['iPHP_DB'])){
@@ -43,25 +45,36 @@ class iDB {
                     return self::$link;
             }
         }
-        //var_dump('expression');
-        self::$link = new mysqli(iPHP_DB_HOST, iPHP_DB_USER, iPHP_DB_PASSWORD);
-        if($break==='link'){
+
+        empty(self::$config) && self::$config = array(
+            'HOST'       => iPHP_DB_HOST,
+            'USER'       => iPHP_DB_USER,
+            'PASSWORD'   => iPHP_DB_PASSWORD,
+            'DB'         => iPHP_DB_NAME,
+            'CHARSET'    => iPHP_DB_CHARSET,
+            'PORT'       => iPHP_DB_PORT,
+            'PREFIX'     => iPHP_DB_PREFIX,
+            'PREFIX_TAG' => iPHP_DB_PREFIX_TAG
+        );
+
+        self::$link = new mysqli(self::$config['HOST'], self::$config['USER'], self::$config['PASSWORD'],null,self::$config['PORT']);
+        if($flag==='link'){
             return self::$link;
         }
         self::$link->connect_errno && self::bail("<h1>数据库连接失败</h1><p>请检查 <em><strong>config.php</strong></em> 的配置是否正确!</p><ul><li>请确认主机支持MySQL?</li><li>请确认用户名和密码正确?</li><li>请确认主机名正确?(一般为localhost)</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
 
         $GLOBALS['iPHP_DB'] = self::$link;
         self::pre_set();
-        if($break===null){
+        if($flag===null){
             self::select_db();
         }
     }
     public static function pre_set() {
-        self::$link->set_charset(iPHP_DB_CHARSET);
+        self::$link->set_charset(self::$config['CHARSET']);
         self::$link->query("SET @@sql_mode =''");
     }
     public static function select_db($var=false) {
-        $sel = self::$link->select_db(iPHP_DB_NAME);
+        $sel = self::$link->select_db(self::$config['DB']);
         if($var) return $sel;
         $sel OR self::bail("<h1>数据库连接失败</h1><p>我们能连接到数据库服务器（即数据库用户名和密码正确） ，但是不能链接到<em><strong> ".iPHP_DB_NAME." </strong></em>数据库.</p><ul><li>你确定<em><strong> ".iPHP_DB_NAME." </strong></em>存在?</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
     }
@@ -81,7 +94,7 @@ class iDB {
 
         // filter the query, if filters are available
         // NOTE: some queries are made before the plugins have been loaded, and thus cannot be filtered with this method
-        $query  = str_replace(iPHP_DB_PREFIX_TAG,iPHP_DB_PREFIX, trim($query));
+        $query  = str_replace(self::$config['PREFIX_TAG'],self::$config['PREFIX'], trim($query));
 
         // initialise return
         $return_val = 0;

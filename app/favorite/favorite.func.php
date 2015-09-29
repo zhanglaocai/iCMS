@@ -45,7 +45,7 @@ function favorite_list($vars=null){
 		$resource = array();
 		$vars['user'] && iPHP::app('user.class','static');
 		if($rs)foreach ($rs as $key => $value) {
-			$value['url']  = iPHP::router(array('/favorite/{id}/',$value['id']),iCMS_REWRITE);
+			$value['url']  = iPHP::router(array('/favorite/{id}/',$value['id']),iPHP_ROUTER_REWRITE);
 			$vars['user'] && $value['user'] = user::info($value['uid'],$value['nickname']);
 			if(isset($vars['loop'])){
 				$resource[$key] = $value;

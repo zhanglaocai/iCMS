@@ -174,6 +174,85 @@ class iFS {
         }
         return @rmdir($dir);
     }
+    //获取文件夹列表
+    public static function folder($dir='',$type=NULL) {
+        $dir    = trim($dir,'/');
+        $sDir   = $dir;
+        $_GET['dir'] && $gDir   = trim($_GET['dir'],'/');
+
+
+
+        // print_r('$dir='.$dir.'<br />');
+        // print_r('$gDir='.$gDir.'<br />');
+
+        //$gDir && $dir = $gDir;
+
+        //strstr($dir,'.')!==false  && self::alert('What are you doing?','',1000000);
+        //strstr($dir,'..')!==false && self::alert('What are you doing?','',1000000);
+
+
+        $sDir_PATH  = iFS::path_join(iPATH,$sDir);
+        $iDir_PATH  = iFS::path_join($sDir_PATH,$gDir);
+
+    // print_r('$sDir_PATH='.$sDir_PATH."\n");
+    // print_r('$iDir_PATH='.$iDir_PATH."\n");
+
+        strpos($iDir_PATH,$sDir_PATH)===false && self::_error(array('code'=>0,'state'=>'DIR_Error'));
+
+        if (!is_dir($iDir_PATH)) {
+            return false;
+        }
+
+        $url    = buildurl(false,'dir');
+        if ($handle = opendir($iDir_PATH)) {
+            while (false !== ($rs = readdir($handle))) {
+                // print_r('$rs='.$rs."\n");
+                $filepath   = iFS::path_join($iDir_PATH,$rs);
+                $filepath   = rtrim($filepath,'/');
+//              print_r('$filepath='.$filepath."\n");
+                $sFileType  = @filetype($filepath);
+//              print_r('$sFileType='.$sFileType."\n");
+                // var_dump($sDir_PATH,$filepath);
+                $path = str_replace($sDir_PATH, '', $filepath);
+                $path = ltrim($path,'/');
+                if ($sFileType  =="dir" && !in_array($rs,array('.','..','admincp'))) {
+                    $dirArray[] = array(
+                        'path' =>$path,
+                        'name' =>$rs,
+                        'url'  =>$url.urlencode($path)
+                    );
+                }
+                if ($sFileType  =="file" && !in_array($rs,array('..','.iPHP'))) {
+                    $filext     = iFS::get_ext($rs);
+                    $fileinfo   = array(
+                            'path'     =>$path,
+                            'dir'      =>dirname($path),
+                            'url'      =>iFS::fp($path,'+http'),
+                            'name'     =>$rs,
+                            'modified' =>get_date(filemtime($filepath),"Y-m-d H:i:s"),
+                            'md5'      =>md5_file($filepath),
+                            'ext'      =>$filext,
+                            'size'     =>iFS::sizeUnit(filesize($filepath))
+                    );
+                    if($type){
+                         in_array(strtolower($filext),$type) && $fileArray[] = $fileinfo;
+                    }else{
+                        $fileArray[] = $fileinfo;
+                    }
+                }
+            }
+        }
+        $a['DirArray']  = (array)$dirArray;
+        $a['FileArray'] = (array)$fileArray;
+        $a['pwd']       = str_replace($sDir_PATH, '', $iDir_PATH);
+        $a['pwd']       = trim($a['pwd'],'/');
+        $pos            = strripos($a['pwd'],'/');
+        $a['parent']    = ltrim(substr($a['pwd'],0,$pos), '/');
+        $a['URI']       = $url;
+    // var_dump($a);
+//      exit;
+        return $a;
+    }
 
     public static function info($path) {
         return (OBJECT) pathinfo($path);
@@ -874,7 +953,8 @@ class iFS {
             "IO"            => "输入输出错误" ,
             "UNKNOWN"       => "未知错误" ,
             "Error"         => "Upload Unknown Error (fopen)" ,
-            "MOVE"          => "文件保存时出错"
+            "MOVE"          => "文件保存时出错",
+            "DIR_Error"     => "您访问的目录有问题"
 	    );
 		$msg = $stateMap[$e['state']];
         if(self::$callback){

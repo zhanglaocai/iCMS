@@ -124,7 +124,6 @@ class propApp{
     }
     function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__prop`");
-        var_dump($rs);
     	foreach((array)$rs AS $row) {
             $type_field_id[$row['type'].'/'.$row['field']][$row['pid']] =
             $type_field_val[$row['type']][$row['field']][$row['val']]   = $row;

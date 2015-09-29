@@ -11,8 +11,8 @@
 // );
 defined('iPHP') OR exit('What are you doing?');
 
-$USER_LOGIN_URL = iPHP::router('/api/user/login',iCMS_REWRITE,'?&');
-if(iCMS_REWRITE){
+$USER_LOGIN_URL = iPHP::router('/api/user/login',iPHP_ROUTER_REWRITE,'?&');
+if(iPHP_ROUTER_REWRITE){
 	if(stripos($USER_LOGIN_URL, 'http://')===false){
 		$USER_LOGIN_URL = rtrim(iCMS_URL,'/').$USER_LOGIN_URL;
 	}
@@ -30,7 +30,7 @@ class user {
 	public static function router($uid,$type,$size=0){
 	    switch($type){
 	        case 'avatar':return iCMS_FS_URL.get_user_pic($uid,$size);break;
-	        case 'url':   return iPHP::router(array('/{uid}/',$uid),iCMS_REWRITE);break;
+	        case 'url':   return iPHP::router(array('/{uid}/',$uid),iPHP_ROUTER_REWRITE);break;
 	        case 'coverpic':
 	        	$dir = get_user_dir($uid,'coverpic');
 				return array(
@@ -40,13 +40,13 @@ class user {
 	        	break;
 	        case 'urls':
 	            return array(
-					'inbox'    => iPHP::router(array('/user/inbox/{uid}',$uid),iCMS_REWRITE),
-					'home'     => iPHP::router(array('/{uid}/',$uid),iCMS_REWRITE),
-					'comment'  => iPHP::router(array('/{uid}/comment/',$uid),iCMS_REWRITE),
-					'favorite' => iPHP::router(array('/{uid}/favorite/',$uid),iCMS_REWRITE),
-					//'share'  => iPHP::router(array('/{uid}/share/',$uid),iCMS_REWRITE),
-					'fans'     => iPHP::router(array('/{uid}/fans/',$uid),iCMS_REWRITE),
-					'follower' => iPHP::router(array('/{uid}/follower/',$uid),iCMS_REWRITE),
+					'inbox'    => iPHP::router(array('/user/inbox/{uid}',$uid),iPHP_ROUTER_REWRITE),
+					'home'     => iPHP::router(array('/{uid}/',$uid),iPHP_ROUTER_REWRITE),
+					'comment'  => iPHP::router(array('/{uid}/comment/',$uid),iPHP_ROUTER_REWRITE),
+					'favorite' => iPHP::router(array('/{uid}/favorite/',$uid),iPHP_ROUTER_REWRITE),
+					//'share'  => iPHP::router(array('/{uid}/share/',$uid),iPHP_ROUTER_REWRITE),
+					'fans'     => iPHP::router(array('/{uid}/fans/',$uid),iPHP_ROUTER_REWRITE),
+					'follower' => iPHP::router(array('/{uid}/follower/',$uid),iPHP_ROUTER_REWRITE),
 	            );
 	        break;
 	    }

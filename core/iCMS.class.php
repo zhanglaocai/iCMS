@@ -9,141 +9,69 @@
 * @version 6.0.0
 * @$Id: iCMS.class.php 2412 2014-05-04 09:52:07Z coolmoo $
 */
-class iCMS {
-    public static $config      = array();
-    public static $apps        = null;
-    public static $do          = null;
+class iCMS extends iPHP{
     public static $iCache      = null;
     public static $sphinx      = null;
-    public static $app         = null;
-    public static $app_name    = null;
-    public static $app_do      = null;
-    public static $app_method  = null;
-    public static $app_tpl     = null;
-    public static $app_path    = null;
-    public static $app_file    = null;
-    public static $app_args    = null;
-    public static $app_vars    = null;
-    public static $hooks       = array();
 
 	public static function init(){
-        self::config();
-        iFS::init(self::$config['FS'],self::$config['watermark'],'filedata');
-        iCache::init(self::$config['cache']);
-        iURL::init(self::$config['router']);
-        iPHP::iTemplate();
-
-        iPHP_DEBUG      && iDB::$show_errors = true;
-        iPHP_TPL_DEBUG  && iPHP::clear_compiled_tpl();
-
+        self::$config = iPHP::config();
         define('iCMS_DIR',       self::$config['router']['DIR']);
         define('iCMS_URL',       self::$config['router']['URL']);
         define('iCMS_PUBLIC_URL',self::$config['router']['public_url']);
-        define('iCMS_USER_URL',  self::$config['router']['user_url']);
         define('iCMS_FS_URL',    self::$config['FS']['url']);
-        define('iCMS_REWRITE',   self::$config['router']['rewrite']);
+        define('iPHP_ROUTER_REWRITE',   iPHP_ROUTER_REWRITE);
         define('iCMS_API',       iCMS_PUBLIC_URL.'/api.php');
         define('iCMS_UI',        iCMS_DIR.'app/ui/common');
         define('iCMS_UI_URL',    iCMS_URL.'/app/ui/common');
-
-        self::$apps = self::$config['apps'];
+        define('iCMS_API_URL',   iCMS_API.'?app=');
         self::assign_site();
 	}
-    private static function config(){
-        $site   = iPHP_MULTI_SITE ? $_SERVER['HTTP_HOST']:iPHP_APP;
-        if(iPHP_MULTI_DOMAIN){ //只绑定主域
-            preg_match("/[^\.\/][\w\-]+\.[^\.\/]+$/", $site, $matches);
-            $site = $matches[0];
-        }
-        iPHP_MULTI_SITE && define('iPHP_APP_SITE',$site);
-        strpos($site, '..') === false OR exit('<h1>What are you doing?(code:001)</h1>');
+    /**
+     * 运行应用程序
+     * @param string $app 应用程序名称
+     * @param string $do 动作名称
+     */
+    public static function run($app = NULL,$do = NULL,$args = NULL,$prefix="do_") {
+        iPHP::$iTPL->_iTPL_VARS = array(
+            'VERSION' => iCMS_VER,
+            'API'     => iCMS_API,
+            'UI'      => iCMS_UI,
+            'UI_URL'  => iCMS_UI_URL,
+            'SAPI'    => iCMS_API_URL,
+            'APPID'   => array(
+                'ARTICLE'  => iCMS_APP_ARTICLE,
+                'CATEGORY' => iCMS_APP_CATEGORY,
+                'TAG'      => iCMS_APP_TAG,
+                'PUSH'     => iCMS_APP_PUSH,
+                'COMMENT'  => iCMS_APP_COMMENT,
+                'PROP'     => iCMS_APP_PROP,
+                'MESSAGE'  => iCMS_APP_MESSAGE,
+                'FAVORITE' => iCMS_APP_FAVORITE,
+                'USER'     => iCMS_APP_USER,
+            )
+        );
 
-        //config.php 中开启iPHP_APP_CONF后 此处设置无效,
-        define('iPHP_APP_CONF', iPHP_CONF_DIR.'/'.$site);//网站配置目录
-        define('iPHP_APP_CONFIG', iPHP_APP_CONF.'/config.php');//网站配置文件
-        @is_file(iPHP_APP_CONFIG) OR exit('<h1>'.iPHP_APP.' 运行出错.找不到"'.$site.'"网站的配置文件!(code:002)</h1>');
-        $config = require iPHP_APP_CONFIG;
-
-        //config.php 中开启后 此处设置无效
-        defined('iPHP_DEBUG')        OR define('iPHP_DEBUG', $config['debug']['php']);       //程序调试模式
-        defined('iPHP_TPL_DEBUG')    OR define('iPHP_TPL_DEBUG',$config['debug']['tpl']);    //模板调试
-        defined('iPHP_SQL_DEBUG')    OR define('iPHP_SQL_DEBUG',$config['debug']['sql']);    //模板调试
-        defined('iPHP_TIME_CORRECT') OR define('iPHP_TIME_CORRECT',$config['time']['cvtime']);
-        defined('iPHP_APP_SITE')     && $config['cache']['prefix'] = iPHP_APP_SITE;
-       //config.php --END--
-
-        define('iPHP_URL_404',$config['router']['404']);//404定义
-        ini_set('display_errors','OFF');
-        error_reporting(0);
-
-        if(iPHP_DEBUG||iPHP_TPL_DEBUG){
-            ini_set('display_errors','ON');
-            error_reporting(E_ALL & ~E_NOTICE);
-        }
-
-        $timezone = $config['time']['zone'];
-        $timezone OR $timezone = 'Asia/Shanghai';//设置中国时区
-        @ini_set('date.timezone',$timezone);
-        function_exists('date_default_timezone_set') && @date_default_timezone_set($timezone);
-
-        self::multiple_device($config);
-        self::$config = $config;
+        iPHP::run($app,$do,$args,$prefix);
     }
-    //多终端适配
-    private static function multiple_device(&$config){
-        $template = $config['template'];
-        foreach ((array)$template['device'] as $key => $device) {
-            if($device['tpl'] && self::device_agent($device['ua'])){
-                $device_name = $device['name'];
-                $device_tpl  = $device['tpl'];
-                $domain      = $device['domain'];
-                break;
-            }
-        }
-        iPHP::$mobile = false;
-        //检查是否移动设备
-        if(self::device_agent($template['mobile']['agent'])){
-            iPHP::$mobile = true;
-            $mobile_tpl   = $template['mobile']['tpl'];
-            $domain       = $template['mobile']['domain'];
-        }
 
-        if($device_tpl){ //设备模板
-            $def_tpl = $device_tpl;
-        }else{
-            if(iPHP::$mobile){//没有设置设备模板 但是移动设备
-                $device_name = 'mobile';
-                $def_tpl     = $mobile_tpl;
-            }
-        }
-
-        if(empty($def_tpl)){
-            $device_name = 'desktop';
-            $def_tpl     = $template['desktop']['tpl'];
-            $domain      = false;
-        }
-        $domain && $config['router'] = str_replace($config['router']['URL'], $domain, $config['router']);
-        define('iPHP_DEFAULT_TPL',$def_tpl);
-        define('iPHP_MOBILE_TPL',$mobile_tpl);
-        define('iPHP_DEVICE',$device_name);
-        define('iPHP_HOST', $config['router']['URL']);
-        header("Access-Control-Allow-Origin: ".iPHP_HOST);
-        header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
+    public static function API($app = NULL,$do = NULL) {
+        $app OR $app = iS::escapeStr($_GET['app']);
+        self::run($app,null,null,'API_');
     }
-    private static function device_agent($user_agent){
-        $user_agent = str_replace(',','|',preg_quote($user_agent));
-        return ($user_agent && preg_match('/'.$user_agent.'/i',$_SERVER["HTTP_USER_AGENT"]));
+
+    public static function hooks($key,$array){
+        self::$hooks[$key]  = $array;
     }
     public static function assign_site(){
         $site          = self::$config['site'];
         $site['title'] = self::$config['site']['name'];
-        $site['404']   = self::$config['router']['404'];
+        $site['404']   = iPHP_URL_404;
         $site['url']   = iCMS_URL;
         $site['tpl']   = iPHP_DEFAULT_TPL;
         $site['urls']  = array(
             "tpl"    => iCMS_URL.'/template/'.iPHP_DEFAULT_TPL,
             "public" => iCMS_PUBLIC_URL,
-            "user"   => iCMS_USER_URL,
+            "user"   => iPHP_ROUTER_USER,
             "res"    => iCMS_FS_URL,
             "ui"     => iCMS_PUBLIC_URL.'/ui',
             "avatar" => iCMS_FS_URL.'avatar/',
@@ -151,90 +79,6 @@ class iCMS {
         );
         iPHP::assign('site',$site);
         iPHP::$dialog['title']  = self::$config['site']['name'];
-    }
-    /**
-     * 运行应用程序
-     * @param string $app 应用程序名称
-     * @param string $do 动作名称
-     * @return iCMS
-     */
-    public static function run($app = NULL,$do = NULL,$args = NULL,$prefix="do_") {
-    	//empty($app) && $app	= $_GET['app']; //单一入口
-    	if(empty($app)){
-            $fi  = iFS::name(__SELF__);
-            $app = $fi['name'];
-    	}
-		if (!in_array($app, self::$apps) && iPHP_DEBUG){
-			iPHP::throw404('运行出错！找不到应用程序: <b>' . $app.'</b>', '0001');
-		}
-        self::$app_path   = iPHP_APP_DIR.'/'.$app;
-        self::$app_file   = self::$app_path.'/'.$app.'.app.php';
-        is_file(self::$app_file) OR iPHP::throw404('运行出错！找不到文件: <b>' . $app.'.app.php</b>', '0002');
-        if($do===NULL){
-            $do = iPHP_APP;
-            $_GET['do'] && $do = iS::escapeStr($_GET['do']);
-        }
-        if($_POST['action']){
-            $do     = iS::escapeStr($_POST['action']);
-            $prefix = 'ACTION_';
-        }
-
-        self::$app_name   = $app;
-        self::$app_do     = $do;
-        self::$app_method = $prefix.$do;
-        self::$app_tpl    = iPHP_APP_DIR.'/'.$app.'/template';
-    	self::$app_vars   = array(
-            'VERSION'    => iCMS_VER,
-            "MOBILE"     => iPHP::$mobile,
-            'API'        => iCMS_API,
-            'UI'         => iCMS_UI,
-            'UI_URL'     => iCMS_UI_URL,
-            'SAPI'       => iCMS_API.'?app='.self::$app_name,
-            'COOKIE_PRE' => iPHP_COOKIE_PRE,
-            'REFER'      => __REF__,
-            'CONFIG'     => self::$config,
-            "APP"        => array(
-                'NAME'   => self::$app_name,
-                'DO'     => self::$app_do,
-                'METHOD' => self::$app_method
-            ),
-            "APPID"        => array(
-                'ARTICLE'  => iCMS_APP_ARTICLE,
-                'CATEGORY' => iCMS_APP_CATEGORY,
-                'TAG'      => iCMS_APP_TAG,
-                'PUSH'     => iCMS_APP_PUSH,
-                'COMMENT'  => iCMS_APP_COMMENT,
-                'PROP'     => ICMS_APP_PROP,
-                'MESSAGE'  => iCMS_APP_MESSAGE,
-                'FAVORITE' => iCMS_APP_FAVORITE,
-                'USER'     => iCMS_APP_USER,
-            ),
-
-        );
-        define('iCMS_API_URL', iCMS_API.'?app='.self::$app_name);
-        iPHP::$iTPL->_iTPL_VARS = self::$app_vars;
-        self::$app = iPHP::app($app);
-		if(self::$app_do && self::$app->methods){
-			in_array(self::$app_do, self::$app->methods) OR iPHP::throw404('运行出错！ <b>' .self::$app_name. '</b> 类中找不到方法定义: <b>'.self::$app_method.'</b>', '0003');
-            $method = self::$app_method;
-            $args===null && $args = self::$app_args;
-			if($args){
-                if($args==='object'){
-                    return self::$app;
-                }
-				return call_user_func_array(array(self::$app,$method), (array)$args);
-			}else{
-                method_exists(self::$app,self::$app_method) OR iPHP::throw404('运行出错！ <b>' .self::$app_name. '</b> 类中 <b>'. self::$app_method.'</b> 方法不存在', '0004');
-				return self::$app->$method();
-			}
-		}else{
-			iPHP::throw404('运行出错！ <b>' .self::$app_name. '</b> 类中 <b>'. self::$app_method.'</b> 方法不存在', '0005');
-		}
-
-    }
-    public static function API($app = NULL,$do = NULL) {
-        $app OR $app = iS::escapeStr($_GET['app']);
-    	self::run($app,null,null,'API_');
     }
     //------------------------------------
     public static function hits_sql($all=true,$hit=1){
@@ -274,11 +118,6 @@ class iCMS {
             'month' => ($_timeline[2]==$month),
         );
     }
-    public static function app_ref($app_name=true,$out=false) {
-        $app_name===true && $app_name = self::$app_name;
-        $rs = iPHP::get_vars($app_name);
-        return $rs['param'];
-    }
 
     public static function get_category_ids($cid = "0",$all=true,$root_array=null) {
         $root_array OR $root_array = iCache::get('iCMS/category/rootid');
@@ -296,47 +135,7 @@ class iCMS {
         $cids = array_filter($cids);
         return $cids;
     }
-    public static function get_ids($rs,$field='id') {
-        if(empty($rs)){
-            return false;
-        }
-        $resource = array();
-        foreach((array)$rs AS $_vars) {
-            $resource[] = "'".$_vars[$field]."'";
-        }
-        unset($rs);
-        if($resource){
-            $resource = array_unique ($resource);
-            $resource = implode(',',$resource);
-            return $resource;
-        }
-        return false;
-    }
-    public static function map_sql($where,$type=null,$field='iid') {
-        if(empty($where)){
-            return false;
-        }
-        $i=0;
-        foreach ($where as $key => $value) {
-            $as = ' map';
-            $i && $as.=$i;
-            $_FROM[]  = $key.$as;
-            $_WHERE[] = str_replace($key,$as,$value);
-            $_FIELD[] = $as.".`{$field}`";
-            $i++;
-        }
-        $_field = $_FIELD[0];
-        $_count = count($_FIELD);
-        if($_count>1){
-            foreach ($_FIELD as $fkey => $fd) {
-                $fkey && array_push($_WHERE,$_field.' = '.$fd);
-            }
-        }
-        if($type=='join'){
-            return array('from' =>implode(',', $_FROM),'where'=>implode(' AND ', $_WHERE) );
-        }
-        return 'SELECT '.$_field.' AS '.$field.' FROM '.implode(',', $_FROM).' WHERE '.implode(' AND ', $_WHERE);
-    }
+
     public static function sphinx(){
     	iPHP::import(iPHP_APP_CORE.'/sphinx.class.php');
 
@@ -361,34 +160,14 @@ class iCMS {
 		$GLOBALS['TBAPI'] = new TBAPI;
 		return $GLOBALS['TBAPI'];
     }
-    public static function hooks($key,$array){
-        self::$hooks[$key]  = $array;
-    }
+
     //------------------------------------
     public static function gotohtml($fp,$url='') {
         if(iPHP::$iTPL_MODE=='html'||empty($url)||stristr($url, '.php?')||iPHP_DEVICE!='desktop') return;
 
         @is_file($fp) && iPHP::gotourl($url);
     }
-    //翻页函数
-    public static function page($a) {
-        iPHP::loadClass("Pages");
-        $lang   = iPHP::lang('iCMS:page');
-        $iPages = new iPages($a,$lang);
-        if($iPages->totalpage>1) {
-            $pagenav = $a['pagenav']?strtoupper($a['pagenav']):'NAV';
-            $pnstyle = $a['pnstyle']?$a['pnstyle']:0;
-            iPHP::$iTPL->_iTPL_VARS['PAGE']  = array(
-                $pagenav  =>$iPages->show($pnstyle),
-                'COUNT'   =>$a['total'],
-                'TOTAL'   =>$iPages->totalpage,
-                'CURRENT' =>$iPages->nowindex,
-                'NEXT'    =>$iPages->next_page()
-            );
-            iPHP::$iTPL->_iTPL_VARS['PAGES'] = $iPages;
-        }
-        return $iPages;
-    }
+
     public static function set_html_url($iurl){
         if(isset($GLOBALS['iPage'])) return;
 
