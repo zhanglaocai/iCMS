@@ -198,7 +198,6 @@ class iS {
 	 * @return string
 	 */
 	public static function escapeStr($string) {
-		// var_dump($string);
 	    if(is_array($string)) {
 	        foreach($string as $key => $val) {
 	            $string[$key] = iS::escapeStr($val);

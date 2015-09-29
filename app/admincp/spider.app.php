@@ -406,10 +406,12 @@ class spiderApp {
         $this->title = $title;
         return array($title,$url);
     }
-    function spider_url($work = NULL) {
-        $pid = $this->pid;
+    function spider_url($work = NULL,$pid = NULL,$_rid = NULL) {
+        $pid === NULL && $pid = $this->pid;
+        // var_dump($pid);
         if ($pid) {
             $project = $this->project($pid);
+            // var_dump($project);
             $cid = $project['cid'];
             $rid = $project['rid'];
             $prule_list_url = $project['list_url'];
@@ -418,7 +420,9 @@ class spiderApp {
             $cid = $this->cid;
             $rid = $this->rid;
         }
+
         if($work=='shell'){
+            (empty($rid) && $_rid !== NULL) && $rid = $_rid;
             $lastupdate = $project['lastupdate'];
             if($project['psleep']){
                 if(time()-$lastupdate<$project['psleep']){
@@ -426,7 +430,7 @@ class spiderApp {
                     return;
                 }
             }
-            echo '开始采集方案['.$pid."]\n";
+            echo "\033[32m开始采集方案[".$pid."] 采集规则[".$rid."]\033[0m\n";
         }
         $ruleA = $this->rule($rid);
         $rule = $ruleA['rule'];
@@ -437,6 +441,10 @@ class spiderApp {
         $urlsArray  = array_filter($urlsArray);
         $_urlsArray = $urlsArray;
         $urlsList   = array();
+        if($work=='shell'){
+            // echo "$urls\n";
+            print_r($urlsArray);
+        }
         foreach ($_urlsArray AS $_key => $_url) {
             $_url = htmlspecialchars_decode($_url);
             preg_match('|.*<(.*)>.*|is',$_url, $_matches);
@@ -448,7 +456,7 @@ class spiderApp {
                 $urlsList = array_merge($urlsList,$_urlsList);
             }
         }
-        $urlsArray = array_merge($urlsArray,$urlsList);
+        $urlsList && $urlsArray = array_merge($urlsArray,$urlsList);
         unset($_urlsArray,$_key,$_url,$_matches,$_urlsList,$urlsList);
         $urlsArray  = array_unique($urlsArray);
 
@@ -773,6 +781,12 @@ class spiderApp {
             print_r(iS::escapeStr($responses));
             echo "</pre><hr />";
         }
+        iFS::$CURLOPT_ENCODING        = '';
+        iFS::$CURLOPT_REFERER         = '';
+        iFS::$watermark_config['pos'] = iCMS::$config['watermark']['pos'];
+        iFS::$watermark_config['x']   = iCMS::$config['watermark']['x'];
+        iFS::$watermark_config['y']   = iCMS::$config['watermark']['y'];
+        iFS::$watermark_config['img'] = iCMS::$config['watermark']['img'];
 
         iFS::$CURLOPT_ENCODING = $rule['fs']['encoding'];
         $rule['fs']['referer'] && iFS::$CURLOPT_REFERER  = $rule['fs']['referer'];

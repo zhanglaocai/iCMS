@@ -14,13 +14,11 @@
 // error_reporting(E_ALL & ~E_DEPRECATED); //Production
 //define('iPHP', TRUE);
 defined('iPHP') OR exit('What are you doing?');
+version_compare('5.1',PHP_VERSION,'>') && die('您的服务器运行的 PHP 版本是'.PHP_VERSION.' 但 iPHP 要求至少 5.1。');
 
 ini_set('display_errors','ON');
 error_reporting(E_ALL & ~E_NOTICE);
 
-header('Content-Type: text/html; charset=utf-8');
-header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
-version_compare('5.1',PHP_VERSION,'>') && die('您的服务器运行的 PHP 版本是'.PHP_VERSION.' 但 iPHP 要求至少 5.1。');
 @ini_set('magic_quotes_sybase', 0);
 @ini_set("magic_quotes_runtime",0);
 
@@ -28,6 +26,9 @@ define('iPHP_PATH',dirname(strtr(__FILE__,'\\','/')));
 
 require iPHP_PATH.'/iPHP.version.php';
 require iPHP_PATH.'/iPHP.define.php';
+header('Content-Type: text/html; charset='.iPHP_CHARSET);
+header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
+
 
 if (function_exists('memory_get_usage') && ((int) @ini_get('memory_limit') < abs(intval(iPHP_MEMORY_LIMIT))))
     @ini_set('memory_limit', iPHP_MEMORY_LIMIT);

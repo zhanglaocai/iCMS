@@ -329,7 +329,7 @@ class DOMDocumentWrapper {
 			//phpQuery::debug('loadMarkupHTML:markup: '.htmlspecialchars(substr($markup, 0, 500)));
 			$markup = mb_convert_encoding($markup, 'HTML-ENTITIES', "UTF-8");
 			$return = phpQuery::$debug === 2
-				? $this->document->loadHTML($markup)
+				? @$this->document->loadHTML($markup)
 				: @$this->document->loadHTML(mb_convert_encoding($markup, 'HTML-ENTITIES', "UTF-8"));
 			if ($return)
 				$this->root = $this->document;
@@ -594,7 +594,7 @@ class DOMDocumentWrapper {
 			// dom nodes
 			phpQuery::debug('Importing nodes to document');
 			foreach($source as $node)
-				$return[] = $this->document->importNode($node, true);
+				$return[] = @$this->document->importNode($node, true);
 		} else {
 			// string markup
 			$fake = $this->documentFragmentCreate($source, $sourceCharset);
@@ -3226,12 +3226,12 @@ class phpQueryObject
 						foreach($loop as $fromNode)
 							// import nodes if needed
 							$insertFrom[] = ! $fromNode->ownerDocument->isSameNode($target->ownerDocument)
-								? $target->ownerDocument->importNode($fromNode, true)
+								? @$target->ownerDocument->importNode($fromNode, true)
 								: $fromNode;
 					} else {
 						// import node if needed
 						if (! $target->ownerDocument->isSameNode($this->document))
-							$target = $this->document->importNode($target, true);
+							$target = @$this->document->importNode($target, true);
 						$insertTo = $this->elements;
 						$insertFrom[] = $target;
 					}
@@ -4541,7 +4541,7 @@ abstract class phpQuery {
 				: new phpQueryObject($domId);
 			$phpQuery->elements = array();
 			foreach($arg1->elements as $node)
-				$phpQuery->elements[] = $phpQuery->document->importNode($node, true);
+				$phpQuery->elements[] = @$phpQuery->document->importNode($node, true);
 			return $phpQuery;
 		} else if ($arg1 instanceof DOMNODE || (is_array($arg1) && isset($arg1[0]) && $arg1[0] instanceof DOMNODE)) {
 			/*
@@ -4556,7 +4556,7 @@ abstract class phpQuery {
 				$sameDocument = $node->ownerDocument instanceof DOMDOCUMENT
 					&& ! $node->ownerDocument->isSameNode($phpQuery->document);
 				$phpQuery->elements[] = $sameDocument
-					? $phpQuery->document->importNode($node, true)
+					? @$phpQuery->document->importNode($node, true)
 					: $node;
 			}
 			return $phpQuery;

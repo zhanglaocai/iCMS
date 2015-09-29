@@ -36,10 +36,12 @@ class categoryApp{
         $iurl = iURL::get('category',$category);
 
         if($tpl){
-            if(iPHP::$iTPL_MODE=="html" && (
-                strstr($category['contentRule'],'{PHP}')
-                ||$category['outurl']
-                ||empty($category['mode']))
+            if(iPHP::$iTPL_MODE=="html"&&
+                (
+                    strstr($category['contentRule'],'{PHP}')
+                    ||$category['outurl']
+                    ||empty($category['mode'])
+                )
             ) {return false;}
 
             $category['url'] && iPHP::gotourl($category['url']);

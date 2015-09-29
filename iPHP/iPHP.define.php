@@ -64,3 +64,4 @@ defined('iPHP_TPL_VAR') OR define('iPHP_TPL_VAR',iPHP_APP);//<!--{iPHP:test }-->
 //defined('iPHP_TPL_DOMAIN') OR define('iPHP_TPL_DOMAIN','www.idreamsoft.com');
 //defined('iPHP_DEFAULT_TPL') OR define('iPHP_DEFAULT_TPL','default');
 defined('iPHP_TPL_FUN') OR define('iPHP_TPL_FUN',iPHP_APP_CORE.'/function');
+defined('iPHP_CHARSET') OR define('iPHP_CHARSET','UTF-8');

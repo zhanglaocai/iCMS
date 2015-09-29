@@ -646,7 +646,6 @@ class memcached_client
       {
          $sock = @fsockopen($ip, $port, $errno, $errstr, $timeout);
       }
-        var_dump('asd');
 
       if (!$sock)
          return false;

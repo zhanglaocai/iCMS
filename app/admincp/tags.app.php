@@ -143,7 +143,7 @@ class tagsApp{
             iPHP::success('标签导入完成<br />空标签:'.(int)$msg['empty'].'个<br />已经存在标签:'.(int)$msg['has'].'个<br />成功导入标签:'.(int)$msg['success'].'个');
         }
     }
-    function do_save(){
+    function do_save($callback=false){
         $id          = (int)$_POST['id'];
         $uid         = (int)$_POST['uid'];
         $cid         = implode(',', (array)$_POST['cid']);
@@ -171,6 +171,12 @@ class tagsApp{
 
         $uid OR $uid= iMember::$userid;
 
+        if($callback){
+            if(empty($name)){
+                echo '标签名称不能为空！';
+                return false;
+            }
+        }
         $name OR iPHP::alert('标签名称不能为空！');
         $cid OR iPHP::alert('请选择标签所属栏目！');
 
@@ -184,12 +190,37 @@ class tagsApp{
         }
 
 		if(empty($id)) {
-			iDB::value("SELECT `id` FROM `#iCMS@__tags` where `name` = '$name'") && iPHP::alert('该标签已经存在!请检查是否重复');
+            $hasNameId = iDB::value("SELECT `id` FROM `#iCMS@__tags` where `name` = '$name'");
+            if($hasNameId){
+                if($callback){
+                    $cbData = array();
+                    $hasTag = iDB::row("SELECT * FROM `#iCMS@__tags` where `id` = '$hasNameId'",ARRAY_A);
+                    (empty($hasTag['subtitle'])   && $subtitle) && $cbData['subtitle']=$subtitle;
+                    (empty($hasTag['description'])&& $description) && $cbData['description']=$description;
+                    (empty($hasTag['seotitle'])   && $seotitle) && $cbData['seotitle']=$seotitle;
+                    (empty($hasTag['keywords'])   && $keywords) && $cbData['keywords']=$keywords;
+
+                    $cbData && iDB::update("tags",$cbData, array('id'=>$hasNameId));
+                    echo '该标签已经存在!请检查是否重复';
+                    return false;
+                }else{
+                    iPHP::alert('该标签已经存在!请检查是否重复');
+                }
+            }
 		}
 		if(empty($tkey) && $url){
 			$tkey = substr(md5($url),8,16);
-			iDB::value("SELECT `id` FROM `#iCMS@__tags` where `tkey` = '$tkey'") && iPHP::alert('该自定义链接已经存在!请检查是否重复');
+			$hasTkey = iDB::value("SELECT `id` FROM `#iCMS@__tags` where `tkey` = '$tkey'");
+            if($hasTkey){
+                if($callback){
+                    echo '该自定义链接已经存在!请检查是否重复';
+                    return false;
+                }else{
+                    iPHP::alert('该自定义链接已经存在!请检查是否重复');
+                }
+            }
 		}
+
 		$tkey OR $tkey = strtolower(pinyin($name));
 		strstr($pic, 'http://') && $pic = iFS::http($pic);
 		iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
@@ -210,6 +241,17 @@ class tagsApp{
             map::add($cid,$id);
             $tcid && map::add($tcid,$id);
 
+            if ($this->callback['primary']) {
+                $PCB = $this->callback['primary'];
+                $handler = $PCB[0];
+                $params  = (array)$PCB[1]+array('indexid'=>$id);
+                if (is_callable($handler)){
+                    call_user_func_array($handler,$params);
+                }
+            }
+            if($callback){
+                return array("code"=>$callback,'indexid'=>$id);
+            }
 	        iPHP::success('标签添加完成',"url:".APP_URI);
 		}else{
             unset($data['count'],$data['comments']);
@@ -222,6 +264,19 @@ class tagsApp{
             map::init('category',$this->appid);
             map::diff($cid,$_cid,$id);
             map::diff($tcid,$_tcid,$id);
+
+            if ($this->callback['primary']) {
+                $PCB = $this->callback['primary'];
+                $handler = $PCB[0];
+                $params  = (array)$PCB[1]+array('indexid'=>$id);
+                if (is_callable($handler)){
+                    call_user_func_array($handler,$params);
+                }
+            }
+            if($callback){
+                return array("code"=>$callback,'indexid'=>$id);
+            }
+
         	iPHP::success('标签更新完成',"url:".APP_URI);
 		}
     }
