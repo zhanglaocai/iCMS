@@ -126,7 +126,7 @@ class iACP {
 
     public static function fields($data='') {
         $fields = array();
-        $dA     = explode(',', $data);
+        $dA     = explode('_', $data);
         foreach ((array) $dA as $d) {
             list($f, $v) = explode(':', $d);
             $v == 'now' && $v = time();
