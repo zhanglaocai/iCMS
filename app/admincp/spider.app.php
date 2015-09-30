@@ -408,10 +408,8 @@ class spiderApp {
     }
     function spider_url($work = NULL,$pid = NULL,$_rid = NULL) {
         $pid === NULL && $pid = $this->pid;
-        // var_dump($pid);
         if ($pid) {
             $project = $this->project($pid);
-            // var_dump($project);
             $cid = $project['cid'];
             $rid = $project['rid'];
             $prule_list_url = $project['list_url'];
