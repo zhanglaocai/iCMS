@@ -21,10 +21,19 @@ class QiniuClient
 	{
 		$uploadToken = $this->uploadToken(array('scope' => $bucket));
 		$data = array();
-		$data['file'] = "@$filePath";
+		if (class_exists('CURLFile')) {
+		    curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+		    $data['file'] = new CURLFile($filePath);
+		} else {
+		    if (defined('CURLOPT_SAFE_UPLOAD')) {
+		        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
+		    }
+		    $data['file'] = "@$filePath";
+		}
+		// $data['file'] = "@$filePath";
 		$data['token'] = $uploadToken;
 		if($key) $data['key'] = $key;
-		 
+
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, self::UP_HOST);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -91,7 +100,7 @@ class QiniuClient
 		return $this->fileHandle($url);
 	}
 
-	// $operator = stat|move|copy|delete 
+	// $operator = stat|move|copy|delete
 	// $client->batch('stat',array('square:test/test5.txt','square:test/test13.png'));
 	public function batch($operator,$files)
 	{
@@ -127,7 +136,7 @@ class QiniuClient
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 		    'Authorization: QBox '.$accessToken,
 	    ));
-		
+
 	    curl_setopt($ch, CURLOPT_URL, $url);
 	    curl_setopt($ch, CURLOPT_POST, true);
 	    // If $data is an array, the Content-Type header will be set to multipart/form-data
