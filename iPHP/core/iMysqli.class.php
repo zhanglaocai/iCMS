@@ -143,16 +143,18 @@ class iDB {
                     self::$last_result[$num_rows] = $row;
                     $num_rows++;
                 }
-                $store->close();
+                // $store->close();
+                $store->free();
+                $store = null;
                 // Log number of rows the query returned
                 self::$num_rows = $num_rows;
 
                 // Return number of rows selected
                 $return_val = $num_rows;
             }
-
+            $result = null;
             //var_dump($result);
-            //$result->free_result();
+            // $result->free_result();
         }
 
         return $return_val;

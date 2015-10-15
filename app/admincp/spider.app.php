@@ -389,6 +389,7 @@ class spiderApp {
                 $title = $pq->attr($title_attr);
             }
             $url = $pq->attr($url_attr);
+            unset($pq);
         }else{
             $title = $row['title'];
             $url   = $row['url'];
@@ -485,6 +486,7 @@ class spiderApp {
 
         $pubArray = array();
         $pubCount = array();
+        $pubAllCount = array();
         $this->curl_proxy = $rule['proxy'];
         foreach ($urlsArray AS $key => $url) {
             $url = trim($url);
@@ -581,6 +583,7 @@ class spiderApp {
             if ($work) {
                 if($work=="shell"){
                     $pubCount[$url]['count'] = count($lists);
+                    $pubAllCount['count']+=$pubCount[$url]['count'];
                     echo "开始采集:".$url." 列表 ".$pubCount[$url]['count']."条记录\n";
                     foreach ($lists AS $lkey => $row) {
                         list($this->title,$this->url) = $this->title_url($row,$rule,$url);
@@ -597,6 +600,7 @@ class spiderApp {
                             $callback  = $this->do_publish("shell");
                             if ($callback['code'] == "1001") {
                                 $pubCount[$url]['success']++;
+                                $pubAllCount['success']+=$pubCount[$url]['success'];
                                 echo "....√\n";
                                 if($project['sleep']){
                                     echo "sleep:".$project['sleep']."s\n";
@@ -610,11 +614,13 @@ class spiderApp {
                                 }
                             }else{
                                 $pubCount[$url]['error']++;
+                                $pubAllCount['error']+=$pubCount[$url]['error'];
                                 echo "error\n\n";
                                 continue;
                             }
                         }
                         $pubCount[$url]['published']++;
+                        $pubAllCount['published']+=$pubCount[$url]['published'];
                     }
                     if($rule['mode']=="2"){
                         phpQuery::unloadDocuments($doc->getDocumentID());
@@ -653,6 +659,7 @@ class spiderApp {
             if($work=="shell"){
                 echo "采集数据统结果:\n";
                 print_r($pubCount);
+                print_r($pubAllCount);
                 echo "全部采集完成....\n";
                 iDB::update('spider_project',array('lastupdate'=>time()),array('id'=>$pid));
                 return;
@@ -835,6 +842,7 @@ class spiderApp {
                             $puk = array_search($rule['__url__'],$page_url_array);
                             unset($page_url_array[$puk]);
                         }
+                        phpQuery::unloadDocuments($doc->getDocumentID());
                         //var_dump($page_url_array);
                         // exit;
                     }else{
@@ -1131,6 +1139,7 @@ class spiderApp {
             }
 
             if(strpos($_pattern, 'DOM::')!==false){
+                iPHP::import(iPHP_LIB.'/phpQuery.php');
                 $doc      = phpQuery::newDocumentHTML($content,'UTF-8');
                 //echo 'dataClean:getDocumentID:'.$doc->getDocumentID()."\n";
                 $_pattern = str_replace('DOM::','', $_pattern);
@@ -1655,6 +1664,7 @@ class spiderApp {
                 $doc     = phpQuery::newDocumentHTML($content,'UTF-8');
                 $pq_dom  = str_replace('DOM::','', $this->content_right_code);
                 $matches = (bool)(string)phpQuery::pq($pq_dom);
+                phpQuery::unloadDocuments($doc->getDocumentID());
             }else{
                 $matches = strpos($content, $this->content_right_code);
             }
@@ -1669,6 +1679,7 @@ class spiderApp {
                 $doc      = phpQuery::newDocumentHTML($content,'UTF-8');
                 $pq_dom   = str_replace('DOM::','', $this->content_right_code);
                 $_matches = (bool)(string)phpQuery::pq($pq_dom);
+                phpQuery::unloadDocuments($doc->getDocumentID());
             }else{
                 $_matches = strpos($content, $this->content_error_code);
             }
