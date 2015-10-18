@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: spider.php 586 2013-04-02 14:44:18Z coolmoo $
@@ -29,10 +29,12 @@ $(function(){
 	});
 
 	$(".addprop").click(function(){
-		var length=$("#spider-data tbody tr").length+1;
+    // var length=$("#spider-data tbody tr").length+1;
+    var length=parseInt($("#spider-data tbody tr:last").attr('key'))+1;
 		var href = $(this).attr("href");
 		var tb	= $(href),tbody=$("tbody",tb);
 		var ntr=$(".aclone",tb).clone(true).removeClass("hide aclone");
+    ntr.attr('key', length);
 		$('input,textarea',ntr).removeAttr("disabled");
 		$('input,textarea',ntr).each(function(i){
       this.id = this.id.replace('__NO__',length);
@@ -200,7 +202,7 @@ $(function(){
                 <?php if($rule['data'])foreach((array)$rule['data'] AS $dkey=>$data){
               	$RDid	= 'rule_data_'.$dkey.'_rule';
               ?>
-                <tr>
+                <tr key="<?php echo $dkey;?>">
                   <td><div class="btn-group btn-group-vertical">
                       <input name="rule[data][<?php echo $dkey;?>][name]" type="text" class="rule_data_name" value="<?php echo $data['name'];?>"/>
                       <a class="btn" href="<%content%>" data-toggle="insertContent" data-target="#<?php echo $RDid;?>">内容标识</a> <a class="btn" href="<%var%>" data-toggle="insertContent" data-target="#<?php echo $RDid;?>">变量标识</a> </div></td>
@@ -246,13 +248,16 @@ $(function(){
                     <label class="checkbox">
                       <input type="checkbox" name="rule[data][<?php echo $dkey;?>][img_absolute]" value="1"<?php if($data['img_absolute']){ echo ' checked="true"';};?>>
                       图片地址补全</label>
-                      <div class="clearfloat mb10"></div>
-                    <label class="checkbox">
-                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][dom]" value="1"<?php if($data['dom']){ echo ' checked="true"';};?>>
-                      phpQuery匹配</label>
+                    <div class="clearfloat mb10"></div>
                     <label class="checkbox">
                       <input type="checkbox" name="rule[data][<?php echo $dkey;?>][capture]" value="1"<?php if($data['capture']){ echo ' checked="true"';};?>>
                       抓取结果</label>
+                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][download]" value="1"<?php if($data['download']){ echo ' checked="true"';};?>>
+                      下载文件</label>
+                    <div class="clearfloat mb10"></div>
+                    <label class="checkbox">
+                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][dom]" value="1"<?php if($data['dom']){ echo ' checked="true"';};?>>
+                      phpQuery匹配</label>
                     <div class="clearfloat mb10"></div></td>
                   <td><a class="btn btn-small delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
                 </tr>
@@ -308,11 +313,14 @@ $(function(){
                       图片地址补全</label>
                     <div class="clearfloat mb10"></div>
                     <label class="checkbox">
-                      <input type="checkbox" name="rule[data][__NO__][dom]" value="1">
-                      phpQuery匹配</label>
-                    <label class="checkbox">
                       <input type="checkbox" name="rule[data][__NO__][capture]" value="1">
                       抓取结果</label>
+                      <input type="checkbox" name="rule[data][__NO__][download]" value="1">
+                      下载文件</label>
+                    <div class="clearfloat mb10"></div>
+                    <label class="checkbox">
+                      <input type="checkbox" name="rule[data][__NO__][dom]" value="1">
+                      phpQuery匹配</label>
                     <div class="clearfloat mb10"></div></td>
                   <td><a class="btn btn-small delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
                 </tr>

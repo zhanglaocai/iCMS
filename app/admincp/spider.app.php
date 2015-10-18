@@ -1030,6 +1030,11 @@ class spiderApp {
             $capture = str_replace ('\\','',$content);
             $content = $this->remote($capture);
         }
+        if ($data['download']) {
+            $http    = str_replace ('\\','',$content);
+            $content = iFS::http($http);
+        }
+
         if ($data['cleanafter']) {
             $content = $this->dataClean($data['cleanafter'], $content);
         }
@@ -1101,6 +1106,18 @@ class spiderApp {
         $ruleArray = explode("\n", $rules);
         foreach ($ruleArray AS $key => $rule) {
             $rule = trim($rule);
+            $rule = str_replace('<BR>', "\n", $rule);
+            if(strpos($rule, 'BEFOR::')!==false){
+              $rule = str_replace('BEFOR::','', $rule);
+              $content = $rule.$content;
+              continue;
+            }
+            if(strpos($rule, 'AFTER::')!==false){
+              $rule = str_replace('AFTER::','', $rule);
+              $content = $rule.$content;
+              continue;
+            }
+
             if(strpos($rule, '<%SELF%>')!==false){
               $content = str_replace('<%SELF%>',$content, $rule);
               continue;
