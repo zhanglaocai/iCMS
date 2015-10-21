@@ -669,7 +669,11 @@ class iPHP{
         }
         $resource = array();
         foreach((array)$rs AS $_vars) {
-            $resource[] = "'".$_vars[$field]."'";
+            if($field===null){
+                $resource[] = "'".$_vars."'";
+            }else{
+                $resource[] = "'".$_vars[$field]."'";
+            }
         }
         unset($rs);
         if($resource){
