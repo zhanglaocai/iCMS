@@ -613,14 +613,15 @@ class articleApp{
         $frs = articleTable::select_filedata_indexid($id);
         for($i=0;$i<count($frs);$i++) {
             if($frs[$i]){
-                $path   = $frs[$i]['path'].'/'.$frs[$i]['filename'].'.'.$frs[$i]['ext'];
-                iFS::del(iFS::fp($frs[$i]['path'],'+iPATH'));
-                $msg.=$this->del_msg($path.' 文件删除');
+                $path = $frs[$i]['path'].'/'.$frs[$i]['filename'].'.'.$frs[$i]['ext'];
+                iFS::del(iFS::fp($path,'+iPATH'));
+                $msg.= $this->del_msg($path.' 文件删除');
             }
         }
         if($art['tags']){
             iPHP::app('tag.class','static');
-            $msg.=tag::del($art['tags']);
+            tag::$remove = false;
+            $msg.= tag::del($art['tags'],'name',$aid);
         }
         iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."';");
         iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."' ;");

@@ -1,13 +1,15 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
 defined('TAG_APPID') OR define('TAG_APPID',0);
 
 class tag {
+    public static $remove = true;
+
 	public static function data($fv=0,$field='name',$limit=0){
 		$sql      = $fv ? "where `$field`='$fv'":'';
 		$limitSQL = $limit ? "LIMIT $limit ":'';
@@ -146,20 +148,27 @@ VALUES ('$uid', '$cid', '$tcid', '0', '$tkey', '$tag', '', '', '', '', '', '', '
 	    $tagArray	= explode(",",$tags);
 	    $iid && $sql="AND `iid`='$iid'";
 	    foreach($tagArray AS $k=>$v) {
-	    	$tagA	= iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `$field`='$v' LIMIT 1;");
-	    	$tRS	= iDB::all("SELECT `iid` FROM `#iCMS@__tags_map` WHERE `node`='$tagA->id' AND `appid`='".TAG_APPID."' {$sql}");
+	    	$tag	= iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `$field`='$v' LIMIT 1;");
+	    	$tRS	= iDB::all("SELECT `iid` FROM `#iCMS@__tags_map` WHERE `node`='$tag->id' AND `appid`='".TAG_APPID."' {$sql}");
 	    	foreach((array)$tRS AS $TL) {
 	    		$idA[]=$TL['iid'];
 	    	}
-	    	// if($idA){
-		    // 	iPHP::appClass('model',"break");
-		    // 	$table	= model::table(TAG_APPID);
-	    	// 	$ids	= implode(',',$idA);
-		    // 	iDB::query("UPDATE `#iCMS@__$table` SET `tags`=REPLACE(tags, '$tagA->name,',''),`tags`=REPLACE(tags, ',$tagA->name','') WHERE id IN($ids)");
-	    	// }
-            iDB::query("DELETE FROM `#iCMS@__tags`  WHERE `$field`='$v'");
-            iDB::query("DELETE FROM `#iCMS@__tags_map` WHERE `node`='$tagA->id' AND `appid`='".TAG_APPID."' {$sql}");
-            $ckey	= self::tkey($tagA->cid);
+	    	if($idA){
+	    		$ids = iPHP::get_ids($idA,null);
+                if($ids){
+                    iPHP::app('apps.class','static');
+                    $table = APPS::table(TAG_APPID);
+                    iDB::query("
+                        UPDATE `#iCMS@__$table`
+                        SET `tags`= REPLACE(tags, '$tag->name,',''),
+                        `tags`= REPLACE(tags, ',$tag->name','')
+                        WHERE id IN($ids)
+                    ");
+                }
+	    	}
+            self::$remove && iDB::query("DELETE FROM `#iCMS@__tags`  WHERE `$field`='$v'");
+            iDB::query("DELETE FROM `#iCMS@__tags_map` WHERE `node`='$tag->id' AND `appid`='".TAG_APPID."' {$sql}");
+            $ckey = self::tkey($tag->cid);
             iCache::delete($ckey);
 	    }
 	}
