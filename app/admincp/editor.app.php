@@ -112,12 +112,12 @@ class editorApp{
         }
     }
     function do_imageManager(){
-		$res = iFS::folder(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
+		$res = iPHP::folder(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
 		$res['public_url'] = iCMS_PUBLIC_URL;
 		iPHP::json($res);
     }
     function do_fileManager(){
-        $res = iFS::folder(iCMS::$config['FS']['dir']);
+        $res = iPHP::folder(iCMS::$config['FS']['dir']);
         $res['public_url'] = iCMS_PUBLIC_URL;
         iPHP::json($res);
     }

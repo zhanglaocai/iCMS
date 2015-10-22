@@ -810,7 +810,7 @@ class articleApp{
 			// }
     	}
     }
-	function fopen_url($url) {
+	function fopen_url($url,$mo=false) {
 		$uri=parse_url($url);
 		$curl_handle = curl_init();
 		curl_setopt($curl_handle, CURLOPT_URL, $url);
@@ -818,7 +818,11 @@ class articleApp{
 		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER,1);
 		curl_setopt($curl_handle, CURLOPT_FAILONERROR,1);
 		curl_setopt($curl_handle, CURLOPT_REFERER,$uri['scheme'].'://'.$uri['host']);
-		curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.0 (KHTML, like Gecko) Chrome/3.0.195.38 Safari/532.0');
+        if($mo){
+            curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19');
+        }else{
+            curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.0 (KHTML, like Gecko) Chrome/3.0.195.38 Safari/532.0');
+        }
 		$file_content = curl_exec($curl_handle);
 		curl_close($curl_handle);
 		return $file_content;
