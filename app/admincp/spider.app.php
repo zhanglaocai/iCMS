@@ -862,12 +862,6 @@ class spiderApp {
                                 gc_collect_cycles();
                             }
                         }
-                        if($page_url_array){
-                            $page_url_array = array_filter($page_url_array);
-                            $page_url_array = array_unique($page_url_array);
-                            $puk = array_search($rule['__url__'],$page_url_array);
-                            unset($page_url_array[$puk]);
-                        }
                         unset($page_area);
                     }
                 }else{ // 逻辑方式
@@ -885,6 +879,12 @@ class spiderApp {
                         }
                     }
             	}
+                if($page_url_array){
+                    $page_url_array = array_filter($page_url_array);
+                    $page_url_array = array_unique($page_url_array);
+                    $puk = array_search($rule['__url__'],$page_url_array);
+                    unset($page_url_array[$puk]);
+                }
 		        if ($this->contTest) {
 		            echo $rule['__url__'] . "<br />";
 		            echo $rule['page_url'] . "<br />";
