@@ -142,7 +142,7 @@ $(function(){
             <th>栏目</th>
             <th>分类</th>
             <th>属性</th>
-            <th style="width:28px;">使用</th>
+            <th style="width:48px;">使用</th>
             <th class="span2">最后更新时间</th>
             <th>操作</th>
           </tr>
