@@ -83,6 +83,9 @@ class iPic {
         	list($ground_w, $ground_h,$ground_imagetype) = @getimagesize($pf);
             $ground_info = @getimagesize($pf);
 			$ground_im	 = self::imagecreate($ground_imagetype,$pf);//取得背景图片的格式
+            if(empty($ground_im)){
+                return;
+            }
         }else {
             die("需要加水印的图片不存在！");
         }
