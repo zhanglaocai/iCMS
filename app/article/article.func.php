@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: article.tpl.php 2408 2014-04-30 18:58:23Z coolmoo $
@@ -96,7 +96,7 @@ function article_list($vars){
         case "comment":  $order_sql = " ORDER BY `comments` $by"; break;
         case "pubdate":  $order_sql = " ORDER BY `pubdate` $by"; break;
         case "disorder": $order_sql = " ORDER BY `ordernum` $by"; break;
-        case "rand":     $order_sql = " ORDER BY rand() $by"; break;
+        // case "rand":     $order_sql = " ORDER BY rand() $by"; break;
         case "weight":   $order_sql = " ORDER BY `weight`,`ordernum` ASC"; break;
         default:$order_sql = " ORDER BY `id` $by";
     }
@@ -130,7 +130,13 @@ function article_list($vars){
         $limit      = "LIMIT {$offset},{$maxperpage}";
         iPHP::assign("article_list_total",$total);
     }
-
+    //随机特别处理
+    if($vars['orderby']=='rand'){
+        $ids_array = iCMS::get_rand_ids('#iCMS@__article',$where_sql,$maxperpage,'id');
+        if($map_order_sql){
+            $map_order_sql  = " ORDER BY `#iCMS@__article`.`id` $by";
+        }
+    }
     $hash = md5($where_sql.$order_sql.$limit);
     if($offset){
         if($vars['cache']){
@@ -143,16 +149,17 @@ function article_list($vars){
             iPHP_SQL_DEBUG && iDB::debug(1);
             $vars['cache'] && iCache::set($map_cache_name,$ids_array,$cache_time);
         }
-        $ids       = iCMS::get_ids($ids_array);
-        $ids       = $ids?$ids:'0';
-        $where_sql = "WHERE `id` IN({$ids})";
-        $limit     = '';
     }else{
         if($map_order_sql){
             $order_sql  = $map_order_sql;
         }
     }
-
+    if($ids_array){
+        $ids       = iCMS::get_ids($ids_array);
+        $ids       = $ids?$ids:'0';
+        $where_sql = "WHERE `#iCMS@__article`.`id` IN({$ids})";
+        $limit     = '';
+    }
     if($vars['cache']){
         $cache_name = iPHP_DEVICE.'/article/'.$hash;
         $resource   = iCache::get($cache_name);

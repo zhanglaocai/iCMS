@@ -17,7 +17,7 @@ class databaseApp{
 //    	$this->do_backup();
 //    }
 	function do_recover(){
-    	$res	= iFS::folder('cache/backup',array('sql'));
+    	$res	= iPHP::folder('cache/backup',array('sql'));
     	$dirRs	= $res['DirArray'];
     	$fileRs	= $res['FileArray'];
     	$pwd	= $res['pwd'];

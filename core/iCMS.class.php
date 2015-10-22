@@ -51,12 +51,12 @@ class iCMS extends iPHP{
             )
         );
 
-        iPHP::run($app,$do,$args,$prefix);
+        return iPHP::run($app,$do,$args,$prefix);
     }
 
     public static function API($app = NULL,$do = NULL) {
         $app OR $app = iS::escapeStr($_GET['app']);
-        self::run($app,null,null,'API_');
+        return self::run($app,null,null,'API_');
     }
 
     public static function hooks($key,$array){
@@ -81,6 +81,29 @@ class iCMS extends iPHP{
         iPHP::$dialog['title']  = self::$config['site']['name'];
     }
     //------------------------------------
+    public static function get_rand_ids($table,$where=null,$limit='10',$primary='id'){
+        $whereSQL = $where?"{$where} AND `{$table}`.`{$primary}` >= rand_id":' WHERE `{$table}`.`{$primary}` >= rand_id';
+        // $limitNum = rand(2,10);
+        // $prelimit = ceil($limit/rand(2,10));
+        $randSQL  = "
+            SELECT `{$table}`.`{$primary}` FROM `{$table}`
+            JOIN (SELECT
+                  ROUND(RAND() * (
+                      (SELECT MAX(`{$table}`.`{$primary}`) FROM `{$table}`) -
+                      (SELECT MIN(`{$table}`.`{$primary}`) FROM `{$table}`)
+                    ) + (SELECT MIN(`{$table}`.`{$primary}`) FROM `{$table}`)
+                 ) AS rand_id) RAND_DATA
+            {$whereSQL}
+            LIMIT $limit;
+        ";
+        $randIdsArray = iDB::all($randSQL);
+        // $randIdsArray = null;
+        // for ($i=0; $i <=$prelimit; $i++) {
+        //     $randIdsArray[$i] = array('id'=>iDB::value($randSQL));
+        //     echo iDB::$last_query;
+        // }
+        return $randIdsArray;
+    }
     public static function hits_sql($all=true,$hit=1){
         $timeline = self::timeline();
         // var_dump($timeline);

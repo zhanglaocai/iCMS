@@ -5,6 +5,7 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
+
 class weixinApp {
 	public $methods	= array('interface');
 

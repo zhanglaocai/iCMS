@@ -330,12 +330,19 @@ class iDB {
     }
     public static function debug($show=false){
         if(!self::$show_errors) return false;
-
-        if(!$show) echo '<!--';
-        echo self::$last_query."\n";
+        $last_query = self::$last_query;
         $explain    = self::row('EXPLAIN EXTENDED '.self::$last_query);
-        var_dump($explain);
-        if(!$show) echo "-->\n";
+        if($show){
+            echo "<pre>".
+            var_dump($last_query);
+            print_r($explain);
+            echo "</pre>";
+        }else{
+            echo "<!--\n";
+            var_dump($last_query);
+            print_r($explain);
+            echo "-->\n";
+        }
     }
 
     // ==================================================================
