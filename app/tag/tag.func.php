@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: tag.tpl.php 159 2013-03-23 04:11:53Z coolmoo $
@@ -86,6 +86,11 @@ function tag_list($vars){
 		$limit  = "LIMIT {$offset},{$maxperpage}";
         iPHP::assign("tags_list_total",$total);
 	}
+
+    if($vars['orderby']=='rand'){
+        $ids_array = iCMS::get_rand_ids(`#iCMS@__tags`,$where_sql,$maxperpage,'id');
+    }
+
 	$hash = md5($where_sql.$order_sql.$limit);
 
 	if($vars['cache']){
@@ -103,9 +108,11 @@ function tag_list($vars){
             $vars['cache'] && iCache::set($map_cache_name,$ids_array,$cache_time);
         }
         //iDB::debug(1);
+    }
+    if($ids_array){
         $ids       = iCMS::get_ids($ids_array);
         $ids       = $ids?$ids:'0';
-        $where_sql = "WHERE `id` IN({$ids})";
+        $where_sql = "WHERE `#iCMS@__tags`.`id` IN({$ids})";
         $limit     = '';
     }
     if($vars['cache']){
