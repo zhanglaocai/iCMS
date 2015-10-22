@@ -51,12 +51,12 @@ class iCMS extends iPHP{
             )
         );
 
-        iPHP::run($app,$do,$args,$prefix);
+        return iPHP::run($app,$do,$args,$prefix);
     }
 
     public static function API($app = NULL,$do = NULL) {
         $app OR $app = iS::escapeStr($_GET['app']);
-        self::run($app,null,null,'API_');
+        return self::run($app,null,null,'API_');
     }
 
     public static function hooks($key,$array){
