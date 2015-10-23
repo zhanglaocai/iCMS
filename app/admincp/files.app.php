@@ -194,7 +194,7 @@ class filesApp{
     }
     function explorer($dir=NULL,$type=NULL){
         iACP::MP('FILE.BROWSE','page');
-        $res    = iPHP::folder($dir,$type);
+        $res    = iFS::folder($dir,$type);
         $dirRs  = $res['DirArray'];
         $fileRs = $res['FileArray'];
         $pwd    = $res['pwd'];
