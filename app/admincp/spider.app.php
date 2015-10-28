@@ -732,6 +732,7 @@ class spiderApp {
         $this->allHtml = "";
         $responses['reurl'] = $this->url;
         $rule['__url__']	= $this->url;
+        $callBackData       = false;
         foreach ((array)$dataArray AS $key => $data) {
             $content_html = $html;
             $dname = $data['name'];
@@ -748,6 +749,9 @@ class spiderApp {
                 }
             }
             $content = $this->content($content_html,$data,$rule);
+            if(strpos($content, 'DATA@')!==false){
+                $callBackData = true;
+            }
             unset($content_html);
 
             if (strpos($dname,'.')!== false){
@@ -779,6 +783,14 @@ class spiderApp {
             $responses['title'] = $title;
         }
         unset($this->allHtml,$html);
+        if($callBackData){
+            foreach ((array)$responses as $key => $value) {
+                if(strpos($value, 'DATA@')!==false){
+                    $name = str_replace('DATA@', '', $value);
+                    $responses[$key] = $responses[$name];
+                }
+            }
+        }
         gc_collect_cycles();
 
         if ($this->contTest) {
