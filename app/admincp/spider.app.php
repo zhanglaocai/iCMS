@@ -484,12 +484,14 @@ class spiderApp {
             $this->ruleTest && $_GET['pq_debug'] && phpQuery::$debug =1;
         }
 
-        $pubArray = array();
-        $pubCount = array();
-        $pubAllCount = array();
+        $pubArray         = array();
+        $pubCount         = array();
+        $pubAllCount      = array();
         $this->curl_proxy = $rule['proxy'];
+        $this->urlslast   = null;
         foreach ($urlsArray AS $key => $url) {
             $url = trim($url);
+            $this->urlslast = $url;
             if($work=='shell'){
                 echo '开始采集列表:'.$url."\n";
             }
