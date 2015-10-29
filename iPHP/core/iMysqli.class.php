@@ -135,16 +135,19 @@ class iDB {
             $return_val = self::$link->affected_rows;
         } else {
             $store = self::$link->store_result();
+
             if($QT=="field") {
                 self::$col_info = $store->fetch_fields();
             }else {
                 $num_rows = 0;
-                while ( $row = $store->fetch_object() ) {
-                    self::$last_result[$num_rows] = $row;
-                    $num_rows++;
+                if($store){
+                    while ( $row = $store->fetch_object() ) {
+                        self::$last_result[$num_rows] = $row;
+                        $num_rows++;
+                    }
+                    // $store->close();
+                    $store->free();
                 }
-                // $store->close();
-                $store->free();
                 $store = null;
                 // Log number of rows the query returned
                 self::$num_rows = $num_rows;
