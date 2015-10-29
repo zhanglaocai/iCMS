@@ -13,3 +13,4 @@
 - article_data分表
 - metedata 字集json化
 - category URL规则统一
+- 接收device参数
