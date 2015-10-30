@@ -14,7 +14,7 @@
 // error_reporting(E_ALL & ~E_DEPRECATED); //Production
 //define('iPHP', TRUE);
 defined('iPHP') OR exit('What are you doing?');
-version_compare('5.1',PHP_VERSION,'>') && die('您的服务器运行的 PHP 版本是'.PHP_VERSION.' 但 iPHP 要求至少 5.1。');
+version_compare('5.3',PHP_VERSION,'>') && die('您的服务器运行的 PHP 版本是'.PHP_VERSION.' 但 iPHP 要求至少 5.3。');
 
 ini_set('display_errors','ON');
 error_reporting(E_ALL & ~E_NOTICE);
@@ -45,7 +45,7 @@ iPHP::timer_start();
 //security
 iPHP::LoadClass("Security",'S');
 iS::filter();
-iS::gp('page','GP',2);
+iS::GP('page','GP',2);
 
 define('__SELF__',	$_SERVER['PHP_SELF']);
 define('__REF__', 	$_SERVER['HTTP_REFERER']);
