@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: files.manage.php 179 2013-03-29 03:21:28Z coolmoo $
@@ -55,8 +55,8 @@ $(function() {
             <td><?php echo $title; ?></td>
             <td><?php echo $url; ?></td>
             <td>
-              <a href="<?php echo APP_FURI; ?>&do=publish&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo $url; ?>&hash=<?php echo $hash; ?>&title=<?php echo  urlencode($title); ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-check"></i> 发布</a>
-              <a href="<?php echo APP_URI; ?>&do=testcont&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo $url; ?>&title=<?php echo  urlencode($title); ?>" class="btn btn-small" target="_blank"><i class="fa fa-keyboard-o"></i> 测试</a>
+              <a href="<?php echo APP_FURI; ?>&do=publish&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&hash=<?php echo $hash; ?>&url=<?php echo urlencode($url); ?>&title=<?php echo  urlencode($title); ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-check"></i> 发布</a>
+              <a href="<?php echo APP_URI; ?>&do=testcont&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo urlencode($url); ?>&title=<?php echo  urlencode($title); ?>" class="btn btn-small" target="_blank"><i class="fa fa-keyboard-o"></i> 测试</a>
               <!-- <a href="<?php echo APP_FURI; ?>&do=publish&pid=<?php echo $pid; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 移除</a> -->
             </td>
           </tr>

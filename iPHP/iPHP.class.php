@@ -136,7 +136,7 @@ class iPHP{
         iFS::init($config['FS'],$config['watermark'],'filedata');
         iCache::init($config['cache']);
         iURL::init($config['router']);
-        self::iTemplate();
+        iPHP::iTemplate();
 
         iPHP_DEBUG      && iDB::$show_errors = true;
         iPHP_TPL_DEBUG  && self::clear_compiled_tpl();
@@ -146,31 +146,52 @@ class iPHP{
         return $config;
     }
 
-    //多终端适配
+    /**
+     * 多终端适配
+     * @param  [type] &$config [系统配置]
+     * @return [type]          [description]
+     */
     private static function multiple_device(&$config){
         $template = $config['template'];
-        foreach ((array)$template['device'] as $key => $device) {
-            if($device['tpl'] && self::device_agent($device['ua'])){
-                $device_name = $device['name'];
-                $device_tpl  = $device['tpl'];
-                $domain      = $device['domain'];
-                break;
+        $_device  = iPHP::PG('device');
+        if($_device){
+            /**
+             * 判断指定设备
+             * @var [type]
+             */
+            foreach ((array)$template['device'] as $key => $device) {
+                if($device['tpl'] && ($device['ua']==$_device||$device['name']==$_device)){
+                    $device_name = $device['name'];
+                    $device_tpl  = $device['tpl'];
+                    $domain      = $device['domain'];
+                    break;
+                }
+            }
+        }
+        /**
+         * 无指定设备 判断USER_AGENT
+         */
+        if(empty($device_tpl)){
+            foreach ((array)$template['device'] as $key => $device) {
+                if($device['tpl'] && self::device_agent($device['ua'])){
+                    $device_name = $device['name'];
+                    $device_tpl  = $device['tpl'];
+                    $domain      = $device['domain'];
+                    break;
+                }
             }
         }
         iPHP::$mobile = false;
-        //检查是否移动设备
-        if(self::device_agent($template['mobile']['agent'])){
-            iPHP::$mobile = true;
-            $mobile_tpl   = $template['mobile']['tpl'];
-            $domain       = $template['mobile']['domain'];
-        }
-
         if($device_tpl){ //设备模板
             $def_tpl = $device_tpl;
         }else{
-            if(iPHP::$mobile){//没有设置设备模板 但是移动设备
-                $device_name = 'mobile';
-                $def_tpl     = $mobile_tpl;
+            //检查是否移动设备
+            if(self::device_agent($template['mobile']['agent'])){
+                iPHP::$mobile = true;
+                $mobile_tpl   = $template['mobile']['tpl'];
+                $device_name  = 'mobile';
+                $def_tpl      = $mobile_tpl;
+                $domain       = $template['mobile']['domain'];
             }
         }
 
@@ -179,6 +200,7 @@ class iPHP{
             $def_tpl     = $template['desktop']['tpl'];
             $domain      = false;
         }
+
         $domain && $config['router'] = str_replace($config['router']['URL'], $domain, $config['router']);
         define('iPHP_DEFAULT_TPL',$def_tpl);
         define('iPHP_MOBILE_TPL',$mobile_tpl);
@@ -274,6 +296,11 @@ class iPHP{
         }
         // return $cache;
     }
+    /**
+     * 模板路径
+     * @param  [type] $tpl [description]
+     * @return [type]      [description]
+     */
 	public static function tpl_path($tpl){
         if(strpos($tpl,iPHP_APP.':/') !==false){
 			$_tpl = str_replace(iPHP_APP.':/',iPHP_DEFAULT_TPL,$tpl);

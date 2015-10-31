@@ -484,12 +484,14 @@ class spiderApp {
             $this->ruleTest && $_GET['pq_debug'] && phpQuery::$debug =1;
         }
 
-        $pubArray = array();
-        $pubCount = array();
-        $pubAllCount = array();
+        $pubArray         = array();
+        $pubCount         = array();
+        $pubAllCount      = array();
         $this->curl_proxy = $rule['proxy'];
+        $this->urlslast   = null;
         foreach ($urlsArray AS $key => $url) {
             $url = trim($url);
+            $this->urlslast = $url;
             if($work=='shell'){
                 echo '开始采集列表:'.$url."\n";
             }
@@ -737,23 +739,43 @@ class spiderApp {
             $content_html = $html;
             $dname = $data['name'];
 
+            /**
+             * [DATA:name]
+             * 把之前[name]处理完的数据当作原始数据
+             * 如果之前有数据会叠加
+             * 用于数据多次处理
+             * @var string
+             */
             if (strpos($dname,'DATA:')!== false){
                 $dname = str_replace('DATA:', '', $dname);
                 $content_html = $responses[$dname];
                 unset($responses[$dname]);
-            }else{
-                $url_dkey = 'PRE:'.$dname;
-                if(isset($responses[$url_dkey])){
-                    $content_html = $responses[$url_dkey];
-                    unset($responses[$url_dkey]);
-                }
             }
+            /**
+             * [PRE:name]
+             * 把PRE:name采集到的数据 当做原始数据
+             * 一般用于下载内容
+             * @var string
+             */
+            $url_dkey = 'PRE:'.$dname;
+            if(isset($responses[$url_dkey])){
+                $content_html = $responses[$url_dkey];
+                unset($responses[$url_dkey]);
+            }
+
             $content = $this->content($content_html,$data,$rule);
+            /**
+             * [DATA@name]
+             * 内容回调 可以规则里调用之前内容
+             */
             if(strpos($content, 'DATA@')!==false){
                 $callBackData = true;
             }
             unset($content_html);
-
+            /**
+             * [name.xxx]
+             * 采集内容做为数组
+             */
             if (strpos($dname,'.')!== false){
                 $f_key = substr($dname,0,stripos($dname, "."));
                 $s_key = substr(strrchr($dname, "."), 1);
@@ -767,6 +789,9 @@ class spiderApp {
                     $responses[$f_key][$s_key] = $content;
                 }
             }else{
+                /**
+                 * 多个name 内容合并
+                 */
                 if(isset($responses[$dname])){
                     if(is_array($responses[$dname])){
                         $responses[$dname] = array_merge($responses[$dname],$content);
@@ -783,6 +808,10 @@ class spiderApp {
             $responses['title'] = $title;
         }
         unset($this->allHtml,$html);
+        /**
+         * [DATA@name]
+         * 内容回调 可以规则里调用之前内容
+         */
         if($callBackData){
             foreach ((array)$responses as $key => $value) {
                 if(strpos($value, 'DATA@')!==false){
@@ -798,6 +827,7 @@ class spiderApp {
             print_r(iS::escapeStr($responses));
             echo "</pre><hr />";
         }
+
         iFS::$CURLOPT_ENCODING        = '';
         iFS::$CURLOPT_REFERER         = '';
         iFS::$watermark_config['pos'] = iCMS::$config['watermark']['pos'];
@@ -805,14 +835,15 @@ class spiderApp {
         iFS::$watermark_config['y']   = iCMS::$config['watermark']['y'];
         iFS::$watermark_config['img'] = iCMS::$config['watermark']['img'];
 
-        iFS::$CURLOPT_ENCODING = $rule['fs']['encoding'];
-        $rule['fs']['referer'] && iFS::$CURLOPT_REFERER  = $rule['fs']['referer'];
+        $rule['fs']['encoding'] && iFS::$CURLOPT_ENCODING = $rule['fs']['encoding'];
+        $rule['fs']['referer']  && iFS::$CURLOPT_REFERER  = $rule['fs']['referer'];
         if($rule['watermark_mode']){
             iFS::$watermark_config['pos'] = $rule['watermark']['pos'];
             iFS::$watermark_config['x']   = $rule['watermark']['x'];
             iFS::$watermark_config['y']   = $rule['watermark']['y'];
             $rule['watermark']['img'] && iFS::$watermark_config['img'] = $rule['watermark']['img'];
         }
+
         return $responses;
     }
 
@@ -1085,13 +1116,6 @@ class spiderApp {
         }
         if ($data['json_decode']) {
             $content = json_decode($content,true);
-            // $content = preg_replace_callback('/&#\d{2,5};/u','utf8_num_decode',$content);
-            // $content = preg_replace_callback(array(
-            //     '/&#x([a-fA-F0-7]{2,8});/u',
-            //     '/%u([a-fA-F0-7]{2,8})/u',
-            //     '/\\\u([a-fA-F0-7]{2,8})/u'
-            //     ),'utf8_entity_decode',$content);
-            // $content = htmlspecialchars_decode($content);
         }
         if($data['array']){
         	return (array)$content;
