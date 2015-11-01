@@ -21,7 +21,7 @@ class tagsApp{
     }
     function do_add(){
         $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
-        $rs['metadata'] && $rs['metadata']=unserialize($rs['metadata']);
+        $rs['metadata'] && $rs['metadata']=json_decode($rs['metadata']);
         include iACP::view('tags.add');
     }
     function do_update(){
@@ -158,6 +158,9 @@ class tagsApp{
         $seotitle    = iS::escapeStr($_POST['seotitle']);
         $keywords    = iS::escapeStr($_POST['keywords']);
         $pic         = iS::escapeStr($_POST['pic']);
+        $bpic        = iS::escapeStr($_POST['bpic']);
+        $mpic        = iS::escapeStr($_POST['mpic']);
+        $spic        = iS::escapeStr($_POST['spic']);
         $description = iS::escapeStr($_POST['description']);
         $url         = iS::escapeStr($_POST['url']);
         $related     = iS::escapeStr($_POST['related']);
@@ -167,7 +170,7 @@ class tagsApp{
         $status      = (int)$_POST['status'];
         $haspic       = $pic?'1':'0';
         $pubdate     = time();
-        $metadata    = iS::escapeStr($_POST['metadata']);
+        $metadata    = $_POST['metadata'];
 
         $uid OR $uid= iMember::$userid;
 
@@ -181,28 +184,23 @@ class tagsApp{
         $cid OR iPHP::alert('请选择标签所属栏目！');
 
         if($metadata){
-            $md = array();
-            foreach($metadata['key'] AS $_mk=>$_mval){
-                !preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iPHP::alert($this->name_text.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
-                $md[$_mval]=$metadata['value'][$_mk];
+            if($metadata['key']){
+                $md = array();
+                foreach($metadata['key'] AS $_mk=>$_mval){
+                    !preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iPHP::alert($this->name_text.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
+                    $md[$_mval] = $metadata['value'][$_mk];
+                }
+            }else{
+                $md = $metadata;
             }
-            $metadata   = addslashes(serialize($md));
+            $metadata = addslashes(json_encode($md));
         }
 
 		if(empty($id)) {
             $hasNameId = iDB::value("SELECT `id` FROM `#iCMS@__tags` where `name` = '$name'");
             if($hasNameId){
-                if($callback){
-                    $cbData = array();
-                    $hasTag = iDB::row("SELECT * FROM `#iCMS@__tags` where `id` = '$hasNameId'",ARRAY_A);
-                    (empty($hasTag['subtitle'])   && $subtitle) && $cbData['subtitle']=$subtitle;
-                    (empty($hasTag['description'])&& $description) && $cbData['description']=$description;
-                    (empty($hasTag['seotitle'])   && $seotitle) && $cbData['seotitle']=$seotitle;
-                    (empty($hasTag['keywords'])   && $keywords) && $cbData['keywords']=$keywords;
-
-                    $cbData && iDB::update("tags",$cbData, array('id'=>$hasNameId));
-                    echo '该标签已经存在!请检查是否重复';
-                    return false;
+                if(isset($_POST['spider_update'])){
+                    $id = $hasNameId;
                 }else{
                     iPHP::alert('该标签已经存在!请检查是否重复');
                 }
@@ -212,7 +210,7 @@ class tagsApp{
 			$tkey = substr(md5($url),8,16);
 			$hasTkey = iDB::value("SELECT `id` FROM `#iCMS@__tags` where `tkey` = '$tkey'");
             if($hasTkey){
-                if($callback){
+                if(isset($_POST['spider_check_tkey'])){
                     echo '该自定义链接已经存在!请检查是否重复';
                     return false;
                 }else{
@@ -222,10 +220,16 @@ class tagsApp{
 		}
 
 		$tkey OR $tkey = strtolower(pinyin($name));
-		strstr($pic, 'http://') && $pic = iFS::http($pic);
+
+        iFS::$forceExt = "jpg";
+        iFS::checkHttp($pic) && $pic = iFS::http($pic);
+        iFS::checkHttp($bpic)&& $bpic = iFS::http($bpic);
+        iFS::checkHttp($mpic)&& $mpic = iFS::http($mpic);
+        iFS::checkHttp($spic)&& $spic = iFS::http($spic);
+
 		iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
 
-        $fields = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'ordernum', 'pubdate', 'status');
+        $fields = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic','bpic','mpic','spic', 'url', 'related', 'count', 'weight', 'tpl', 'ordernum', 'pubdate', 'status');
         $data   = compact ($fields);
 
 		if(empty($id)){
@@ -254,6 +258,21 @@ class tagsApp{
             }
 	        iPHP::success('标签添加完成',"url:".APP_URI);
 		}else{
+            if(isset($_POST['spider_update'])){
+                // $data = array();
+                $hasTag = iDB::row("SELECT * FROM `#iCMS@__tags` where `id` = '$id'",ARRAY_A);
+                $this->check_spider_data($data,$hasTag,'subtitle',$subtitle);
+                $this->check_spider_data($data,$hasTag,'description',$description);
+                $this->check_spider_data($data,$hasTag,'seotitle',$seotitle);
+                $this->check_spider_data($data,$hasTag,'keywords',$keywords);
+                $this->check_spider_data($data,$hasTag,'related',$related);
+
+                ($hasTag['cid'] && $cid)    && $data['cid']=$cid;   $_cid = $hasTag['cid'];
+                ($hasTag['tcid'] && $tcid)  && $data['tcid']=$tcid; $_tcid = $hasTag['tcid'];
+                ($hasTag['pid'] && $pid)    && $data['pid']=$pid;   $_pid = $hasTag['pid'];
+
+            }
+
             unset($data['count'],$data['comments']);
             iDB::update('tags', $data, array('id'=>$id));
 			tag::cache($id,'id');
@@ -280,7 +299,15 @@ class tagsApp{
         	iPHP::success('标签更新完成',"url:".APP_URI);
 		}
     }
-
+    function check_spider_data(&$data,$old,$key,$value){
+        if($old[$key]){
+            if($value){
+                $data[$key] = $value;
+            }else{
+                unset($data[$key]);
+            }
+        }
+    }
     function do_cache(){
     	tag::cache($this->id,'id');
     	iPHP::success("标签缓存更新成功");
