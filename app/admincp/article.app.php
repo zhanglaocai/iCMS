@@ -691,13 +691,33 @@ class articleApp{
     }
     function autodesc($body){
         if(iCMS::$config['publish']['autodesc'] && iCMS::$config['publish']['descLen']) {
-            is_array($body) && $body_text   = implode("\n",$body);
-            $body_text   = str_replace('#--iCMS.PageBreak--#',"\n",$body_text);
-            $body_text   = preg_replace(array('/<[\/\!]*?[^<>]*?>/is',"/\n+/","/　+/"),array('',"\n",''),$body_text);
-            $description = csubstr($body_text,iCMS::$config['publish']['descLen']);
-            $description = addslashes(trim($description));
-            $description = str_replace('#--iCMS.PageBreak--#','',$description);
-            unset($body_text);
+            is_array($body) && $bodyText   = implode("\n",$body);
+            $bodyText   = str_replace('#--iCMS.PageBreak--#',"\n",$bodyText);
+            $bodyText   = str_replace('</p><p>', "</p>\n<p>", $bodyText);
+
+            $textArray = explode("\n", $bodyText);
+            $pageNum   = 0;
+            $resource  = array();
+            foreach ($textArray as $key => $p) {
+                $text      = preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$p);
+                // $pageLen   = strlen($resource);
+                // $output    = implode('',array_slice($textArray,$key));
+                // $outputLen = strlen($output);
+                $output    = implode('',$resource);
+                $outputLen = strlen($output);
+                if($outputLen>iCMS::$config['publish']['descLen']){
+                    // $pageNum++;
+                    // $resource[$pageNum] = $p;
+                    break;
+                }else{
+                    $resource[]= $text;
+                }
+            }
+            $description = implode("\n", $resource);
+            // $description = csubstr($body_text,iCMS::$config['publish']['descLen']);
+            // $description = addslashes(trim($description));
+            // $description = str_replace('#--iCMS.PageBreak--#','',$description);
+            unset($bodyText);
             return $description;
         }
     }

@@ -99,7 +99,13 @@ class iFS {
     public static function check($fn) {
         strpos($fn, '..') !== false && exit('What are you doing?');
     }
-
+    public static function checkHttp($url) {
+        if(stripos($url, 'http://')===false && stripos($url, 'https://')===false){
+            return false;
+        }else{
+            return true;
+        }
+    }
     public static function del($fn, $check = 1) {
         $check && self::check($fn);
         @chmod($fn, 0777);
