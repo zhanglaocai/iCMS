@@ -46,6 +46,8 @@ class tagsApp{
 
         $sql.= $this->categoryApp->search_sql($cid);
         $sql.= $this->tagcategory->search_sql($tcid,'tcid');
+        $_GET['starttime'] && $sql.=" AND `pubdate`>='".iPHP::str2time($_GET['starttime']." 00:00:00")."'";
+        $_GET['endtime']   && $sql.=" AND `pubdate`<='".iPHP::str2time($_GET['endtime']." 23:59:59")."'";
 
         isset($_GET['pic']) && $sql.=" AND `haspic` ='".($_GET['pic']?1:0)."'";
         if(isset($_GET['pid']) && $pid!='-1'){
@@ -233,8 +235,9 @@ class tagsApp{
         $data   = compact ($fields);
 
 		if(empty($id)){
-            $data['count']    ='0';
-            $data['comments'] ='0';
+            $data['postime']  = $pubdate;
+            $data['count']    = '0';
+            $data['comments'] = '0';
             $id = iDB::insert('tags',$data);
 			tag::cache($id,'id');
 

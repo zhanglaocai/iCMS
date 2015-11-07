@@ -170,7 +170,7 @@ $(function(){
           <td><a href="<?php echo APP_DOURI; ?>&tcid=<?php echo $rs[$i]['tcid'] ; ?><?php echo $uri ; ?>"><?php echo $TC['name'] ; ?></a></td>
           <td><?php echo iACP::getProp("pid",$rs[$i]['pid'],'text',APP_DOURI.'&pid={PID}&'.$uri) ; ?></td>
           <td><?php echo $rs[$i]['count']; ?></td>
-          <td><?php echo get_date($rs[$i]['pubdate'],'Y-m-d H:i');?></td>
+          <td><?php echo get_date($rs[$i]['pubdate'],'Y-m-d H:i');?><br /><?php echo get_date($rs[$i]['postime'],'Y-m-d H:i');?></td>
           <td>
           	<?php if($rs[$i]['status']=="1"){ ?>
             <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['id'] ; ?>&iDT=status:0" class="btn btn-small btn-danger tip" target="iPHP_FRAME" title="当前状态:启用,点击可禁用此标签"><i class="fa fa-power-off"></i> 禁用</a>
