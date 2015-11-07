@@ -503,7 +503,11 @@ class articleApp{
             }
 
             if($tags){
+
                 iPHP::app('tag.class','static');
+                if(isset($_POST['tag_status'])){
+                    tag::$addStatus = $_POST['tag_status'];
+                }
                 tag::add($tags,$userid,$aid,$cid);
                 //articleTable::update(compact('tags'),array('id'=>$aid));
             }
