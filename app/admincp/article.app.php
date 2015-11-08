@@ -443,6 +443,15 @@ class articleApp{
         $userid OR $userid = iMember::$userid;
         iFS::$userid = $userid;
 
+        if(iCMS::$config['article']['filter']) {
+            $fwd = iCMS::filter($title);
+            $fwd && iPHP::alert('标题中包含被系统屏蔽的字符，请重新填写。');
+            $fwd = iCMS::filter($description);
+            $fwd && iPHP::alert('简介中包含被系统屏蔽的字符，请重新填写。');
+            // $fwd = iCMS::filter($body);
+            // $fwd && iPHP::alert('内容中包含被系统屏蔽的字符，请重新填写。');
+        }
+
         if(empty($aid) && iCMS::$config['publish']['repeatitle']) {
             articleTable::check_title($title) && iPHP::alert('该标题的文章已经存在!请检查是否重复');
         }
@@ -818,37 +827,4 @@ class articleApp{
         }
         return $picdata?addslashes(serialize($picdata)):'';
     }
-
-    function do_purge(){
-        //$id  = sprintf("%08s",$_GET['id']);
-        $url = str_replace('/article/','/~cc/article/',$_GET['url']);
-		echo $this->fopen_url($url);
-
-		for($i=2;$i<50;$i++){
-            // $url = "http://www.OOXX.com/~cc/article/".$id."_".$i.".shtml";
-            // $str = $this->fopen_url($url);
-			// if(!strstr($str,"Successful purge")){
-			// 	break;
-			// }else{
-			// 	echo $str;
-			// }
-    	}
-    }
-	function fopen_url($url,$mo=false) {
-		$uri=parse_url($url);
-		$curl_handle = curl_init();
-		curl_setopt($curl_handle, CURLOPT_URL, $url);
-		curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT,2);
-		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER,1);
-		curl_setopt($curl_handle, CURLOPT_FAILONERROR,1);
-		curl_setopt($curl_handle, CURLOPT_REFERER,$uri['scheme'].'://'.$uri['host']);
-        if($mo){
-            curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19');
-        }else{
-            curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.0 (KHTML, like Gecko) Chrome/3.0.195.38 Safari/532.0');
-        }
-		$file_content = curl_exec($curl_handle);
-		curl_close($curl_handle);
-		return $file_content;
-	}
 }
