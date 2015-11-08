@@ -23,13 +23,16 @@ class filterApp{
     	include iACP::view("filter");
     }
     function do_save(){
-        $disable = explode("\n",iS::escapeStr($_POST['disable']));
-        $filter  = explode("\n",iS::escapeStr($_POST['filter']));
+        $filter  = explode("\n",$_POST['filter']);
+        $disable = explode("\n",$_POST['disable']);
+        $disable = array_unique($disable);
+
         foreach($filter AS $k=> $val) {
             $filterArray[$k] = explode("=",$val);
         }
         $this->setting->set($filterArray,'word.filter',0,true);
         $this->setting->set($disable,'word.disable',0,true);
+        $this->cache();
         iPHP::success('更新完成');
     }
     function cache(){
@@ -38,7 +41,7 @@ class filterApp{
         foreach((array)$filter AS $k=>$val) {
             $filterArray[$k]=implode("=",(array)$val);
         }
-    	iCache::set('iCMS/word.filter',$filter,0);
-    	iCache::set('iCMS/word.disable',$filterArray,0);
+    	iCache::set('iCMS/word.filter',$filterArray,0);
+    	iCache::set('iCMS/word.disable',$disable,0);
     }
 }

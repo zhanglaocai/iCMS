@@ -21,10 +21,10 @@ iACP::head();
       <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-filter" target="iPHP_FRAME">
         <div id="filter" class="tab-content">
           <div id="tab-disable" class="tab-pane active">
-            <textarea name="disable" class="span6" style="height: 150px;"><?php echo implode("\r\n",(array)$disable) ; ?></textarea>
+            <textarea name="disable" class="span6" style="height: 150px;"><?php echo implode("\n",(array)$disable) ; ?></textarea>
           </div>
           <div id="tab-filter" class="tab-pane hide">
-            <textarea name="filter" class="span6" style="height: 150px;"><?php echo implode("\r\n",(array)$filterArray) ; ?></textarea>
+            <textarea name="filter" class="span6" style="height: 150px;"><?php echo implode("\n",(array)$filterArray) ; ?></textarea>
           </div>
           <span class="help-inline">每行一个<br />
           过滤词格式:过滤词=***</span> </div>
