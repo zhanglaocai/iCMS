@@ -763,12 +763,12 @@ class spiderApp {
                 unset($responses[$url_dkey]);
             }
 
-            $content = $this->content($content_html,$data,$rule);
+            $content = $this->content($content_html,$data,$rule,$responses);
             /**
              * [DATA@name]
              * 内容回调 可以规则里调用之前内容
              */
-            if(strpos($content, 'DATA@')!==false){
+            if(!is_array($content) && strpos($content, 'DATA@')!==false){
                 $callBackData = true;
             }
             unset($content_html);
@@ -807,6 +807,18 @@ class spiderApp {
         if(empty($responses['title']) && $responses['title']!==false){
             $responses['title'] = $title;
         }
+        if ($responses['tags']){
+            $_tagsArray = explode(',', $responses['tags']);
+            $tagsArray  = array();
+            foreach ((array)$_tagsArray as $key => $value) {
+                $value = trim($value);
+                $value && $tagsArray[]=$value;
+            }
+            $tagsArray = array_filter($tagsArray);
+            $tagsArray = array_unique($tagsArray);
+            $responses['tags'] = implode(',', $tagsArray);
+            unset($tagsArray,$_tagsArray);
+        }
         unset($this->allHtml,$html);
         /**
          * [DATA@name]
@@ -814,7 +826,7 @@ class spiderApp {
          */
         if($callBackData){
             foreach ((array)$responses as $key => $value) {
-                if(strpos($value, 'DATA@')!==false){
+                if(!is_array($value) && strpos($value, 'DATA@')!==false){
                     $name = str_replace('DATA@', '', $value);
                     $responses[$key] = $responses[$name];
                 }
@@ -847,7 +859,7 @@ class spiderApp {
         return $responses;
     }
 
-    function content($html,$data,$rule) {
+    function content($html,$data,$rule,$responses) {
         if(trim($data['rule'])===''){
             return;
         }
@@ -1044,6 +1056,10 @@ class spiderApp {
 
         if ($data['cleanbefor']) {
             $content = $this->dataClean($data['cleanbefor'], $content);
+        }
+        if(strpos($content, 'DATA@')!==false){
+            $name    = str_replace('DATA@', '', $content);
+            $content = $responses[$name];
         }
         if ($data['cleanhtml']) {
             $content = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $content);

@@ -91,10 +91,13 @@ class tagApp {
         if($category['mode'] && stripos($tag['url'], '.php?')===false){
             iCMS::set_html_url($tag['iurl']);
         }
-
+        $tag['metadata'] && $tag['meta'] = json_decode($tag['metadata']);
         $tag['related']  && $tag['relArray'] = explode(',', $tag['related']);
         $tag['appid'] = iCMS_APP_TAG;
-        $tag['pic']   = get_pic($tag['pic']);
+        $tag['pic']  = get_pic($tag['pic']);
+        $tag['bpic'] = get_pic($tag['bpic']);
+        $tag['mpic'] = get_pic($tag['mpic']);
+        $tag['spic'] = get_pic($tag['spic']);
         return $tag;
     }
     public function get_array($tags) {
