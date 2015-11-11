@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: setting.php 2412 2014-05-04 09:52:07Z coolmoo $
@@ -423,18 +423,37 @@ function modal_tplfile(el,a){
             <span class="help-inline">默认保留本地资源,权当备份用</span>
             <div class="clearfloat mb10"></div>
             <h3>七牛云存储</h3>
-            <span class="help-inline">申请地址:https://portal.qiniu.com/signup</span>
+            <span class="help-inline">申请地址:<a href="https://portal.qiniu.com/signup?from=iCMS" target="_blank">https://portal.qiniu.com/signup</a></span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on">Bucket</span>
-              <input type="text" name="config[FS][yun][QiNiu][Bucket]" class="span4" id="yun_QiNiu_Bucket" value="<?php echo $config['FS']['yun']['QiNiu']['Bucket'] ; ?>"/>
+              <input type="text" name="config[FS][yun][sdk][QiNiuYun][Bucket]" class="span4" id="yun_QiNiuYun_Bucket" value="<?php echo $config['FS']['yun']['sdk']['QiNiuYun']['Bucket'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">AccessKey</span>
-              <input type="text" name="config[FS][yun][QiNiu][AccessKey]" class="span4" id="yun_QiNiu_AccessKey" value="<?php echo $config['FS']['yun']['QiNiu']['AccessKey'] ; ?>"/>
+              <input type="text" name="config[FS][yun][sdk][QiNiuYun][AccessKey]" class="span4" id="yun_QiNiuYun_AccessKey" value="<?php echo $config['FS']['yun']['sdk']['QiNiuYun']['AccessKey'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">SecretKey</span>
-              <input type="text" name="config[FS][yun][QiNiu][SecretKey]" class="span4" id="yun_QiNiu_SecretKey" value="<?php echo $config['FS']['yun']['QiNiu']['SecretKey'] ; ?>"/>
+              <input type="text" name="config[FS][yun][sdk][QiNiuYun][SecretKey]" class="span4" id="yun_QiNiuYun_SecretKey" value="<?php echo $config['FS']['yun']['sdk']['QiNiuYun']['SecretKey'] ; ?>"/>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <h3>腾讯云万象图片</h3>
+            <span class="help-inline">申请地址:<a href="http://www.qcloud.com/product/ci.html?from=iCMS" target="_blank">http://www.qcloud.com/product/ci.html</a></span>
+            <div class="clearfloat"></div>
+            <div class="input-prepend"> <span class="add-on">APPID</span>
+              <input type="text" name="config[FS][yun][sdk][TencentYun][AppId]" class="span4" id="yun_TencentYun_AppId" value="<?php echo $config['FS']['yun']['sdk']['TencentYun']['AppId'] ; ?>"/>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">Bucket</span>
+              <input type="text" name="config[FS][yun][sdk][TencentYun][Bucket]" class="span4" id="yun_TencentYun_Bucket" value="<?php echo $config['FS']['yun']['sdk']['TencentYun']['Bucket'] ; ?>"/>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">AccessKey</span>
+              <input type="text" name="config[FS][yun][sdk][TencentYun][AccessKey]" class="span4" id="yun_TencentYun_AccessKey" value="<?php echo $config['FS']['yun']['sdk']['TencentYun']['AccessKey'] ; ?>"/>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">SecretKey</span>
+              <input type="text" name="config[FS][yun][sdk][TencentYun][SecretKey]" class="span4" id="yun_TencentYun_SecretKey" value="<?php echo $config['FS']['yun']['sdk']['TencentYun']['SecretKey'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
           </div>
