@@ -22,12 +22,10 @@ class QiniuYun
 		$uploadToken = $this->uploadToken(array('scope' => $bucket));
 		$data = array();
 		if (class_exists('CURLFile')) {
-		    curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+		    defined('CURLOPT_SAFE_UPLOAD') && curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
 		    $data['file'] = new CURLFile($filePath);
 		} else {
-		    if (defined('CURLOPT_SAFE_UPLOAD')) {
-		        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
-		    }
+		    defined('CURLOPT_SAFE_UPLOAD') && curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
 		    $data['file'] = "@$filePath";
 		}
 		// $data['file'] = "@$filePath";
