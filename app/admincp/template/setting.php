@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: setting.php 2412 2014-05-04 09:52:07Z coolmoo $
@@ -46,14 +46,6 @@ $(function(){
     $('.files_modal',tdc).attr("href",fmhref);
     tdc.appendTo(TD);
     return false;
-  });
-  $("#weixin_token_make").click(function(event) {
-    var token = iCMS.random(20);
-    $("#weixin_token").val(token);
-    $("#wx_api_token").text(token);
-  });
-  $("#weixin_token").keypress(function(event) {
-    $("#wx_api_token").text(this.value);
   });
 });
 function modal_tplfile(el,a){
@@ -431,18 +423,37 @@ function modal_tplfile(el,a){
             <span class="help-inline">默认保留本地资源,权当备份用</span>
             <div class="clearfloat mb10"></div>
             <h3>七牛云存储</h3>
-            <span class="help-inline">申请地址:https://portal.qiniu.com/signup</span>
+            <span class="help-inline">申请地址:<a href="https://portal.qiniu.com/signup?from=iCMS" target="_blank">https://portal.qiniu.com/signup</a></span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on">Bucket</span>
-              <input type="text" name="config[FS][yun][QiNiu][Bucket]" class="span4" id="yun_QiNiu_Bucket" value="<?php echo $config['FS']['yun']['QiNiu']['Bucket'] ; ?>"/>
+              <input type="text" name="config[FS][yun][sdk][QiNiuYun][Bucket]" class="span4" id="yun_QiNiuYun_Bucket" value="<?php echo $config['FS']['yun']['sdk']['QiNiuYun']['Bucket'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">AccessKey</span>
-              <input type="text" name="config[FS][yun][QiNiu][AccessKey]" class="span4" id="yun_QiNiu_AccessKey" value="<?php echo $config['FS']['yun']['QiNiu']['AccessKey'] ; ?>"/>
+              <input type="text" name="config[FS][yun][sdk][QiNiuYun][AccessKey]" class="span4" id="yun_QiNiuYun_AccessKey" value="<?php echo $config['FS']['yun']['sdk']['QiNiuYun']['AccessKey'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">SecretKey</span>
-              <input type="text" name="config[FS][yun][QiNiu][SecretKey]" class="span4" id="yun_QiNiu_SecretKey" value="<?php echo $config['FS']['yun']['QiNiu']['SecretKey'] ; ?>"/>
+              <input type="text" name="config[FS][yun][sdk][QiNiuYun][SecretKey]" class="span4" id="yun_QiNiuYun_SecretKey" value="<?php echo $config['FS']['yun']['sdk']['QiNiuYun']['SecretKey'] ; ?>"/>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <h3>腾讯云万象图片</h3>
+            <span class="help-inline">申请地址:<a href="http://www.qcloud.com/product/ci.html?from=iCMS" target="_blank">http://www.qcloud.com/product/ci.html</a></span>
+            <div class="clearfloat"></div>
+            <div class="input-prepend"> <span class="add-on">APPID</span>
+              <input type="text" name="config[FS][yun][sdk][TencentYun][AppId]" class="span4" id="yun_TencentYun_AppId" value="<?php echo $config['FS']['yun']['sdk']['TencentYun']['AppId'] ; ?>"/>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">Bucket</span>
+              <input type="text" name="config[FS][yun][sdk][TencentYun][Bucket]" class="span4" id="yun_TencentYun_Bucket" value="<?php echo $config['FS']['yun']['sdk']['TencentYun']['Bucket'] ; ?>"/>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">AccessKey</span>
+              <input type="text" name="config[FS][yun][sdk][TencentYun][AccessKey]" class="span4" id="yun_TencentYun_AccessKey" value="<?php echo $config['FS']['yun']['sdk']['TencentYun']['AccessKey'] ; ?>"/>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">SecretKey</span>
+              <input type="text" name="config[FS][yun][sdk][TencentYun][SecretKey]" class="span4" id="yun_TencentYun_SecretKey" value="<?php echo $config['FS']['yun']['sdk']['TencentYun']['SecretKey'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
           </div>
@@ -701,7 +712,15 @@ function modal_tplfile(el,a){
                 <input type="checkbox" data-type="switch" name="config[publish][showpic]" id="publish_showpic" <?php echo $config['publish']['showpic']?'checked':''; ?>/>
               </div>
             </div>
-            <span class="help-inline">开启后文章列表将会显示缩略图</span> </div>
+            <span class="help-inline">开启后文章列表将会显示缩略图</span>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">后台文章过滤</span>
+              <div class="switch">
+                <input type="checkbox" data-type="switch" name="config[article][filter]" id="article_filter" <?php echo $config['article']['filter']?'checked':''; ?>/>
+              </div>
+            </div>
+            <span class="help-inline">开启台 后台输入的文章都将经过关键字过滤</span>
+          </div>
           <div id="setting-comment" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">评论</span>
               <div class="switch">
@@ -978,54 +997,7 @@ index iCMS_article_delta : iCMS_article
             <div class="clearfloat mt10"></div>
 
           </div>
-          <div id="setting-weixin" class="tab-pane hide">
-            <h3>微信公众平台</h3>
-            <span class="help-inline">申请地址:https://mp.weixin.qq.com/</span>
-            <div class="clearfloat"></div>
-            <div class="input-prepend"> <span class="add-on">appID</span>
-              <input type="text" name="config[api][weixin][appid]" class="span3" id="weixin_appid" value="<?php echo $config['api']['weixin']['appid'] ; ?>"/>
-            </div>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">appsecret</span>
-              <input type="text" name="config[api][weixin][appsecret]" class="span3" id="weixin_appsecret" value="<?php echo $config['api']['weixin']['appsecret'] ; ?>"/>
-            </div>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">Token(令牌)</span>
-              <input type="text" name="config[api][weixin][token]" class="span3" id="weixin_token" value="<?php echo $config['api']['weixin']['token'] ; ?>"/>
-              <a class="btn" id="weixin_token_make" data-toggle="createpass" data-len="20" data-target="#weixin_token">生成令牌</a>
-            </div>
-            <span class="help-inline">公共平台接口URL:<?php echo $config['router']['public_url'] ; ?>/api.php?app=weixin&do=interface&api_token=<span id="wx_api_token">Token(令牌)</span></span>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">名称</span>
-              <input type="text" name="config[api][weixin][name]" class="span3" id="weixin_name" value="<?php echo $config['api']['weixin']['name'] ; ?>"/>
-            </div>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">微信号</span>
-              <input type="text" name="config[api][weixin][account]" class="span3" id="weixin_account" value="<?php echo $config['api']['weixin']['account'] ; ?>"/>
-            </div>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">二维码</span>
-              <input type="text" name="config[api][weixin][qrcode]" class="span3" id="weixin_qrcode" value="<?php echo $config['api']['weixin']['qrcode'] ; ?>"/>
-            </div>
-            <span class="help-inline">公众号的二维码链接</span>
-            <hr />
-            <div class="input-prepend"> <span class="add-on">关注事件</span>
-              <textarea name="config[api][weixin][subscribe]" id="weixin_subscribe" class="span6" style="height: 90px;"><?php echo $config['api']['weixin']['subscribe'] ; ?></textarea>
-            </div>
-            <span class="help-inline">用户未关注时，进行关注后的信息回复，留空将使用系统默认信息回复</span>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">取消关注</span>
-              <textarea name="config[api][weixin][unsubscribe]" id="weixin_unsubscribe" class="span6" style="height: 90px;"><?php echo $config['api']['weixin']['unsubscribe'] ; ?></textarea>
-            </div>
-            <span class="help-inline">用户取消关注后的信息回复，留空将使用系统默认信息回复</span>
-
-            <div class="mt20"></div>
-            <div class="alert alert-block">
-              <h4>注意事项</h4>
-              微信功能目前只能接收关键字并自动回复相关信息．其它功能在开发中．．．．
-            </div>
-
-          </div>
+          <?php include iACP::view("weixin.config");?>
           <div class="form-actions">
             <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
           </div>

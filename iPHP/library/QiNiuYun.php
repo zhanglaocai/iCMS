@@ -2,19 +2,19 @@
 /**
  * @author https://github.com/chuck911/qiniu-php
  */
-class QiniuClient
+class QiniuYun
 {
-	const UP_HOST = 'http://up.qiniu.com';
-	const RS_HOST = 'http://rs.qbox.me';
+	const UP_HOST  = 'http://up.qiniu.com';
+	const RS_HOST  = 'http://rs.qbox.me';
 	const RSF_HOST = 'http://rsf.qbox.me';
 
 	public $accessKey;
 	public $secretKey;
 
-	function __construct($accessKey='',$secretKey='')
+	public function __construct($AccessKey='',$SecretKey='',$AppId=null)
 	{
-		$this->accessKey = $accessKey;
-		$this->secretKey = $secretKey;
+		$this->accessKey = $AccessKey;
+		$this->secretKey = $SecretKey;
 	}
 
 	public function uploadFile($filePath,$bucket,$key=null)
@@ -22,12 +22,10 @@ class QiniuClient
 		$uploadToken = $this->uploadToken(array('scope' => $bucket));
 		$data = array();
 		if (class_exists('CURLFile')) {
-		    curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+		    defined('CURLOPT_SAFE_UPLOAD') && curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
 		    $data['file'] = new CURLFile($filePath);
 		} else {
-		    if (defined('CURLOPT_SAFE_UPLOAD')) {
-		        curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
-		    }
+		    defined('CURLOPT_SAFE_UPLOAD') && curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
 		    $data['file'] = "@$filePath";
 		}
 		// $data['file'] = "@$filePath";
@@ -64,7 +62,7 @@ class QiniuClient
 
 	public function stat($bucket,$key)
 	{
-		$encodedEntryURI = self::urlsafe_base64_encode("{$bucket}:{$key}");
+		$encodedEntryURI = $this->urlsafe_base64_encode("{$bucket}:{$key}");
 		$url = "/stat/{$encodedEntryURI}";
 		return $this->fileHandle($url);
 	}
@@ -75,8 +73,8 @@ class QiniuClient
 			$key2 = $bucket2;
 			$bucket2 = $bucket;
 		}
-		$encodedEntryURISrc = self::urlsafe_base64_encode("{$bucket}:{$key}");
-		$encodedEntryURIDest = self::urlsafe_base64_encode("{$bucket2}:{$key2}");
+		$encodedEntryURISrc = $this->urlsafe_base64_encode("{$bucket}:{$key}");
+		$encodedEntryURIDest = $this->urlsafe_base64_encode("{$bucket2}:{$key2}");
 		$url = "/move/{$encodedEntryURISrc}/{$encodedEntryURIDest}";
 		return $this->fileHandle($url);
 	}
@@ -87,15 +85,15 @@ class QiniuClient
 			$key2 = $bucket2;
 			$bucket2 = $bucket;
 		}
-		$encodedEntryURISrc = self::urlsafe_base64_encode("{$bucket}:{$key}");
-		$encodedEntryURIDest = self::urlsafe_base64_encode("{$bucket2}:{$key2}");
+		$encodedEntryURISrc = $this->urlsafe_base64_encode("{$bucket}:{$key}");
+		$encodedEntryURIDest = $this->urlsafe_base64_encode("{$bucket2}:{$key2}");
 		$url = "/copy/{$encodedEntryURISrc}/{$encodedEntryURIDest}";
 		return $this->fileHandle($url);
 	}
 
 	public function delete($bucket,$key)
 	{
-		$encodedEntryURI = self::urlsafe_base64_encode("{$bucket}:{$key}");
+		$encodedEntryURI = $this->urlsafe_base64_encode("{$bucket}:{$key}");
 		$url = "/delete/{$encodedEntryURI}";
 		return $this->fileHandle($url);
 	}
@@ -107,11 +105,11 @@ class QiniuClient
 		$data = '';
 		foreach ($files as $file) {
 			if(!is_array($file)) {
-				$encodedEntryURI = self::urlsafe_base64_encode($file);
+				$encodedEntryURI = $this->urlsafe_base64_encode($file);
 				$data.="op=/{$operator}/{$encodedEntryURI}&";
 			}else{
-				$encodedEntryURI = self::urlsafe_base64_encode($file[0]);
-				$encodedEntryURIDest = self::urlsafe_base64_encode($file[1]);
+				$encodedEntryURI = $this->urlsafe_base64_encode($file[0]);
+				$encodedEntryURIDest = $this->urlsafe_base64_encode($file[1]);
 				$data.="op=/{$operator}/{$encodedEntryURI}/{$encodedEntryURIDest}&";
 			}
 		}
@@ -158,9 +156,9 @@ class QiniuClient
 	{
 		if(!isset($flags['deadline']))
 			$flags['deadline'] = 3600 + time();
-		$encodedFlags = self::urlsafe_base64_encode(json_encode($flags));
+		$encodedFlags = $this->urlsafe_base64_encode(json_encode($flags));
 		$sign = hash_hmac('sha1', $encodedFlags, $this->secretKey, true);
-		$encodedSign = self::urlsafe_base64_encode($sign);
+		$encodedSign = $this->urlsafe_base64_encode($sign);
 	    $token = $this->accessKey.':'.$encodedSign. ':' . $encodedFlags;
 	    return $token;
 	}
@@ -175,10 +173,10 @@ class QiniuClient
 	    $access .= "\n";
 	    if($body) $access .= $body;
 	    $digest = hash_hmac('sha1', $access, $this->secretKey, true);
-	    return $this->accessKey.':'.self::urlsafe_base64_encode($digest);
+	    return $this->accessKey.':'.$this->urlsafe_base64_encode($digest);
 	}
 
-	public static function urlsafe_base64_encode($str){
+	public function urlsafe_base64_encode($str){
 	    $find = array("+","/");
 	    $replace = array("-", "_");
 	    return str_replace($find, $replace, base64_encode($str));

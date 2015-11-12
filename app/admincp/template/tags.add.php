@@ -110,6 +110,21 @@ $(function(){
               <?php iACP::picBtnGroup("pic");?>
             </div>
             <div class="clearfloat mb10"></div>
+            <div class="input-prepend input-append"> <span class="add-on">大图</span>
+              <input type="text" name="bpic" class="span6" id="bpic" value="<?php echo $rs['bpic'] ; ?>"/>
+              <?php iACP::picBtnGroup("bpic");?>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend input-append"> <span class="add-on">中图</span>
+              <input type="text" name="mpic" class="span6" id="mpic" value="<?php echo $rs['mpic'] ; ?>"/>
+              <?php iACP::picBtnGroup("mpic");?>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend input-append"> <span class="add-on">小图</span>
+              <input type="text" name="spic" class="span6" id="spic" value="<?php echo $rs['spic'] ; ?>"/>
+              <?php iACP::picBtnGroup("spic");?>
+            </div>
+            <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">标签描述</span>
               <textarea name="description" id="description" class="span6" style="height: 150px;width:600;"><?php echo $rs['description'] ; ?></textarea>
             </div>
