@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: tags.manage.php 2393 2014-04-09 13:14:23Z coolmoo $
@@ -85,11 +85,19 @@ $(function(){
           <input type="checkbox" name="tfsub" id="tfsub"/>
           子分类 </span> </div>
         <div class="clearfloat mb10"></div>
-        <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i></span>
+        <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i> 发布时间</span>
           <input type="text" class="span2 ui-datepicker" name="starttime" value="<?php echo $_GET['starttime'] ; ?>" placeholder="开始时间" />
           <span class="add-on">-</span>
           <input type="text" class="span2 ui-datepicker" name="endtime" value="<?php echo $_GET['endtime'] ; ?>" placeholder="结束时间" />
-          <span class="add-on"><i class="fa fa-calendar"></i></span> </div>
+          <span class="add-on"><i class="fa fa-calendar"></i></span>
+        </div>
+        <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i> 添加时间</span>
+          <input type="text" class="span2 ui-datepicker" name="post_starttime" value="<?php echo $_GET['post_starttime'] ; ?>" placeholder="开始时间" />
+          <span class="add-on">-</span>
+          <input type="text" class="span2 ui-datepicker" name="post_endtime" value="<?php echo $_GET['post_endtime'] ; ?>" placeholder="结束时间" />
+          <span class="add-on"><i class="fa fa-calendar"></i></span>
+        </div>
+        <div class="clearfloat mb10"></div>
         <div class="input-prepend"> <span class="add-on">排序</span>
           <select name="orderby" id="orderby" class="span2 chosen-select">
             <option value="">默认排序</option>
@@ -113,7 +121,6 @@ $(function(){
           </span> <span class="add-on">缩略图
           <input type="checkbox" name="haspic" id="haspic"/>
           </span> </div>
-        <div class="clearfloat mb10"></div>
         <div class="input-prepend input-append"> <span class="add-on">关键字</span>
           <input type="text" name="keywords" class="span2" id="keywords" value="<?php echo $_GET['keywords'] ; ?>" />
           <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜 索</button>
