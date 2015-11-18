@@ -994,7 +994,6 @@ class spiderApp {
 
                 if ($this->contTest) {
                     echo "<pre>";
-                    print_r($pageMd5);
                     print_r($pageurl);
                     echo "</pre><hr />";
                 }
@@ -1112,6 +1111,9 @@ class spiderApp {
 
         if ($data['cleanafter']) {
             $content = $this->dataClean($data['cleanafter'], $content);
+        }
+        if ($data['autobreakpage']) {
+            $content = $this->autoBreakPage($content);
         }
         if ($data['mergepage']) {
             $_content = $content;
@@ -1801,7 +1803,26 @@ class spiderApp {
             $newbody[$k] = $nbody;
         }
     }
-
+    function autoBreakPage($content,$pageBit = '15000',$pageBreak='#--iCMS.PageBreak--#'){
+        $text      = str_replace('</p><p>', "</p>\n<p>", $content);
+        $textArray = explode("\n", $text);
+        $pageNum   = 0;
+        $resource  = array();
+        // $_count         = count($textArray);
+        foreach ($textArray as $key => $p) {
+            $text      = preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$p);
+            $pageLen   = strlen($resource[$pageNum]);
+            $output    = implode('',array_slice($textArray,$key));
+            $outputLen = strlen($output);
+            if($pageLen>$pageBit && $outputLen>$pageBit){
+                $pageNum++;
+                $resource[$pageNum] = $p;
+            }else{
+                $resource[$pageNum].= $p;
+            }
+        }
+        return implode($pageBreak, (array)$resource);
+    }
 }
 
 function stripslashes_deep($value) {
