@@ -266,6 +266,20 @@ function article_search($vars){
     $resource = __article_array($vars,$resource);
     return $resource;
 }
+function article_data($vars){
+    $vars['aid'] OR iPHP::warning('iCMS&#x3a;article&#x3a;data 标签出错! 缺少"aid"属性或"aid"值为空.');
+    $data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='".(int)$vars['aid']."' LIMIT 1;",ARRAY_A);
+    if($data['body']){
+        $articleApp = iPHP::app("article");
+        $data['body'] = $articleApp->ubb($data['body']);
+        if(strpos($data['body'], '#--iCMS.Markdown--#')!==false){
+            $data['body'] = iPHP::Markdown($data['body']);
+        }
+        $data['body'] = $articleApp->keywords($data['body']);
+        $data['body'] = $articleApp->taoke($data['body']);
+    }
+    return $data;
+}
 
 function __article_array($vars,$variable){
     $resource = array();

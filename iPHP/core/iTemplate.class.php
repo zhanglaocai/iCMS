@@ -415,8 +415,8 @@ class iTemplate_Compiler extends iTemplate {
 		// [foo]
 		// [$bar]
 		// [#bar#]
-//		$this->_var_bracket_regexp = '\[[\$|\#]?\w+\#?\]';
-		$this->_var_bracket_regexp = '\[\$?[\w\.]+\]';
+		$this->_var_bracket_regexp = '\[[\$|\#]?\w+\#?\]';
+		// $this->_var_bracket_regexp = '\[\$?[\w\.]+\]';
 
 		// matches section vars:
 		// %foo.bar%
@@ -427,8 +427,8 @@ class iTemplate_Compiler extends iTemplate {
 		// $foo[0]
 		// $foo[$bar]
 		// $foo[5][blah]
-//		$this->_dvar_regexp = '\$[a-zA-Z0-9_]{1,}(?:' . $this->_var_bracket_regexp . ')*(?:' . $this->_var_bracket_regexp . ')*';
-		$this->_dvar_regexp = '\$\w{1,}(?:' . $this->_var_bracket_regexp . ')*(?:\.\$?\w+(?:' . $this->_var_bracket_regexp . ')*)*';
+		// $this->_dvar_regexp = '\$[a-zA-Z0-9_]{1,}(?:' . $this->_var_bracket_regexp . ')*(?:' . $this->_var_bracket_regexp . ')*';
+		$this->_dvar_regexp = '\$[a-zA-Z0-9_]{1,}(?:' . $this->_var_bracket_regexp . ')*(?:\.\$?[a-zA-Z0-9_]+(?:' . $this->_var_bracket_regexp . ')*)*';
 
 		// matches valid variable syntax:
 		// $foo
@@ -832,6 +832,7 @@ class iTemplate_Compiler extends iTemplate {
 			 2 - expecting attribute value (not '=')
 		*/
 		$state = 0;
+
 		foreach($_match[0] as $value){
 			switch($state){
 				case 0:
@@ -852,6 +853,7 @@ class iTemplate_Compiler extends iTemplate {
 					break;
 				case 2:
 					$value = $this->_dequote($value);
+
 					if ($value != '='){
 						if ($value == 'yes' || $value == 'on' || $value == 'true'){
 							$value = true;
@@ -859,6 +861,9 @@ class iTemplate_Compiler extends iTemplate {
 							$value = false;
 						}elseif ($value == 'null'){
 							$value = null;
+						}
+						if(strpos($value,'"') !==false||strpos($value,"'") !==false){
+							$value =  addslashes($value);
 						}
 						if(strpos($value,'{$') !==false){ //对 {$xxx} 进行简单的替换
 							$_key   = substr(strrchr($value,'{$'),2);
@@ -869,6 +874,9 @@ class iTemplate_Compiler extends iTemplate {
 						}else if(preg_match_all('/(?:(' . $this->_var_regexp . '|' . $this->_svar_regexp . ')(' . $this->_mod_regexp . '*))(?:\s+(.*))?/xs', $value, $_variables)){
 							$_result[$a_name] = $this->_parse_variables($_variables[1], $_variables[2]);
 						}else{
+							if(strpos($value,'\"') !==false||strpos($value,"\'") !==false){
+								$value =  stripslashes($value);
+							}
 							$_result[$a_name] = '"'.$value.'"';
 							if (is_bool($value)){
 								$_result[$a_name] = $value ? 'true' : 'false';

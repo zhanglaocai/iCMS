@@ -339,6 +339,7 @@ $(function(){
             </ul>
             <div class="tab-content">
               <div id="spider-page-area-rule" class="tab-pane active">
+                <div class="alert mt5" style="width:360px;">采集方式适合所有分页都列出来的分页模式</div>
                 <div class="input-prepend input-sp"><span class="add-on">分页区域规则</span>
                   <textarea name="rule[page_area_rule]" id="page_area_rule" class="span6"><?php echo $rule['page_area_rule'] ; ?></textarea>
                   <div class="btn-group btn-group-vertical"> <a class="btn" href="<%content%>" data-toggle="insertContent" data-target="#page_area_rule">内容标识</a> <a class="btn" href="<%var%>" data-toggle="insertContent" data-target="#page_area_rule">变量标识</a> </div>
@@ -444,7 +445,10 @@ $(function(){
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
-          <a id="test" href="<?php echo APP_URI; ?>&do=testrule&rid=<?php echo $this->rid ; ?>" class="btn" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试</a> </div>
+          <a id="test" href="<?php echo APP_URI; ?>&do=testrule&rid=<?php echo $this->rid ; ?>" class="btn btn-inverse" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试</a>
+          <a href="<?php echo APP_URI; ?>&do=manage&rid=<?php echo $this->rid ; ?>" class="btn btn-success" target="_blank"><i class="fa fa-list-alt"></i> 已采集</a>
+          <a href="<?php echo APP_URI; ?>&do=project&rid=<?php echo $this->rid ; ?>" class="btn btn-info" target="_blank"><i class="fa fa-magnet"></i> 方案</a>
+        </div>
       </form>
     </div>
   </div>
