@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: article.manage.php 2405 2014-04-17 06:59:42Z coolmoo $
@@ -146,11 +146,19 @@ $(function(){
           <input type="radio" name="pic" class="checkbox spic" value="1"/>
           </span> </div>
         <div class="clearfloat mb10"></div>
-        <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i></span>
+        <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i> 发布时间</span>
           <input type="text" style="width:120px;" class="ui-datepicker" name="starttime" value="<?php echo $_GET['starttime'] ; ?>" placeholder="开始时间" />
           <span class="add-on">-</span>
           <input type="text" style="width:120px;" class="ui-datepicker" name="endtime" value="<?php echo $_GET['endtime'] ; ?>" placeholder="结束时间" />
-          <span class="add-on"><i class="fa fa-calendar"></i></span> </div>
+          <span class="add-on"><i class="fa fa-calendar"></i></span>
+        </div>
+        <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i> 添加时间</span>
+          <input type="text" style="width:120px;" class="ui-datepicker" name="post_starttime" value="<?php echo $_GET['post_starttime'] ; ?>" placeholder="开始时间" />
+          <span class="add-on">-</span>
+          <input type="text" style="width:120px;" class="ui-datepicker" name="post_endtime" value="<?php echo $_GET['post_endtime'] ; ?>" placeholder="结束时间" />
+          <span class="add-on"><i class="fa fa-calendar"></i></span>
+        </div>
+        <div class="clearfloat mb10"></div>
         <div class="input-prepend input-append"> <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
           <span class="add-on">条记录</span> </div>

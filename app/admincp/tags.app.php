@@ -48,6 +48,8 @@ class tagsApp{
         $sql.= $this->tagcategory->search_sql($tcid,'tcid');
         $_GET['starttime'] && $sql.=" AND `pubdate`>='".iPHP::str2time($_GET['starttime']." 00:00:00")."'";
         $_GET['endtime']   && $sql.=" AND `pubdate`<='".iPHP::str2time($_GET['endtime']." 23:59:59")."'";
+        $_GET['post_starttime'] && $sql.=" AND `postime`>='".iPHP::str2time($_GET['post_starttime']." 00:00:00")."'";
+        $_GET['post_endtime']   && $sql.=" AND `postime`<='".iPHP::str2time($_GET['post_endtime']." 23:59:59")."'";
 
         isset($_GET['pic']) && $sql.=" AND `haspic` ='".($_GET['pic']?1:0)."'";
         if(isset($_GET['pid']) && $pid!='-1'){

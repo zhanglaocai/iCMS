@@ -881,10 +881,20 @@ class spiderApp {
                             $href = phpQuery::pq($pq_val)->attr('href');
                             if($href){
                                 if($rule['page_url_rule']){
-                                    $page_url_rule = $this->pregTag($rule['page_url_rule']);
-                                    // var_dump('|' . $page_url_rule . '|is');
-                                    if (!preg_match('|' . $page_url_rule . '|is', $href)){
-                                        continue;
+                                    if(strpos($rule['page_url_rule'], 'CLEAN@')!==false){
+                                        $cleanhref = $this->dataClean($data['cleanafter'],$href);
+                                        if($cleanhref){
+                                            $href = $cleanhref;
+                                            unset($cleanhref);
+                                        }else{
+                                            continue;
+                                        }
+                                    }else{
+                                        $page_url_rule = $this->pregTag($rule['page_url_rule']);
+                                        // var_dump('|' . $page_url_rule . '|is');
+                                        if (!preg_match('|' . $page_url_rule . '|is', $href)){
+                                            continue;
+                                        }
                                     }
                                 }
                                 $href = str_replace('<%url%>',$href, $rule['page_url']);
@@ -895,7 +905,9 @@ class spiderApp {
                             $page_url_array = array_filter($page_url_array);
                             $page_url_array = array_unique($page_url_array);
                             $puk = array_search($rule['__url__'],$page_url_array);
-                            unset($page_url_array[$puk]);
+                            if($puk!==false){
+                                unset($page_url_array[$puk]);
+                            }
                         }
                         phpQuery::unloadDocuments($doc->getDocumentID());
                         //var_dump($page_url_array);
@@ -957,24 +969,27 @@ class spiderApp {
 
                 $pcontent = '';
                 $pcon     = '';
+                $pageurl  = array();
                 foreach ($page_url_array AS $pukey => $purl) {
                     //usleep(100);
                     $phtml = $this->remote($purl);
+                    $md5   = md5($phtml);
                     if (empty($phtml)) {
                         break;
                     }
-                    $phttp = $this->check_content_code($phtml);
-
-                    if ($phttp['match'] == false) {
+                    if($pageurl[$md5]){
                         break;
                     }
-
-                    $pageurl[] = $purl;
+                    $phttp = $this->check_content_code($phtml);
+                    if ($phttp['match'] === false) {
+                        break;
+                    }
+                    $pageurl[$md5] = $purl;
                     $pcon.= $phttp['content'];
                 }
                 gc_collect_cycles();
                 $html.= $pcon;
-                unset($pcon);
+                unset($pcon,$phttp);
                 $this->allHtml = $html;
 
                 if ($this->contTest) {
@@ -1097,6 +1112,9 @@ class spiderApp {
         if ($data['cleanafter']) {
             $content = $this->dataClean($data['cleanafter'], $content);
         }
+        if ($data['autobreakpage']) {
+            $content = $this->autoBreakPage($content);
+        }
         if ($data['mergepage']) {
             $_content = $content;
             preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is", $_content, $picArray);
@@ -1108,7 +1126,7 @@ class spiderApp {
             } else {
                 $contentA = explode("#--iCMS.PageBreak--#", $_content);
                 $newcontent = array();
-                $this->checkpage($newcontent, $contentA, 2);
+                $this->checkpage($newcontent, $contentA, 4);
                 if (is_array($newcontent)) {
                     $content = array_filter($newcontent);
                     $content = implode('#--iCMS.PageBreak--#', $content);
@@ -1785,7 +1803,26 @@ class spiderApp {
             $newbody[$k] = $nbody;
         }
     }
-
+    function autoBreakPage($content,$pageBit = '15000',$pageBreak='#--iCMS.PageBreak--#'){
+        $text      = str_replace('</p><p>', "</p>\n<p>", $content);
+        $textArray = explode("\n", $text);
+        $pageNum   = 0;
+        $resource  = array();
+        // $_count         = count($textArray);
+        foreach ($textArray as $key => $p) {
+            $text      = preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$p);
+            $pageLen   = strlen($resource[$pageNum]);
+            $output    = implode('',array_slice($textArray,$key));
+            $outputLen = strlen($output);
+            if($pageLen>$pageBit && $outputLen>$pageBit){
+                $pageNum++;
+                $resource[$pageNum] = $p;
+            }else{
+                $resource[$pageNum].= $p;
+            }
+        }
+        return implode($pageBreak, (array)$resource);
+    }
 }
 
 function stripslashes_deep($value) {
