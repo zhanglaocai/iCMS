@@ -881,10 +881,20 @@ class spiderApp {
                             $href = phpQuery::pq($pq_val)->attr('href');
                             if($href){
                                 if($rule['page_url_rule']){
-                                    $page_url_rule = $this->pregTag($rule['page_url_rule']);
-                                    // var_dump('|' . $page_url_rule . '|is');
-                                    if (!preg_match('|' . $page_url_rule . '|is', $href)){
-                                        continue;
+                                    if(strpos($rule['page_url_rule'], 'CLEAN@')!==false){
+                                        $cleanhref = $this->dataClean($data['cleanafter'],$href);
+                                        if($cleanhref){
+                                            $href = $cleanhref;
+                                            unset($cleanhref);
+                                        }else{
+                                            continue;
+                                        }
+                                    }else{
+                                        $page_url_rule = $this->pregTag($rule['page_url_rule']);
+                                        // var_dump('|' . $page_url_rule . '|is');
+                                        if (!preg_match('|' . $page_url_rule . '|is', $href)){
+                                            continue;
+                                        }
                                     }
                                 }
                                 $href = str_replace('<%url%>',$href, $rule['page_url']);
