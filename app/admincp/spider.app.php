@@ -895,7 +895,9 @@ class spiderApp {
                             $page_url_array = array_filter($page_url_array);
                             $page_url_array = array_unique($page_url_array);
                             $puk = array_search($rule['__url__'],$page_url_array);
-                            unset($page_url_array[$puk]);
+                            if($puk!==false){
+                                unset($page_url_array[$puk]);
+                            }
                         }
                         phpQuery::unloadDocuments($doc->getDocumentID());
                         //var_dump($page_url_array);
@@ -957,28 +959,32 @@ class spiderApp {
 
                 $pcontent = '';
                 $pcon     = '';
+                $pageurl  = array();
                 foreach ($page_url_array AS $pukey => $purl) {
                     //usleep(100);
                     $phtml = $this->remote($purl);
+                    $md5   = md5($phtml);
                     if (empty($phtml)) {
                         break;
                     }
-                    $phttp = $this->check_content_code($phtml);
-
-                    if ($phttp['match'] == false) {
+                    if($pageurl[$md5]){
                         break;
                     }
-
-                    $pageurl[] = $purl;
+                    $phttp = $this->check_content_code($phtml);
+                    if ($phttp['match'] === false) {
+                        break;
+                    }
+                    $pageurl[$md5] = $purl;
                     $pcon.= $phttp['content'];
                 }
                 gc_collect_cycles();
                 $html.= $pcon;
-                unset($pcon);
+                unset($pcon,$phttp);
                 $this->allHtml = $html;
 
                 if ($this->contTest) {
                     echo "<pre>";
+                    print_r($pageMd5);
                     print_r($pageurl);
                     echo "</pre><hr />";
                 }
@@ -1108,7 +1114,7 @@ class spiderApp {
             } else {
                 $contentA = explode("#--iCMS.PageBreak--#", $_content);
                 $newcontent = array();
-                $this->checkpage($newcontent, $contentA, 2);
+                $this->checkpage($newcontent, $contentA, 4);
                 if (is_array($newcontent)) {
                     $content = array_filter($newcontent);
                     $content = implode('#--iCMS.PageBreak--#', $content);
