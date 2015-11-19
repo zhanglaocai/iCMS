@@ -107,7 +107,7 @@ class spiderApp {
 
     function do_testrule() {
         $this->ruleTest = true;
-        $this->spider_url();
+        $this->spider_url('WEB@AUTO');
     }
 
     function do_listpub() {
@@ -659,7 +659,7 @@ class spiderApp {
                     }
                     $hash  = md5($this->url);
                     if ($this->ruleTest) {
-                        echo $title . ' (<a href="' . APP_URI . '&do=testcont&url=' . urlencode($this->url) . '&rid=' . $rid . '&pid=' . $pid . '&title=' . urlencode($title) . '" target="_blank">测试内容规则</a>) <br />';
+                        echo $this->title . ' (<a href="' . APP_URI . '&do=testcont&url=' . urlencode($this->url) . '&rid=' . $rid . '&pid=' . $pid . '&title=' . urlencode($title) . '" target="_blank">测试内容规则</a>) <br />';
                         echo $this->url . "<br />";
                         echo $hash . "<br /><br />";
                     } else {
