@@ -1,4 +1,5 @@
 /* ===========commentApp=========== */
+.iCMS-comment-page{background-image: none;background: #FFF;}
 /* icon */
 .iCMS_icon { width: 16px; height: 16px; background-image: url(img/sprites-1.9.1.png); background-repeat: no-repeat; display: inline-block; vertical-align: middle }
 .iCMS_icon_comment_like { background-position: -222px -92px }
