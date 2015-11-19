@@ -57,7 +57,11 @@ class articleApp{
         $strpos   = strpos(__REF__,'?');
         $REFERER  = $strpos===false?'':substr(__REF__,$strpos);
         $defArray = iCache::get('iCMS/defaults');
-    	include iACP::view("article.add");
+        if(iCMS::$config['article']['editor']){
+            include iACP::view("article.markdown");
+        }else{
+            include iACP::view("article.add");
+        }
     }
     function do_update(){
     	$data = iACP::fields($_GET['iDT']);
@@ -664,7 +668,10 @@ class articleApp{
         $body     = preg_replace(array('/<script.+?<\/script>/is','/<form.+?<\/form>/is'),'',$body);
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
 
-        iCMS::$config['publish']['autoformat'] && $body = autoformat($body);
+        if(isset($_POST['markdown'])){
+        }else{
+            iCMS::$config['publish']['autoformat'] && $body = autoformat($body);
+        }
 
         articleTable::$ID = $aid;
 
