@@ -638,7 +638,7 @@ function modal_tplfile(el,a){
             <div class="input-prepend">
               <span class="add-on">编辑器</span>
               <div class="switch" data-on-label="Editor.md" data-off-label="UEditor">
-                <input type="checkbox" data-type="switch" name="config[publish][editor]" id="publish_editor" <?php echo $config['publish']['editor']?'checked':''; ?>/>
+                <input type="checkbox" data-type="switch" name="config[article][editor]" id="article_editor" <?php echo $config['article']['editor']?'checked':''; ?>/>
               </div>
             </div>
             <span class="help-inline">Editor.md为markdown编辑器,默认使用UEditor</span>
