@@ -1092,9 +1092,9 @@ class iTemplate_Compiler extends iTemplate {
 		// check for object functions
 		//var_dump($this->_plugins);
 		$_plugins_fun = $this->_plugins[$type][$function];
-		if(empty($_plugins_fun)){
-			return false;
-		}
+		// if(empty($_plugins_fun)){
+		// 	return false;
+		// }
 		// var_dump($_plugins_fun[0],class_exists($_plugins_fun[0]));
 
 		if (isset($_plugins_fun) &&
