@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2010, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: setting.php 2412 2014-05-04 09:52:07Z coolmoo $
@@ -8,30 +8,9 @@
 defined('iPHP') OR exit('What are you doing?');
 iACP::head();
 ?>
-<style>
-.iCMS-setting h3{
-  display: inline-block;
-  height: 35px;
-  margin-bottom: 5px;
-  background-color: #DFDFDF;
-  margin-top: 5px;
-  padding-left: 10px;
-  font-weight: bold;
-  color: #696969;
-  text-shadow: 0 1px 0 #FFF;
-  border-radius: 4px 4px 0px 0px;
-  width: 350px;
-  font-size: 16px;
-}
-</style>
 <script type="text/javascript">
 
 $(function(){
-	iCMS.select('cache_engine',"<?php echo $config['cache']['engine'] ; ?>");
-	iCMS.select('watermark_pos',"<?php echo (int)$config['watermark']['pos'] ; ?>");
-	iCMS.select('time_zone',"<?php echo $config['time']['zone'] ; ?>");
-	iCMS.select('system_patch',"<?php echo (int)$config['system']['patch'] ; ?>");
-
   $(document).on("click",".del_device",function(){
       $(this).parent().parent().remove();
   });
@@ -251,7 +230,7 @@ function modal_tplfile(el,a){
             <div class="input-prepend"> <span class="add-on">CMS安装目录</span>
               <input type="text" name="config[router][DIR]" class="span4" id="router_dir" value="<?php echo $config['router']['DIR'] ; ?>"/>
             </div>
-            <span class="help-inline">CMS安装目录，如：http：//www.idreamsoft.com/iCMS/ 则安装目录为:iCMS/ 根目录请输入<span class="label label-info">/</span></span>
+            <span class="help-inline">CMS安装目录，如：http://www.idreamsoft.com/iCMS/ 则安装目录为:iCMS/ 根目录请输入<span class="label label-info">/</span></span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">404页面</span>
               <input type="text" name="config[router][404]" class="span4" id="router_404" value="<?php echo $config['router']['404'] ; ?>"/>
@@ -338,6 +317,7 @@ function modal_tplfile(el,a){
                 <option value="redis">分布式缓存 Redis</option>
               </select>
             </div>
+            <script>$(function(){iCMS.select('cache_engine',"<?php echo $config['cache']['engine'] ; ?>");});</script>
             <span class="help-inline">Memcache,Redis 需要服务器支持,如果不清楚请询问管理员,iCMS推荐使用Redis</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">缓存配置</span>
@@ -380,7 +360,7 @@ function modal_tplfile(el,a){
             <div class="input-prepend"> <span class="add-on">附件URL</span>
               <input type="text" name="config[FS][url]" class="span4" id="FS_url" value="<?php echo $config['FS']['url'] ; ?>"/>
             </div>
-            <span class="help-inline">如果访问不到,请自行调整</span>
+            <span class="help-inline">如果访问不到,请自行调整.请填写完整的URL例:http://www.idreamsoft.com/res/</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">文件保存目录</span>
               <input type="text" name="config[FS][dir]" class="span4" id="FS_dir" value="<?php echo $config['FS']['dir'] ; ?>"/>
@@ -422,12 +402,13 @@ function modal_tplfile(el,a){
             </div>
             <span class="help-inline">默认保留本地资源,权当备份用</span>
             <div class="clearfloat mb10"></div>
-            <h3>七牛云存储</h3>
-            <span class="help-inline">申请地址:<a href="https://portal.qiniu.com/signup?from=iCMS" target="_blank">https://portal.qiniu.com/signup</a></span>
+            <h3 class="title">七牛云存储</h3>
+            <span class="help-inline">申请地址:https://portal.qiniu.com/signup</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on">Bucket</span>
               <input type="text" name="config[FS][yun][sdk][QiNiuYun][Bucket]" class="span4" id="yun_QiNiuYun_Bucket" value="<?php echo $config['FS']['yun']['sdk']['QiNiuYun']['Bucket'] ; ?>"/>
             </div>
+            <span class="help-inline">空间名称</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">AccessKey</span>
               <input type="text" name="config[FS][yun][sdk][QiNiuYun][AccessKey]" class="span4" id="yun_QiNiuYun_AccessKey" value="<?php echo $config['FS']['yun']['sdk']['QiNiuYun']['AccessKey'] ; ?>"/>
@@ -480,12 +461,17 @@ function modal_tplfile(el,a){
             </div>
             <span class="help-inline">将在上传的图片附件中加上您在下面设置的图片或文字水印</span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">图片尺寸</span><span class="add-on" style="width:24px;">宽度</span>
+            <div class="input-prepend"> <span class="add-on">图片尺寸</span><span class="add-on" style="width:24px;">宽度</span>
               <input type="text" name="config[watermark][width]" class="span1" id="watermark_width" value="<?php echo $config['watermark']['width'] ; ?>"/>
               <span class="add-on" style="width:24px;">高度</span>
               <input type="text" name="config[watermark][height]" class="span1" id="watermark_height" value="<?php echo $config['watermark']['height'] ; ?>"/>
             </div>
             <span class="help-inline">单位:像素(px) 只对超过程序设置的大小的附件图片才加上水印图片或文字(设置为0不限制)</span>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">图片类型</span>
+              <input type="text" name="config[watermark][allow_ext]" class="span3" id="watermark_allow_ext" value="<?php echo $config['watermark']['allow_ext'] ; ?>"/>
+            </div>
+            <span class="help-inline">需要添加水印的图片类型(jpg,jpeg,png)  注:当前版本gif动画添加水印将失效</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">水印位置</span>
               <select name="config[watermark][pos]" id="watermark_pos" class="span3 chosen-select">
@@ -502,6 +488,7 @@ function modal_tplfile(el,a){
                 <option value="-1">自定义</option>
               </select>
             </div>
+            <script>$(function(){iCMS.select('watermark_pos',"<?php echo (int)$config['watermark']['pos'] ; ?>");});</script>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">水印位置偏移</span><span class="add-on" style="width:24px;">X</span>
               <input type="text" name="config[watermark][x]" class="span1" id="watermark_x" value="<?php echo $config['watermark']['x'] ; ?>"/>
@@ -603,7 +590,7 @@ function modal_tplfile(el,a){
             <span class="help-inline">请将图片放在public目录下</span>
             <div class="clearfloat mb10"></div>
             <hr />
-            <h3>微信开放平台</h3>
+            <h3 class="title">微信开放平台</h3>
             <span class="help-inline">申请地址:https://open.weixin.qq.com/</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on" style="width:60px;">APPID:</span>
@@ -614,7 +601,7 @@ function modal_tplfile(el,a){
               <input type="text" name="config[open][WX][appkey]" class="span3" id="wx_appkey" value="<?php echo $config['open']['WX']['appkey'] ; ?>"/>
             </div>
             <hr />
-            <h3>QQ开放平台</h3>
+            <h3 class="title">QQ开放平台</h3>
             <span class="help-inline">申请地址:http://connect.qq.com/</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on" style="width:60px;">APPID:</span>
@@ -625,7 +612,7 @@ function modal_tplfile(el,a){
               <input type="text" name="config[open][QQ][appkey]" class="span3" id="qq_appkey" value="<?php echo $config['open']['QQ']['appkey'] ; ?>"/>
             </div>
             <hr />
-            <h3>微博开放平台</h3>
+            <h3 class="title">微博开放平台</h3>
             <span class="help-inline">申请地址:http://open.weibo.com/authentication/</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on" style="width:60px;">APPID:</span>
@@ -636,7 +623,7 @@ function modal_tplfile(el,a){
               <input type="text" name="config[open][WB][appkey]" class="span3" id="WB_appkey" value="<?php echo $config['open']['WB']['appkey'] ; ?>"/>
             </div>
             <hr />
-            <h3>淘宝开放平台</h3>
+            <h3 class="title">淘宝开放平台</h3>
             <span class="help-inline">申请地址:http://open.taobao.com/</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on" style="width:60px;">APPID:</span>
@@ -648,6 +635,14 @@ function modal_tplfile(el,a){
             </div>
           </div>
           <div id="setting-publish" class="tab-pane hide">
+            <div class="input-prepend">
+              <span class="add-on">编辑器</span>
+              <div class="switch" data-on-label="Editor.md" data-off-label="UEditor">
+                <input type="checkbox" data-type="switch" name="config[publish][editor]" id="publish_editor" <?php echo $config['publish']['editor']?'checked':''; ?>/>
+              </div>
+            </div>
+            <span class="help-inline">Editor.md为markdown编辑器,默认使用UEditor</span>
+            <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">自动排版</span>
               <div class="switch">
                 <input type="checkbox" data-type="switch" name="config[publish][autoformat]" id="publish_autoformat" <?php echo $config['publish']['autoformat']?'checked':''; ?>/>
@@ -776,6 +771,7 @@ function modal_tplfile(el,a){
                 <option value="Asia/Kamchatka">(标准时+12：00) 奥克兰、惠灵顿、堪察加半岛 </option>
               </select>
             </div>
+            <script>$(function(){iCMS.select('time_zone',"<?php echo $config['time']['zone'] ; ?>");});</script>
             <span class="help-inline">服务器所在时区</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">服务器时间校正</span>
@@ -821,7 +817,7 @@ function modal_tplfile(el,a){
             </div>
             <span class="help-inline">后台侧边栏默认开启,启用后可选择打开或者最小化</span>
             <hr />
-            <h3>文章显示相关设置</h3>
+            <h3 class="title">文章显示相关设置</h3>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on">文章图片居中</span>
               <div class="switch" data-on-label="启用" data-off-label="关闭">
@@ -849,8 +845,9 @@ function modal_tplfile(el,a){
               </div>
             </div>
             <span class="help-inline">启用文章上下文(内容页的上一篇/下一篇) 这个比较耗性能 如果访问量较大 建议关闭</span>
+            <div class="clearfloat mb10"></div>
             <hr />
-            <h3>百度站长平台 主动推送(实时)</h3>
+            <h3 class="title">百度站长平台 主动推送(实时)</h3>
             <span class="help-inline">申请地址:http://zhanzhang.baidu.com/ (需要权限)</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on">站点</span>
@@ -873,7 +870,7 @@ function modal_tplfile(el,a){
 
             <!--
             <hr />
-            <h3>淘宝联盟</h3>
+            <h3 class="title">淘宝联盟</h3>
             <span class="help-inline">申请地址:https://www.alimama.com/</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on">广告位PID</span>
@@ -890,6 +887,7 @@ function modal_tplfile(el,a){
                 <option value="0">关闭自动更新</option>
               </select>
             </div>
+            <script>$(function(){iCMS.select('system_patch',"<?php echo (int)$config['system']['patch'] ; ?>");});</script>
           </div>
           <div id="setting-grade" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">sphinx服务器</span>
@@ -903,7 +901,7 @@ function modal_tplfile(el,a){
             </div>
             <span class="help-inline"></span>
             <div class="clearfloat mb10"></div>
-            <h3>sphinx 配置示例</h3>
+            <h3 class="title">sphinx 配置示例</h3>
             <pre>
 source iCMS_article
 {
