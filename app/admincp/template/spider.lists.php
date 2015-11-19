@@ -33,7 +33,7 @@ $(function() {
             <th>操作</th>
           </tr>
         </thead>
-        <?php foreach ($listsArray AS $furl => $lists) {?>
+  <?php foreach ($listsArray AS $furl => $lists) {?>
         <thead>
           <tr>
             <th><input type="checkbox" class="checkAll" data-target="#spider-list-<?php echo md5($furl); ?>" /></th>
@@ -43,26 +43,26 @@ $(function() {
         <tbody class="spider-list" id="spider-list-<?php echo md5($furl); ?>">
     <?php
 	  	foreach ($lists AS $lkey => $row) {
-        list($title,$url) = $this->title_url($row,$rule,$furl);
-        if($url===false){
+        list($this->title,$this->url) = $this->title_url($row,$rule,$furl);
+        if($this->url===false){
             continue;
         }
-				$hash = md5($url);
-				if(!$sArray[$hash]){
+				$hash = md5($this->url);
+				if($this->checker($work)===true){
 		?>
           <tr id="<?php echo $hash; ?>">
-            <td><input type="checkbox" name="pub[]" value="<?php echo $cid; ?>|<?php echo $pid; ?>|<?php echo $rid; ?>|<?php echo $url; ?>|<?php echo $title; ?>|<?php echo $hash; ?>" /></td>
-            <td><?php echo $title; ?></td>
-            <td><?php echo $url; ?></td>
+            <td><input type="checkbox" name="pub[]" value="<?php echo $cid; ?>|<?php echo $pid; ?>|<?php echo $rid; ?>|<?php echo $this->url; ?>|<?php echo $this->title; ?>|<?php echo $hash; ?>" /></td>
+            <td><?php echo $this->title; ?></td>
+            <td><?php echo $this->url; ?></td>
             <td>
-              <a href="<?php echo APP_FURI; ?>&do=publish&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&hash=<?php echo $hash; ?>&url=<?php echo urlencode($url); ?>&title=<?php echo  urlencode($title); ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-check"></i> 发布</a>
-              <a href="<?php echo APP_URI; ?>&do=testcont&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo urlencode($url); ?>&title=<?php echo  urlencode($title); ?>" class="btn btn-small" target="_blank"><i class="fa fa-keyboard-o"></i> 测试</a>
+              <a href="<?php echo APP_FURI; ?>&do=publish&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&hash=<?php echo $hash; ?>&url=<?php echo urlencode($this->url); ?>&title=<?php echo  urlencode($this->title); ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-check"></i> 发布</a>
+              <a href="<?php echo APP_URI; ?>&do=testcont&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo urlencode($this->url); ?>&title=<?php echo  urlencode($this->title); ?>" class="btn btn-small" target="_blank"><i class="fa fa-keyboard-o"></i> 测试</a>
               <!-- <a href="<?php echo APP_FURI; ?>&do=publish&pid=<?php echo $pid; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 移除</a> -->
             </td>
           </tr>
-          <?php }?>
-          <?php }?>
-          <?php } ?>
+        <?php }?>
+      <?php }?>
+  <?php } ?>
         </tbody>
       </table>
       <div class="form-actions mt0">

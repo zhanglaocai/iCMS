@@ -107,11 +107,11 @@ class spiderApp {
 
     function do_testrule() {
         $this->ruleTest = true;
-        $this->spider_url();
+        $this->spider_url('WEB@AUTO');
     }
 
     function do_listpub() {
-        $this->spider_url('HM');
+        $this->spider_url('WEB@MANUAL');
     }
     function do_dropurl() {
     	$this->pid OR iPHP::alert("请选择要删除的项目");
@@ -124,7 +124,7 @@ class spiderApp {
         iPHP::success('数据清除完成');
     }
     function do_start() {
-        $a	= $this->spider_url();
+        $a	= $this->spider_url('WEB@AUTO');
         $this->do_mpublish($a);
     }
 	function do_mpublish($pubArray=array()){
@@ -162,8 +162,8 @@ class spiderApp {
 	}
 	function multipublish(){
 		$a		= array();
-		$code	= $this->do_publish('multi');
-        //print_r($code);
+		$code	= $this->do_publish('WEB@AUTO');
+
         if(is_array($code)){
             $label='<span class="label label-success">发布成功!</span>';
         }else{
@@ -174,8 +174,7 @@ class spiderApp {
 		return $a;
 	}
     function checker($work = null){
-        $pid     = $this->pid;
-        $project = $this->project($pid);
+        $project = $this->project($this->pid);
         $hash    = md5($this->url);
         if($project['checker'] && empty($_GET['indexid'])){
             $title = iS::escapeStr($this->title);
@@ -194,7 +193,7 @@ class spiderApp {
                     $msg ='该网址和标题的文章已经发布过!请检查是否重复';
                 break;
             }
-            $project['self'] && $sql.=" AND `pid`='$pid'";
+            $project['self'] && $sql.=" AND `pid`='$this->pid'";
             $checker = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` where $sql AND `publish`='1'");
             if($checker){
                 $work===NULL && iPHP::alert($msg, 'js:parent.$("#' . $hash . '").remove();');
@@ -202,7 +201,7 @@ class spiderApp {
                     echo $msg."\n";
                     return false;
                 }
-                if($work=="multi"){
+                if($work=="WEB@AUTO"){
                     return '-1';
                 }
             }else{
@@ -299,7 +298,7 @@ class spiderApp {
 		        $work===NULL && iPHP::success("发布成功!", 'js:parent.$("#' . $hash . '").remove();');
             }
         }
-        if($work=="shell"||$work=="multi"){
+        if($work=="shell"||$work=="WEB@AUTO"){
             $callback['work']=$work;
         	return $callback;
         }
@@ -446,13 +445,18 @@ class spiderApp {
         }
         foreach ($_urlsArray AS $_key => $_url) {
             $_url = htmlspecialchars_decode($_url);
-            preg_match('|.*<(.*)>.*|is',$_url, $_matches);
-            if($_matches){
-                list($format,$begin,$num,$step,$zeroize,$reverse) = explode(',',$_matches[1]);
-                $url = str_replace($_matches[1], '*',trim($_matches[0]));
-                $_urlsList = $this->mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse);
-                unset($urlsArray[$_key]);
-                $urlsList = array_merge($urlsList,$_urlsList);
+            if(strpos($_url, 'PID@')!==false){//使用[pid]方案的列表采集结果
+                $_pid     = str_replace('PID@', '', $_url);
+                $urlsList = $this->spider_url('DATA@URL',$_pid);
+            }else{
+                preg_match('|.*<(.*)>.*|is',$_url, $_matches);
+                if($_matches){
+                    list($format,$begin,$num,$step,$zeroize,$reverse) = explode(',',$_matches[1]);
+                    $url = str_replace($_matches[1], '*',trim($_matches[0]));
+                    $_urlsList = $this->mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse);
+                    unset($urlsArray[$_key]);
+                    $urlsList = array_merge($urlsList,$_urlsList);
+                }
             }
         }
         $urlsList && $urlsArray = array_merge($urlsArray,$urlsList);
@@ -582,97 +586,107 @@ class spiderApp {
 			if($prule_list_url){
 				$rule['list_url']	= $prule_list_url;
 			}
-            if ($work) {
-                if($work=="shell"){
-                    $pubCount[$url]['count'] = count($lists);
-                    $pubAllCount['count']+=$pubCount[$url]['count'];
-                    echo "开始采集:".$url." 列表 ".$pubCount[$url]['count']."条记录\n";
-                    foreach ($lists AS $lkey => $row) {
-                        list($this->title,$this->url) = $this->title_url($row,$rule,$url);
-                        if($this->url===false){
-                            continue;
-                        }
-                        $hash  = md5($this->url);
-                        echo "title:".$this->title."\n";
-                        echo "url:".$this->url."\n";
-                        $this->rid = $rid;
-                        $checker = $this->checker($work);
-                        if($checker===true){
-                            echo "开始采集....";
-                            $callback  = $this->do_publish("shell");
-                            if ($callback['code'] == "1001") {
-                                $pubCount[$url]['success']++;
-                                $pubAllCount['success']+=$pubCount[$url]['success'];
-                                echo "....√\n";
-                                if($project['sleep']){
-                                    echo "sleep:".$project['sleep']."s\n";
-                                    if($rule['mode']!="2"){
-                                        unset($lists[$lkey]);
-                                    }
-                                    gc_collect_cycles();
-                                    sleep($project['sleep']);
-                                }else{
-                                    //sleep(1);
-                                }
-                            }else{
-                                $pubCount[$url]['error']++;
-                                $pubAllCount['error']+=$pubCount[$url]['error'];
-                                echo "error\n\n";
-                                continue;
-                            }
-                        }
-                        $pubCount[$url]['published']++;
-                        $pubAllCount['published']+=$pubCount[$url]['published'];
-                    }
-                    if($rule['mode']=="2"){
-                        phpQuery::unloadDocuments($doc->getDocumentID());
-                    }else{
-                        unset($lists);
-                    }
-                }else{
-                    $listsArray[$url] = $lists;
-                }
-            } else {
+
+            //PID@xx 返回URL列表
+            if($work=='DATA@URL'){
+                $dataUrl = array();
                 foreach ($lists AS $lkey => $row) {
-                    list($title,$turl) = $this->title_url($row,$rule,$url);
-                    if($turl===false){
+                    list($this->title,$this->url) = $this->title_url($row,$rule,$url);
+                    if($this->url===false){
                         continue;
                     }
-                    $hash  = md5($turl);
+                    if($this->checker('shell')===true){
+                        $dataUrl[] = $this->url;
+                    }
+                }
+                return $dataUrl;
+            }
+            if($work=="shell"){
+                $pubCount[$url]['count'] = count($lists);
+                $pubAllCount['count']+=$pubCount[$url]['count'];
+                echo "开始采集:".$url." 列表 ".$pubCount[$url]['count']."条记录\n";
+                foreach ($lists AS $lkey => $row) {
+                    list($this->title,$this->url) = $this->title_url($row,$rule,$url);
+                    if($this->url===false){
+                        continue;
+                    }
+                    $hash  = md5($this->url);
+                    echo "title:".$this->title."\n";
+                    echo "url:".$this->url."\n";
+                    $this->rid = $rid;
+                    $checker = $this->checker($work);
+                    if($checker===true){
+                        echo "开始采集....";
+                        $callback  = $this->do_publish("shell");
+                        if ($callback['code'] == "1001") {
+                            $pubCount[$url]['success']++;
+                            $pubAllCount['success']+=$pubCount[$url]['success'];
+                            echo "....√\n";
+                            if($project['sleep']){
+                                echo "sleep:".$project['sleep']."s\n";
+                                if($rule['mode']!="2"){
+                                    unset($lists[$lkey]);
+                                }
+                                gc_collect_cycles();
+                                sleep($project['sleep']);
+                            }else{
+                                //sleep(1);
+                            }
+                        }else{
+                            $pubCount[$url]['error']++;
+                            $pubAllCount['error']+=$pubCount[$url]['error'];
+                            echo "error\n\n";
+                            continue;
+                        }
+                    }
+                    $pubCount[$url]['published']++;
+                    $pubAllCount['published']+=$pubCount[$url]['published'];
+                }
+                if($rule['mode']=="2"){
+                    phpQuery::unloadDocuments($doc->getDocumentID());
+                }else{
+                    unset($lists);
+                }
+            }
+            if($work=="WEB@MANUAL"){
+                $listsArray[$url] = $lists;
+            }
+            if($work=="WEB@AUTO"){
+                foreach ($lists AS $lkey => $row) {
+                    list($this->title,$this->url) = $this->title_url($row,$rule,$url);
+                    if($this->url===false){
+                        continue;
+                    }
+                    $hash  = md5($this->url);
                     if ($this->ruleTest) {
-                        echo $title . ' (<a href="' . APP_URI . '&do=testcont&url=' . urlencode($turl) . '&rid=' . $rid . '&pid=' . $pid . '&title=' . urlencode($title) . '" target="_blank">测试内容规则</a>) <br />';
-                        echo $turl . "<br />";
+                        echo $this->title . ' (<a href="' . APP_URI . '&do=testcont&url=' . urlencode($this->url) . '&rid=' . $rid . '&pid=' . $pid . '&title=' . urlencode($title) . '" target="_blank">测试内容规则</a>) <br />';
+                        echo $this->url . "<br />";
                         echo $hash . "<br /><br />";
                     } else {
-                        //iDB::query("INSERT INTO `#iCMS@__spider_url` (`cid`, `rid`,`pid`, `hash`, `title`, `url`, `status`, `publish`, `addtime`, `pubdate`) VALUES ('$cid', '$rid','$pid','$hash','$title', '$turl', '0', '0', '" . time() . "', '0');");
-                        $checker = $this->checker($work);
-                        $checker===true && $pubArray[] = array('sid'=>iDB::$insert_id,'url'=>$turl,'title'=>$title,'cid'=>$cid,'rid'=>$rid,'pid'=>$pid,'hash'=>$hash);
+                        //iDB::query("INSERT INTO `#iCMS@__spider_url` (`cid`, `rid`,`pid`, `hash`, `title`, `url`, `status`, `publish`, `addtime`, `pubdate`) VALUES ('$cid', '$rid','$pid','$hash','$title', '$this->url', '0', '0', '" . time() . "', '0');");
+                        $this->checker($work)===true && $pubArray[] = array('sid'=>iDB::$insert_id,'url'=>$this->url,'title'=>$this->title,'cid'=>$cid,'rid'=>$rid,'pid'=>$pid,'hash'=>$hash);
                     }
                 }
             }
         }
-        if(!$work){
-            return $pubArray;
-        }
-		$lists = null;
+        $lists = null;
         unset($lists);
-		gc_collect_cycles();
-        if ($work) {
-            if($work=="shell"){
+        gc_collect_cycles();
+
+        switch ($work) {
+            case 'WEB@AUTO':
+                return $pubArray;
+            break;
+            case 'WEB@MANUAL':
+                return include iACP::view("spider.lists");
+            break;
+            case "shell":
                 echo "采集数据统结果:\n";
                 print_r($pubCount);
                 print_r($pubAllCount);
                 echo "全部采集完成....\n";
                 iDB::update('spider_project',array('lastupdate'=>time()),array('id'=>$pid));
-                return;
-            }
-            $sArrayTmp = iDB::all("SELECT `hash` FROM `#iCMS@__spider_url` where `pid`='$pid'");
-            $_count = count($sArrayTmp);
-            for ($i = 0; $i < $_count; $i++) {
-                $sArray[$sArrayTmp[$i]['hash']] = 1;
-            }
-            unset($sArrayTmp);
-            include iACP::view("spider.lists");
+            break;
         }
     }
 
@@ -822,7 +836,7 @@ class spiderApp {
         unset($this->allHtml,$html);
         /**
          * [DATA@name]
-         * 内容回调 可以规则里调用之前内容
+         * 内容里回调 可以规则里调用之前内容
          */
         if($callBackData){
             foreach ((array)$responses as $key => $value) {
@@ -864,6 +878,17 @@ class spiderApp {
             return;
         }
         $name = $data['name'];
+        if ($this->contTest) {
+            print_r('<b>['.$name.']规则:</b>'.iS::escapeStr($data['rule']));
+            echo "<hr />";
+        }
+        if(strpos($data['rule'], 'RULE@')!==false){
+            $_rid       = str_replace('RULE@', '',$data['rule']);
+            $spider_url = $responses['reurl'];
+            var_dump($_rid,$responses);
+            exit;
+        }
+
         if ($data['page']) {
         	if(empty($rule['page_url'])){
         		$rule['page_url'] = $rule['list_url'];
@@ -1041,10 +1066,6 @@ class spiderApp {
                 $content = $html;
             }else{
                 $data_rule = $this->pregTag($data['rule']);
-                if ($this->contTest) {
-                    print_r(iS::escapeStr($data_rule));
-                    echo "<hr />";
-                }
                 if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $data_rule)) {
                     if ($data['multi']) {
                         preg_match_all('|' . $data_rule . '|is', $html, $matches, PREG_SET_ORDER);
@@ -1140,12 +1161,15 @@ class spiderApp {
             unset($_content);
         }
         if ($data['empty'] && empty($content)) {
+            $emptyMsg = '['.$name.']规则设置了不允许为空.当前抓取结果为空!请检查,规则是否正确!';
+            if($this->contTest){
+                exit('<h1>'.$emptyMsg.'</h1>');
+            }
             if($this->work){
-                echo "\n[".$name . "内容为空!请检查,规则是否正确!]\n";
+                echo "\n{$emptyMsg}\n";
                 return false;
             }else{
-                $this->contTest && iPHP::$dialog['alert']='window';
-                iPHP::alert($name . '内容为空!请检查,规则是否正确!!');
+                iPHP::alert($emptyMsg);
             }
         }
         if ($data['json_decode']) {
@@ -1164,8 +1188,12 @@ class spiderApp {
                 $base_host = $base_uri['scheme'].'://'.$base_uri['host'];
                 return $base_host.'/'.ltrim($href,'/');
             }else{
-                $base_url  = pathinfo($baseUrl,PATHINFO_DIRNAME);
-                return iFS::path($base_url.'/'.ltrim($href,'/'));
+                if(substr($baseUrl, -1)!='/'){
+                    $info = pathinfo($baseUrl);
+                    $info['extension'] && $baseUrl = $info['dirname'];
+                }
+                $baseUrl = rtrim($baseUrl,'/');
+                return iFS::path($baseUrl.'/'.ltrim($href,'/'));
             }
         }else{
             return $href;
