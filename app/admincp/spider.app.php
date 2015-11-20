@@ -632,7 +632,7 @@ class spiderApp {
                         $callback  = $this->do_publish("shell");
                         if ($callback['code'] == "1001") {
                             $pubCount[$url]['success']++;
-                            $pubAllCount['success']+=$pubCount[$url]['success'];
+                                $pubAllCount['success']++;
                             echo "....√\n";
                             if($project['sleep']){
                                 echo "sleep:".$project['sleep']."s\n";
@@ -646,13 +646,13 @@ class spiderApp {
                             }
                         }else{
                             $pubCount[$url]['error']++;
-                            $pubAllCount['error']+=$pubCount[$url]['error'];
+                                $pubAllCount['error']++;
                             echo "error\n\n";
                             continue;
                         }
                     }
                     $pubCount[$url]['published']++;
-                    $pubAllCount['published']+=$pubCount[$url]['published'];
+                        $pubAllCount['published']++;
                 }
                 if($rule['mode']=="2"){
                     phpQuery::unloadDocuments($doc->getDocumentID());
@@ -925,18 +925,17 @@ class spiderApp {
                             $href = phpQuery::pq($pq_val)->attr('href');
                             if($href){
                                 if($rule['page_url_rule']){
-                                    if(strpos($rule['page_url_rule'], 'CLEAN@')!==false){
-                                        $cleanhref = $this->dataClean($data['cleanafter'],$href);
+                                    if(strpos($rule['page_url_rule'], '<%')!==false){
+                                        $page_url_rule = $this->pregTag($rule['page_url_rule']);
+                                        if (!preg_match('|' . $page_url_rule . '|is', $href)){
+                                            continue;
+                                        }
+                                    }else{
+                                        $cleanhref = $this->dataClean($rule['page_url_rule'],$href);
                                         if($cleanhref){
                                             $href = $cleanhref;
                                             unset($cleanhref);
                                         }else{
-                                            continue;
-                                        }
-                                    }else{
-                                        $page_url_rule = $this->pregTag($rule['page_url_rule']);
-                                        // var_dump('|' . $page_url_rule . '|is');
-                                        if (!preg_match('|' . $page_url_rule . '|is', $href)){
                                             continue;
                                         }
                                     }
@@ -945,17 +944,7 @@ class spiderApp {
                                 $page_url_array[$pn] = $this->_url_complement($rule['__url__'],$href);
                             }
                         }
-                        if($page_url_array){
-                            $page_url_array = array_filter($page_url_array);
-                            $page_url_array = array_unique($page_url_array);
-                            $puk = array_search($rule['__url__'],$page_url_array);
-                            if($puk!==false){
-                                unset($page_url_array[$puk]);
-                            }
-                        }
                         phpQuery::unloadDocuments($doc->getDocumentID());
-                        //var_dump($page_url_array);
-                        // exit;
                     }else{
                         $page_area_rule = $this->pregTag($page_area_rule);
                         if ($page_area_rule) {
@@ -972,12 +961,6 @@ class spiderApp {
                                 $page_url_array[$pn] = $this->_url_complement($rule['__url__'],$href);
                                 gc_collect_cycles();
                             }
-                        }
-                        if($page_url_array){
-                            $page_url_array = array_filter($page_url_array);
-                            $page_url_array = array_unique($page_url_array);
-                            $puk = array_search($rule['__url__'],$page_url_array);
-                            unset($page_url_array[$puk]);
                         }
                         unset($page_area);
                     }
@@ -996,6 +979,16 @@ class spiderApp {
                         }
                     }
             	}
+                //URL去重清理
+                if($page_url_array){
+                    $page_url_array = array_filter($page_url_array);
+                    $page_url_array = array_unique($page_url_array);
+                    $puk = array_search($rule['__url__'],$page_url_array);
+                    if($puk!==false){
+                        unset($page_url_array[$puk]);
+                    }
+                }
+
 		        if ($this->contTest) {
 		            echo $rule['__url__'] . "<br />";
 		            echo $rule['page_url'] . "<br />";
@@ -1007,20 +1000,20 @@ class spiderApp {
 					print_r($page_url_array);
 					echo "</pre><hr />";
 				}
+
 		        $this->content_right_code = trim($rule['page_url_right']);
 		        $this->content_error_code = trim($rule['page_url_error']);
                 $this->curl_proxy = $rule['proxy'];
 
-                $pcontent = '';
                 $pcon     = '';
                 $pageurl  = array();
                 foreach ($page_url_array AS $pukey => $purl) {
                     //usleep(100);
                     $phtml = $this->remote($purl);
-                    $md5   = md5($phtml);
                     if (empty($phtml)) {
                         break;
                     }
+                    $md5 = md5($phtml);
                     if($pageurl[$md5]){
                         break;
                     }
@@ -1048,7 +1041,7 @@ class spiderApp {
         if($data['dom']){
             iPHP::import(iPHP_LIB.'/phpQuery.php');
             $this->contTest && $_GET['pq_debug'] && phpQuery::$debug =1;
-            $doc     = phpQuery::newDocumentHTML($html,'UTF-8');
+            $doc = phpQuery::newDocumentHTML($html,'UTF-8');
             //echo "\ndata:getDocumentID:".$doc->getDocumentID()."\n";
             list($content_dom,$content_fun,$content_attr) = explode("\n", $data['rule']);
             $content_dom  = trim($content_dom);
@@ -1097,6 +1090,7 @@ class spiderApp {
                             print_r(htmlspecialchars($content));
                             echo "<hr />";
                         }
+                        unset($conArray);
                     } else {
                         preg_match('|' . $data_rule . '|is', $html, $matches, $PREG_SET_ORDER);
                         $content = $matches['content'];
