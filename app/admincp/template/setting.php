@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: setting.php 2412 2014-05-04 09:52:07Z coolmoo $
@@ -591,7 +591,7 @@ function modal_tplfile(el,a){
             <div class="clearfloat mb10"></div>
             <hr />
             <h3 class="title">微信开放平台</h3>
-            <span class="help-inline">申请地址:https://open.weixin.qq.com/</span>
+            <span class="help-inline">申请地址: https://open.weixin.qq.com</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on" style="width:60px;">APPID:</span>
               <input type="text" name="config[open][WX][appid]" class="span3" id="wx_appid" value="<?php echo $config['open']['WX']['appid'] ; ?>"/>
@@ -600,9 +600,14 @@ function modal_tplfile(el,a){
             <div class="input-prepend"> <span class="add-on"style="width:60px;">APPKEY:</span>
               <input type="text" name="config[open][WX][appkey]" class="span3" id="wx_appkey" value="<?php echo $config['open']['WX']['appkey'] ; ?>"/>
             </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on"style="width:60px;">回调域名:</span>
+              <input type="text" name="config[open][WX][redirect]" class="span3" id="wx_redirect" value="<?php echo $config['open']['WX']['redirect'] ; ?>"/>
+            </div>
+            <span class="help-inline">例:http://www.idreamsoft.com</span>
             <hr />
             <h3 class="title">QQ开放平台</h3>
-            <span class="help-inline">申请地址:http://connect.qq.com/</span>
+            <span class="help-inline">申请地址:http://connect.qq.com</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on" style="width:60px;">APPID:</span>
               <input type="text" name="config[open][QQ][appid]" class="span3" id="qq_appid" value="<?php echo $config['open']['QQ']['appid'] ; ?>"/>
@@ -611,9 +616,14 @@ function modal_tplfile(el,a){
             <div class="input-prepend"> <span class="add-on"style="width:60px;">APPKEY:</span>
               <input type="text" name="config[open][QQ][appkey]" class="span3" id="qq_appkey" value="<?php echo $config['open']['QQ']['appkey'] ; ?>"/>
             </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on"style="width:60px;">回调域名:</span>
+              <input type="text" name="config[open][QQ][redirect]" class="span3" id="qq_redirect" value="<?php echo $config['open']['QQ']['redirect'] ; ?>"/>
+            </div>
+            <span class="help-inline">例:http://www.idreamsoft.com</span>
             <hr />
             <h3 class="title">微博开放平台</h3>
-            <span class="help-inline">申请地址:http://open.weibo.com/authentication/</span>
+            <span class="help-inline">申请地址:http://open.weibo.com/authentication</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on" style="width:60px;">APPID:</span>
               <input type="text" name="config[open][WB][appid]" class="span3" id="WB_appid" value="<?php echo $config['open']['WB']['appid']; ?>"/>
@@ -622,9 +632,14 @@ function modal_tplfile(el,a){
             <div class="input-prepend"> <span class="add-on"style="width:60px;">APPKEY:</span>
               <input type="text" name="config[open][WB][appkey]" class="span3" id="WB_appkey" value="<?php echo $config['open']['WB']['appkey'] ; ?>"/>
             </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on"style="width:60px;">回调域名:</span>
+              <input type="text" name="config[open][WB][redirect]" class="span3" id="WB_redirect" value="<?php echo $config['open']['WB']['redirect'] ; ?>"/>
+            </div>
+            <span class="help-inline">例:http://www.idreamsoft.com</span>
             <hr />
             <h3 class="title">淘宝开放平台</h3>
-            <span class="help-inline">申请地址:http://open.taobao.com/</span>
+            <span class="help-inline">申请地址:http://open.taobao.com</span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on" style="width:60px;">APPID:</span>
               <input type="text" name="config[open][TB][appid]" class="span3" id="TB_appid" value="<?php echo $config['open']['TB']['appid']; ?>"/>
@@ -633,6 +648,11 @@ function modal_tplfile(el,a){
             <div class="input-prepend"> <span class="add-on"style="width:60px;">APPKEY:</span>
               <input type="text" name="config[open][TB][appkey]" class="span3" id="TB_appkey" value="<?php echo $config['open']['TB']['appkey'] ; ?>"/>
             </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on"style="width:60px;">回调域名:</span>
+              <input type="text" name="config[open][TB][redirect]" class="span3" id="TB_redirect" value="<?php echo $config['open']['TB']['redirect'] ; ?>"/>
+            </div>
+            <span class="help-inline">例:http://www.idreamsoft.com</span>
           </div>
           <div id="setting-publish" class="tab-pane hide">
             <div class="input-prepend">

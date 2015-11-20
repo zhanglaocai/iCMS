@@ -200,7 +200,7 @@ class iPHP{
             $def_tpl     = $template['desktop']['tpl'];
             $domain      = false;
         }
-
+        define('iPHP_ROUTER_URL',$config['router']['URL']);
         $domain && $config['router'] = str_replace($config['router']['URL'], $domain, $config['router']);
         define('iPHP_DEFAULT_TPL',$def_tpl);
         define('iPHP_MOBILE_TPL',$mobile_tpl);

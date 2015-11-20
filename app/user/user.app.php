@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: user.app.php 2353 2014-02-13 04:04:49Z coolmoo $
@@ -18,11 +18,12 @@ class userApp {
     private $auth   = false;
 
     public function __construct() {
-        $this->auth    = user::get_cookie();
-        $this->uid     = (int)$_GET['uid'];
-        $this->forward = iS::escapeStr($_GET['forward']);
+        $this->auth      = user::get_cookie();
+        $this->uid       = (int)$_GET['uid'];
+        $this->forward   = iS::escapeStr($_GET['forward']);
         $this->forward OR iPHP::get_cookie('forward');
         $this->forward OR $this->forward = iCMS_URL;
+        $this->login_uri = user::login_uri();
         // iFS::config($GLOBALS['iCONFIG']['user_fs_conf'])
         iFS::$userid = user::$userid;
         iPHP::assign('forward',$this->forward);
@@ -36,7 +37,7 @@ class userApp {
         $this->me = user::status(); //判断是否登陆
         if(empty($this->me) && empty($this->user)){
             iPHP::set_cookie('forward', '',-31536000);
-            iPHP::gotourl(USER_LOGIN_URL);
+            iPHP::gotourl($this->login_uri);
         }
 
         if($this->me){
@@ -143,7 +144,7 @@ class userApp {
      * [ACTION_manage description]
      */
     public function ACTION_manage(){
-        $this->me = user::status(USER_LOGIN_URL,"nologin");
+        $this->me = user::status($this->login_uri,"nologin");
 
         $pgArray = array('publish','category','article','comment','message','favorite','share','follow','fans');
         $pg      = iS::escapeStr($_POST['pg']);
@@ -382,7 +383,7 @@ class userApp {
      * [ACTION_profile description]
      */
     public function ACTION_profile(){
-        $this->me = user::status(USER_LOGIN_URL,"nologin");
+        $this->me = user::status($this->login_uri,"nologin");
 
         $pgArray = array('base','avatar','setpassword','bind','custom');
         $pg      = iS::escapeStr($_POST['pg']);
@@ -1044,9 +1045,11 @@ class userApp {
         if($platform){
             iPHP::app('user.open/'.$class_name.'.class','static');
             $api = new $class_name;
-            $api->appid  = iCMS::$config['open'][$class_name]['appid'];
-            $api->appkey = iCMS::$config['open'][$class_name]['appkey'];
-            $api->url    = USER_LOGIN_URL.'sign='.$sign;
+            $api->appid   = iCMS::$config['open'][$class_name]['appid'];
+            $api->appkey  = iCMS::$config['open'][$class_name]['appkey'];
+            $redirect_uri = rtrim(iCMS::$config['open'][$class_name]['redirect'],'/');
+            $api->url     = user::login_uri($redirect_uri).'sign='.$sign;
+
             if(isset($_GET['bind']) && $_GET['bind']==$sign){
                 $api->get_openid();
             }else{
