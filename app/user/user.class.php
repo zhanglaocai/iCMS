@@ -5,10 +5,6 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
-// $GLOBALS['iCONFIG']['user_fs_conf']	= array(
-// 	"url"=>"http://s1.ladyband.cn",
-// 	"dir"=>"../pic"
-// );
 defined('iPHP') OR exit('What are you doing?');
 
 define("USER_AUTHASH",'#=(iCMS@'.iPHP_KEY.'@iCMS)=#');
