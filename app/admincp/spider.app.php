@@ -884,7 +884,14 @@ class spiderApp {
 
         return $responses;
     }
-
+    /**
+     * 抓取资源
+     * @param  [string] $html      [抓取结果]
+     * @param  [array] $data      [数据项]
+     * @param  [array] $rule      [规则]
+     * @param  [array] $responses [已经抓取资源]
+     * @return [array]           [返回处理结果]
+     */
     function content($html,$data,$rule,$responses) {
         if(trim($data['rule'])===''){
             return;
