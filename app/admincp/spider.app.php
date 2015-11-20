@@ -113,6 +113,17 @@ class spiderApp {
     function do_listpub() {
         $this->spider_url('WEB@MANUAL');
     }
+    function do_markurl() {
+        $hash  = md5($this->url);
+        $title = iS::escapeStr($_GET['title']);
+        iDB::query("
+        INSERT INTO `#iCMS@__spider_url`
+               (`cid`, `rid`,`pid`, `hash`, `title`, `url`,
+                `status`,`publish`, `addtime`, `pubdate`)
+        VALUES ('$this->cid', '$this->rid','$this->pid','$hash','$title', '$this->url',
+                '2', '2', '" . time() . "', '0');");
+        iPHP::success("移除成功!", 'js:parent.$("#' . $hash . '").remove();');
+    }
     function do_dropurl() {
     	$this->pid OR iPHP::alert("请选择要删除的项目");
 
@@ -194,7 +205,7 @@ class spiderApp {
                 break;
             }
             $project['self'] && $sql.=" AND `pid`='$this->pid'";
-            $checker = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` where $sql AND `publish`='1'");
+            $checker = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` where $sql AND `publish` in(1,2)");
             if($checker){
                 $work===NULL && iPHP::alert($msg, 'js:parent.$("#' . $hash . '").remove();');
                 if($work=='shell'){
@@ -204,6 +215,7 @@ class spiderApp {
                 if($work=="WEB@AUTO"){
                     return '-1';
                 }
+                return false;
             }else{
                 return true;
             }

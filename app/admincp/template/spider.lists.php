@@ -56,8 +56,8 @@ $(function() {
             <td><?php echo $this->url; ?></td>
             <td>
               <a href="<?php echo APP_FURI; ?>&do=publish&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&hash=<?php echo $hash; ?>&url=<?php echo urlencode($this->url); ?>&title=<?php echo  urlencode($this->title); ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-check"></i> 发布</a>
-              <a href="<?php echo APP_URI; ?>&do=testcont&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo urlencode($this->url); ?>&title=<?php echo  urlencode($this->title); ?>" class="btn btn-small" target="_blank"><i class="fa fa-keyboard-o"></i> 测试</a>
-              <!-- <a href="<?php echo APP_FURI; ?>&do=publish&pid=<?php echo $pid; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 移除</a> -->
+              <a href="<?php echo APP_URI;  ?>&do=testcont&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo urlencode($this->url); ?>&title=<?php echo  urlencode($this->title); ?>" class="btn btn-small" target="_blank"><i class="fa fa-keyboard-o"></i> 测试</a>
+              <a href="<?php echo APP_FURI; ?>&do=markurl&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo urlencode($this->url); ?>&title=<?php echo  urlencode($this->title); ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 移除</a>
             </td>
           </tr>
         <?php }?>
