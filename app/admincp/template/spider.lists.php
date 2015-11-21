@@ -43,7 +43,7 @@ $(function() {
         <tbody class="spider-list" id="spider-list-<?php echo md5($furl); ?>">
     <?php
 	  	foreach ($lists AS $lkey => $row) {
-        list($this->title,$this->url) = $this->title_url($row,$rule,$furl);
+        list($this->title,$this->url) = spiderTools::title_url($row,$rule,$furl);
         if($this->url===false){
             continue;
         }
