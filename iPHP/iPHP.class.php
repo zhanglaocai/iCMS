@@ -592,7 +592,7 @@ class iPHP{
 			$url = $router?$router[$key]:$key;
 		}
 		if($var=='?&'){
-			$url.= iPHP_ROUTER_USER?'?':'&';
+			$url.= iPHP_ROUTER_REWRITE?'?':'&';
 		}
 		return $url;
 	}
