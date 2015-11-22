@@ -53,29 +53,46 @@ class spider{
     }
 }
 class spiderTools extends spider{
-
-    public static function title_url($row,$rule,$baseUrl=null){
-        if($rule['mode']=="2"){
-            $pq    = phpQuery::pq($row);
-            list($title_attr,$url_attr) = explode("\n", $rule['list_url_rule']);
-            $title_attr = trim($title_attr);
-            $url_attr   = trim($url_attr);
-            $title_attr OR $title_attr = 'text';
-            $url_attr OR $url_attr = 'href';
-            if($title_attr=='text'){
-                $title = $pq->text();
-            }else{
-                $title = $pq->attr($title_attr);
-            }
-            $url = $pq->attr($url_attr);
-            unset($pq);
+    public static function domAttr($DOM,$selectors,$fun='text'){
+        $selectors = str_replace('DOM::','',$selectors);
+        list($selector,$attr) = explode("@", $selectors);
+        if($attr){
+            return $DOM[$selector]->attr($attr);
         }else{
+            return $DOM[$selector]->$fun();
+        }
+    }
+    public static function title_url($row,$rule,$baseUrl=null){
+        if(strpos($rule['list_url_rule'], '<%url%>')!==false){
             $title = $row['title'];
             $url   = $row['url'];
+        }else if(is_object($row)){
+            list($title_dom,$url_dom) = explode("\n", $rule['list_url_rule']);
+            $DOM       = phpQuery::pq($row);
+            $title_dom = trim($title_dom);
+            $url_dom   = trim($url_dom);
+            if(strpos($title_dom, 'DOM::')!==false){
+                $title = spiderTools::domAttr($DOM,$title_dom);
+            }else{
+                $title_dom OR $title_dom = 'text';
+                if($title_dom=='text'){
+                    $title = $DOM->text();
+                }else{
+                    $title = $DOM->attr($title_dom);
+                }
+            }
+            if(strpos($url_dom, 'DOM::')!==false){
+                $url = spiderTools::domAttr($DOM,$url_dom);
+            }else{
+                $url_dom OR $url_dom = 'href';
+                $url = $DOM->attr($url_dom);
+            }
+
+            unset($DOM,$title_dom,$url_dom);
         }
+
         $title = trim($title);
         $url   = trim($url);
-        //_url_complement($baseUrl,$href)
         $url   = str_replace('<%url%>',$url, $rule['list_url']);
         if(strpos($url, 'AUTO::')!==false && $baseUrl){
             $url = str_replace('AUTO::','',$url);
