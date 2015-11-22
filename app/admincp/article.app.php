@@ -33,6 +33,10 @@ class articleApp{
             list($rs,$adRs) = articleTable::data($this->id,$this->dataid);
             if($adRs){
                 $adRs['body'] = htmlspecialchars($adRs['body']);
+                if(substr($adRs['body'], 0,19)=='#--iCMS.Markdown--#'){
+                    iCMS::$config['article']['editor'] = true;
+                    $adRs['body'] = substr($adRs['body'], 19);
+                }
                 $bodyArray    = explode('#--iCMS.PageBreak--#',$adRs['body']);
                 $bodyCount    = count($bodyArray);
             }
@@ -669,6 +673,7 @@ class articleApp{
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
 
         if(isset($_POST['markdown'])){
+            $body = '#--iCMS.Markdown--#'.$body;
         }else{
             iCMS::$config['publish']['autoformat'] && $body = autoformat($body);
         }

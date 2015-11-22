@@ -27,9 +27,9 @@ var MD_CONFIG = {
         //dialogMaskBgColor : "#000", // 设置透明遮罩层的背景颜色，全局通用，默认为#fff
         imageUpload : true,
         imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-        imageUploadURL : "./php/upload.php",
+        imageUploadURL : window.iCMS.config.API + '?app=editor&do=md_uploadimage',
         onload : function() {
-            console.log('onload', this);
+            // console.log('onload', this);
             //this.fullscreen();
             //this.unwatch();
             //this.watch().fullscreen();
@@ -53,14 +53,14 @@ var MD_CONFIG = {
           });
         },
         get:function(eid) {
-            var ed  = this.container[eid]||editormd("editor-"+eid, MD_CONFIG);
-            //UE.getEditor('iCMS-editor-'+eid);
-            //this.container[this.id] = ed;
+            var ed  = this.container[eid];
+            if(typeof ed=="undefined"){
+                ed  = this.create(eid);
+            }
             return ed;
         },
         create:function(eid) {
             if(eid) this.id = eid;
-            // var ed  = UE.getEditor('iCMS-editor-'+this.id);
             var ed  = editormd("editor-"+this.id, MD_CONFIG);
             this.container[this.id] = ed;
             return ed;

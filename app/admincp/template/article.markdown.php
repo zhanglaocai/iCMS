@@ -26,7 +26,7 @@ $(function(){
 	$(".iCMS-editor-page").change(function(){
 		$(".iCMS-editor").hide();
 		$("#editor-"+this.value).show();
-    iCMS.editor.create(this.value).focus();
+    iCMS.editor.get(this.value).focus();
 		$(".iCMS-editor-page").val(this.value).trigger("chosen:updated");
 	});
   iCMS.select('pid',"<?php echo $rs['pid']?trim($rs['pid']):0 ; ?>");
@@ -140,8 +140,8 @@ function delEditorPage(){
     var index = p.val();
 	}
   s.remove();
-  UE.delEditor("iCMS-editor-"+i);
-  //iCMS.editor.get(i).destroy();
+  iCMS.editor.get(i).editor.remove();
+
   $("#iCMS-editor-"+i).remove();
   $("#editor-"+i).remove();
 
