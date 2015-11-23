@@ -223,20 +223,25 @@ class spiderTools extends spider{
             return $content;
         }
     }
-    public static function charsetTrans($html,$content_charset,$encode, $out = 'UTF-8') {
-        if($encode=='auto'){
+    public static function charsetTrans($html,$content_charset,$rule_charset, $out = 'UTF-8') {
+        $encode = null;
+        $rule_charset == 'gbk' && $encode = 'GBK';
+        /**
+         * 检测页面编码
+         * @var [type]
+         */
+        if($content_charset && empty($encode)){
+            $encode = $content_charset;
+        }
+        if(empty($encode)){
             preg_match('/<meta[^>]*?charset=(["\']?)([a-zA-z0-9\-\_]+)(\1)[^>]*?>/is', $html, $charset);
             $encode = str_replace(array('"',"'"),'', trim($charset[2]));
-            if($content_charset){
-                $encode = $content_charset;
-            }
-            if(function_exists('mb_detect_encoding') && empty($encode)) {
-                $encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
-                //var_dump('mb_detect_encoding:'.$encode);
-            }
+        }else if(function_exists('mb_detect_encoding') && empty($encode)) {
+            $encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
         }
+
         if (spider::$contTest || spider::$ruleTest) {
-            echo '<b>页面编码:</b>'.$encode . '<br />';
+            echo '<b>检测页面编码:</b>'.$encode . '<br />';
         }
         if(strtoupper($encode)=='UTF-8'){
             return $html;
@@ -512,11 +517,8 @@ class spiderTools extends spider{
             return spiderTools::remote($url, $_count);
         }
         $pos = stripos($info['content_type'], 'charset=');
-        if($pos!==false){
-            $content_charset = substr($info['content_type'], $pos+8);
-        }
-
-        spider::$charset && $responses = spiderTools::charsetTrans($responses,$content_charset,spider::$charset);
+        $pos!==false && $content_charset = trim(substr($info['content_type'], $pos+8));
+        $responses = spiderTools::charsetTrans($responses,$content_charset,spider::$charset);
 		curl_close($ch);
 		unset($info);
         if (spider::$contTest || spider::$ruleTest) {
