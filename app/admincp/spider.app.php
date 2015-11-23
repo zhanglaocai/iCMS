@@ -359,13 +359,13 @@ class spiderApp {
         }
         foreach ($_urlsArray AS $_key => $_url) {
             $_url = htmlspecialchars_decode($_url);
-            if(strpos($_url, 'PID@')!==false){//使用[pid]方案的列表采集结果
-                list($___s,$_pid,$_urls) = explode('@', $_url);
+            if(strpos($_url, 'RULE@')!==false){//使用[pid]方案的列表采集结果
+                list($___s,$_rid,$_urls) = explode('@', $_url);
                 if ($this->ruleTest) {
-                    print_r('<b>使用[pid:'.$_pid.']方案抓取</b>:'.$_urls);
+                    print_r('<b>使用[rid:'.$_rid.']规则抓取列表</b>:'.$_urls);
                     echo "<hr />";
                 }
-                $urlsList = $this->spider_url('DATA@URL',$_pid,null,$_urls);
+                $urlsList = $this->spider_url('DATA@URL',false,$_rid,$_urls);
             }else{
                 preg_match('|.*<(.*)>.*|is',$_url, $_matches);
                 if($_matches){
