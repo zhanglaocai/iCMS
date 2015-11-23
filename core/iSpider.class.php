@@ -225,7 +225,7 @@ class spiderTools extends spider{
     }
     public static function charsetTrans($html,$content_charset,$rule_charset, $out = 'UTF-8') {
         $encode = null;
-        $rule_charset == 'gbk' && $encode = 'GBK';
+        // $rule_charset == 'gbk' && $encode = 'GBK';
         /**
          * 检测页面编码
          * @var [type]
