@@ -318,7 +318,7 @@ class spiderApp {
     }
 
 
-    function spider_url($work = NULL,$pid = NULL,$_rid = NULL) {
+    function spider_url($work = NULL,$pid = NULL,$_rid = NULL,$_urls=null) {
         $pid === NULL && $pid = $this->pid;
 
         if ($pid) {
@@ -347,7 +347,7 @@ class spiderApp {
         $rule = $ruleA['rule'];
         $urls = $rule['list_urls'];
         $project['urls'] && $urls = $project['urls'];
-        $this->urls && $urls = $this->urls;
+        $_urls && $urls = $_urls;
 
         $urlsArray  = explode("\n", $urls);
         $urlsArray  = array_filter($urlsArray);
@@ -360,8 +360,8 @@ class spiderApp {
         foreach ($_urlsArray AS $_key => $_url) {
             $_url = htmlspecialchars_decode($_url);
             if(strpos($_url, 'PID@')!==false){//使用[pid]方案的列表采集结果
-                $_pid     = str_replace('PID@', '', $_url);
-                $urlsList = $this->spider_url('DATA@URL',$_pid);
+                list($___s,$_pid,$_urls) = explode('@', $_url);
+                $urlsList = $this->spider_url('DATA@URL',$_pid,null,$_urls);
             }else{
                 preg_match('|.*<(.*)>.*|is',$_url, $_matches);
                 if($_matches){
@@ -825,12 +825,12 @@ class spiderApp {
         }
         if(strpos($data['rule'], 'RULE@')!==false){
             $this->rid  = str_replace('RULE@', '',$data['rule']);
-            $this->urls = trim($html);
+            $_urls = trim($html);
             if ($this->contTest) {
                 print_r('<b>使用[rid:'.$this->rid.']规则抓取</b>:'.$this->urls);
                 echo "<hr />";
             }
-            return $this->spider_url('DATA@RULE',false);
+            return $this->spider_url('DATA@RULE',false,$this->rid,$_urls);
         }
 
         if ($data['page']) {

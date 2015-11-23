@@ -418,7 +418,7 @@ function modal_tplfile(el,a){
               <input type="text" name="config[FS][yun][sdk][QiNiuYun][SecretKey]" class="span4" id="yun_QiNiuYun_SecretKey" value="<?php echo $config['FS']['yun']['sdk']['QiNiuYun']['SecretKey'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
-            <h3>腾讯云万象图片</h3>
+            <h3 class="title">腾讯云万象图片</h3>
             <span class="help-inline">申请地址:<a href="http://www.qcloud.com/product/ci.html?from=iCMS" target="_blank">http://www.qcloud.com/product/ci.html</a></span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on">APPID</span>
