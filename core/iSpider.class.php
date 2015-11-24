@@ -49,6 +49,7 @@ class spider{
                 list($pkey, $pval) = explode("=", $pstr);
                 $_POST[$pkey] = trim($pval);
             }
+            return $postRs;
         }
     }
 }
@@ -223,34 +224,42 @@ class spiderTools extends spider{
             return $content;
         }
     }
-    public static function charsetTrans($html,$content_charset,$rule_charset, $out = 'UTF-8') {
-        $encode = null;
-        // $rule_charset == 'gbk' && $encode = 'GBK';
+    public static function charsetTrans($html,$content_charset,$encode, $out = 'UTF-8') {
+        if (spider::$contTest || spider::$ruleTest) {
+            echo '<b>规则设置编码:</b>'.$encode . '<br />';
+        }
+
+        $encode == 'auto' && $encode = null;
         /**
          * 检测页面编码
          * @var [type]
          */
-        if($content_charset && empty($encode)){
-            $encode = $content_charset;
+        if($content_charset){
+            if(empty($encode)){
+                $encode = $content_charset;
+            }else if(strtoupper($encode)!=strtoupper($content_charset)){
+                $encode = $content_charset;
+            }
         }
         if(empty($encode)){
             preg_match('/<meta[^>]*?charset=(["\']?)([a-zA-z0-9\-\_]+)(\1)[^>]*?>/is', $html, $charset);
             $encode = str_replace(array('"',"'"),'', trim($charset[2]));
-        }else if(function_exists('mb_detect_encoding') && empty($encode)) {
+        }
+        if(function_exists('mb_detect_encoding') && empty($encode)) {
             $encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
         }
 
         if (spider::$contTest || spider::$ruleTest) {
             echo '<b>检测页面编码:</b>'.$encode . '<br />';
         }
-        if(strtoupper($encode)=='UTF-8'){
+        if(strtoupper($encode)==$out){
             return $html;
         }
         $html = preg_replace('/(<meta[^>]*?charset=(["\']?))[a-z\d_\-]*(\2[^>]*?>)/is', "\\1$out\\3", $html,1);
         if (function_exists('mb_convert_encoding')) {
-            return mb_convert_encoding($html,'UTF-8',$encode);
+            return mb_convert_encoding($html,$out,$encode);
         } elseif (function_exists('iconv')) {
-            return iconv($encode,'UTF-8', $html);
+            return iconv($encode,$out, $html);
         } else {
             iPHP::throwException('charsetTrans failed, no function');
         }

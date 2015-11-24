@@ -252,7 +252,8 @@ class spiderApp {
         $pid          = $this->pid;
         $project      = spider::project($pid);
         $_POST['cid'] = $project['cid'];
-        spider::postArgs($project['poid']);
+        $postArgs = spider::postArgs($project['poid']);
+
         if($_GET['indexid']){
             $aid = (int)$_GET['indexid'];
             $_POST['aid']  = $aid;
@@ -290,8 +291,8 @@ class spiderApp {
         }
 
         iS::slashes($_POST);
-        $app      = iACP::app($postRs->app);
-        $fun      = $postRs->fun;
+        $app = iACP::app($postArgs->app);
+        $fun = $postArgs->fun;
 
         $app->callback['primary'] = array(
             array($this,'update_spider_url_indexid'),
