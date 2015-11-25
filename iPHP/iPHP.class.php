@@ -438,10 +438,6 @@ class iPHP{
 		return new $obj_name();
     }
 
-    public static function domain($url){
-    	self::import(iPHP_LIB.'/DomainParser.php');
-    	return LtDomainParser::getRootDomain($url);
-    }
     public static function QRcode($content){
         self::import(iPHP_LIB.'/phpqrcode.php');
 		$expires  = 86400;
@@ -516,7 +512,6 @@ class iPHP{
     }
     public static function cleanHtml($content){
     	$content = stripslashes($content);
-
     	//echo $content,"\n\n\n\n\n\n\n\n";
     	self::import(iPHP_LIB.'/htmlpurifier-4.6.0/HTMLPurifier.auto.php');
 		$config = HTMLPurifier_Config::createDefault();
@@ -527,7 +522,7 @@ class iPHP{
 		$config->set('HTML.AllowedElements',array(
 		    'ul'=>true,'ol'=>true,'li'=>true,
 		    'br'=>true,'hr'=>true,'div'=>true,'p'=>true,
-		    'strong'=>true,'em'=>true,'span'=>true,
+		    'strong'=>true,'b'=>true,'em'=>true,'span'=>true,
 		    'blockquote'=>true,'sub'=>true,'sup'=>true,
 		    'img'=>true,'a'=>true,'embed'=>true,
 		));
@@ -536,8 +531,9 @@ class iPHP{
 		//     'a.href','a.target',
 		//     'embed.play','embed.loop', 'embed.menu',
 		// ));
+        $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
+        $config->set('HTML.TidyLevel','medium');
 		$config->set('AutoFormat.AutoParagraph',true);
-		$config->set('HTML.TidyLevel','medium');
 		$config->set('Cache.DefinitionImpl',null);
 		$config->set('AutoFormat.RemoveEmpty', true);
 		//配置 允许flash

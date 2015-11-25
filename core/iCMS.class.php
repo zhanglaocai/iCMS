@@ -232,7 +232,7 @@ class iCMS extends iPHP{
     public static function str_replace_limit($search, $replace, $subject, $limit=-1) {
         preg_match_all ("/<a[^>]*?>(.*?)<\/a>/si", $subject, $matches);//链接不替换
         $linkArray	= array_unique($matches[0]);
-        $linkArray & $linkflip	= array_flip($linkArray);
+        $linkArray && $linkflip	= array_flip($linkArray);
         foreach((array)$linkflip AS $linkHtml=>$linkkey){
             $linkA[$linkkey]='###iCMS_LINK_'.rand(1,1000).'_'.$linkkey.'###';
         }

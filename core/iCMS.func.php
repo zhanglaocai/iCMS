@@ -104,14 +104,14 @@ function autoformat($html){
     $html = stripslashes($html);
     $html = preg_replace(array(
     '@on(\w+)=(["\']?)+\\1@is','@style=(["|\']?)+\\1@is',
-    '@<script[^>]*>.*?</script>@ism','@<style[^>]*>.*?</style>@ism',
+    '@<script[^>]*>.*?</script>@is','@<style[^>]*>.*?</style>@is',
 
     '@<br[^>]*>@is',
-    '@<div[^>]*>(.*?)</div>@ism','@<p[^>]*>(.*?)</p>@ism',
-    '@<b[^>]*>(.*?)</b>@ism','@<strong[^>]*>(.*?)</strong>@ism',
+    '@<div[^>]*>(.*?)</div>@is','@<p[^>]*>(.*?)</p>@is',
+    '@<b[^>]*>(.*?)</b>@is','@<strong[^>]*>(.*?)</strong>@is',
     '@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is',
     ),array('','','','',
-    "\n[br]",
+    "\n[br]\n",
     "$1\n","$1\n",
     "[b]$1[/b]","[b]$1[/b]",
     "\n[img]$2[/img]\n",
@@ -140,7 +140,7 @@ function autoformat($html){
     $html = str_replace(array("&nbsp;","　"),'',$html);
     $html = preg_replace('@<[/\!]*?[^<>]*?>@is','',$html);
     $html = ubb2html($html);
-    $html = nl2p($html);
+    $html = autoclean($html);
     return $html;
 }
 function ubb2html($content){
@@ -159,50 +159,52 @@ function ubb2html($content){
     '<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>'
     ),$content);
 }
-function nl2p($html){
-    $_htmlArray = explode("\n",$html);
-    $_htmlArray = array_map("trim", $_htmlArray);
-    $_htmlArray = array_filter($_htmlArray);
-    if(empty($_htmlArray)){
+function autoclean($html){
+    $elArray = explode("\n",$html);
+    $elArray = array_map("trim", $elArray);
+    $elArray = array_filter($elArray);
+    if(empty($elArray)){
         return false;
     }
-    $isempty    = false;
-    $emptycount = 0;
-    foreach($_htmlArray as $hkey=>$_html){
-        if(empty($_html)){
-            $emptycount++;
-            $isempty  = true;
-            $emptykey = $hkey;
-        }else{
-            if($emptycount>1 && !$pbkey){
-                $brkey = $emptykey;
-                $isbr  = true;
-                $htmlArray[$emptykey]='<p><br /></p>';
+
+    $stack     = array();
+    $htmlArray = array();
+    foreach($elArray as $hkey=>$el){
+        $el = preg_replace('@<img\ssrc=""\s/>@is','',$el);
+        $el = trim($el);
+        if($el===''){
+            continue;
+        }
+        if($el=="#--iCMS.PageBreak--#"){
+            $htmlArray[$hkey] = $el;
+            continue;
+        }
+        if($el=='<br />'){
+            $stack['br']++;
+            if($stack['br']===1){
+                $htmlArray[$hkey] = '<p><br /></p>';
             }
-            $emptycount = 0;
-            $emptykey   = 0;
-            $isempty    = false;
-            $pbkey      = false;
-            $htmlArray[$hkey]   = '<p>'.$_html.'</p>'."\n";
+            continue;
         }
-        if($_html=="#--iCMS.PageBreak--#"){
-            unset($htmlArray[$brkey]);
-            $pbkey            = $hkey;
-            $htmlArray[$hkey] = $_html;
+        $stack['br'] = 0;
+        if(
+            preg_match('@^<[/]*(\w+)>$@is', $el)||
+            preg_match('@^<(\w+)>\s*</\\1>$@is', $el)
+        ){
+            continue;
         }
+        $el = preg_replace(array(
+            '@(<(\w+)>\s*</\\2>\n*)*@is',
+            '@(<[/]*(\w+)></p>\n*)*@is',
+            '@(<(\w+)>\s*</\\1>\n*)*@is',
+        ),'',$el);
+        $el && $htmlArray[$hkey] = '<p>'.$el.'</p>';
     }
     reset ($htmlArray);
     if(current($htmlArray)=="<p><br /></p>"){
         array_shift($htmlArray);
     }
-    $html = implode('',$htmlArray);
-    $html = preg_replace('@(<p>\s*</p>\n*)+@is','<p><br /></p>',$html);
-    $html = preg_replace(
-        array(
-        '@(<p>[<br\s/>]*<(\w+)>\s*</\\2></p>\n*)*@is',
-        '@(<p>[<br\s/>]*<[/]*(\w+)></p>\n*)*@is',
-        '@(<(\w+)>\s*</\\1>\n*)+@is',
-        ),'',$html);
+    $html = implode("\n",$htmlArray);
     return $html;
 }
 function cnum($subject){
