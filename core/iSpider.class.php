@@ -54,6 +54,30 @@ class spider{
     }
 }
 class spiderTools extends spider{
+    /**
+     * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
+     */
+    public static function getDATA($responses,$content){
+        preg_match_all('#\[DATA@(.*?)\]#is', $content,$data_match);
+        $_data_replace = array();
+        foreach ((array)$data_match[1] as $_key => $_name) {
+            $_nameKeys = explode('.', $_name);
+            $_content  = $responses[$_nameKeys[0]];
+            if(count($_nameKeys)>1) foreach ((array)$_nameKeys as $kk => $nk) {
+                $kk && $_content = $_content[$nk];
+            }
+            $_data_replace[$_key]=$_content;
+        }
+        if($_data_replace){
+            if(count($data_match[0])>1||!is_array($_data_replace[0])){
+                $content = str_replace($data_match[0], $_data_replace, $content);
+            }else{
+                $content = $_data_replace[0];
+            }
+        }
+        unset($data_match,$_data_replace,$_content);
+        return $content;
+    }
     public static function domAttr($DOM,$selectors,$fun='text'){
         $selectors = str_replace('DOM::','',$selectors);
         list($selector,$attr) = explode("@", $selectors);
