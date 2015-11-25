@@ -675,7 +675,7 @@ class articleApp{
         if(isset($_POST['markdown'])){
             $body = '#--iCMS.Markdown--#'.$body;
         }else{
-            iCMS::$config['publish']['autoformat'] && $body = autoformat($body);
+            iCMS::$config['publish']['autoformat'] && $body = addslashes(autoformat($body));
         }
 
         articleTable::$ID = $aid;

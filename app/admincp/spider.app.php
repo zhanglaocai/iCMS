@@ -717,13 +717,7 @@ class spiderApp {
             }
 
             $content = $this->content($content_html,$data,$rule,$responses);
-            /**
-             * [DATA@name]
-             * 内容回调 可以规则里调用之前内容
-             */
-            if(!is_array($content) && strpos($content, 'DATA@')!==false){
-                $callBackData = true;
-            }
+
             unset($content_html);
             /**
              * [name.xxx]
@@ -755,36 +749,32 @@ class spiderApp {
                     $responses[$dname] = $content;
                 }
             }
+            /**
+             * 对匹配多条的数据去重过滤
+             */
+            if(!is_array($responses[$dname]) && $data['multi']){
+                if(strpos($responses[$dname], ',')!==false){
+                    $_dnameArray = explode(',', $responses[$dname]);
+                    $dnameArray  = array();
+                    foreach ((array)$_dnameArray as $key => $value) {
+                        $value = trim($value);
+                        $value && $dnameArray[]=$value;
+                    }
+                    $dnameArray = array_filter($dnameArray);
+                    $dnameArray = array_unique($dnameArray);
+                    $responses[$dname] = implode(',', $dnameArray);
+                    unset($dnameArray,$_dnameArray);
+                }
+            }
+
             gc_collect_cycles();
         }
         if(empty($responses['title']) && $responses['title']!==false){
             $responses['title'] = $title;
         }
-        if ($responses['tags']){
-            $_tagsArray = explode(',', $responses['tags']);
-            $tagsArray  = array();
-            foreach ((array)$_tagsArray as $key => $value) {
-                $value = trim($value);
-                $value && $tagsArray[]=$value;
-            }
-            $tagsArray = array_filter($tagsArray);
-            $tagsArray = array_unique($tagsArray);
-            $responses['tags'] = implode(',', $tagsArray);
-            unset($tagsArray,$_tagsArray);
-        }
+
         unset($this->allHtml,$html);
-        /**
-         * [DATA@name]
-         * 内容里回调 可以规则里调用之前内容
-         */
-        if($callBackData){
-            foreach ((array)$responses as $key => $value) {
-                if(!is_array($value) && strpos($value, 'DATA@')!==false){
-                    $name = str_replace('DATA@', '', $value);
-                    $responses[$key] = $responses[$name];
-                }
-            }
-        }
+
         gc_collect_cycles();
 
         if ($this->contTest) {
@@ -972,8 +962,12 @@ class spiderApp {
             iPHP::import(iPHP_LIB.'/phpQuery.php');
             $this->contTest && $_GET['pq_debug'] && phpQuery::$debug =1;
             $doc = phpQuery::newDocumentHTML($html,'UTF-8');
-            //echo "\ndata:getDocumentID:".$doc->getDocumentID()."\n";
-            list($content_dom,$content_fun,$content_attr) = explode("\n", $data['rule']);
+            if(strpos($data['rule'], '@')!==false){
+                list($content_dom,$content_attr) = explode("@", $data['rule']);
+                $content_fun = 'attr';
+            }else{
+                list($content_dom,$content_fun,$content_attr) = explode("\n", $data['rule']);
+            }
             $content_dom  = trim($content_dom);
             $content_fun  = trim($content_fun);
             $content_attr = trim($content_attr);
@@ -1004,7 +998,6 @@ class spiderApp {
                 $content = $html;
             }else{
                 $data_rule = spiderTools::pregTag($data['rule']);
-
                 if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $data_rule)) {
                     if ($data['multi']) {
                         preg_match_all('|' . $data_rule . '|is', $html, $matches, PREG_SET_ORDER);
@@ -1025,29 +1018,30 @@ class spiderApp {
         }
 		$html = null;
         unset($html);
+        $content = stripslashes($content);
         if ($this->contTest) {
-            print_r('<b>['.$name.']抓取结果:</b>'.htmlspecialchars($content));
+            print_r('<b>['.$name.']匹配结果:</b>'.htmlspecialchars($content));
             echo "<hr />";
         }
         if ($data['cleanbefor']) {
             $content = spiderTools::dataClean($data['cleanbefor'], $content);
         }
-        if(strpos($content, 'DATA@')!==false){
-            $name    = str_replace('DATA@', '', $content);
-            $content = $responses[$name];
+        /**
+         * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
+         */
+        if(strpos($content, '[DATA@')!==false){
+            $content = spiderTools::getDATA($responses,$content);
         }
         if ($data['cleanhtml']) {
+            $content = stripslashes($content);
             $content = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $content);
         }
         if ($data['format'] && $content) {
-            // $_content = iPHP::cleanHtml($content);
-            // trim($_content) && $content = $_content;
             $content = autoformat($content);
-            $content = stripslashes($content);
-            // unset($_content);
         }
 
         if ($data['img_absolute'] && $content) {
+            // $content = stripslashes($content);
             preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $img_match);
             if($img_match[1]){
                 $_img_array = array_unique($img_match[1]);
@@ -1057,20 +1051,23 @@ class spiderApp {
                 }
                $content = str_replace($_img_array, $_img_urls, $content);
             }
+            unset($img_match,$_img_array,$_img_urls,$_img_src);
         }
-
-        $data['trim'] && $content = trim($content);
+        if ($data['trim']) {
+            $content = trim($content);
+        }
         if ($data['capture']) {
-            $capture = str_replace ('\\','',$content);
-            $content = spiderTools::remote($capture);
+            // $content = stripslashes($content);
+            $content = spiderTools::remote($content);
         }
         if ($data['download']) {
-            $http    = str_replace ('\\','',$content);
-            $content = iFS::http($http);
+            // $content = stripslashes($content);
+            $content = iFS::http($content);
         }
 
         if ($data['cleanafter']) {
             $content = spiderTools::dataClean($data['cleanafter'], $content);
+            // $content = stripslashes($content);
         }
         if ($data['autobreakpage']) {
             $content = spiderTools::autoBreakPage($content);
@@ -1183,10 +1180,11 @@ class spiderApp {
         $data   = compact ($fields);
         if ($id) {
             iDB::update('spider_rule', $data, array('id'=>$id));
+            iPHP::success('保存成功');
         } else {
             iDB::insert('spider_rule',$data);
+            iPHP::success('保存成功!','url:'.APP_URI."&do=addrule&rid=".$id);
         }
-        iPHP::success('保存成功');
     }
 
     function rule_opt($id = 0, $output = null) {

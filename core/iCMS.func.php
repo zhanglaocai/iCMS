@@ -103,23 +103,27 @@ function get_twh($width=null,$height=null){
 function autoformat($html){
     $html = stripslashes($html);
     $html = preg_replace(array(
-    '/on(\w+)="[^"]+"/is',
-    '/<script[^>]*?>.*?<\/script>/si',
-    '/<style[^>]*?>.*?<\/style>/si',
-    '/style=[" ]?([^"]+)[" ]/is',
-    '/<br[^>]*>/i',
-    '/<div[^>]*>(.*?)<\/div>/is',
-    '/<p[^>]*>(.*?)<\/p>/is',
-    '/<img[^>]+src=[" ]?([^"]+)[" ]?[^>]*>/is'
-    ),array('','','','',"\n","$1\n","$1\n","\n[img]$1[/img]"),$html);
+    '@on(\w+)=(["\']?)+\\1@is','@style=(["|\']?)+\\1@is',
+    '@<script[^>]*>.*?</script>@ism','@<style[^>]*>.*?</style>@ism',
+
+    '@<br[^>]*>@is',
+    '@<div[^>]*>(.*?)</div>@ism','@<p[^>]*>(.*?)</p>@ism',
+    '@<b[^>]*>(.*?)</b>@ism','@<strong[^>]*>(.*?)</strong>@ism',
+    '@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is',
+    ),array('','','','',
+    "\n[br]",
+    "$1\n","$1\n",
+    "[b]$1[/b]","[b]$1[/b]",
+    "\n[img]$2[/img]\n",
+    ),$html);
 
     if (stripos($html,'<embed') !== false){
-        preg_match_all("/<embed[^>]*>/is", $html, $embed_match);
+        preg_match_all("@<embed[^>]*>@is", $html, $embed_match);
         foreach ((array)$embed_match[0] as $key => $value) {
-            preg_match("/.*?src\s*=[\"|'|](.*?)[\"|'|]/is", $value, $src_match);
-            preg_match("/.*?class\s*=[\"|'|](.*?)[\"|'|]/is", $value, $class_match);
-            preg_match("/.*?width\s*=[\"|'|](\d+)[\"|'|]/is", $value, $width_match);
-            preg_match("/.*?height\s*=[\"|'|](\d+)[\"|'|]/is", $value, $height_match);
+            preg_match("@.*?src\s*=[\"|'|](.*?)[\"|'|]@is", $value, $src_match);
+            preg_match("@.*?class\s*=[\"|'|](.*?)[\"|'|]@is", $value, $class_match);
+            preg_match("@.*?width\s*=[\"|'|](\d+)[\"|'|]@is", $value, $width_match);
+            preg_match("@.*?height\s*=[\"|'|](\d+)[\"|'|]@is", $value, $height_match);
             $embed_width = $width_match[1];
             $embed_height = $height_match[1];
             if($class_match[1]=='edui-faked-music'){
@@ -134,25 +138,22 @@ function autoformat($html){
         }
     }
     $html = str_replace(array("&nbsp;","　"),'',$html);
-    $html = preg_replace(array(
-    '/<b[^>]*>(.*?)<\/b>/i',
-    '/<strong[^>]*>(.*?)<\/strong>/i'
-    ),"[b]$1[/b]",$html);
-
-    $html = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$html);
+    $html = preg_replace('@<[/\!]*?[^<>]*?>@is','',$html);
     $html = ubb2html($html);
     $html = nl2p($html);
-    return addslashes($html);
+    return $html;
 }
 function ubb2html($content){
     return preg_replace(array(
-    '/\[img\](.*?)\[\/img\]/is',
-    '/\[b\](.*?)\[\/b\]/is',
-    '/\[url=([^\]]+)\](.*?)\[\/url\]/is',
-    '/\[url=([^\]|#]+)\](.*?)\[\/url\]/is',
-    '/\[music=(\d+),(\d+)\](.*?)\[\/music\]/is',
-    '/\[video=(\d+),(\d+)\](.*?)\[\/video\]/is',
+    '@\[br\]@is',
+    '@\[img\](.*?)\[/img\]@is',
+    '@\[b\](.*?)\[/b\]@is',
+    '@\[url=([^\]]+)\](.*?)\[/url\]@is',
+    '@\[url=([^\]|#]+)\](.*?)\[/url\]@is',
+    '@\[music=(\d+),(\d+)\](.*?)\[/music\]@is',
+    '@\[video=(\d+),(\d+)\](.*?)\[/video\]@is',
     ),array(
+    '<br />',
     '<img src="$1" />','<strong>$1</strong>','<a target="_blank" href="$1">$2</a>','$2',
     '<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>',
     '<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>'
@@ -182,7 +183,7 @@ function nl2p($html){
             $emptykey   = 0;
             $isempty    = false;
             $pbkey      = false;
-            $htmlArray[$hkey]   = '<p>'.$_html.'</p>';
+            $htmlArray[$hkey]   = '<p>'.$_html.'</p>'."\n";
         }
         if($_html=="#--iCMS.PageBreak--#"){
             unset($htmlArray[$brkey]);
@@ -193,11 +194,15 @@ function nl2p($html){
     reset ($htmlArray);
     if(current($htmlArray)=="<p><br /></p>"){
         array_shift($htmlArray);
-        //$fkey = key($htmlArray);
-        //unset($htmlArray[$fkey]);
     }
     $html = implode('',$htmlArray);
-    $html = preg_replace('/<p[^>]*>\s+<\/p>/i','',$html);
+    $html = preg_replace('@(<p>\s*</p>\n*)+@is','<p><br /></p>',$html);
+    $html = preg_replace(
+        array(
+        '@(<p>[<br\s/>]*<(\w+)>\s*</\\2></p>\n*)*@is',
+        '@(<p>[<br\s/>]*<[/]*(\w+)></p>\n*)*@is',
+        '@(<(\w+)>\s*</\\1>\n*)+@is',
+        ),'',$html);
     return $html;
 }
 function cnum($subject){
