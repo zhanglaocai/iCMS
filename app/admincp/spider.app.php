@@ -333,8 +333,9 @@ class spiderApp {
             $rid = $this->rid;
         }
 
+        if(empty($rid) && $_rid !== NULL) $rid = $_rid;
+
         if($work=='shell'){
-            (empty($rid) && $_rid !== NULL) && $rid = $_rid;
             $lastupdate = $project['lastupdate'];
             if($project['psleep']){
                 if(time()-$lastupdate<$project['psleep']){
@@ -360,7 +361,11 @@ class spiderApp {
         }
         foreach ($_urlsArray AS $_key => $_url) {
             $_url = htmlspecialchars_decode($_url);
-            if(strpos($_url, 'RULE@')!==false){//使用[pid]方案的列表采集结果
+            /**
+             * RULE@rid@url
+             * url使用[rid]规则采集并返回列表结果
+             */
+            if(strpos($_url, 'RULE@')!==false){
                 list($___s,$_rid,$_urls) = explode('@', $_url);
                 if ($this->ruleTest) {
                     print_r('<b>使用[rid:'.$_rid.']规则抓取列表</b>:'.$_urls);
