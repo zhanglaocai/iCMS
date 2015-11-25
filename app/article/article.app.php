@@ -190,6 +190,7 @@ class articleApp {
                 $pagenav   = $index_nav.$prev_nav.$num_nav.$next_nav.$end_nav;
             }
             $article['page'] = array(
+                'pn'      => $page,
                 'total'   => $total,//总页数
                 'count'   => $count,//实际页数
                 'current' => $page,
