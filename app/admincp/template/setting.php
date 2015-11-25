@@ -403,7 +403,7 @@ function modal_tplfile(el,a){
             <span class="help-inline">默认保留本地资源,权当备份用</span>
             <div class="clearfloat mb10"></div>
             <h3 class="title">七牛云存储</h3>
-            <span class="help-inline">申请地址:https://portal.qiniu.com/signup</span>
+            <span class="help-inline">申请地址:<a href="https://portal.qiniu.com/signup?from=iCMS">https://portal.qiniu.com/signup</a></span>
             <div class="clearfloat"></div>
             <div class="input-prepend"> <span class="add-on">Bucket</span>
               <input type="text" name="config[FS][yun][sdk][QiNiuYun][Bucket]" class="span4" id="yun_QiNiuYun_Bucket" value="<?php echo $config['FS']['yun']['sdk']['QiNiuYun']['Bucket'] ; ?>"/>
@@ -428,6 +428,7 @@ function modal_tplfile(el,a){
             <div class="input-prepend"> <span class="add-on">Bucket</span>
               <input type="text" name="config[FS][yun][sdk][TencentYun][Bucket]" class="span4" id="yun_TencentYun_Bucket" value="<?php echo $config['FS']['yun']['sdk']['TencentYun']['Bucket'] ; ?>"/>
             </div>
+            <span class="help-inline">空间名称</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">AccessKey</span>
               <input type="text" name="config[FS][yun][sdk][TencentYun][AccessKey]" class="span4" id="yun_TencentYun_AccessKey" value="<?php echo $config['FS']['yun']['sdk']['TencentYun']['AccessKey'] ; ?>"/>
