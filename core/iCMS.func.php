@@ -204,7 +204,7 @@ function autoclean($html){
     if(current($htmlArray)=="<p><br /></p>"){
         array_shift($htmlArray);
     }
-    $html = implode("\n",$htmlArray);
+    $html = implode('',(array)$htmlArray);
     return $html;
 }
 function cnum($subject){
