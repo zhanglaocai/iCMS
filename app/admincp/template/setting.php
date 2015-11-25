@@ -90,7 +90,7 @@ function modal_tplfile(el,a){
             <div class="input-prepend"> <span class="add-on">备 案 号</span>
               <input type="text" name="config[site][icp]" class="span3" id="title" value="<?php echo $config['site']['icp'] ; ?>"/>
             </div>
-            <span class="help-inline">页面底部可以显示 ICP 备案信息，如果网站已备案，在此输入您的授权码，它将显示在页面底部，如果没有请留空</span>
+            <span class="help-inline">页面底部可以显示 ICP 备案信息，如果网站已备案，在此输入您的备案号，如果没有请留空</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">程序提示</span>
               <div class="switch">
