@@ -1201,7 +1201,7 @@ class spiderApp {
 
     function do_post() {
         if ($_GET['keywords']) {
-            $sql = " WHERE `name` REGEXP '{$_GET['keywords']}'";
+            $sql = " WHERE CONCAT(name,app,post) REGEXP '{$_GET['keywords']}'";
         }
         $orderby = $_GET['orderby'] ? $_GET['orderby'] : "id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
