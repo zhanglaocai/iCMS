@@ -319,7 +319,7 @@ class spiderApp {
     }
 
 
-    function spider_url($work = NULL,$pid = NULL,$_rid = NULL,$_urls=null $callback=null) {
+    function spider_url($work = NULL,$pid = NULL,$_rid = NULL,$_urls=null,$callback=null) {
         $pid === NULL && $pid = $this->pid;
 
         if ($pid) {
@@ -504,17 +504,17 @@ class spiderApp {
 
             //PID@xx 返回URL列表
             if($callback=='CALLBACK@URL'){
-                $dataUrl = array();
+                $cbListUrl = array();
                 foreach ($lists AS $lkey => $row) {
                     list($this->title,$this->url) = spiderTools::title_url($row,$rule,$url);
                     if($this->url===false){
                         continue;
                     }
                     if($this->checker($work)===true){
-                        $dataUrl[] = $this->url;
+                        $cbListUrl[] = $this->url;
                     }
                 }
-                return $dataUrl;
+                return $cbListUrl;
             }
             if($work=="shell"){
                 $pubCount[$url]['count'] = count($lists);
