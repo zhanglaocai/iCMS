@@ -103,23 +103,15 @@ function get_twh($width=null,$height=null){
 function autoformat($html){
     $html = stripslashes($html);
     $html = preg_replace(array(
-        '@on(\w+)="[^"]+"@is','@<script[^>]*?>.*?</script>@is',
-        '@<style[^>]*?>.*?</style>@is','@style=[" ]?([^"]+)[" ]@is',
-        '@<br[^>]*>@is',
-        '@<b[^>]*>(.*?)</b>@is',
-        '@<strong[^>]*>(.*?)</strong>@is',
-        '@<p[^>]*>(.*?)</p>@is',
-        '@<div[^>]*>(.*?)</div>@is',
-        '@<img[^>]+src=[" ]?([^"]+)[" ]?[^>]*>@is',
-    ),
-    array('','','','',
-    "[br]",//br
-    "\n[b]$1[/b]\n",
-    "\n[b]$1[/b]\n",
-    "\n$1\n",//p
-    "\n$1\n",//div
-    "\n[img]$1[/img]\n",
-    ),$html);
+    '/on(\w+)="[^"]+"/is',
+    '/<script[^>]*?>.*?<\/script>/si',
+    '/<style[^>]*?>.*?<\/style>/si',
+    '/style=[" ]?([^"]+)[" ]/is',
+    '/<br[^>]*>/i',
+    '/<div[^>]*>(.*?)<\/div>/is',
+    '/<p[^>]*>(.*?)<\/p>/is',
+    '/<img[^>]+src=[" ]?([^"]+)[" ]?[^>]*>/is'
+    ),array('','','','',"\n","$1\n","$1\n","\n[img]$1[/img]"),$html);
 
     if (stripos($html,'<embed') !== false){
         preg_match_all("/<embed[^>]*>/is", $html, $embed_match);
@@ -141,9 +133,13 @@ function autoformat($html){
             }
         }
     }
-
     $html = str_replace(array("&nbsp;","　"),'',$html);
-    $html = preg_replace('@<[\/\!]*?[^<>]*?>@is','',$html);
+    $html = preg_replace(array(
+    '/<b[^>]*>(.*?)<\/b>/i',
+    '/<strong[^>]*>(.*?)<\/strong>/i'
+    ),"[b]$1[/b]",$html);
+
+    $html = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$html);
     $html = ubb2html($html);
     $html = nl2p($html);
     return addslashes($html);
