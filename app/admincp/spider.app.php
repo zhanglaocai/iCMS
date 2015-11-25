@@ -319,7 +319,7 @@ class spiderApp {
     }
 
 
-    function spider_url($work = NULL,$pid = NULL,$_rid = NULL,$_urls=null) {
+    function spider_url($work = NULL,$pid = NULL,$_rid = NULL,$_urls=null $callback=null) {
         $pid === NULL && $pid = $this->pid;
 
         if ($pid) {
@@ -371,7 +371,7 @@ class spiderApp {
                     print_r('<b>使用[rid:'.$_rid.']规则抓取列表</b>:'.$_urls);
                     echo "<hr />";
                 }
-                $urlsList = $this->spider_url('DATA@URL',false,$_rid,$_urls);
+                $urlsList = $this->spider_url($work,false,$_rid,$_urls,'CALLBACK@URL');
             }else{
                 preg_match('|.*<(.*)>.*|is',$_url, $_matches);
                 if($_matches){
@@ -503,14 +503,14 @@ class spiderApp {
 			}
 
             //PID@xx 返回URL列表
-            if($work=='DATA@URL'){
+            if($callback=='CALLBACK@URL'){
                 $dataUrl = array();
                 foreach ($lists AS $lkey => $row) {
                     list($this->title,$this->url) = spiderTools::title_url($row,$rule,$url);
                     if($this->url===false){
                         continue;
                     }
-                    if($this->checker('shell')===true){
+                    if($this->checker($work)===true){
                         $dataUrl[] = $this->url;
                     }
                 }
