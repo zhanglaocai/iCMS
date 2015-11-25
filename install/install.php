@@ -76,7 +76,7 @@ if($_POST['action']=='install'){
 
 	$parse_url     = parse_url($router_url);
 	$host          = $parse_url['host'];
-	$COOKIE_DOMAIN = '.'.domain($host);
+	$COOKIE_DOMAIN = '.'.LtDomainParser::getRootDomain($host);
     preg_match("/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/",$host) && $COOKIE_DOMAIN = '';
 	$content = preg_replace("/define\(\'iPHP_COOKIE_DOMAIN\',\s*\'.*?\'\)/is","define('iPHP_COOKIE_DOMAIN','$COOKIE_DOMAIN')",$content);
 
@@ -156,10 +156,7 @@ function run_query($sql) {
         $query && iDB::query($query);
     }
 }
-function domain($url){
-    require_once dirname(__file__).'/DomainParser.php';
-    return LtDomainParser::getRootDomain($url);
-}
+
 /**
  * from https://github.com/qinjx/lotusphp/blob/master/runtime/DomainParser/DomainParser.php
  */
