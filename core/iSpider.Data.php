@@ -106,6 +106,18 @@ class spiderData extends spider{
 
             unset($content_html);
             /**
+             * [EMPTY:name]
+             * 如果[name]之前抓取结果数据为空使用这个数据项替换
+             * @var string
+             */
+            if (strpos($dname,'EMPTY:')!== false){
+                $dname = str_replace('EMPTY:', '', $dname);
+                if(empty($responses[$dname])){
+                    unset($responses[$dname]);
+                }
+            }
+
+            /**
              * [name.xxx]
              * 采集内容做为数组
              */
