@@ -9,6 +9,8 @@
 * @version 6.0.0
 * @$Id: iCMS.class.php 2412 2014-05-04 09:52:07Z coolmoo $
 */
+defined('iPHP') OR exit('What are you doing?');
+
 class iCMS extends iPHP{
     public static $iCache      = null;
     public static $sphinx      = null;
