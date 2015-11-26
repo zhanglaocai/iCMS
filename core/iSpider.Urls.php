@@ -12,6 +12,7 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class spiderUrls extends spider{
+    public static $urls = null;
 
     public static function crawl($work = NULL,$pid = NULL,$_rid = NULL,$_urls=null,$callback=null) {
         $pid === NULL && $pid = spider::$pid;
@@ -43,6 +44,7 @@ class spiderUrls extends spider{
         $rule = $ruleA['rule'];
         $urls = $rule['list_urls'];
         $project['urls'] && $urls = $project['urls'];
+        spiderUrls::$urls && $urls = spiderUrls::$urls;
         $_urls && $urls = $_urls;
 
         $urlsArray  = explode("\n", $urls);
