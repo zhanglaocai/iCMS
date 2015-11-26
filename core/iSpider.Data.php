@@ -13,7 +13,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 class spiderData extends spider{
 
-    public static function xxx() {
+    public static function crawl() {
         ini_get('safe_mode') OR set_time_limit(0);
         $sid = spider::$sid;
         if ($sid) {
@@ -101,7 +101,7 @@ class spiderData extends spider{
                 unset($responses[$url_dkey]);
             }
 
-            $content = spiderContent::xxx($content_html,$data,$rule,$responses);
+            $content = spiderContent::crawl($content_html,$data,$rule,$responses);
 
             unset($content_html);
             /**

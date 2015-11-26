@@ -21,7 +21,7 @@ class spiderContent extends spider{
      * @param  [array] $responses [已经抓取资源]
      * @return [array]           [返回处理结果]
      */
-    public static function xxx($html,$data,$rule,$responses) {
+    public static function crawl($html,$data,$rule,$responses) {
         if(trim($data['rule'])===''){
             return;
         }
@@ -37,7 +37,7 @@ class spiderContent extends spider{
                 print_r('<b>使用[rid:'.spider::$rid.']规则抓取</b>:'.$_urls);
                 echo "<hr />";
             }
-            return spiderUrls::xxx('DATA@RULE',false,spider::$rid,$_urls);
+            return spiderUrls::crawl('DATA@RULE',false,spider::$rid,$_urls);
         }
 
         if ($data['page']) {

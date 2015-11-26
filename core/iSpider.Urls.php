@@ -13,7 +13,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 class spiderUrls extends spider{
 
-    public static function xxx($work = NULL,$pid = NULL,$_rid = NULL,$_urls=null,$callback=null) {
+    public static function crawl($work = NULL,$pid = NULL,$_rid = NULL,$_urls=null,$callback=null) {
         $pid === NULL && $pid = spider::$pid;
 
         if ($pid) {
@@ -65,7 +65,7 @@ class spiderUrls extends spider{
                     print_r('<b>使用[rid:'.$_rid.']规则抓取列表</b>:'.$_urls);
                     echo "<hr />";
                 }
-                $urlsList = spiderUrls::xxx($work,false,$_rid,$_urls,'CALLBACK@URL');
+                $urlsList = spiderUrls::crawl($work,false,$_rid,$_urls,'CALLBACK@URL');
             }else{
                 preg_match('|.*<(.*)>.*|is',$_url, $_matches);
                 if($_matches){
@@ -287,8 +287,8 @@ class spiderUrls extends spider{
                             );
                             switch ($work) {
                                 case 'DATA@RULE':
-                                    $contentArray[$lkey] = spiderData::xxx();
-                                    // $contentArray[$lkey] = spiderUrls::xxx($work,$_pid);
+                                    $contentArray[$lkey] = spiderData::crawl();
+                                    // $contentArray[$lkey] = spiderUrls::crawl($work,$_pid);
                                     unset($suData['sid']);
                                     $suData['title'] = addslashes($suData['title']);
                                     $suData+= array(

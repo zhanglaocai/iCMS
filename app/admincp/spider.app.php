@@ -108,16 +108,16 @@ class spiderApp {
 
     function do_testdata() {
         spider::$dataTest = true;
-        spiderData::xxx();
+        spiderData::crawl();
     }
 
     function do_testrule() {
         spider::$ruleTest = true;
-        spiderUrls::xxx('WEB@AUTO');
+        spiderUrls::crawl('WEB@AUTO');
     }
 
     function do_listpub() {
-        $responses = spiderUrls::xxx('WEB@MANUAL');
+        $responses = spiderUrls::crawl('WEB@MANUAL');
         extract($responses);
         include iACP::view("spider.lists");
     }
@@ -151,7 +151,7 @@ class spiderApp {
         iPHP::success('数据清除完成');
     }
     function do_start() {
-        $a	= spiderUrls::xxx('WEB@AUTO');
+        $a	= spiderUrls::crawl('WEB@AUTO');
         $this->do_mpublish($a);
     }
 	function do_mpublish($pubArray=array()){
@@ -206,11 +206,11 @@ class spiderApp {
     }
 
     function spider_url($work = NULL,$pid = NULL,$_rid = NULL,$_urls = NULL,$callback = NULL) {
-        return spiderUrls::xxx($work,$pid,$_rid,$_urls,$callback);
+        return spiderUrls::crawl($work,$pid,$_rid,$_urls,$callback);
     }
 
     function spider_content() {
-		return spiderData::xxx();
+		return spiderData::crawl();
     }
 
     function do_rule() {
