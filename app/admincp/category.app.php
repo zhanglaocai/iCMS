@@ -203,6 +203,15 @@ class categoryApp extends category{
             $msg = $this->category_name."编辑完成!";
         }
         $hasbody && iCache::set('iCMS/category/'.$cid.'.body',$body,0);
+
+        iACP::callback($cid,$this);
+        if($this->callback['code']){
+            return array(
+                "code"    => $this->callback['code'],
+                'indexid' => $cid
+            );
+        }
+
         iPHP::success($msg,'url:'.$this->category_uri);
     }
 

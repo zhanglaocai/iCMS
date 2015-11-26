@@ -176,6 +176,7 @@ class spider{
         iS::slashes($_POST);
         $app = iACP::app($postArgs->app);
         $fun = $postArgs->fun;
+        $app->callback['code'] = '1001';
         /**
          * 主表 回调 更新关联ID
          */
@@ -191,8 +192,8 @@ class spider{
             array('suid'=>$suid)
         );
 
-        $callback = $app->$fun("1001");
-        if ($callback['code'] == "1001") {
+        $callback = $app->$fun();
+        if ($callback['code'] == $app->callback['code']) {
             if (spider::$sid) {
                 $work===NULL && iPHP::success("发布成功!",'js:1');
             } else {
