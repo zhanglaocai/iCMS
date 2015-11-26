@@ -70,10 +70,11 @@ class spiderData extends spider{
 //      }
 //      $content        = $http['content'];
         spider::$allHtml = "";
-        $responses['reurl'] = spider::$url;
         $rule['__url__']    = spider::$url;
-        $callBackData       = false;
+        $responses['reurl'] = spider::$url;
+        $responses['title'] = $title;
         foreach ((array)$dataArray AS $key => $data) {
+
             $content_html = $html;
             $dname = $data['name'];
 
@@ -154,9 +155,7 @@ class spiderData extends spider{
 
             gc_collect_cycles();
         }
-        if(empty($responses['title']) && $responses['title']!==false){
-            $responses['title'] = $title;
-        }
+
         spider::$allHtml = null;
         unset($html);
 
