@@ -39,6 +39,15 @@ class spiderContent extends spider{
             }
             return spiderUrls::crawl('DATA@RULE',false,spider::$rid,$_urls);
         }
+        /**
+         * RAND@10,0
+         * 返回随机数
+         */
+        if(strpos($data['rule'], 'RAND@')!==false){
+            $random = str_replace('RAND@', '',$data['rule']);
+            list($length,$numeric) = explode(',', $random);
+            return random($length, empty($numeric)?0:1);
+        }
 
         if ($data['page']) {
             if(empty($rule['page_url'])){
