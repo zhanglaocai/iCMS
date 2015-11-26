@@ -86,8 +86,8 @@ class spiderData extends spider{
              * @var string
              */
             if (strpos($dname,'DATA:')!== false){
-                $dname = str_replace('DATA:', '', $dname);
-                $content_html = $responses[$dname];
+                $_dname = str_replace('DATA:', '', $dname);
+                $content_html = $responses[$_dname];
                 unset($responses[$dname]);
             }
             /**
@@ -96,26 +96,28 @@ class spiderData extends spider{
              * 一般用于下载内容
              * @var string
              */
-            $url_dkey = 'PRE:'.$dname;
-            if(isset($responses[$url_dkey])){
-                $content_html = $responses[$url_dkey];
-                unset($responses[$url_dkey]);
+            $pre_dname = 'PRE:'.$dname;
+            if(isset($responses[$pre_dname])){
+                $content_html = $responses[$pre_dname];
+                unset($responses[$pre_dname]);
             }
-
-            $content = spiderContent::crawl($content_html,$data,$rule,$responses);
-
-            unset($content_html);
             /**
              * [EMPTY:name]
              * 如果[name]之前抓取结果数据为空使用这个数据项替换
              * @var string
              */
             if (strpos($dname,'EMPTY:')!== false){
-                $dname = str_replace('EMPTY:', '', $dname);
-                if(empty($responses[$dname])){
-                    unset($responses[$dname]);
+                $_dname = str_replace('EMPTY:', '', $dname);
+                if(empty($responses[$_dname])){
+                    $dname = $_dname;
+                }else{
+                    //有值不执行抓取
+                    continue;
                 }
             }
+            $content = spiderContent::crawl($content_html,$data,$rule,$responses);
+
+            unset($content_html);
 
             /**
              * [name.xxx]
