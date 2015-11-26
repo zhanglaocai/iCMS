@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: spider.php 586 2013-04-02 14:44:18Z coolmoo $
@@ -28,6 +28,10 @@ $(function(){
             <select name="app" id="app" class="chosen-select span2">
               <option value="article"> 文章系统 </option>
               <option value="tags"> 标签系统 </option>
+              <option value="category"> 栏目系统 </option>
+              <option value="pushcategory"> 推荐分类系统 </option>
+              <option value="tagscategory"> 标签分类系统 </option>
+              <option value="push"> 推荐系统 </option>
             </select>
           </div>
           <div class="clearfloat mb10"></div>
@@ -40,7 +44,7 @@ $(function(){
           </div>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"><span class="add-on">函数名</span>
-            <input type="text" name="fun" class="span6" id="fun" value="<?php echo $rs['fun']; ?>"/>
+            <input type="text" name="fun" class="span6" id="fun" value="<?php echo $rs['fun']?$rs['fun']:'do_save'; ?>"/>
           </div>
           <div class="clearfloat mb10"></div>
         </div>
