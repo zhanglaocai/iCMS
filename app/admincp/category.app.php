@@ -12,6 +12,7 @@
 defined('iPHP') OR exit('What are you doing?');
 iPHP::app('category.class','include');
 class categoryApp extends category{
+    public $callback           = array();
     protected $category_uri    = APP_URI;
     protected $category_furi   = APP_FURI;
     protected $category_name   = "栏目";
