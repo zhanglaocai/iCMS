@@ -29,6 +29,18 @@ $(function(){
         $(this).parent().parent().parent().remove();
       }
 	});
+  $('#spider').on("click",'a[data-toggle="insertContent"]',function(){
+    var href = $(this).attr("href");
+    console.log(href.indexOf('<%'),href.indexOf('aaaaaaaaaa'));
+    if(href.indexOf('<%')!="-1"){
+      var target= $(this).attr('data-target')
+      var text = $(target).val();
+      if(text.indexOf(href)!="-1"){
+        alert(href+"只能有一个!其它请用 变量标识!");
+        return false;
+      }
+    }
+  });
 
 	$(".addprop").click(function(){
     // var length=$("#spider-data tbody tr").length+1;
@@ -36,6 +48,7 @@ $(function(){
 		var href = $(this).attr("href");
 		var tb	= $(href),tbody=$("tbody",tb);
 		var ntr=$(".aclone",tb).clone(true).removeClass("hide aclone");
+    if(!length) length = 0;
     ntr.attr('key', length);
 		$('input,textarea',ntr).removeAttr("disabled");
 		$('input,textarea',ntr).each(function(i){
