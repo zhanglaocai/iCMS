@@ -134,7 +134,11 @@ class spider{
         }
         $pid          = spider::$pid;
         $project      = spider::project($pid);
-        $_POST['cid'] = $project['cid'];
+
+        if(!isset($_POST['cid'])){
+            $_POST['cid'] = $project['cid'];
+        }
+
         $postArgs = spider::postArgs($project['poid']);
 
         if($_GET['indexid']){
