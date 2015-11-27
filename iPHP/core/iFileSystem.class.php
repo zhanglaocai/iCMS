@@ -45,6 +45,7 @@ class iFS {
     public static $FileData         = null;
     public static $watermark        = true;
     public static $watermark_config = null;
+    public static $PROXY_URL        = null;
 
     public static $CURL_COUNT             = 3;
     public static $CURL_PROXY             = null;
@@ -108,6 +109,13 @@ class iFS {
     }
     public static function del($fn, $check = 1) {
         $check && self::check($fn);
+
+        if(self::$config['yun']['enable']){
+            iPHP::LoadClass('Yun');
+            iYun::init(self::$config['yun']);
+            iYun::delete($fn);
+        }
+
         @chmod($fn, 0777);
         return @unlink($fn);
     }
@@ -399,6 +407,10 @@ class iFS {
                 // CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
                 // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
             );
+            if(self::$PROXY_URL){
+                $options[CURLOPT_URL] = self::$PROXY_URL.$url;
+            }
+
             if(self::$CURL_PROXY){
                 $proxy   = self::proxy_test();
                 $proxy && $options = self::proxy($options,$proxy);
@@ -583,24 +595,10 @@ class iFS {
     }
     public static function yun_write($frp){
         if(self::$config['yun']['enable']){
-            self::yun($frp,'QiNiu');
-            if(self::$config['yun']['local']){
-                self::del($frp);
-                return true;
-            }
+            iPHP::LoadClass('Yun');
+            iYun::init(self::$config['yun']);
+            iYun::write($frp);
         }
-    }
-
-    public static function yun($frp,$provider='QiNiu') {
-        iPHP::import(iPHP_LIB.'/QiniuClient.php');
-        $client = new QiniuClient(self::$config['yun'][$provider]['AccessKey'],self::$config['yun'][$provider]['SecretKey']);
-        $fp     = ltrim(self::fp($frp,'-iPATH'),'/');
-        $res    = $client->uploadFile($frp,self::$config['yun'][$provider]['Bucket'],$fp);
-        $res    = json_decode($res,true);
-        if($res['error']){
-            return self::_error(array('code'=>0,'state'=>'Error'));
-        }
-        return true;
     }
 
     public static function IO($FileName='',$udir='',$FileExt='jpg'){

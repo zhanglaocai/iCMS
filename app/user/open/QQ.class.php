@@ -83,17 +83,12 @@ class QQ {
 		iPHP::set_cookie('QQ_STATE', '',-31536000);
 	}
 	public function get_url_contents($url){
-        if (ini_get("allow_url_fopen") == "1") {
-            $response = file_get_contents($url);
-        }else{
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-            curl_setopt($ch, CURLOPT_URL, $url);
-            $response =  curl_exec($ch);
-            curl_close($ch);
-        }
-
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        $response =  curl_exec($ch);
+        curl_close($ch);
         //-------请求为空
         if(empty($response)){
             die("可能是服务器无法请求https协议</h2>可能未开启curl支持,请尝试开启curl支持，重启web服务器，如果问题仍未解决，请联系我们");

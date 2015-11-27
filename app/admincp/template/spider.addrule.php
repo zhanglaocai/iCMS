@@ -25,7 +25,9 @@ $(function(){
 		$("#<?php echo $_GET['app']; ?>-<?php echo $_GET['tab']; ?>").addClass("active").removeClass("hide");
 	<?php }?>
 	$('#spider-data').on("click",".delprop",function(){
-   		$(this).parent().parent().remove();
+      if(confirm('确定要删除?')){
+        $(this).parent().parent().parent().remove();
+      }
 	});
 
 	$(".addprop").click(function(){
@@ -100,6 +102,7 @@ $(function(){
               <input type="text" name="rule[user_agent]" class="span6" id="user_agent" value="<?php echo $rule['user_agent'] ; ?>"/>
               <div class="btn-group">
                 <a class="btn" href="Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)" data-toggle="insertContent" data-target="#user_agent" data-mode="replace">百度蜘蛛</a>
+                <a class="btn" href="Mozilla/5.0 (Linux;u;Android 4.2.2;zh-cn;) AppleWebKit/534.46 (KHTML,like Gecko) Version/5.1 Mobile Safari/10600.6.3 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html）" data-toggle="insertContent" data-target="#user_agent" data-mode="replace">百度移动蜘蛛</a>
                 <a class="btn" href="Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727)" data-toggle="insertContent" data-target="#user_agent" data-mode="replace">普通浏览器</a>
                 <a class="btn" href="Mozilla/5.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/600.1.3 (KHTML, like Gecko) Version/8.0 Mobile/12A4345d Safari/600.1.4" data-toggle="insertContent" data-target="#user_agent" data-mode="replace">iPhone 6</a>
                 <a class="btn" href="Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19" data-toggle="insertContent" data-target="#user_agent" data-mode="replace">Nexus 5</a>
@@ -195,7 +198,6 @@ $(function(){
                   <th>数据项名称</th>
                   <th>规则</th>
                   <th>选项</th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -205,7 +207,12 @@ $(function(){
                 <tr key="<?php echo $dkey;?>">
                   <td><div class="btn-group btn-group-vertical">
                       <input name="rule[data][<?php echo $dkey;?>][name]" type="text" class="rule_data_name" value="<?php echo $data['name'];?>"/>
-                      <a class="btn" href="<%content%>" data-toggle="insertContent" data-target="#<?php echo $RDid;?>">内容标识</a> <a class="btn" href="<%var%>" data-toggle="insertContent" data-target="#<?php echo $RDid;?>">变量标识</a> </div></td>
+                      <a class="btn" href="<%content%>" data-toggle="insertContent" data-target="#<?php echo $RDid;?>">内容标识</a>
+                      <a class="btn" href="<%var%>" data-toggle="insertContent" data-target="#<?php echo $RDid;?>">变量标识</a>
+                      <div class="clearfloat mb10"></div>
+                      <a class="btn btn-danger delprop"><i class="fa fa-trash-o"></i> 删除</a>
+                    </div>
+                  </td>
                   <td class="rule_data_rule"><textarea name="rule[data][<?php echo $dkey;?>][rule]" class="span6" id="<?php echo $RDid;?>"><?php echo $data['rule'];?></textarea>
                     <div class="clearfloat mb10"></div>
                     <div class="input-prepend input-sp"> <span class="add-on s4">数据整理</span>
@@ -229,25 +236,25 @@ $(function(){
                       移除HTML标识</label>
                     <div class="clearfloat mb10"></div>
                     <label class="checkbox">
+                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][mergepage]" value="1"<?php if($data['mergepage']){ echo ' checked="true"';};?>>
+                      合并分页</label>
+                    <label class="checkbox">
+                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][autobreakpage]" value="1"<?php if($data['autobreakpage']){ echo ' checked="true"';};?>>
+                      自动分页</label>
+                    <div class="clearfloat mb10"></div>
+                    <label class="checkbox">
                       <input type="checkbox" name="rule[data][<?php echo $dkey;?>][trim]" value="1"<?php if($data['trim']){ echo ' checked="true"';};?>>
                       去首尾空白</label>
                     <label class="checkbox">
-                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][mergepage]" value="1"<?php if($data['mergepage']){ echo ' checked="true"';};?>>
-                      合并分页</label>
-                    <div class="clearfloat mb10"></div>
-                    <label class="checkbox">
                       <input type="checkbox" name="rule[data][<?php echo $dkey;?>][empty]" value="1"<?php if($data['empty']){ echo ' checked="true"';};?>>
                       不允许为空</label>
-                    <label class="checkbox">
-                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][array]" value="1"<?php if($data['array']){ echo ' checked="true"';};?>>
-                      返回数组</label>
                     <div class="clearfloat mb10"></div>
                     <label class="checkbox">
                       <input type="checkbox" name="rule[data][<?php echo $dkey;?>][json_decode]" value="1"<?php if($data['json_decode']){ echo ' checked="true"';};?>>
                       json解码</label>
                     <label class="checkbox">
-                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][img_absolute]" value="1"<?php if($data['img_absolute']){ echo ' checked="true"';};?>>
-                      图片地址补全</label>
+                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][array]" value="1"<?php if($data['array']){ echo ' checked="true"';};?>>
+                      返回数组</label>
                     <div class="clearfloat mb10"></div>
                     <label class="checkbox">
                       <input type="checkbox" name="rule[data][<?php echo $dkey;?>][capture]" value="1"<?php if($data['capture']){ echo ' checked="true"';};?>>
@@ -258,8 +265,10 @@ $(function(){
                     <label class="checkbox">
                       <input type="checkbox" name="rule[data][<?php echo $dkey;?>][dom]" value="1"<?php if($data['dom']){ echo ' checked="true"';};?>>
                       phpQuery匹配</label>
+                    <label class="checkbox">
+                      <input type="checkbox" name="rule[data][<?php echo $dkey;?>][img_absolute]" value="1"<?php if($data['img_absolute']){ echo ' checked="true"';};?>>
+                      图片地址补全</label>
                     <div class="clearfloat mb10"></div></td>
-                  <td><a class="btn btn-small delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
                 </tr>
                 <?php } ?>
               </tbody>
@@ -268,7 +277,11 @@ $(function(){
                   <td><div class="btn-group btn-group-vertical">
                       <input name="rule[data][__NO__][name]" type="text" disabled="disabled" class="rule_data_name" value=""/>
                       <a class="btn" href="<%content%>" data-toggle="insertContent" data-target="#rule_data___NO___rule">内容标识</a>
-                      <a class="btn" href="<%var%>" data-toggle="insertContent" data-target="#rule_data___NO___rule">变量标识</a> </div></td>
+                      <a class="btn" href="<%var%>" data-toggle="insertContent" data-target="#rule_data___NO___rule">变量标识</a>
+                      <div class="clearfloat mb10"></div>
+                      <a class="btn btn-danger delprop"><i class="fa fa-trash-o"></i> 删除</a>
+                    </div>
+                  </td>
                   <td class="rule_data_rule"><textarea name="rule[data][__NO__][rule]" disabled="disabled" class="span6" id="rule_data___NO___rule"></textarea>
                     <div class="clearfloat mb10"></div>
                     <div class="input-prepend input-sp"> <span class="add-on s4">数据整理</span>
@@ -292,25 +305,25 @@ $(function(){
                       移除HTML标识</label>
                     <div class="clearfloat mb10"></div>
                     <label class="checkbox">
+                      <input type="checkbox" name="rule[data][__NO__][mergepage]" value="1">
+                      合并分页</label>
+                    <label class="checkbox">
+                      <input type="checkbox" name="rule[data][__NO__][autobreakpage]" value="1">
+                      自动分页</label>
+                    <div class="clearfloat mb10"></div>
+                    <label class="checkbox">
                       <input type="checkbox" name="rule[data][__NO__][trim]" value="1">
                       去首尾空白</label>
                     <label class="checkbox">
-                      <input type="checkbox" name="rule[data][__NO__][mergepage]" value="1">
-                      合并分页</label>
-                    <div class="clearfloat mb10"></div>
-                    <label class="checkbox">
                       <input type="checkbox" name="rule[data][__NO__][empty]" value="1">
                       不允许为空</label>
-                    <label class="checkbox">
-                      <input type="checkbox" name="rule[data][__NO__][array]" value="1">
-                      返回数组</label>
                     <div class="clearfloat mb10"></div>
                     <label class="checkbox">
                       <input type="checkbox" name="rule[data][__NO__][json_decode]" value="1">
                       json解码</label>
                     <label class="checkbox">
-                      <input type="checkbox" name="rule[data][__NO__][img_absolute]" value="1">
-                      图片地址补全</label>
+                      <input type="checkbox" name="rule[data][__NO__][array]" value="1">
+                      返回数组</label>
                     <div class="clearfloat mb10"></div>
                     <label class="checkbox">
                       <input type="checkbox" name="rule[data][__NO__][capture]" value="1">
@@ -321,11 +334,13 @@ $(function(){
                     <label class="checkbox">
                       <input type="checkbox" name="rule[data][__NO__][dom]" value="1">
                       phpQuery匹配</label>
+                    <label class="checkbox">
+                      <input type="checkbox" name="rule[data][__NO__][img_absolute]" value="1">
+                      图片地址补全</label>
                     <div class="clearfloat mb10"></div></td>
-                  <td><a class="btn btn-small delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
                 </tr>
                 <tr>
-                  <td colspan="10">
+                  <td colspan="4">
                     <p class="mb10"> <span class="label label-info">摘要:description</span> <span class="label label-info">标签:tags</span> <span class="label label-info">出处:source</span> <span class="label label-info">作者:author</span> <span class="label label-info">关键字:keywords</span></p>
                     <a href="#spider-data" class="btn btn-primary addprop"/>增加加附加属性</a></td>
                 </tr>
@@ -339,6 +354,7 @@ $(function(){
             </ul>
             <div class="tab-content">
               <div id="spider-page-area-rule" class="tab-pane active">
+                <div class="alert mt5" style="width:360px;">采集方式适合所有分页都列出来的分页模式</div>
                 <div class="input-prepend input-sp"><span class="add-on">分页区域规则</span>
                   <textarea name="rule[page_area_rule]" id="page_area_rule" class="span6"><?php echo $rule['page_area_rule'] ; ?></textarea>
                   <div class="btn-group btn-group-vertical"> <a class="btn" href="<%content%>" data-toggle="insertContent" data-target="#page_area_rule">内容标识</a> <a class="btn" href="<%var%>" data-toggle="insertContent" data-target="#page_area_rule">变量标识</a> </div>
@@ -444,7 +460,10 @@ $(function(){
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
-          <a id="test" href="<?php echo APP_URI; ?>&do=testrule&rid=<?php echo $this->rid ; ?>" class="btn" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试</a> </div>
+          <a id="test" href="<?php echo APP_URI; ?>&do=testrule&rid=<?php echo $this->rid ; ?>" class="btn btn-inverse" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试</a>
+          <a href="<?php echo APP_URI; ?>&do=manage&rid=<?php echo $this->rid ; ?>" class="btn btn-success" target="_blank"><i class="fa fa-list-alt"></i> 已采集</a>
+          <a href="<?php echo APP_URI; ?>&do=project&rid=<?php echo $this->rid ; ?>" class="btn btn-info" target="_blank"><i class="fa fa-magnet"></i> 方案</a>
+        </div>
       </form>
     </div>
   </div>

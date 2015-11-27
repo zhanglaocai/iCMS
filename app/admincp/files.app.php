@@ -161,11 +161,11 @@ class filesApp{
         $sql     = isset($_GET['indexid'])?"AND `indexid`='$indexid'":"";
         $rs      = iDB::row("SELECT * FROM `#iCMS@__filedata` WHERE `id` = '$id' {$sql} LIMIT 1;");
     	if($rs){
-	    	$rs->filepath	= $rs->path.'/'.$rs->filename.'.'.$rs->ext;
-	    	$FileRootPath	= iFS::fp($rs->filepath,"+iPATH");
-	    	iDB::query("DELETE FROM `#iCMS@__filedata` WHERE `id` = '$id' {$sql};");
+            $rs->filepath = rtrim($rs->path,'/').'/'.$rs->filename.'.'.$rs->ext;
+            $FileRootPath = iFS::fp($rs->filepath,"+iPATH");
 	    	if(iFS::del($FileRootPath)){
-	    		$msg	= 'success:#:check:#:文件删除完成!';
+                iDB::query("DELETE FROM `#iCMS@__filedata` WHERE `id` = '$id' {$sql};");
+                $msg = 'success:#:check:#:文件删除完成!';
 	    		$_GET['ajax'] && iPHP::json(array('code'=>1,'msg'=>$msg));
 	    	}else{
 	    		$msg	= 'warning:#:warning:#:找不到相关文件,文件删除失败!<hr/>文件相关数据已清除';

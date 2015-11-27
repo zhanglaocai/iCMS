@@ -1,25 +1,13 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
-// $GLOBALS['iCONFIG']['user_fs_conf']	= array(
-// 	"url"=>"http://s1.ladyband.cn",
-// 	"dir"=>"../pic"
-// );
 defined('iPHP') OR exit('What are you doing?');
 
-$USER_LOGIN_URL = iPHP::router('/api/user/login',iPHP_ROUTER_REWRITE,'?&');
-if(iPHP_ROUTER_REWRITE){
-	if(stripos($USER_LOGIN_URL, 'http://')===false){
-		$USER_LOGIN_URL = rtrim(iCMS_URL,'/').$USER_LOGIN_URL;
-	}
-}
-define("USER_LOGIN_URL",$USER_LOGIN_URL);
 define("USER_AUTHASH",'#=(iCMS@'.iPHP_KEY.'@iCMS)=#');
-
 class user {
 	public static $userid     = 0;
 	public static $nickname   = '';
@@ -27,6 +15,16 @@ class user {
 	public static $format     = false;
 	private static $AUTH      = 'USER_AUTH';
 
+	public static function login_uri($uri=null){
+		$login_uri = iPHP::router('/api/user/login',iPHP_ROUTER_REWRITE,'?&');
+		if(iPHP_ROUTER_REWRITE){
+			if(stripos($login_uri, 'http://')===false){
+				$login_uri = rtrim(iCMS_URL,'/').$login_uri;
+			}
+		}
+		$uri && $login_uri = str_replace(rtrim(iCMS_URL,'/'),$uri,$login_uri);
+		return $login_uri;
+	}
 	public static function router($uid,$type,$size=0){
 	    switch($type){
 	        case 'avatar':return iCMS_FS_URL.get_user_pic($uid,$size);break;
