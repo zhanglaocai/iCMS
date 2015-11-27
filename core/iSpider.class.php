@@ -118,16 +118,17 @@ class spider{
     }
     public static function publish($work = null) {
         $_POST = spiderData::crawl();
-        if(spider::$work){
-           // if(empty($_POST['title'])){
-           //     echo "标题不能为空\n";
-           //     return false;
-           // }
-           // if(empty($_POST['body'])){
-           //     echo "内容不能为空\n";
-           //     return false;
-           // }
+        if(spider::$work=='shell'){
+           if(empty($_POST['title'])){
+               echo "标题不能为空\n";
+               return false;
+           }
+           if(empty($_POST['body'])){
+               echo "内容不能为空\n";
+               return false;
+           }
         }
+
         $checker = spider::checker($work);
         if($checker!==true){
             return $checker;
