@@ -72,7 +72,7 @@ class spiderData extends spider{
         spider::$allHtml = "";
         $rule['__url__']    = spider::$url;
         $responses['reurl'] = spider::$url;
-        $responses['title'] = $title;
+        $responses['__title__'] = $title;
         foreach ((array)$dataArray AS $key => $data) {
 
             $content_html = $html;
@@ -169,7 +169,9 @@ class spiderData extends spider{
 
             gc_collect_cycles();
         }
-
+        if(isset($responses['title']) && empty($responses['title'])){
+            $responses['title'] = $responses['__title__'];
+        }
         spider::$allHtml = null;
         unset($html);
 
