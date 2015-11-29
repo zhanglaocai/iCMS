@@ -106,6 +106,8 @@ class spiderTools extends spider{
         $rule = str_replace("%>\n", "%>", $rule);
         $rule = preg_replace('|<%(\w{3,20})%>|i', '(?<\\1>.*?)', $rule);
         $rule = str_replace(array('<%', '%>'), '', $rule);
+        unset($pregArray,$pregflip,$matches);
+        gc_collect_cycles();
         return $rule;
     }
     public static function dataClean($rules, $content) {
@@ -185,6 +187,7 @@ class spiderTools extends spider{
                 phpQuery::unloadDocuments($doc->getDocumentID());
                 //var_dump(array_map('htmlspecialchars', $pq_pattern));
                 $content = str_replace($pq_pattern,$pq_replacement, $content);
+                unset($doc,$pq_array);
             }else{
                 if($_pattern=='~SELF~'){
                     $_pattern = $content;
@@ -255,8 +258,10 @@ class spiderTools extends spider{
                 $pq_dom  = str_replace('DOM::','', spider::$content_right_code);
                 $matches = (bool)(string)phpQuery::pq($pq_dom);
                 phpQuery::unloadDocuments($doc->getDocumentID());
+                unset($doc,$content);
             }else{
                 $matches = strpos($content, spider::$content_right_code);
+                unset($content);
             }
 	        if ($matches===false) {
 	            $match = false;
@@ -270,8 +275,10 @@ class spiderTools extends spider{
                 $pq_dom   = str_replace('DOM::','', spider::$content_error_code);
                 $_matches = (bool)(string)phpQuery::pq($pq_dom);
                 phpQuery::unloadDocuments($doc->getDocumentID());
+                unset($doc,$content);
             }else{
                 $_matches = strpos($content, spider::$content_error_code);
+                unset($content);
             }
             if ($_matches!==false) {
                 $match = false;
@@ -426,6 +433,7 @@ class spiderTools extends spider{
                 $resource[$pageNum].= $p;
             }
         }
+        unset($text,$textArray,$output);
         return implode($pageBreak, (array)$resource);
     }
 

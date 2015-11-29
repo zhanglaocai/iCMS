@@ -198,6 +198,9 @@ class spiderData extends spider{
             iFS::$watermark_config['y']   = $rule['watermark']['y'];
             $rule['watermark']['img'] && iFS::$watermark_config['img'] = $rule['watermark']['img'];
         }
+        if (spider::$callback['data'] && is_callable(spider::$callback['data'])) {
+            $responses = call_user_func_array(spider::$callback['data'],array($responses));
+        }
 
         return $responses;
     }

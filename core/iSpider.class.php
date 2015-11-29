@@ -33,7 +33,8 @@ class spider{
 	public static $cookie      = null;
 	public static $charset     = null;
 	public static $curl_proxy  = false;
-	public static $proxy_array = array();
+    public static $proxy_array = array();
+    public static $callback = array();
 
     public static function rule($id) {
         $rs = iDB::row("SELECT * FROM `#iCMS@__spider_rule` WHERE `id`='$id' LIMIT 1;", ARRAY_A);
@@ -176,6 +177,10 @@ class spider{
             }
         }else{
             $suid = spider::$sid;
+        }
+
+        if (spider::$callback['post'] && is_callable(spider::$callback['post'])) {
+            $_POST = call_user_func_array(spider::$callback['post'],array($_POST));
         }
 
         iS::slashes($_POST);
