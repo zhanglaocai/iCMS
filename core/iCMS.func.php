@@ -74,6 +74,14 @@ function baidu_ping($urls) {
     return $json;
 }
 function get_pic($src,$size=0,$thumb=0){
+    if(stripos($src, '://')){
+        return array(
+            'src' => $src,
+            'url' => $src,
+            'width' => 0,
+            'height' => 0,
+        );
+    }
     if(empty($src)) return array();
 
     $data = array(
