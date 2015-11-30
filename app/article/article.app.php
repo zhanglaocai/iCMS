@@ -400,11 +400,12 @@ class articleApp {
         }
         return $content;
     }
-    public function tmpl($itemid,$url,$title=''){
-        $title OR $title = $url;
-        return '<a data-type="0"
-        biz-itemid="'.$itemid.'"
-        data-tmpl="350x100" data-tmplid="6" data-rd="2" data-style="2" data-border="1"
-        href="'.$url.'" rel="nofollow">==点击购买==</a>';
+    public function tmpl($itemid,$url,$title=null){
+        iPHP::assign('taoke',array(
+            'itemid' => $itemid,
+            'title'  => $title,
+            'url'    => $url,
+        ));
+        return iPHP::fetch('iCMS://taoke.tmpl.htm');
     }
 }
