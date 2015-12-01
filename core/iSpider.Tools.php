@@ -216,8 +216,7 @@ class spiderTools extends spider{
 
         $encode == 'auto' && $encode = null;
         /**
-         * 检测页面编码
-         * @var [type]
+         * 检测http返回的编码
          */
         if($content_charset){
             if(empty($encode)){
@@ -225,7 +224,16 @@ class spiderTools extends spider{
             }else if(strtoupper($encode)!=strtoupper($content_charset)){
                 $encode = $content_charset;
             }
+            if(strtoupper($encode)==$out){
+                if (spider::$dataTest || spider::$ruleTest) {
+                    echo '<b>检测页面编码:</b>'.$encode . '<br />';
+                }
+                return $html;
+            }
         }
+        /**
+         * 检测页面编码
+         */
         if(empty($encode)){
             preg_match('/<meta[^>]*?charset=(["\']?)([a-zA-z0-9\-\_]+)(\1)[^>]*?>/is', $html, $charset);
             $encode = str_replace(array('"',"'"),'', trim($charset[2]));
@@ -264,7 +272,6 @@ class spiderTools extends spider{
                 unset($content);
             }
 	        if ($matches===false) {
-	            $match = false;
 	            return false;
 	        }
         }
@@ -281,12 +288,10 @@ class spiderTools extends spider{
                 unset($content);
             }
             if ($_matches!==false) {
-                $match = false;
                 return false;
             }
         }
-        $match = true;
-        return compact('content', 'match');
+        return true;
     }
     public static function mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse) {
         $urls = "";

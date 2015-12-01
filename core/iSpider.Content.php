@@ -131,13 +131,13 @@ class spiderContent extends spider{
                 }
 
                 if (spider::$dataTest) {
-                    echo $rule['__url__'] . "<br />";
-                    echo $rule['page_url'] . "<br />";
+                    echo "<b>内容页网址:</b>".$rule['__url__'] . "<br />";
+                    echo "<b>分页:</b>".$rule['page_url'] . "<br />";
                     echo iS::escapeStr($page_url_rule);
                     echo "<hr />";
                 }
                 if(spider::$dataTest){
-                    echo "<pre>";
+                    echo "<b>分页列表:</b><pre>";
                     print_r($page_url_array);
                     echo "</pre><hr />";
                 }
@@ -146,7 +146,6 @@ class spiderContent extends spider{
                 spider::$content_error_code = trim($rule['page_url_error']);
                 spider::$curl_proxy = $rule['proxy'];
 
-                $pcon     = '';
                 $pageurl  = array();
                 foreach ($page_url_array AS $pukey => $purl) {
                     //usleep(100);
@@ -158,20 +157,20 @@ class spiderContent extends spider{
                     if($pageurl[$md5]){
                         break;
                     }
-                    $phttp = spiderTools::check_content_code($phtml);
-                    if ($phttp['match'] === false) {
+                    $check_content = spiderTools::check_content_code($phtml);
+                    if ($check_content === false) {
+                        unset($check_content,$phtml);
                         break;
                     }
                     $pageurl[$md5] = $purl;
-                    $pcon.= $phttp['content'];
+                    $html.= $phtml;
                 }
                 gc_collect_cycles();
-                $html.= $pcon;
-                unset($pcon,$phttp);
+                unset($check_content,$phtml);
                 spider::$allHtml = $html;
 
                 if (spider::$dataTest) {
-                    echo "<pre>";
+                    echo "<b>最终分页列表:</b><pre>";
                     print_r($pageurl);
                     echo "</pre><hr />";
                 }
@@ -179,6 +178,8 @@ class spiderContent extends spider{
                 $html = spider::$allHtml;
             }
         }
+
+
         if($data['dom']){
             iPHP::import(iPHP_LIB.'/phpQuery.php');
             spider::$dataTest && $_GET['pq_debug'] && phpQuery::$debug =1;
