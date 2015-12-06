@@ -55,7 +55,6 @@ $iDB_CLASS = 'Mysql';
 iPHP_DB_TYPE  =='pgsql'  && $iDB_CLASS = 'Pgsql';
 iPHP_DB_TYPE  =='sqlite' && $iDB_CLASS = 'SQLite';
 
-iPHP::loadClass($iDB_CLASS,'DB'); //加载数据库操作类
+iPHP::loadClass($iDB_CLASS,'DB');   //加载数据库操作类
 iPHP::loadClass("FileSystem",'FS');	//加载文件操作类
 iPHP::loadClass('Cache');			//加载缓存操作类
-iPHP::loadClass("Template");		//加载模板操作类
