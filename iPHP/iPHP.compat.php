@@ -276,6 +276,13 @@ if (!function_exists('htmlspecialchars_decode')) {
         return $string;
     }
 }
+function stripslashes_deep($value) {
+    $value = is_array($value) ?
+            array_map('stripslashes_deep', $value) :
+            stripslashes($value);
+
+    return $value;
+}
 
 function random($length, $numeric = 0) {
     if($numeric) {

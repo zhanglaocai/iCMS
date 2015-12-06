@@ -45,6 +45,7 @@ class iFS {
     public static $FileData         = null;
     public static $watermark        = true;
     public static $watermark_config = null;
+    public static $PROXY_URL        = null;
 
     public static $CURL_COUNT             = 3;
     public static $CURL_PROXY             = null;
@@ -406,6 +407,10 @@ class iFS {
                 // CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
                 // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
             );
+            if(self::$PROXY_URL){
+                $options[CURLOPT_URL] = self::$PROXY_URL.$url;
+            }
+
             if(self::$CURL_PROXY){
                 $proxy   = self::proxy_test();
                 $proxy && $options = self::proxy($options,$proxy);

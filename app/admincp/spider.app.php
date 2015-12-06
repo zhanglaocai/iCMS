@@ -10,18 +10,21 @@
  * @version 6.0.0
  * @$Id: spider.app.php 156 2013-03-22 13:40:07Z coolmoo $
  */
-//ini_set('memory_limit','512M');
+defined('iPHP') OR exit('What are you doing?');
+
+iPHP::import(iPHP_APP_CORE .'/iSpider.Autoload.php');
+
 class spiderApp {
 
     function __construct() {
-        $this->cid   = (int) $_GET['cid'];
-        $this->rid   = (int) $_GET['rid'];
-        $this->pid   = (int) $_GET['pid'];
-        $this->sid   = (int) $_GET['sid'];
-        $this->poid  = (int) $_GET['poid'];
-        $this->title = $_GET['title'];
-        $this->url   = $_GET['url'];
-        $this->work  = false;
+        spider::$cid   = $this->cid   = (int) $_GET['cid'];
+        spider::$rid   = $this->rid   = (int) $_GET['rid'];
+        spider::$pid   = $this->pid   = (int) $_GET['pid'];
+        spider::$sid   = $this->sid   = (int) $_GET['sid'];
+        spider::$title = $this->title = $_GET['title'];
+        spider::$url   = $this->url   = $_GET['url'];
+        spider::$work  = $this->work  = false;
+        $this->poid    = (int) $_GET['poid'];
     }
     function do_update(){
         if($this->sid){
@@ -70,7 +73,6 @@ class spiderApp {
         iDB::query("delete from `#iCMS@__spider_url` where `id` = '$this->sid';");
         iPHP::success('删除完成','js:1');
     }
-
     function do_manage($doType = null) {
         $categoryApp = iACP::app('category',iCMS_APP_ARTICLE);
         $category    = $categoryApp->category;
@@ -100,18 +102,39 @@ class spiderApp {
         $this->do_manage("inbox");
     }
 
-    function do_testcont() {
-        $this->contTest = true;
-        $this->spider_content();
+    function do_testdata() {
+        spider::$dataTest = true;
+        spiderData::crawl();
     }
 
     function do_testrule() {
-        $this->ruleTest = true;
-        $this->spider_url();
+        spider::$ruleTest = true;
+        spiderUrls::crawl('WEB@AUTO');
     }
 
     function do_listpub() {
-        $this->spider_url('HM');
+        $responses = spiderUrls::crawl('WEB@MANUAL');
+        extract($responses);
+        include iACP::view("spider.lists");
+    }
+
+    function do_markurl() {
+        $hash  = md5($this->url);
+        $title = iS::escapeStr($_GET['title']);
+        iDB::insert('spider_url',array(
+            'cid'     => $this->cid,
+            'rid'     => $this->rid,
+            'pid'     => $this->pid,
+            'title'   => addslashes($title),
+            'url'     => $this->url,
+            'hash'    => $hash,
+            'status'  => '2',
+            'addtime' => time(),
+            'publish' => '2',
+            'indexid' => '0',
+            'pubdate' => '0'
+        ));
+        iPHP::success("移除成功!", 'js:parent.$("#' . $hash . '").remove();');
     }
     function do_dropurl() {
     	$this->pid OR iPHP::alert("请选择要删除的项目");
@@ -124,7 +147,7 @@ class spiderApp {
         iPHP::success('数据清除完成');
     }
     function do_start() {
-        $a	= $this->spider_url();
+        $a	= spiderUrls::crawl('WEB@AUTO');
         $this->do_mpublish($a);
     }
 	function do_mpublish($pubArray=array()){
@@ -144,12 +167,12 @@ class spiderApp {
         ob_end_flush();
         ob_implicit_flush(1);
         foreach((array)$pubArray as $i=>$a){
-            $this->sid   = $a['sid'];
-            $this->cid   = $a['cid'];
-            $this->pid   = $a['pid'];
-            $this->rid   = $a['rid'];
-            $this->url   = $a['url'];
-            $this->title = $a['title'];
+            spider::$sid   = $a['sid'];
+            spider::$cid   = $a['cid'];
+            spider::$pid   = $a['pid'];
+            spider::$rid   = $a['rid'];
+            spider::$url   = $a['url'];
+            spider::$title = $a['title'];
             $rs          = $this->multipublish();
             $updateMsg   = $i?true:false;
             $timeout     = ($i++)==$_count?'3':false;
@@ -162,1151 +185,28 @@ class spiderApp {
 	}
 	function multipublish(){
 		$a		= array();
-		$code	= $this->do_publish('multi');
-        //print_r($code);
+		$code	= spider::publish('WEB@AUTO');
+
         if(is_array($code)){
             $label='<span class="label label-success">发布成功!</span>';
         }else{
             $code=="-1" && $label='<span class="label label-warning">该URL的文章已经发布过!请检查是否重复</span>';
         }
-        $a['msg'] = '标题:'.$this->title.'<br />URL:'.$this->url.'<br />'.$label.'<hr />';
-        $a['js']  = 'parent.$("#' . md5($this->url) . '").remove();';
+        $a['msg'] = '标题:'.spider::$title.'<br />URL:'.spider::$url.'<br />'.$label.'<hr />';
+        $a['js']  = 'parent.$("#' . md5(spider::$url) . '").remove();';
 		return $a;
 	}
-    function checker($work = null){
-        $pid     = $this->pid;
-        $project = $this->project($pid);
-        $hash    = md5($this->url);
-        if($project['checker'] && empty($_GET['indexid'])){
-            $title = iS::escapeStr($this->title);
-            $url   = iS::escapeStr($this->url);
-            switch ($project['checker']) {
-                case '1'://按网址检查
-                    $sql ="`url` = '$url'";
-                    $msg ='该网址的文章已经发布过!请检查是否重复';
-                break;
-                case '2'://按标题检查
-                    $sql ="`title` = '$title'";
-                    $msg ='该标题的文章已经发布过!请检查是否重复';
-                break;
-                case '3'://网址和标题
-                    $sql ="`url` = '$url' AND `title` = '$title'";
-                    $msg ='该网址和标题的文章已经发布过!请检查是否重复';
-                break;
-            }
-            $project['self'] && $sql.=" AND `pid`='$pid'";
-            $checker = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` where $sql AND `publish`='1'");
-            if($checker){
-                $work===NULL && iPHP::alert($msg, 'js:parent.$("#' . $hash . '").remove();');
-                if($work=='shell'){
-                    echo $msg."\n";
-                    return false;
-                }
-                if($work=="multi"){
-                    return '-1';
-                }
-            }else{
-                return true;
-            }
-        }
-        return true;
-    }
+
     function do_publish($work = null) {
-        $_POST = $this->spider_content();
-        if($this->work){
-           if(empty($_POST['title'])){
-               echo "标题不能为空\n";
-               return false;
-           }
-           if(empty($_POST['body'])){
-               echo "内容不能为空\n";
-               return false;
-           }
-        }
-        $checker = $this->checker($work);
-        if($checker!==true){
-            return $checker;
-        }
-        $pid          = $this->pid;
-        $project      = $this->project($pid);
-        $sleep        = $project['sleep'];
-        $poid         = $project['poid'];
-        $_POST['cid'] = $project['cid'];
-        $postRs       = iDB::row("SELECT * FROM `#iCMS@__spider_post` WHERE `id`='$poid' LIMIT 1;");
-        if ($postRs->post) {
-            $postArray = explode("\n", $postRs->post);
-            $postArray = array_filter($postArray);
-            foreach ($postArray AS $key => $pstr) {
-                list($pkey, $pval) = explode("=", $pstr);
-                $_POST[$pkey] = trim($pval);
-            }
-        }
-        if($_GET['indexid']){
-            $aid = (int)$_GET['indexid'];
-            $_POST['aid']  = $aid;
-            $_POST['adid'] = iDB::value("SELECT `id` FROM `#iCMS@__article_data` WHERE aid='$aid'");
-        }
-        $hash  = md5($this->url);
-        $title = iS::escapeStr($_POST['title']);
-        $url   = iS::escapeStr($_POST['reurl']);
-        if(empty($this->sid)){
-            $spider_url = iDB::row("SELECT `id`,`publish`,`indexid` FROM `#iCMS@__spider_url` where `url`='$url'",ARRAY_A);
-            if(empty($spider_url)){
-                $spider_url_data = array(
-                    'cid'     => $project['cid'],
-                    'rid'     => $this->rid,
-                    'pid'     => $pid,
-                    'title'   => addslashes($title),
-                    'url'     => $url,
-                    'hash'    => $hash,
-                    'status'  => '1',
-                    'addtime' => time(),
-                    'publish' => '0',
-                    'indexid' => '0',
-                    'pubdate' => ''
-                );
-                $suid = iDB::insert('spider_url',$spider_url_data);
-            }else{
-                if($spider_url['indexid']){
-                    $_POST['aid']  = $spider_url['indexid'];
-                    $_POST['adid'] = iDB::value("SELECT `id` FROM `#iCMS@__article_data` WHERE aid='".$spider_url['indexid']."'");
-                }
-                $suid = $spider_url['id'];
-            }
-        }else{
-            $suid = $this->sid;
-        }
-
-        iS::slashes($_POST);
-        $app      = iACP::app($postRs->app);
-        $fun      = $postRs->fun;
-
-        $app->callback['primary'] = array(
-            array($this,'update_spider_url_indexid'),
-            array('suid'=>$suid)
-        );//主表 回调 更新关联ID
-
-        $app->callback['data'] = array(
-            array($this,'update_spider_url_publish'),
-            array('suid'=>$suid)
-        );//数据表 回调 成功发布
-
-        $callback = $app->$fun("1001");
-        if ($callback['code'] == "1001") {
-            if ($this->sid) {
-                $work===NULL && iPHP::success("发布成功!",'js:1');
-            } else {
-		        $work===NULL && iPHP::success("发布成功!", 'js:parent.$("#' . $hash . '").remove();');
-            }
-        }
-        if($work=="shell"||$work=="multi"){
-            $callback['work']=$work;
-        	return $callback;
-        }
+        return spider::publish($work);
     }
-    function update_spider_url_indexid($suid,$indexid){
-        iDB::update('spider_url',array(
-            //'publish' => '1',
-            'indexid' => $indexid,
-            //'pubdate' => time()
-        ),array('id'=>$suid));
-    }
-    function update_spider_url_publish($suid){
-        iDB::update('spider_url',array(
-            'publish' => '1',
-            'pubdate' => time()
-        ),array('id'=>$suid));
-    }
-    function mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse) {
-        $urls = "";
-        $start = (int)$begin;
-        if($format==0){
-            $num = $num-1;
-            if($num<0){
-                $num = 1;
-            }
-            $end = $start+$num;
-        }else if($format==1){
-            $end = $start*pow($step,$num-1);
-        }else if($format==2){
-            $start = ord($begin);
-            $end   = ord($num);
-            $step  = 1;
-        }
-        $zeroize = ($zeroize=='true'?true:false);
-        $reverse = ($reverse=='true'?true:false);
-        //var_dump($url.','.$format.','.$begin.','.$num.','.$step,$zeroize,$reverse);
-        if($reverse){
-            for($i=$end;$i>=$start;){
-                $id = $i;
-                if($format==2){
-                    $id = chr($i);
-                }
-                if($zeroize){
-                    $len = strlen($end);
-                    //$len==1 && $len=2;
-                    $id  = sprintf("%0{$len}d", $i);
-                }
-                $urls[]=str_replace('<*>',$id,$url);
-                if($format==1){
-                  $i=$i/$step;
-                }else{
-                  $i=$i-$step;
-                }
-            }
-        }else{
-            for($i=$start;$i<=$end;){
-                $id = $i;
-                if($format==2){
-                    $id = chr($i);
-                }
-                if($zeroize){
-                    $len = strlen($end);
-                    //$len==1 && $len=2;
-                    $id  = sprintf("%0{$len}d", $i);
-                }
-                $urls[]=str_replace('<*>',$id,$url);
-                if($format==1){
-                  $i=$i*$step;
-                }else{
-                  $i=$i+$step;
-                }
-            }
-        }
-        return $urls;
-    }
-    function title_url($row,$rule,$baseUrl=null){
-        if($rule['mode']=="2"){
-            $pq    = phpQuery::pq($row);
-            list($title_attr,$url_attr) = explode("\n", $rule['list_url_rule']);
-            $title_attr = trim($title_attr);
-            $url_attr   = trim($url_attr);
-            $title_attr OR $title_attr = 'text';
-            $url_attr OR $url_attr = 'href';
-            if($title_attr=='text'){
-                $title = $pq->text();
-            }else{
-                $title = $pq->attr($title_attr);
-            }
-            $url = $pq->attr($url_attr);
-            unset($pq);
-        }else{
-            $title = $row['title'];
-            $url   = $row['url'];
-        }
-        $title = trim($title);
-        $url   = trim($url);
-        //_url_complement($baseUrl,$href)
-        $url   = str_replace('<%url%>',$url, $rule['list_url']);
-        if(strpos($url, 'AUTO::')!==false && $baseUrl){
-            $url = str_replace('AUTO::','',$url);
-            $url = $this->_url_complement($baseUrl,$url);
-        }
-        $rule['list_url_clean'] && $url = $this->dataClean($rule['list_url_clean'],$url);
-        $title = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $title);
-        $this->title = $title;
-        return array($title,$url);
-    }
-    function spider_url($work = NULL,$pid = NULL,$_rid = NULL) {
-        $pid === NULL && $pid = $this->pid;
-        if ($pid) {
-            $project = $this->project($pid);
-            $cid = $project['cid'];
-            $rid = $project['rid'];
-            $prule_list_url = $project['list_url'];
-            $lastupdate     = $project['lastupdate'];
-        } else {
-            $cid = $this->cid;
-            $rid = $this->rid;
-        }
 
-        if($work=='shell'){
-            (empty($rid) && $_rid !== NULL) && $rid = $_rid;
-            $lastupdate = $project['lastupdate'];
-            if($project['psleep']){
-                if(time()-$lastupdate<$project['psleep']){
-                    echo '采集方案['.$pid."]:".format_date($lastupdate)."刚采集过了,请".($project['psleep']/3600)."小时后在继续采集\n";
-                    return;
-                }
-            }
-            echo "\033[32m开始采集方案[".$pid."] 采集规则[".$rid."]\033[0m\n";
-        }
-        $ruleA = $this->rule($rid);
-        $rule = $ruleA['rule'];
-        $urls = $rule['list_urls'];
-        $project['urls'] && $urls = $project['urls'];
-
-        $urlsArray  = explode("\n", $urls);
-        $urlsArray  = array_filter($urlsArray);
-        $_urlsArray = $urlsArray;
-        $urlsList   = array();
-        if($work=='shell'){
-            // echo "$urls\n";
-            print_r($urlsArray);
-        }
-        foreach ($_urlsArray AS $_key => $_url) {
-            $_url = htmlspecialchars_decode($_url);
-            preg_match('|.*<(.*)>.*|is',$_url, $_matches);
-            if($_matches){
-                list($format,$begin,$num,$step,$zeroize,$reverse) = explode(',',$_matches[1]);
-                $url = str_replace($_matches[1], '*',trim($_matches[0]));
-                $_urlsList = $this->mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse);
-                unset($urlsArray[$_key]);
-                $urlsList = array_merge($urlsList,$_urlsList);
-            }
-        }
-        $urlsList && $urlsArray = array_merge($urlsArray,$urlsList);
-        unset($_urlsArray,$_key,$_url,$_matches,$_urlsList,$urlsList);
-        $urlsArray  = array_unique($urlsArray);
-
-        // $this->useragent = $rule['user_agent'];
-        // $this->encoding  = $rule['curl']['encoding'];
-        // $this->referer   = $rule['curl']['referer'];
-        // $this->charset   = $rule['charset'];
-
-        if(empty($urlsArray)){
-            if($work=='shell'){
-                echo "采集列表为空!请填写!\n";
-                return false;
-            }
-            iPHP::alert('采集列表为空!请填写!', 'js:parent.window.iCMS_MODAL.destroy();');
-        }
-
-//    	if($this->ruleTest){
-//	    	echo "<pre>";
-//	    	print_r(iS::escapeStr($project));
-//	    	print_r(iS::escapeStr($rule));
-//	    	echo "</pre>";
-//	    	echo "<hr />";
-//		}
-        if($rule['mode']=="2"){
-            iPHP::import(iPHP_LIB.'/phpQuery.php');
-            $this->ruleTest && $_GET['pq_debug'] && phpQuery::$debug =1;
-        }
-
-        $pubArray         = array();
-        $pubCount         = array();
-        $pubAllCount      = array();
-        $this->curl_proxy = $rule['proxy'];
-        $this->urlslast   = null;
-        foreach ($urlsArray AS $key => $url) {
-            $url = trim($url);
-            $this->urlslast = $url;
-            if($work=='shell'){
-                echo '开始采集列表:'.$url."\n";
-            }
-            if ($this->ruleTest) {
-                echo $url . "<br />";
-            }
-            $html = $this->remote($url);
-            if(empty($html)){
-                continue;
-            }
-            if($rule['mode']=="2"){
-                $doc       = phpQuery::newDocumentHTML($html,'UTF-8');
-                $list_area = $doc[trim($rule['list_area_rule'])];
-                // if(strpos($rule['list_area_format'], 'DOM::')!==false){
-                //     $list_area = $this->dataClean($rule['list_area_format'], $list_area);
-                // }
-
-                if($rule['list_area_format']){
-                    $list_area_format = trim($rule['list_area_format']);
-                    if(strpos($list_area_format, 'ARRAY::')!==false){
-                        $list_area_format = str_replace('ARRAY::', '', $list_area_format);
-                        $lists = array();
-                        foreach ($list_area as $la_key => $la) {
-                            $lists[] = phpQuery::pq($list_area_format,$la);
-                        }
-                    }else{
-                        $lists = phpQuery::pq($list_area_format,$list_area);
-                    }
-                }else{
-                    $lists = $list_area;
-                }
-
-                if ($this->ruleTest) {
-                    echo iS::escapeStr($rule['list_area_format']);
-                    echo "<hr />";
-                    echo iS::escapeStr($list_area);
-                    echo "<hr />";
-                }
-                // $lists = $list_area;
-                //echo 'list:getDocumentID:'.$lists->getDocumentID()."\n";
-            }else{
-                $list_area_rule = $this->pregTag($rule['list_area_rule']);
-                if ($list_area_rule) {
-                    preg_match('|' . $list_area_rule . '|is', $html, $matches, $PREG_SET_ORDER);
-                    $list_area = $matches['content'];
-                } else {
-                    $list_area = $html;
-                }
-
-    			$html = null;
-                unset($html);
-
-                if ($this->ruleTest) {
-                    echo iS::escapeStr($rule['list_area_rule']);
-    //    			echo iS::escapeStr($list_area);
-                    echo "<hr />";
-                }
-                if ($rule['list_area_format']) {
-                    $list_area = $this->dataClean($rule['list_area_format'], $list_area);
-                }
-                if ($this->ruleTest) {
-                    echo iS::escapeStr($rule['list_area_format']);
-                    echo "<hr />";
-                    echo iS::escapeStr($list_area);
-                    echo "<hr />";
-                }
-
-                preg_match_all('|' . $this->pregTag($rule['list_url_rule']) . '|is', $list_area, $lists, PREG_SET_ORDER);
-
-                $list_area = null;
-                unset($list_area);
-                if ($rule['sort'] == "1") {
-                    //arsort($lists);
-                } elseif ($rule['sort'] == "2") {
-                    asort($lists);
-                } elseif ($rule['sort'] == "3") {
-                    shuffle($lists);
-                }
-            }
-            //
-
-            if ($this->ruleTest) {
-                echo iS::escapeStr($rule['list_url_rule']);
-                echo "<hr />";
-                echo iS::escapeStr($rule['list_url']);
-                echo "<hr />";
-            }
-			if($prule_list_url){
-				$rule['list_url']	= $prule_list_url;
-			}
-            if ($work) {
-                if($work=="shell"){
-                    $pubCount[$url]['count'] = count($lists);
-                    $pubAllCount['count']+=$pubCount[$url]['count'];
-                    echo "开始采集:".$url." 列表 ".$pubCount[$url]['count']."条记录\n";
-                    foreach ($lists AS $lkey => $row) {
-                        list($this->title,$this->url) = $this->title_url($row,$rule,$url);
-                        if($this->url===false){
-                            continue;
-                        }
-                        $hash  = md5($this->url);
-                        echo "title:".$this->title."\n";
-                        echo "url:".$this->url."\n";
-                        $this->rid = $rid;
-                        $checker = $this->checker($work);
-                        if($checker===true){
-                            echo "开始采集....";
-                            $callback  = $this->do_publish("shell");
-                            if ($callback['code'] == "1001") {
-                                $pubCount[$url]['success']++;
-                                $pubAllCount['success']+=$pubCount[$url]['success'];
-                                echo "....√\n";
-                                if($project['sleep']){
-                                    echo "sleep:".$project['sleep']."s\n";
-                                    if($rule['mode']!="2"){
-                                        unset($lists[$lkey]);
-                                    }
-                                    gc_collect_cycles();
-                                    sleep($project['sleep']);
-                                }else{
-                                    //sleep(1);
-                                }
-                            }else{
-                                $pubCount[$url]['error']++;
-                                $pubAllCount['error']+=$pubCount[$url]['error'];
-                                echo "error\n\n";
-                                continue;
-                            }
-                        }
-                        $pubCount[$url]['published']++;
-                        $pubAllCount['published']+=$pubCount[$url]['published'];
-                    }
-                    if($rule['mode']=="2"){
-                        phpQuery::unloadDocuments($doc->getDocumentID());
-                    }else{
-                        unset($lists);
-                    }
-                }else{
-                    $listsArray[$url] = $lists;
-                }
-            } else {
-                foreach ($lists AS $lkey => $row) {
-                    list($title,$turl) = $this->title_url($row,$rule,$url);
-                    if($turl===false){
-                        continue;
-                    }
-                    $hash  = md5($turl);
-                    if ($this->ruleTest) {
-                        echo $title . ' (<a href="' . APP_URI . '&do=testcont&url=' . urlencode($turl) . '&rid=' . $rid . '&pid=' . $pid . '&title=' . urlencode($title) . '" target="_blank">测试内容规则</a>) <br />';
-                        echo $turl . "<br />";
-                        echo $hash . "<br /><br />";
-                    } else {
-                        //iDB::query("INSERT INTO `#iCMS@__spider_url` (`cid`, `rid`,`pid`, `hash`, `title`, `url`, `status`, `publish`, `addtime`, `pubdate`) VALUES ('$cid', '$rid','$pid','$hash','$title', '$turl', '0', '0', '" . time() . "', '0');");
-                        $checker = $this->checker($work);
-                        $checker===true && $pubArray[] = array('sid'=>iDB::$insert_id,'url'=>$turl,'title'=>$title,'cid'=>$cid,'rid'=>$rid,'pid'=>$pid,'hash'=>$hash);
-                    }
-                }
-            }
-        }
-        if(!$work){
-            return $pubArray;
-        }
-		$lists = null;
-        unset($lists);
-		gc_collect_cycles();
-        if ($work) {
-            if($work=="shell"){
-                echo "采集数据统结果:\n";
-                print_r($pubCount);
-                print_r($pubAllCount);
-                echo "全部采集完成....\n";
-                iDB::update('spider_project',array('lastupdate'=>time()),array('id'=>$pid));
-                return;
-            }
-            $sArrayTmp = iDB::all("SELECT `hash` FROM `#iCMS@__spider_url` where `pid`='$pid'");
-            $_count = count($sArrayTmp);
-            for ($i = 0; $i < $_count; $i++) {
-                $sArray[$sArrayTmp[$i]['hash']] = 1;
-            }
-            unset($sArrayTmp);
-            include iACP::view("spider.lists");
-        }
+    function spider_url($work = NULL,$pid = NULL,$_rid = NULL,$_urls = NULL,$callback = NULL) {
+        return spiderUrls::crawl($work,$pid,$_rid,$_urls,$callback);
     }
 
     function spider_content() {
-		ini_get('safe_mode') OR set_time_limit(0);
-        $sid = $this->sid;
-        if ($sid) {
-            $sRs   = iDB::row("SELECT * FROM `#iCMS@__spider_url` WHERE `id`='$sid' LIMIT 1;");
-            $title = $sRs->title;
-            $cid   = $sRs->cid;
-            $pid   = $sRs->pid;
-            $url   = $sRs->url;
-            $rid   = $sRs->rid;
-       } else {
-            $rid   = $this->rid;
-            $pid   = $this->pid;
-            $title = $this->title;
-            $url   = $this->url;
-        }
-
-		if($pid){
-            $project        = $this->project($pid);
-            $prule_list_url = $project['list_url'];
-		}
-
-        $ruleA           = $this->rule($rid);
-        $rule            = $ruleA['rule'];
-        $dataArray       = $rule['data'];
-
-		if($prule_list_url){
-			$rule['list_url']	= $prule_list_url;
-		}
-
-        if ($this->contTest) {
-            echo "<pre>";
-            print_r(iS::escapeStr($ruleA));
-            print_r(iS::escapeStr($$project));
-            echo "</pre><hr />";
-        }
-
-        $this->curl_proxy = $rule['proxy'];
-        $responses = array();
-        $html      = $this->remote($url);
-        if(empty($html)){
-            if($this->work=='shell'){
-                echo '错误:001..采集 ' . $url . "文件内容为空!请检查采集规则\n";
-                return false;
-            }else{
-                iPHP::alert('错误:001..采集 ' . $url . ' 文件内容为空!请检查采集规则');
-            }
-        }
-
-//    	$http	= $this->check_content_code($html);
-//
-//    	if($http['match']==false){
-//    		return false;
-//    	}
-//		$content		= $http['content'];
-        $this->allHtml = "";
-        $responses['reurl'] = $this->url;
-        $rule['__url__']	= $this->url;
-        $callBackData       = false;
-        foreach ((array)$dataArray AS $key => $data) {
-            $content_html = $html;
-            $dname = $data['name'];
-
-            /**
-             * [DATA:name]
-             * 把之前[name]处理完的数据当作原始数据
-             * 如果之前有数据会叠加
-             * 用于数据多次处理
-             * @var string
-             */
-            if (strpos($dname,'DATA:')!== false){
-                $dname = str_replace('DATA:', '', $dname);
-                $content_html = $responses[$dname];
-                unset($responses[$dname]);
-            }
-            /**
-             * [PRE:name]
-             * 把PRE:name采集到的数据 当做原始数据
-             * 一般用于下载内容
-             * @var string
-             */
-            $url_dkey = 'PRE:'.$dname;
-            if(isset($responses[$url_dkey])){
-                $content_html = $responses[$url_dkey];
-                unset($responses[$url_dkey]);
-            }
-
-            $content = $this->content($content_html,$data,$rule,$responses);
-            /**
-             * [DATA@name]
-             * 内容回调 可以规则里调用之前内容
-             */
-            if(!is_array($content) && strpos($content, 'DATA@')!==false){
-                $callBackData = true;
-            }
-            unset($content_html);
-            /**
-             * [name.xxx]
-             * 采集内容做为数组
-             */
-            if (strpos($dname,'.')!== false){
-                $f_key = substr($dname,0,stripos($dname, "."));
-                $s_key = substr(strrchr($dname, "."), 1);
-                if(isset($responses[$f_key][$s_key])){
-                    if(is_array($responses[$f_key][$s_key])){
-                        $responses[$f_key][$s_key] = array_merge($responses[$f_key][$s_key],$content);
-                    }else{
-                        $responses[$f_key][$s_key].= $content;
-                    }
-                }else{
-                    $responses[$f_key][$s_key] = $content;
-                }
-            }else{
-                /**
-                 * 多个name 内容合并
-                 */
-                if(isset($responses[$dname])){
-                    if(is_array($responses[$dname])){
-                        $responses[$dname] = array_merge($responses[$dname],$content);
-                    }else{
-                        $responses[$dname].= $content;
-                    }
-                }else{
-                    $responses[$dname] = $content;
-                }
-            }
-            gc_collect_cycles();
-        }
-        if(empty($responses['title']) && $responses['title']!==false){
-            $responses['title'] = $title;
-        }
-        if ($responses['tags']){
-            $_tagsArray = explode(',', $responses['tags']);
-            $tagsArray  = array();
-            foreach ((array)$_tagsArray as $key => $value) {
-                $value = trim($value);
-                $value && $tagsArray[]=$value;
-            }
-            $tagsArray = array_filter($tagsArray);
-            $tagsArray = array_unique($tagsArray);
-            $responses['tags'] = implode(',', $tagsArray);
-            unset($tagsArray,$_tagsArray);
-        }
-        unset($this->allHtml,$html);
-        /**
-         * [DATA@name]
-         * 内容回调 可以规则里调用之前内容
-         */
-        if($callBackData){
-            foreach ((array)$responses as $key => $value) {
-                if(!is_array($value) && strpos($value, 'DATA@')!==false){
-                    $name = str_replace('DATA@', '', $value);
-                    $responses[$key] = $responses[$name];
-                }
-            }
-        }
-        gc_collect_cycles();
-
-        if ($this->contTest) {
-            echo "<pre style='width:99%;word-wrap: break-word;'>";
-            print_r(iS::escapeStr($responses));
-            echo "</pre><hr />";
-        }
-
-        iFS::$CURLOPT_ENCODING        = '';
-        iFS::$CURLOPT_REFERER         = '';
-        iFS::$watermark_config['pos'] = iCMS::$config['watermark']['pos'];
-        iFS::$watermark_config['x']   = iCMS::$config['watermark']['x'];
-        iFS::$watermark_config['y']   = iCMS::$config['watermark']['y'];
-        iFS::$watermark_config['img'] = iCMS::$config['watermark']['img'];
-
-        $rule['fs']['encoding'] && iFS::$CURLOPT_ENCODING = $rule['fs']['encoding'];
-        $rule['fs']['referer']  && iFS::$CURLOPT_REFERER  = $rule['fs']['referer'];
-        if($rule['watermark_mode']){
-            iFS::$watermark_config['pos'] = $rule['watermark']['pos'];
-            iFS::$watermark_config['x']   = $rule['watermark']['x'];
-            iFS::$watermark_config['y']   = $rule['watermark']['y'];
-            $rule['watermark']['img'] && iFS::$watermark_config['img'] = $rule['watermark']['img'];
-        }
-
-        return $responses;
-    }
-
-    function content($html,$data,$rule,$responses) {
-        if(trim($data['rule'])===''){
-            return;
-        }
-        $name = $data['name'];
-        if ($data['page']) {
-        	if(empty($rule['page_url'])){
-        		$rule['page_url'] = $rule['list_url'];
-        	}
-            if (empty($this->allHtml)) {
-                $page_url_array = array();
-                $page_area_rule = trim($rule['page_area_rule']);
-                if($page_area_rule){
-                    if(strpos($page_area_rule, 'DOM::')!==false){
-                        iPHP::import(iPHP_LIB.'/phpQuery.php');
-                        $doc      = phpQuery::newDocumentHTML($html,'UTF-8');
-                        $pq_dom   = str_replace('DOM::','', $page_area_rule);
-                        $pq_array = phpQuery::pq($pq_dom);
-                        foreach ($pq_array as $pn => $pq_val) {
-                            $href = phpQuery::pq($pq_val)->attr('href');
-                            if($href){
-                                if($rule['page_url_rule']){
-                                    if(strpos($rule['page_url_rule'], 'CLEAN@')!==false){
-                                        $cleanhref = $this->dataClean($data['cleanafter'],$href);
-                                        if($cleanhref){
-                                            $href = $cleanhref;
-                                            unset($cleanhref);
-                                        }else{
-                                            continue;
-                                        }
-                                    }else{
-                                        $page_url_rule = $this->pregTag($rule['page_url_rule']);
-                                        // var_dump('|' . $page_url_rule . '|is');
-                                        if (!preg_match('|' . $page_url_rule . '|is', $href)){
-                                            continue;
-                                        }
-                                    }
-                                }
-                                $href = str_replace('<%url%>',$href, $rule['page_url']);
-                                $page_url_array[$pn] = $this->_url_complement($rule['__url__'],$href);
-                            }
-                        }
-                        if($page_url_array){
-                            $page_url_array = array_filter($page_url_array);
-                            $page_url_array = array_unique($page_url_array);
-                            $puk = array_search($rule['__url__'],$page_url_array);
-                            if($puk!==false){
-                                unset($page_url_array[$puk]);
-                            }
-                        }
-                        phpQuery::unloadDocuments($doc->getDocumentID());
-                        //var_dump($page_url_array);
-                        // exit;
-                    }else{
-                        $page_area_rule = $this->pregTag($page_area_rule);
-                        if ($page_area_rule) {
-                            preg_match('|' . $page_area_rule . '|is', $html, $matches, $PREG_SET_ORDER);
-                            $page_area = $matches['content'];
-                        } else {
-                            $page_area = $html;
-                        }
-                        if($rule['page_url_rule']){
-                            $page_url_rule = $this->pregTag($rule['page_url_rule']);
-                            preg_match_all('|' .$page_url_rule. '|is', $page_area, $page_url_matches, PREG_SET_ORDER);
-                            foreach ($page_url_matches AS $pn => $row) {
-                                $href = str_replace('<%url%>', $row['url'], $rule['page_url']);
-                                $page_url_array[$pn] = $this->_url_complement($rule['__url__'],$href);
-                                gc_collect_cycles();
-                            }
-                        }
-                        if($page_url_array){
-                            $page_url_array = array_filter($page_url_array);
-                            $page_url_array = array_unique($page_url_array);
-                            $puk = array_search($rule['__url__'],$page_url_array);
-                            unset($page_url_array[$puk]);
-                        }
-                        unset($page_area);
-                    }
-                }else{ // 逻辑方式
-                    if($rule['page_url_parse']=='<%url%>'){
-                        $page_url = str_replace('<%url%>',$rule['__url__'],$rule['page_url']);
-                    }else{
-                		$page_url_rule = $this->pregTag($rule['page_url_parse']);
-    					preg_match('|' . $page_url_rule . '|is', $rule['__url__'], $matches, $PREG_SET_ORDER);
-    			        $page_url = str_replace('<%url%>', $matches['url'], $rule['page_url']);
-			        }
-                    if (stripos($page_url,'<%step%>') !== false){
-                        for ($pn = $rule['page_no_start']; $pn <= $rule['page_no_end']; $pn = $pn + $rule['page_no_step']) {
-                            $page_url_array[$pn] = str_replace('<%step%>', $pn, $page_url);
-                            gc_collect_cycles();
-                        }
-                    }
-            	}
-		        if ($this->contTest) {
-		            echo $rule['__url__'] . "<br />";
-		            echo $rule['page_url'] . "<br />";
-		            echo iS::escapeStr($page_url_rule);
-		            echo "<hr />";
-		        }
-				if($this->contTest){
-					echo "<pre>";
-					print_r($page_url_array);
-					echo "</pre><hr />";
-				}
-		        $this->content_right_code = trim($rule['page_url_right']);
-		        $this->content_error_code = trim($rule['page_url_error']);
-                $this->curl_proxy = $rule['proxy'];
-
-                $pcontent = '';
-                $pcon     = '';
-                $pageurl  = array();
-                foreach ($page_url_array AS $pukey => $purl) {
-                    //usleep(100);
-                    $phtml = $this->remote($purl);
-                    $md5   = md5($phtml);
-                    if (empty($phtml)) {
-                        break;
-                    }
-                    if($pageurl[$md5]){
-                        break;
-                    }
-                    $phttp = $this->check_content_code($phtml);
-                    if ($phttp['match'] === false) {
-                        break;
-                    }
-                    $pageurl[$md5] = $purl;
-                    $pcon.= $phttp['content'];
-                }
-                gc_collect_cycles();
-                $html.= $pcon;
-                unset($pcon,$phttp);
-                $this->allHtml = $html;
-
-                if ($this->contTest) {
-                    echo "<pre>";
-                    print_r($pageurl);
-                    echo "</pre><hr />";
-                }
-            }else{
-                $html = $this->allHtml;
-            }
-        }
-        if($data['dom']){
-            iPHP::import(iPHP_LIB.'/phpQuery.php');
-            $this->contTest && $_GET['pq_debug'] && phpQuery::$debug =1;
-            $doc     = phpQuery::newDocumentHTML($html,'UTF-8');
-            //echo "\ndata:getDocumentID:".$doc->getDocumentID()."\n";
-            list($content_dom,$content_fun,$content_attr) = explode("\n", $data['rule']);
-            $content_dom  = trim($content_dom);
-            $content_fun  = trim($content_fun);
-            $content_attr = trim($content_attr);
-            $content_fun OR $content_fun = 'html';
-            if ($data['multi']) {
-                $conArray = array();
-                foreach ($doc[$content_dom] as $doc_key => $doc_value) {
-                    if($content_attr){
-                        $conArray[] = phpQuery::pq($doc_value)->$content_fun($content_attr);
-                    }else{
-                        $conArray[] = phpQuery::pq($doc_value)->$content_fun();
-                    }
-                }
-                $content = implode('#--iCMS.PageBreak--#', $conArray);
-                unset($conArray);
-            }else{
-                if($content_attr){
-                    $content = $doc[$content_dom]->$content_fun($content_attr);
-                }else{
-                    $content = $doc[$content_dom]->$content_fun();
-                }
-            }
-
-            if ($this->contTest) {
-                print_r(htmlspecialchars($content));
-                echo "<hr />";
-            }
-            phpQuery::unloadDocuments($doc->getDocumentID());
-            unset($doc);
-        }else{
-            if(trim($data['rule'])=='<%content%>'){
-                $content = $html;
-            }else{
-                $data_rule = $this->pregTag($data['rule']);
-                if ($this->contTest) {
-                    print_r(iS::escapeStr($data_rule));
-                    echo "<hr />";
-                }
-                if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $data_rule)) {
-                    if ($data['multi']) {
-                        preg_match_all('|' . $data_rule . '|is', $html, $matches, PREG_SET_ORDER);
-                        $conArray = array();
-                        foreach ((array) $matches AS $mkey => $mat) {
-                            $conArray[] = $mat['content'];
-                        }
-                        $content = implode('#--iCMS.PageBreak--#', $conArray);
-                        if ($this->contTest) {
-                            print_r(htmlspecialchars($content));
-                            echo "<hr />";
-                        }
-                    } else {
-                        preg_match('|' . $data_rule . '|is', $html, $matches, $PREG_SET_ORDER);
-                        $content = $matches['content'];
-                    }
-                } else {
-                    $content = $data_rule;
-                }
-            }
-        }
-		$html = null;
-        unset($html);
-
-        if ($data['cleanbefor']) {
-            $content = $this->dataClean($data['cleanbefor'], $content);
-        }
-        if(strpos($content, 'DATA@')!==false){
-            $name    = str_replace('DATA@', '', $content);
-            $content = $responses[$name];
-        }
-        if ($data['cleanhtml']) {
-            $content = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $content);
-        }
-        if ($data['format'] && $content) {
-            // $_content = iPHP::cleanHtml($content);
-            // trim($_content) && $content = $_content;
-            $content = autoformat($content);
-            $content = stripslashes($content);
-            // unset($_content);
-        }
-
-        if ($data['img_absolute'] && $content) {
-            preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $img_match);
-            if($img_match[1]){
-                $_img_array = array_unique($img_match[1]);
-                $_img_urls  = array();
-                foreach ((array)$_img_array as $_img_key => $_img_src) {
-                    $_img_urls[$_img_key] = $this->_url_complement($rule['__url__'],$_img_src);
-                }
-               $content = str_replace($_img_array, $_img_urls, $content);
-            }
-        }
-
-        $data['trim'] && $content = trim($content);
-        if ($data['capture']) {
-            $capture = str_replace ('\\','',$content);
-            $content = $this->remote($capture);
-        }
-        if ($data['download']) {
-            $http    = str_replace ('\\','',$content);
-            $content = iFS::http($http);
-        }
-
-        if ($data['cleanafter']) {
-            $content = $this->dataClean($data['cleanafter'], $content);
-        }
-        if ($data['autobreakpage']) {
-            $content = $this->autoBreakPage($content);
-        }
-        if ($data['mergepage']) {
-            $_content = $content;
-            preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is", $_content, $picArray);
-            $pA = array_unique($picArray[1]);
-            $pA = array_filter($pA);
-            $_pcount = count($pA);
-            if ($_pcount < 4) {
-                $content = str_replace('#--iCMS.PageBreak--#', "", $content);
-            } else {
-                $contentA = explode("#--iCMS.PageBreak--#", $_content);
-                $newcontent = array();
-                $this->checkpage($newcontent, $contentA, 4);
-                if (is_array($newcontent)) {
-                    $content = array_filter($newcontent);
-                    $content = implode('#--iCMS.PageBreak--#', $content);
-                    //$content      = addslashes($content);
-                } else {
-                    //$content      = addslashes($newcontent);
-                    $content = $newcontent;
-                }
-                unset($newcontent,$contentA);
-            }
-            unset($_content);
-        }
-        if ($data['empty'] && empty($content)) {
-            if($this->work){
-                echo "\n[".$name . "内容为空!请检查,规则是否正确!]\n";
-                return false;
-            }else{
-                $this->contTest && iPHP::$dialog['alert']='window';
-                iPHP::alert($name . '内容为空!请检查,规则是否正确!!');
-            }
-        }
-        if ($data['json_decode']) {
-            $content = json_decode($content,true);
-        }
-        if($data['array']){
-        	return (array)$content;
-        }
-        return $content;
-    }
-    function _url_complement($baseUrl,$href){
-        $href = trim($href);
-        if (stripos($href,'http://') === false){
-            if ($href[0]=='/'){
-                $base_uri  = parse_url($baseUrl);
-                $base_host = $base_uri['scheme'].'://'.$base_uri['host'];
-                return $base_host.'/'.ltrim($href,'/');
-            }else{
-                $base_url  = pathinfo($baseUrl,PATHINFO_DIRNAME);
-                return iFS::path($base_url.'/'.ltrim($href,'/'));
-            }
-        }else{
-            return $href;
-        }
-    }
-    function dataClean($rules, $content) {
-        iPHP::import(iPHP_LIB.'/phpQuery.php');
-        $ruleArray = explode("\n", $rules);
-        foreach ($ruleArray AS $key => $rule) {
-            $rule = trim($rule);
-            $rule = str_replace('<BR>', "\n", $rule);
-            if(strpos($rule, 'BEFOR::')!==false){
-              $rule = str_replace('BEFOR::','', $rule);
-              $content = $rule.$content;
-              continue;
-            }
-            if(strpos($rule, 'AFTER::')!==false){
-              $rule = str_replace('AFTER::','', $rule);
-              $content = $rule.$content;
-              continue;
-            }
-
-            if(strpos($rule, '<%SELF%>')!==false){
-              $content = str_replace('<%SELF%>',$content, $rule);
-              continue;
-            }
-
-            list($_pattern, $_replacement) = explode("==", $rule);
-            $_pattern     = trim($_pattern);
-            $_replacement = trim($_replacement);
-            $_replacement = str_replace('\n', "\n", $_replacement);
-            if(strpos($_pattern, 'NEED::')!==false){
-                $need = str_replace('NEED::','', $_pattern);
-                if(strpos($content,$need)===false){
-                    return false;
-                }
-            }
-            if(strpos($_pattern, 'NOT::')!==false){
-                $not = str_replace('NOT::','', $_pattern);
-                if(strpos($content,$not)!==false){
-                    return false;
-                }
-            }
-            if(strpos($_pattern, 'LEN::')!==false){
-                $len        = str_replace('LEN::','', $_pattern);
-                $len_content = preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$content);
-                if(cstrlen($len_content)<$len){
-                    return false;
-                }
-            }
-            if(strpos($_pattern, 'IMG::')!==false){
-                $img_count = str_replace('IMG::','', $_pattern);
-                preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
-                $img_array  = array_unique($match[1]);
-                if(count($img_array)<$img_count){
-                    return false;
-                }
-            }
-
-            if(strpos($_pattern, 'DOM::')!==false){
-                iPHP::import(iPHP_LIB.'/phpQuery.php');
-                $doc      = phpQuery::newDocumentHTML($content,'UTF-8');
-                //echo 'dataClean:getDocumentID:'.$doc->getDocumentID()."\n";
-                $_pattern = str_replace('DOM::','', $_pattern);
-                list($pq_dom, $pq_fun,$pq_attr) = explode("::", $_pattern);
-                $pq_array = phpQuery::pq($pq_dom);
-                foreach ($pq_array as $pq_key => $pq_val) {
-                    if($pq_fun){
-                        if($pq_attr){
-                            $pq_content = phpQuery::pq($pq_val)->$pq_fun($pq_attr);
-                        }else{
-                            $pq_content = phpQuery::pq($pq_val)->$pq_fun();
-                        }
-                    }else{
-                        $pq_content = (string)phpQuery::pq($pq_val);
-                    }
-                    $pq_pattern[$pq_key]     = $pq_content;
-                    $pq_replacement[$pq_key] = $_replacement;
-                }
-                phpQuery::unloadDocuments($doc->getDocumentID());
-                //var_dump(array_map('htmlspecialchars', $pq_pattern));
-                $content = str_replace($pq_pattern,$pq_replacement, $content);
-            }else{
-                if($_pattern=='~SELF~'){
-                    $_pattern = $content;
-                }
-                if(strpos($_replacement, '~SELF~')!==false){
-                    $_replacement = str_replace('~SELF~',$content, $_replacement);
-                }
-                if(strpos($_replacement, '~S~')!==false){
-                    $_replacement = str_replace('~S~',' ', $_replacement);
-                }
-
-                $replacement[$key] = $_replacement;
-                $pattern[$key] = '|' . $this->pregTag($_pattern) . '|is';
-            }
-        }
-        if($pattern){
-            return preg_replace($pattern, $replacement, $content);
-        }else{
-            return $content;
-        }
-    }
-
-    function checkurl($hash) {
-        $id = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` WHERE `hash`='$hash'");
-        return $id ? true : false;
-    }
-
-    function pregTag($rule) {
-        $rule = trim($rule);
-        if(empty($rule)){
-            return false;
-        }
-        $rule = str_replace("%>", "%>\n", $rule);
-        preg_match_all("/<%(.+)%>/i", $rule, $matches);
-        $pregArray = array_unique($matches[0]);
-        $pregflip = array_flip($pregArray);
-
-        foreach ((array)$pregflip AS $kpreg => $vkey) {
-            $pregA[$vkey] = "###iCMS_PREG_" . rand(1, 1000) . '_' . $vkey . '###';
-        }
-        $rule = str_replace($pregArray, $pregA, $rule);
-        $rule = preg_quote($rule, '|');
-        $rule = str_replace($pregA, $pregArray, $rule);
-        $rule = str_replace("%>\n", "%>", $rule);
-        $rule = preg_replace('|<%(\w{3,20})%>|i', '(?<\\1>.*?)', $rule);
-        $rule = str_replace(array('<%', '%>'), '', $rule);
-        return $rule;
-    }
-
-    function rule($id) {
-        $rs = iDB::row("SELECT * FROM `#iCMS@__spider_rule` WHERE `id`='$id' LIMIT 1;", ARRAY_A);
-        $rs['rule'] && $rs['rule'] = stripslashes_deep(unserialize($rs['rule']));
-        $rs['user_agent'] OR $rs['user_agent'] = "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)";
-        $this->useragent = $rs['rule']['user_agent'];
-        $this->encoding  = $rs['rule']['curl']['encoding'];
-        $this->referer   = $rs['rule']['curl']['referer'];
-        $this->cookie    = $rs['rule']['curl']['cookie'];
-        $this->charset   = $rs['rule']['charset'];
-        return $rs;
+		return spiderData::crawl();
     }
 
     function do_rule() {
@@ -1360,7 +260,7 @@ class spiderApp {
 
     function do_addrule() {
         $rs = array();
-        $this->rid && $rs = $this->rule($this->rid);
+        $this->rid && $rs = spider::rule($this->rid);
         $rs['rule'] && $rule = $rs['rule'];
         if (empty($rule['data'])) {
             $rule['data'] = array(
@@ -1393,10 +293,11 @@ class spiderApp {
         $data   = compact ($fields);
         if ($id) {
             iDB::update('spider_rule', $data, array('id'=>$id));
+            iPHP::success('保存成功');
         } else {
             iDB::insert('spider_rule',$data);
+            iPHP::success('保存成功!','url:'.APP_URI."&do=addrule&rid=".$id);
         }
-        iPHP::success('保存成功');
     }
 
     function rule_opt($id = 0, $output = null) {
@@ -1413,7 +314,7 @@ class spiderApp {
 
     function do_post() {
         if ($_GET['keywords']) {
-            $sql = " WHERE `name` REGEXP '{$_GET['keywords']}'";
+            $sql = " WHERE CONCAT(name,app,post) REGEXP '{$_GET['keywords']}'";
         }
         $orderby = $_GET['orderby'] ? $_GET['orderby'] : "id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
@@ -1462,10 +363,6 @@ class spiderApp {
         return $opt;
     }
 
-    function project($id) {
-        return iDB::row("SELECT * FROM `#iCMS@__spider_project` WHERE `id`='$id' LIMIT 1;", ARRAY_A);
-    }
-
     function do_copyproject() {
         iDB::query("INSERT INTO `#iCMS@__spider_project` (`name`, `urls`, `cid`, `rid`, `poid`, `sleep`,`checker`,`self`,`auto`, `psleep`) select `name`, `urls`, `cid`, `rid`, `poid`, `sleep`,`checker`,`self`,`auto`,`psleep` from `#iCMS@__spider_project` where id = '$this->pid'");
         $pid = iDB::$insert_id;
@@ -1508,7 +405,7 @@ class spiderApp {
     }
     function do_addproject() {
         $rs = array();
-        $this->pid && $rs = $this->project($this->pid);
+        $this->pid && $rs = spider::project($this->pid);
         $cid = empty($rs['cid']) ? $this->cid : $rs['cid'];
 
         $categoryApp = iACP::app('category',iCMS_APP_ARTICLE);
@@ -1550,301 +447,10 @@ class spiderApp {
         iPHP::success('完成', 'url:' . APP_URI . '&do=project');
     }
     function do_proxy_test(){
-       $a = $this->_proxy_test();
+       $a = spiderTools::proxy_test();
        var_dump($a);
     }
-    function _proxy_test(){
-        $options = array(
-            CURLOPT_URL                  => 'http://www.baidu.com',
-            CURLOPT_REFERER              => 'http://www.baidu.com',
-            CURLOPT_USERAGENT            => 'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
-            CURLOPT_TIMEOUT              => 10,
-            CURLOPT_CONNECTTIMEOUT       => 8,
-            CURLOPT_RETURNTRANSFER       => 1,
-            CURLOPT_HEADER               => 0,
-            CURLOPT_NOSIGNAL             => true,
-            CURLOPT_DNS_USE_GLOBAL_CACHE => true,
-            CURLOPT_DNS_CACHE_TIMEOUT    => 86400,
-            CURLOPT_SSL_VERIFYPEER       => false,
-            CURLOPT_SSL_VERIFYHOST       => false
-            // CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
-            // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
-        );
-        if(empty($this->proxy_array)){
-            if(empty($this->curl_proxy)){
-                return false;
-            }
-            $this->proxy_array = explode("\n", $this->curl_proxy); // socks5://127.0.0.1:1080@username:password
-        }
-        if(empty($this->proxy_array)){
-            return false;
-        }
-        $rand_keys   = array_rand($this->proxy_array,1);
-        $proxy       = $this->proxy_array[$rand_keys];
-        $proxy       = trim($proxy);
-        $options     = $this->_proxy($options,$proxy);
 
-        $ch        = curl_init();
-        curl_setopt_array($ch,$options);
-        curl_exec($ch);
-        $info      = curl_getinfo($ch);
-        curl_close($ch);
-        if($info['http_code']==200){
-            return $proxy;
-        }else{
-            unset($this->proxy_array[$rand_keys]);
-            return $this->_proxy_test();
-        }
-    }
-    function _proxy($options='',$proxy){
-        if($proxy){
-            // $proxy_array = explode("\n", $this->proxy); // socks5://127.0.0.1:1080@username:password
-            // $rand_keys   = array_rand($proxy_array,1);
-            // $proxy       = $proxy_array[$rand_keys];
-            // if(empty($proxy)){
-            //     return $options;
-            // }
-            //foreach ($proxy_array as $key => $proxy) {
-                $proxy   = trim($proxy);
-                $matches = strpos($proxy,'socks5://');
-                if($matches===false){
-                    // $options[CURLOPT_HTTPPROXYTUNNEL] = true;//HTTP代理开关
-                    $options[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP;//使用http代理模式
-                }else{
-                    $options[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
-                }
-                list($url,$auth) = explode('@', $proxy);
-                $url = str_replace(array('http://','socks5://'), '', $url);
-                $options[CURLOPT_PROXY] = $url;
-                $auth && $options[CURLOPT_PROXYUSERPWD] = $auth;//代理验证格式  username:password
-                $options[CURLOPT_PROXYAUTH] = CURLAUTH_BASIC; //代理认证模式
-            //}
-        }
-
-        return $options;
-    }
-    function remote($url, $_count = 0) {
-        $url = str_replace('&amp;', '&', $url);
-        if(empty($this->referer)){
-            $uri = parse_url($url);
-            $this->referer = $uri['scheme'] . '://' . $uri['host'];
-        }
-
-        $options = array(
-            CURLOPT_URL                  => $url,
-            CURLOPT_ENCODING             => $this->encoding,
-            CURLOPT_REFERER              => $this->referer,
-            CURLOPT_USERAGENT            => $this->useragent,
-            CURLOPT_TIMEOUT              => 10,
-            CURLOPT_CONNECTTIMEOUT       => 10,
-            CURLOPT_RETURNTRANSFER       => 1,
-            CURLOPT_FAILONERROR          => 1,
-            CURLOPT_HEADER               => 0,
-            CURLOPT_NOSIGNAL             => true,
-            CURLOPT_DNS_USE_GLOBAL_CACHE => true,
-            CURLOPT_DNS_CACHE_TIMEOUT    => 86400,
-            CURLOPT_SSL_VERIFYPEER       => false,
-            CURLOPT_SSL_VERIFYHOST       => false
-            // CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
-            // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
-        );
-        $this->cookie && $options[CURLOPT_COOKIE] = $this->cookie;
-        if($this->curl_proxy){
-            $proxy   = $this->_proxy_test();
-            $proxy && $options = $this->_proxy($options,$proxy);
-        }
-        $ch = curl_init();
-        curl_setopt_array($ch,$options);
-        $responses = curl_exec($ch);
-        $info = curl_getinfo($ch);
-        if ($this->contTest || $this->ruleTest) {
-            echo '<pre>';
-            print_r($info);
-            echo '</pre><hr />';
-            if($_GET['breakinfo']){
-            	exit();
-            }
-        }
-        if (in_array($info['http_code'],array(301,302)) && $_count < 5) {
-            $_count++;
-            $newurl = $info['redirect_url'];
-	        if(empty($newurl)){
-		    	curl_setopt($ch, CURLOPT_HEADER, 1);
-		    	$header		= curl_exec($ch);
-		    	preg_match ('|Location: (.*)|i',$header,$matches);
-		    	$newurl 	= ltrim($matches[1],'/');
-			    if(empty($newurl)) return false;
-
-		    	if(!strstr($newurl,'http://')){
-			    	$host	= $uri['scheme'].'://'.$uri['host'];
-		    		$newurl = $host.'/'.$newurl;
-		    	}
-	        }
-	        $newurl	= trim($newurl);
-			curl_close($ch);
-			unset($responses,$info);
-            return $this->remote($newurl, $_count);
-        }
-        if (in_array($info['http_code'],array(404,500))) {
-			curl_close($ch);
-			unset($responses,$info);
-            return false;
-        }
-
-        if ((empty($responses)||$info['http_code']!=200) && $_count < 5) {
-            $_count++;
-            if ($this->contTest || $this->ruleTest) {
-                echo $url . '<br />';
-                echo "获取内容失败,重试第{$_count}次...<br />";
-            }
-			curl_close($ch);
-			unset($responses,$info);
-            return $this->remote($url, $_count);
-        }
-        $pos = stripos($info['content_type'], 'charset=');
-        if($pos!==false){
-            $content_charset = substr($info['content_type'], $pos+8);
-        }
-
-        $this->charset && $responses = $this->charsetTrans($responses,$content_charset,$this->charset);
-		curl_close($ch);
-		unset($info);
-        if ($this->contTest || $this->ruleTest) {
-            echo '<pre>';
-            print_r(htmlspecialchars(substr($responses,0,500)));
-            echo '</pre><hr />';
-        }
-        $this->url = $url;
-        return $responses;
-    }
-    function charsetTrans($html,$content_charset,$encode, $out = 'UTF-8') {
-        if($encode=='auto'){
-            preg_match('/<meta[^>]*?charset=(["\']?)([a-zA-z0-9\-\_]+)(\1)[^>]*?>/is', $html, $charset);
-            $encode = str_replace(array('"',"'"),'', trim($charset[2]));
-            if($content_charset){
-                $encode = $content_charset;
-            }
-            if(function_exists('mb_detect_encoding') && empty($encode)) {
-                $encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
-                //var_dump('mb_detect_encoding:'.$encode);
-            }
-        }
-        if ($this->contTest || $this->ruleTest) {
-            echo 'encoding:'.$encode . '<br />';
-        }
-        if(strtoupper($encode)=='UTF-8'){
-            return $html;
-        }
-        $html = preg_replace('/(<meta[^>]*?charset=(["\']?))[a-z\d_\-]*(\2[^>]*?>)/is', "\\1$out\\3", $html,1);
-        if (function_exists('mb_convert_encoding')) {
-            return mb_convert_encoding($html,'UTF-8',$encode);
-        } elseif (function_exists('iconv')) {
-            return iconv($encode,'UTF-8', $html);
-        } else {
-            iPHP::throwException('charsetTrans failed, no function');
-        }
-    }
-    function check_content_code($content) {
-        if ($this->content_right_code) {
-            if(strpos($this->content_right_code, 'DOM::')!==false){
-                iPHP::import(iPHP_LIB.'/phpQuery.php');
-                $doc     = phpQuery::newDocumentHTML($content,'UTF-8');
-                $pq_dom  = str_replace('DOM::','', $this->content_right_code);
-                $matches = (bool)(string)phpQuery::pq($pq_dom);
-                phpQuery::unloadDocuments($doc->getDocumentID());
-            }else{
-                $matches = strpos($content, $this->content_right_code);
-            }
-	        if ($matches===false) {
-	            $match = false;
-	            return false;
-	        }
-        }
-        if ($this->content_error_code) {
-            if(strpos($this->content_right_code, 'DOM::')!==false){
-                iPHP::import(iPHP_LIB.'/phpQuery.php');
-                $doc      = phpQuery::newDocumentHTML($content,'UTF-8');
-                $pq_dom   = str_replace('DOM::','', $this->content_right_code);
-                $_matches = (bool)(string)phpQuery::pq($pq_dom);
-                phpQuery::unloadDocuments($doc->getDocumentID());
-            }else{
-                $_matches = strpos($content, $this->content_error_code);
-            }
-            if ($_matches!==false) {
-                $match = false;
-                return false;
-            }
-        }
-        $match = true;
-        return compact('content', 'match');
-    }
-
-    function checkpage(&$newbody, $bodyA, $_count = 1, $nbody = "", $i = 0, $k = 0) {
-        $ac = count($bodyA);
-        $nbody.= $bodyA[$i];
-        preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is", $nbody, $picArray);
-        $pA = array_unique($picArray[1]);
-        $pA = array_filter($pA);
-        $_pcount = count($pA);
-        //	print_r($_pcount);
-        //	echo "\n";
-        //	print_r('_count:'.$_count);
-        //	echo "\n";
-        //	var_dump($_pcount>$_count);
-        if ($_pcount >= $_count) {
-            $newbody[$k] = $nbody;
-            $k++;
-            $nbody = "";
-        }
-        $ni = $i + 1;
-        if ($ni <= $ac) {
-            $this->checkpage($newbody, $bodyA, $_count, $nbody, $ni, $k);
-        } else {
-            $newbody[$k] = $nbody;
-        }
-    }
-    function autoBreakPage($content,$pageBit = '15000',$pageBreak='#--iCMS.PageBreak--#'){
-        $text      = str_replace('</p><p>', "</p>\n<p>", $content);
-        $textArray = explode("\n", $text);
-        $pageNum   = 0;
-        $resource  = array();
-        // $_count         = count($textArray);
-        foreach ($textArray as $key => $p) {
-            $text      = preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$p);
-            $pageLen   = strlen($resource[$pageNum]);
-            $output    = implode('',array_slice($textArray,$key));
-            $outputLen = strlen($output);
-            if($pageLen>$pageBit && $outputLen>$pageBit){
-                $pageNum++;
-                $resource[$pageNum] = $p;
-            }else{
-                $resource[$pageNum].= $p;
-            }
-        }
-        return implode($pageBreak, (array)$resource);
-    }
 }
 
-function stripslashes_deep($value) {
-    $value = is_array($value) ?
-            array_map('stripslashes_deep', $value) :
-            stripslashes($value);
 
-    return $value;
-}
-
-function str_cut($str, $start, $end) {
-    $content = strstr($str, $start);
-    $content = substr($content, strlen($start), strpos($content, $end) - strlen($start));
-    return $content;
-}
-
-function utf8_num_decode($entity) {
-    $convmap = array(0x0, 0x10000, 0, 0xfffff);
-    return mb_decode_numericentity($entity, $convmap, 'UTF-8');
-}
-function utf8_entity_decode($entity) {
-    $entity  = '&#'.hexdec($entity).';';
-    $convmap = array(0x0, 0x10000, 0, 0xfffff);
-    return mb_decode_numericentity($entity, $convmap, 'UTF-8');
-}

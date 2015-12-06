@@ -13,6 +13,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 iPHP::app('tag.class','static');
 class tagsApp{
+    public $callback = array();
     function __construct() {
         $this->appid       = iCMS_APP_TAG;
         $this->id          = (int)$_GET['id'];
@@ -147,7 +148,7 @@ class tagsApp{
             iPHP::success('标签导入完成<br />空标签:'.(int)$msg['empty'].'个<br />已经存在标签:'.(int)$msg['has'].'个<br />成功导入标签:'.(int)$msg['success'].'个');
         }
     }
-    function do_save($callback=false){
+    function do_save(){
         $id          = (int)$_POST['id'];
         $uid         = (int)$_POST['uid'];
         $cid         = implode(',', (array)$_POST['cid']);
@@ -250,18 +251,7 @@ class tagsApp{
             map::add($cid,$id);
             $tcid && map::add($tcid,$id);
 
-            if ($this->callback['primary']) {
-                $PCB = $this->callback['primary'];
-                $handler = $PCB[0];
-                $params  = (array)$PCB[1]+array('indexid'=>$id);
-                if (is_callable($handler)){
-                    call_user_func_array($handler,$params);
-                }
-            }
-            if($callback){
-                return array("code"=>$callback,'indexid'=>$id);
-            }
-	        iPHP::success('标签添加完成',"url:".APP_URI);
+            $msg ='标签添加完成';
 		}else{
             if(isset($_POST['spider_update'])){
                 // $data = array();
@@ -288,21 +278,34 @@ class tagsApp{
             map::init('category',$this->appid);
             map::diff($cid,$_cid,$id);
             map::diff($tcid,$_tcid,$id);
-
-            if ($this->callback['primary']) {
-                $PCB = $this->callback['primary'];
-                $handler = $PCB[0];
-                $params  = (array)$PCB[1]+array('indexid'=>$id);
-                if (is_callable($handler)){
-                    call_user_func_array($handler,$params);
-                }
-            }
-            if($callback){
-                return array("code"=>$callback,'indexid'=>$id);
-            }
-
-        	iPHP::success('标签更新完成',"url:".APP_URI);
+            $msg = '标签更新完成';
 		}
+        iACP::callback($id,$this);
+        if($this->callback['code']){
+            return array(
+                "code"    => $this->callback['code'],
+                'indexid' => $id
+            );
+        }
+        iPHP::success($msg,"url:".APP_URI);
+    }
+    function __callback($id){
+        if ($this->callback['primary']) {
+            $PCB = $this->callback['primary'];
+            $handler = $PCB[0];
+            $params  = (array)$PCB[1]+array('indexid'=>$id);
+            if (is_callable($handler)){
+                call_user_func_array($handler,$params);
+            }
+        }
+        if ($this->callback['data']) {
+            $DCB     = $this->callback['data'];
+            $handler = $DCB[0];
+            $params  = (array)$DCB[1];
+            if (is_callable($handler)){
+                call_user_func_array($handler,$params);
+            }
+        }
     }
     function check_spider_data(&$data,$old,$key,$value){
         if($old[$key]){

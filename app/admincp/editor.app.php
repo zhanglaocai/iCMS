@@ -166,6 +166,19 @@ class editorApp{
 			'state'    => 'SUCCESS'
 		));
     }
+    function do_md_uploadimage(){
+        $F = iFS::upload('editormd-image-file');
+        $F===false && iPHP::json(array(
+            'message'  => iFS::$ERROR,
+            'success'  => '0'
+        ));
+        $F['path'] && $url = iFS::fp($F['path'],'+http');
+        iPHP::json(array(
+            'url'      => $url,
+            // 'message'  => '上传成功',
+            'success'  => 1
+        ));
+    }
     function do_uploadfile(){
         $F = iFS::upload('upfile');
         $F===false && exit(iFS::$ERROR);

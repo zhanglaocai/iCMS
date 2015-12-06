@@ -33,6 +33,10 @@ class articleApp{
             list($rs,$adRs) = articleTable::data($this->id,$this->dataid);
             if($adRs){
                 $adRs['body'] = htmlspecialchars($adRs['body']);
+                if(substr($adRs['body'], 0,19)=='#--iCMS.Markdown--#'){
+                    iCMS::$config['article']['editor'] = true;
+                    $adRs['body'] = substr($adRs['body'], 19);
+                }
                 $bodyArray    = explode('#--iCMS.PageBreak--#',$adRs['body']);
                 $bodyCount    = count($bodyArray);
             }
@@ -57,7 +61,11 @@ class articleApp{
         $strpos   = strpos(__REF__,'?');
         $REFERER  = $strpos===false?'':substr(__REF__,$strpos);
         $defArray = iCache::get('iCMS/defaults');
-    	include iACP::view("article.add");
+        if(iCMS::$config['article']['editor']){
+            include iACP::view("article.markdown");
+        }else{
+            include iACP::view("article.add");
+        }
     }
     function do_update(){
     	$data = iACP::fields($_GET['iDT']);
@@ -398,7 +406,7 @@ class articleApp{
         $_count = count($rs);
         include iACP::view("article.manage");
     }
-    function do_save($callback=false){
+    function do_save(){
         $aid         = (int)$_POST['aid'];
         $cid         = (int)$_POST['cid'];
         $userid      = (int)$_POST['userid'];
@@ -504,14 +512,7 @@ class articleApp{
 
             $aid  = articleTable::insert(compact($fields));
 
-            if ($this->callback['primary']) {
-                $PCB = $this->callback['primary'];
-                $handler = $PCB[0];
-                $params  = (array)$PCB[1]+array('indexid'=>$aid);
-                if (is_callable($handler)){
-                    call_user_func_array($handler,$params);
-                }
-            }
+            iACP::callback($aid,$this,'primary');
 
             if($tags){
 
@@ -541,8 +542,11 @@ class articleApp{
                 baidu_ping($article_url);
             }
 
-            if($callback){
-            	return array("code"=>$callback,'indexid'=>$aid);
+            if($this->callback['code']){
+                return array(
+                    "code"    => $this->callback['code'],
+                    'indexid' => $aid
+                );
             }
             $moreBtn = array(
                     array("text" =>"查看该文章","target"=>'_blank',"url"=>$article_url,"o"=>'target="_blank"'),
@@ -562,14 +566,7 @@ class articleApp{
 
             articleTable::update(compact($fields),array('id'=>$aid));
 
-            if ($this->callback['primary']) {
-                $PCB = $this->callback['primary'];
-                $handler = $PCB[0];
-                $params  = (array)$PCB[1]+array('indexid'=>$aid);
-                if (is_callable($handler)){
-                    call_user_func_array($handler,$params);
-                }
-            }
+            iACP::callback($aid,$this,'primary');
 
             map::init('prop',$this->appid);
             map::diff($pid,$_pid,$aid);
@@ -585,8 +582,11 @@ class articleApp{
                 $this->categoryApp->update_count_one($_cid,'-');
                 $this->categoryApp->update_count_one($cid);
             }
-            if($callback){
-                return array("code"=>$callback,'indexid'=>$aid);
+            if($this->callback['code']){
+                return array(
+                    "code"    => $this->callback['code'],
+                    'indexid' => $aid
+                );
             }
 
    //       if(!strstr($this->category[$cid]['contentRule'],'{PHP}')&&!$this->category[$cid]['url']&&$this->category[$cid]['mode']=="1" && $status) {
@@ -664,7 +664,11 @@ class articleApp{
         $body     = preg_replace(array('/<script.+?<\/script>/is','/<form.+?<\/form>/is'),'',$body);
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
 
-        iCMS::$config['publish']['autoformat'] && $body = autoformat($body);
+        if(isset($_POST['markdown'])){
+            $body = '#--iCMS.Markdown--#'.$body;
+        }else{
+            iCMS::$config['publish']['autoformat'] && $body = addslashes(autoformat($body));
+        }
 
         articleTable::$ID = $aid;
 
@@ -676,15 +680,7 @@ class articleApp{
         }else{
             $id = articleTable::data_insert($data);
         }
-
-        if ($this->callback['data']) {
-            $DCB     = $this->callback['data'];
-            $handler = $DCB[0];
-            $params  = (array)$DCB[1];
-            if (is_callable($handler)){
-                call_user_func_array($handler,$params);
-            }
-        }
+        iACP::callback($aid,$this,'data');
 
         $_POST['isredirect'] && iFS::$redirect  = true;
         $_POST['iswatermark']&& iFS::$watermark = false;

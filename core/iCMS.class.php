@@ -9,6 +9,8 @@
 * @version 6.0.0
 * @$Id: iCMS.class.php 2412 2014-05-04 09:52:07Z coolmoo $
 */
+defined('iPHP') OR exit('What are you doing?');
+
 class iCMS extends iPHP{
     public static $iCache      = null;
     public static $sphinx      = null;
@@ -232,7 +234,7 @@ class iCMS extends iPHP{
     public static function str_replace_limit($search, $replace, $subject, $limit=-1) {
         preg_match_all ("/<a[^>]*?>(.*?)<\/a>/si", $subject, $matches);//链接不替换
         $linkArray	= array_unique($matches[0]);
-        $linkArray & $linkflip	= array_flip($linkArray);
+        $linkArray && $linkflip	= array_flip($linkArray);
         foreach((array)$linkflip AS $linkHtml=>$linkkey){
             $linkA[$linkkey]='###iCMS_LINK_'.rand(1,1000).'_'.$linkkey.'###';
         }

@@ -10,6 +10,7 @@
 * @$Id: push.app.php 2393 2014-04-09 13:14:23Z coolmoo $
 */
 class pushApp{
+    public $callback = array();
     function __construct() {
         $this->id          = (int)$_GET['id'];
         $this->categoryApp = iACP::app('pushcategory');
@@ -143,14 +144,40 @@ class pushApp{
         if(empty($id)) {
             iDB::insert('push',$data);
             iDB::query("UPDATE `#iCMS@__category` SET `count` = count+1 WHERE `cid` ='$cid' LIMIT 1 ");
-            iPHP::success('推送完成','url:'.APP_URI);
+            $msg = '推送完成';
         }else{
 			iDB::update('push', $data, array('id'=>$id));
             if($_cid!=$cid) {
                 iDB::query("UPDATE `#iCMS@__category` SET `count` = count-1 WHERE `cid` ='{$_cid}' and `count`>0 LIMIT 1 ");
                 iDB::query("UPDATE `#iCMS@__category` SET `count` = count+1 WHERE `cid` ='$cid' LIMIT 1 ");
             }
-            iPHP::success('编辑完成!','url:'.APP_URI);
+            $msg = '编辑完成!';
+        }
+        iACP::callback($id,$this);
+        if($this->callback['code']){
+            return array(
+                "code"    => $this->callback['code'],
+                'indexid' => $id
+            );
+        }
+        iPHP::success($msg,'url:'.APP_URI);
+    }
+    function __callback($id){
+        if ($this->callback['primary']) {
+            $PCB = $this->callback['primary'];
+            $handler = $PCB[0];
+            $params  = (array)$PCB[1]+array('indexid'=>$id);
+            if (is_callable($handler)){
+                call_user_func_array($handler,$params);
+            }
+        }
+        if ($this->callback['data']) {
+            $DCB     = $this->callback['data'];
+            $handler = $DCB[0];
+            $params  = (array)$DCB[1];
+            if (is_callable($handler)){
+                call_user_func_array($handler,$params);
+            }
         }
     }
 	function getpic($path){

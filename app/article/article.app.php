@@ -151,8 +151,10 @@ class articleApp {
             if($p_array)foreach($p_array as $key =>$_pic) {
                 $article['pics'][$key] = trim($_pic);
             }
-            if(strpos($art_data['body'], '#--iCMS.Markdown--#')!==false){
-                $art_data['body'] = iPHP::Markdown($art_data['body']);
+            if(substr($art_data['body'], 0,19)=='#--iCMS.Markdown--#'){
+                // $art_data['body']    = iPHP::Markdown($art_data['body']);
+                $art_data['body']    = substr($art_data['body'], 19);
+                $article['markdown'] = ture;
             }
             $body     = explode('#--iCMS.PageBreak--#',$art_data['body']);
             $count    = count($body);
@@ -188,6 +190,7 @@ class articleApp {
                 $pagenav   = $index_nav.$prev_nav.$num_nav.$next_nav.$end_nav;
             }
             $article['page'] = array(
+                'pn'      => $page,
                 'total'   => $total,//总页数
                 'count'   => $count,//实际页数
                 'current' => $page,
@@ -197,6 +200,8 @@ class articleApp {
                 'prev'    => $prev_url,
                 'next'    => $next_url,
                 'pageurl' => $pageurl,
+                'args'    => $_GET['pageargs'],
+                'first'   => ($page=="1"?true:false),
                 'last'    => ($page==$count?true:false),//实际最后一页
                 'end'     => ($page==$total?true:false)
             );
@@ -380,7 +385,7 @@ class articleApp {
         return $content;
     }
     public function taoke($content){
-        preg_match_all('/<[^>]+>(http:\/\/(item|detail)\.(taobao|tmall)\.com\/.+)<\/[^>]+>/isU',$content,$taoke_array);
+        preg_match_all('/<[^>]+>((http|https):\/\/(item|detail)\.(taobao|tmall)\.com\/.+)<\/[^>]+>/isU',$content,$taoke_array);
         if($taoke_array[1]){
             $tk_array = array_unique($taoke_array[1]);
             foreach ($tk_array as $tkid => $tk_url) {
@@ -395,11 +400,12 @@ class articleApp {
         }
         return $content;
     }
-    public function tmpl($itemid,$url,$title=''){
-        $title OR $title = $url;
-        return '<a data-type="0"
-        biz-itemid="'.$itemid.'"
-        data-tmpl="350x100" data-tmplid="6" data-rd="2" data-style="2" data-border="1"
-        href="'.$url.'" rel="nofollow">==点击购买==</a>';
+    public function tmpl($itemid,$url,$title=null){
+        iPHP::assign('taoke',array(
+            'itemid' => $itemid,
+            'title'  => $title,
+            'url'    => $url,
+        ));
+        return iPHP::fetch('iCMS://taoke.tmpl.htm');
     }
 }

@@ -12,6 +12,7 @@
 defined('iPHP') OR exit('What are you doing?');
 iPHP::app('category.class','include');
 class categoryApp extends category{
+    public $callback           = array();
     protected $category_uri    = APP_URI;
     protected $category_furi   = APP_FURI;
     protected $category_name   = "栏目";
@@ -129,11 +130,15 @@ class categoryApp extends category{
         empty($name) && iPHP::alert($this->category_name.'名称不能为空!');
 		if($metadata){
 	        $md	= array();
-			foreach($metadata['key'] AS $_mk=>$_mval){
-				!preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iPHP::alert($this->category_name.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
-				$md[$_mval] = $metadata['value'][$_mk];
-			}
-			$metadata = addslashes(serialize($md));
+            if(is_array($metadata['key'])){
+    			foreach($metadata['key'] AS $_mk=>$_mval){
+    				!preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iPHP::alert($this->category_name.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
+    				$md[$_mval] = $metadata['value'][$_mk];
+    			}
+            }else if(is_array($metadata)){
+                $md = $metadata;
+            }
+            $metadata = addslashes(serialize($md));
 		}
 		if($contentprop){
 	        $ca = array();
@@ -203,6 +208,15 @@ class categoryApp extends category{
             $msg = $this->category_name."编辑完成!";
         }
         $hasbody && iCache::set('iCMS/category/'.$cid.'.body',$body,0);
+
+        iACP::callback($cid,$this);
+        if($this->callback['code']){
+            return array(
+                "code"    => $this->callback['code'],
+                'indexid' => $cid
+            );
+        }
+
         iPHP::success($msg,'url:'.$this->category_uri);
     }
 
