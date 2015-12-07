@@ -135,8 +135,7 @@ class iPHP{
         self::multiple_device($config);
         iFS::init($config['FS'],$config['watermark'],'filedata');
         iCache::init($config['cache']);
-        iURL::init($config['router']);
-        iPHP::iTemplate();
+        iPHP::template_start();
 
         iPHP_DEBUG      && iDB::$show_errors = true;
         iPHP_TPL_DEBUG  && self::clear_compiled_tpl();
@@ -213,7 +212,8 @@ class iPHP{
         $user_agent = str_replace(',','|',preg_quote($user_agent));
         return ($user_agent && preg_match('/'.$user_agent.'/i',$_SERVER["HTTP_USER_AGENT"]));
     }
-	public static function iTemplate(){
+	public static function template_start(){
+        self::import(iPHP_CORE.'/iTemplate.class.php');
         self::$iTPL = new iTemplate();
         self::$iTPL->template_callback = array("iPHP","tpl_path");
         self::$iTPL->template_dir      = iPHP_TPL_DIR;
@@ -373,11 +373,6 @@ class iPHP{
 	    return FALSE;
 	}
 
-    public static function getUniCookie($s){
-		$s = str_replace('\\\u','\\u',self::get_cookie($s));
-		$u = json_decode('["'.$s.'"]');
-		return $u[0];
-    }
     public static function import($path,$dump=false){
 		$key	= str_replace(iPATH,'iPHP://',$path);
 		if($dump){
@@ -912,6 +907,7 @@ class iPHP{
                 'COUNT'   =>$a['total'],
                 'TOTAL'   =>$iPages->totalpage,
                 'CURRENT' =>$iPages->nowindex,
+                'PN'      =>$iPages->nowindex,
                 'NEXT'    =>$iPages->next_page()
             );
             iPHP::$iTPL->_iTPL_VARS['PAGES'] = $iPages;
