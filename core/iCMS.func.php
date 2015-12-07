@@ -42,8 +42,12 @@ function small($sfp,$w='',$h='',$scale=true) {
     }
 
     if(iCMS::$config['FS']['yun']['enable']){
-        if(iCMS::$config['FS']['yun']['QiNiu']['Bucket']){
+        if(iCMS::$config['FS']['yun']['sdk']['QiNiuYun']['Bucket']){
             echo $sfp.'?imageView2/1/w/'.$w.'/h/'.$h;
+            return;
+        }
+        if(iCMS::$config['FS']['yun']['sdk']['TencentYun']['Bucket']){
+            echo $sfp.'?imageView2/2/w/'.$w.'/h/'.$h;
             return;
         }
     }

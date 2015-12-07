@@ -68,14 +68,14 @@ if (!class_exists('Gmagick')) {
 }
 
 /**
- * ËõÂÔÍ¼Éú³É³ÌĞò
+ * ç¼©ç•¥å›¾ç”Ÿæˆç¨‹åº
  */
 class Thumb {
 	public static $srcData     = null;
 	public static $thumbPath   = null;
 	protected static $cacheDir = null;
 	/**
-	 * ÏÔÊ¾ËõÂÔÍ¼
+	 * æ˜¾ç¤ºç¼©ç•¥å›¾
 	 */
 	public static function create(){
 		$expires = 31536000;
@@ -87,11 +87,11 @@ class Thumb {
 		self::finish();
 	}
 	/**
-	 * Éú³ÉËõÂÔÍ¼
-	 * @param  [type]  $path [Ô­Í¼Â·¾¶]
-	 * @param  integer $tw   [ËõÂÔÍ¼¿í¶È]
-	 * @param  integer $th   [ËõÂÔÍ¼¸ß¶È]
-	 * @return [image]        [ËõÂÔÍ¼×ÊÔ´]
+	 * ç”Ÿæˆç¼©ç•¥å›¾
+	 * @param  [type]  $path [åŸå›¾è·¯å¾„]
+	 * @param  integer $tw   [ç¼©ç•¥å›¾å®½åº¦]
+	 * @param  integer $th   [ç¼©ç•¥å›¾é«˜åº¦]
+	 * @return [image]        [ç¼©ç•¥å›¾èµ„æº]
 	 */
 	public static function make($path,$tw=1,$th=1){
 		strpos($path,'..') === false OR exit('What are you doing?');
@@ -131,7 +131,7 @@ class Thumb {
 		}
 	}
 	/**
-	 * Éú³ÉÎŞÍ¼±êÖ¾
+	 * ç”Ÿæˆæ— å›¾æ ‡å¿—
 	 * @return [type] [description]
 	 */
 	private static function blank(){
@@ -173,7 +173,7 @@ class Thumb {
 		return @stat($file)===false?false:true;
 	}
 	/**
-	 * µÈ¸ß/¿íËõ·Å
+	 * ç­‰é«˜/å®½ç¼©æ”¾
 	 * @param  [type]  $a      [description]
 	 * @param  boolean $reSize [description]
 	 * @return [type]          [description]
@@ -193,7 +193,7 @@ class Thumb {
 	    return $a;
 	}
 	/**
-	 * µÈ±ÈËõ·Å
+	 * ç­‰æ¯”ç¼©æ”¾
 	 * @param  [type]  $a      [description]
 	 * @param  boolean $reSize [description]
 	 * @return [type]          [description]
@@ -296,24 +296,24 @@ class Thumb {
 
 }
 
-// error_reporting(E_ALL ^ E_NOTICE); //µ÷ÊÔ
+// error_reporting(E_ALL ^ E_NOTICE); //è°ƒè¯•
 /**
- * Í¼Æ¬Ä¿Â¼¾ø¶ÔÂ·¾¶ ×îºó´ø /
+ * å›¾ç‰‡ç›®å½•ç»å¯¹è·¯å¾„ æœ€åå¸¦ /
  */
 define('iPHP_RES_PAHT','/data/www/ooxx.com/res/');
 /**
- * »º´æËõÂÔÍ¼ÅäÖÃ
+ * ç¼“å­˜ç¼©ç•¥å›¾é…ç½®
  */
-define('iPHP_RES_CACHE',false); 			//ÊÇ·ñ¿ªÆô»º´æ
-define('iPHP_RES_CACHE_DIR','thumbCache');	//»º´æÄ¿Â¼Ãû
-define('iPHP_RES_CACHE_TIME',2592000);		//»º´æÊ±¼ä
+define('iPHP_RES_CACHE',false); 			//æ˜¯å¦å¼€å¯ç¼“å­˜
+define('iPHP_RES_CACHE_DIR','thumbCache');	//ç¼“å­˜ç›®å½•å
+define('iPHP_RES_CACHE_TIME',2592000);		//ç¼“å­˜æ—¶é—´
 
-define('THUMB_PATH',$_GET['fp']);		//Ô­Í¼µØÖ·
-define('THUMB_WIDTH',(int)$_GET['w']);	//ËõÂÔÍ¼¿í¶È
-define('THUMB_HEIGHT',(int)$_GET['h']); //ËõÂÔÍ¼¸ß¶È
+define('THUMB_PATH',$_GET['fp']);		//åŸå›¾åœ°å€
+define('THUMB_WIDTH',(int)$_GET['w']);	//ç¼©ç•¥å›¾å®½åº¦
+define('THUMB_HEIGHT',(int)$_GET['h']); //ç¼©ç•¥å›¾é«˜åº¦
 
 /**
- * ¿ÉÓÃ³ß´ç ¿ªÆô»º´æºó½¨ÒéÌîĞ´
+ * å¯ç”¨å°ºå¯¸ å¼€å¯ç¼“å­˜åå»ºè®®å¡«å†™
  * @var array
  */
 $thumbSizeMap = array(
@@ -324,7 +324,7 @@ $thumbSizeMap = array(
 $thumbSize = THUMB_WIDTH.'x'.THUMB_HEIGHT;
 
 /**
- * Éú³ÉËõÂÔÍ¼
+ * ç”Ÿæˆç¼©ç•¥å›¾
  */
 if(in_array($thumbSize, $thumbSizeMap)||empty($thumbSizeMap)){
 	Thumb::make(THUMB_PATH,THUMB_WIDTH,THUMB_HEIGHT);
