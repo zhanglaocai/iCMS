@@ -750,8 +750,8 @@ class articleApp{
 
         iFS::$forceExt = "jpg";
         $content = stripslashes($content);
-        preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
-        $array  = array_unique($match[1]);
+        preg_match_all('@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is', $content, $match);
+        $array  = array_unique($match[2]);
         $uri    = parse_url(iCMS_FS_URL);
         $fArray = array();
         $fpArray= array();
@@ -759,16 +759,16 @@ class articleApp{
             $value = trim($value);
             if (stripos($value,$uri['host']) === false){
                 $filepath = iFS::http($value);
-                if($filepath){
+                if($filepath && !iFS::checkHttp($filepath)){
                     if($aid){
                         $filename = basename($filepath);
                         $filename = substr($filename,0, 32);
                         $faid     = articleTable::filedata_value($filename);
                         empty($faid) && articleTable::filedata_update_indexid($aid,$filename);
                     }
-                    $value        = iFS::fp($filepath, '+http');
-                    $fArray[$key] = $value;
+                    $value = iFS::fp($filepath,'+http');
                 }
+                $fArray[$key] = $value;
             }else{
                 unset($array[$key]);
             }
@@ -784,6 +784,7 @@ class articleApp{
             krsort($fArray);
             $content = str_replace($array, $fArray, $content);
         }
+
         return addslashes($content);
     }
     function pic_indexid($content,$aid) {
