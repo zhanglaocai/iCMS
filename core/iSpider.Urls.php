@@ -206,9 +206,9 @@ class spiderUrls extends spider{
                     if(spider::$url===false){
                         continue;
                     }
-                    if(spider::checker($work)===true){
+                    // if(spider::checker($work)===true){
                         $cbListUrl[] = spider::$url;
-                    }
+                    // }
                 }
                 return $cbListUrl;
             }
