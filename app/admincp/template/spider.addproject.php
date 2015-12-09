@@ -154,7 +154,7 @@ $(function(){
 })
 </script>
 <style>
-#urls{height: 90px;font-size: 16px; font-family:"Lucida Grande","Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif}
+#urls{height: 90px;font-size: 16px; font-family:"Consolas","Courier New",Courier,monospace}
 </style>
 <div class="iCMS-container">
   <div class="widget-box">
