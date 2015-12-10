@@ -55,6 +55,7 @@ class spiderUrls extends spider{
             // echo "$urls\n";
             print_r($urlsArray);
         }
+
         foreach ($_urlsArray AS $_key => $_url) {
             $_url = htmlspecialchars_decode($_url);
             /**
@@ -67,7 +68,9 @@ class spiderUrls extends spider{
                     print_r('<b>使用[rid:'.$_rid.']规则抓取列表</b>:'.$_urls);
                     echo "<hr />";
                 }
-                $urlsList = spiderUrls::crawl($work,false,$_rid,$_urls,'CALLBACK@URL');
+                $_urlsList = spiderUrls::crawl($work,false,$_rid,$_urls,'CALLBACK@URL');
+                $urlsList  = array_merge($urlsList,$_urlsList);
+                unset($urlsArray[$_key]);
             }else{
                 preg_match('|.*<(.*)>.*|is',$_url, $_matches);
                 if($_matches){
