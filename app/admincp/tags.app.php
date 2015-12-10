@@ -39,9 +39,10 @@ class tagsApp{
     }
     function do_manage(){
         $sql  = " where 1=1";
-        $cid  = (int)$_GET['cid'];
-        $tcid = (int)$_GET['tcid'];
-        $pid  = (int)$_GET['pid'];
+        $cid    = (int)$_GET['cid'];
+        $tcid   = (int)$_GET['tcid'];
+        $pid    = (int)$_GET['pid'];
+        $rootid = (int)$_GET['rootid'];
 
         $_GET['keywords'] && $sql.=" AND CONCAT(name,seotitle,subtitle,keywords,description) REGEXP '{$_GET['keywords']}'";
 
@@ -151,6 +152,7 @@ class tagsApp{
     function do_save(){
         $id          = (int)$_POST['id'];
         $uid         = (int)$_POST['uid'];
+        $rootid      = (int)$_POST['rootid'];
         $cid         = implode(',', (array)$_POST['cid']);
         $tcid        = implode(',', (array)$_POST['tcid']);
         $pid         = implode(',', (array)$_POST['pid']);
@@ -173,7 +175,7 @@ class tagsApp{
         $weight      = _int($_POST['weight']);
         $ordernum    = _int($_POST['ordernum']);
         $status      = (int)$_POST['status'];
-        $haspic       = $pic?'1':'0';
+        $haspic      = $pic?'1':'0';
         $pubdate     = time();
         $metadata    = $_POST['metadata'];
 
@@ -234,7 +236,7 @@ class tagsApp{
 
 		iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
 
-        $fields = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic','bpic','mpic','spic', 'url', 'related', 'count', 'weight', 'tpl', 'ordernum', 'pubdate', 'status');
+        $fields = array('uid','rootid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic','bpic','mpic','spic', 'url', 'related', 'count', 'weight', 'tpl', 'ordernum', 'pubdate', 'status');
         $data   = compact ($fields);
 
 		if(empty($id)){
