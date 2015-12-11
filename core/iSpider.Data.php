@@ -72,7 +72,7 @@ class spiderData extends spider{
         spider::$allHtml = "";
         $rule['__url__']    = spider::$url;
         $responses['reurl'] = spider::$url;
-        $responses['title'] = $title;
+        $responses['__title__'] = $title;
         foreach ((array)$dataArray AS $key => $data) {
 
             $content_html = $html;
@@ -169,7 +169,9 @@ class spiderData extends spider{
 
             gc_collect_cycles();
         }
-
+        if(isset($responses['title']) && empty($responses['title'])){
+            $responses['title'] = $responses['__title__'];
+        }
         spider::$allHtml = null;
         unset($html);
 
@@ -195,6 +197,9 @@ class spiderData extends spider{
             iFS::$watermark_config['x']   = $rule['watermark']['x'];
             iFS::$watermark_config['y']   = $rule['watermark']['y'];
             $rule['watermark']['img'] && iFS::$watermark_config['img'] = $rule['watermark']['img'];
+        }
+        if (spider::$callback['data'] && is_callable(spider::$callback['data'])) {
+            $responses = call_user_func_array(spider::$callback['data'],array($responses));
         }
 
         return $responses;

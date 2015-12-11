@@ -9,6 +9,9 @@
 function tag_list($vars){
 	$where_sql ="WHERE status='1' ";
 	$map_where = array();
+    if(isset($vars['rootid'])){
+        $where_sql.= iPHP::where($vars['rootid'],'rootid');
+    }
 	if(isset($vars['tcid'])){
         iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
         map::init('category',iCMS_APP_TAG);

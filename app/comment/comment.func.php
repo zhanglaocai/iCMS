@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: comment.tpl.php 2408 2014-04-30 18:58:23Z coolmoo $
@@ -45,6 +45,9 @@ function comment_list_display($vars){
 	echo iPHP::view("iCMS://comment/{$tpl}.htm");
 }
 function comment_list($vars){
+	if(iCMS::$config['comment']['plugin']['changyan']['enable']){
+		return;
+	}
 	if ($vars['display'] && empty($vars['loop'])) {
 		if(empty($vars['_display'])){
 			$_vars = iCMS::app_ref(true);
@@ -148,6 +151,14 @@ function comment_list($vars){
 function comment_form($vars){
 	if(!iCMS::$hooks['enable_comment']){
 		iPHP::warning('此页面禁止调用 iCMS&#x3a;comment&#x3a;form 标签！');
+	}
+	if(iCMS::$config['comment']['plugin']['changyan']['enable']){
+		if(iPHP::$mobile){
+			echo iPHP::view('iCMS://comment/changyan.mobile.htm');
+		}else{
+			echo iPHP::view('iCMS://comment/changyan.pc.htm');
+		}
+		return;
 	}
 	if($vars['ref']){
 		$_vars = iCMS::app_ref($vars['ref']);

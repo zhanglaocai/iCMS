@@ -33,7 +33,8 @@ class spider{
 	public static $cookie      = null;
 	public static $charset     = null;
 	public static $curl_proxy  = false;
-	public static $proxy_array = array();
+    public static $proxy_array = array();
+    public static $callback = array();
 
     public static function rule($id) {
         $rs = iDB::row("SELECT * FROM `#iCMS@__spider_rule` WHERE `id`='$id' LIMIT 1;", ARRAY_A);
@@ -118,23 +119,28 @@ class spider{
     }
     public static function publish($work = null) {
         $_POST = spiderData::crawl();
-        if(spider::$work){
-           // if(empty($_POST['title'])){
-           //     echo "标题不能为空\n";
-           //     return false;
-           // }
-           // if(empty($_POST['body'])){
-           //     echo "内容不能为空\n";
-           //     return false;
-           // }
+        if(spider::$work=='shell'){
+           if(empty($_POST['title'])){
+               echo "标题不能为空\n";
+               return false;
+           }
+           if(empty($_POST['body'])){
+               echo "内容不能为空\n";
+               return false;
+           }
         }
+
         $checker = spider::checker($work);
         if($checker!==true){
             return $checker;
         }
         $pid          = spider::$pid;
         $project      = spider::project($pid);
-        $_POST['cid'] = $project['cid'];
+
+        if(!isset($_POST['cid'])){
+            $_POST['cid'] = $project['cid'];
+        }
+
         $postArgs = spider::postArgs($project['poid']);
 
         if($_GET['indexid']){
@@ -171,6 +177,10 @@ class spider{
             }
         }else{
             $suid = spider::$sid;
+        }
+
+        if (spider::$callback['post'] && is_callable(spider::$callback['post'])) {
+            $_POST = call_user_func_array(spider::$callback['post'],array($_POST));
         }
 
         iS::slashes($_POST);

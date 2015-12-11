@@ -14,7 +14,7 @@
 // error_reporting(E_ALL & ~E_DEPRECATED); //Production
 //define('iPHP', TRUE);
 defined('iPHP') OR exit('What are you doing?');
-version_compare('5.1',PHP_VERSION,'>') && die('您的服务器运行的 PHP 版本是'.PHP_VERSION.' 但 iPHP 要求至少 5.1。');
+version_compare('5.1',PHP_VERSION,'>') && die('iPHP requires PHP version 5.1 or higher. You are running version '.PHP_VERSION.'.');
 
 ini_set('display_errors','ON');
 error_reporting(E_ALL & ~E_NOTICE);
@@ -55,7 +55,6 @@ $iDB_CLASS = 'Mysql';
 iPHP_DB_TYPE  =='pgsql'  && $iDB_CLASS = 'Pgsql';
 iPHP_DB_TYPE  =='sqlite' && $iDB_CLASS = 'SQLite';
 
-iPHP::loadClass($iDB_CLASS,'DB'); //加载数据库操作类
+iPHP::loadClass($iDB_CLASS,'DB');   //加载数据库操作类
 iPHP::loadClass("FileSystem",'FS');	//加载文件操作类
 iPHP::loadClass('Cache');			//加载缓存操作类
-iPHP::loadClass("Template");		//加载模板操作类

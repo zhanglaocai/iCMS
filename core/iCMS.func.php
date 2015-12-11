@@ -42,8 +42,12 @@ function small($sfp,$w='',$h='',$scale=true) {
     }
 
     if(iCMS::$config['FS']['yun']['enable']){
-        if(iCMS::$config['FS']['yun']['QiNiu']['Bucket']){
+        if(iCMS::$config['FS']['yun']['sdk']['QiNiuYun']['Bucket']){
             echo $sfp.'?imageView2/1/w/'.$w.'/h/'.$h;
+            return;
+        }
+        if(iCMS::$config['FS']['yun']['sdk']['TencentYun']['Bucket']){
+            echo $sfp.'?imageView2/2/w/'.$w.'/h/'.$h;
             return;
         }
     }
@@ -75,6 +79,15 @@ function baidu_ping($urls) {
 }
 function get_pic($src,$size=0,$thumb=0){
     if(empty($src)) return array();
+
+    if(stripos($src, '://')!== false){
+        return array(
+            'src' => $src,
+            'url' => $src,
+            'width' => 0,
+            'height' => 0,
+        );
+    }
 
     $data = array(
         'src' => $src,

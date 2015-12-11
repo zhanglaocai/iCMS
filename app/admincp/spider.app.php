@@ -12,11 +12,7 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::import(iPHP_APP_CORE .'/iSpider.class.php');
-iPHP::import(iPHP_APP_CORE .'/iSpider.Tools.php');
-iPHP::import(iPHP_APP_CORE .'/iSpider.Content.php');
-iPHP::import(iPHP_APP_CORE .'/iSpider.Urls.php');
-iPHP::import(iPHP_APP_CORE .'/iSpider.Data.php');
+iPHP::import(iPHP_APP_CORE .'/iSpider.Autoload.php');
 
 class spiderApp {
 

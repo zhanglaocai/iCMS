@@ -106,6 +106,8 @@ class spiderTools extends spider{
         $rule = str_replace("%>\n", "%>", $rule);
         $rule = preg_replace('|<%(\w{3,20})%>|i', '(?<\\1>.*?)', $rule);
         $rule = str_replace(array('<%', '%>'), '', $rule);
+        unset($pregArray,$pregflip,$matches);
+        gc_collect_cycles();
         return $rule;
     }
     public static function dataClean($rules, $content) {
@@ -185,6 +187,7 @@ class spiderTools extends spider{
                 phpQuery::unloadDocuments($doc->getDocumentID());
                 //var_dump(array_map('htmlspecialchars', $pq_pattern));
                 $content = str_replace($pq_pattern,$pq_replacement, $content);
+                unset($doc,$pq_array);
             }else{
                 if($_pattern=='~SELF~'){
                     $_pattern = $content;
@@ -213,8 +216,7 @@ class spiderTools extends spider{
 
         $encode == 'auto' && $encode = null;
         /**
-         * 检测页面编码
-         * @var [type]
+         * 检测http返回的编码
          */
         if($content_charset){
             if(empty($encode)){
@@ -222,7 +224,16 @@ class spiderTools extends spider{
             }else if(strtoupper($encode)!=strtoupper($content_charset)){
                 $encode = $content_charset;
             }
+            if(strtoupper($encode)==$out){
+                if (spider::$dataTest || spider::$ruleTest) {
+                    echo '<b>检测页面编码:</b>'.$encode . '<br />';
+                }
+                return $html;
+            }
         }
+        /**
+         * 检测页面编码
+         */
         if(empty($encode)){
             preg_match('/<meta[^>]*?charset=(["\']?)([a-zA-z0-9\-\_]+)(\1)[^>]*?>/is', $html, $charset);
             $encode = str_replace(array('"',"'"),'', trim($charset[2]));
@@ -255,11 +266,12 @@ class spiderTools extends spider{
                 $pq_dom  = str_replace('DOM::','', spider::$content_right_code);
                 $matches = (bool)(string)phpQuery::pq($pq_dom);
                 phpQuery::unloadDocuments($doc->getDocumentID());
+                unset($doc,$content);
             }else{
                 $matches = strpos($content, spider::$content_right_code);
+                unset($content);
             }
 	        if ($matches===false) {
-	            $match = false;
 	            return false;
 	        }
         }
@@ -270,16 +282,16 @@ class spiderTools extends spider{
                 $pq_dom   = str_replace('DOM::','', spider::$content_error_code);
                 $_matches = (bool)(string)phpQuery::pq($pq_dom);
                 phpQuery::unloadDocuments($doc->getDocumentID());
+                unset($doc,$content);
             }else{
                 $_matches = strpos($content, spider::$content_error_code);
+                unset($content);
             }
             if ($_matches!==false) {
-                $match = false;
                 return false;
             }
         }
-        $match = true;
-        return compact('content', 'match');
+        return true;
     }
     public static function mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse) {
         $urls = "";
@@ -426,6 +438,7 @@ class spiderTools extends spider{
                 $resource[$pageNum].= $p;
             }
         }
+        unset($text,$textArray,$output);
         return implode($pageBreak, (array)$resource);
     }
 
