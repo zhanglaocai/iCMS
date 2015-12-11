@@ -57,7 +57,8 @@ class spiderUrls extends spider{
         }
 
         foreach ($_urlsArray AS $_key => $_url) {
-            $_url = htmlspecialchars_decode($_url);
+            $_url      = htmlspecialchars_decode($_url);
+            $_urlsList = array();
             /**
              * RULE@rid@url
              * url使用[rid]规则采集并返回列表结果
