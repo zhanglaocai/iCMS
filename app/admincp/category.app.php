@@ -187,6 +187,7 @@ class categoryApp extends category{
                 $data['createtime'] = time();
                 $data['count']      = '0';
                 $data['comments']   = '0';
+                $data['ordernum']   = $nkey;
 
                 $cid = iDB::insert('category',$data);
                 $pid && map::add($pid,$cid);

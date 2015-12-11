@@ -514,6 +514,7 @@ DROP TABLE IF EXISTS `#iCMS@__tags`;
 CREATE TABLE `#iCMS@__tags` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uid` int(10) unsigned NOT NULL DEFAULT '0',
+  `rootid` int(10) unsigned NOT NULL DEFAULT '0',
   `cid` int(10) unsigned NOT NULL DEFAULT '0',
   `tcid` varchar(255) NOT NULL DEFAULT '',
   `pid` varchar(255) NOT NULL DEFAULT '',
@@ -543,6 +544,7 @@ CREATE TABLE `#iCMS@__tags` (
   KEY `idx_status` (`status`,`id`),
   KEY `idx_order` (`status`,`ordernum`),
   KEY `name` (`name`),
+  KEY `rootid` (`rootid`),
   KEY `tkey` (`tkey`),
   KEY `idx_count` (`status`,`count`),
   KEY `pid_count` (`pid`,`count`),

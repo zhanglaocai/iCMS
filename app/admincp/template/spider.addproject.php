@@ -1,6 +1,6 @@
 <?php /**
 * @package iCMS
-* @copyright 2007-2010, iDreamSoft
+* @copyright 2007-2015, iDreamSoft
 * @license http://www.idreamsoft.com iDreamSoft
 * @author coolmoo <idreamsoft@qq.com>
 * @$Id: spider.php 586 2013-04-02 14:44:18Z coolmoo $
@@ -153,6 +153,9 @@ $(function(){
   }
 })
 </script>
+<style>
+#urls{height: 90px;font-size: 16px; font-family:"Consolas","Courier New",Courier,monospace}
+</style>
 <div class="iCMS-container">
   <div class="widget-box">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-plus-square"></i> </span>
@@ -167,7 +170,7 @@ $(function(){
           </div>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend input-append"><span class="add-on">列表网址</span>
-            <textarea name="urls" id="urls" class="span6" style="height: 90px;"><?php echo $rs['urls'] ; ?></textarea>
+            <textarea name="urls" id="urls" class="span6" style=""><?php echo $rs['urls'] ; ?></textarea>
             <a class="btn" id="makeurls">添加采集地址</a>
           </div>
           <div class="clearfloat mb10"></div>

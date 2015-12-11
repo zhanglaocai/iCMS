@@ -1,0 +1,64 @@
+    <div class="top">
+      <ul id="user-login" class="fr">
+        <!--{if $iCMS.CONFIG.open.QQ.enable }-->
+        <li><a href="<!--{iCMS:router url='/api/user/login/qq'}-->" class="login_qq">QQ登录</a></li>
+        <!--{/if}-->
+        <!--{if $iCMS.CONFIG.open.WB.enable }-->
+        <li><a href="<!--{iCMS:router url='/api/user/login/wb'}-->" class="login_wb">微博登录</a></li>
+        <!--{/if}-->
+        <!--{if $iCMS.CONFIG.open.WX.enable }-->
+        <li><a href="<!--{iCMS:router url='/api/user/login/wx'}-->" class="login_wx">微信登录</a></li>
+        <!--{/if}-->
+        <li><a i="iCMS-user-login" href="<!--{iCMS:router url='/api/user/login'}-->" title="登录">登录</a></li>
+        <li><a href="<!--{iCMS:router url='/api/user/register'}-->" target="_blank">注册</a></li>
+      </ul>
+      <div id="user-profile" class="fr">
+        <span>
+            <a href="<!--{iCMS:router url='/user/publish'}-->" target="_blank">
+                <i class="fa fa-edit"></i> 发表文章
+            </a>
+        </span>
+      </div>
+    </div>
+    <div class="header">
+      <div class="wrapper">
+        <div class="logo">
+            <a target="_self" title="<!--{$site.url}-->" href="<!--{$site.url}-->"><!--{$site.name}--></a>
+        </div>
+        <div class="search">
+            <form i="iCMS-search-box" action="<!--{iCMS:router url='/api'}-->" method="get" target="_blank">
+              <div class="search_wrapper">
+                <input name="app" type="hidden" value="search" />
+                <input type="text" name="q" placeholder="请输入关键词" value="<!--{$search.title}-->">
+                <button i="iCMS-search" type="submit" class="btn"><i class="fa fa-search"></i> 搜索</button>
+              </div>
+            </form>
+        </div>
+      </div>
+      <div class="navbar">
+          <ul class="navbar-wrap">
+            <li id="navbar_c0" class="first"><a target="_self" href="<!--{$site.url}-->"><strong>首页</strong></a></li>
+            <!--{iCMS:category:list loop="true" stype='top' row="10"}-->
+                <!--{if $category_list.child}-->
+                <li id="navbar_c<!--{$category_list.cid}-->" class="subnav"><a href="<!--{$category_list.url}-->" target="_blank"><strong><!--{$category_list.name}--></strong></a>
+                    <ul class="subnav-menu">
+                      <!--{iCMS:category:list as="subcate" loop="true" stype='sub' row="10" cid="$category_list.cid"}-->
+                      <li><a href="<!--{$subcate.url}-->"><strong><!--{$subcate.name}--></strong></a></li>
+                      <!--{/iCMS}-->
+                    </ul>
+                </li>
+                <!--{else}-->
+                <li id="navbar_c<!--{$category_list.cid}-->"><a href="<!--{$category_list.url}-->" target="_blank"><strong><!--{$category_list.name}--></strong></a></li>
+                <!--{/if}-->
+            <!--{/iCMS}-->
+          </ul>
+          <script type="text/javascript">
+          $("#navbar_c0").removeClass("active");
+          <!--{if $category.rootid}-->
+            $("#navbar_c<!--{$category.rootid}-->").addClass("active");
+          <!--{else}-->
+            $("#navbar_c<!--{$category.cid}-->").addClass("active");
+          <!--{/if}-->
+          </script>
+      </div>
+    </div>

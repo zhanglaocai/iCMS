@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: tags.add.php 2393 2014-04-09 13:14:23Z coolmoo $
@@ -82,6 +82,11 @@ $(function(){
                 <?php echo iACP::getProp("pid") ; ?>
               </select>
             </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">父标签ID</span>
+              <input type="text" name="rootid" class="span6" id="rootid" value="<?php echo $rs['rootid'] ; ?>"/>
+            </div>
+            <span class="help-inline">本标签所属的标签的ID,请自行填写ID</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">标签名称</span>
               <input type="text" name="name" class="span6" id="name" value="<?php echo $rs['name'] ; ?>"/>

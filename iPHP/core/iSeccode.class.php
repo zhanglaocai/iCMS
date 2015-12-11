@@ -31,31 +31,23 @@ class iSeccode {
         $pre && $name = $pre.'_seccode';
         //设定cookie
         iPHP::set_cookie($name, authcode(self::$code, 'ENCODE'));
+        self::$noGD && self::icmsChar(); //不支持GD库 直接显示iCMS字符
         self::__image();
     }
     private static function __image(){
-        self::$noGD && exit(base64_decode('
-        R0lGODlhUAAeALMAAAAAAI+Pj09PTzMzM8zMzK+vr39/fw8PD2ZmZj8/Px8fH9/f35mZmb+/v2ZmZv
-        ///yH5BAEHAA8ALAAAAABQAB4AAAT/8MlJq7046827/2AojmS5IYi2MEYiGMyiBYa4GEFWtElvEJoE
-        oHBpCADIAxIpAF6QjBACeQkok4qlgnhZHA4yyhQgKIQXhSOgZkEqQF5qZXpANCiNcaoKiE6mA04WBA
-        MAexRLdx4BSxWMA2EWC4WHGgYAkCqFfhOGAAkfCgeFFaKRXYWKGQsACqcYXmCIBkeCGgxrQhQEhhy8
-        b46CU6obuGwSaw29HEILuhPKXCcHbWxeAyAKlWsPzRvKKc8SyjkcC68P3A8FAOUk3MYnADLiD7HoHu
-        qX+B/qpqtkJNR7wOiANBDqElAzoQ6XOwvDBAKwwAhTAH4YEoJiaO0AMEmj/yYMlLBgTKsXxDKyObCx
-        hLoHlzhRiClyIiwGCLIsKZNBo4l0x1hhs6DgYzebHBoYKITJVic2CYa6PPYgIgWHFEZuKAmlmoQpP1
-        /a+1RhgKyaIwh8eaWO3UEOuASJPRpJGdWjVzFWiDeL5DIPUyLNBTfhyCtx5PrdfRnYg9C+ZeeNrSSR
-        Qsh8i4OS7XBE5twH8RpXqHfpLQa7FcQyonxhSktkdyWYYnmh3gJRTi/USn0XUMoJC45kguwIE4DfeH
-        d9eViBqwCvjpRoK9CgegA1CdB9ticdw0gCWaZXr04LSXbozQ3oXIJkgEzic/p4X5h+PXtM7ycQ0Etg
-        hwEDDfCn1xAq/PkHQ4A/Jajgggw26EEEADs=')); //不支持GD库 直接显示iCMS字符
-
         self::__background();
         self::__adulterate();
         self::__font();
+
+        header("Expires: 0");
+        header("Cache-Control: no-cache");
+        header("Pragma: no-cache");
         if(function_exists('imagejpeg')) {
             header('Content-type: image/jpeg');
-            imagejpeg(self::$im,null,100);
+            $void = imagejpeg(self::$im);
         } else {
             header('Content-type: image/png');
-            imagepng(self::$im);
+            $void = imagepng(self::$im);
         }
         imagedestroy(self::$im);
     }
@@ -131,5 +123,19 @@ class iSeccode {
             $font_box   = imagettftext(self::$im,$font_size,$angle,$x, $y,$text_color,$font_file,self::$code[$i]);
             $y          = $font_box[1];
         }
+    }
+    private static function icmsChar(){
+        exit(base64_decode('
+        R0lGODlhUAAeALMAAAAAAI+Pj09PTzMzM8zMzK+vr39/fw8PD2ZmZj8/Px8fH9/f35mZmb+/v2ZmZv
+        ///yH5BAEHAA8ALAAAAABQAB4AAAT/8MlJq7046827/2AojmS5IYi2MEYiGMyiBYa4GEFWtElvEJoE
+        oHBpCADIAxIpAF6QjBACeQkok4qlgnhZHA4yyhQgKIQXhSOgZkEqQF5qZXpANCiNcaoKiE6mA04WBA
+        MAexRLdx4BSxWMA2EWC4WHGgYAkCqFfhOGAAkfCgeFFaKRXYWKGQsACqcYXmCIBkeCGgxrQhQEhhy8
+        b46CU6obuGwSaw29HEILuhPKXCcHbWxeAyAKlWsPzRvKKc8SyjkcC68P3A8FAOUk3MYnADLiD7HoHu
+        qX+B/qpqtkJNR7wOiANBDqElAzoQ6XOwvDBAKwwAhTAH4YEoJiaO0AMEmj/yYMlLBgTKsXxDKyObCx
+        hLoHlzhRiClyIiwGCLIsKZNBo4l0x1hhs6DgYzebHBoYKITJVic2CYa6PPYgIgWHFEZuKAmlmoQpP1
+        /a+1RhgKyaIwh8eaWO3UEOuASJPRpJGdWjVzFWiDeL5DIPUyLNBTfhyCtx5PrdfRnYg9C+ZeeNrSSR
+        Qsh8i4OS7XBE5twH8RpXqHfpLQa7FcQyonxhSktkdyWYYnmh3gJRTi/USn0XUMoJC45kguwIE4DfeH
+        d9eViBqwCvjpRoK9CgegA1CdB9ticdw0gCWaZXr04LSXbozQ3oXIJkgEzic/p4X5h+PXtM7ycQ0Etg
+        hwEDDfCn1xAq/PkHQ4A/Jajgggw26EEEADs='));
     }
 }
