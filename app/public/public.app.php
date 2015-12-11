@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: public.app.php 1392 2013-05-20 12:28:08Z coolmoo $
@@ -51,9 +51,6 @@ class publicApp {
         }
     }
     public function API_seccode(){
-        @header("Expires: -1");
-        @header("Cache-Control: no-store, private, post-check=0, pre-check=0, max-age=0", FALSE);
-        @header("Pragma: no-cache");
         iPHP::loadClass("Seccode");
         $_GET['pre'] && $pre = iS::escapeStr($_GET['pre']);
         iSeccode::run($pre);
