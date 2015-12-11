@@ -3,3 +3,10 @@
 *.tags*
 /test
 /*.bak
+/bak.*
+/cache/desktop
+/cache/mobile
+/cache/total
+/cache/iCMS/*
+/res/*
+/html/*
