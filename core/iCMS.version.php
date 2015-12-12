@@ -8,5 +8,5 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0
 */
-define('iCMS_VER', 'V6.0.9');
-define('iCMS_RELEASE', '20151108');
+define('iCMS_VER', 'V6.0.10');
+define('iCMS_RELEASE', '20151212');
