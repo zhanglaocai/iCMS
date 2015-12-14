@@ -1,4 +1,4 @@
-    <div class="top">
+    <div class="top clearfix">
       <div class="top-wrap">
         <div class="sitename fl"><!--{$site.name}--></div>
         <div id="user-login" class="fr">
@@ -25,7 +25,7 @@
         </div>
       </div>
     </div>
-    <div class="header">
+    <div class="header clearfix">
       <div class="header-wrap">
         <div class="logo">
             <a target="_self" title="<!--{$site.url}-->" href="<!--{$site.url}-->"></a>
@@ -40,7 +40,7 @@
         </div>
       </div>
     </div>
-    <div class="navbar">
+    <div class="navbar clearfix">
         <ul class="navbar-wrap">
           <li id="navbar_c0" class="active"><a target="_self" href="<!--{$site.url}-->"><strong>首页</strong></a></li>
           <!--{iCMS:category:list loop="true" stype='top' row="10"}-->
@@ -61,8 +61,10 @@
         $("#navbar_c0").removeClass("active");
         <!--{if $category.rootid}-->
           $("#navbar_c<!--{$category.rootid}-->").addClass("active");
-        <!--{else}-->
+        <!--{elseif $category.cid}-->
           $("#navbar_c<!--{$category.cid}-->").addClass("active");
+        <!--{else}-->
+          $("#navbar_c0").addClass("active");
         <!--{/if}-->
         </script>
     </div>

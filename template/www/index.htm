@@ -11,41 +11,42 @@
   </head>
   <body>
   <!--{include file="./header.htm"}-->
-  <div class="body">
+  <div class="body clearfix ">
     <div class="body-wrap">
-      <div class="index_top">
-        <div class="w600 fl">
+      <div class="focus">
+        <div class="focus-left fl">
           <script type="text/javascript" src="http://s.ladyband.cn/js/jquery.slider.js"></script>
           <script>
           $(function(){
-            $(".box_skitter").slider();
+            $(".carousel-box").slider();
           })
           </script>
-          <div class="box_skitter">
+          <div class="carousel-box">
             <ul>
-            <!--{iCMS:article:list loop="true" pic="true" row="8"}-->
+            <!--{iCMS:article:list loop="true" pic="true" row="5"}-->
               <li>
                 <a href="<!--{$article_list.url}-->">
                   <img src="<!--{$article_list.pic.url|thumb:300:450}-->" />
                 </a>
                 <div class="label_text">
-                  <p><!--{$article_list.title}--></p>
+                  <!--{$article_list.title}-->
                 </div>
               </li>
             <!--{/iCMS}-->
             </ul>
+            <span id="carousel-left"  class="arrow-left">左侧</span>
+            <span id="carousel-right"  class="arrow-right">右侧</span>
           </div>
         </div>
-        <div class="w500 fr">
+        <div class="focus-right fr">
+          <!--{iCMS:article:list  row="11" orderby="month"}-->
           <div class="topnews">
-            <!--{iCMS:article:list  row="11" orderby="month"}-->
-            <div class="toph1">
-              <h1><a href="<!--{$article_list[0].url}-->" target="_blank"><!--{$article_list[0].title}--></a></h1>
-              <p>
-                <!--{$article_list[0].description}-->
-                <a href="<!--{$article_list[0].url}-->" target="_blank" class="bule">[详细]</a>
-              </p>
-            </div>
+            <h1><a href="<!--{$article_list[0].url}-->" target="_blank"><!--{$article_list[0].title}--></a></h1>
+            <p>
+              <!--{$article_list[0].description}-->...
+              <a href="<!--{$article_list[0].url}-->" target="_blank" class="blue">[详细]</a>
+            </p>
+            <p class="clearfix dotted mb10"></p>
             <ul>
             <!--{foreach value="alist" start="1" from="$article_list"}-->
             <li>
