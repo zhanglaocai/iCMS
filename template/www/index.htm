@@ -10,11 +10,18 @@
     <!--{iCMS:public:ui}-->
   </head>
   <body>
-    <!--{include file="./header.htm"}-->
-    <div class="container">
+  <!--{include file="./header.htm"}-->
+  <div class="body">
+    <div class="body-wrap">
       <div class="index_top">
         <div class="w600 fl">
-          <div class="box_skitter box_skitter_large">
+          <script type="text/javascript" src="http://s.ladyband.cn/js/jquery.slider.js"></script>
+          <script>
+          $(function(){
+            $(".box_skitter").slider();
+          })
+          </script>
+          <div class="box_skitter">
             <ul>
             <!--{iCMS:article:list loop="true" pic="true" row="8"}-->
               <li>
@@ -188,6 +195,7 @@
         </div>
       </div>
     </div>
-    <!--{include file="./footer.htm"}-->
+  </div>
+  <!--{include file="./footer.htm"}-->
   </body>
 </html>
