@@ -19,8 +19,8 @@ class QiniuYun
 
 	public function uploadFile($filePath,$bucket,$key=null)
 	{
-		$uploadToken = $this->uploadToken(array('scope' => $bucket));
 		$data = array();
+		$ch   = curl_init();
 		if (class_exists('CURLFile')) {
 		    defined('CURLOPT_SAFE_UPLOAD') && curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
 		    $data['file'] = new CURLFile($filePath);
@@ -29,10 +29,9 @@ class QiniuYun
 		    $data['file'] = "@$filePath";
 		}
 		// $data['file'] = "@$filePath";
-		$data['token'] = $uploadToken;
+		$data['token'] = $this->uploadToken(array('scope' => $bucket));
 		if($key) $data['key'] = $key;
 
-		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, self::UP_HOST);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_POST, true);
