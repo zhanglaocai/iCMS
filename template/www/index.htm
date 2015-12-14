@@ -12,7 +12,7 @@
   <body>
   <!--{include file="./header.htm"}-->
   <div class="body clearfix ">
-    <div class="body-wrap">
+    <div class="body-wrap r5">
       <div class="focus">
         <div class="focus-left fl">
           <script type="text/javascript" src="http://s.ladyband.cn/js/jquery.slider.js"></script>
@@ -39,7 +39,7 @@
           </div>
         </div>
         <div class="focus-right fr">
-          <!--{iCMS:article:list  row="11" orderby="month"}-->
+          <!--{iCMS:article:list  row="7" orderby="month"}-->
           <div class="topnews">
             <h1><a href="<!--{$article_list[0].url}-->" target="_blank"><!--{$article_list[0].title}--></a></h1>
             <p>
@@ -48,7 +48,7 @@
             </p>
             <p class="clearfix dotted mb10"></p>
             <ul>
-            <!--{foreach value="alist" start="1" from="$article_list"}-->
+            <!--{foreach value="alist" start="2" from="$article_list"}-->
             <li>
               <a href="<!--{$alist.url}-->" target="_blank"><!--{$alist.title}--></a>
               <span class="date"><!--{$alist.pubdate|date:"m-d H"}--></span>
@@ -58,7 +58,9 @@
           </div>
         </div>
       </div>
-      <div class="clearfix mb30"></div>
+      <div class="clearfix"></div>
+    </div>
+    <div class="body-wrap r5">
       <div class="main-col">
         <div class="mod-tabs">
           <!--{iCMS:category:list stype='top' row="10"}-->
@@ -195,8 +197,11 @@
           </div>
         </div>
       </div>
+      <div class="clearfix mb10"></div>
     </div>
+        <div class="clearfix mb30"></div>
   </div>
+
   <!--{include file="./footer.htm"}-->
   </body>
 </html>
