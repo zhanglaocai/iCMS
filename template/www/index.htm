@@ -62,23 +62,58 @@
     </div>
     <div class="body-wrap r5">
       <div class="main-col">
-        <div class="mod-tabs">
-          <p class="tabs-title">
-            <a href="<!--{$site.url}-->">全部资讯</a>
-          </p>
-          <!--{iCMS:category:list stype='top' row="10"}-->
-          <ul class="tabs-nav">
-            <!--{foreach key="catkey" value="catlist" from="$category_list"}-->
-            <li<!--{if $catkey=="0"}--> class="active"<!--{/if}-->>
-              <a href="#tabs_c<!--{$catlist.cid}-->" data-toggle="tab">
-                 <!--{$catlist.name}-->
-              </a>
-            </li>
-            <!--{/foreach}-->
-          </ul>
+        <div class="tabs-wrap">
+          <div class="tabs-head">
+            <p class="tabs-title">
+              <a href="<!--{$site.url}-->">全部资讯</a>
+            </p>
+            <!--{iCMS:category:list stype='top' row="10"}-->
+            <ul class="tabs-nav">
+              <!--{foreach key="catkey" value="catlist" from="$category_list"}-->
+              <li>
+                <a href="#tabs_c<!--{$catlist.cid}-->" data-toggle="tab">
+                   <!--{$catlist.name}-->
+                </a>
+              </li>
+              <!--{/foreach}-->
+            </ul>
+          </div>
+          <div class="clearfix"></div>
           <div class="tabs-content">
+            <div class="tabs-pane" id="tabs_c0">
+              <div class="kwLink">
+                <!--{iCMS:tag:list loop="true" row="5" orderby="hot"}-->
+                <a href="<!--{$tag_list.url}-->" target="_blank"><!--{$tag_list.name}--></a>
+                <!--{/iCMS}-->
+              </div>
+              <ul class="media-list">
+                <!--{iCMS:article:list loop="true" tags="true" sub="all" row="10"}-->
+                <li class="media">
+                  <!--{if $article_list.pic.url}-->
+                  <a class="media-object" href="<!--{$article_list.url}-->">
+                    <img class="r5 lazy" data-src="<!--{$article_list.pic.url}-->" src="<!--{$site.urls.tpl}-->/static/img/loading.gif">
+                  </a>
+                  <!--{/if}-->
+                  <div class="media-body">
+                    <h4 class="media-heading">
+                      <a href="<!--{$article_list.url}-->" target="_blank"><!--{$article_list.title}--></a>
+                    </h4>
+                    <p class="media-text"><!--{$article_list.description}--></p>
+                    <div class="media-info">
+                      <span class="date"><!--{$article_list.pubdate|date:'m月d日'}--></span>
+                      <span class="category">[<!--{$article_list.category.link}-->]</span>
+
+                      <!--{if $article_list.tags_link}-->
+                      <span class="tags"><!--{$article_list.tags_link}--></span>
+                      <!--{/if}-->
+                    </div>
+                  </div>
+                </li>
+                <!--{/iCMS}-->
+              </ul>
+            </div>
             <!--{foreach value="catlist" from="$category_list"}-->
-            <div class="tabs-pane" id="tabs_c<!--{$catlist.cid}-->">
+            <div class="tabs-pane hide" id="tabs_c<!--{$catlist.cid}-->">
               <div class="kwLink">
                 <!--{iCMS:tag:list loop="true" row="5" orderby="hot" cid="$catlist.cid"}-->
                 <a href="<!--{$tag_list.url}-->" target="_blank"><!--{$tag_list.name}--></a>
@@ -88,8 +123,8 @@
                 <!--{iCMS:article:list loop="true" tags="true" sub="all" row="10" cid="$catlist.cid"}-->
                 <li class="media">
                   <!--{if $article_list.pic.url}-->
-                  <a class="pull-left" href="<!--{$article_list.url}-->">
-                    <img class="media-object lazy" data-src="<!--{$article_list.pic.url}-->" src="<!--{$site.urls.tpl}-->/static/img/loading.gif">
+                  <a class="media-object" href="<!--{$article_list.url}-->">
+                    <img class="r5 lazy" data-src="<!--{$article_list.pic.url}-->" src="<!--{$site.urls.tpl}-->/static/img/loading.gif">
                   </a>
                   <!--{/if}-->
                   <div class="media-body">
@@ -98,7 +133,7 @@
                     </h4>
                     <p class="media-text"><!--{$article_list.description}--></p>
                     <div class="media-info">
-                      <span class="data"><!--{$article_list.pubdate|date:'m月d日'}--></span>
+                      <span class="date"><!--{$article_list.pubdate|date:'m月d日'}--></span>
                       <span class="category">[<!--{$article_list.category.link}-->]</span>
                       <!--{if $article_list.tags_link}-->
                       <span class="tags"><!--{$article_list.tags_link}--></span>
@@ -106,10 +141,6 @@
                     </div>
                   </div>
                 </li>
-                <!--{if !$article_list.last}-->
-                <div class="clearfix"></div>
-                <div class="media-bg"></div>
-                <!--{/if}-->
                 <!--{/iCMS}-->
               </ul>
             </div>
@@ -118,40 +149,39 @@
         </div>
       </div>
       <div class="side-col">
-        <div class="mod-box">
-          <div class="tab-wrapper">
-            <div class="tab-state"></div>
-            <h3 class="tab-title red">
-              <span class="txt cur">周点击榜</span>
-              <span class="txt">周热评榜</span>
-            </h3>
-            <div class="rank-wrapper">
-              <ul class="tab-ranklist current">
-                 <!--{iCMS:article:list loop="true" row="10" orderby="week"}-->
-                 <li>
-                  <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
-                  <a href="<!--{$article_list.url}-->" target="_blank" ><!--{$article_list.title}--></a>
-                 </li>
-                 <!--{/iCMS}-->
-              </ul>
-              <ul class="tab-ranklist">
-                 <!--{iCMS:article:list loop="true" row="10" orderby="comment" startdate="-7 day"}-->
-                 <li>
-                  <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
-                  <a href="<!--{$article_list.url}-->" target="_blank" ><!--{$article_list.title}--></a>
-                 </li>
-                 <!--{/iCMS}-->
-              </ul>
-            </div>
+        <div class="mod-box rank">
+          <div class="mod-title">
+            <ul>
+              <li class="active">周点击榜</li>
+              <li>周热评榜</li>
+            </ul>
+          </div>
+          <div class="mod-content">
+            <ul class="rank-list current">
+               <!--{iCMS:article:list loop="true" row="10" orderby="week"}-->
+               <li>
+                <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
+                <a href="<!--{$article_list.url}-->" target="_blank" ><!--{$article_list.title}--></a>
+               </li>
+               <!--{/iCMS}-->
+            </ul>
+            <ul class="rank-list hide">
+               <!--{iCMS:article:list loop="true" row="10" orderby="comment" startdate="-7 day"}-->
+               <li>
+                <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
+                <a href="<!--{$article_list.url}-->" target="_blank" ><!--{$article_list.title}--></a>
+               </li>
+               <!--{/iCMS}-->
+            </ul>
           </div>
         </div>
-        <div class="mod-box">
+        <div class="mod-box hot-tags">
           <div class="mod-title">
-            <h3 class="mod-txt">热门话题</h3>
+            <h3 class="mod-txt">热门标签</h3>
           </div>
           <div class="mod-content">
             <ul>
-              <!--{iCMS:tag:list loop="true" row="10" orderby="hot"}-->
+              <!--{iCMS:tag:list loop="true" row="15" orderby="hot"}-->
               <li><a href="<!--{$tag_list.url}-->" target="_blank" class="btn"><!--{$tag_list.name}--></a></li>
               <!--{/iCMS}-->
             </ul>
