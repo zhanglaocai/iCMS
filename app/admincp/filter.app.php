@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
 * iCMS - i Content Management System
 * Copyright (c) 2007-2012 idreamsoft.com iiimon Inc. All rights reserved.
