@@ -43,7 +43,7 @@
           <div class="topnews">
             <h1><a href="<!--{$article_list[0].url}-->" target="_blank"><!--{$article_list[0].title}--></a></h1>
             <p>
-              <!--{$article_list[0].description}-->...
+              <!--{$article_list[0].description|cut:100}-->...
               <a href="<!--{$article_list[0].url}-->" target="_blank" class="blue">[详细]</a>
             </p>
             <p class="clearfix dotted mb10"></p>
@@ -63,10 +63,13 @@
     <div class="body-wrap r5">
       <div class="main-col">
         <div class="mod-tabs">
+          <p class="tabs-title">
+            <a href="<!--{$site.url}-->">全部资讯</a>
+          </p>
           <!--{iCMS:category:list stype='top' row="10"}-->
           <ul class="tabs-nav">
-            <!--{foreach value="catlist" from="$category_list"}-->
-            <li>
+            <!--{foreach key="catkey" value="catlist" from="$category_list"}-->
+            <li<!--{if $catkey=="0"}--> class="active"<!--{/if}-->>
               <a href="#tabs_c<!--{$catlist.cid}-->" data-toggle="tab">
                  <!--{$catlist.name}-->
               </a>
