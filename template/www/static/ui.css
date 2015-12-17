@@ -957,6 +957,7 @@ ul {
     padding: 8px 0px;
     background: url(img/rank.png) no-repeat 0px 16px;
     padding-left: 28px;
+    height: 310px;
 }
 .rank-list li {
     width: 100%;
