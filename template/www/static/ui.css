@@ -811,9 +811,10 @@ ul {
 }
 .media-list .media {
     width: 100%;
-    height: 150px;
+    /*height: 150px;*/
     border-bottom: 1px solid #ddd;
     margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 .media .media-object {
     float: left;
@@ -839,7 +840,7 @@ ul {
     padding-right: 15px;
     color: #888;
     font-size: 14px;
-    height: 72px;
+    /*height: 72px;*/
     line-height: 24px;
     overflow: hidden;
 }
