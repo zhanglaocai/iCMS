@@ -10,8 +10,8 @@
 define(["jquery"],function($){
     var iCMS = {
         CONFIG:{
-            API: '/public/api.php',
-            PUBLIC: '/',
+            API: 'api.php',
+            PUBLIC: '/public/',
             COOKIE: 'iCMS_',
             AUTH:'USER_AUTH',
             DIALOG:[],
@@ -24,6 +24,7 @@ define(["jquery"],function($){
         init: function(options) {
             //console.log(options);
             this.CONFIG = $.extend(this.CONFIG,options);
+            this.CONFIG.API = this.CONFIG.PUBLIC+'api.php';
             // var cssUrl = this.CONFIG.PUBLIC+"/ui/css/iCMS-6.1.0.css";
             // this.style(cssUrl,"iCMS_UI_CSS");
             return this;
