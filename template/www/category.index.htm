@@ -9,7 +9,7 @@
     <link rel="alternate" media="only screen and(max-width: 640px)" href="<!--{$category.url|replace:$site.url:$site.urls.mobile}-->" >
     <!--{iCMS:public:ui}-->
   </head>
-  <body>
+  <body class="category-index">
   <!--{include file="./header.htm"}-->
   <div class="body clearfix ">
     <div class="body-wrap r5">
@@ -99,7 +99,10 @@
                     <h4 class="media-heading">
                       <a href="<!--{$article_list.url}-->" target="_blank"><!--{$article_list.title}--></a>
                     </h4>
-                    <p class="media-text"><!--{$article_list.description}--></p>
+                    <p class="media-text">
+                      <!--{$article_list.description|cut:110:'...'}-->
+                      <a href="<!--{$article_list.url}-->" target="_blank" class="blue">[详细]</a>
+                    </p>
                     <div class="media-info">
                       <span class="date"><!--{$article_list.pubdate|date:'Y-m-d H:i'}--></span>
                       <span class="category">分类：<!--{$article_list.category.link}--></span>
@@ -129,7 +132,7 @@
           </div>
           <div class="mod-content">
             <ul class="rank-list current">
-               <!--{iCMS:article:list loop="true" row="9" orderby="week" cid="$category.cid"}-->
+               <!--{iCMS:article:list loop="true" row="9" sub="all" orderby="week" cid="$category.cid"}-->
                <li>
                 <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
                 <a href="<!--{$article_list.url}-->" target="_blank" ><!--{$article_list.title}--></a>
@@ -137,7 +140,7 @@
                <!--{/iCMS}-->
             </ul>
             <ul class="rank-list hide">
-               <!--{iCMS:article:list loop="true" row="9" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
+               <!--{iCMS:article:list loop="true" row="9" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
                <li>
                 <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
                 <a href="<!--{$article_list.url}-->" target="_blank" ><!--{$article_list.title}--></a>
@@ -152,7 +155,7 @@
           </div>
           <div class="mod-content">
             <ul>
-              <!--{iCMS:tag:list loop="true" row="15" orderby="hot" cid="$category.cid"}-->
+              <!--{iCMS:tag:list loop="true" row="15" sub="all" orderby="hot" cid="$category.cid"}-->
               <li><a href="<!--{$tag_list.url}-->" target="_blank" class="btn"><!--{$tag_list.name}--></a></li>
               <!--{/iCMS}-->
             </ul>
@@ -166,7 +169,7 @@
             </div>
           </div>
           <div class="mod-content">
-            <!--{iCMS:article:list loop="true" pic="true" row="8" cid="$category.cid"}-->
+            <!--{iCMS:article:list loop="true" pic="true" sub="all" row="8" cid="$category.cid"}-->
             <div class="pictxt-list <!--{cycle values='fl,fr'}-->">
               <a href="<!--{$article_list.url}-->" target="_blank">
                 <span class="pictxt-img">
@@ -181,9 +184,8 @@
       </div>
       <div class="clearfix mb10"></div>
     </div>
-        <div class="clearfix mb20"></div>
+    <div class="clearfix mb20"></div>
   </div>
-
   <!--{include file="./footer.htm"}-->
   </body>
 </html>
