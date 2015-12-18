@@ -156,17 +156,17 @@ ul { list-style: none; margin: 0px; padding: 0px; }
 /* ==search== */
 .header .search { margin-top: 4px; +width: 440px; display: inline-block; float: right; margin-top: 18px; }
 .search-wrap .search_query { outline: none; border-radius: 5px 0px 0px 5px; width: 360px; height: 35px; border: 1px solid #EDEDED; padding-left: 32px; border-right: 0 none; background-image: url(img/sprites.png); background-position: 6px -46px; color: #999; background-repeat: no-repeat; margin-right: 0; line-height: 34px; }
-.search-wrap .search_btn { outline: none; border-radius: 0px 5px 5px 0px; width: 60px; height: 39px; background-color: #48bad0; color: #FFFFFF; border: 1px solid #48bad0; }
+.search-wrap .search_btn { outline: none; border-radius: 0px 5px 5px 0px; width: 60px; height: 39px;background-color: #0099cc; color: #FFFFFF;border: 1px solid #0099cc;}
 
 /* ==navbar== */
-.navbar { height: 41px; background-color: #2cabc4; line-height: 41px; }
+.navbar { height: 41px;background-color: #333; line-height: 41px;}
 
 /*.navbar ul {list-style: none; margin: 0px;}*/
 .navbar-wrap { width: 1200px; position: relative; margin: 0 auto; left: 0; display: block; }
 .navbar-wrap>li { float: left; }
 .navbar-wrap>li a { text-decoration: none; padding: 12px 25px; color: #FFF; font-size: 14px; font-weight: bold; }
-.navbar-wrap>li a:hover { background-color: #57c1d6; }
-.navbar-wrap>li.active>a { background-color: #0086a0; }
+.navbar-wrap>li a:hover {background-color: rgb(9, 119, 181);}
+.navbar-wrap>li.active>a {background-color: #079CF1;}
 .navbar-wrap>li.dropdown { position: relative; }
 
 /* ==dropdown-menu== */
@@ -254,11 +254,11 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .mod-title .mod-txt { font-size: 16px; color: #038BD8; font-weight: bold; line-height: 40px; float: left; padding: 0 10px; display: inline; border-bottom: 1px solid #038BD8; margin: 0px; }
 .mod-title span.txt { position: relative; font-size: 18px; font-family: 'Microsoft YaHei'; top: -1px; display: block; float: left; }
 .mod-title span.blue { border-top: 3px solid blue; }
-.mod-title span.green { border-top: 3px solid #00afc7; color:#0084bb }
+.mod-title span.green {border-top: 3px solid #0099cc; color:#0084bb}
 .mod-title .more-link { }
 .mod-title .more-link a { border: 1px solid #ddd; border-top: 0; display: block; padding: 0 5px; background: #eee; }
 .mod-title .more-link a.more { padding: 4px 8px; border-left: 0; float: none; }
-.mod-title .more-link a:hover { background: #73A907; color: #fff; text-decoration: none; }
+.mod-title .more-link a:hover {background: #0099cc; color: #fff; text-decoration: none;}
 
 /*.mod-title hr{ border:none;border-top:1px #E5E5E5 solid; padding:0; margin:0; color:#E5E5E5; height:1px; margin-top:20px; float:left; width:350px}*/
 
@@ -276,12 +276,33 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 */
 
 /* ==hot-tags == */
-.btn { display: inline-block; margin-bottom: 0px; padding: 0; font-size: 16px; font-weight: normal; line-height: 28px; text-align: center; white-space: nowrap; background-image: none; border: 1px solid transparent; border-radius: 0px; cursor: pointer; outline: 0px none; transition: background-color 300ms ease-out 0s, border-color 300ms ease-out 0s; display: block; border-radius: 5px; background: none; border: 1px #8C8C8C solid }
+/*.btn { display: inline-block; margin-bottom: 0px; padding: 0; font-size: 16px; font-weight: normal; line-height: 28px; text-align: center; white-space: nowrap; background-image: none; border: 1px solid transparent; border-radius: 0px; cursor: pointer; outline: 0px none; transition: background-color 300ms ease-out 0s, border-color 300ms ease-out 0s; display: block; border-radius: 5px; background: none; border: 1px #8C8C8C solid }*/
 .hot-tags .mod-content { height: auto; overflow: hidden; padding-top: 15px }
-.hot-tags .mod-content li { float: left; width: 90px; padding: 0px 6px; overflow: hidden; text-align: center; margin: 5px auto }
+/*.hot-tags .mod-content li { float: left; width: 90px; padding: 0px 6px; overflow: hidden; text-align: center; margin: 5px auto }
 .hot-tags .mod-content li a { color: #0084bb; text-decoration: none; overflow: hidden; border-radius: 100px; padding: 2px 4px; height: 32px; line-height: 30px; border: 1px #DCDCDC solid; font-size: 16px }
 .hot-tags .mod-content li a:hover { background: #48bad0; color: #fff; border: 1px #48bad0 solid; }
-
+*/
+.hot-tags .mod-content li {
+/*    overflow: hidden;
+    padding: 15px 0 12px 15px;
+*//* display: block; */}
+.hot-tags .mod-content li a {
+    color: #999;
+    background-color: #EFEFEF;
+    float: left;
+    width: 30%;
+    margin: 0px 1px 1px 0px;
+    padding: 0 4px;
+    /* font-size: 12px; */
+    height: 29px;
+    line-height: 29px;
+    overflow: hidden;
+    text-align: center;
+}
+.hot-tags .mod-content li a:hover {
+    color: #fff;
+    background-color: #61B3E6;
+}
 /* ==author-list == */
 .author-list { width: 100%; height: 72px; padding: 10px 4px; border-bottom: 1px dotted #ccc; background: 0; word-wrap: break-word; word-break: break-all; }
 .author-last { border-bottom: 0px; }
@@ -299,7 +320,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .pictxt-list .pictxt-img { display: inline-block; height: 110px; }
 .pictxt-list img { width: 150px; height: 110px; }
 .pictxt-list a .pictxt-text { overflow: hidden; font-size: 12px; font-family: "Microsoft YaHei"; margin: 0px 4px; height: 40px; overflow: hidden; line-height: 18px; }
-.pictxt-list a:hover { background: #2cabc4; color: #fff; }
+.pictxt-list a:hover {background: #0099cc; color: #fff;}
 
 /* ==pagination == */
 .pagination { margin: 10px; clear: both; max-height: 30px; position: relative; text-align: center }
@@ -353,7 +374,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 
 
 .article-like { margin-left: 10px; }
-.article-like .like-btn { position: relative; display: block; text-decoration: none; text-align: left; color: #fff; background: #fff; font-size: 16px; line-height: 25px; font-family: "微软雅黑"; border: 1px solid #ddd; border-radius: 5px; padding: 5px; float: left; margin-right: 10px; }
+.article-like .like-btn { position: relative; display: block; text-decoration: none; text-align: left; color: #fff; background: #fff; font-size: 16px; line-height: 25px; font-family: "ÃƒÂ¥Ã‚Â¾Ã‚Â®ÃƒÂ¨Ã‚Â½Ã‚Â¯ÃƒÂ©Ã¢â‚¬ÂºÃ¢â‚¬Â¦ÃƒÂ©Ã‚Â»Ã¢â‚¬Ëœ"; border: 1px solid #ddd; border-radius: 5px; padding: 5px; float: left; margin-right: 10px; }
 .article-like .like-icon { position: absolute; top: 2px; left: 10px; width: 27px; height: 27px; display: block; }
 .article-like .like-num { margin-left: 35px; color: #369; }
 .article-like .like-txt { color: #666; }
@@ -367,7 +388,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .commnet{padding-right: 10px;width: auto;}
 .comment-list-iframe,.comment-form-iframe{width: 100%}
 /* ==footer== */
-.footer { background-color: #009fbe;color: #FFF;}
+.footer {background-color: #444;color: #FFF;}
 .footer .footer-wrap {min-height: 90px; width: 1200px; margin: 0 auto; text-align: center; padding-top: 5px;font-size: 12px;}
 .footer-wrap p { margin: 5px auto; }
 .footer-wrap p a {color: #FFF;font-weight: bold;}
