@@ -126,7 +126,7 @@ ul { list-style: none; margin: 0px; padding: 0px; }
 .error { color: #C33; }
 .bull { padding: 0 3px; color: #BBB; display: inline-block; font-family: Arial; }
 .hide { display: none; }
-.blue, a.blue { color: #0099FF; }
+.blue, a.blue { color: #0084bb; }
 .green, a.green { color: #6FA700; }
 .fs16 { font-size: 16px; }
 
@@ -156,17 +156,17 @@ ul { list-style: none; margin: 0px; padding: 0px; }
 /* ==search== */
 .header .search { margin-top: 4px; +width: 440px; display: inline-block; float: right; margin-top: 18px; }
 .search-wrap .search_query { outline: none; border-radius: 5px 0px 0px 5px; width: 360px; height: 35px; border: 1px solid #EDEDED; padding-left: 32px; border-right: 0 none; background-image: url(img/sprites.png); background-position: 6px -46px; color: #999; background-repeat: no-repeat; margin-right: 0; line-height: 34px; }
-.search-wrap .search_btn { outline: none; border-radius: 0px 5px 5px 0px; width: 60px; height: 39px; background-color: #333333; color: #FFFFFF; border: 1px solid #333333; }
+.search-wrap .search_btn { outline: none; border-radius: 0px 5px 5px 0px; width: 60px; height: 39px; background-color: #48bad0; color: #FFFFFF; border: 1px solid #48bad0; }
 
 /* ==navbar== */
-.navbar { height: 41px; background-color: #333; line-height: 41px; }
+.navbar { height: 41px; background-color: #2cabc4; line-height: 41px; }
 
 /*.navbar ul {list-style: none; margin: 0px;}*/
 .navbar-wrap { width: 1200px; position: relative; margin: 0 auto; left: 0; display: block; }
 .navbar-wrap>li { float: left; }
-.navbar-wrap>li a { text-decoration: none; padding: 12px 15px 12px 15px; color: #FFF; font-size: 14px; font-weight: bold; }
-.navbar-wrap>li a:hover { background-color: #474747; }
-.navbar-wrap>li.active>a { background-color: #779E00; }
+.navbar-wrap>li a { text-decoration: none; padding: 12px 25px; color: #FFF; font-size: 14px; font-weight: bold; }
+.navbar-wrap>li a:hover { background-color: #57c1d6; }
+.navbar-wrap>li.active>a { background-color: #0086a0; }
 .navbar-wrap>li.dropdown { position: relative; }
 
 /* ==dropdown-menu== */
@@ -225,7 +225,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .tabs-wrap ul.tabs-nav li a:hover { background: #fff; color: #369; }*/
 .tabs-wrap .kwLink { padding: 8px 0 8px; }
 .tabs-wrap .kwLink b {/* background: url(img/sprites.png) no-repeat 0px -440px; *//* width: 18px; *//* height: 18px; */display: inline-block; }
-.tabs-wrap .kwLink a { margin-right: 10px; position: relative; display: inline-block; color: #5C9E06; }
+.tabs-wrap .kwLink a { margin-right: 10px; position: relative; display: inline-block; color: #0e82bf; }
 .tabs-wrap .kwLink a i { color: #99CC33; display: block; position: absolute; width: 4px; height: 4px; overflow: hidden; background: #ccc; left: 4px; top: 8px; _top: 6px; }
 
 /*.tabs-wrap .kwLink a.active, .tabs-wrap .kwLink a:hover { color: #333; text-decoration: none; }
@@ -254,7 +254,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .mod-title .mod-txt { font-size: 16px; color: #038BD8; font-weight: bold; line-height: 40px; float: left; padding: 0 10px; display: inline; border-bottom: 1px solid #038BD8; margin: 0px; }
 .mod-title span.txt { position: relative; font-size: 18px; font-family: 'Microsoft YaHei'; top: -1px; display: block; float: left; }
 .mod-title span.blue { border-top: 3px solid blue; }
-.mod-title span.green { border-top: 3px solid #659604; }
+.mod-title span.green { border-top: 3px solid #00afc7; color:#0084bb }
 .mod-title .more-link { }
 .mod-title .more-link a { border: 1px solid #ddd; border-top: 0; display: block; padding: 0 5px; background: #eee; }
 .mod-title .more-link a.more { padding: 4px 8px; border-left: 0; float: none; }
@@ -267,7 +267,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 /*.rank .mod-title ul { width: 100%; float: left; border-bottom: 1px solid #d2d2d2; height: 38px; margin-top: 10px }*/
 .rank .mod-title  li { float: left; font-size: 16px; padding: 0 15px; line-height: 40px; cursor: pointer }
 .rank .mod-title  li.active { color: #038BD8; font-weight: bold; border-bottom: 1px solid #038BD8 }
-.rank-list { padding: 8px 0px; background: url(img/rank.png) no-repeat 0px 16px; padding-left: 28px; height: 310px; }
+.rank-list { padding: 8px 0px; background: url(img/rank.png?i=2) no-repeat 0px 20px; padding-left: 28px; height: 310px; }
 .rank-list li { width: 100%; height: 24px; overflow: hidden; font-size: 14px; padding: 6px 0; }
 .rank-list li em { color: #fff; float: left; font-size: 14px; font-style: italic; font-family: Verdana, Geneva, sans-serif, Arial; line-height: 20px; margin: 3px 10px 0 0; overflow: hidden; text-align: center; width: 20px; height: 20px; background-color: #0099CC; border-radius: 5px; display: none; }
 .rank-list li a { float: left; font-size: 14px; height: 24px; line-height: 24px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 268px; }
@@ -279,14 +279,14 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .btn { display: inline-block; margin-bottom: 0px; padding: 0; font-size: 16px; font-weight: normal; line-height: 28px; text-align: center; white-space: nowrap; background-image: none; border: 1px solid transparent; border-radius: 0px; cursor: pointer; outline: 0px none; transition: background-color 300ms ease-out 0s, border-color 300ms ease-out 0s; display: block; border-radius: 5px; background: none; border: 1px #8C8C8C solid }
 .hot-tags .mod-content { height: auto; overflow: hidden; padding-top: 15px }
 .hot-tags .mod-content li { float: left; width: 90px; padding: 0px 6px; overflow: hidden; text-align: center; margin: 5px auto }
-.hot-tags .mod-content li a { color: #578203; text-decoration: none; overflow: hidden; border-radius: 100px; padding: 2px 4px; height: 32px; line-height: 30px; border: 1px #DCDCDC solid; font-size: 16px }
-.hot-tags .mod-content li a:hover { background: #578203; color: #fff; border: 1px #578203 solid; }
+.hot-tags .mod-content li a { color: #0084bb; text-decoration: none; overflow: hidden; border-radius: 100px; padding: 2px 4px; height: 32px; line-height: 30px; border: 1px #DCDCDC solid; font-size: 16px }
+.hot-tags .mod-content li a:hover { background: #48bad0; color: #fff; border: 1px #48bad0 solid; }
 
 /* ==author-list == */
 .author-list { width: 100%; height: 72px; padding: 10px 4px; border-bottom: 1px dotted #ccc; background: 0; word-wrap: break-word; word-break: break-all; }
 .author-last { border-bottom: 0px; }
 .author-list .author-name { margin-left: 80px; padding: 0; text-align: left; font-size: 18px; line-height: 24px; }
-.author-list .author-name a { color: #77A914; }
+.author-list .author-name a { color: #0084bb; }
 .author-list .author-text { margin-left: 80px; color: #515050; font-size: 14px; padding: 5px 0 0 0; line-height: 24px; }
 .author-list .author-pic { float: left; margin-right: 10px; margin-left: 3px; border: 0; }
 .author-list .author-pic img { width: 72px; height: 72px; border-radius: 50px; }
@@ -299,7 +299,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .pictxt-list .pictxt-img { display: inline-block; height: 110px; }
 .pictxt-list img { width: 150px; height: 110px; }
 .pictxt-list a .pictxt-text { overflow: hidden; font-size: 12px; font-family: "Microsoft YaHei"; margin: 0px 4px; height: 40px; overflow: hidden; line-height: 18px; }
-.pictxt-list a:hover { background: #64B100; color: #fff; }
+.pictxt-list a:hover { background: #2cabc4; color: #fff; }
 
 /* ==pagination == */
 .pagination { margin: 10px; clear: both; max-height: 30px; position: relative; text-align: center }
@@ -367,10 +367,10 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .commnet{padding-right: 10px;width: auto;}
 .comment-list-iframe,.comment-form-iframe{width: 100%}
 /* ==footer== */
-.footer { background-color: #313131;color: #999;}
+.footer { background-color: #009fbe;color: #FFF;}
 .footer .footer-wrap {min-height: 90px; width: 1200px; margin: 0 auto; text-align: center; padding-top: 5px;font-size: 12px;}
 .footer-wrap p { margin: 5px auto; }
-.footer-wrap p a {color: #999;font-weight: bold;}
+.footer-wrap p a {color: #FFF;font-weight: bold;}
 
 /* ==baidu.share== */
 .share { }
