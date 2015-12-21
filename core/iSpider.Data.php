@@ -180,7 +180,10 @@ class spiderData extends spider{
         if (spider::$dataTest) {
             echo "<pre style='width:99%;word-wrap: break-word;'>";
             print_r(iS::escapeStr($responses));
-            echo "</pre><hr />";
+            echo '<hr />';
+            echo '使用内存:'.iFS::sizeUnit(memory_get_usage()).' 执行时间:'.iPHP::timer_stop().'s';
+            echo "</pre>";
+
         }
 
         iFS::$CURLOPT_ENCODING        = '';
