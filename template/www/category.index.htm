@@ -15,12 +15,6 @@
     <div class="body-wrap r5">
       <div class="focus">
         <div class="focus-left fl">
-          <script type="text/javascript" src="http://s.ladyband.cn/js/jquery.slider.js"></script>
-          <script>
-          $(function(){
-            $(".carousel-box").slider();
-          })
-          </script>
           <div class="carousel-box">
             <ul>
             <!--{iCMS:article:list loop="true" pic="true" row="5"}-->
@@ -50,6 +44,9 @@
             <ul>
             <!--{foreach value="alist" start="2" from="$article_list"}-->
             <li>
+              <!--{if $category.rootid=="0"}-->
+              <b>[<!--{$alist.category.link}-->]</b>
+              <!--{/if}-->
               <a href="<!--{$alist.url}-->" target="_blank"><!--{$alist.title}--></a>
               <span class="date"><!--{$alist.pubdate|date:"m-d"}--></span>
             </li>
@@ -65,13 +62,13 @@
         <div class="tabs-wrap">
           <div class="tabs-head">
             <p class="tabs-title">
-              <a href="<!--{$category.url}-->"><!--{$category.name}--></a>
+              <a href="<!--{$category.url}-->" date-target="#tabs_c0" data-toggle="tab"><!--{$category.name}--></a>
             </p>
             <!--{iCMS:category:list stype='sub' row="8" cid="$category.cid"}-->
             <ul class="tabs-nav">
               <!--{foreach key="catkey" value="catlist" from="$category_list"}-->
               <li>
-                <a href="#tabs_c<!--{$catlist.cid}-->" data-toggle="tab">
+                <a href="<!--{$catlist.url}-->" target="_blank" date-target="#tabs_c<!--{$catlist.cid}-->" data-toggle="tab">
                    <!--{$catlist.name}-->
                 </a>
               </li>
@@ -126,12 +123,12 @@
         <div class="mod-box rank">
           <div class="mod-title">
             <ul>
-              <li class="active">周点击榜</li>
-              <li>周热评榜</li>
+              <li class="active"><a href="#rank-week" data-toggle="tab">周点击榜</a></li>
+              <li><a href="#rank-momth" data-toggle="tab">周热评榜</a></li>
             </ul>
           </div>
           <div class="mod-content">
-            <ul class="rank-list current">
+            <ul class="rank-list" id="rank-week">
                <!--{iCMS:article:list loop="true" row="9" sub="all" orderby="week" cid="$category.cid"}-->
                <li>
                 <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
@@ -139,7 +136,7 @@
                </li>
                <!--{/iCMS}-->
             </ul>
-            <ul class="rank-list hide">
+            <ul class="rank-list hide" id="rank-momth">
                <!--{iCMS:article:list loop="true" row="9" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
                <li>
                 <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>

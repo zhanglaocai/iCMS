@@ -15,12 +15,6 @@
     <div class="body-wrap r5">
       <div class="focus">
         <div class="focus-left fl">
-          <script type="text/javascript" src="http://s.ladyband.cn/js/jquery.slider.js"></script>
-          <script>
-          $(function(){
-            $(".carousel-box").slider();
-          })
-          </script>
           <div class="carousel-box">
             <ul>
             <!--{iCMS:article:list loop="true" pic="true" row="5"}-->
@@ -50,6 +44,7 @@
             <ul>
             <!--{foreach value="alist" start="2" from="$article_list"}-->
             <li>
+              <b>[<!--{$alist.category.link}-->]</b>
               <a href="<!--{$alist.url}-->" target="_blank"><!--{$alist.title}--></a>
               <span class="date"><!--{$alist.pubdate|date:"m-d"}--></span>
             </li>
@@ -65,13 +60,13 @@
         <div class="tabs-wrap">
           <div class="tabs-head">
             <p class="tabs-title">
-              <a href="<!--{$site.url}-->">全部资讯</a>
+              <a href="<!--{$site.url}-->" date-target="#tabs_c0" data-toggle="tab">全部资讯</a>
             </p>
             <!--{iCMS:category:list stype='top' row="8"}-->
             <ul class="tabs-nav">
               <!--{foreach key="catkey" value="catlist" from="$category_list"}-->
               <li>
-                <a href="#tabs_c<!--{$catlist.cid}-->" data-toggle="tab">
+                <a href="<!--{$catlist.url}-->" target="_blank" date-target="#tabs_c<!--{$catlist.cid}-->" data-toggle="tab">
                    <!--{$catlist.name}-->
                 </a>
               </li>
@@ -161,12 +156,12 @@
         <div class="mod-box rank">
           <div class="mod-title">
             <ul>
-              <li class="active">周点击榜</li>
-              <li>周热评榜</li>
+              <li class="active"><a date-target="#rank-week" data-toggle="tab">周点击榜</a></li>
+              <li><a date-target="#rank-momth" data-toggle="tab">周热评榜</a></li>
             </ul>
           </div>
           <div class="mod-content">
-            <ul class="rank-list current">
+            <ul class="rank-list" id="rank-week">
                <!--{iCMS:article:list loop="true" row="9" orderby="week"}-->
                <li>
                 <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
@@ -174,7 +169,7 @@
                </li>
                <!--{/iCMS}-->
             </ul>
-            <ul class="rank-list hide">
+            <ul class="rank-list hide" id="rank-momth">
                <!--{iCMS:article:list loop="true" row="9" orderby="comment" startdate="-7 day"}-->
                <li>
                 <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
@@ -205,7 +200,7 @@
             <div class="author-list <!--{if $user_list.last}-->author-last<!--{/if}-->">
               <div class="author-pic">
                 <a href="<!--{$user_list.url}-->" target="_blank">
-                <img  src="http://7tea1z.com1.z0.glb.clouddn.com/2015/12-17/17/e5edec0280f4401a49edf25c8f0b8084.jpeg" data-src="<!--{$user_list.avatar}-->" onerror="iCMS.user.noavatar(this);">
+                <img  src="http://7tea1z.com1.z0.glb.clouddn.com/2015/12-17/17/e5edec0280f4401a49edf25c8f0b8084.jpeg" data-src="<!--{$user_list.avatar}-->">
                 </a>
               </div>
               <div class="author-name"><!--{$user_list.link}--></div>

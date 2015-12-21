@@ -147,12 +147,12 @@
         <div class="mod-box rank">
           <div class="mod-title">
             <ul>
-              <li class="active">周点击榜</li>
-              <li>周热评榜</li>
+              <li class="active"><a href="#rank-week" data-toggle="tab">周点击榜</a></li>
+              <li><a href="#rank-momth" data-toggle="tab">周热评榜</a></li>
             </ul>
           </div>
           <div class="mod-content">
-            <ul class="rank-list current">
+            <ul class="rank-list" id="rank-week">
                <!--{iCMS:article:list loop="true" row="9" sub="all" orderby="week" cid="$category.cid"}-->
                <li>
                 <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
@@ -160,7 +160,7 @@
                </li>
                <!--{/iCMS}-->
             </ul>
-            <ul class="rank-list hide">
+            <ul class="rank-list hide" id="rank-momth">
                <!--{iCMS:article:list loop="true" row="9" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
                <li>
                 <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>

@@ -155,8 +155,8 @@ ul { list-style: none; margin: 0px; padding: 0px; }
 
 /* ==search== */
 .header .search { margin-top: 4px; +width: 440px; display: inline-block; float: right; margin-top: 18px; }
-.search-wrap .search_query { outline: none; border-radius: 5px 0px 0px 5px; width: 360px; height: 35px; border: 1px solid #EDEDED; padding-left: 32px; border-right: 0 none; background-image: url(img/sprites.png); background-position: 6px -46px; color: #999; background-repeat: no-repeat; margin-right: 0; line-height: 34px; }
-.search-wrap .search_btn { outline: none; border-radius: 0px 5px 5px 0px; width: 60px; height: 39px;background-color: #0099cc; color: #FFFFFF;border: 1px solid #0099cc;}
+.search-wrap .search-query { outline: none; border-radius: 5px 0px 0px 5px; width: 360px; height: 35px; border: 1px solid #EDEDED; padding-left: 32px; border-right: 0 none; background-image: url(img/sprites.png); background-position: 6px -46px; color: #999; background-repeat: no-repeat; margin-right: 0; line-height: 34px; }
+.search-wrap .search-btn { outline: none; border-radius: 0px 5px 5px 0px; width: 60px; height: 39px;background-color: #0099cc; color: #FFFFFF;border: 1px solid #0099cc;}
 
 /* ==navbar== */
 .navbar { height: 41px;background-color: #333; line-height: 41px;}
@@ -199,6 +199,8 @@ ul { list-style: none; margin: 0px; padding: 0px; }
 .topnews h1 { font-size: 24px; text-align: center; margin: 0px 0px 10px 0px; line-height: 40px; }
 .topnews p { color: #333; line-height: 24px; }
 .topnews ul li { line-height: 32px; background: url(img/sprites.png) no-repeat -5px -80px; padding-left: 12px; }
+.topnews ul li b{color: #0084BB;}
+.topnews ul li b a{color: #0084BB;}
 .topnews ul li span.date { width: 60px; float: right; color: #999; }
 
 /* ==tabs-wrap== */
@@ -238,7 +240,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .media .media-object { float: left; margin-right: 20px; display: inline; position: relative; }
 .media .media-object img { width: 250px; height: 140px; }
 .media .media-body h4.media-heading { font-size: 18px; font-weight: bold; line-height: 32px; margin: 0px 0px 5px 0px; overflow: hidden; white-space: nowrap; }
-.media .media-body .media-text { text-indent: 2em; margin: 0px 0px 10px 0px; padding-right: 15px; color: #888; font-size: 14px;    /*height: 72px;*/ line-height: 24px; overflow: hidden; }
+.media .media-body .media-text { text-indent: 2em;margin: 0px 0px 10px 0px; color: #888; font-size: 14px;/* height: 72px; */ line-height: 24px; overflow: hidden;padding-right: 10px;}
 .media .media-body .media-info { }
 .media .media-body .media-info .date { float: right; color: #999; display: inline-block; margin-right: 10px; }
 .media .media-body .media-info .tags { background: url(img/sprites.png) no-repeat 0px -398px; display: inline; padding-left: 25px; overflow: hidden; width: 350px; height: 20px; }
@@ -267,6 +269,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 /*.rank .mod-title ul { width: 100%; float: left; border-bottom: 1px solid #d2d2d2; height: 38px; margin-top: 10px }*/
 .rank .mod-title  li { float: left; font-size: 16px; padding: 0 15px; line-height: 40px; cursor: pointer }
 .rank .mod-title  li.active { color: #038BD8; font-weight: bold; border-bottom: 1px solid #038BD8 }
+.rank .mod-title  li a{text-decoration: none;}
 .rank-list { padding: 8px 0px; background: url(img/rank.png?i=2) no-repeat 0px 20px; padding-left: 28px; height: 310px; }
 .rank-list li { width: 100%; height: 24px; overflow: hidden; font-size: 14px; padding: 6px 0; }
 .rank-list li em { color: #fff; float: left; font-size: 14px; font-style: italic; font-family: Verdana, Geneva, sans-serif, Arial; line-height: 20px; margin: 3px 10px 0 0; overflow: hidden; text-align: center; width: 20px; height: 20px; background-color: #0099CC; border-radius: 5px; display: none; }
@@ -374,7 +377,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 
 
 .article-like { margin-left: 10px; }
-.article-like .like-btn { position: relative; display: block; text-decoration: none; text-align: left; color: #fff; background: #fff; font-size: 16px; line-height: 25px; font-family: "ÃƒÂ¥Ã‚Â¾Ã‚Â®ÃƒÂ¨Ã‚Â½Ã‚Â¯ÃƒÂ©Ã¢â‚¬ÂºÃ¢â‚¬Â¦ÃƒÂ©Ã‚Â»Ã¢â‚¬Ëœ"; border: 1px solid #ddd; border-radius: 5px; padding: 5px; float: left; margin-right: 10px; }
+.article-like .like-btn { position: relative; display: block; text-decoration: none; text-align: left; color: #fff; background: #fff; font-size: 16px; line-height: 25px; font-family: "ÃƒÆ’Ã‚Â¥Ãƒâ€šÃ‚Â¾Ãƒâ€šÃ‚Â®ÃƒÆ’Ã‚Â¨Ãƒâ€šÃ‚Â½Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã‚Â©ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã‚Â©Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“"; border: 1px solid #ddd; border-radius: 5px; padding: 5px; float: left; margin-right: 10px; }
 .article-like .like-icon { position: absolute; top: 2px; left: 10px; width: 27px; height: 27px; display: block; }
 .article-like .like-num { margin-left: 35px; color: #369; }
 .article-like .like-txt { color: #666; }
