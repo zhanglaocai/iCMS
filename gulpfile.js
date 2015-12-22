@@ -1,6 +1,8 @@
 /**
  * 初始化
- * npm install gulp-jshint gulp-util gulp-imagemin gulp-sass gulp-minify-css gulp-uglify gulp-rename gulp-concat gulp-clean gulp-clean tiny-lr --save-dev
+ * npm install --save-dev gulp
+ * npm install --save-dev gulp-livereload gulp-ruby-sass gulp-autoprefixer gulp-jshint gulp-util gulp-imagemin gulp-sass gulp-minify-css gulp-uglify gulp-rename gulp-concat gulp-clean gulp-clean tiny-lr
+ * gulp
  */
 
 // 引入 gulp及组件

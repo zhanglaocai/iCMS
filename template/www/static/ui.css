@@ -196,9 +196,9 @@ ul { list-style: none; margin: 0px; padding: 0px; }
 
 /* ==topnews== */
 .topnews { }
-.topnews h1 { font-size: 24px; text-align: center; margin: 0px 0px 10px 0px; line-height: 40px; }
+.topnews h1 { font-size: 24px; text-align: center; margin: 0px 0px 10px 0px; line-height: 40px;height: 40px;overflow: hidden;}
 .topnews p { color: #333; line-height: 24px; }
-.topnews ul li { line-height: 32px; background: url(img/sprites.png) no-repeat -5px -80px; padding-left: 12px; }
+.topnews ul li { line-height: 32px; background: url(img/sprites.png) no-repeat -5px -80px; padding-left: 12px;height: 32px;overflow: hidden;/* width: 450px; */}
 .topnews ul li b{color: #0084BB;}
 .topnews ul li b a{color: #0084BB;}
 .topnews ul li span.date { width: 60px; float: right; color: #999; }
@@ -251,7 +251,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .media .media-body .media-info .tags a:hover { color: #336699; text-decoration: underline; }
 
 /* ==mod-box == */
-.mod-box {margin-bottom: 20px;width: 100%;}
+.mod-box {margin-bottom: 12px;width: 100%;}
 .mod-title { width: 100%; display: block; height: 40px; border-bottom: 1px solid #eaeaea; position: relative; z-index: 1; margin-top: 5px }
 .mod-title .mod-txt { font-size: 16px; color: #038BD8; font-weight: bold; line-height: 40px; float: left; padding: 0 10px; display: inline; border-bottom: 1px solid #038BD8; margin: 0px; }
 .mod-title span.txt { position: relative; font-size: 18px; font-family: 'Microsoft YaHei'; top: -1px; display: block; float: left; }
@@ -270,7 +270,7 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .rank .mod-title  li { float: left; font-size: 16px; padding: 0 15px; line-height: 40px; cursor: pointer }
 .rank .mod-title  li.active { color: #038BD8; font-weight: bold; border-bottom: 1px solid #038BD8 }
 .rank .mod-title  li a{text-decoration: none;}
-.rank-list { padding: 8px 0px; background: url(img/rank.png?i=2) no-repeat 0px 20px; padding-left: 28px; height: 310px; }
+.rank-list {padding: 8px 0px 0px 0px; background: url(img/rank.png?i=2) no-repeat 0px 20px;padding-left: 24px;height: 360px;}
 .rank-list li { width: 100%; height: 24px; overflow: hidden; font-size: 14px; padding: 6px 0; }
 .rank-list li em { color: #fff; float: left; font-size: 14px; font-style: italic; font-family: Verdana, Geneva, sans-serif, Arial; line-height: 20px; margin: 3px 10px 0 0; overflow: hidden; text-align: center; width: 20px; height: 20px; background-color: #0099CC; border-radius: 5px; display: none; }
 .rank-list li a { float: left; font-size: 14px; height: 24px; line-height: 24px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 268px; }
@@ -371,13 +371,13 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 .article .related .related-left li { width: 320px; height: 28px; float: left; line-height: 28px; overflow: hidden; background: url(img/dot.png) no-repeat 0 12px; padding: 0 0 0 11px; font-size: 14px; display: inline; }
 .article .related .related-right {float: right; width: 300px; height: 250px;}
 
-/* ==article breadcrumb== */
-.article .breadcrumb { border-radius: 0px;margin: 1px;position: relative;left: -20px;width: 839px;}
-.article .breadcrumb>li>.divider { color: #666; font-size: 18px; }
+/* == breadcrumb== */
+.breadcrumb { border-radius: 0px;margin: 1px;position: relative;left: -20px;width: 839px;}
+.breadcrumb>li>.divider { color: #666; font-size: 18px; }
 
 
 .article-like { margin-left: 10px; }
-.article-like .like-btn { position: relative; display: block; text-decoration: none; text-align: left; color: #fff; background: #fff; font-size: 16px; line-height: 25px; font-family: "ÃƒÆ’Ã‚Â¥Ãƒâ€šÃ‚Â¾Ãƒâ€šÃ‚Â®ÃƒÆ’Ã‚Â¨Ãƒâ€šÃ‚Â½Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã‚Â©ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂºÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã‚Â©Ãƒâ€šÃ‚Â»ÃƒÂ¢Ã¢â€šÂ¬Ã‹Å“"; border: 1px solid #ddd; border-radius: 5px; padding: 5px; float: left; margin-right: 10px; }
+.article-like .like-btn { position: relative; display: block; text-decoration: none; text-align: left; color: #fff; background: #fff; font-size: 16px; line-height: 25px; font-family: "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¥ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¾ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â®ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â½ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚ÂºÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â»ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¹Ã…â€œ"; border: 1px solid #ddd; border-radius: 5px; padding: 5px; float: left; margin-right: 10px; }
 .article-like .like-icon { position: absolute; top: 2px; left: 10px; width: 27px; height: 27px; display: block; }
 .article-like .like-num { margin-left: 35px; color: #369; }
 .article-like .like-txt { color: #666; }
@@ -390,6 +390,13 @@ line-height: 32px; height: 40px; float: left; text-align: center;/* overflow: hi
 /* ==commnet==*/
 .commnet{padding-right: 10px;width: auto;}
 .comment-list-iframe,.comment-form-iframe{width: 100%}
+
+/* ==tag-index== */
+.tag-index .body-wrap {padding-top: 0px; }
+.tag-wrap  h1 { font: bold 34px/40px "microsoft yahei",Arial; color: #333; margin: 15px 0; }
+.tag-wrap  blockquote { text-indent: 2em; background-color: #EEE; color: #666; padding: 20px; margin-bottom: 4px; }
+
+
 /* ==footer== */
 .footer {background-color: #444;color: #FFF;}
 .footer .footer-wrap {min-height: 90px; width: 1200px; margin: 0 auto; text-align: center; padding-top: 5px;font-size: 12px;}

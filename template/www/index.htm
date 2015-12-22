@@ -45,7 +45,7 @@
             <!--{foreach value="alist" start="2" from="$article_list"}-->
             <li>
               <b>[<!--{$alist.category.link}-->]</b>
-              <a href="<!--{$alist.url}-->" target="_blank"><!--{$alist.title}--></a>
+              <a href="<!--{$alist.url}-->" target="_blank"><!--{$alist.title|cut:25:'...'}--></a>
               <span class="date"><!--{$alist.pubdate|date:"m-d"}--></span>
             </li>
             <!--{/foreach}-->
@@ -156,8 +156,8 @@
         <div class="mod-box rank">
           <div class="mod-title">
             <ul>
-              <li class="active"><a date-target="#rank-week" data-toggle="tab">周点击榜</a></li>
-              <li><a date-target="#rank-momth" data-toggle="tab">周热评榜</a></li>
+              <li class="active"><a href="javascript:void(0);" date-target="#rank-week" data-toggle="tab">周点击榜</a></li>
+              <li><a href="javascript:void(0);" date-target="#rank-momth" data-toggle="tab">周热评榜</a></li>
             </ul>
           </div>
           <div class="mod-content">
@@ -200,7 +200,7 @@
             <div class="author-list <!--{if $user_list.last}-->author-last<!--{/if}-->">
               <div class="author-pic">
                 <a href="<!--{$user_list.url}-->" target="_blank">
-                <img  src="http://7tea1z.com1.z0.glb.clouddn.com/2015/12-17/17/e5edec0280f4401a49edf25c8f0b8084.jpeg" data-src="<!--{$user_list.avatar}-->">
+                <img src="http://7tea1z.com1.z0.glb.clouddn.com/QQ图片20151218154902.jpg" data-src="<!--{$user_list.avatar}-->">
                 </a>
               </div>
               <div class="author-name"><!--{$user_list.link}--></div>

@@ -78,13 +78,13 @@
         <div class="mod-box rank">
           <div class="mod-title">
             <ul>
-              <li class="active"><a href="#rank-week" data-toggle="tab">周点击榜</a></li>
-              <li><a href="#rank-momth" data-toggle="tab">周热评榜</a></li>
+              <li class="active"><a href="javascript:void(0);" date-target="#rank-week" data-toggle="tab">周点击榜</a></li>
+              <li><a href="javascript:void(0);" date-target="#rank-momth" data-toggle="tab">周热评榜</a></li>
             </ul>
           </div>
           <div class="mod-content">
             <ul class="rank-list" id="rank-week">
-               <!--{iCMS:article:list loop="true" row="9" sub="all" orderby="week" cid="$category.cid"}-->
+               <!--{iCMS:article:list loop="true" row="10" sub="all" orderby="week" cid="$category.cid"}-->
                <li>
                 <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
                 <a href="<!--{$article_list.url}-->" target="_blank" ><!--{$article_list.title}--></a>
@@ -92,7 +92,7 @@
                <!--{/iCMS}-->
             </ul>
             <ul class="rank-list hide" id="rank-momth">
-               <!--{iCMS:article:list loop="true" row="9" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
+               <!--{iCMS:article:list loop="true" row="10" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
                <li>
                 <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
                 <a href="<!--{$article_list.url}-->" target="_blank" ><!--{$article_list.title}--></a>
