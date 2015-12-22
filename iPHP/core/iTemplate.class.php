@@ -680,10 +680,12 @@ class iTemplate_Compiler extends iTemplate {
 			case 'for':
 				$this->_for_stack++;
 				$_args = $this->_parse_arguments($arguments);
+				isset($_args['stop']) && $_args['count'] = $_args['stop'];
+
 				isset($_args['start']) OR $this->trigger_error("missing 'start' attribute in 'for'", E_USER_ERROR, __FILE__, __LINE__);
-				isset($_args['stop'])  OR $this->trigger_error("missing 'stop' attribute in 'for'", E_USER_ERROR, __FILE__, __LINE__);
+				isset($_args['count'])  OR $this->trigger_error("missing 'count' attribute in 'for'", E_USER_ERROR, __FILE__, __LINE__);
 				isset($_args['step'])  OR $_args['step'] = 1;
-				$_result = '<?php for($for' . $this->_for_stack . ' = ' . $_args['start'] . '; ((' . $_args['start'] . ' < ' . $_args['stop'] . ') ? ($for' . $this->_for_stack . ' < ' . $_args['stop'] . ') : ($for' . $this->_for_stack . ' > ' . $_args['stop'] . ')); $for' . $this->_for_stack . ' += ((' . $_args['start'] . ' < ' . $_args['stop'] . ') ? ' . $_args['step'] . ' : -' . $_args['step'] . ')){ ?>';
+				$_result = '<?php for($for' . $this->_for_stack . ' = ' . $_args['start'] . '; ((' . $_args['start'] . ' < ' . $_args['count'] . ') ? ($for' . $this->_for_stack . ' < ' . $_args['count'] . ') : ($for' . $this->_for_stack . ' > ' . $_args['count'] . ')); $for' . $this->_for_stack . ' += ((' . $_args['start'] . ' < ' . $_args['count'] . ') ? ' . $_args['step'] . ' : -' . $_args['step'] . ')){ ?>';
 				isset($_args['value']) &&$_result .= '<?php $this->assign(\'' . $this->_dequote($_args['value']) . '\', $for' . $this->_for_stack . '); ?>';
 				return $_result;
 				break;

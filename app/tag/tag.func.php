@@ -10,36 +10,40 @@ function tag_list($vars){
 	$where_sql ="WHERE status='1' ";
 	$map_where = array();
     if(isset($vars['rootid'])){
-        $where_sql.= iPHP::where($vars['rootid'],'rootid');
+        $where_sql.= " AND `rootid`='".(int)$vars['rootid']."'";
     }
-	if(isset($vars['tcid'])){
+    if(!isset($vars['tcids']) && isset($vars['tcid'])){
+        $where_sql.= iPHP::where($vars['tcid'],'tcid');
+    }
+    if(isset($vars['tcids']) && !isset($vars['tcid'])){
         iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
         map::init('category',iCMS_APP_TAG);
         //$where_sql.= map::exists($vars['tcid'],'`#iCMS@__tags`.id'); //map 表大的用exists
         $map_where+=map::where($vars['tcid']);
-	}
+    }
+    if(isset($vars['tcid!'])){
+        $where_sql.= iPHP::where($vars['tcid!'],'tcid','not');
+    }
 
-    if($vars['pid'] && !isset($vars['pids'])){
+    if(!isset($vars['pids']) && isset($vars['pid'])){
         $where_sql.= iPHP::where($vars['pid'],'pid');
     }
-	if(isset($vars['pids']) && !$vars['pid']){
+    if(isset($vars['pids']) && !isset($vars['pid'])){
         iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
         map::init('prop',iCMS_APP_TAG);
         //$where_sql.= map::exists($vars['pids'],'`#iCMS@__tags`.id'); //map 表大的用exists
         $map_where+= map::where($vars['pids']);
-	}
+    }
+    if(isset($vars['pid!'])){
+        $where_sql.= iPHP::where($vars['pid!'],'pid','not');
+    }
 
-    // if(isset($vars['cid!'])){
-    // 	$ncids    = explode(',',$vars['cid!']);
-    //     $vars['sub'] && $ncids+=iCMS::get_category_ids($ncids,true);
-    //     $where_sql.= iPHP::where($ncids,'cid','not');
-    // }
-    if($vars['cid'] && !isset($vars['cids'])){
+    if(!isset($vars['cids']) && isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
         $vars['sub'] && $cid+=iCMS::get_category_ids($cid,true);
         $where_sql.= iPHP::where($cid,'cid');
     }
-    if(isset($vars['cids']) && !$vars['cid']){
+    if(isset($vars['cids']) && !isset($vars['cid'])){
         $cids = explode(',',$vars['cids']);
         $vars['sub'] && $cids+=iCMS::get_category_ids($vars['cids'],true);
 
@@ -49,6 +53,12 @@ function tag_list($vars){
             $map_where+=map::where($cids);
         }
     }
+    if(isset($vars['cid!'])){
+        $ncids    = explode(',',$vars['cid!']);
+        $vars['sub'] && $ncids+=iCMS::get_category_ids($ncids,true);
+        $where_sql.= iPHP::where($ncids,'cid','not');
+    }
+
     if(isset($vars['keywords'])){//最好使用 iCMS:tag:search
         if(empty($vars['keywords'])) return;
 
