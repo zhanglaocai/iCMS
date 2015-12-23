@@ -23,7 +23,7 @@ class spiderContent extends spider{
      */
     public static function crawl($html,$data,$rule,$responses) {
         if(trim($data['rule'])===''){
-            return;
+            return '';
         }
         $name = $data['name'];
         if (spider::$dataTest) {
