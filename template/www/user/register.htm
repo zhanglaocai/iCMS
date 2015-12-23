@@ -28,46 +28,48 @@
             <strong>*</strong>请先补充必要的个人信息，只有补充完这些信息才能真正加入<!--{$site.title}-->哦
           </div>
           <!--{/if}-->
-          <div id="register-box" class="passport-form">
-            <div class="reg_mail">
-              <span>电子邮箱：</span>
-              <input id="iCMS-reg-username" type="text" maxlength="36" name="username" class="form-control" value="">
+          <div id="register-box" class="passport-form form-horizontal">
+            <div class="form-group">
+              <label for="username" class="control-label">电子邮箱：</label>
+              <input type="email" name="username" class="form-control" id="username" placeholder="请输入邮箱">
+              <p class="help-block err_username">请输入邮箱</p>
             </div>
-            <div class="reg_nickname">
-              <span>昵称：</span>
-              <input id="iCMS-reg-nickname" maxlength="36" type="text" name="nickname" class="form-control" value="<!--{$user.nickname}-->">
+            <div class="form-group">
+              <label for="nickname" class="control-label">昵称：</label>
+              <input type="text" name="nickname" class="form-control" id="nickname" placeholder="请输入昵称">
+              <p class="help-block err_nickname">请输入昵称</p>
             </div>
-            <div class="reg_sex">
-              <span>性别：</span>
-              <p class="rdo">
-                <input type="radio" name="gender" value="girl" checked="checked" class="ck">
-                女
-                <input style="margin-left:10px" type="radio" name="gender" value="boy" class="ck">
-                男
-              </p>
+            <div class="radio">
+              <label class="control-label">性别：</label>
+              <label><input type="radio" name="gender" value="girl" checked="checked">女</label>
+              <label><input type="radio" name="gender" value="boy">男</label>
             </div>
-            <div class="reg_password">
-              <span>密码：</span>
-              <input id="iCMS-reg-password" style="*margin-left:-1px;" maxlength="36" type="password" name="password" class="form-control">
+            <div class="form-group">
+              <label for="password" class="control-label">密码：</label>
+              <input type="password" name="password" class="form-control" id="password" placeholder="请输入密码">
             </div>
-            <div class="reg_respassword">
-              <span>确认密码：</span>
-              <input id="iCMS-reg-rstpassword" type="password" maxlength="36" name="rstpassword" class="form-control">
+            <div class="form-group">
+              <label for="rstpassword" class="control-label">确认密码：</label>
+              <input type="password" name="rstpassword" class="form-control" id="rstpassword" placeholder="请输入确认密码">
             </div>
             <!--{if $iCMS.CONFIG.user.register.seccode }-->
-            <div class="reg_check">
-              <span>验证码：</span>
-              <input id="iCMS-reg-seccode" type="text" maxlength="4" name="seccode" class="seccode" data-placement="bottom">
-              <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
-              <a href="javascript:;" class="iCMS_seccode_text" style="float: none">换一张</a>
+            <div class="form-group">
+              <label for="seccode" class="control-label">验证码：</label>
+              <input type="password" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
+              <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="seccode-img r3"/>
+              <a href="javascript:;" class="seccode-text" style="float: none">换一张</a>
+              <p class="help-block err_uname">请输入验证码</p>
             </div>
             <!--{/if}-->
-            <div class="reg_box">
-              <input class="agreement fl" name="agreement" type="checkbox" checked="checked">
-              <span class="fl">我已看过并同意《<a href="<!--{iCMS:router url='/api/public/agreement'}-->" target="_blank"><!--{$site.title}-->网络服务使用协议</a>》</span>
+            <div class="form-group opt">
+              <label>
+                <input type="checkbox" value="1" name="agreement" class="check" checked="checked">
+                我已看过并同意《<a href="<!--{iCMS:router url='/api/public/agreement'}-->" target="_blank"><!--{$site.title}-->网络服务使用协议</a>》
+              </label>
             </div>
-            <div class="reg_submit">
-              <button class="submit btn btn-success">注册</button>
+            <div class="form-group submit">
+              <a href="javascript:;" id="register_submit" class="btn btn-success btn-lg">注 册</a>
+              <a class="findpwd" href="<!--{$iCMS.SAPI}-->&do=findpwd">忘记密码？</a>
             </div>
           </div>
         </div>

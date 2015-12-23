@@ -32,48 +32,39 @@
         用户登录
         <!--{/if}-->
         </h1>
-        <div id="login-box" class="passport-form">
-          <div class="pp-name">
-            <span>用户名：</span>
-            <input type="text" placeholder="邮箱 或 昵称" name="uname" class="form-control">
+        <div id="login-box" class="passport-form form-horizontal">
+          <div class="form-group">
+            <label for="uname" class="control-label">用户名：</label>
+            <input type="text" name="uname" class="form-control" id="uname" placeholder="邮箱 或 昵称">
+            <p class="help-block err_uname">请输入登录名</p>
           </div>
-          <div class="err_uname">
-            <span><i class="fa fa-minus-circle"></i> 请输入登录名</span>
+          <div class="form-group">
+            <label for="pass" class="control-label">密码：</label>
+            <input type="password" name="pass" class="form-control" id="pass" placeholder="请输入密码">
+            <p class="help-block err_uname">请输入密码</p>
           </div>
-          <div class="clearfix"></div>
-          <div class="pp-pass">
-            <span>密码：</span><input type="password" value="" name="pass" class="form-control">
-          </div>
-          <div class="err_pass">
-            <span><i class="fa fa-minus-circle"></i> 请输入密码</span>
-          </div>
-          <div class="clearfix"></div>
           <!--{if $iCMS.CONFIG.user.login.seccode }-->
-          <div class="pp-check">
-            <span>验证码：</span>
-            <input type="text" maxlength="4" name="seccode" class="seccode form-control" data-placement="bottom">
+          <div class="form-group">
+            <label for="seccode" class="control-label">验证码：</label>
+            <input type="password" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
             <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="seccode-img r3"/>
             <a href="javascript:;" class="seccode-text" style="float: none">换一张</a>
-          </div>
-          <div class="err_seccode">
-            <span><i class="fa fa-minus-circle"></i> 请输入验证码</span>
+            <p class="help-block err_uname">请输入验证码</p>
           </div>
           <!--{/if}-->
-          <div class="clearfix"></div>
-          <div class="pp-remember">
-            <label><input type="checkbox" value="1" name="remember" class="check" checked="checked">
-            <span>记住我（两周免登录）</span></label>
-            <div class="clearfix">
-            </div>
+          <div class="form-group opt">
+            <label>
+              <input type="checkbox" value="1" name="remember" class="check" checked="checked">
+              记住我（两周免登录）
+            </label>
+            <a class="findpwd" href="<!--{$iCMS.SAPI}-->&do=findpwd">忘记密码？</a>
           </div>
-          <div class="clearfix"></div>
-          <div class="pp-login">
-            <button class="submit btn btn-success">登录</button>
-            <a href="<!--{$iCMS.SAPI}-->&do=findpwd">忘记密码？</a>
+          <div class="form-group submit">
+            <a href="javascript:;" id="login_submit" class="btn btn-success btn-lg">登 录</a>
           </div>
-          <div class="ot_login">
+          <div class="platform">
             <span>您也可以用以下方式登录：</span>
-            <div class="ot_btn">
+            <div class="platform-btn">
               <!--{if $iCMS.CONFIG.open.QQ.enable }-->
               <a href="<!--{iCMS:router url='/api/user/login/qq'}-->" class="login_qq"></a>
               <!--{/if}-->
@@ -90,7 +81,7 @@
       <div class="passport-right">
         <div class="right-wrap">
           <h2>注 册</h2>
-          <span style="margin-left:40px;">还没有账号？</span>
+          <p>还没有账号？</p>
           <a class="btn btn-primary" href="<!--{iCMS:router url='/api/user/register'}-->">快速注册</a>
         </div>
       </div>
