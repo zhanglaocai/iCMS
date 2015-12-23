@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Warning! 系统已经关闭注册功能!</title>
-  <!--{iCMS:public:ui}-->
-  <link rel="stylesheet" href="<!--{$site.urls.ui}-->/iCMS.passport.css" type="text/css" />
-</head>
-<body>
-  <div class="iCMS_register_wrap">
-    <div class="logo"> <a href="<!--{$site.url}-->" class="iCMS fl" title="<!--{$site.title}-->"><!--{$site.title}--></a> </div>
-    <div class="content pl20 pr20 pt40">
-      <div class="clearfix mt10"></div>
-      <div class="alert">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Warning!</strong> 系统已经关闭注册功能!
+  <head>
+    <title>Warning! 系统已经关闭注册功能!</title>
+    <!--{iCMS:public:ui}-->
+    <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/user/ui/passport.css" type="text/css" />
+  </head>
+  <body>
+    <div class="passport">
+      <div class="logo"> <a href="<!--{$site.url}-->" title="<!--{$site.title}-->">
+      <div class="passport-wrap pl20 pr20 pt40">
+        <div class="clearfix mt10"></div>
+        <div class="alert">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong>Warning!</strong> 系统已经关闭注册功能!
+        </div>
+        <div class="clearfix mt10"></div>
       </div>
-      <div class="clearfix mt10"></div>
     </div>
-  </div>
-  <!--{include file="{iTPL}/footer.htm"}-->
-</body>
+    <!--{include file="{iTPL}/footer.htm"}-->
+  </body>
 </html>
