@@ -116,7 +116,7 @@
           <h3><i class="line"></i>更多 <b><!--{$category.link}--></b> 相关资讯：</h3>
           <div class="related-left">
             <ul>
-            <!--{iCMS:article:list loop='true' cache="true" row='9' cid="$category.cid"}-->
+            <!--{iCMS:article:list loop='true' row='9' cid="$category.cid"}-->
               <li><a href="<!--{$article_list.url}-->"><!--{$article_list.title}--></a> </li>
             <!--{/iCMS}-->
             </ul>
@@ -208,5 +208,6 @@
     <div class="clearfix mb20"></div>
   </div>
   <!--{include file="./footer.htm"}-->
+  <script src="<!--{$article.hits.script}-->"></script>
   </body>
 </html>

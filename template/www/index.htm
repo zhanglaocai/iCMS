@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="focus-right fr">
-          <!--{iCMS:article:list  row="7" orderby="month"}-->
+          <!--{iCMS:article:list  row="8" orderby="month"}-->
           <div class="topnews">
             <h1><a href="<!--{$article_list[0].url}-->" target="_blank"><!--{$article_list[0].title}--></a></h1>
             <p>
@@ -45,7 +45,7 @@
             <!--{foreach value="alist" start="2" from="$article_list"}-->
             <li>
               <b>[<!--{$alist.category.link}-->]</b>
-              <a href="<!--{$alist.url}-->" target="_blank"><!--{$alist.title|cut:25:'...'}--></a>
+              <a href="<!--{$alist.url}-->" target="_blank"><!--{$alist.title|cut:22:'...'}--></a>
               <span class="date"><!--{$alist.pubdate|date:"m-d"}--></span>
             </li>
             <!--{/foreach}-->
@@ -78,7 +78,7 @@
             <div class="tabs-pane" id="tabs_c0">
               <div class="kwLink">
                 <b>相关标签：</b>
-                <!--{iCMS:tag:list loop="true" row="5" orderby="hot"}-->
+                <!--{iCMS:tag:list loop="true" row="20" orderby="hot"}-->
                 <a href="<!--{$tag_list.url}-->" target="_blank"><!--{$tag_list.name}--></a>
                 <!--{/iCMS}-->
               </div>
@@ -95,7 +95,7 @@
                       <a href="<!--{$article_list.url}-->" target="_blank"><!--{$article_list.title}--></a>
                     </h4>
                     <p class="media-text">
-                      <!--{$article_list.description|cut:110:'...'}-->
+                      <!--{$article_list.description|cut:100:'......'}-->
                       <a href="<!--{$article_list.url}-->" target="_blank" class="blue">[详细]</a>
                     </p>
                     <div class="media-info">
@@ -115,7 +115,7 @@
             <div class="tabs-pane hide" id="tabs_c<!--{$catlist.cid}-->">
               <div class="kwLink">
                 <b>相关标签：</b>
-                <!--{iCMS:tag:list loop="true" row="5" orderby="hot" cid="$catlist.cid"}-->
+                <!--{iCMS:tag:list loop="true" row="20" orderby="hot" cid="$catlist.cid"}-->
                 <a href="<!--{$tag_list.url}-->" target="_blank"><!--{$tag_list.name}--></a>
                 <!--{/iCMS}-->
               </div>
@@ -132,7 +132,7 @@
                       <a href="<!--{$article_list.url}-->" target="_blank"><!--{$article_list.title}--></a>
                     </h4>
                     <p class="media-text">
-                      <!--{$article_list.description|cut:110:'...'}-->
+                      <!--{$article_list.description|cut:100:'......'}-->
                       <a href="<!--{$article_list.url}-->" target="_blank" class="blue">[详细]</a>
                     </p>
                     <div class="media-info">
@@ -184,10 +184,7 @@
             <h3 class="mod-txt">标签云</h3>
           </div>
           <div class="mod-content">
-            <ul>
-              <!--{iCMS:tag:list loop="true" row="30" orderby="hot"}-->
-              <li><a href="<!--{$tag_list.url}-->" target="_blank" class="btn"><!--{$tag_list.name}--></a></li>
-              <!--{/iCMS}-->
+            <ul><!--{iCMS:tag:list loop="true" row="30" orderby="hot"}--><li><a href="<!--{$tag_list.url}-->" target="_blank" class="btn"><!--{$tag_list.name}--></a></li><!--{/iCMS}-->
             </ul>
           </div>
         </div>
@@ -196,11 +193,11 @@
             <h3 class="mod-txt">推荐作者</h3>
           </div>
           <div class="mod-content">
-            <!--{iCMS:user:list loop="true" row="6" data="true"}-->
+            <!--{iCMS:user:list loop="true" row="6" data="true" orderby="hot"}-->
             <div class="author-list <!--{if $user_list.last}-->author-last<!--{/if}-->">
               <div class="author-pic">
                 <a href="<!--{$user_list.url}-->" target="_blank">
-                <img src="http://7tea1z.com1.z0.glb.clouddn.com/QQ图片20151218154902.jpg" data-src="<!--{$user_list.avatar}-->">
+                <img class="lazy" src="http://7tea1z.com1.z0.glb.clouddn.com/QQ图片20151218154902.jpg" data-src="<!--{$user_list.avatar}-->">
                 </a>
               </div>
               <div class="author-name"><!--{$user_list.link}--></div>
