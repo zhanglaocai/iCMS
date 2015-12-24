@@ -1,89 +1,51 @@
 body { background-image: url(img/body-bg.jpg); padding: 0px; margin: 0px; }
 .seccode { width: 90px !important; height: 34px !important; }
-.seccode-img { margin-left: 10px;}
+.seccode-img { margin-left: 10px; }
 body.passport { margin: 0 auto; width: 1003px; }
 body.passport .logo { height: 106px; background: url(img/iCMS.LOGO.png) no-repeat 0 30px; _background-image: none; _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='img/login-reg-logo.png', sizingMethod="crop"); }
 body.passport .logo a { width: 220px; height: 75px; }
 body.passport .logo a span { display: none; }
-body.passport .passport-wrap { background-color: #fff; border: 1px solid #D6D6D6; box-shadow: 0 0 3px #fff inset, 0 1px 1px rgba(0, 0, 0, .1); }
+body.passport .passport-wrap {background-color: #FFF; padding-bottom: 40px;border-radius: 5px 5px 0px 0px;}
 .passport-wrap { padding-left: 55px; }
-.passport-main { float: left; width: 645px; height: 574px; }
+.passport-main { float: left; width: 645px; }
 .passport-main h1 { margin-top: 30px; color: #42650C; font-weight: normal; font-size: 32px; font-family: '\5FAE\8F6F\96C5\9ED1'; }
 .passport-main h1 span { margin-left: 10px; color: #FF5783; font-weight: normal; font-size: 12px; line-height: 48px; }
 .passport-right { float: left; margin-top: 40px; width: 250px; height: 480px; border-left: 1px solid #e5e5e5; }
-.passport-form {float: left;width: 544px;}
-.passport-form .form-group{margin: 15px 0px;line-height: 30px;}
-.passport-form .control-label { line-height: 30px;width: 90px;}
-.passport-form .form-control { margin-left: 5px; padding: 0 8px;width: 320px; height: 40px;display: inline;}
-.passport-form .help-block{display: none;}
-.passport-form .opt{margin-top: 20px;width: 390px;line-height: 40px;font-size: 12px;}
-.passport-form .opt label{font-size: 12px;margin-right: 20px;}
-.passport-form .submit { text-align: center;width: 400px;}
-.passport-form .submit .btn{ width: 150px; color: #fff !important; }
-
-.register-wrap .opt{text-align: center;}
-.register-wrap .findpwd{font-size: 12px;}
-
-.platform { margin-top: 32px;}
+.passport-form { float: left; width: 544px; }
+.passport-form .form-group { margin: 15px 0px; line-height: 30px; }
+.passport-form .control-label { line-height: 30px; width: 90px; }
+.passport-form .form-control { margin-left: 5px; padding: 0 8px; width: 320px; height: 40px; display: inline; }
+.passport-form .help-block { display: none; }
+.passport-form .opt { margin-top: 20px; width: 390px; line-height: 40px; font-size: 12px; padding-left: 40px; }
+.passport-form .opt label { font-size: 12px; margin-right: 20px; }
+.passport-form .submit { text-align: center; width: 400px; }
+.passport-form .submit .btn { width: 150px; color: #fff !important; }
+.register-wrap .opt { text-align: center; }
+.register-wrap .findpwd { font-size: 12px; margin-left: 20px; }
+.platform { margin-top: 32px;margin-left: 40px;}
 .platform span { color: #999 !important; float: none !important; }
 .platform-btn { clear: both; margin-top: 10px;/* display: block; *//* height: 45px; */ }
 .platform-btn a { float: left; margin-right: 10px; *margin-left: 1px; }
 .platform .login_qq { background: url(img/login_qq.png) no-repeat left center; width: 49px; height: 21px; }
 .platform .login_wb { background: url(img/login_wb.png) no-repeat left center; width: 76px; height: 21px; }
 .platform .login_wx { background: url(img/login_wx.png) no-repeat left center; width: 53px; height: 21px; }
+.right-wrap  h2 { margin-bottom: 36px; margin-left: 40px; color: #337AB7; font-weight: normal; font-size: 28px; font-family: '\5FAE\8F6F\96C5\9ED1'; }
+.right-wrap span, .right-wrap p { margin-top: 36px; margin-left: 40px; color: #333; font-size: 14px; }
+.right-wrap .btn { margin-left: 40px; width: 120px; }
+.register-wrap .right-wrap  h2 { font-size: 16px; margin-bottom: 10px; }
+.register-wrap .right-wrap .other_login { margin-top: 65px; }
+.register-wrap .right-wrap .other_login p { margin-bottom: 2px; color: #999; }
+.register-wrap .right-wrap .other_login a { display: block; margin: 10px 0px 10px 40px; }
 
-#login_submit{/* float: right; *//* text-align: center; */}
+/* icon */
+.open_icon { display: inline-block; height: 16px; padding: 0 0 0 19px; background: url(img/login_method_v3.png) no-repeat 0 0; color: #666; line-height: 16px }
+.open_icon.icon_qq { background-position: 0 -27px; }
+.open_icon.icon_tb { background-position: 0 -52px; }
+.open_icon.icon_txwb { background-position: 0 -77px; }
+.open_icon.icon_db { background-position: 0 -107px; }
+.open_icon.icon_wx { background-position: 0 -136px; }
+.open_icon.icon_rr { background-position: 0 -166px; }
+.open_icon.icon_wb { background-position: 0 -223px; }
+.open_icon.icon_arr { background-position: 0 -197px; }
 
-.right-wrap  h2 { margin-bottom: 36px; margin-left: 40px; color: #768263; font-weight: normal; font-size: 22px; font-family: '\5FAE\8F6F\96C5\9ED1'; }
-.right-wrap span, .right-wrap p { margin-top: 36px;margin-left: 40px; color: #333; font-size: 14px;}
-.right-wrap .btn {margin-left: 40px;width: 120px;}
-
-/*.right-wrap .reg { display: block; margin-top: 10px; margin-left: 40px; width: 131px; height: 35px; background-position: 0 -100px; }*/
-
-/*.passport-wrap .tooltip.right .tooltip-arrow { border-right-color: #fff; }
-.passport-wrap .tooltip .tooltip-inner { background-color: #fff; color: #08c; font-size: 12px; width: 240px; }
-.passport-wrap .tooltip .tooltip-inner i { font-size: 16px; }
-.passport-wrap .tooltip.bottom .tooltip-arrow { display: none; }
-.passport-wrap .tooltip.bottom { margin-left: 80px; margin-top: -5px; }*/
-/*.submit { width: 120px; color: #fff !important; }*/
-/*.iCMS_findpwd_wrap .btn-large { margin-left: 95px; margin-top: 10px; }*/
-
-/*======register======*/
-/*.passport-right .rst_login { margin-top: 38px; margin-left: 32px; }
-.passport-right .rst_login span { color: #999; }
-.passport-right .rst_login a { display: block; margin-top: 12px; width: 81px; height: 29px; background-position: right -150px; }
-.passport-right .other_login { margin-top: 65px; margin-left: 32px; }
-.passport-right .other_login span { margin-bottom: 2px; color: #999; }
-.passport-wrap .iCMS_open_icon { display: block; margin-top: 12px; padding-top: 3px\9; padding-left: 20px; width: 100px; height: 16px; line-height: 16px; *padding-top: 3px; _padding-top: 5px; }
-.reg_mail { overflow: hidden; margin-top: 15px; margin-left: 20px; line-height: 30px; room: 1; _width: 334px; }
-.reg_nickname { overflow: hidden; margin-top: 18px; margin-left: 48px; line-height: 30px; room: 1; _width: 334px; }
-.reg_sex { overflow: hidden; margin-top: 16px; margin-left: 48px; height: 30px; line-height: 30px; room: 1; _width: 300px; }
-.reg_sex .rdo { display: inline-block; }
-.reg_sex .rdo .ck { margin-top: -3px; vertical-align: middle; text-align: center; }
-.reg_password { overflow: hidden; margin-top: 18px; margin-left: 48px; line-height: 30px; room: 1; _width: 334px; }
-.reg_respassword { overflow: hidden; margin-top: 18px; margin-left: 20px; line-height: 30px; room: 1; _width: 334px; }
-.reg_box { overflow: hidden; margin-top: 20px; margin-left: 91px; room: 1; _width: 290px; }
-.reg_box a:hover { text-decoration: underline; }
-.reg_box .agreement { margin: 6px 2px 0px 0px !important; }
-.reg_submit { overflow: hidden; margin-top: 20px; margin-left: 92px; room: 1; *margin-left: 48px; _width: 330px; }
-.reg_submit .submit { background-position: right -100px; }
-.reg_check, .pp-check { overflow: hidden; margin-top: 18px; margin-left: 39px; line-height: 30px; room: 1; _width: 100%; }
-.reg_check a { float: left; margin-left: 6px; color: #87b32e; }
-*/
-/*======login======*/
-/*.login-wrap .passport-main { height: 500px; }
-.pp-name { float: left; margin-top: 15px; margin-left: 34px; line-height: 30px; }
-.pp-pass { margin-top: 18px; margin-left: 48px; line-height: 30px; float: left; margin-left: 14px\9; _margin-left: 7px; }
-.pp-pass .text { margin-left: 7px; }
-.pp-check { float: left; }
-.pp-remember { margin-top: 18px; margin-left: 90px; }
-.pp-remember .check { float: left; vertical-align: middle; text-align: center; margin: 4px 2px 0px 0px !important; }
-.pp-remember span { font-size: 12px !important; color: #999; cursor: pointer; }
-.pp-login { margin-top: 10px; margin-left: 60px; font-size: 12px !important; }
-.pp-login .submit { margin-left: 30px; }
-.pp-login a { margin-left: 12px; color: #666; text-decoration: underline; }*/
-/*.err_uname {visibility: hidden; float: left; margin-top: 19px; margin-left: 12px; *margin-top: 0; _margin-top: 0;}
-.err_uname span { color: #08c !important; font-size: 12px !important; display: block; margin-left: 4px; padding-left: 21px; color: #ff89a7; *padding: 5px 0 2px 21px; *line-height: 30px; _padding: 5px 0 2px 21px; _line-height: 30px; }
-.err_pass, .err_seccode { visibility: hidden; float: left; margin-top: 25px; margin-left: 12px; *margin-top: 21px; _margin-top: 21px; }
-.err_pass span, .err_seccode span { color: #08c !important; font-size: 12px !important; margin-left: 4px; padding-top: 1px; padding-left: 21px; color: #ff89a7; *padding: 5px 0 2px 21px; *line-height: 30px; _padding: 5px 0 2px 21px; _line-height: 30px; }
-*/
+#login_submit { }

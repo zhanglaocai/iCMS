@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
   <head>
     <title><!--{$article.title}-->_<!--{$category.name}-->_<!--{$site.title}-->_<!--{$site.seotitle}--></title>
     <meta name="keywords" content="<!--{$article.keywords}-->" />
@@ -15,8 +15,10 @@
     <div class="body-wrap r5">
       <div class="main-col">
         <ul class="breadcrumb">
-          <li><a href="<!--{$site.url}-->">首页</a> <span class="divider">»</span></li>
-          <!--{$category.nav}-->
+          <li><a href="<!--{$site.url}-->">首页</a></li>
+          <!--{foreach value="catenav" from="$category.navArray"}-->
+          <li><a href='<!--{$catenav.url}-->'><!--{$catenav.name}--></a>
+          <!--{/foreach}-->
           <li class="active"><!--{$article.link}--></li>
         </ul>
         <div class="article-wrap">
@@ -46,11 +48,13 @@
           <!--{if $article.taoke}-->
             <!-- taoke code -->
           <!--{/if}-->
+          <!--{if $article.page.nav}-->
           <div class="clearfix"></div>
           <div class="article-pagenav pagination">
             <!--{$article.page.nav}-->
           </div>
           <div class="tip clr">提示：键盘也能翻页，试试"← →"键</div>
+          <!--{/if}-->
           <script>
             $(function(){
               $("img",".content").each(function(i){
@@ -64,6 +68,7 @@
               });
             })
           </script>
+          <div class="clearfix mb10"></div>
           <div class="share">
               <div class="share-icon">
                 <div class="t">分享到</div>
@@ -147,8 +152,8 @@
         <div class="mod-box rank">
           <div class="mod-title">
             <ul>
-              <li class="active"><a href="javascript:void(0);" href="#rank-week" data-toggle="tab">周点击榜</a></li>
-              <li><a href="javascript:void(0);" href="#rank-momth" data-toggle="tab">周热评榜</a></li>
+              <li class="active"><a href="javascript:void(0);" date-target="#rank-week" data-toggle="tab">周点击榜</a></li>
+              <li><a href="javascript:void(0);" date-target="#rank-momth" data-toggle="tab">周热评榜</a></li>
             </ul>
           </div>
           <div class="mod-content">
@@ -170,6 +175,7 @@
             </ul>
           </div>
         </div>
+        <div class="clearfix"></div>
         <div class="mod-box hot-tags">
           <div class="mod-title">
             <h3 class="mod-txt">热门标签</h3>
@@ -180,8 +186,10 @@
               <li><a href="<!--{$tag_list.url}-->" target="_blank" class="btn"><!--{$tag_list.name}--></a></li>
               <!--{/iCMS}-->
             </ul>
+            <div class="clearfix"></div>
           </div>
         </div>
+        <div class="clearfix"></div>
         <div class="mod-box pictxt">
           <div class="mod-title">
             <span class="txt green">编辑推荐</span>
