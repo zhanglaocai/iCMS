@@ -18,9 +18,10 @@ class userApp {
     private $auth   = false;
 
     public function __construct() {
-        $this->auth      = user::get_cookie();
-        $this->uid       = (int)$_GET['uid'];
-        $this->forward   = iS::escapeStr($_GET['forward']);
+        $this->auth    = user::get_cookie();
+        $this->uid     = (int)$_GET['uid'];
+        $this->ajax    = (bool)$_GET['ajax'];
+        $this->forward = iS::escapeStr($_GET['forward']);
         $this->forward OR iPHP::get_cookie('forward');
         $this->forward OR $this->forward = iCMS_URL;
         $this->login_uri = user::login_uri();
@@ -32,7 +33,10 @@ class userApp {
         $status = array('logined'=>false,'followed'=>false,'isme'=>false);
         if($this->uid){ // &uid=
             $this->user = user::get($this->uid);
-            empty($this->user) && iPHP::throw404('运行出错！找不到该用户',"user:".$this->uid);
+            empty($this->user) && iPHP::throw404(
+                '运行出错！找不到该用户',
+                "user:".$this->uid
+            );
         }
         $this->me = user::status(); //判断是否登陆
         if(empty($this->me) && empty($this->user)){
@@ -216,7 +220,8 @@ class userApp {
             $last_postime = iDB::value("
                 SELECT MAX(postime)
                 FROM `#iCMS@__article`
-                WHERE userid='".user::$userid."'");
+                WHERE userid='".user::$userid."' LIMIT 1;
+            ");
 
             if($_SERVER['REQUEST_TIME']-$last_postime<iCMS::$config['user']['post']['interval']){
                 iPHP::alert('user:publish:interval');
@@ -267,21 +272,42 @@ class userApp {
 
             map::init('category',iCMS_APP_ARTICLE);
             map::add($cid,$aid);
-            iDB::query("UPDATE `#iCMS@__user_category` SET `count` = count+1 WHERE `cid` = '$ucid' AND `uid`='".user::$userid."' AND `appid`='".iCMS_APP_ARTICLE."';");
+            iDB::query("
+                UPDATE `#iCMS@__user_category`
+                SET `count` = count+1
+                WHERE `cid` = '$ucid'
+                AND `uid`='".user::$userid."'
+                AND `appid`='".iCMS_APP_ARTICLE."'
+            ");
             user::update_count(user::$userid,1,'article');
             $lang = array(
                 '1'=>'user:article:add_success',
                 '3'=>'user:article:add_examine',
             );
         }else{
-            if(articleTable::update(compact($fields),array('id'=>$aid,'userid'=>user::$userid))){
+            if(articleTable::update(compact($fields),
+                array('id'=>$aid,'userid'=>user::$userid)))
+            {
                 articleTable::data_update(compact ($data_fields),array('aid'=>$aid));
             }
             map::init('category',iCMS_APP_ARTICLE);
             map::diff($cid,$_cid,$aid);
             if($ucid!=$_ucid){
-                iDB::query("UPDATE `#iCMS@__user_category` SET `count` = count+1 WHERE `cid` = '$ucid' AND `uid`='".user::$userid."' AND `appid`='".iCMS_APP_ARTICLE."';");
-                iDB::query("UPDATE `#iCMS@__user_category` SET `count` = count-1 WHERE `cid` = '$_ucid' AND `uid`='".user::$userid." AND `count`>0' AND `appid`='".iCMS_APP_ARTICLE."';");
+                iDB::query("
+                    UPDATE `#iCMS@__user_category`
+                    SET `count` = count+1
+                    WHERE `cid` = '$ucid'
+                    AND `uid`='".user::$userid."'
+                    AND `appid`='".iCMS_APP_ARTICLE."'
+                ");
+                iDB::query("
+                    UPDATE `#iCMS@__user_category`
+                    SET `count` = count-1
+                    WHERE `cid` = '$_ucid'
+                    AND `uid`='".user::$userid."
+                    AND `count`>0'
+                    AND `appid`='".iCMS_APP_ARTICLE."'
+                ");
             }
             $lang = array(
                 '1'=>'user:article:update_success',
@@ -316,7 +342,12 @@ class userApp {
             $id = (int)$_POST['id'];
             $id OR iPHP::code(0,'iCMS:error',0,'json');
 
-            $comment = iDB::row("SELECT `appid`,`iid` FROM `#iCMS@__comment` WHERE `userid` = '".user::$userid."' AND `id`='$id' LIMIT 1;");
+            $comment = iDB::row("
+                SELECT `appid`,`iid`
+                FROM `#iCMS@__comment`
+                WHERE `userid` = '".user::$userid."'
+                AND `id`='$id'
+            ");
 
             iPHP::import(iPHP_APP_CORE .'/iAPP.class.php');
             $table = app::get_table($comment->appid);
@@ -326,13 +357,13 @@ class userApp {
                 SET comments = comments-1
                 WHERE `comments`>0
                 AND `{$table['primary']}`='{$comment->iid}'
-                LIMIT 1;
+                LIMIT 1
             ");
 
             iDB::query("
                 DELETE FROM `#iCMS@__comment`
                 WHERE `userid` = '".user::$userid."'
-                AND `id`='$id' LIMIT 1;
+                AND `id`='$id' LIMIT 1
             ");
             user::update_count(user::$userid,1,'comments','-');
             iPHP::code(1,0,0,'json');
@@ -438,9 +469,18 @@ class userApp {
             iDB::update('user',array('gender'=>$gender),array('uid'=>user::$userid));
         }
 
-        $uid    = iDB::value("SELECT `uid` FROM `#iCMS@__user_data` where `uid`='".user::$userid."' limit 1");
+        $uid    = iDB::value("
+            SELECT `uid`
+            FROM `#iCMS@__user_data`
+            WHERE `uid`='".user::$userid."' LIMIT 1;
+        ");
 
-        $fields = array('weibo', 'province', 'city', 'year', 'month', 'day', 'constellation', 'profession', 'isSeeFigure', 'height', 'weight', 'bwhB', 'bwhW', 'bwhH', 'pskin', 'phair', 'shoesize', 'personstyle', 'slogan','coverpic');
+        $fields = array(
+            'weibo', 'province', 'city', 'year', 'month', 'day',
+            'constellation', 'profession', 'isSeeFigure',
+            'height', 'weight', 'bwhB', 'bwhW', 'bwhH', 'pskin',
+            'phair', 'shoesize', 'personstyle', 'slogan','coverpic'
+        );
         if($uid){
             $data = compact ($fields);
             $unickEdit && $data['unickEdit'] = 1;
@@ -448,7 +488,12 @@ class userApp {
         }else{
             $unickEdit = 0 ;
             $uid     = user::$userid;
-            $_fields = array('uid', 'realname','unickEdit','mobile', 'enterprise', 'address', 'zip','tb_nick', 'tb_buyer_credit', 'tb_seller_credit', 'tb_type', 'is_golden_seller');
+            $_fields = array(
+                'uid', 'realname','unickEdit','mobile',
+                'enterprise', 'address', 'zip','tb_nick',
+                'tb_buyer_credit', 'tb_seller_credit', 'tb_type',
+                'is_golden_seller'
+            );
             $fields  = array_merge($fields,$_fields);
             $data    = compact ($fields);
             iDB::insert('user_data',$data);
@@ -472,7 +517,11 @@ class userApp {
             }
         }
         $F OR iPHP::code(0,'user:iCMS:error',0,'json');
-        $F['code'] && iDB::update('user_data',array('coverpic'=>$F["path"]),array('uid'=>user::$userid));
+        $F['code'] && iDB::update(
+            'user_data',
+            array('coverpic'=>$F["path"]),
+            array('uid'=>user::$userid)
+        );
         $url = iFS::fp($F['path'],'+http');
         if($_POST['format']=='json'){
             iPHP::code(1,'user:profile:custom',$url,'json');
@@ -528,9 +577,17 @@ class userApp {
 
         $newPwd1!=$newPwd2 && iPHP::alert("user:password:unequal");
 
-        $password = iDB::value("SELECT `password` FROM `#iCMS@__user` where `uid`='".user::$userid."' limit 1");
+        $password = iDB::value("
+            SELECT `password`
+            FROM `#iCMS@__user`
+            WHERE `uid`='".user::$userid."' LIMIT 1;
+        ");
         $oldPwd!=$password && iPHP::alert("user:password:original");
-        iDB::query("UPDATE `#iCMS@__user` SET `password` = '$newPwd1' WHERE `uid` = '".user::$userid."';");
+        iDB::query("
+            UPDATE `#iCMS@__user`
+            SET `password` = '$newPwd1'
+            WHERE `uid` = '".user::$userid."';
+        ");
         iPHP::alert("user:password:modified",'js:parent.location.reload();');
     }
     public function ACTION_findpwd(){
@@ -571,7 +628,12 @@ class userApp {
             $user = user::get($uid,false);
             $user OR iPHP::code(0,'user:findpwd:username:noexist','uname','json');
 
-            $authcode = authcode($uid.USER_AUTHASH.$user->username.USER_AUTHASH.$user->password.USER_AUTHASH.time(),'ENCODE');
+            $authcode = authcode($uid.
+                USER_AUTHASH.$user->username.
+                USER_AUTHASH.$user->password.
+                USER_AUTHASH.time(),
+                'ENCODE'
+            );
             $authcode = base64_encode($authcode);
             $authcode = rawurlencode($authcode);
             $find_url = iPHP::router('/api/user/findpwd',iPHP_ROUTER_REWRITE,'?&');
@@ -664,8 +726,11 @@ class userApp {
                 SELECT `regdate`
                 FROM `#iCMS@__user`
                 WHERE `regip`='$regip'
-                ORDER BY uid DESC");
-            ($ip_regdate-$regdate>iCMS::$config['user']['register']['interval']) && iPHP::code(0,'user:register:interval','username','json');
+                ORDER BY uid DESC LIMIT 1;");
+
+            if($ip_regdate-$regdate>iCMS::$config['user']['register']['interval']){
+                iPHP::code(0,'user:register:interval','username','json');
+            }
         }
 
         $username    = iS::escapeStr($_POST['username']);
@@ -707,11 +772,25 @@ class userApp {
         $hits    = $hits_today = $hits_yday = $hits_week = $hits_month = 0;
         $lastloginip = $lastlogintime = '';
         $status = 1;
-        $fields = array('gid','pid', 'username', 'nickname', 'password', 'gender', 'fans', 'follow', 'article', 'comments','share', 'credit', 'regip', 'regdate', 'lastloginip', 'lastlogintime','hits', 'hits_today', 'hits_yday', 'hits_week', 'hits_month', 'type', 'status');
+        $fields = array(
+            'gid','pid', 'username', 'nickname', 'password',
+            'gender', 'fans', 'follow', 'article', 'comments',
+            'share', 'credit', 'regip', 'regdate', 'lastloginip',
+            'lastlogintime','hits', 'hits_today', 'hits_yday', 'hits_week',
+            'hits_month', 'type', 'status'
+        );
         $data   = compact ($fields);
         $uid    = iDB::insert('user',$data);
 
-        user::set_cookie($username,$password,array('uid'=>$uid,'username'=>$username,'nickname'=>$nickname,'status'=>$status));
+        user::set_cookie(
+            $username,
+            $password,
+            array('uid'     =>$uid,
+                'username'  =>$username,
+                'nickname'  =>$nickname,
+                'status'    =>$status
+            )
+        );
 
         if($openid){
             $platform = $type;
@@ -741,7 +820,12 @@ class userApp {
         empty($name) && iPHP::code(0,'user:category:empty','add_category','json');
         $fwd  = iCMS::filter($name);
         $fwd && iPHP::code(0,'user:category:filter','add_category','json');
-        $max  = iDB::value("SELECT COUNT(cid) FROM `#iCMS@__user_category` WHERE `uid`='$uid' AND `appid`='".iCMS_APP_ARTICLE."'");
+        $max  = iDB::value("
+            SELECT COUNT(cid)
+            FROM `#iCMS@__user_category`
+            WHERE `uid`='$uid'
+            AND `appid`='".iCMS_APP_ARTICLE."' LIMIT 1;"
+        );
         $max >=10 && iPHP::code(0,'user:category:max','add_category','json');
         $count  = 0;
         $appid  = iCMS_APP_ARTICLE;
@@ -805,7 +889,12 @@ class userApp {
         $fuid OR iPHP::code(0,'iCMS:error',0,'json');
 
         if($follow){ //1 取消关注
-            iDB::query("DELETE FROM `#iCMS@__user_follow` WHERE `uid` = '$uid' AND `fuid`='$fuid' LIMIT 1;");
+            iDB::query("
+                DELETE FROM `#iCMS@__user_follow`
+                WHERE `uid` = '$uid'
+                AND `fuid`='$fuid'
+                LIMIT 1;
+            ");
             user::update_count($uid,1,'follow','-');
             user::update_count($fuid,1,'fans','-');
             iPHP::code(1,0,0,'json');
@@ -836,13 +925,25 @@ class userApp {
         $addtime = time();
 
         $url OR iPHP::code(0,'iCMS:favorite:url',0,'json');
-        iDB::value("SELECT `id` FROM `#iCMS@__user_favorite` where `uid`='".user::$userid."' AND `url`='$url' limit 1") && iPHP::code(0,'iCMS:favorite:failure',0,'json');
+
+        if(iDB::value("
+            SELECT `id`FROM `#iCMS@__user_favorite`
+            where `uid`='".user::$userid."'
+            AND `url`='$url' LIMIT 1;"))
+        {
+            iPHP::code(0,'iCMS:favorite:failure',0,'json');
+        }
 
         $fields = array('uid', 'appid', 'cid', 'url', 'title', 'addtime');
         $data   = compact ($fields);
         $cid    = iDB::insert('user_favorite',$data);
 
-        iDB::query("UPDATE `#iCMS@__article` SET `favorite`=favorite+1 WHERE `id` ='{$aid}' limit 1");
+        iDB::query("
+            UPDATE `#iCMS@__article`
+            SET `favorite`=favorite+1
+            WHERE `id` ='{$aid}'
+            limit 1
+        ");
         iPHP::code(1,'iCMS:favorite:success',0,'json');
     }
 
@@ -862,14 +963,18 @@ class userApp {
                 if(!preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/i", $value)){
                     $a = iPHP::code(0,'user:register:username:error','username');
                 }else{
-                    user::check($value,'username') && $a = iPHP::code(0,'user:register:username:exist','username');
+                    if(user::check($value,'username')) {
+                        $a = iPHP::code(0,'user:register:username:exist','username');
+                    }
                 }
                 break;
             case 'nickname':
                 if(preg_match("/\d/", $value[0])||cstrlen($value)>20||cstrlen($value)<4){
                     $a = iPHP::code(0,'user:register:nickname:error','nickname');
                 }else{
-                    user::check($value,'nickname') && $a = iPHP::code(0,'user:register:nickname:exist','nickname');
+                    if(user::check($value,'nickname')) {
+                        $a = iPHP::code(0,'user:register:nickname:exist','nickname');
+                    }
                 }
                 break;
             case 'password':
@@ -1080,7 +1185,14 @@ class userApp {
                     $user = $api->get_user_info();
                     $user['openid']   = $api->openid;
                     $user['platform'] = $platform;
-                    iDB::value("SELECT `uid` FROM `#iCMS@__user` where `nickname`='".$user['nickname']."' LIMIT 1") && $user['nickname']=$sign.'_'.$user['nickname'];
+                    if(iDB::value("
+                        SELECT `uid`
+                        FROM `#iCMS@__user`
+                        where `nickname`='".$user['nickname']."' LIMIT 1
+                        "))
+                    {
+                        $user['nickname']=$sign.'_'.$user['nickname'];
+                    }
                     iPHP::assign('user',$user);
                     iPHP::assign('query',compact(array('sign','code','state','bind')));
                     iPHP::view('iCMS://user/register.htm');
