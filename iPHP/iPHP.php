@@ -42,6 +42,9 @@ require iPHP_PATH.'/iPHP.class.php';
 set_error_handler('iPHP_ERROR_HANDLER');
 
 iPHP::timer_start();
+//waf
+iPHP::LoadClass("Waf");
+waf::filter();
 //security
 iPHP::LoadClass("Security",'S');
 iS::filter();

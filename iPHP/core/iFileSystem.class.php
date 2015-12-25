@@ -379,6 +379,7 @@ class iFS {
     }
     //获取远程页面的内容
     public static function remote($url,$_count = 0) {
+        $url = str_replace(' ', '%20', $url);
         if (function_exists('curl_init')) {
 		    if(empty($url)){
 				echo 'remote:('.$_count.')'.$url."\n";

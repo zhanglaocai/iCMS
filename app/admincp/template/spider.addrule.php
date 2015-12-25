@@ -355,7 +355,7 @@ $(function(){
                 <tr>
                   <td colspan="4">
                     <p class="mb10"> <span class="label label-info">摘要:description</span> <span class="label label-info">标签:tags</span> <span class="label label-info">出处:source</span> <span class="label label-info">作者:author</span> <span class="label label-info">关键字:keywords</span></p>
-                    <a href="#spider-data" class="btn btn-primary addprop"/>增加加附加属性</a></td>
+                    <a href="#spider-data" class="btn btn-primary addprop"/>新增数据项</a></td>
                 </tr>
               </tfoot>
             </table>

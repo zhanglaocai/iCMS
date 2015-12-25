@@ -23,7 +23,7 @@ class spiderContent extends spider{
      */
     public static function crawl($html,$data,$rule,$responses) {
         if(trim($data['rule'])===''){
-            return;
+            return '';
         }
         $name = $data['name'];
         if (spider::$dataTest) {
@@ -48,6 +48,13 @@ class spiderContent extends spider{
             list($length,$numeric) = explode(',', $random);
             return random($length, empty($numeric)?0:1);
         }
+        $contentArray       = array();
+        $contentHash        = array();
+        $_content           = null;
+        $_content           = spiderContent::match($html,$data,$rule);
+        $cmd5               = md5($_content);
+        $contentArray[]     = $_content;
+        $contentHash[$cmd5] = true;
 
         if ($data['page']) {
             if(empty($rule['page_url'])){
@@ -146,7 +153,8 @@ class spiderContent extends spider{
                 spider::$content_error_code = trim($rule['page_url_error']);
                 spider::$curl_proxy = $rule['proxy'];
 
-                $pageurl  = array();
+                $pageurl = array();
+
                 foreach ($page_url_array AS $pukey => $purl) {
                     //usleep(100);
                     $phtml = spiderTools::remote($purl);
@@ -162,12 +170,19 @@ class spiderContent extends spider{
                         unset($check_content,$phtml);
                         break;
                     }
-                    $pageurl[$md5] = $purl;
-                    $html.= $phtml;
+
+                    $_content = spiderContent::match($phtml,$data,$rule);
+                    $cmd5     = md5($_content);
+                    if($contentHash[$cmd5]){
+                        break;
+                    }
+                    $contentArray[]  = $_content;
+                    $contentHash[$cmd5]    = true;
+                    $pageurl[$md5]         = $purl;
+                    spider::$allHtml[$md5] = $phtml;
                 }
                 gc_collect_cycles();
                 unset($check_content,$phtml);
-                spider::$allHtml = $html;
 
                 if (spider::$dataTest) {
                     echo "<b>最终分页列表:</b><pre>";
@@ -175,71 +190,14 @@ class spiderContent extends spider{
                     echo "</pre><hr />";
                 }
             }else{
-                $html = spider::$allHtml;
-            }
-        }
-
-
-        if($data['dom']){
-            iPHP::import(iPHP_LIB.'/phpQuery.php');
-            spider::$dataTest && $_GET['pq_debug'] && phpQuery::$debug =1;
-            $doc = phpQuery::newDocumentHTML($html,'UTF-8');
-            if(strpos($data['rule'], '@')!==false){
-                list($content_dom,$content_attr) = explode("@", $data['rule']);
-                $content_fun = 'attr';
-            }else{
-                list($content_dom,$content_fun,$content_attr) = explode("\n", $data['rule']);
-            }
-            $content_dom  = trim($content_dom);
-            $content_fun  = trim($content_fun);
-            $content_attr = trim($content_attr);
-            $content_fun OR $content_fun = 'html';
-            if ($data['multi']) {
-                $conArray = array();
-                foreach ($doc[$content_dom] as $doc_key => $doc_value) {
-                    if($content_attr){
-                        $conArray[] = phpQuery::pq($doc_value)->$content_fun($content_attr);
-                    }else{
-                        $conArray[] = phpQuery::pq($doc_value)->$content_fun();
-                    }
-                }
-                $content = implode('#--iCMS.PageBreak--#', $conArray);
-                unset($conArray);
-            }else{
-                if($content_attr){
-                    $content = $doc[$content_dom]->$content_fun($content_attr);
-                }else{
-                    $content = $doc[$content_dom]->$content_fun();
-                }
-            }
-
-            phpQuery::unloadDocuments($doc->getDocumentID());
-            unset($doc);
-        }else{
-            if(trim($data['rule'])=='<%content%>'){
-                $content = $html;
-            }else{
-                $data_rule = spiderTools::pregTag($data['rule']);
-                if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $data_rule)) {
-                    if ($data['multi']) {
-                        preg_match_all('|' . $data_rule . '|is', $html, $matches, PREG_SET_ORDER);
-                        $conArray = array();
-                        foreach ((array) $matches AS $mkey => $mat) {
-                            $conArray[] = $mat['content'];
-                        }
-                        $content = implode('#--iCMS.PageBreak--#', $conArray);
-                        unset($conArray);
-                    } else {
-                        preg_match('|' . $data_rule . '|is', $html, $matches, $PREG_SET_ORDER);
-                        $content = $matches['content'];
-                    }
-                } else {
-                    $content = $data_rule;
+                foreach ((array)spider::$allHtml as $ahkey => $phtml) {
+                    $contentArray[] = spiderContent::match($phtml,$data,$rule);
                 }
             }
         }
-        $html = null;
-        unset($html);
+        $content = implode('#--iCMS.PageBreak--#', $contentArray);
+        $html    = null;
+        unset($html,$contentArray,$contentHash,$_content);
         $content = stripslashes($content);
         if (spider::$dataTest) {
             print_r('<b>['.$name.']匹配结果:</b>'.htmlspecialchars($content));
@@ -319,6 +277,90 @@ class spiderContent extends spider{
             $content = call_user_func_array(spider::$callback['content'],array($content));
         }
 
+        return $content;
+    }
+    public static function match($html,$data,$rule){
+        $match_hash = array();
+        if($data['dom']){
+            iPHP::import(iPHP_LIB.'/phpQuery.php');
+            spider::$dataTest && $_GET['pq_debug'] && phpQuery::$debug =1;
+            $doc = phpQuery::newDocumentHTML($html,'UTF-8');
+            if(strpos($data['rule'], '@')!==false){
+                list($content_dom,$content_attr) = explode("@", $data['rule']);
+                $content_fun = 'attr';
+            }else{
+                list($content_dom,$content_fun,$content_attr) = explode("\n", $data['rule']);
+            }
+            $content_dom  = trim($content_dom);
+            $content_fun  = trim($content_fun);
+            $content_attr = trim($content_attr);
+            $content_fun OR $content_fun = 'html';
+            if ($data['multi']) {
+                $conArray = array();
+                $_content = null;
+                foreach ($doc[$content_dom] as $doc_key => $doc_value) {
+                    if($content_attr){
+                        $_content = phpQuery::pq($doc_value)->$content_fun($content_attr);
+                    }else{
+                        $_content = phpQuery::pq($doc_value)->$content_fun();
+                    }
+                    $cmd5 = md5($_content);
+                    if($match_hash[$cmd5]){
+                        break;
+                    }
+                    $conArray[$doc_key]  = $_content;
+                    $match_hash[$cmd5] = true;
+                }
+                if (spider::$dataTest) {
+                    echo "<b>多条匹配结果:</b><pre>";
+                    print_r($match_hash);
+                    echo "</pre><hr />";
+                }
+                $content = implode('#--iCMS.PageBreak--#', $conArray);
+                unset($conArray,$_content,$match_hash);
+            }else{
+                if($content_attr){
+                    $content = $doc[$content_dom]->$content_fun($content_attr);
+                }else{
+                    $content = $doc[$content_dom]->$content_fun();
+                }
+            }
+
+            phpQuery::unloadDocuments($doc->getDocumentID());
+            unset($doc);
+        }else{
+            if(trim($data['rule'])=='<%content%>'){
+                $content = $html;
+            }else{
+                $data_rule = spiderTools::pregTag($data['rule']);
+                if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $data_rule)) {
+                    if ($data['multi']) {
+                        preg_match_all('|' . $data_rule . '|is', $html, $matches, PREG_SET_ORDER);
+                        $conArray = array();
+                        foreach ((array) $matches AS $mkey => $mat) {
+                            $cmd5 = md5($mat['content']);
+                            if($match_hash[$cmd5]){
+                                break;
+                            }
+                            $conArray[$mkey]     = $mat['content'];
+                            $match_hash[$cmd5] = true;
+                        }
+                        if (spider::$dataTest) {
+                            echo "<b>多条匹配结果:</b><pre>";
+                            print_r($match_hash);
+                            echo "</pre><hr />";
+                        }
+                        $content = implode('#--iCMS.PageBreak--#', $conArray);
+                        unset($conArray,$match_hash);
+                    } else {
+                        preg_match('|' . $data_rule . '|is', $html, $matches, $PREG_SET_ORDER);
+                        $content = $matches['content'];
+                    }
+                } else {
+                    $content = $data_rule;
+                }
+            }
+        }
         return $content;
     }
 }
