@@ -27,15 +27,16 @@ function compile_custom_block($function, $modifiers, $arguments, &$_result, &$ob
 				$_args[$key] = "'$key' => $value";
 			}
 			$_result = "<?php \$this->_tag_stack[] = array('$function', array(".implode(',', (array)$_args).")); ";
-			$_result .= '$this->_block_content = '.$function . '(array(' . implode(',', (array)$_args) .'), null, $this); ';
-			$_result .= 'if($this->_block_content===false){';
+			$_result .= '$_block_content = '.$function . '(array(' . implode(',', (array)$_args) .'), null, $this); ';
+			$_result .= 'if(!$_block_content){';
 			$_result .= 'ob_start(); ?>';
 		}else{
 			$_result .= '<?php $this->_block_content = ob_get_contents(); ob_end_clean(); ';
+			$_result .= 'if($_block_content===null){ $_block_content = $this->_block_content; } ';
 			$_result .= $function . '($this->_tag_stack[count($this->_tag_stack) - 1][1], $this->_block_content, $this); ';
 			$modifiers && $_result .= '$this->_block_content = ' . $object->_parse_modifier('$this->_block_content', $modifiers) . '; ';
 			$_result .= '} ';
-			$_result .= 'echo $this->_block_content; array_pop($this->_tag_stack); ?>';
+			$_result .= 'echo $_block_content; array_pop($this->_tag_stack); ?>';
 		}
 		return true;
 	}else{

@@ -22,6 +22,6 @@ function tpl_block_capture($params, $content, &$tpl)
 	if (isset($assign)){
 		$tpl->assign($assign, $content);
 	}
-	return;
+	return true;
 }
 ?>

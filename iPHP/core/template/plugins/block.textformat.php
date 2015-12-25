@@ -68,6 +68,7 @@ function tpl_block_textformat($params, $content, &$template_object)
 	if($assign != null)
 	{
 		$template_object->assign($assign,$output);
+		return true;
 	}
 	else
 	{

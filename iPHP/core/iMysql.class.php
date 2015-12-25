@@ -208,6 +208,29 @@ class iDB{
      * @param int $y = 0 col num to return
      * @return mixed results
      */
+    public static function val($table, $field, $where) {
+        $fields = $wheres = array();
+        if ( is_array( $field ) ){
+            foreach ( $field as $c => $f )
+                $fields[] = "`$f`";
+        }else{
+            return false;
+        }
+
+        if ( is_array( $where ) ){
+            foreach ( $where as $c => $v ){
+                if(strpos($c,'!')===false){
+                    $wheres[] = "$c = '" . addslashes( $v ) . "'";
+                }else{
+                    $c = str_replace('!', '', $c);
+                    $wheres[] = "$c != '" . addslashes( $v ) . "'";
+                }
+            }
+        }else{
+            return false;
+        }
+        return self::value("SELECT ".implode( ', ', $fields )." FROM ".iPHP_DB_PREFIX_TAG."{$table} WHERE " . implode( ' AND ', $wheres ) . ' LIMIT 1;' );
+    }
     public static function value($query=null, $x = 0, $y = 0) {
         self::$func_call = __CLASS__."::value(\"$query\",$x,$y)";
         $query && self::query($query);

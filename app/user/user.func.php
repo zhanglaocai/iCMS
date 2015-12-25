@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: user.tpl.php 1392 2013-05-20 12:28:08Z coolmoo $
@@ -56,12 +56,15 @@ function user_list($vars=null){
 
 	$by=$vars['by']=="ASC"?"ASC":"DESC";
     switch ($vars['orderby']) {
-        case "id":		$order_sql=" ORDER BY `uid` $by";			break;
-        case "article":	$order_sql=" ORDER BY `article` $by";    break;
-        case "comments":$order_sql=" ORDER BY `comments` $by";    break;
-        case "follow":$order_sql=" ORDER BY `follow` $by";    break;
-        case "fans":$order_sql=" ORDER BY `fans` $by";    break;
-        case "hits":$order_sql=" ORDER BY `hits` $by";    break;
+        case "id":		$order_sql =" ORDER BY `uid` $by";      break;
+        case "article":	$order_sql =" ORDER BY `article` $by";  break;
+        case "comments":$order_sql =" ORDER BY `comments` $by"; break;
+        case "follow":  $order_sql =" ORDER BY `follow` $by";   break;
+        case "fans":    $order_sql =" ORDER BY `fans` $by";     break;
+        case "hits":    $order_sql =" ORDER BY `hits` $by";     break;
+        case "hot":     $order_sql =" ORDER BY `hits` $by";     break;
+        case "week":    $order_sql =" ORDER BY `hits_week` $by";break;
+        case "month":   $order_sql =" ORDER BY `hits_month` $by";break;
         default:$order_sql=" ORDER BY `uid` $by";
     }
     if($map_where){
@@ -102,6 +105,7 @@ function user_list($vars=null){
         $resource = iDB::all("SELECT * FROM `#iCMS@__user` {$where_sql} {$order_sql} {$limit}");
 		iPHP_SQL_DEBUG && iDB::debug(1);
         if($resource)foreach ($resource as $key => $value) {
+            unset($value['password']);
 			$value['url']    = user::router($value['uid'],"url");
 			$value['urls']   = user::router($value['uid'],"urls");
 			$value['avatar'] = user::router($value['uid'],"avatar",$vars['size']?$vars['size']:0);

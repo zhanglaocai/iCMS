@@ -177,7 +177,6 @@ class iDB {
      * @return mixed results of self::query()
      */
     public static function insert($table, $data) {
-//      $data = add_magic_quotes($data);
         $fields = array_keys($data);
         self::query("INSERT INTO ".iPHP_DB_PREFIX_TAG."{$table} (`" . implode('`,`',$fields) . "`) VALUES ('".implode("','",$data)."')");
         return self::$insert_id;
@@ -191,7 +190,6 @@ class iDB {
      * @return mixed results of self::query()
      */
     public static function update($table, $data, $where) {
-//      $data = add_magic_quotes($data);
         $bits = $wheres = array();
         foreach ( array_keys($data) as $k ){
             $bits[] = "`$k` = '$data[$k]'";
@@ -204,6 +202,7 @@ class iDB {
         }
         return self::query("UPDATE ".iPHP_DB_PREFIX_TAG."{$table} SET " . implode( ', ', $bits ) . ' WHERE ' . implode( ' AND ', $wheres ) . ' LIMIT 1;' );
     }
+
     /**
      * Get one variable from the database
      * @param string $query (can be null as well, for caching, see codex)
@@ -211,6 +210,29 @@ class iDB {
      * @param int $y = 0 col num to return
      * @return mixed results
      */
+    public static function val($table, $field, $where) {
+        $fields = $wheres = array();
+        if ( is_array( $field ) ){
+            foreach ( $field as $c => $f )
+                $fields[] = "`$f`";
+        }else{
+            return false;
+        }
+
+        if ( is_array( $where ) ){
+            foreach ( $where as $c => $v ){
+                if(strpos($c,'!')===false){
+                    $wheres[] = "$c = '" . addslashes( $v ) . "'";
+                }else{
+                    $c = str_replace('!', '', $c);
+                    $wheres[] = "$c != '" . addslashes( $v ) . "'";
+                }
+            }
+        }else{
+            return false;
+        }
+        return self::value("SELECT ".implode( ', ', $fields )." FROM ".iPHP_DB_PREFIX_TAG."{$table} WHERE " . implode( ' AND ', $wheres ) . ' LIMIT 1;' );
+    }
     public static function value($query=null, $x = 0, $y = 0) {
         self::$func_call = __CLASS__."::value(\"$query\",$x,$y)";
         $query && self::query($query);
