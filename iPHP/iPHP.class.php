@@ -281,7 +281,7 @@ class iPHP{
         $cache      = iCache::get($cache_name);
         if(empty($cache)){
             if($content===null){
-                return false;
+                return null;
             }
             $cache = $content;
             iCache::set($cache_name,$content,$cache_time);
@@ -289,7 +289,7 @@ class iPHP{
         }
         if($vars['assign']){
             $tpl->assign($vars['assign'], $cache);
-            return;
+            return ture;
         }
         if($content===null){
             return $cache;
