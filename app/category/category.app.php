@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: category.app.php 2412 2014-05-04 09:52:07Z coolmoo $
@@ -92,10 +92,10 @@ class categoryApp{
     }
     public function get_nav($C,&$navArray = array()) {
         if($C) {
-            $iurl = (array)$C['iurl'];
-            $navArray[]=array(
-                'name'=>$C['name'],
-                'href'=>$iurl['href'],
+            $iurl       = (array)$C['iurl'];
+            $navArray[] = array(
+                'name' => $C['name'],
+                'url'  => $iurl['href'],
             );
             if($C['rootid']){
                 $rc = iCache::get('iCMS/category/'.$C['rootid']);
@@ -116,7 +116,7 @@ class categoryApp{
         // $category['pic']         = $C['pic'];
         $category['navArray']    = $this->get_nav($C);
         $category['url']         = $C['iurl']['href'];
-        $category['link']        = "<a href='{$C['url']}'>{$C['name']}</a>";
+        $category['link']        = "<a href='{$category['url']}'>{$C['name']}</a>";
         $category['pic']         = is_array($C['pic'])?$C['pic']:get_pic($C['pic']);
         $category['mpic']        = is_array($C['mpic'])?$C['mpic']:get_pic($C['mpic']);
         $category['spic']        = is_array($C['spic'])?$C['spic']:get_pic($C['spic']);
@@ -131,7 +131,7 @@ class categoryApp{
         krsort($category['navArray']);
         if($category['navArray']){
             foreach ($category['navArray'] as $key => $value) {
-                $category['nav'].="<li><a href='{$value['href']}'>{$value['name']}</a><span class=\"divider\">".iPHP::lang('iCMS:navTag')."</span></li>";
+                $category['nav'].="<li><a href='{$value['url']}'>{$value['name']}</a><span class=\"divider\">".iPHP::lang('iCMS:navTag')."</span></li>";
             }
         }
         return $category;

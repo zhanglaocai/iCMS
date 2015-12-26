@@ -219,6 +219,7 @@ class spiderTools extends spider{
          * 检测http返回的编码
          */
         if($content_charset){
+            $content_charset = rtrim($content_charset,';');
             if(empty($encode)){
                 $encode = $content_charset;
             }else if(strtoupper($encode)!=strtoupper($content_charset)){

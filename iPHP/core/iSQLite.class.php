@@ -34,10 +34,8 @@ class iDB{
     private static $link;
     private static $result;
 
-    function __construct() {
-        self::$link OR self::connect();
-    }
-    function connect() {
+
+    public static function connect() {
 		extension_loaded('PDO') OR die('您的 PHP 安装看起来缺少 PDO 部分，这对 iPHP 来说是必须的。');
 		extension_loaded('PDO_SQLITE') OR die('您的 PHP 安装看起来缺少 PDO_SQLITE 部分，这对 iPHP 来说是必须的。');
 
@@ -56,7 +54,7 @@ class iDB{
     // ==================================================================
     //	Print SQL/DB error.
 
-    function print_error($str = '') {
+    public static function print_error($str = '') {
         if (!$str){
             $info 	= self::$link->errorInfo();
             $str	= $info[2];
@@ -80,7 +78,7 @@ class iDB{
     // ==================================================================
     //	Kill cached query results
 
-    function flush() {
+    public static function flush() {
         self::$last_result	= array();
         self::$col_info		= null;
         self::$last_query	= null;
@@ -89,7 +87,7 @@ class iDB{
     // ==================================================================
     //	Basic Query	- see docs for more detail
 
-    function query($query,$QT=NULL) {
+    public static function query($query,$QT=NULL) {
         if (!self::$link) {
             self::connect();
         }
@@ -157,7 +155,7 @@ class iDB{
      * @param array $data should not already be SQL-escaped
      * @return mixed results of self::query()
      */
-    function insert($table, $data) {
+    public static function insert($table, $data) {
 //		$data = add_magic_quotes($data);
         $fields = array_keys($data);
         return self::query("INSERT INTO ".iPHP_DB_PREFIX_TAG."{$table} (`" . implode('`,`',$fields) . "`) VALUES ('".implode("','",$data)."')");
@@ -170,7 +168,7 @@ class iDB{
      * @param array $where a named array of WHERE column => value relationships.  Multiple member pairs will be joined with ANDs.  WARNING: the column names are not currently sanitized!
      * @return mixed results of self::query()
      */
-    function update($table, $data, $where) {
+    public static function update($table, $data, $where) {
 //		$data = add_magic_quotes($data);
         $bits = $wheres = array();
         foreach ( array_keys($data) as $k )
@@ -190,7 +188,7 @@ class iDB{
      * @param int $y = 0 col num to return
      * @return mixed results
      */
-    function value($query=null, $x = 0, $y = 0) {
+    public static function value($query=null, $x = 0, $y = 0) {
         self::$func_call = __CLASS__."::value(\"$query\",$x,$y)";
         if ( $query )
             self::query($query);
@@ -210,7 +208,7 @@ class iDB{
      * @param int $y row num to return
      * @return mixed results
      */
-    function row($query = null, $output = OBJECT, $y = 0) {
+    public static function row($query = null, $output = OBJECT, $y = 0) {
         self::$func_call = __CLASS__."::row(\"$query\",$output,$y)";
         if ( $query )
             self::query($query);
@@ -235,7 +233,7 @@ class iDB{
      * @param string $output ARRAY_A | ARRAY_N | OBJECT
      * @return mixed results
      */
-    function all($query = null, $output = ARRAY_A) {
+    public static function all($query = null, $output = ARRAY_A) {
         self::$func_call = __CLASS__."::array(\"$query\", $output)";
 
         if ( $query )
@@ -270,7 +268,7 @@ class iDB{
      * @param int $x col num to return
      * @return array results
      */
-    function col($query = null , $x = 0) {
+    public static function col($query = null , $x = 0) {
         if ( $query )
             self::query($query);
 
@@ -288,7 +286,7 @@ class iDB{
      * @param int $col_offset 0: col name. 1: which table the col's in. 2: col's max length. 3: if the col is numeric. 4: col's type
      * @return mixed results
      */
-    function col_info($query = null ,$info_type = 'name', $col_offset = -1) {
+    public static function col_info($query = null ,$info_type = 'name', $col_offset = -1) {
         if ( $query )
             self::query($query,"field");
 
@@ -305,12 +303,12 @@ class iDB{
             }
         }
     }
-    function version() {}
+    public static function version() {}
 
     /**
      * Starts the timer, for debugging purposes
      */
-    function timer_start() {
+    public static function timer_start() {
         $mtime = microtime();
         $mtime = explode(' ', $mtime);
         self::$time_start = $mtime[1] + $mtime[0];
@@ -321,7 +319,7 @@ class iDB{
      * Stops the debugging timer
      * @return int total time spent on the query, in milliseconds
      */
-    function timer_stop() {
+    public static function timer_stop() {
         $mtime = microtime();
         $mtime = explode(' ', $mtime);
         $time_end = $mtime[1] + $mtime[0];
@@ -333,7 +331,7 @@ class iDB{
      * Wraps fatal errors in a nice header and footer and dies.
      * @param string $message
      */
-    function bail($message){ // Just wraps errors in a nice header and footer
+    public static function bail($message){ // Just wraps errors in a nice header and footer
         if ( !self::$show_errors ) {
             return false;
         }

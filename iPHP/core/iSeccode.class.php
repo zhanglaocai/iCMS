@@ -11,13 +11,15 @@
 // seccode::run();
 
 class iSeccode {
-    public static $config = array (
+    public static $config = array(
         'size'   => 24,//字体大小
         'width'  => 80,//图片宽度
         'height' => 30,//图片高度
-        'line'   => 3, //干扰线数量
+        'line'   => 4, //干扰线数量
         'pixel'  => 90 //干扰点数量
     );
+    public static $setcookie = array();
+
     protected static $noGD   = false;
     protected static $im     = null;
     protected static $code   = null;
@@ -25,31 +27,37 @@ class iSeccode {
 
     public static function run($pre=null){
         (extension_loaded('gd') && function_exists('gd_info')) OR self::$noGD = true;
-        self::$code OR self::$code = self::__mkcode();
-        self::$noGD && self::$code = 'iCMS';
         $name = 'seccode';
         $pre && $name = $pre.'_seccode';
-        //设定cookie
-        iPHP::set_cookie($name, authcode(self::$code, 'ENCODE'));
-        self::$noGD && self::icmsChar(); //不支持GD库 直接显示iCMS字符
-        self::__image();
+        if(self::$noGD){
+            self::icmsChar($name);
+        }else{
+            self::$code OR self::$code = self::__mkcode();
+            iPHP::set_cookie($name, authcode(self::$code, 'ENCODE'));
+            self::__image() OR self::icmsChar($name);
+        }
     }
     private static function __image(){
         self::__background();
         self::__adulterate();
         self::__font();
-
-        header("Expires: 0");
-        header("Cache-Control: no-cache");
-        header("Pragma: no-cache");
+        header("Expires: 0".PHP_EOL);
+        header("Cache-Control: no-cache".PHP_EOL);
+        header("Pragma: no-cache".PHP_EOL);
         if(function_exists('imagejpeg')) {
-            header('Content-type: image/jpeg');
+            header('Content-type:image/jpeg'.PHP_EOL);
             $void = imagejpeg(self::$im);
-        } else {
-            header('Content-type: image/png');
+        } else if(function_exists('imagepng')) {
+            header('Content-type:image/png'.PHP_EOL);
             $void = imagepng(self::$im);
+        } else if(function_exists('imagegif')) {
+            header('Content-type:image/gif'.PHP_EOL);
+            $void = imagegif(self::$im);
+        } else {
+            return false;
         }
         imagedestroy(self::$im);
+        return $void;
     }
     //生成随机
     private static function __mkcode() {
@@ -63,7 +71,8 @@ class iSeccode {
 
     //背景
     private static function __background() {
-        self::$im = imagecreatetruecolor(self::$config['width'], self::$config['height']);
+        //创建图片，并设置背景色
+        self::$im = @imagecreatetruecolor(self::$config['width'], self::$config['height']);
         for($i = 0;$i < 3;$i++) {
             $start[$i]       = rand(200, 255);
             $end[$i]         = rand(100, 200);
@@ -115,16 +124,17 @@ class iSeccode {
         $font       = array();
         $font_size  = self::$config['size'];
         // $ttfb_box = imagettfbbox($font_size,$angle,$font_file,self::$code[0]);
-        for ($i=0; $i <=3; $i++) {
+        for ($i=0; $i < 4; $i++) {
             $x          =(self::$config['width']/4)*$i;
             $y          = $font_size+rand(0,4);
-            $angle      = 0;
+            $angle      = mt_rand(0, 20);
             $text_color = imagecolorallocate(self::$im, self::$color[0], self::$color[1], self::$color[2]);
-            $font_box   = imagettftext(self::$im,$font_size,$angle,$x, $y,$text_color,$font_file,self::$code[$i]);
-            $y          = $font_box[1];
+            @imagettftext(self::$im,$font_size,$angle,$x, $y,$text_color,$font_file,self::$code[$i]);
         }
     }
-    private static function icmsChar(){
+    private static function icmsChar($name){
+        iPHP::set_cookie($name, authcode('iCMS', 'ENCODE'));
+        header('Content-type:image/gif'.PHP_EOL);
         exit(base64_decode('
         R0lGODlhUAAeALMAAAAAAI+Pj09PTzMzM8zMzK+vr39/fw8PD2ZmZj8/Px8fH9/f35mZmb+/v2ZmZv
         ///yH5BAEHAA8ALAAAAABQAB4AAAT/8MlJq7046827/2AojmS5IYi2MEYiGMyiBYa4GEFWtElvEJoE
