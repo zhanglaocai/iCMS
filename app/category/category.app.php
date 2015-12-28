@@ -116,7 +116,7 @@ class categoryApp{
         // $category['pic']         = $C['pic'];
         $category['navArray']    = $this->get_nav($C);
         $category['url']         = $C['iurl']['href'];
-        $category['link']        = "<a href='{$C['url']}'>{$C['name']}</a>";
+        $category['link']        = "<a href='{$category['url']}'>{$C['name']}</a>";
         $category['pic']         = is_array($C['pic'])?$C['pic']:get_pic($C['pic']);
         $category['mpic']        = is_array($C['mpic'])?$C['mpic']:get_pic($C['mpic']);
         $category['spic']        = is_array($C['spic'])?$C['spic']:get_pic($C['spic']);
