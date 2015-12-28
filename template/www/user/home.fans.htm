@@ -7,13 +7,20 @@
         </tr>
       </thead>
       <tbody>
-        <!--{iCMS:user:follow loop="true" row="15" fuid="$user.uid" followed="$me.uid"}-->
+        <!--{iCMS:user:follow loop="true" page="true" row="15" fuid="$user.uid" followed="$me.uid"}-->
           <!--{include file="./userfollow.htm" import="true"}-->
         <!--{iCMSelse}-->
         <tr>
           <td colspan="3"><i class="fa fa-ban"></i> 暂无粉丝</td>
         </tr>
         <!--{/iCMS}-->
+        <tr>
+          <td colspan="3">
+            <div class="pagination">
+              <!--{$iCMS.PAGE.NAV}-->
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
 </div>

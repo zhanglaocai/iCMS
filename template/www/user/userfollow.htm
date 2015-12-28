@@ -1,12 +1,14 @@
 <tr id="uid_<!--{$user_follow.uid}-->" class="userfollow">
   <td class="avatar_35">
     <a title="<!--{$user_follow.name}-->" href="<!--{$user_follow.url}-->">
-      <img class="iCMS_user_avatar avatar_35" data-tip="iCMS:ucard:<!--{$user_follow.uid}-->" src="<!--{$user_follow.avatar}-->" onerror="iCMS.user.noavatar(this);">
+      <img class="iCMS_user_avatar avatar_60" data-tip="iCMS:ucard:<!--{$user_follow.uid}-->" src="<!--{$user_follow.avatar}-->" onerror="iCMS.user.noavatar(this);">
     </a>
   </td>
   <td>
     <div class="info">
-      <span><!--{$user_follow.name}--></span> <i class="icon_<!--{$user.gender}-->"></i>
+      <a title="<!--{$user_follow.name}-->" href="<!--{$user_follow.url}-->">
+        <b><!--{$user_follow.name}--></b><i class="icon_<!--{$user.gender}-->"></i>
+      </a>
     </div>
   </td>
   <td class="span2">
