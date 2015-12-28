@@ -6,7 +6,7 @@
   </td>
   <td>
     <div class="info">
-      <span class="label label-success"><!--{$user_follow.name}--></span> <i class="icon_<!--{$user.gender}-->"></i>
+      <span><!--{$user_follow.name}--></span> <i class="icon_<!--{$user.gender}-->"></i>
     </div>
   </td>
   <td class="span2">
@@ -15,7 +15,7 @@
       你自己
       <!--{else}-->
         <!--{if $user_follow.followed}-->
-        <a href="javascript:;" data-param='{"follow":"1"}' class="btn_follow"><i class="fa fa-check"></i> 已关注，取消</a>
+        <a href="javascript:;" data-param='{"follow":"1"}' class="btn btn-link btn_follow"><i class="fa fa-check"></i> 已关注，取消</a>
         <!--{else}-->
         <a href="javascript:;" data-param='{"follow":"0"}' class="btn btn-success btn_follow"><i class="fa fa-plus"></i> 关注</a>
         <!--{/if}-->
