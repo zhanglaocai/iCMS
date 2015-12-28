@@ -1,0 +1,163 @@
+/* userApp */
+.userhome-wrap { margin: 0 auto; width: 1200px; background-color: #fff; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.26); }
+.userhome-wrap .home-main { float: left; width: 840px; border-right: 1px solid #EAEAEA; background: #fff; padding-bottom: 40px; }
+.userhome-wrap .home-side { width: 320px; padding: 0px; float: right; margin-right: 20px; margin-top: 10px; }
+.userhome-wrap .home-side .mod-title span.fr a { color: #ccc; text-decoration: none; }
+.userhome-wrap .txtList li { display: block; margin-bottom: 3px; list-style: none; }
+.userhome-wrap .txtList li a { padding: 0 0 0 10px; display: block; height: 28px; line-height: 28px; color: #666; }
+.userhome-wrap .txtList li a:hover { color: #259; background: #EFF6FA; border-radius: 3px; text-decoration: none; }
+.userhome-wrap .txtList li a span { margin-left: 10px; }
+.userhome-wrap .avatar_list { }
+.userhome-wrap .avatar_list li { display: inline-block; margin-bottom: 4px; }
+.userhome-wrap .statistics li { padding: 2px 5px; margin: 0px; font-weight: normal; min-width: 80px; }
+
+/* ------home.header---------- */
+.userhome-header { background: none repeat scroll 0 0 #FFF; border-bottom: 1px solid #E4E4E4; }
+.card_top { height: 72px; line-height: normal; position: relative; *z-index: 1001; }
+.card_info { padding: 0px; max-width: 600px; float: left; }
+.card_data { margin: 0; overflow: hidden; border: none; }
+.card_avatar { *border: solid 1px #CCC; position: absolute; left: 0;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.41);border: 1px solid #DCDBDB;}
+.card_avatar, .card_avatar_img {border-radius: 5px; width: 60px;height: 60px; display: block;}
+.card_title_name { font-size: 22px; color: #333; margin-right: 15px }
+.card_title_name:hover { }
+.card_title_name:visited { text-decoration: none; color: #333 }
+.card_slogan { color: #8E8E8E; font-size: 12px; height: 16px; overflow: hidden; float: left; padding-right: 30px; clear: both; margin-top: 5px; }
+.follow_btn { height: 28px; float: left; margin-left: 10px; _margin-top: 0; }
+.follow { width: 72px; background: url(img/follow.png) no-repeat top left; float: left; }
+.follow:hover { background-position: 0 -36px }
+.follow:active { background-position: 0 -73px }
+.unfollow { width: 130px; background: url(img/unfollow.png) no-repeat top left; float: left; }
+.unfollow:hover { background-position: 0 -58px }
+.unfollow:active { background-position: 0 -109px }
+.card_title_name { float: left }
+.card_title_name { margin-top: 0 }
+.card_title_name { margin-top: 0\0 }
+.card_title_name { margin-top: 3px\9\0 }
+.userhome-header .card_avatar { overflow: hidden; background: #FFF; z-index: 9; top: auto; bottom: 0px; margin: 0px 0px 20px 36px; }
+.userhome-header .card_avatar, .userhome-header .card_avatar_img { width: 160px; height: 160px;border-radius: 160px;}
+.userhome-header .card_data { padding: 15px 0 15px; float: right; width: 360px; text-align: center; }
+.userhome-header .card_banner { border-radius: 5px 5px 0px 0px; display: block; position: relative; min-height: 150px; max-height: 300px; margin: 0; overflow: hidden; _zoom: 1 }
+.userhome-header .card_banner img { width: 100%; vertical-align: top }
+.userhome-header .card_top { padding-left: 220px; background-color: #f5f5f5; _background: #F8F8F8 }
+.userhome-header .card_title_name { margin-right: 0; }
+.userhome-header ul li { padding: 0 20px; _display: inline-block; border-right: 1px dotted #CCC; cursor: pointer; min-width: 55px; _width: 55px; _overflow: visible; float: right; }
+.userhome-header .card_data  .text_count { position: relative; display: block; line-height: 18px; font-size: 16px; font-weight: 500; font-family: tahoma; }
+.userhome-header .card_data .text_atr { position: relative; display: block; margin-bottom: 3px; color: #333; font-size: 12px; }
+.userhome-header .card_data li.last { border-right: 0; }
+.userhome-header .card_data li.first { border-left: 0; }
+
+/*user_nav_wrap*/
+.user_nav_wrap { border-top: 1px solid #e4e4e4; border-bottom: 1px solid #CCC; height: 43px; width: 100%; background: url(img/home-top-bg.png) repeat-x 0 0; position: relative; }
+.user_nav_wrap .nav_list { height: 46px; font-size: 16px; float: left; overflow: hidden; width: 750px; margin-left: 22px; }
+.user_nav_wrap .nav_list li { height: 46px; line-height: 46px; float: left; display: inline; margin-left: -2px; }
+.user_nav_wrap .nav_list li.c { background: url(img/home-top-bg.png) repeat-x 0 -100px; }
+.user_nav_wrap .nav_list a { font-weight: bold; font-size: 14px; color: #5C6573; display: block; padding: 0 22px; position: relative; }
+.nav_list a.nav_icon { background: url(img/nav_icon.png) no-repeat; padding-left: 43px; }
+.nav_list a.icon_art { background-position: 20px -85px; }
+.nav_list a.icon_fav { background-position: 20px -169px; }
+.nav_list a.icon_sha { background-position: 20px -44px; }
+
+/* ----home.artList-------- */
+.category_name { margin-left: 20px; }
+.category_name .label { padding: 6px 20px; font-size: 16px; }
+.home-article, #favList { font-size: 14px; }
+.home-article ul, #favList ul { padding: 0 30px; }
+.home-article li, #favList li { width: 100%; overflow-y: hidden; padding: 16px 0 18px; border-bottom: 1px dotted #E4E4E4; line-height: 23px; }
+.home-article .rep_num { float: left; font-size: 12px; padding: 0 4px 0 1px; overflow: hidden; width: 60px; height: 23px; line-height: 23px; text-align: center; color: #333; background: url(http://tb2.bdstatic.com/tb/static-frs/img/v2/reply_num_bg.gif?t=1398765586497) no-repeat; }
+.home-article .list_top {height: 24px;line-height: 24px; overflow: hidden;}
+.home-article .list_top .title { width: auto; float: left;margin: 0px;font-size: 18px;line-height: 24px;}
+.home-article .list_top .info { width: 155px; overflow: hidden; float: right; display: inline; overflow: hidden; }
+.home-article .list_top .info .date { float: right;color: #999;}
+.home-article .list_detail { margin-top: 5px; }
+.home-article .list_detail .text { font-size: 12px; }
+.home-article .list_detail .pic { /* height: 150px;  */overflow: hidden; }
+.home-article .list_fun { text-align: right; }
+.home-article .list_fun a { color: #333; margin-left: 10px; }
+#favList li { width: 100%; padding: 4px 0 10px; border-bottom: 1px dotted #E4E4E4; line-height: 23px; }
+#favList .fav-follow { float: right; margin-top: 10px; }
+#favList .fav-link h2 { font-weight: bold; display: inline; }
+#favList .data { font-size: 12px; }
+#favList .fav-data-link { color: #698EBF; }
+#followerList { }
+#fansList { }
+.userfollow { }
+.userfollow .info .label { float: left; font-size: 14px; padding: 5px 6px; }
+.userfollow .info i { margin: 0px 2px 0px 5px; }
+
+/* ======userApp======== */
+
+/* ----home.btn-------- */
+.home-btn { font-weight: bold; margin-top: 10px; margin-bottom: 20px; }
+.home-btn a { margin-left: 30px; line-height: 32px; }
+.home-btn .icon-publish { display: block; width: 32px; height: 32px; background: url(img/icon-publish.png) no-repeat top left; float: left; margin-right: 10px; }
+.home-btn .icon-manage { display: block; width: 32px; height: 32px; background: url(img/icon-manage.png) no-repeat top left; margin-right: 10px; float: left; }
+.home-btn span { }
+.mod-title h3 span{
+    padding-left: 10px;
+    color: #ccc;
+    letter-spacing: 1px;
+    font: italic 14px/18px Palatino Linotype, simsun;
+    }
+/* ----userApp-box------- */
+.userApp-box { width: 960px; margin: 10px auto; }
+.userApp-box .piece_hd { background: url(img/profile_hd_bg.png) no-repeat; }
+.userApp-box .piece_bd { min-height: 600px; background: url(img/profile_bd_bg.png) repeat-y; }
+.userApp-box .piece_ft { background: url(img/profile_ft_bg.png) no-repeat; }
+.userApp-box .sidebar { margin: 25px 0 0 35px; font-size: 14px; width: 147px; }
+.userApp-box .sidebar h1 { font-size: 16px; line-height: 130%; font-weight: normal; color: #000; }
+.userApp-box .sidebar h1 i { font-size: 18px; color: #079CF1 }
+.userApp-box .sidebar .iconfont { color: #8DB933; }
+.userApp-box .sidebar .base_info { margin: 10px 0 20px 14px; }
+.userApp-box .sidebar a.c { font-weight: bold; }
+.userApp-box .sidebar a { padding: 0 10px; line-height: 28px; font-size: 14px; }
+.userApp-box .contents { font-size: 14px; width: 720px; margin-left: 15px; margin-top: 10px; }
+.userApp-box .iner { _padding-top: -50px; display: inline; *vertical-align: 10px; }
+.userApp-box .title { background: url(img/profile_title_bg.png) no-repeat; width: 100%; height: 30px; line-height: 30px; padding-left: 20px; margin-bottom: 10px; }
+.userApp-box .title span { color: #70A700; font-size: 14px; font-weight: bold; height: 30px; line-height: 30px; }
+.userApp-box .w670 { width: 670px; margin-left: 5px; }
+.userApp-box .profile_wrapper { position: relative; }
+.profile_wrapper dl { margin-bottom: 12px; }
+.profile_wrapper dt { float: left; width: 105px; text-align: right; line-height: 26px; vertical-align: middle; color: #666; font-weight: normal; }
+.profile_wrapper dd { margin-bottom: 12px; font-size: 12px; color: #666; font-weight: normal; }
+
+/* -----profile.bind---------- */
+.account_bind .account_bind_title { height: 30px; line-height: 30px; background: #f7f7f7; padding: 0 15px; border-radius: 8px; color: #666; }
+.account_bind .bind_logo { margin-top: 5px; overflow: hidden; zoom: 1; }
+.account_bind .bind_help { font-size: 12px; color: #70a700; }
+.account_bind .bind_web { margin-left: 15px; float: left; width: 595px; height: 85px; }
+.account_bind .bind_web .unbind { color: #999; }
+.account_bind .bind_logo li { overflow: hidden; font-size: 12px; padding: 30px 0 0 0; line-height: 180%; color: #999; float: left; clear: both; zoom: 1; height: 85px; width: 685px; border-bottom: 1px solid #eee; }
+.account_bind .bind_logo li.mr0 { margin-right: 0; }
+.account_bind .bind_logo .checkType_box { background: #f7f7f7; overflow: hidden; zoom: 1; height: 23px; padding: 12px 0 8px 15px; margin-top: 10px; }
+.account_bind .bind_logo .checkType { float: left; color: #666; margin-right: 10px; }
+.account_bind .bind_logo .checkType input { vertical-align: middle; margin: 0 5px 4px 10px; }
+.account_bind .bind_logo .icon { height: 61px; width: 61px; background: url(img/profile_icon.png) no-repeat; margin-bottom: 4px; float: left; }
+.account_bind .bind_logo .i_sina { background-position: 0 -100px; }
+.account_bind .bind_logo .i_tencent { background-position: 0 -200px; }
+.account_bind .bind_logo .i_qzone { background-position: 0 -300px; }
+.account_bind .bind_logo .i_renren { background-position: 0 -400px; }
+.account_bind .bind_logo .i_douban { background-position: 0 -500px; }
+.account_bind .bind_logo .i_wangyi { background-position: 0 -600px; }
+.account_bind .bind_logo li span { color: #333; float: left; color: #70a700; margin-right: 10px; }
+.account_bind .bind_logo li .bind_title { color: #666; font-size: 14px; }
+.account_bind .bind_logo li .bind_title b { color: #87BD34; }
+.account_bind .bind_logo li .bind_title .unbind_link { float: right; font-size: 12px; color: #666; text-decoration: underline; }
+.account_bind .bind_logo li .bind_result { color: #666; margin: 10px 0 0 0; color: #70a700; }
+.account_bind .bind_logo li .bind_result .result_taobao { margin: 0 0 0 10px; color: #666; font-weight: normal; }
+.account_bind .bind_logo li .bind_result .result_taobao a { color: #666; text-decoration: underline; }
+.account_bind .bind_logo li span.unbind { color: #999; }
+.account_bind .bind_logo li a.binded { color: #5e7d08; }
+.account_bind .bind_logo li #bind_qq { clear: both; }
+.account_bind .bind_logo .bind_web .addSuccess { color: #690; line-height: 23px; padding-left: 12px; vertical-align: center; }
+.account_bind p.bind_tip { margin-top: 0; text-align: left; color: #999; }
+
+/* ==manage== */
+#coverpic_box { width: 480px; height: 150px; border: 1px solid #D4D4D4; padding: 1px; }
+#coverpic { height: 150px; }
+
+/* pg_follow */
+.pg_follow { }
+.pg_follow .avatar_list li { margin-right: 5px; }
+.pg_follow .avatar_list li .label-info { padding: 8px 5px; font-size: 14px; width: 80px; text-align: center; display: block; border-top-left-radius: 0; border-top-right-radius: 0; }
+.pg_follow .avatar_list li .avatar_90 { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.pg_follow .avatar_list li .btn_follow { display: none; width: 64px; border-top-left-radius: 0; border-top-right-radius: 0; }
