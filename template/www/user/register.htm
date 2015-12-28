@@ -17,7 +17,7 @@
     })
     </script>
   </head>
-  <body class="passport">
+  <body class="userApp passport">
     <div class="register-wrap">
       <div class="logo"> <a href="<!--{$site.url}-->" title="<!--{$site.title}-->"><span><!--{$site.title}--></span></a>
     </div>
@@ -56,7 +56,7 @@
           <!--{if $iCMS.CONFIG.user.register.seccode }-->
           <div class="form-group">
             <label for="seccode" class="control-label">验证码：</label>
-            <input type="password" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
+            <input type="text" maxlength="4" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
             <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="seccode-img r3"/>
             <a href="javascript:;" class="seccode-text" style="float: none">换一张</a>
             <p class="help-block err_uname">请输入验证码</p>

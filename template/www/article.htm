@@ -9,7 +9,7 @@
     <link rel="alternate" media="only screen and(max-width: 640px)" href="<!--{$article.url|replace:$site.url:$site.urls.mobile}-->" >
     <!--{iCMS:public:ui}-->
   </head>
-  <body class="article">
+  <body class="articleApp">
   <!--{include file="./header.htm"}-->
   <div class="body clearfix">
     <div class="body-wrap r5">
@@ -57,8 +57,8 @@
           <!--{/if}-->
           <script>
             $(function(){
-              $("img",".content").each(function(i){
-                iCMS.imgFix(this,500,600);
+              $("img",".article-body").each(function(i){
+                // iCMS.imgFix(this,500,600);
               });
               $(window).keydown(function(event){
                 switch(event.keyCode) {
@@ -138,11 +138,11 @@
           </div>
           <div class="mod-content">
             <div class="comment-list">
-
+              <!--{*iCMS:comment:list display="default" page="true" row="10" ref="true"*}-->
             </div>
             <div class="clearfix"></div>
             <div class="comment-form">
-
+              <!--{iCMS:comment:form display="default" ref="true"}-->
             </div>
           </div>
           <div class="clearfix"></div>
