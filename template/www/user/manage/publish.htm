@@ -2,26 +2,25 @@
 iCMS.config.UI = '<!--{$iCMS.UI}-->';
 </script>
 <link href="<!--{$iCMS.UI}-->/bootstrap/2.3.2/css/bootstrap-switch.css" type="text/css" rel="stylesheet" />
-<script src="<!--{$iCMS.UI}-->/bootstrap/2.3.2/js/bootstrap-switch.min.js">
-</script>
-<script src="<!--{$iCMS.UI}-->/iCMS.user.editor-6.0.0.js" type="text/javascript" charset="utf-8">
-</script>
-<script src="<!--{$iCMS.UI}-->/ueditor/ueditor.all.min.js" type="text/javascript" charset="utf-8">
-</script>
+<script src="<!--{$iCMS.UI}-->/bootstrap/2.3.2/js/bootstrap-switch.min.js"></script>
+<script src="<!--{$iCMS.UI}-->/iCMS.user.editor-6.0.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="<!--{$iCMS.UI}-->/ueditor/ueditor.all.min.js" type="text/javascript" charset="utf-8"></script>
 <input name="id" type="hidden" value="<!--{$article.id}-->" />
 <input name="ucid" id="ucid" type="hidden" value="<!--{$article.ucid}-->" />
 <input name="_ucid" type="hidden" value="<!--{$article.ucid}-->" />
 <input name="_cid" type="hidden" value="<!--{$article.cid}-->" />
 <input name="mobile" type="hidden" value="0" />
 <div class="title"><span>发表文章</span></div>
-<div class="publish ml25">
-    <div class="input-prepend"> <span class="add-on">栏 目</span>
-        <select name="cid" id="cid" class="chosen-select span3">
-            <option value="0"> == 请选择所属栏目 == </option>
-            <!--{$option}-->
-        </select>
-    </div>
-    <div class="input-prepend input-append"> <span class="add-on">快捷</span>
+<div class="manage-publish form-inline">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon">
+                <label for="cid" class="control-label">栏 目</label>
+            </div><select name="cid" id="cid" class="form-control">
+                <option value="0"> == 请选择所属栏目 == </option>
+                <!--{$option}-->
+            </select>
+        </div>
         <button class="btn btn-primary iCMS_user_publish" type="submit"><i class="fa fa-check"></i> 提交</button>
     </div>
     <div class="mb10"></div>
