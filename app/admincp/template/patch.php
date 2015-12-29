@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: filter.php 2003 2013-07-22 07:27:56Z coolmoo $
@@ -8,7 +8,9 @@
 defined('iPHP') OR exit('What are you doing?');
 iACP::head();
 ?>
-
+<style>
+#log{color: #999;font-size: 12px;line-height: 20px;}
+</style>
 <div class="iCMS-container">
   <div class="well iCMS-well iCMS-patch">
     <div id="log"></div>

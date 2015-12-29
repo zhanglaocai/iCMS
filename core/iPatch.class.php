@@ -73,49 +73,46 @@ class iPatch {
 
 		if ( 0 == count($archive_files) ) exit("空的ZIP文件");
 
-        $msg.= '解压完成#<iCMS>';
-        $msg.= '开始测试目录权限#<iCMS>';
+        $msg.= '解压完成<iCMS>';
+        $msg.= '开始测试目录权限<iCMS>';
 		$bakDir	= iPATH.self::$release.'bak';
         $update = true;
         if(!self::checkDir(iPATH)){
             $update = false;
-            $msg.= iPATH.' 目录无写权限#<iCMS>';
+            $msg.= iPATH.' 目录无写权限<iCMS>';
         }
-        if(!self::checkDir($bakDir)){
-            $update = false;
-            $msg.= $bakDir.' 目录无写权限#<iCMS>';
-        }
+
 
         //测试目录文件是否写
         foreach ($archive_files as $file) {
             $folder = $file['folder'] ? $file['filename'] : dirname($file['filename']);
             $dp     = iPATH.$folder;
-            if(!self::checkDir($dp)){
+            if(!self::checkDir($dp) && iFS::ex($dp)){
                 $update = false;
-                $msg.= $dp.' 目录无写权限#<iCMS>';
+                $msg.= $dp.' 目录无写权限<iCMS>';
             }
             if (empty($file['folder'])){
-                $bfp= $bakDir.'/'.$file['filename'];
-                if(!self::checkDir(dirname($bfp))){
+                $fp = iPATH.$file['filename'];
+                if(file_exists($fp) && !@is_writable($fp)){
                     $update = false;
-                    $msg.= $dp.' 目录无写权限#<iCMS>';
+                    $msg.= $fp.' 文件无写权限<iCMS>';
                 }
-                iFS::mkdir(dirname($bfp));
             }
         }
         if(!$update){
-            $msg.= '权限测试无法完成#<iCMS>';
-            $msg.= '请设置好上面提示的文件写权限#<iCMS>';
-            $msg.= '然后重新更新#<iCMS>';
+            $msg.= '权限测试无法完成<iCMS>';
+            $msg.= '请设置好上面提示的文件写权限<iCMS>';
+            $msg.= '然后重新更新<iCMS>';
             iPatch::$next = false;
             return $msg;
         }
         //测试通过！
         iPatch::$next = true;
         iFS::mkdir($bakDir);
-        $msg.= '权限测试通过#<iCMS>';
-        $msg.= '备份目录创建完成#<iCMS>';
-        $msg.= '开始更新程序#<iCMS>';
+        $msg.= '权限测试通过<iCMS>';
+        $msg.= '备份目录创建完成<iCMS>';
+        $msg.= '开始更新程序<iCMS>';
+
 		foreach ($archive_files as $file) {
 			$folder	= $file['folder'] ? $file['filename'] : dirname($file['filename']);
 			$dp		= iPATH.$folder;
@@ -133,10 +130,10 @@ class iPatch {
 				}
 				$msg.= '更新 ['.$fp.'] 文件<iCMS>';
 				iFS::write($fp, $file['content']);
-				$msg.= '['.$fp.'] 更新完成!#<iCMS>';
+				$msg.= '['.$fp.'] 更新完成!<iCMS>';
 			}
 		}
-     	$msg.= '清除临时文件!<iCMS>注:原文件备份在 ['.$bakDir.'] 目录<iCMS>如没有特殊用处请删除此目录!#<iCMS>';
+     	$msg.= '清除临时文件!<iCMS>注:原文件备份在 ['.$bakDir.'] 目录<iCMS>如没有特殊用处请删除此目录!<iCMS>';
     	iFS::rmdir(PATCH_DIR,true,'version.txt');
 		return $msg;
    }
