@@ -19,9 +19,11 @@ defined('iPHP') OR exit('What are you doing?');
 define('PATCH_URL',"http://patch.idreamsoft.com");//自动更新服务器
 define('PATCH_DIR',iPATH.'cache/iCMS/patch/');//临时文件夹
 class iPatch {
-	public static $version	= '';
-	public static $release	= '';
-	public static $zipName	= '';
+    public static $version = '';
+    public static $release = '';
+    public static $zipName = '';
+    public static $next    = false;
+
     public static function init($force=false){
 		$info = self::getVersion($force);
     	if($info->app==iPHP_APP &&
@@ -71,9 +73,49 @@ class iPatch {
 
 		if ( 0 == count($archive_files) ) exit("空的ZIP文件");
 
-		$msg.= '解压完成开始更新程序#<iCMS>';
+        $msg.= '解压完成#<iCMS>';
+        $msg.= '开始测试目录权限#<iCMS>';
 		$bakDir	= iPATH.self::$release.'bak';
-		iFS::mkdir($bakDir);
+        $update = true;
+        if(!self::checkDir(iPATH)){
+            $update = false;
+            $msg.= iPATH.' 目录无写权限#<iCMS>';
+        }
+        if(!self::checkDir($bakDir)){
+            $update = false;
+            $msg.= $bakDir.' 目录无写权限#<iCMS>';
+        }
+
+        //测试目录文件是否写
+        foreach ($archive_files as $file) {
+            $folder = $file['folder'] ? $file['filename'] : dirname($file['filename']);
+            $dp     = iPATH.$folder;
+            if(!self::checkDir($dp)){
+                $update = false;
+                $msg.= $dp.' 目录无写权限#<iCMS>';
+            }
+            if (empty($file['folder'])){
+                $bfp= $bakDir.'/'.$file['filename'];
+                if(!self::checkDir(dirname($bfp))){
+                    $update = false;
+                    $msg.= $dp.' 目录无写权限#<iCMS>';
+                }
+                iFS::mkdir(dirname($bfp));
+            }
+        }
+        if(!$update){
+            $msg.= '权限测试无法完成#<iCMS>';
+            $msg.= '请设置好上面提示的文件写权限#<iCMS>';
+            $msg.= '然后重新更新#<iCMS>';
+            iPatch::$next = false;
+            return $msg;
+        }
+        //测试通过！
+        iPatch::$next = true;
+        iFS::mkdir($bakDir);
+        $msg.= '权限测试通过#<iCMS>';
+        $msg.= '备份目录创建完成#<iCMS>';
+        $msg.= '开始更新程序#<iCMS>';
 		foreach ($archive_files as $file) {
 			$folder	= $file['folder'] ? $file['filename'] : dirname($file['filename']);
 			$dp		= iPATH.$folder;
@@ -110,5 +152,18 @@ class iPatch {
    	   	   $msg= '升级顺利完成!';
    	   }
    	   return $msg;
+   }
+   public static function checkDir($dirpath){
+        if(empty($dirpath)){
+            return false;
+        }
+        $dirpath = rtrim($dirpath,'/').'/';
+        if($fp=@fopen($dirpath.'iCMS.txt',"wb")) {
+            @fclose($fp);
+            @unlink($dirpath.'iCMS.txt');
+            return true;
+        } else {
+            return false;
+        }
    }
 }

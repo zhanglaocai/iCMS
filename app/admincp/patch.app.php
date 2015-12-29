@@ -56,7 +56,9 @@ class patchApp{
     }
     function do_install(){
 		$this->msg.= iPatch::update();//更新文件
-		$this->msg.= iPatch::run();//数据库升级
+		if(iPatch::$next){
+			$this->msg.= iPatch::run();//数据库升级
+		}
 		include iACP::view("patch");
     }
     function do_update(){
