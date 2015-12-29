@@ -27,7 +27,7 @@ function comment_list_display($vars){
 	$vars['page_ajax']   = 1;
 	$vars['total_cahce'] = 1;
 	$tpl = 'list.default';
-	if($vars['display'] == 'iframe'){
+	if($vars['display'] === 'iframe'){
 		$vars['page_ajax'] = 0;
 		$tpl = 'list.iframe';
 	}
@@ -48,19 +48,19 @@ function comment_list($vars){
 	if(iCMS::$config['comment']['plugin']['changyan']['enable']){
 		return;
 	}
-	if($vars['ref']){
-		$_vars = iCMS::app_ref($vars['ref']);
-		$vars  = array_merge($vars,$_vars);
-		unset($vars['ref'],$_vars);
-	}
-	$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"iid"属性或"iid"值为空.');
-	$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"appid"属性或"appid"值为空.');
+	// if($vars['ref']){
+	// 	$_vars = iCMS::app_ref($vars['ref']);
+	// 	$vars  = array_merge($vars,$_vars);
+	// 	unset($vars['ref'],$_vars);
+	// }
 
 	if ($vars['display'] && empty($vars['loop'])) {
 		if(empty($vars['_display'])){
 			$_vars = iCMS::app_ref(true);
 			$vars  = array_merge($vars,$_vars);
 		}
+		$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"iid"属性或"iid"值为空.');
+		$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"appid"属性或"appid"值为空.');
 		return comment_list_display($vars);
 	}
 
@@ -146,6 +146,7 @@ function comment_list($vars){
 			}
 	        $value['param'] = array(
 				"appid"  => iCMS_APP_COMMENT,
+				"iid"    => $value['iid'],
 				"id"     => $value['id'],
 				"userid" => $value['userid'],
 				"name"   => $value['username'],
@@ -161,7 +162,10 @@ function comment_form($vars){
 	if(!iCMS::$hooks['enable_comment']){
 		iPHP::warning('此页面禁止调用 iCMS&#x3a;comment&#x3a;form 标签！');
 	}
-	if(iCMS::$config['comment']['plugin']['changyan']['enable']){
+	if(iCMS::$config['comment']['plugin']['changyan']['enable']|| $vars['display']==="changyan"){
+		iCMS::$config['comment']['plugin']['changyan']['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少"appid"属性或"appid"值为空.');
+		iCMS::$config['comment']['plugin']['changyan']['appkey'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少"appkey"属性或"appkey"值为空.');
+
 		if(iPHP::$mobile){
 			echo iPHP::view('iCMS://comment/changyan.mobile.htm');
 		}else{

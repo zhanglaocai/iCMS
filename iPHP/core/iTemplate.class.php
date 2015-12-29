@@ -415,8 +415,8 @@ class iTemplate_Compiler extends iTemplate {
 		// [foo]
 		// [$bar]
 		// [#bar#]
-		$this->_var_bracket_regexp = '\[[\$|\#]?\w+\#?\]';
-		// $this->_var_bracket_regexp = '\[\$?[\w\.]+\]';
+//		$this->_var_bracket_regexp = '\[[\$|\#]?\w+\#?\]';
+		$this->_var_bracket_regexp = '\[\$?[\w\.]+\]';
 
 		// matches section vars:
 		// %foo.bar%
@@ -427,8 +427,8 @@ class iTemplate_Compiler extends iTemplate {
 		// $foo[0]
 		// $foo[$bar]
 		// $foo[5][blah]
-		// $this->_dvar_regexp = '\$[a-zA-Z0-9_]{1,}(?:' . $this->_var_bracket_regexp . ')*(?:' . $this->_var_bracket_regexp . ')*';
-		$this->_dvar_regexp = '\$[a-zA-Z0-9_]{1,}(?:' . $this->_var_bracket_regexp . ')*(?:\.\$?[a-zA-Z0-9_]+(?:' . $this->_var_bracket_regexp . ')*)*';
+//		$this->_dvar_regexp = '\$[a-zA-Z0-9_]{1,}(?:' . $this->_var_bracket_regexp . ')*(?:' . $this->_var_bracket_regexp . ')*';
+		$this->_dvar_regexp = '\$\w{1,}(?:' . $this->_var_bracket_regexp . ')*(?:\.\$?\w+(?:' . $this->_var_bracket_regexp . ')*)*';
 
 		// matches valid variable syntax:
 		// $foo

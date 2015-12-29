@@ -10,6 +10,10 @@ defined('iPHP') OR exit('What are you doing?');
 
 iPHP::app('user.class','static');
 function user_data($vars=null){
+    if($vars['cookie']){
+        return user::get_cookie();
+    }
+
 	$vars['uid']   OR iPHP::warning('iCMS&#x3a;user&#x3a;data 标签出错! 缺少"uid"属性或"uid"值为空.');
 	$uid = $vars['uid'];
 	if($uid=='me'){
@@ -17,6 +21,7 @@ function user_data($vars=null){
 		$auth = user::get_cookie();
 		$auth && $uid = user::$userid;
 	}
+
 	if(strpos($uid, ',')===false){
 		$user = (array)user::get($uid);
 		if($vars['data']){
