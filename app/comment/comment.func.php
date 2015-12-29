@@ -48,19 +48,19 @@ function comment_list($vars){
 	if(iCMS::$config['comment']['plugin']['changyan']['enable']){
 		return;
 	}
-	if($vars['ref']){
-		$_vars = iCMS::app_ref($vars['ref']);
-		$vars  = array_merge($vars,$_vars);
-		unset($vars['ref'],$_vars);
-	}
-	$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"iid"属性或"iid"值为空.');
-	$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"appid"属性或"appid"值为空.');
+	// if($vars['ref']){
+	// 	$_vars = iCMS::app_ref($vars['ref']);
+	// 	$vars  = array_merge($vars,$_vars);
+	// 	unset($vars['ref'],$_vars);
+	// }
 
 	if ($vars['display'] && empty($vars['loop'])) {
 		if(empty($vars['_display'])){
 			$_vars = iCMS::app_ref(true);
 			$vars  = array_merge($vars,$_vars);
 		}
+		$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"iid"属性或"iid"值为空.');
+		$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"appid"属性或"appid"值为空.');
 		return comment_list_display($vars);
 	}
 
