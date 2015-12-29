@@ -52,12 +52,12 @@
             <h3 class="category_name"><span class="label label-primary"><!--{$user.category.name}--></span></h3>
             <!--{/if}-->
             <!--{switch from="$iCMS.APP.DO"}-->
-            <!--{case value="home"}-->
-            <!--{include file="./home/article.htm" import="true"}-->
             <!--{case value="follower"}-->
             <!--{include file="./home/follower.htm" import="true"}-->
             <!--{case value="fans"}-->
             <!--{include file="./home/fans.htm" import="true"}-->
+            <!--{case}-->
+            <!--{include file="./home/article.htm" import="true"}-->
             <!--{/switch}-->
             <div class="pagination">
                 <!--{$iCMS.PAGE.NAV}-->
