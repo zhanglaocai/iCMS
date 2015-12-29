@@ -1,11 +1,16 @@
-$(function(){
+$(function() {
     $("img.lazy").lazyload();
     $(".carousel-box").slider({
-        left_btn:'#carousel-left',
-        right_btn:'#carousel-right',
+        left_btn: '#carousel-left',
+        right_btn: '#carousel-right',
     });
-    $(".tabs-wrap").tabs({action:'mouseover'});
-    $(".rank").tabs({item:'.rank-list',action:'mouseover'});
+    $(".tabs-wrap").tabs({
+        action: 'mouseover'
+    });
+    $(".rank").tabs({
+        item: '.rank-list',
+        action: 'mouseover'
+    });
 
     // $(".search-btn").click(function(event) {
     //     event.preventDefault();
