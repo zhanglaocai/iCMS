@@ -119,6 +119,22 @@ class spiderData extends spider{
 
             unset($content_html);
 
+            if (strpos($dname,'ARRAY:')!== false){
+            // if(strpos($data['rule'], 'RULE@')!==false){
+                $_dname = str_replace('ARRAY:', '', $dname);
+                var_dump($_dname);
+                // $contentArray = $responses[$dname];
+                // // $contentArray = $responses[$dname];
+                // $cArray = array();
+                // foreach ($contentArray as $k => $value) {
+                //     foreach ($value as $key => $val) {
+                //         $cArray[$key][$k]=$val;
+                //     }
+                // }
+                // $responses[$_dname] = $cArray;
+                // unset($cArray);
+            }
+
             /**
              * [name.xxx]
              * 采集内容做为数组
