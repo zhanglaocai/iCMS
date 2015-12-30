@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: article.app.php 2408 2014-04-30 18:58:23Z coolmoo $
@@ -79,7 +79,12 @@ class articleApp {
             iPHP::app('article.table');
             $article_data = articleTable::get_text($id);
         }else{
-            $article && $article_data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='".(int)$id."' LIMIT 1;",ARRAY_A);
+            if($article['chapter']){
+                $article_data = iDB::all("SELECT id FROM `#iCMS@__article_data` WHERE aid='".(int)$id."';",ARRAY_A);
+                usort ($article_data,"cmp");
+            }else{
+                $article_data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='".(int)$id."' LIMIT 1;",ARRAY_A);
+            }
         }
         $vars = array(
             'tags'          =>true,
@@ -137,12 +142,15 @@ class articleApp {
         }
         $this->taoke = false;
         if($art_data){
+            $pkey    = intval($page-1);
             $pageurl = $article['iurl']->pageurl;
-
-            // if(strpos($art_data['body'], '#--iCMS.ArticleData--#')!==false){
-            //     iPHP::app('article.table');
-            //     $art_data['body'] = articleTable::get_text($article['id']);
-            // }
+            if($article['chapter']){
+                // print_r($art_data);
+                $count    = count($art_data);
+                $adid     = $art_data[$pkey]['id'];
+                unset($art_data);
+                $art_data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='".(int)$article['id']."' AND id='".(int)$adid."' LIMIT 1;",ARRAY_A);
+            }
 
             $art_data['body'] = $this->ubb($art_data['body']);
 
@@ -156,15 +164,21 @@ class articleApp {
                 $art_data['body']    = substr($art_data['body'], 19);
                 $article['markdown'] = ture;
             }
-            $body     = explode('#--iCMS.PageBreak--#',$art_data['body']);
-            $count    = count($body);
-            $total    = $count+intval(iCMS::$config['article']['pageno_incr']);
 
-            $article['body']     = $this->keywords($body[intval($page-1)]);
+            if($article['chapter']){
+                $article['body'] = $art_data['body'];
+            }else{
+                $body            = explode('#--iCMS.PageBreak--#',$art_data['body']);
+                $count           = count($body);
+                $article['body'] = $body[$pkey];
+            }
+
+            $total    = $count+intval(iCMS::$config['article']['pageno_incr']);
+            $article['body']     = $this->keywords($article['body']);
             $article['body']     = $this->taoke($article['body']);
-            $article['subtitle'] = $art_data['subtitle'];
             $article['taoke']    = $this->taoke;
-            unset($art_data);
+            $article['subtitle'] = $art_data['subtitle'];
+            unset($body,$art_data);
             if($total>1) {
                 $flag    = 0;
                 $num_nav = '';

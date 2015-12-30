@@ -270,11 +270,15 @@ class spiderContent extends spider{
         if ($data['json_decode']) {
             $content = json_decode($content,true);
         }
-        if($data['array']){
-            return (array)$content;
-        }
         if (spider::$callback['content'] && is_callable(spider::$callback['content'])) {
             $content = call_user_func_array(spider::$callback['content'],array($content));
+        }
+
+        if($data['array']){
+            if(strpos($content, '#--iCMS.PageBreak--#')!==false){
+                $content = explode('#--iCMS.PageBreak--#', $content);
+            }
+            return (array)$content;
         }
 
         return $content;
@@ -307,6 +311,9 @@ class spiderContent extends spider{
                     $cmd5 = md5($_content);
                     if($match_hash[$cmd5]){
                         break;
+                    }
+                    if ($data['trim']) {
+                        $_content = trim($_content);
                     }
                     $conArray[$doc_key]  = $_content;
                     $match_hash[$cmd5] = true;
@@ -341,6 +348,9 @@ class spiderContent extends spider{
                             $cmd5 = md5($mat['content']);
                             if($match_hash[$cmd5]){
                                 break;
+                            }
+                            if ($data['trim']) {
+                                $mat['content'] = trim($mat['content']);
                             }
                             $conArray[$mkey]     = $mat['content'];
                             $match_hash[$cmd5] = true;

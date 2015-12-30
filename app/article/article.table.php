@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: article.table.php 2408 2014-04-30 18:58:23Z coolmoo $
@@ -63,8 +63,14 @@ class articleTable {
             if(iCMS_ARTICLE_DATA==="TEXT"){
                 $adrs  = self::get_text($aid);
             }else{
-                $adsql = $adid?" AND `id`='{$adid}'":'';
-                $adrs  = iDB::row("SELECT * FROM `#iCMS@__article_data` WHERE `aid`='$aid' {$adsql}",ARRAY_A);
+                $adsql = "SELECT * FROM `#iCMS@__article_data` WHERE `aid`='$aid'";
+                $adid && $adsql.= " AND `id`='{$adid}'";
+
+                if($rs['chapter']){
+                    $adrs  = iDB::all($adsql,ARRAY_A);
+                }else{
+                    $adrs  = iDB::row($adsql,ARRAY_A);
+                }
             }
         }
         return array($rs,$adrs);
