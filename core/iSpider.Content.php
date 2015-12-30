@@ -34,18 +34,19 @@ class spiderContent extends spider{
          * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
          */
         if(strpos($data['rule'], '[DATA@')!==false){
-            $html = spiderTools::getDATA($responses,$data['rule']);
+            $content = spiderTools::getDATA($responses,$data['rule']);
+            if(is_array($content)){
+                return $content;
+            }else{
+                $data['rule'] = $content;
+            }
         }
         /**
          * 在数据项里调用之前采集的数据RULE@规则id@@url
          */
         if(strpos($data['rule'], 'RULE@')!==false){
-            var_dump($data['rule'],$html);
-            list(spider::$rid,$_urls) = explode('@@', str_replace('RULE@', '',$data['rule']));
-            var_dump(spider::$rid,$_urls);
+            list(spider::$rid,$_urls) = explode('@', str_replace('RULE@', '',$data['rule']));
             empty($_urls) && $_urls = trim($html);
-            var_dump($_urls);
-            exit;
             if (spider::$dataTest) {
                 print_r('<b>使用[rid:'.spider::$rid.']规则抓取</b>:'.$_urls);
                 echo "<hr />";
