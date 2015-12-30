@@ -254,6 +254,9 @@ $(function(){
                   <?php if ($C['mode'] && strstr($C['contentRule'],'{PHP}')===false && $value['status']=="1" && empty($ourl) && iMember::$data->gid==1){  ?>
                   <a href="<?php echo __ADMINCP__; ?>=html&do=createArticle&aid=<?php echo $value['id'] ; ?>&frame=iPHP" class="tip-bottom" target="iPHP_FRAME" title="生成静态文件"><i class="fa fa-file"></i></a>
                   <?php } ?>
+                  <?php if($value['chapter']){?>
+                  <i class="fa fa-bookmark"></i>(<?php echo $value['chapter'];?>)
+                  <?php } ?>
                 </div>
                 <?php if($value['pic'] && iCMS::$config['publish']['showpic']){ ?>
                 <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $value['id'] ; ?>" data-toggle="modal" title="预览"><img src="<?php echo iFS::fp($value['pic']); ?>" style="height:120px;"/></a>

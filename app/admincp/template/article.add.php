@@ -59,7 +59,7 @@ $(function(){
   });
   $('#ischapter').click(function(){
     var checkedStatus = $(this).prop("checked"),chapter = $("input[name=chapter]").val();
-    $('#chapterText').text(checkedStatus?'章节标题':'副标题')
+    subtitleToggle (checkedStatus);
     if(!checkedStatus && chapter>1){
       return confirm('您之前添加过其它章节!确定要取消章节模式?');
     }
@@ -85,11 +85,11 @@ $(function(){
 				return false;
 			}
 		}
-    if($('#ischapter').prop("checked") && $("#subtitle").val()==''){
-      $("#subtitle").focus();
-      iCMS.alert("章节模式下 章节标题不能为空!");
-      return false;
-    }
+    // if($('#ischapter').prop("checked") && $("#subtitle").val()==''){
+    //   $("#subtitle").focus();
+    //   iCMS.alert("章节模式下 章节标题不能为空!");
+    //   return false;
+    // }
 	});
 
 });
@@ -123,9 +123,35 @@ function addEditorPage(){
 	//iCMSed.cleanup(iCMSed.id);
 	var index	= parseInt($(".iCMS-editor-page option:last").val()),n	= index+1;
 	$(".iCMS-editor").hide();
-	$("#editor-"+index).after('<div class="iCMS-editor" id="editor-'+n+'"><textarea type="text/plain" id="iCMS-editor-'+n+'" name="body[]"></textarea></div>');
+	$("#editor-"+index).after(
+    '<div class="iCMS-editor" id="editor-'+n+'">'+
+      '<div class="chapter-title hide">'+
+        '<input name="adid[]" id="adid-'+n+'" type="hidden" value="" />'+
+        '<div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>'+
+            '<input type="text"  id="chapter-title-'+n+'" disabled="true" name="chaptertitle[]" class="span6" value="" />'+
+        '</div>'+
+        '<div class="clearfloat mb10"></div>'+
+      '</div>'+
+      '<textarea type="text/plain" id="iCMS-editor-'+n+'" name="body[]"></textarea>'+
+    '</div>'
+  );
 	$(".iCMS-editor-page").append('<option value="'+n+'">第 '+n+' 页</option>').val(n).trigger("chosen:updated");
 	iCMS.editor.create(n).focus();
+  var checkedStatus = $('#ischapter').prop("checked");
+  subtitleToggle (checkedStatus);
+}
+function subtitleToggle (checkedStatus) {
+  if(checkedStatus){
+    $(".subtitle-box").hide();
+    $("input",".subtitle-box").attr("disabled","disabled");
+    $(".chapter-title").show();
+    $("input",".chapter-title").removeAttr("disabled");
+  }else{
+    $(".subtitle-box").show();
+    $("input",".subtitle-box").removeAttr("disabled");
+    $(".chapter-title").hide();
+    $("input",".chapter-title").attr("disabled","disabled");
+  }
 }
 function delEditorPage(){
 	if($(".iCMS-editor-page:eq(0) option").length==1) return;
@@ -222,7 +248,6 @@ function _modal_dialog(cancel_text){
         <input name="_pid" type="hidden" value="<?php echo $rs['pid']; ?>" />
 
         <input name="aid" type="hidden" value="<?php echo $this->id ; ?>" />
-        <input name="adid" type="hidden" value="<?php echo $adRs['id']; ?>" />
         <input name="userid" type="hidden" value="<?php echo $rs['userid'] ; ?>" />
         <input name="postype" type="hidden" value="<?php echo $rs['postype'] ; ?>" />
         <input name="REFERER" type="hidden" value="<?php echo $REFERER ; ?>" />
@@ -314,10 +339,15 @@ function _modal_dialog(cancel_text){
               <textarea name="description" id="description" class="span6" style="height: 150px;"><?php echo $rs['description'] ; ?></textarea>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on" id="chapterText">副标题</span>
-                <input type="text" name="subtitle" class="span6" id="subtitle" value="<?php echo $adRs['subtitle'] ; ?>" />
+            <?php if(!$rs['chapter']){?>
+            <div class="subtitle-box">
+              <input name="adid" type="hidden" value="<?php echo $adRs['id']; ?>" />
+              <div class="input-prepend "> <span class="add-on">副标题</span>
+                  <input type="text" name="subtitle" class="span6" id="subtitle" value="<?php echo $adRs['subtitle'] ; ?>" />
               </div>
-            <div class="clearfloat mb10"></div>
+              <div class="clearfloat mb10"></div>
+            </div>
+            <?php } ?>
             <div class="input-prepend input-append">
               <div class="btn-group">
                 <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
@@ -347,9 +377,9 @@ function _modal_dialog(cancel_text){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append">
-              <!-- <span class="add-on wauto">
+              <span class="add-on wauto">
               <input name="ischapter" type="checkbox" id="ischapter" value="1" <?php if($rs['chapter']) echo 'checked="checked"'  ?>/>
-              章节模式</span>  -->
+              章节模式</span>
               <span class="add-on wauto">
               <input name="inbox" type="checkbox" id="inbox" value="1" <?php if($rs['status']=="0")echo 'checked="checked"'  ?>/>
               存为草稿</span>
@@ -373,6 +403,25 @@ function _modal_dialog(cancel_text){
                 $idNum  = $i+1;
             ?>
             <div class="iCMS-editor<?php if($i){ echo ' hide';}?>" id="editor-<?php echo $idNum;?>">
+              <div class="chapter-title
+                <?php
+                  if(!$rs['chapter']){
+                    echo ' hide';
+                  }
+                ?>
+              ">
+                <input name="adid[]" id="adid-<?php echo $idNum;?>"
+                  <?php
+                    if(!$rs['chapter']){
+                      echo ' disabled="true"';
+                    }
+                  ?>
+                type="hidden" value="<?php echo $adIdArray[$i] ; ?>" />
+                <div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>
+                    <input type="text" id="chapter-title-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> name="chaptertitle[]" class="span6" value="<?php echo $cTitArray[$i] ; ?>" />
+                </div>
+                <div class="clearfloat mb10"></div>
+              </div>
               <textarea type="text/plain" id="iCMS-editor-<?php echo $idNum;?>" name="body[]"><?php echo $bodyArray[$i];?></textarea>
             </div>
             <?php }?>
