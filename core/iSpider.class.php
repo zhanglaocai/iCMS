@@ -36,6 +36,8 @@ class spider{
     public static $proxy_array = array();
     public static $callback = array();
 
+    public static $spider_url_ids = array();
+
     public static function rule($id) {
         $rs = iDB::row("SELECT * FROM `#iCMS@__spider_rule` WHERE `id`='$id' LIMIT 1;", ARRAY_A);
         $rs['rule'] && $rs['rule'] = stripslashes_deep(unserialize($rs['rule']));
@@ -69,6 +71,7 @@ class spider{
             'indexid' => $indexid,
             //'pubdate' => time()
         ),array('id'=>$suid));
+        self::update_spider_url_ids($indexid);
     }
 
     public static function update_spider_url_publish($suid){
@@ -76,7 +79,26 @@ class spider{
             'publish' => '1',
             'pubdate' => time()
         ),array('id'=>$suid));
+        self::update_spider_url_ids();
     }
+
+    public static function update_spider_url_ids($indexid=0){
+        foreach ((array)spider::$spider_url_ids as $key => $suid) {
+            if($indexid){
+                $data = array(
+                    'indexid' => $indexid
+                );
+            }else{
+                $data = array(
+                    'publish' => '1',
+                    'status'  => '1',
+                    'pubdate' => time()
+                );
+            }
+            iDB::update('spider_url',$data,array('id'=>$suid));
+        }
+    }
+
     public static function checker($work = null){
         $project = spider::project(spider::$pid);
         $hash    = md5(spider::$url);

@@ -267,6 +267,7 @@ class spiderUrls extends spider{
                 $listsArray[$url] = $lists;
             }
             if($work=="WEB@AUTO"||$work=='DATA@RULE'){
+                spider::$spider_url_ids = array();
                 foreach ($lists AS $lkey => $row) {
                     list(spider::$title,spider::$url) = spiderTools::title_url($row,$rule,$url);
                     if(spider::$url===false){
@@ -303,7 +304,7 @@ class spiderUrls extends spider{
                                         'indexid' => '0','pubdate' => '0'
                                     );
                                     spider::$dataTest OR $suid = iDB::insert('spider_url',$suData);
-                                    $contentArray[$lkey]['spider_url'] = $suid;
+                                    spider::$spider_url_ids[$lkey] = $suid;
                                 break;
                                 case 'WEB@AUTO':
                                     $pubArray[] = $suData;

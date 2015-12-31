@@ -196,6 +196,7 @@ class spiderData extends spider{
 
             gc_collect_cycles();
         }
+
         if(isset($responses['title']) && empty($responses['title'])){
             $responses['title'] = $responses['__title__'];
         }
