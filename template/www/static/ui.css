@@ -347,7 +347,7 @@ body.articleApp { }
 .article-wrap .article-body a { text-decoration: none; }
 .article-wrap .article-body a.keyword { border-bottom: 1px dotted #87B32E; color: #87B32E }
 .article-wrap .article-body img { border: 1px solid #dadada; overflow: hidden; padding: 5px; position: relative; background-color: #FFF; zoom: 1; border-radius: 3px; }
-.article-wrap .article-pagenav { margin-top: 30px; }
+.article-wrap .article-pagenav {margin: 30px auto 10px;display: block;}
 .article-wrap .article-pagenav a, .article-wrap .article-pagenav span { padding: 6px 15px; font-size: 14px; }
 .article-wrap .tip { text-align: center; color: #999; margin-bottom: 10px; }
 

@@ -200,23 +200,32 @@ function autoclean($html){
             continue;
         }
         $stack['br'] = 0;
-        if(
-            preg_match('@^<[/]*(\w+)>$@is', $el)||
-            preg_match('@^<(\w+)>\s*</\\1>$@is', $el)
-        ){
+        if(preg_match('@^<[/]*(\w+)>$@is', $el)){
+            $stack['el']++;
+            if (stripos($ek,'</') !== false){
+                $stack['el'] = 0;
+            }
+            $htmlArray[$hkey] = $el;
+            continue;
+        }
+        if(preg_match('@^<(\w+)>\s*</\\1>$@is', $el)){
             continue;
         }
         $el = preg_replace(array(
             '@(<(\w+)>\s*</\\2>\n*)*@is',
-            '@(<[/]*(\w+)></p>\n*)*@is',
+            '@(<[/]*(\w+)></\\1>\n*)*@is',
             '@(<(\w+)>\s*</\\1>\n*)*@is',
         ),'',$el);
-        $el && $htmlArray[$hkey] = '<p>'.$el.'</p>';
+
+        if($el){
+            if($stack['el']===1){
+                $htmlArray[$hkey] = $el;
+            }else{
+                $htmlArray[$hkey] = '<p>'.$el.'</p>';
+            }
+        }
     }
     reset ($htmlArray);
-    if(current($htmlArray)=="<p><br /></p>"){
-        array_shift($htmlArray);
-    }
     $html = implode('',(array)$htmlArray);
     return $html;
 }
@@ -258,8 +267,5 @@ function key2num($resource){
         ++$sort_key;
     }
     return $_resource;
-}
-function cmp($a,$b){
-    return  strcmp ($a["id"],$b ["id"]);
 }
 

@@ -280,7 +280,45 @@ function article_data($vars){
     }
     return $data;
 }
+function article_prev($vars){
+    $vars['order'] = 'p';
+    return article_next($vars);
+}
+function article_next($vars){
+    // if($vars['param']){
+    //     $vars+= $vars['param'];
+    //     unset($vars['param']);
+    // }
+    empty($vars['order']) && $vars['order']='n';
 
+    $cache_time = isset($vars['time'])?(int)$vars['time']:-1;
+    if(isset($vars['cid'])){
+        $sql=" AND `cid`='{$vars['cid']}' ";
+    }
+    if($vars['order']=='p'){
+        $sql.=" AND `id` < '{$vars['id']}' ORDER BY id DESC LIMIT 1";
+    }else if($vars['order']=='n'){
+        $sql.=" AND `id` > '{$vars['id']}' ORDER BY id ASC LIMIT 1";
+    }
+    $hash = md5($sql);
+    if($vars['cache']){
+        $cache = iPHP_DEVICE.'/article/'.$hash;
+        $array = iCache::get($cache);
+    }
+    if(empty($array)){
+        $rs = iDB::row("SELECT * FROM `#iCMS@__article` WHERE `status`='1' {$sql}");
+        if($rs){
+            $category = iCache::get('iCMS/category/'.$rs->cid);
+            $array    = array(
+                'title' => $rs->title,
+                'pic'   => get_pic($rs->pic),
+                'url'   => iURL::get('article',array((array)$rs,$category))->href,
+            );
+        }
+        iCache::set($cache,$array,$cache_time);
+    }
+    return $array;
+}
 function __article_array($vars,$variable){
     $resource = array();
     if($variable){

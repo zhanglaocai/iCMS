@@ -30,9 +30,23 @@ class spiderContent extends spider{
             print_r('<b>['.$name.']规则:</b>'.iS::escapeStr($data['rule']));
             echo "<hr />";
         }
+        /**
+         * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
+         */
+        if(strpos($data['rule'], '[DATA@')!==false){
+            $content = spiderTools::getDATA($responses,$data['rule']);
+            if(is_array($content)){
+                return $content;
+            }else{
+                $data['rule'] = $content;
+            }
+        }
+        /**
+         * 在数据项里调用之前采集的数据RULE@规则id@@url
+         */
         if(strpos($data['rule'], 'RULE@')!==false){
-            spider::$rid  = str_replace('RULE@', '',$data['rule']);
-            $_urls = trim($html);
+            list(spider::$rid,$_urls) = explode('@', str_replace('RULE@', '',$data['rule']));
+            empty($_urls) && $_urls = trim($html);
             if (spider::$dataTest) {
                 print_r('<b>使用[rid:'.spider::$rid.']规则抓取</b>:'.$_urls);
                 echo "<hr />";
@@ -206,12 +220,7 @@ class spiderContent extends spider{
         if ($data['cleanbefor']) {
             $content = spiderTools::dataClean($data['cleanbefor'], $content);
         }
-        /**
-         * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
-         */
-        if(strpos($content, '[DATA@')!==false){
-            $content = spiderTools::getDATA($responses,$content);
-        }
+
         if ($data['cleanhtml']) {
             $content = stripslashes($content);
             $content = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $content);

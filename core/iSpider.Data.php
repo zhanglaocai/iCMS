@@ -77,7 +77,16 @@ class spiderData extends spider{
 
             $content_html = $html;
             $dname = $data['name'];
-
+            /**
+             * [UNSET:name]
+             * 注销[name]
+             * @var string
+             */
+            if (strpos($dname,'UNSET:')!== false){
+                $_dname = str_replace('UNSET:', '', $dname);
+                unset($responses[$_dname]);
+                continue;
+            }
             /**
              * [DATA:name]
              * 把之前[name]处理完的数据当作原始数据
@@ -118,6 +127,24 @@ class spiderData extends spider{
             $content = spiderContent::crawl($content_html,$data,$rule,$responses);
 
             unset($content_html);
+
+            if (strpos($dname,'ARRAY:')!== false){
+                // if(strpos($data['rule'], 'RULE@')!==false){
+                $dname = str_replace('ARRAY:', '', $dname);
+                // $contentArray = $responses[$dname];
+                // // $contentArray = $responses[$dname];
+                $cArray = array();
+
+                foreach ((array)$content as $k => $value) {
+                    foreach ($value as $key => $val) {
+                        $cArray[$key][$k]=$val;
+                    }
+                }
+                if($cArray){
+                    $content = $cArray;
+                    unset($cArray);
+                }
+            }
 
             /**
              * [name.xxx]
@@ -169,6 +196,7 @@ class spiderData extends spider{
 
             gc_collect_cycles();
         }
+
         if(isset($responses['title']) && empty($responses['title'])){
             $responses['title'] = $responses['__title__'];
         }
