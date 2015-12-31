@@ -880,13 +880,6 @@ function modal_tplfile(el,a){
             </div>
             <span class="help-inline">设置此项后,内容分页数比实际页数+N页,不增加请设置为0</span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">文章上下文</span>
-              <div class="switch" data-on-label="启用" data-off-label="关闭">
-                <input type="checkbox" data-type="switch" name="config[article][prev_next]" id="article_prev_next" <?php echo $config['article']['prev_next']?'checked':''; ?>/>
-              </div>
-            </div>
-            <span class="help-inline">启用文章上下文(内容页的上一篇/下一篇) 这个比较耗性能 如果访问量较大 建议关闭</span>
-            <div class="clearfloat mb10"></div>
             <hr />
             <h3 class="title">百度站长平台 主动推送(实时)</h3>
             <span class="help-inline">申请地址:http://zhanzhang.baidu.com/ (需要权限)</span>
