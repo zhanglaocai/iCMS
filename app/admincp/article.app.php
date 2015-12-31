@@ -662,7 +662,7 @@ class articleApp{
         articleTable::chapter_count($aid);
     }
     function article_data($bodyArray,$aid=0,$haspic=0){
-        if(isset($_POST['ischapter']) && is_array($_POST['adid'])){
+        if(isset($_POST['ischapter']) || is_array($_POST['adid'])){
             $adidArray    = $_POST['adid'];
             $chaptertitle = $_POST['chaptertitle'];
             $chapter      = count($bodyArray);

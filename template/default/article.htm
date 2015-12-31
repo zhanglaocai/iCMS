@@ -105,8 +105,10 @@
       </script>
       <!--{include file="./article.up_down.htm"}-->
       <div class="prev-next">
-        <p>上一篇 : <a href="<!--{$article.prev.url}-->" class="prev" target="_self"><!--{$article.prev.title}--></a></p>
-        <p>下一篇 : <a href="<!--{$article.next.url}-->" class="next" target="_self"><!--{$article.next.title}--></a></p>
+        <!--{iCMS:article:prev cid="$article.cid" id="$article.id"}-->
+        <p>上一篇 : <a href="<!--{$article_prev.url}-->" class="prev" target="_self"><!--{$article_prev.title}--></a></p>
+        <!--{iCMS:article:next cid="$article.cid" id="$article.id"}-->
+        <p>下一篇 : <a href="<!--{$article_next.url}-->" class="next" target="_self"><!--{$article_next.title}--></a></p>
       </div>
       <div class="clearfix mb20"></div>
       <div class="comments_list">
