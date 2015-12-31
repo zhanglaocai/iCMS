@@ -395,9 +395,8 @@ class articleApp {
         return iPHP::fetch('iCMS://taoke.tmpl.htm');
     }
     public function pnTitle($pn,$chapterArray,$chapter){
-        $pn = $pn-1;
         $title = $pn;
-        $chapter && $title = $chapterArray[$pn]['subtitle'];
+        $chapter && $title = $chapterArray[$pn-1]['subtitle'];
         return $title;
     }
 }
