@@ -30,9 +30,23 @@ class spiderContent extends spider{
             print_r('<b>['.$name.']规则:</b>'.iS::escapeStr($data['rule']));
             echo "<hr />";
         }
+        /**
+         * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
+         */
+        if(strpos($data['rule'], '[DATA@')!==false){
+            $content = spiderTools::getDATA($responses,$data['rule']);
+            if(is_array($content)){
+                return $content;
+            }else{
+                $data['rule'] = $content;
+            }
+        }
+        /**
+         * 在数据项里调用之前采集的数据RULE@规则id@@url
+         */
         if(strpos($data['rule'], 'RULE@')!==false){
-            spider::$rid  = str_replace('RULE@', '',$data['rule']);
-            $_urls = trim($html);
+            list(spider::$rid,$_urls) = explode('@', str_replace('RULE@', '',$data['rule']));
+            empty($_urls) && $_urls = trim($html);
             if (spider::$dataTest) {
                 print_r('<b>使用[rid:'.spider::$rid.']规则抓取</b>:'.$_urls);
                 echo "<hr />";
@@ -206,12 +220,7 @@ class spiderContent extends spider{
         if ($data['cleanbefor']) {
             $content = spiderTools::dataClean($data['cleanbefor'], $content);
         }
-        /**
-         * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
-         */
-        if(strpos($content, '[DATA@')!==false){
-            $content = spiderTools::getDATA($responses,$content);
-        }
+
         if ($data['cleanhtml']) {
             $content = stripslashes($content);
             $content = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $content);
@@ -270,11 +279,15 @@ class spiderContent extends spider{
         if ($data['json_decode']) {
             $content = json_decode($content,true);
         }
-        if($data['array']){
-            return (array)$content;
-        }
         if (spider::$callback['content'] && is_callable(spider::$callback['content'])) {
             $content = call_user_func_array(spider::$callback['content'],array($content));
+        }
+
+        if($data['array']){
+            if(strpos($content, '#--iCMS.PageBreak--#')!==false){
+                $content = explode('#--iCMS.PageBreak--#', $content);
+            }
+            return (array)$content;
         }
 
         return $content;
@@ -307,6 +320,9 @@ class spiderContent extends spider{
                     $cmd5 = md5($_content);
                     if($match_hash[$cmd5]){
                         break;
+                    }
+                    if ($data['trim']) {
+                        $_content = trim($_content);
                     }
                     $conArray[$doc_key]  = $_content;
                     $match_hash[$cmd5] = true;
@@ -341,6 +357,9 @@ class spiderContent extends spider{
                             $cmd5 = md5($mat['content']);
                             if($match_hash[$cmd5]){
                                 break;
+                            }
+                            if ($data['trim']) {
+                                $mat['content'] = trim($mat['content']);
                             }
                             $conArray[$mkey]     = $mat['content'];
                             $match_hash[$cmd5] = true;

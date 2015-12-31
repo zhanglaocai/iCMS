@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: article.app.php 2408 2014-04-30 18:58:23Z coolmoo $
@@ -79,7 +79,16 @@ class articleApp {
             iPHP::app('article.table');
             $article_data = articleTable::get_text($id);
         }else{
-            $article && $article_data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='".(int)$id."' LIMIT 1;",ARRAY_A);
+            if($article['chapter']){
+                $all = iDB::all("SELECT id,subtitle FROM `#iCMS@__article_data` WHERE aid='".(int)$id."';",ARRAY_A);
+                foreach ($all as $akey => $value) {
+                    $article_data[] = $value;
+                }
+                unset($all);
+                ksort($article_data);
+            }else{
+                $article_data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='".(int)$id."' LIMIT 1;",ARRAY_A);
+            }
         }
         $vars = array(
             'tags'          =>true,
@@ -137,12 +146,14 @@ class articleApp {
         }
         $this->taoke = false;
         if($art_data){
+            $pkey    = intval($page-1);
             $pageurl = $article['iurl']->pageurl;
-
-            // if(strpos($art_data['body'], '#--iCMS.ArticleData--#')!==false){
-            //     iPHP::app('article.table');
-            //     $art_data['body'] = articleTable::get_text($article['id']);
-            // }
+            if($article['chapter']){
+                $chapterArray = $art_data;
+                $count        = count($chapterArray);
+                $adid         = $chapterArray[$pkey]['id'];
+                $art_data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='".(int)$article['id']."' AND id='".(int)$adid."' LIMIT 1;",ARRAY_A);
+            }
 
             $art_data['body'] = $this->ubb($art_data['body']);
 
@@ -156,57 +167,81 @@ class articleApp {
                 $art_data['body']    = substr($art_data['body'], 19);
                 $article['markdown'] = ture;
             }
-            $body     = explode('#--iCMS.PageBreak--#',$art_data['body']);
-            $count    = count($body);
-            $total    = $count+intval(iCMS::$config['article']['pageno_incr']);
 
-            $article['body']     = $this->keywords($body[intval($page-1)]);
+            if($article['chapter']){
+                $article['body'] = $art_data['body'];
+            }else{
+                $body            = explode('#--iCMS.PageBreak--#',$art_data['body']);
+                $count           = count($body);
+                $article['body'] = $body[$pkey];
+            }
+
+            $total = $count+intval(iCMS::$config['article']['pageno_incr']);
+            $article['body']     = $this->keywords($article['body']);
             $article['body']     = $this->taoke($article['body']);
-            $article['subtitle'] = $art_data['subtitle'];
             $article['taoke']    = $this->taoke;
-            unset($art_data);
+            $article['subtitle'] = $art_data['subtitle'];
+            unset($body,$art_data);
+            $pageArray = array();
+
             if($total>1) {
                 $flag    = 0;
-                $num_nav = '';
-                for($i=$page-3;$i<=$page-1;$i++) {
-                    if($i<1) continue;
-                    $num_nav.="<a href='".iPHP::p2num($pageurl,$i)."' target='_self'>$i</a>";
-                    $flag++;
+                for($i=1;$i<=$total;$i++) {
+                    $pagea = array(
+                        'pn'    => $i,
+                        'url'   => iPHP::p2num($pageurl,$i),
+                        'title' => $this->pnTitle($i,$chapterArray,$article['chapter'])
+                    );
+                    $pagea['link'] = "<a href='".$pagea['url']."'>".$pagea['title']."</a>";
+                    $pageArray['list'][] = $pagea;
                 }
-                $num_nav.='<span class="current">'.$page.'</span>';
-                for($i=$page+1;$i<=$total;$i++) {
-                    $num_nav.="<a href='".iPHP::p2num($pageurl,$i)."' target='_self'>$i</a>";
-                    $flag++;
-                    if($flag==6)break;
-                }
+                $pageArray['index']         = array('url'=> $article['url'],'title' => iPHP::lang('iCMS:page:index'));
+                $pageArray['index']['link'] = "<a href='".$pageArray['index']['url']."'>".$pageArray['index']['title']."</a>";
+                $pageArray['prev']          = array('url' => iPHP::p2num($pageurl,($page-1>1)?$page-1:1),'title' => iPHP::lang('iCMS:page:prev'));
+                $pageArray['prev']['link']  = "<a href='".$pageArray['prev']['url']."'>".$pageArray['prev']['title']."</a>";
+                $pageArray['next']          = array('url' => iPHP::p2num($pageurl,(($total-$page>0)?$page+1:$page)),'title' => iPHP::lang('iCMS:page:next'));
+                $pageArray['next']['link']  = "<a href='".$pageArray['next']['url']."'>".$pageArray['next']['title']."</a>";
+                $pageArray['endof']         = array('url' => iPHP::p2num($pageurl,$total),'title' => '共'.$total.'页');
+                $pageArray['endof']['link'] = "<a href='".$pageArray['endof']['url']."'>".$pageArray['endof']['title']."</a>";
 
-                $index_nav = '<a href="'.$article['url'].'" class="first" target="_self">'.iPHP::lang('iCMS:page:index').'</a>';
-                $prev_url  = iPHP::p2num($pageurl,($page-1>1)?$page-1:1);
-                $prev_nav  = '<a href="'.$prev_url.'" class="prev" target="_self">'.iPHP::lang('iCMS:page:prev').'</a>';
-                $next_url  = iPHP::p2num($pageurl,(($total-$page>0)?$page+1:$page));
-                $next_nav  ='<a href="'.$next_url.'" class="next" target="_self">'.iPHP::lang('iCMS:page:next').'</a>';
-                $end_nav   ='<a href="'.iPHP::p2num($pageurl,$total).'" class="end" target="_self">共'.$total.'页</a>';
-                $text_nav  = $index_nav.$prev_nav.'<span class="current">第'.$page.'页</span>'.$next_nav.$end_nav;
-                $pagenav   = $index_nav.$prev_nav.$num_nav.$next_nav.$end_nav;
+                $length = 3;
+                $offset = $page-$length-1;
+                if($offset<$length-1){
+                    $offset = 0;
+                    $length = 6;
+                }
+                if($offset>=$total-6){
+                    $offset = $total-6;
+                    $length = 6;
+                }
+                $output = array_slice ($pageArray['list'],$offset,$length);
+                if($length!=6){
+                    $output  =  array_merge ((array) $output ,array($pageArray['list'][$page-1]),(array) array_slice ($pageArray['list'],$page,3) );
+                }
+                $pagenav = $pageArray['index']['link'].$pageArray['prev']['link'];
+                foreach ($output as $key => $value) {
+                    if($page==$value['pn']){
+                        $pagenav.= '<span class="current">'.$value['title'].'</span>';
+                    }else{
+                        $pagenav.= $value['link'];
+                    }
+                }
+                $pagenav.= $pageArray['next']['link'].$pageArray['endof']['link'];
             }
             $article['page'] = array(
                 'pn'      => $page,
                 'total'   => $total,//总页数
                 'count'   => $count,//实际页数
                 'current' => $page,
-                'num'     => $num_nav,
-                'text'    => $text_nav,
                 'nav'     => $pagenav,
-                'prev'    => $prev_url,
-                'next'    => $next_url,
                 'pageurl' => $pageurl,
-                'args'    => $_GET['pageargs'],
+                'args'    => iS::escapeStr($_GET['pageargs']),
                 'first'   => ($page=="1"?true:false),
                 'last'    => ($page==$count?true:false),//实际最后一页
                 'end'     => ($page==$total?true:false)
-            );
-            unset($index_nav,$prev_nav,$num_nav,$next_nav,$end_nav,$pagenav);
-            //var_dump($page,$total,$count);
+            )+$pageArray;
+            $next_url = $pageArray['next']['url'];
+            unset($pageArray,$pagea,$output);
             if($pic_array[0]){
                 $img_array = array_unique($pic_array[0]);
                 foreach($img_array as $key =>$img){
@@ -233,53 +268,6 @@ class articleApp {
 
         }
 
-        if($vars['prev_next'] && iCMS::$config['article']['prev_next']){
-            //上一篇
-            $prev_cache = iPHP_DEVICE.'/article/'.$article['id'].'/prev';
-            $prev_array = iCache::get($prev_cache);
-            if(empty($prev_array)){
-                $prev_array = array(
-                    'empty' => true,
-                    'title' => iPHP::lang('iCMS:article:first'),
-                    'pic'   => array(),
-                    'url'   => 'javascript:;',
-                );
-                $prevrs = iDB::row("SELECT * FROM `#iCMS@__article` WHERE `id` < '{$article['id']}' AND `cid`='{$article['cid']}' AND `status`='1' order by id DESC LIMIT 1;");
-                if($prevrs){
-                    $prev_array = array(
-                        'empty' => false,
-                        'title' => $prevrs->title,
-                        'pic'   => get_pic($prevrs->pic),
-                        'url'   => iURL::get('article',array((array)$prevrs,$category))->href,
-                    );
-                }
-                iCache::set($prev_cache,$prev_array);
-            }
-            $article['prev'] = $prev_array;
-            //下一篇
-            $next_cache = iPHP_DEVICE.'/article/'.$article['id'].'/next';
-            $next_array = iCache::get($next_cache);
-            if(empty($next_array)){
-                $next_array = array(
-                    'empty' => true,
-                    'title' => iPHP::lang('iCMS:article:last'),
-                    'pic'   => array(),
-                    'url'   => 'javascript:;',
-                );
-                $nextrs = iDB::row("SELECT * FROM `#iCMS@__article` WHERE `id` > '{$article['id']}'  and `cid`='{$article['cid']}' AND `status`='1' order by id ASC LIMIT 1;");
-                if($nextrs){
-                    $next_array = array(
-                        'empty' => false,
-                        'title' => $nextrs->title,
-                        'pic'   => get_pic($nextrs->pic),
-                        'url'   => iURL::get('article',array((array)$nextrs,$category))->href,
-                    );
-                }
-                iCache::set($next_cache,$next_array);
-            }
-            $article['next'] = $next_array;
-        }
-
         if($vars['tags']){
             $article['tags_fname'] = $category['name'];
             if($article['tags']) {
@@ -287,9 +275,7 @@ class articleApp {
                 $tagArray = $tagApp->get_array($article['tags']);
                 $article['tag_array'] = array();
                 foreach((array)$tagArray AS $tk=>$tag) {
-                    $article['tag_array'][$tk]['name'] = $tag['name'];
-                    $article['tag_array'][$tk]['url']  = $tag['url'];
-                    $article['tag_array'][$tk]['link'] = $tag['link'];
+                    $article['tag_array'][$tk] = $tag;
                     $article['tags_link'].= $tag['link'];
                     $tag_name_array[] = $tag['name'];
                 }
@@ -407,5 +393,11 @@ class articleApp {
             'url'    => $url,
         ));
         return iPHP::fetch('iCMS://taoke.tmpl.htm');
+    }
+    public function pnTitle($pn,$chapterArray,$chapter){
+        $pn = $pn-1;
+        $title = $pn;
+        $chapter && $title = $chapterArray[$pn]['subtitle'];
+        return $title;
     }
 }

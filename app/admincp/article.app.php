@@ -14,6 +14,7 @@ defined('iPHP') OR exit('What are you doing?');
 iPHP::app('article.table');
 class articleApp{
     public $callback = array();
+    public $chapter  = false;
 
     function __construct() {
         $this->appid       = iCMS_APP_ARTICLE;
@@ -31,18 +32,27 @@ class articleApp{
         $rs      = array();
         if($this->id){
             list($rs,$adRs) = articleTable::data($this->id,$this->dataid);
-            if($adRs){
-                $adRs['body'] = htmlspecialchars($adRs['body']);
-                if(substr($adRs['body'], 0,19)=='#--iCMS.Markdown--#'){
-                    iCMS::$config['article']['editor'] = true;
-                    $adRs['body'] = substr($adRs['body'], 19);
-                }
-                $bodyArray    = explode('#--iCMS.PageBreak--#',$adRs['body']);
-                $bodyCount    = count($bodyArray);
-            }
             iACP::CP($rs['cid'],'ce','page');//编辑权限
+            if($adRs){
+                if($rs['chapter']){
+                    foreach ($adRs as $key => $value) {
+                        $adIdArray[$key] = $value['id'];
+                        $cTitArray[$key] = $value['subtitle'];
+                        $bodyArray[$key] = $value['body'];
+                    }
+                }else{
+                    $adRs['body'] = htmlspecialchars($adRs['body']);
+                    if(substr($adRs['body'], 0,19)=='#--iCMS.Markdown--#'){
+                        iCMS::$config['article']['editor'] = true;
+                        $adRs['body'] = substr($adRs['body'], 19);
+                    }
+                    $adIdArray = array($adRs['id']);
+                    $bodyArray = explode('#--iCMS.PageBreak--#',$adRs['body']);
+                }
+            }
         }
 
+        $bodyCount = count($bodyArray);
         $bodyCount OR $bodyCount = 1;
         $cid                 = empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
         $cata_option         = $this->categoryApp->select('ca',$cid);
@@ -409,6 +419,9 @@ class articleApp{
     function do_save(){
         $aid         = (int)$_POST['aid'];
         $cid         = (int)$_POST['cid'];
+        iACP::CP($cid,($aid?'ce':'ca'),'alert');
+
+
         $userid      = (int)$_POST['userid'];
         $scid        = implode(',', (array)$_POST['scid']);
         $pid         = implode(',', (array)$_POST['pid']);
@@ -437,21 +450,20 @@ class articleApp{
         $metadata    = $metadata?addslashes(serialize($metadata)):'';
         $body        = (array)$_POST['body'];
         $creative    = (int)$_POST['creative'];
-        iACP::CP($cid,($aid?'ce':'ca'),'alert');
+
+        empty($title)&& iPHP::alert('标题不能为空！');
+        empty($cid)  && iPHP::alert('请选择所属栏目');
+        empty($body) && empty($url) && iPHP::alert('文章内容不能为空！');
 
         empty($_POST['pubdate']) && $_POST['pubdate'] = get_date(0,'Y-m-d H:i:s');
         $pubdate   = iPHP::str2time($_POST['pubdate']);
         $weight    = _int($_POST['weight']);
         $postype   = $_POST['postype']?$_POST['postype']:0;
-        $ischapter = isset($_POST['ischapter'])?1:0;
         isset($_POST['inbox']) && $status = "0";
-
-        $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
-        empty($title)&& iPHP::alert('标题不能为空！');
-        empty($cid)  && iPHP::alert('请选择所属栏目');
-        empty($body) && empty($url) && iPHP::alert('文章内容不能为空！');
         $userid OR $userid = iMember::$userid;
         iFS::$userid = $userid;
+        $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
+
 
         if(iCMS::$config['article']['filter']) {
             $fwd = iCMS::filter($title);
@@ -492,11 +504,6 @@ class articleApp{
 
         $editor OR	$editor	= empty(iMember::$data->nickname)?iMember::$data->username:iMember::$data->nickname;
 
-        // if($aid && $ischapter){
-        //     $this->article_data($body,$aid);
-        //     iDB::query("UPDATE `#iCMS@__article` SET `chapter`=chapter+1  WHERE `id` = '$aid'");
-        //     iPHP::success('章节添加完成!','url:'.$SELFURL);
-        // }
         iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
         $picdata = '';
         $ucid    = 0;
@@ -505,10 +512,8 @@ class articleApp{
 
         if(empty($aid)) {
             $postime = $pubdate;
-            $hits    = 0;
-            $good = $bad = $comments = 0;
-            $ischapter && $chapter = 1;
-            $mobile = 0;
+            $hits    = $good = $bad = $comments = $chapter = 0;
+            $mobile  = 0;
 
             $aid  = articleTable::insert(compact($fields));
 
@@ -558,6 +563,7 @@ class articleApp{
             iPHP::$dialog['lock']	= true;
             iPHP::dialog('success:#:check:#:文章添加完成!<br />10秒后返回文章列表','url:'.$SELFURL,10,$moreBtn);
         }else{
+            isset($_POST['ischapter']) OR $chapter = 0;
 			if($tags){
 				iPHP::app('tag.class','static');
 	            tag::diff($tags,$_tags,iMember::$userid,$aid,$cid);
@@ -577,7 +583,6 @@ class articleApp{
 
             $url OR $this->article_data($body,$aid,$haspic);
 
-            //$ischapter && $this->chapter_count($aid);
             if($_cid!=$cid) {
                 $this->categoryApp->update_count_one($_cid,'-');
                 $this->categoryApp->update_count_one($cid);
@@ -656,12 +661,28 @@ class articleApp{
     function chapter_count($aid){
         articleTable::chapter_count($aid);
     }
-
     function article_data($bodyArray,$aid=0,$haspic=0){
-        $id       = (int)$_POST['adid'];
-        $subtitle = iS::escapeStr($_POST['subtitle']);
-        $body     = implode('#--iCMS.PageBreak--#',$bodyArray);
-        $body     = preg_replace(array('/<script.+?<\/script>/is','/<form.+?<\/form>/is'),'',$body);
+        if(isset($_POST['ischapter']) || is_array($_POST['adid'])){
+            $adidArray    = $_POST['adid'];
+            $chaptertitle = $_POST['chaptertitle'];
+            $chapter      = count($bodyArray);
+            foreach ($bodyArray as $key => $body) {
+                $adid     = (int)$adidArray[$key];
+                $subtitle = iS::escapeStr($chaptertitle[$key]);
+                $this->body($body,$subtitle,$aid,$adid,$haspic);
+            }
+            articleTable::update(compact('chapter'),array('id'=>$aid));
+        }else{
+            $adid     = (int)$_POST['adid'];
+            $subtitle = iS::escapeStr($_POST['subtitle']);
+            $body     = implode('#--iCMS.PageBreak--#',$bodyArray);
+            $this->body($body,$subtitle,$aid,$adid,$haspic);
+        }
+        iACP::callback($aid,$this,'data');
+    }
+    function body($body,$subtitle,$aid=0,$id=0,&$haspic=0){
+
+        $body = preg_replace(array('/<script.+?<\/script>/is','/<form.+?<\/form>/is'),'',$body);
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
 
         if(isset($_POST['markdown'])){
@@ -680,7 +701,6 @@ class articleApp{
         }else{
             $id = articleTable::data_insert($data);
         }
-        iACP::callback($aid,$this,'data');
 
         $_POST['isredirect'] && iFS::$redirect  = true;
         $_POST['iswatermark']&& iFS::$watermark = false;
@@ -695,8 +715,10 @@ class articleApp{
         }
 
         if(isset($_POST['autopic']) && empty($haspic)){
-            $picurl = $this->remotepic($body,'autopic',$aid);
-            $this->pic($picurl,$aid);
+            if($picurl = $this->remotepic($body,'autopic',$aid)){
+                $this->pic($picurl,$aid);
+                $haspic = true;
+            }
         }
         $this->pic_indexid($body,$aid);
     }
