@@ -112,15 +112,28 @@ class spider{
             switch ($project_checker) {
                 case '1'://按网址检查
                     $sql ="`url` = '$url'";
-                    $msg ="<span class='label label-important'>{$url}</span><br />".'该网址的文章已经发布过!请检查是否重复';
+                    $label = $url.PHP_EOL;
+                    if($work=='shell'){
+                        $label = "<span class='label label-important'>{$url}</span><br />"
+                    }
+                    $msg =$label.'该网址的文章已经发布过!请检查是否重复';
                 break;
                 case '2'://按标题检查
                     $sql ="`title` = '$title'";
-                    $msg ="<span class='label label-important'>{$title}</span><br />".'该标题的文章已经发布过!请检查是否重复';
+                    $label = $title.PHP_EOL;
+                    if($work=='shell'){
+                        $label = "<span class='label label-important'>{$title}</span><br />"
+                    }
+                    $msg = $label.'该标题的文章已经发布过!请检查是否重复';
                 break;
                 case '3'://网址和标题
                     $sql ="`url` = '$url' AND `title` = '$title'";
-                    $msg ="<span class='label label-important'>{$title}</span><br />"."<span class='label label-important'>{$url}</span><br />".'该网址和标题的文章已经发布过!请检查是否重复';
+                    $label = $title.PHP_EOL.$url;
+                    if($work=='shell'){
+                        $label = "<span class='label label-important'>{$title}</span><br />".
+                        $label.= "<span class='label label-important'>{$url}</span><br />"
+                    }
+                    $msg = $label.'该网址和标题的文章已经发布过!请检查是否重复';
                 break;
             }
             $project['self'] && $sql.=" AND `pid`='".spider::$pid."'";
