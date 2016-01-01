@@ -99,29 +99,32 @@ class spider{
         }
     }
 
-    public static function checker($work = null){
+    public static function checker($work = null,$url=null,$title=null){
         $project = spider::project(spider::$pid);
-        $hash    = md5(spider::$url);
+        $url   ===null && $url = spider::$url;
+        $title ===null && $title = spider::$title;
+        $hash    = md5($url);
         if(($project['checker'] && empty($_GET['indexid'])) || $work=="DATA@RULE"){
-            $title = iS::escapeStr(spider::$title);
-            $url   = iS::escapeStr(spider::$url);
+            $title = iS::escapeStr($title);
+            $url   = iS::escapeStr($url);
             $project_checker = $project['checker'];
             $work=="DATA@RULE" && $project_checker = '1';
             switch ($project_checker) {
                 case '1'://按网址检查
                     $sql ="`url` = '$url'";
-                    $msg ='该网址的文章已经发布过!请检查是否重复';
+                    $msg ="<span class='label label-important'>{$url}</span><br />".'该网址的文章已经发布过!请检查是否重复';
                 break;
                 case '2'://按标题检查
                     $sql ="`title` = '$title'";
-                    $msg ='该标题的文章已经发布过!请检查是否重复';
+                    $msg ="<span class='label label-important'>{$title}</span><br />".'该标题的文章已经发布过!请检查是否重复';
                 break;
                 case '3'://网址和标题
                     $sql ="`url` = '$url' AND `title` = '$title'";
-                    $msg ='该网址和标题的文章已经发布过!请检查是否重复';
+                    $msg ="<span class='label label-important'>{$title}</span><br />"."<span class='label label-important'>{$url}</span><br />".'该网址和标题的文章已经发布过!请检查是否重复';
                 break;
             }
             $project['self'] && $sql.=" AND `pid`='".spider::$pid."'";
+
             $checker = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` where $sql AND `publish` in(1,2)");
             if($checker){
                 $work===NULL && iPHP::alert($msg, 'js:parent.$("#' . $hash . '").remove();');
@@ -152,7 +155,7 @@ class spider{
            }
         }
 
-        $checker = spider::checker($work);
+        $checker = spider::checker($work,$_POST['reurl'],$_POST['title']);
         if($checker!==true){
             return $checker;
         }

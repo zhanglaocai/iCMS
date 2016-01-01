@@ -48,7 +48,7 @@ $(function() {
             continue;
         }
 				$hash = md5(spider::$url);
-				if(spider::checker($work)===true){
+				if(spider::checker($work,spider::$url,spider::$title)===true){
 		?>
           <tr id="<?php echo $hash; ?>">
             <td><input type="checkbox" name="pub[]" value="<?php echo $cid; ?>|<?php echo $pid; ?>|<?php echo $rid; ?>|<?php echo spider::$url; ?>|<?php echo spider::$title; ?>|<?php echo $hash; ?>" /></td>

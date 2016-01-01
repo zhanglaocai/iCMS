@@ -136,7 +136,7 @@ class spiderData extends spider{
                 $cArray = array();
 
                 foreach ((array)$content as $k => $value) {
-                    foreach ($value as $key => $val) {
+                    foreach ((array)$value as $key => $val) {
                         $cArray[$key][$k]=$val;
                     }
                 }

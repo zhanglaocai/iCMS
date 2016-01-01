@@ -85,7 +85,8 @@ class spiderUrls extends spider{
         }
         $urlsList && $urlsArray = array_merge($urlsArray,$urlsList);
         unset($_urlsArray,$_key,$_url,$_matches,$_urlsList,$urlsList);
-        $urlsArray  = array_unique($urlsArray);
+        $urlsArray = array_filter($urlsArray);
+        $urlsArray = array_unique($urlsArray);
 
         // spider::$useragent = $rule['user_agent'];
         // spider::$encoding  = $rule['curl']['encoding'];
@@ -229,7 +230,7 @@ class spiderUrls extends spider{
                     echo "title:".spider::$title."\n";
                     echo "url:".spider::$url."\n";
                     spider::$rid = $rid;
-                    $checker = spider::checker($work);
+                    $checker = spider::checker($work,spider::$url,spider::$title);
                     if($checker===true){
                         echo "开始采集....";
                         $callback  = spider::publish("shell");
@@ -285,7 +286,7 @@ class spiderUrls extends spider{
                         echo spider::$url . "<br />";
                         echo $hash . "<br /><hr />";
                     } else {
-                        if(spider::checker($work)===true||spider::$dataTest){
+                        if(spider::checker($work,spider::$url,spider::$title)===true||spider::$dataTest){
                             $suData = array(
                                 'sid'   => 0,
                                 'url'   => spider::$url,'title' => spider::$title,
