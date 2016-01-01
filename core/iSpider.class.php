@@ -114,7 +114,7 @@ class spider{
                     $sql ="`url` = '$url'";
                     $label = $url.PHP_EOL;
                     if($work=='shell'){
-                        $label = "<span class='label label-important'>{$url}</span><br />"
+                        $label = "<span class='label label-important'>{$url}</span><br />";
                     }
                     $msg =$label.'该网址的文章已经发布过!请检查是否重复';
                 break;
@@ -122,7 +122,7 @@ class spider{
                     $sql ="`title` = '$title'";
                     $label = $title.PHP_EOL;
                     if($work=='shell'){
-                        $label = "<span class='label label-important'>{$title}</span><br />"
+                        $label = "<span class='label label-important'>{$title}</span><br />";
                     }
                     $msg = $label.'该标题的文章已经发布过!请检查是否重复';
                 break;
@@ -131,7 +131,7 @@ class spider{
                     $label = $title.PHP_EOL.$url;
                     if($work=='shell'){
                         $label = "<span class='label label-important'>{$title}</span><br />".
-                        $label.= "<span class='label label-important'>{$url}</span><br />"
+                        $label.= "<span class='label label-important'>{$url}</span><br />";
                     }
                     $msg = $label.'该网址和标题的文章已经发布过!请检查是否重复';
                 break;
