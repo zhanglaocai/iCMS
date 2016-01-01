@@ -112,26 +112,26 @@ class spider{
             switch ($project_checker) {
                 case '1'://按网址检查
                     $sql ="`url` = '$url'";
-                    $label = $url.PHP_EOL;
+                    $label = "<span class='label label-important'>{$url}</span><br />";
                     if($work=='shell'){
-                        $label = "<span class='label label-important'>{$url}</span><br />";
+                        $label = $url.PHP_EOL;
                     }
                     $msg =$label.'该网址的文章已经发布过!请检查是否重复';
                 break;
                 case '2'://按标题检查
                     $sql ="`title` = '$title'";
-                    $label = $title.PHP_EOL;
+                    $label = "<span class='label label-important'>{$title}</span><br />";
                     if($work=='shell'){
-                        $label = "<span class='label label-important'>{$title}</span><br />";
+                        $label = $title.PHP_EOL;
                     }
                     $msg = $label.'该标题的文章已经发布过!请检查是否重复';
                 break;
                 case '3'://网址和标题
                     $sql ="`url` = '$url' AND `title` = '$title'";
-                    $label = $title.PHP_EOL.$url;
+                    $label = "<span class='label label-important'>{$title}</span><br />".
+                    $label.= "<span class='label label-important'>{$url}</span><br />";
                     if($work=='shell'){
-                        $label = "<span class='label label-important'>{$title}</span><br />".
-                        $label.= "<span class='label label-important'>{$url}</span><br />";
+                        $label = $title.PHP_EOL.$url;
                     }
                     $msg = $label.'该网址和标题的文章已经发布过!请检查是否重复';
                 break;
