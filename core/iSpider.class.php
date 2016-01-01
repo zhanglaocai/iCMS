@@ -99,10 +99,11 @@ class spider{
         }
     }
 
-    public static function checker($work = null,$url=null,$title=null){
-        $project = spider::project(spider::$pid);
+    public static function checker($work = null,$pid=null,$url=null,$title=null){
+        $pid   ===null && $pid = spider::$pid;
         $url   ===null && $url = spider::$url;
         $title ===null && $title = spider::$title;
+        $project = spider::project($pid);
         $hash    = md5($url);
         if(($project['checker'] && empty($_GET['indexid'])) || $work=="DATA@RULE"){
             $title = iS::escapeStr($title);
@@ -136,7 +137,7 @@ class spider{
                     $msg = $label.'该网址和标题的文章已经发布过!请检查是否重复';
                 break;
             }
-            $project['self'] && $sql.=" AND `pid`='".spider::$pid."'";
+            $project['self'] && $sql.=" AND `pid`='".$pid."'";
 
             $checker = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` where $sql AND `publish` in(1,2)");
             if($checker){
@@ -167,13 +168,12 @@ class spider{
                return false;
            }
         }
-
-        $checker = spider::checker($work,$_POST['reurl'],$_POST['title']);
+        $checker = spider::checker($work,spider::$pid,$_POST['reurl'],$_POST['title']);
         if($checker!==true){
             return $checker;
         }
-        $pid          = spider::$pid;
-        $project      = spider::project($pid);
+        $pid = spider::$pid;
+        $project = spider::project($pid);
 
         if(!isset($_POST['cid'])){
             $_POST['cid'] = $project['cid'];
@@ -186,9 +186,9 @@ class spider{
             $_POST['aid']  = $aid;
             $_POST['adid'] = iDB::value("SELECT `id` FROM `#iCMS@__article_data` WHERE aid='$aid'");
         }
-        $hash  = md5(spider::$url);
         $title = iS::escapeStr($_POST['title']);
         $url   = iS::escapeStr($_POST['reurl']);
+        $hash  = md5($url);
         if(empty(spider::$sid)){
             $spider_url = iDB::row("SELECT `id`,`publish`,`indexid` FROM `#iCMS@__spider_url` where `url`='$url'",ARRAY_A);
             if(empty($spider_url)){

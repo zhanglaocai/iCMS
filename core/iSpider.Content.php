@@ -42,16 +42,16 @@ class spiderContent extends spider{
             }
         }
         /**
-         * 在数据项里调用之前采集的数据RULE@规则id@@url
+         * 在数据项里调用之前采集的数据RULE@规则id@url
          */
         if(strpos($data['rule'], 'RULE@')!==false){
-            list(spider::$rid,$_urls) = explode('@', str_replace('RULE@', '',$data['rule']));
+            list($_rid,$_urls) = explode('@', str_replace('RULE@', '',$data['rule']));
             empty($_urls) && $_urls = trim($html);
             if (spider::$dataTest) {
-                print_r('<b>使用[rid:'.spider::$rid.']规则抓取</b>:'.$_urls);
+                print_r('<b>使用[rid:'.$_rid.']规则抓取</b>:'.$_urls);
                 echo "<hr />";
             }
-            return spiderUrls::crawl('DATA@RULE',false,spider::$rid,$_urls);
+            return spiderUrls::crawl('DATA@RULE',false,$_rid,$_urls);
         }
         /**
          * RAND@10,0
