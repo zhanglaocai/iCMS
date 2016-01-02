@@ -13,7 +13,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 class spiderData extends spider{
 
-    public static function crawl() {
+    public static function crawl($_pid = NULL,$_rid = NULL,$_url = NULL,$_title = NULL) {
         ini_get('safe_mode') OR set_time_limit(0);
         $sid = spider::$sid;
         if ($sid) {
@@ -28,6 +28,11 @@ class spiderData extends spider{
             $pid   = spider::$pid;
             $title = spider::$title;
             $url   = spider::$url;
+
+            $_rid   === NULL OR $rid = $_rid;
+            $_pid   === NULL OR $pid = $_pid;
+            $_title === NULL OR $title = $_title;
+            $_url   === NULL OR $url = $_url;
         }
 
         if($pid){
@@ -136,7 +141,7 @@ class spiderData extends spider{
                 $cArray = array();
 
                 foreach ((array)$content as $k => $value) {
-                    foreach ($value as $key => $val) {
+                    foreach ((array)$value as $key => $val) {
                         $cArray[$key][$k]=$val;
                     }
                 }

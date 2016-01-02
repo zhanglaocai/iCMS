@@ -65,6 +65,55 @@ class spider{
             return $postRs;
         }
     }
+
+    public static function checker($work = null,$pid=null,$url=null,$title=null){
+        $pid   ===null && $pid = spider::$pid;
+        $url   ===null && $url = spider::$url;
+        $title ===null && $title = spider::$title;
+        $project = spider::project($pid);
+        $hash    = md5($url);
+        if(($project['checker'] && empty($_GET['indexid'])) || $work=="DATA@RULE"){
+            $title = iS::escapeStr($title);
+            $url   = iS::escapeStr($url);
+            $project_checker = $project['checker'];
+            $work=="DATA@RULE" && $project_checker = '1';
+            switch ($project_checker) {
+                case '1'://按网址检查
+                    $sql   = "`url` = '$url'";
+                    $label = $url.PHP_EOL;
+                    $msg   = $label.'该网址的文章已经发布过!请检查是否重复';
+                break;
+                case '2'://按标题检查
+                    $sql   = "`title` = '$title'";
+                    $label = $title.PHP_EOL;
+                    $msg   = $label.'该标题的文章已经发布过!请检查是否重复';
+                break;
+                case '3'://网址和标题
+                    $sql   = "`url` = '$url' AND `title` = '$title'";
+                    $label = $title.PHP_EOL.$url;
+                    $msg   = $label.'该网址和标题的文章已经发布过!请检查是否重复';
+                break;
+            }
+            $project['self'] && $sql.=" AND `pid`='".$pid."'";
+
+            $checker = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` where $sql AND `publish` in(1,2)");
+            if($checker){
+                $work===NULL && iPHP::alert($msg, 'js:parent.$("#' . $hash . '").remove();');
+                if($work=='shell'){
+                    echo $msg."\n";
+                    return false;
+                }
+                if($work=="WEB@AUTO"){
+                    return '-1';
+                }
+                return false;
+            }else{
+                return true;
+            }
+        }
+        return true;
+    }
+
     public static function update_spider_url_indexid($suid,$indexid){
         iDB::update('spider_url',array(
             //'publish' => '1',
@@ -90,6 +139,7 @@ class spider{
                 );
             }else{
                 $data = array(
+                    'pid'     => spider::$pid,
                     'publish' => '1',
                     'status'  => '1',
                     'pubdate' => time()
@@ -99,46 +149,6 @@ class spider{
         }
     }
 
-    public static function checker($work = null){
-        $project = spider::project(spider::$pid);
-        $hash    = md5(spider::$url);
-        if(($project['checker'] && empty($_GET['indexid'])) || $work=="DATA@RULE"){
-            $title = iS::escapeStr(spider::$title);
-            $url   = iS::escapeStr(spider::$url);
-            $project_checker = $project['checker'];
-            $work=="DATA@RULE" && $project_checker = '1';
-            switch ($project_checker) {
-                case '1'://按网址检查
-                    $sql ="`url` = '$url'";
-                    $msg ='该网址的文章已经发布过!请检查是否重复';
-                break;
-                case '2'://按标题检查
-                    $sql ="`title` = '$title'";
-                    $msg ='该标题的文章已经发布过!请检查是否重复';
-                break;
-                case '3'://网址和标题
-                    $sql ="`url` = '$url' AND `title` = '$title'";
-                    $msg ='该网址和标题的文章已经发布过!请检查是否重复';
-                break;
-            }
-            $project['self'] && $sql.=" AND `pid`='".spider::$pid."'";
-            $checker = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` where $sql AND `publish` in(1,2)");
-            if($checker){
-                $work===NULL && iPHP::alert($msg, 'js:parent.$("#' . $hash . '").remove();');
-                if($work=='shell'){
-                    echo $msg."\n";
-                    return false;
-                }
-                if($work=="WEB@AUTO"){
-                    return '-1';
-                }
-                return false;
-            }else{
-                return true;
-            }
-        }
-        return true;
-    }
     public static function publish($work = null) {
         $_POST = spiderData::crawl();
         if(spider::$work=='shell'){
@@ -151,13 +161,12 @@ class spider{
                return false;
            }
         }
-
-        $checker = spider::checker($work);
+        $checker = spider::checker($work,spider::$pid,$_POST['reurl'],$_POST['title']);
         if($checker!==true){
             return $checker;
         }
-        $pid          = spider::$pid;
-        $project      = spider::project($pid);
+
+        $project = spider::project(spider::$pid);
 
         if(!isset($_POST['cid'])){
             $_POST['cid'] = $project['cid'];
@@ -170,16 +179,16 @@ class spider{
             $_POST['aid']  = $aid;
             $_POST['adid'] = iDB::value("SELECT `id` FROM `#iCMS@__article_data` WHERE aid='$aid'");
         }
-        $hash  = md5(spider::$url);
         $title = iS::escapeStr($_POST['title']);
         $url   = iS::escapeStr($_POST['reurl']);
+        $hash  = md5($url);
         if(empty(spider::$sid)){
             $spider_url = iDB::row("SELECT `id`,`publish`,`indexid` FROM `#iCMS@__spider_url` where `url`='$url'",ARRAY_A);
             if(empty($spider_url)){
                 $spider_url_data = array(
                     'cid'     => $project['cid'],
                     'rid'     => spider::$rid,
-                    'pid'     => $pid,
+                    'pid'     => spider::$pid,
                     'title'   => addslashes($title),
                     'url'     => $url,
                     'hash'    => $hash,

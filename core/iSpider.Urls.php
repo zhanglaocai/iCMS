@@ -28,7 +28,7 @@ class spiderUrls extends spider{
             $rid = spider::$rid;
         }
 
-        if(empty($rid) && $_rid !== NULL) $rid = $_rid;
+        if($_rid !== NULL) $rid = $_rid;
 
         if($work=='shell'){
             $lastupdate = $project['lastupdate'];
@@ -85,7 +85,8 @@ class spiderUrls extends spider{
         }
         $urlsList && $urlsArray = array_merge($urlsArray,$urlsList);
         unset($_urlsArray,$_key,$_url,$_matches,$_urlsList,$urlsList);
-        $urlsArray  = array_unique($urlsArray);
+        $urlsArray = array_filter($urlsArray);
+        $urlsArray = array_unique($urlsArray);
 
         // spider::$useragent = $rule['user_agent'];
         // spider::$encoding  = $rule['curl']['encoding'];
@@ -206,12 +207,12 @@ class spiderUrls extends spider{
             if($callback=='CALLBACK@URL'){
                 $cbListUrl = array();
                 foreach ($lists AS $lkey => $row) {
-                    list(spider::$title,spider::$url) = spiderTools::title_url($row,$rule,$url);
-                    if(spider::$url===false){
+                    list($_stitle,$_url) = spiderTools::title_url($row,$rule,$url);
+                    if($_surl===false){
                         continue;
                     }
                     // if(spider::checker($work)===true){
-                        $cbListUrl[] = spider::$url;
+                        $cbListUrl[] = $_surl;
                     // }
                 }
                 return $cbListUrl;
@@ -229,7 +230,7 @@ class spiderUrls extends spider{
                     echo "title:".spider::$title."\n";
                     echo "url:".spider::$url."\n";
                     spider::$rid = $rid;
-                    $checker = spider::checker($work);
+                    $checker = spider::checker($work,$pid,spider::$url,spider::$title);
                     if($checker===true){
                         echo "开始采集....";
                         $callback  = spider::publish("shell");
@@ -285,7 +286,7 @@ class spiderUrls extends spider{
                         echo spider::$url . "<br />";
                         echo $hash . "<br /><hr />";
                     } else {
-                        if(spider::checker($work)===true||spider::$dataTest){
+                        if(spider::checker($work,$pid,spider::$url,spider::$title)===true||spider::$dataTest){
                             $suData = array(
                                 'sid'   => 0,
                                 'url'   => spider::$url,'title' => spider::$title,
@@ -294,7 +295,7 @@ class spiderUrls extends spider{
                             );
                             switch ($work) {
                                 case 'DATA@RULE':
-                                    $contentArray[$lkey] = spiderData::crawl();
+                                    $contentArray[$lkey] = spiderData::crawl($pid,$rid,spider::$url,spider::$title);
                                     // $contentArray[$lkey] = spiderUrls::crawl($work,$_pid);
                                     unset($suData['sid']);
                                     $suData['title'] = addslashes($suData['title']);

@@ -43,21 +43,21 @@ $(function() {
         <tbody class="spider-list" id="spider-list-<?php echo md5($furl); ?>">
     <?php
 	  	foreach ($lists AS $lkey => $row) {
-        list(spider::$title,spider::$url) = spiderTools::title_url($row,$rule,$furl);
-        if(spider::$url===false){
+        list($_title,$_url) = spiderTools::title_url($row,$rule,$furl);
+        if($_url===false){
             continue;
         }
-				$hash = md5(spider::$url);
-				if(spider::checker($work)===true){
+				$hash = md5($_url);
+				if(spider::checker($work,$pid,$_url,$_title)===true){
 		?>
           <tr id="<?php echo $hash; ?>">
-            <td><input type="checkbox" name="pub[]" value="<?php echo $cid; ?>|<?php echo $pid; ?>|<?php echo $rid; ?>|<?php echo spider::$url; ?>|<?php echo spider::$title; ?>|<?php echo $hash; ?>" /></td>
-            <td><?php echo spider::$title; ?></td>
-            <td><?php echo spider::$url; ?></td>
+            <td><input type="checkbox" name="pub[]" value="<?php echo $cid; ?>|<?php echo $pid; ?>|<?php echo $rid; ?>|<?php echo $_url; ?>|<?php echo $_title; ?>|<?php echo $hash; ?>" /></td>
+            <td><?php echo $_title; ?></td>
+            <td><?php echo $_url; ?></td>
             <td>
-              <a href="<?php echo APP_FURI; ?>&do=publish&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&hash=<?php echo $hash; ?>&url=<?php echo urlencode(spider::$url); ?>&title=<?php echo  urlencode(spider::$title); ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-check"></i> 发布</a>
-              <a href="<?php echo APP_URI;  ?>&do=testdata&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo urlencode(spider::$url); ?>&title=<?php echo  urlencode(spider::$title); ?>" class="btn btn-small" target="_blank"><i class="fa fa-keyboard-o"></i> 测试</a>
-              <a href="<?php echo APP_FURI; ?>&do=markurl&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo urlencode(spider::$url); ?>&title=<?php echo  urlencode(spider::$title); ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 移除</a>
+              <a href="<?php echo APP_FURI; ?>&do=publish&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&hash=<?php echo $hash; ?>&url=<?php echo urlencode($_url); ?>&title=<?php echo  urlencode($_title); ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-check"></i> 发布</a>
+              <a href="<?php echo APP_URI;  ?>&do=testdata&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo urlencode($_url); ?>&title=<?php echo  urlencode($_title); ?>" class="btn btn-small" target="_blank"><i class="fa fa-keyboard-o"></i> 测试</a>
+              <a href="<?php echo APP_FURI; ?>&do=markurl&cid=<?php echo $cid; ?>&pid=<?php echo $pid; ?>&rid=<?php echo $rid; ?>&url=<?php echo urlencode($_url); ?>&title=<?php echo  urlencode($_title); ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 移除</a>
             </td>
           </tr>
         <?php }?>

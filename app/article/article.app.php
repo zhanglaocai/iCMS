@@ -218,15 +218,19 @@ class articleApp {
                 if($length!=6){
                     $output  =  array_merge ((array) $output ,array($pageArray['list'][$page-1]),(array) array_slice ($pageArray['list'],$page,3) );
                 }
-                $pagenav = $pageArray['index']['link'].$pageArray['prev']['link'];
-                foreach ($output as $key => $value) {
+                $indexprev = $pageArray['index']['link'].$pageArray['prev']['link'];
+                $nextendof = $pageArray['next']['link'].$pageArray['endof']['link'];
+                $listnav   = '';
+                foreach ((array)$output as $key => $value) {
                     if($page==$value['pn']){
-                        $pagenav.= '<span class="current">'.$value['title'].'</span>';
+                        $listnav.= '<span class="current">'.$value['title'].'</span>';
                     }else{
-                        $pagenav.= $value['link'];
+                        $listnav.= $value['link'];
                     }
                 }
-                $pagenav.= $pageArray['next']['link'].$pageArray['endof']['link'];
+                $pagenav  = $indexprev.$listnav.$nextendof;
+                $pagetext = $indexprev.'<span class="current">'.$this->pnTitle($page,$chapterArray,$article['chapter']).'</span>'.$nextendof;
+                unset($indexprev,$listnav,$nextendof);
             }
             $article['page'] = array(
                 'pn'      => $page,
@@ -235,13 +239,14 @@ class articleApp {
                 'current' => $page,
                 'nav'     => $pagenav,
                 'pageurl' => $pageurl,
+                'text'    => $pagetext,
                 'args'    => iS::escapeStr($_GET['pageargs']),
                 'first'   => ($page=="1"?true:false),
                 'last'    => ($page==$count?true:false),//实际最后一页
                 'end'     => ($page==$total?true:false)
             )+$pageArray;
             $next_url = $pageArray['next']['url'];
-            unset($pageArray,$pagea,$output);
+            unset($pageArray,$pagea,$output,$pagetext);
             if($pic_array[0]){
                 $img_array = array_unique($pic_array[0]);
                 foreach($img_array as $key =>$img){
@@ -343,7 +348,7 @@ class articleApp {
     public function ubb($content){
         if(strpos($content, '[img]')!==false){
             $content = stripslashes($content);
-            preg_match_all("/\[img\][\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png))\[\/img\]/is",$content,$img_array);
+            preg_match_all("/\[img\][\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png|webp))\[\/img\]/is",$content,$img_array);
             if($img_array[1]){
                 foreach ($img_array[1] as $key => $src) {
                     $imgs[$key] = '<p><img src="'.$src.'" /></p>';
