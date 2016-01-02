@@ -1,6 +1,6 @@
 /*=== userApp passport ===*/
 .userApp.passport { margin: 0 auto; width: 1003px; }
-.userApp.passport .logo { height: 106px; background: url(img/iCMS.LOGO.png) no-repeat 0 30px; _background-image: none; _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='img/login-reg-logo.png', sizingMethod="crop"); }
+.userApp.passport .logo { height: 106px; background: url(../img/iCMS.LOGO.png) no-repeat 0 30px; _background-image: none; _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/login-reg-logo.png', sizingMethod="crop"); }
 .userApp.passport .logo a { width: 220px; height: 75px; }
 .userApp.passport .logo a span { display: none; }
 .userApp.passport .passport-wrap {background-color: #FFF; padding-bottom: 40px;border-radius: 5px 5px 0px 0px;}
@@ -24,9 +24,9 @@
 .platform span { color: #999 !important; float: none !important; }
 .platform-btn { clear: both; margin-top: 10px;/* display: block; *//* height: 45px; */ }
 .platform-btn a { float: left; margin-right: 10px; *margin-left: 1px; }
-.platform .login_qq { background: url(img/login_qq.png) no-repeat left center; width: 49px; height: 21px; }
-.platform .login_wb { background: url(img/login_wb.png) no-repeat left center; width: 76px; height: 21px; }
-.platform .login_wx { background: url(img/login_wx.png) no-repeat left center; width: 53px; height: 21px; }
+.platform .login_qq { background: url(../img/login_qq.png) no-repeat left center; width: 49px; height: 21px; }
+.platform .login_wb { background: url(../img/login_wb.png) no-repeat left center; width: 76px; height: 21px; }
+.platform .login_wx { background: url(../img/login_wx.png) no-repeat left center; width: 53px; height: 21px; }
 .right-wrap  h2 { margin-bottom: 36px; margin-left: 40px; color: #337AB7; font-weight: normal; font-size: 28px; font-family: '\5FAE\8F6F\96C5\9ED1'; }
 .right-wrap span, .right-wrap p { margin-top: 36px; margin-left: 40px; color: #333; font-size: 14px; }
 .right-wrap .btn { margin-left: 40px; width: 120px; }
@@ -36,7 +36,7 @@
 .register-wrap .right-wrap .other_login a { display: block; margin: 10px 0px 10px 40px; }
 
 /* icon */
-.open_icon { display: inline-block; height: 16px; padding: 0 0 0 19px; background: url(img/login_method_v3.png) no-repeat 0 0; color: #666; line-height: 16px }
+.open_icon { display: inline-block; height: 16px; padding: 0 0 0 19px; background: url(../img/login_method_v3.png) no-repeat 0 0; color: #666; line-height: 16px }
 .open_icon.icon_qq { background-position: 0 -27px; }
 .open_icon.icon_tb { background-position: 0 -52px; }
 .open_icon.icon_txwb { background-position: 0 -77px; }

@@ -4,7 +4,7 @@
 .avatar_60 { width: 60px; height: 60px; border-radius: 3px; }
 .avatar_90 { width: 90px; height: 90px; border-radius: 4px; }
 .avatar_120 { width: 120px; height: 120px; border-radius: 4px; }
-i[class^=z-icon-], i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 10px; vertical-align: 0; background-image: url(img/sprites-1.9.2.4c54885a.png); background-repeat: no-repeat; margin-right: 5px }
+i[class^=z-icon-], i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 10px; vertical-align: 0; background-image: url(../img/sprites-1.9.2.4c54885a.png); background-repeat: no-repeat; margin-right: 5px }
 .z-icon-comment { width: 9px; height: 10px; background-position: -28px -22px }
 .z-icon-collect { width: 7px; height: 10px; background-position: -56px -22px }
 .z-icon-thank { width: 10px; height: 10px; background-position: -41px -22px }
@@ -21,7 +21,7 @@ i[class^=z-icon-], i[class*=" z-icon-"] { display: inline-block; *margin-right: 
 .list_fun a:hover .z-icon-collect { background-position: -56px -37px }
 .list_fun a:hover .z-icon-comment { background-position: -28px -37px }
 .list_fun a { color: #999; vertical-align: middle; font-size: 13px; }
-.icon { width: 16px; height: 16px; background-image: url(img/sprites-1.9.2.4c54885a.png); background-repeat: no-repeat; display: inline-block; vertical-align: middle; }
+.icon { width: 16px; height: 16px; background-image: url(../img/sprites-1.9.2.4c54885a.png); background-repeat: no-repeat; display: inline-block; vertical-align: middle; }
 .icon-profile-male { background-position: -144px -110px; margin-top: 10px; margin-left: 5px; }
 .icon-profile-female { background-position: -127px -110px; margin-top: 10px; margin-left: 5px; }
 
@@ -50,10 +50,10 @@ i[class^=z-icon-], i[class*=" z-icon-"] { display: inline-block; *margin-right: 
 .card_title_name:visited { text-decoration: none; color: #333 }
 .card_slogan { color: #999; font-size: 12px; height: 16px; overflow: hidden; float: left; padding-right: 30px; clear: both; margin-top: 5px; }
 .follow_btn { height: 28px; margin-left: 10px; _margin-top: 0; }
-.follow { width: 72px; background: url(img/follow.png) no-repeat top left; float: left; margin-top: 3px; }
+.follow { width: 72px; background: url(../img/follow.png) no-repeat top left; float: left; margin-top: 3px; }
 .follow:hover { background-position: 0 -36px }
 .follow:active { background-position: 0 -73px }
-.unfollow { width: 130px; background: url(img/unfollow.png) no-repeat top left; float: left; }
+.unfollow { width: 130px; background: url(../img/unfollow.png) no-repeat top left; float: left; }
 .unfollow:hover { background-position: 0 -58px }
 .unfollow:active { background-position: 0 -109px }
 .card_title_name { float: left; }
@@ -81,7 +81,7 @@ i[class^=z-icon-], i[class*=" z-icon-"] { display: inline-block; *margin-right: 
 .home-article, .home-favorite { font-size: 14px; }
 .home-article ul, .home-favorite ul { padding: 0 30px; }
 .home-article li, .home-favorite li { width: 100%; overflow-y: hidden; padding: 16px 0 18px; border-bottom: 1px dotted #E4E4E4; line-height: 23px; }
-.home-article .rep_num { float: left; font-size: 12px; padding: 0 4px 0 1px; overflow: hidden; width: 60px; height: 23px; line-height: 23px; text-align: center; color: #333; background: url(http://tb2.bdstatic.com/tb/static-frs/img/v2/reply_num_bg.gif?t=1398765586497) no-repeat; }
+.home-article .rep_num { float: left; font-size: 12px; padding: 0 4px 0 1px; overflow: hidden; width: 60px; height: 23px; line-height: 23px; text-align: center; color: #333; background: url(http://tb2.bdstatic.com/tb/static-frs/../img/v2/reply_num_bg.gif?t=1398765586497) no-repeat; }
 .home-article .list_top { height: 24px; line-height: 24px; overflow: hidden; }
 .home-article .list_top .title { width: auto; float: left; margin: 0px; font-size: 18px; line-height: 24px; }
 .home-article .list_top .info { width: 155px; overflow: hidden; float: right; display: inline; overflow: hidden; }
@@ -107,8 +107,8 @@ i[class^=z-icon-], i[class*=" z-icon-"] { display: inline-block; *margin-right: 
 /* ----home.btn-------- */
 .home-btn { font-weight: bold; margin-top: 10px; margin-bottom: 20px; }
 .home-btn a { margin-left: 30px; line-height: 32px; }
-.home-btn .icon-publish { display: block; width: 32px; height: 32px; background: url(img/icon-publish.png) no-repeat top left; float: left; margin-right: 10px; }
-.home-btn .icon-manage { display: block; width: 32px; height: 32px; background: url(img/icon-manage.png) no-repeat top left; margin-right: 10px; float: left; }
+.home-btn .icon-publish { display: block; width: 32px; height: 32px; background: url(../img/icon-publish.png) no-repeat top left; float: left; margin-right: 10px; }
+.home-btn .icon-manage { display: block; width: 32px; height: 32px; background: url(../img/icon-manage.png) no-repeat top left; margin-right: 10px; float: left; }
 .home-btn span { }
 .userhome-wrap .mod-title { border-bottom: 1px solid #dedede; }
 .userhome-wrap .mod-title .mod-txt { border-bottom: 1px solid #BFBFBF; line-height: 40px; }
@@ -148,7 +148,7 @@ i[class^=z-icon-], i[class*=" z-icon-"] { display: inline-block; *margin-right: 
 .account_bind .bind_logo .checkType_box { background: #f7f7f7; overflow: hidden; zoom: 1; height: 23px; padding: 12px 0 8px 15px; margin-top: 10px; }
 .account_bind .bind_logo .checkType { float: left; color: #666; margin-right: 10px; }
 .account_bind .bind_logo .checkType input { vertical-align: middle; margin: 0 5px 4px 10px; }
-.account_bind .bind_logo .icon { height: 61px; width: 61px; background: url(img/profile_icon.png) no-repeat; margin-bottom: 4px; float: left; }
+.account_bind .bind_logo .icon { height: 61px; width: 61px; background: url(../img/profile_icon.png) no-repeat; margin-bottom: 4px; float: left; }
 .account_bind .bind_logo .i_sina { background-position: 0 -100px; }
 .account_bind .bind_logo .i_tencent { background-position: 0 -200px; }
 .account_bind .bind_logo .i_qzone { background-position: 0 -300px; }
