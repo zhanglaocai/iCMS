@@ -206,7 +206,7 @@ class articleApp {
                 $GLOBALS['iPage'] = $_GLOBALS_iPage;
                 unset($_GLOBALS_iPage);
 
-                $pageArray['list']  = $iPages->nowbar('array');
+                $pageArray['list']  = $iPages->list_page();
                 $pageArray['index'] = $iPages->first_page('array');
                 $pageArray['prev']  = $iPages->prev_page('array');
                 $pageArray['next']  = $iPages->next_page('array');
