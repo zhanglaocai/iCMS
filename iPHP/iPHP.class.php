@@ -895,16 +895,16 @@ class iPHP{
         self::$break && exit();
     }
     //模板翻页函数
-    public static function page($a) {
+    public static function page($conf) {
         iPHP::loadClass("Pages");
-        $lang   = iPHP::lang(iPHP_APP.':page');
-        $iPages = new iPages($a,$lang);
+        $conf['lang'] = iPHP::lang(iPHP_APP.':page');
+        $iPages = new iPages($conf);
         if($iPages->totalpage>1) {
-            $pagenav = $a['pagenav']?strtoupper($a['pagenav']):'NAV';
-            $pnstyle = $a['pnstyle']?$a['pnstyle']:0;
+            $pagenav = $conf['pagenav']?strtoupper($conf['pagenav']):'NAV';
+            $pnstyle = $conf['pnstyle']?$conf['pnstyle']:0;
             iPHP::$iTPL->_iTPL_VARS['PAGE']  = array(
                 $pagenav  =>$iPages->show($pnstyle),
-                'COUNT'   =>$a['total'],
+                'COUNT'   =>$conf['total'],
                 'TOTAL'   =>$iPages->totalpage,
                 'CURRENT' =>$iPages->nowindex,
                 'PN'      =>$iPages->nowindex,
@@ -916,42 +916,29 @@ class iPHP{
     }
 	//动态翻页函数
 	public static function pagenav($total,$displaypg=20,$unit="条记录",$url='',$target='') {
-		$displaypg = intval($displaypg);
-		$page      = $GLOBALS["page"]?intval($GLOBALS["page"]):1;
-		$lastpg    = ceil($total/$displaypg); //最后页，也是总页数
-		$page      = min($lastpg,$page);
-		$prepg     = (($page-1)<0)?"0":$page-1; //上一页
-		$nextpg    = ($page==$lastpg ? 0 : $page+1); //下一页
-		$url       = buildurl($url,array('total_num'=>$total,'page'=>''));
-	    self::$offset	= ($page-1)*$displaypg;
-	    self::$offset<0 && self::$offset=0;
-	    self::$pagenav="<ul><li><a href='{$url}1' target='_self'>首页</a></li>";
-	    self::$pagenav.=$prepg?"<li><a href='{$url}$prepg' target='_self'>上一页</a></li>":'<li class="disabled"><a href="javascript:;">上一页</a></li>';
-	    $flag=0;
-	    for($i=$page-2;$i<=$page-1;$i++) {
-	        if($i<1) continue;
-	        self::$pagenav.="<li><a href='{$url}$i' target='_self'>$i</a></li>";
-	    }
-	    self::$pagenav.='<li class="active"><a href="javascript:;">'.$page.'</a></li>';
-	    for($i=$page+1;$i<=$lastpg;$i++) {
-	        self::$pagenav.="<li><a href='{$url}$i' target='_self'>$i</a></li>";
-	        $flag++;
-	        if($flag==4) break;
-	    }
-	    self::$pagenav.=$nextpg?"<li><a href='{$url}$nextpg' target='_self'>下一页</a></li>":'<li class="disabled"><a href="javascript:;">下一页</a></li>';
-	    self::$pagenav.="<li><a href='{$url}$lastpg' target='_self'>末页</a></li>";
-	    self::$pagenav.="<li> <span class=\"muted\">共{$total}{$unit}，{$displaypg}{$unit}/页 共{$lastpg}页</span></li>";
-	    for($i=1;$i<=$lastpg;$i=$i+5) {
-	        $s=$i==$page?' selected="selected"':'';
-	        $select.="<option value=\"$i\"{$s}>$i</option>";
-	    }
-	    if($lastpg>200) {
-	        self::$pagenav.="<li> <span class=\"muted\">跳到 <input type=\"text\" id=\"pageselect\" style=\"width:24px;height:12px;margin-bottom: 0px;line-height: 12px;\" /> 页 <input class=\"btn btn-small\" type=\"button\" onClick=\"window.location='{$url}'+$('#pageselect').val();\" value=\"跳转\" style=\"height: 22px;line-height: 18px;\"/></span></li>";
-	    }else {
-	        self::$pagenav.="<li> <span class=\"muted\">跳到 <select id=\"pageselect\" style=\"width:48px;height:20px;margin-bottom: 3px;line-height: 16px;padding: 0px\" onchange=\"window.location='{$url}'+this.value\">{$select}</select> 页</span></li>";
-	    }
-	    self::$pagenav.='</ul>';
-	    //(int)$lastpg<2 &&UCP::$pagenav='';
+		iPHP::loadClass("Pages");
+        $pageconf = array(
+             'url'        => $url,
+             'target'     => $target,
+             'total'      => $total,
+             'perpage'    => $displaypg,
+             'total_type' => 'G',
+             'lang'       => iPHP::lang(iPHP_APP.':page'),
+        );
+        $pageconf['lang']['format_left'] = '<li>';
+        $pageconf['lang']['format_right'] = '</li>';
+
+        $iPages = new iPages($pageconf);
+        self::$offset  = $iPages->offset;
+        self::$pagenav = '<ul>'.
+        self::$pagenav.= $iPages->show(3);
+        $url = $iPages->get_url(1);
+        if($iPages->totalpage>200) {
+            self::$pagenav.="<li> <span class=\"muted\">跳到 <input type=\"text\" id=\"pageselect\" style=\"width:24px;height:12px;margin-bottom: 0px;line-height: 12px;\" /> 页 <input class=\"btn btn-small\" type=\"button\" onClick=\"window.location='{$url}'+$('#pageselect').val();\" value=\"跳转\" style=\"height: 22px;line-height: 18px;\"/></span></li>";
+        }else {
+            self::$pagenav.="<li> <span class=\"muted\">跳到".$iPages->select()."页</span></li>";
+        }
+        self::$pagenav.= '</ul>';
 	}
 	public static function total($tnkey,$sql,$type=null){
 		$tnkey=='sql.md5' && $tnkey = md5($sql);
