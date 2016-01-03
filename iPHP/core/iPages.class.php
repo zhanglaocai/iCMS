@@ -12,48 +12,58 @@
 //$GLOBALS['iPage']['url']="/index_";
 //$GLOBALS['iPage']['html']['enable']=true;
 class iPages {
-	/**
-	* config ,public
-	*/
-	public $page_name = "page";//page标签，用来控制url页。比如说xxx.php?page=2中的page
-	public $is_ajax   = false;//是否支持AJAX分页模式
 
-	/**
-	* private
-	*
-	*/
-	public $pagebarnum =8;//控制记录条的个数。
-	public $totalpage  =0;//总页数
-	public $ajax_fun   ='';//AJAX动作名
-	public $nowindex   =1;//当前页
-	public $url        ="";//url地址头
-	public $offset     =0;
-	public $config     ='';
-	public $lang       ='';
+	public $page_name  = "page";//page标签，用来控制url页。比如说xxx.php?page=2中的page
+	public $is_ajax    = false;//是否支持AJAX分页模式
+	public $ajax_fun   = null;   //AJAX动作名
+	public $titles     = array();
+	public $target     = '_self';
+
+	public $pagebarnum = 8;//控制记录条的个数。
+	public $totalpage  = 0;//总页数
+	public $nowindex   = 1;//当前页
+	public $url        = null;//url地址头
+	public $offset     = 0;
+	public $lang       = array('index'=>'INDEX','prev'=>'PREV','next'=>'NEXT','last'=>'LAST','other'=>'Total','unit'=>'Page','list'=>'Articles','sql'=>'Records','tag'=>'Tags','comment'=>'Comments','message'=>'Messages');
 	/**
 	* constructor构造函数
 	*
 	* @param array $array['total'],$array['perpage'],$array['pn'],$array['unit'],$array['nowindex'],$array['url'],$array['ajax'],$array['pnName']...
 	*/
-	function __construct($_config,$lang=null){
- 		array_key_exists('total',$_config) OR $this->error('need a param of total',1001);
-		$this->total     = (int)$_config['total'];
-		$nowindex        = $_config['nowindex']?(int)$_config['nowindex']:1;
-		$this->perpage   = $_config['perpage']?(int)$_config['perpage']:10;
-		$url             = isset($_config['url'])?$_config['url']:($GLOBALS['iPage']['url']?$GLOBALS['iPage']['url']:$_SERVER['REQUEST_URI']);
+	public function __construct($conf){
+ 		array_key_exists('total',$conf) OR $this->error('need a param of total',1001);
+		$this->total     = (int)$conf['total'];
+		$this->perpage   = $conf['perpage']?(int)$conf['perpage']:10;
 		$this->totalpage = ceil($this->total/$this->perpage);
+		if($this->totalpage<1){
+			return false;
+		}
+
+		if(isset($conf['url'])){
+			$url = $conf['url'];
+		}else{
+			$url = $GLOBALS['iPage']['url']?$GLOBALS['iPage']['url']:$_SERVER['REQUEST_URI'];
+		}
+
 		$GLOBALS['iPage']['total'] = (int)$this->totalpage;
-		if($this->totalpage<1) return;
-		$_config['page_name'] && $this->set('page_name',$_config['page_name']);//设置pagename
-		$this->html          = $GLOBALS['iPage']['html'];
-		$this->lang          = array('index'=>'INDEX','prev'=>'PREV','next'=>'NEXT','last'=>'LAST','other'=>'Total','unit'=>'Page','list'=>'Articles','sql'=>'Records','tag'=>'Tags','comment'=>'Comments','message'=>'Messages');
-		$lang && $this->lang = $lang;
-		$this->unit          = $_config['unit']?$_config['unit']:$this->lang['sql'];
-		$this->_set_nowindex($nowindex);//设置当前页
-		$this->_set_url($url,$_config['total_type']);//设置链接地址
-		$this->nowindex      = min($this->totalpage,$this->nowindex);
-		$this->offset        = (int)($this->nowindex-1<0?0:$this->nowindex-1)*$this->perpage;
-		$_config['ajax'] && $this->ajax($_config['ajax']);//打开AJAX模式
+		$this->html = $GLOBALS['iPage']['html'];
+
+		//设置pagename
+		$conf['page_name']&& $this->page_name = $conf['page_name'];
+		$conf['target']   && $this->target = $conf['target'];
+		$conf['titles']   && $this->titles = $conf['titles'];
+		$conf['lang']     && $this->lang = $conf['lang'];
+
+		$this->unit = $conf['unit']?$conf['unit']:$this->lang['sql'];
+		//设置当前页
+		$nowindex = isset($conf['nowindex'])?(int)$conf['nowindex']:0;
+		$this->_set_nowindex($nowindex);
+		//设置链接地址
+		$this->_set_url($url,$conf['total_type']);
+		// $this->nowindex = min($this->totalpage,$this->nowindex);
+		$this->offset   = (int)($this->nowindex-1<0?0:$this->nowindex-1)*$this->perpage;
+		//打开AJAX模式
+		$conf['ajax'] && $this->ajax($conf['ajax']);
 	}
 
 	/**
@@ -62,13 +72,13 @@ class iPages {
 	* @param string $var
 	* @param string $value
 	*/
-	function set($var,$value){
+	public function set($var,$value){
 		if(in_array($var,get_object_vars($this)))
 	 		$this->$var=$value;
 		else
 			$this->error("does not belong to PB_Page!",1002);
 	}
-	function get($var){
+	public function get($var){
 		if(in_array($var,get_object_vars($this)))
 	 		return $this->$var;
 		else
@@ -80,7 +90,7 @@ class iPages {
 	*
 	* @param string $action 默认ajax触发的动作。
 	*/
-	function ajax($action){
+	public function ajax($action){
 		$this->is_ajax  = true;
 		$this->ajax_fun = $action;
 	}
@@ -92,11 +102,13 @@ class iPages {
 	* @param string $style
 	* @return string
 	*/
-	function next_page($style='next_page',$target='_self'){
-		if($this->nowindex<$this->totalpage){
-			return $this->_get_link($this->_get_url($this->nowindex+1),$this->lang['next'],$style,$target);
+	public function next_page($style='next_page'){
+		$p = $this->nowindex+1;
+		if($p>$this->totalpage){
+			$p = $this->totalpage;
 		}
-		return '<span class="'.$style.'">'.$this->lang['next'].'</span>';
+		$pnt = $this->get_title($p,$this->lang['next']);
+		return $this->_get_link($p,$pnt,$style,($this->nowindex<$this->totalpage));
 	}
 
 	/**
@@ -105,11 +117,13 @@ class iPages {
 	* @param string $style
 	* @return string
 	*/
-	function pre_page($style='pre_page',$target='_self'){
-		if($this->nowindex>1){
-			return $this->_get_link($this->_get_url($this->nowindex-1),$this->lang['prev'],$style,$target);
+	public function prev_page($style='prev_page'){
+		$p = $this->nowindex-1;
+		if($p<2){
+			$p = 1;
 		}
-		return '<span class="'.$style.'">'.$this->lang['prev'].'</span>';
+		$pnt = $this->get_title($p,$this->lang['prev']);
+		return $this->_get_link($p,$pnt,$style,($this->nowindex>1));
 	}
 
 	/**
@@ -117,11 +131,9 @@ class iPages {
 	*
 	* @return string
 	*/
-	function first_page($style='index_page',$target='_self'){
-		if($this->nowindex==1){
-	  		return '<span class="'.$style.'">'.$this->lang['index'].'</span>';
-		}
-		return $this->_get_link($this->_get_url(1),$this->lang['index'],$style,$target);
+	public function first_page($style='index_page'){
+		$pnt = $this->get_title(1,$this->lang['index']);
+		return $this->_get_link(1,$pnt,$style,($this->nowindex==1));
 	}
 
 	/**
@@ -129,33 +141,44 @@ class iPages {
 	*
 	* @return string
 	*/
-	function last_page($style='last_page',$target='_self'){
-		if($this->nowindex==$this->totalpage){
-	 		 return '<span class="'.$style.'">'.$this->lang['last'].'</span>';
-		}
-		return $this->_get_link($this->_get_url($this->totalpage),$this->lang['last'],$style,$target);
+	public function last_page($style='last_page'){
+		$pnt = $this->get_title($this->totalpage,$this->lang['last']);
+		return $this->_get_link($this->totalpage,$pnt,$style,($this->nowindex==$this->totalpage));
 	}
-
-	function nowbar($style='',$nowindex_style='page_nowindex',$target='_self'){
+	public function last_text($style='last_page'){
+		$text = $this->lang['other'].$this->totalpage.$this->lang['unit'];
+		$pnt  = $this->get_title($this->totalpage,$text);
+		return $this->_get_link($this->totalpage,$pnt,$style,($this->nowindex==$this->totalpage));
+	}
+	public function current_page($style='current_page'){
+		$pnt = $this->get_title($this->nowindexi);
+		return '<span class="'.$style.'">'.$this->lang['di'].$pnt.$this->lang['unit'].'</span>';
+	}
+	//文字 说明
+	public function bartext($style='bartext'){
+		return '<span class="'.$style.'">'.$this->total.$this->unit.'，'.$this->lang['other'].$this->totalpage.$this->lang['unit'].'</span>';
+//		return '<span class="'.$style.'">'.$this->lang['other'].$this->total.$this->unit.'，'.$this->perpage.$this->unit.'/'.$this->lang['unit'].' '.$this->lang['other'].$this->totalpage.$this->lang['unit'].'</span>';
+	}
+	public function nowbar($style='',$nowindex_style='page_nowindex'){
 		$plus=ceil($this->pagebarnum/2);
 		if($this->pagebarnum-$plus+$this->nowindex>$this->totalpage)
 			$plus=($this->pagebarnum-$this->totalpage+$this->nowindex);
-		$begin  =$this->nowindex-$plus+1;
-		$begin  =($begin>=1)?$begin:1;
-		$return ='';
+		$begin  = $this->nowindex-$plus+1;
+		$begin  = ($begin>=1)?$begin:1;
+		$pieces = array();
 		for($i=$begin;$i<$begin+$this->pagebarnum;$i++){
 			if($i<=$this->totalpage){
-				if($i!=$this->nowindex){
-		    		$return.=$this->_get_text($this->_get_link($this->_get_url($i),$i,$style,$target));
-				}else{
-		    		$return.=$this->_get_text('<span class="'.$nowindex_style.'">'.$i.'</span>');
-		    	}
+				$pnt = $this->get_title($i);
+		    	$pieces[] = $this->_get_link($i,$pnt,$style,($i!=$this->nowindex),$nowindex_style);
 			}else{
 				break;
 			}
 		}
-		unset($begin);
-		return $return;
+		if($style=='array'){
+			return $pieces;
+		}else{
+			return implode('', $pieces);
+		}
 	}
 
 	/**
@@ -163,27 +186,19 @@ class iPages {
 	*
 	* @return string
 	*/
-	function select($style='page_select'){
+	public function select($style='page_select'){
 		$return='<select class="'.$style.'" name="Page_Select" onchange="window.location.href=this.value">';
 		for($i=1;$i<=$this->totalpage;$i++){
-			$url = $this->_get_url($i);
+			$url = $this->get_url($i);
+			$pnt = $this->get_title($i);
 			if($i==$this->nowindex){
-				$return.='<option value="'.$url.'" selected>'.$i.'</option>';
+				$return.='<option value="'.$url.'" selected>'.$pnt.'</option>';
 			}else{
-				$return.='<option value="'.$url.'">'.$i.'</option>';
+				$return.='<option value="'.$url.'">'.$pnt.'</option>';
 			}
 		}
-		unset($i);
 		$return.='</select>';
 		return $return;
-	}
-	function current_page($style='current_page'){
-		return '<span class="'.$style.'">'.$this->lang['di'].$this->nowindex.$this->lang['unit'].'</span>';
-	}
-	//文字 说明
-	function bartext($style='bartext'){
-		return '<span class="'.$style.'">'.$this->total.$this->unit.'，'.$this->lang['other'].$this->totalpage.$this->lang['unit'].'</span>';
-//		return '<span class="'.$style.'">'.$this->lang['other'].$this->total.$this->unit.'，'.$this->perpage.$this->unit.'/'.$this->lang['unit'].' '.$this->lang['other'].$this->totalpage.$this->lang['unit'].'</span>';
 	}
 
 	/**
@@ -191,7 +206,7 @@ class iPages {
 	*
 	* @return string
 	*/
-	function offset(){
+	public function offset(){
 		return $this->offset;
 	}
 
@@ -201,37 +216,37 @@ class iPages {
 	* @param int $mode
 	* @return string
 	*/
-	function show($mode=0){
+	public function show($mode=0){
 		switch ($mode){
 			case '1':
-				return $this->pre_page().$this->nowbar().$this->next_page().$this->lang['di'].$this->select().$this->lang['unit'];
+				return $this->prev_page().$this->nowbar().$this->next_page().$this->lang['di'].$this->select().$this->lang['unit'];
 				break;
 			case '2':
-				return $this->first_page().$this->pre_page().$this->lang['format_left'].$this->lang['di'].$this->nowindex.$this->lang['unit'].$this->lang['format_right'].$this->next_page().$this->last_page().$this->lang['di'].$this->select().$this->lang['unit'];
+				return $this->first_page().$this->prev_page().$this->nowbar().$this->next_page().$this->last_page().$this->lang['di'].$this->select().$this->lang['unit'];
 				break;
 			case '3':
-				return $this->first_page().$this->pre_page().$this->nowbar().$this->next_page().$this->last_page();
+				return $this->first_page().$this->prev_page().$this->nowbar().$this->next_page().$this->last_page();
 				break;
 			case '4':
-				return $this->pre_page().$this->nowbar().$this->next_page();
+				return $this->prev_page().$this->nowbar().$this->next_page();
 				break;
 			case '5':
 				return $this->nowbar();
 				break;
 			case '6':
-				return $this->pre_page().$this->next_page();
+				return $this->prev_page().$this->next_page();
 				break;
 			case '7':
-				return $this->first_page().$this->pre_page().$this->current_page().$this->next_page().$this->last_page().$this->bartext();
+				return $this->first_page().$this->prev_page().$this->current_page().$this->next_page().$this->last_page().$this->bartext();
 				break;
 			case '8':
-				return $this->first_page().$this->pre_page().$this->current_page().$this->next_page().$this->last_page();
+				return $this->first_page().$this->prev_page().$this->current_page().$this->next_page().$this->last_page();
 				break;
 			case '9':
-				return $this->first_page().$this->pre_page().$this->next_page().$this->last_page();
+				return $this->first_page().$this->prev_page().$this->next_page().$this->last_page();
 				break;
 			default:
-				return $this->first_page().$this->pre_page().$this->nowbar().$this->next_page().$this->last_page().$this->bartext();
+				return $this->first_page().$this->prev_page().$this->nowbar().$this->next_page().$this->last_text();
 				break;
 		}
 	}
@@ -241,7 +256,7 @@ class iPages {
 	* @param: String $url
 	* @return boolean
 	*/
-	function _set_url($url="",$total_type=null){
+	public function _set_url($url="",$total_type=null){
 		if($this->html['enable']){
 			$this->url	= $url;
 		}else{
@@ -257,7 +272,7 @@ class iPages {
 	* 设置当前页面
 	*
 	*/
-	function _set_nowindex($nowindex){
+	public function _set_nowindex($nowindex){
 		if(empty($nowindex)){
 			//系统获取
 			if(isset($_GET[$this->page_name])){
@@ -268,7 +283,12 @@ class iPages {
 			$this->nowindex=intval($nowindex);
 		}
 	}
-
+    public function get_title($pn=0,$text=null){
+        $title = $pn;
+        $text && $title = $text;
+        $this->titles[$pn] && $title = $this->titles[$pn];
+        return $title;
+    }
 
 	/**
 	* 为指定的页面返回地址值
@@ -276,7 +296,7 @@ class iPages {
 	* @param int $pageno
 	* @return string $url
 	*/
-	function _get_url($pageno=1){
+	public function get_url($pageno=1){
 		if($this->is_ajax) return (int)$pageno;
 		if($pageno<2){
 			$url = $this->url;
@@ -292,7 +312,7 @@ class iPages {
 	* @param String $str
 	* @return string $url
 	*/
-	function _get_text($str){
+	public function _get_text($str){
 		return $this->lang['format_left'].$str.$this->lang['format_right'];
 	}
 
@@ -300,22 +320,40 @@ class iPages {
 	/**
 	* 获取链接地址
 	*/
-	function _get_link($url,$text,$style='',$target=''){
-		$style	&& $style	= 'class="'.$style.'"';
-		$target OR $target	= '_self';
+	public function _get_link($i,$text,$style='',$flag=true,$nowindex_style=null){
+
+		if($style=='array'){
+			return $this->_get_array($i,$text);
+		}
+		$style	&& $style	= ' class="'.$style.'"';
+
+		if(!$flag){
+			$nowindex_style && $style = ' class="'.$nowindex_style.'"';
+			return $this->_get_text('<span'.$style.'>'.$text.'</span>');
+		}
+
+		$url = $this->get_url($i);
 		if($this->is_ajax){
 	  		//如果是使用AJAX模式
-			return '<a '.$style.' href="javascript:;" onclick="'.$this->ajax_fun.'(\''.$url.'\',this)">'.$text.'</a>';
+	  		$a = '<a'.$style.' href="javascript:;" onclick="'.$this->ajax_fun.'(\''.$url.'\',this)">'.$text.'</a>';
 		}else{
-			return '<a '.$style.' href="'.$url.'" target="'.$target.'">'.$text.'</a>';
+			$a = '<a'.$style.' href="'.$url.'" target="'.$this->target.'">'.$text.'</a>';
 		}
+		return $this->_get_text($a);
 	}
-
+	public function _get_array($i,$text){
+		return array(
+			'pn'    => $i,
+			'url'   => $this->get_url($i),
+			'title' => $text,
+			'link'  => $this->_get_link($i,$text),
+		);
+	}
 
 	/**
 	* 出错处理方式
 	*/
-	function error($msg,$code){
+	public function error($msg,$code){
 		trigger_error($msg . '(' . $code . ')');
 	}
 }

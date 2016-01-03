@@ -185,52 +185,34 @@ class articleApp {
             $pageArray = array();
 
             if($total>1) {
-                $flag    = 0;
-                for($i=1;$i<=$total;$i++) {
-                    $pagea = array(
-                        'pn'    => $i,
-                        'url'   => iPHP::p2num($pageurl,$i),
-                        'title' => $this->pnTitle($i,$chapterArray,$article['chapter'])
-                    );
-                    $pagea['link'] = "<a href='".$pagea['url']."'>".$pagea['title']."</a>";
-                    $pageArray['list'][] = $pagea;
-                }
-                $pageArray['index']         = array('url'=> $article['url'],'title' => iPHP::lang('iCMS:page:index'));
-                $pageArray['index']['link'] = "<a href='".$pageArray['index']['url']."'>".$pageArray['index']['title']."</a>";
-                $pageArray['prev']          = array('url' => iPHP::p2num($pageurl,($page-1>1)?$page-1:1),'title' => iPHP::lang('iCMS:page:prev'));
-                $pageArray['prev']['link']  = "<a href='".$pageArray['prev']['url']."'>".$pageArray['prev']['title']."</a>";
-                $pageArray['next']          = array('url' => iPHP::p2num($pageurl,(($total-$page>0)?$page+1:$page)),'title' => iPHP::lang('iCMS:page:next'));
-                $pageArray['next']['link']  = "<a href='".$pageArray['next']['url']."'>".$pageArray['next']['title']."</a>";
-                $pageArray['endof']         = array('url' => iPHP::p2num($pageurl,$total),'title' => '共'.$total.'页');
-                $pageArray['endof']['link'] = "<a href='".$pageArray['endof']['url']."'>".$pageArray['endof']['title']."</a>";
-
-                $length = 3;
-                $offset = $page-$length-1;
-                if($offset<$length-1){
-                    $offset = 0;
-                    $length = 6;
-                }
-                if($offset>=$total-6){
-                    $offset = $total-6;
-                    $length = 6;
-                }
-                $output = array_slice ($pageArray['list'],$offset,$length);
-                if($length!=6){
-                    $output  =  array_merge ((array) $output ,array($pageArray['list'][$page-1]),(array) array_slice ($pageArray['list'],$page,3) );
-                }
-                $indexprev = $pageArray['index']['link'].$pageArray['prev']['link'];
-                $nextendof = $pageArray['next']['link'].$pageArray['endof']['link'];
-                $listnav   = '';
-                foreach ((array)$output as $key => $value) {
-                    if($page==$value['pn']){
-                        $listnav.= '<span class="current">'.$value['title'].'</span>';
-                    }else{
-                        $listnav.= $value['link'];
+                iPHP::loadClass("Pages");
+                $_GLOBALS_iPage = $GLOBALS['iPage'];
+                $category['mode'] && iCMS::set_html_url($article['iurl']);
+                $pageconf = array(
+                     'page_name' => 'p',
+                     'url'       => $pageurl,
+                     'total'     => $total,
+                     'perpage'   => 1,
+                     'nowindex'  => (int)$_GET['p'],
+                     'lang'      => iPHP::lang(iPHP_APP.':page'),
+                );
+                if($article['chapter']){
+                    foreach ((array)$chapterArray as $key => $value) {
+                        $pageconf['titles'][$key+1] = $value['subtitle'];
                     }
                 }
-                $pagenav  = $indexprev.$listnav.$nextendof;
-                $pagetext = $indexprev.'<span class="current">'.$this->pnTitle($page,$chapterArray,$article['chapter']).'</span>'.$nextendof;
-                unset($indexprev,$listnav,$nextendof);
+                $iPages = new iPages($pageconf);
+                unset($GLOBALS['iPage']);
+                $GLOBALS['iPage'] = $_GLOBALS_iPage;
+                unset($_GLOBALS_iPage);
+
+                $pageArray['list']  = $iPages->nowbar('array');
+                $pageArray['index'] = $iPages->first_page('array');
+                $pageArray['prev']  = $iPages->prev_page('array');
+                $pageArray['next']  = $iPages->next_page('array');
+                $pageArray['endof'] = $iPages->last_page('array');
+                $pagenav   = $iPages->show(0);
+                $pagetext  = $iPages->show(7);
             }
             $article['page'] = array(
                 'pn'      => $page,
@@ -240,13 +222,15 @@ class articleApp {
                 'nav'     => $pagenav,
                 'pageurl' => $pageurl,
                 'text'    => $pagetext,
+                'PAGES'   => $iPages,
                 'args'    => iS::escapeStr($_GET['pageargs']),
                 'first'   => ($page=="1"?true:false),
                 'last'    => ($page==$count?true:false),//实际最后一页
                 'end'     => ($page==$total?true:false)
             )+$pageArray;
             $next_url = $pageArray['next']['url'];
-            unset($pageArray,$pagea,$output,$pagetext);
+            unset($pagenav,$pagetext,$iPages,$pageArray);
+
             if($pic_array[0]){
                 $img_array = array_unique($pic_array[0]);
                 foreach($img_array as $key =>$img){
