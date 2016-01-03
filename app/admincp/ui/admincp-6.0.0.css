@@ -524,3 +524,4 @@ form { margin-bottom: 0; }
 	#sidebar > ul ul:before { border-right: 7px solid rgba(0, 0, 0, 0.2); }
 	#sidebar > ul ul:after { border-right: 6px solid #222222; }
 }
+.page_select{width:48px;height:20px;margin-bottom: 3px;line-height: 16px;padding: 0px}

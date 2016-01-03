@@ -133,7 +133,7 @@ class iPages {
 	*/
 	public function first_page($style='index_page'){
 		$pnt = $this->get_title(1,$this->lang['index']);
-		return $this->_get_link(1,$pnt,$style,($this->nowindex==1));
+		return $this->_get_link(1,$pnt,$style,true);
 	}
 
 	/**
@@ -143,12 +143,12 @@ class iPages {
 	*/
 	public function last_page($style='last_page'){
 		$pnt = $this->get_title($this->totalpage,$this->lang['last']);
-		return $this->_get_link($this->totalpage,$pnt,$style,($this->nowindex==$this->totalpage));
+		return $this->_get_link($this->totalpage,$pnt,$style,true);
 	}
 	public function last_text($style='last_page'){
 		$text = $this->lang['other'].$this->totalpage.$this->lang['unit'];
 		$pnt  = $this->get_title($this->totalpage,$text);
-		return $this->_get_link($this->totalpage,$pnt,$style,($this->nowindex==$this->totalpage));
+		return $this->_get_link($this->totalpage,$pnt,$style,true);
 	}
 	public function current_page($style='current_page'){
 		$pnt = $this->get_title($this->nowindexi);
@@ -169,18 +169,25 @@ class iPages {
 		for($i=$begin;$i<$begin+$this->pagebarnum;$i++){
 			if($i<=$this->totalpage){
 				$pnt = $this->get_title($i);
-		    	$pieces[] = $this->_get_link($i,$pnt,$style,($i!=$this->nowindex),$nowindex_style);
+				if($i!=$this->nowindex){
+		    		$pieces[] = $this->_get_link($i,$pnt,$style,($i!=$this->nowindex));
+				}else{
+		    		$pieces[] =$this->_get_text('<span class="'.$nowindex_style.'">'.$pnt.'</span>');
+		    	}
 			}else{
 				break;
 			}
 		}
-		if($style=='array'){
-			return $pieces;
-		}else{
-			return implode('', $pieces);
-		}
+		return implode('', $pieces);
 	}
-
+	public function list_page(){
+		$pieces = array();
+		for($i=1;$i<=$this->totalpage;$i++){
+			$pnt      = $this->get_title($i);
+			$pieces[] = $this->_get_link($i,$pnt,'array',true);
+		}
+		return $pieces;
+	}
 	/**
 	* 获取显示跳转按钮的代码
 	*
@@ -286,7 +293,7 @@ class iPages {
     public function get_title($pn=0,$text=null){
         $title = $pn;
         $text && $title = $text;
-        $this->titles[$pn] && $title = $this->titles[$pn];
+        $this->titles && $title = $this->titles[$pn];
         return $title;
     }
 
@@ -320,7 +327,7 @@ class iPages {
 	/**
 	* 获取链接地址
 	*/
-	public function _get_link($i,$text,$style='',$flag=true,$nowindex_style=null){
+	public function _get_link($i,$text,$style='',$flag=true){
 
 		if($style=='array'){
 			return $this->_get_array($i,$text);
@@ -328,7 +335,6 @@ class iPages {
 		$style	&& $style	= ' class="'.$style.'"';
 
 		if(!$flag){
-			$nowindex_style && $style = ' class="'.$nowindex_style.'"';
 			return $this->_get_text('<span'.$style.'>'.$text.'</span>');
 		}
 
