@@ -932,9 +932,10 @@ class iPHP{
         self::$offset  = $iPages->offset;
         self::$pagenav = '<ul>'.
         self::$pagenav.= $iPages->show(3);
-        $url = $iPages->get_url(1);
+        self::$pagenav.="<li> <span class=\"muted\">{$total}{$unit} {$displaypg}{$unit}/页 共{$iPages->totalpage}页</span></li>";
         if($iPages->totalpage>200) {
-            self::$pagenav.="<li> <span class=\"muted\">跳到 <input type=\"text\" id=\"pageselect\" style=\"width:24px;height:12px;margin-bottom: 0px;line-height: 12px;\" /> 页 <input class=\"btn btn-small\" type=\"button\" onClick=\"window.location='{$url}'+$('#pageselect').val();\" value=\"跳转\" style=\"height: 22px;line-height: 18px;\"/></span></li>";
+            $url = $iPages->get_url(1);
+            self::$pagenav.="<li> <span class=\"muted\">跳到 <input type=\"text\" id=\"pageselect\" style=\"width:24px;height:12px;margin-bottom: 0px;line-height: 12px;\" /> 页 <input class=\"btn btn-small\" type=\"button\" onClick=\"window.location='{$url}&page='+$('#pageselect').val();\" value=\"跳转\" style=\"height: 22px;line-height: 18px;\"/></span></li>";
         }else {
             self::$pagenav.="<li> <span class=\"muted\">跳到".$iPages->select()."页</span></li>";
         }
