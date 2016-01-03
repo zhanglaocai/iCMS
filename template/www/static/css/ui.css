@@ -151,7 +151,7 @@ body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
 
 /* ==logo== */
 .header .logo { display: inline-block; }
-.header .logo a { width: 320px; height: 70px; display: block; background: url(../img/iCMS.LOGO.png) no-repeat 0 -8px; }
+.header .logo a { width: 320px; height: 70px; display: block;background: url(../img/iCMS.LOGO.png) no-repeat 0 12px;}
 
 /* ==search== */
 .header .search { margin-top: 4px; +width: 440px; display: inline-block; float: right; margin-top: 18px; }

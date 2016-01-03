@@ -30,7 +30,7 @@
                 <p><a href="<!--{iCMS:router url='/user/manage/fans'}-->" <!--{if $pg=="fans" }--> class="c"<!--{/if}-->><i class="fa fa-group"></i> 我的粉丝</a></p>
             </div>
         </div>
-        <div class="contents">
+        <div class="contents manage_<!--{$pg}-->">
             <form action="<!--{iCMS:router url='/user'}-->" method="post" target="iCMS_FRAME">
                 <input name="action" type="hidden" value="manage" />
                 <input name="pg" type="hidden" value="<!--{$pg}-->" />
