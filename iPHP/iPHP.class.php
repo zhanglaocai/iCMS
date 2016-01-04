@@ -359,18 +359,37 @@ class iPHP{
 		$cookiepath   = iPHP_COOKIE_PATH;
 		$cookietime   = ($time?$time:iPHP_COOKIE_TIME);
 		$name         = iPHP_COOKIE_PRE.'_'.$name;
-	    setcookie($name, $value,time()+$cookietime,$cookiepath, $cookiedomain, $_SERVER['SERVER_PORT'] == 443 ? 1 : 0);
-		if($value==''){
-			unset($_COOKIE[$name]);
-		}
+        if(strpos(iPHP_SESSION,'SESSION')!==false){
+            $_SESSION[$name] = $value;
+        }
+        if(strpos(iPHP_SESSION,'COOKIE')!==false){
+    	    setcookie($name, $value,time()+$cookietime,$cookiepath, $cookiedomain, $_SERVER['SERVER_PORT'] == 443 ? 1 : 0);
+        }
 	}
 	//取得COOKIE
 	public static function get_cookie($name) {
 	    $name	= iPHP_COOKIE_PRE.'_'.$name;
-	    if (isset($_COOKIE[$name])) {
-	        return $_COOKIE[$name];
-	    }
-	    return FALSE;
+
+        if(strpos(iPHP_SESSION,'COOKIE')!==false){
+    	   $cvalue = $_COOKIE[$name];
+        }
+        if(strpos(iPHP_SESSION,'SESSION')!==false){
+            $svalue = $_SESSION[$name];
+        }
+        if(iPHP_SESSION=='SESSION+COOKIE'){
+            if($cvalue==$svalue){
+                return $svalue;
+            }else if($svalue){
+                return $svalue;
+            }else if($cvalue){
+                return $cvalue;
+            }
+        }else if(iPHP_SESSION=='SESSION'){
+            return $svalue;
+        }else if(iPHP_SESSION=='COOKIE'){
+            return $cvalue;
+        }
+	    return false;
 	}
 
     public static function import($path,$dump=false){
