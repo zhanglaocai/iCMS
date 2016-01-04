@@ -15,12 +15,103 @@
     <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/passport.css" type="text/css" />
     <script>
     $(function() {
-        <!--{if $user}-->
-        iCMS.user.OPENID = <!--{$user|json_encode}-->;
-            $("[name=gender][value=<!--{$user.gender}-->]").prop("checked", true);
-        <!--{/if}-->
-        iCMS.user.register();
-    })
+        var register = $("#register-box");
+
+        $("input[name=agreement]").click(function() {
+          $(this).prop("checked", true);
+        });
+
+        $("#register_submit").click(function(event) {
+            event.preventDefault();
+            var checkform,param=[];
+            $("input", register).each(function() {
+                // check_form(this);
+                //console.log(this.id, this.name, !$(this).data('check'))
+                // if (!$(this).data('check')) {
+                //     checkform = true;
+                //     return false;
+                // }
+                //console.log(this.id, 'ok')
+                if (this.name) {
+                    param[this.name] = this.value;
+                }
+            });
+            param.gender    = $('input[name="gender"]:checked').val();
+            param.agreement = true;
+            console.log(param);
+            return;
+            <!--{if $user}-->
+            //绑定账号
+            param.OPENID = <!--{$user|json_encode}-->;
+            <!--{/if}-->
+
+            <!--{if $iCMS.CONFIG.user.register.seccode }-->
+            //检查验证码
+            param.register_seccode = true;
+            <!--{/if}-->
+
+            // iCMS.PASSPORT.REGISTER(
+            //     //提交参数
+            //     param,
+            //     //登录成功 事件
+            //     function(ret) {
+            //         window.top.location.href = ret.forward;
+            //     },
+            //     //登录失败 事件
+            //     function(ret) {
+            //         iCMS.seccode(".seccode-img","#register-box");
+            //         var tip = $('.tip_'+ret[0]);
+            //         tip.text(ret[1]).show();
+            //         // console.log(ret);
+            //     }
+            // );
+        });
+    });
+/*
+    function check_form(a) {
+        if (a.value == "") {
+          return msg(a, 'empty');
+        }
+        switch (a.name) {
+          case 'username':
+            var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9._-])+/;
+            if (!pattern.test(a.value)) {
+              return msg(a, "err");
+            }
+            ajax_check(a);
+            break;
+          case 'nickname':
+            var length = a.value.replace(/[^\x00-\xff]/g, 'xx').length;
+            if (length < 4) {
+              return msg(a, "err");
+            }
+            if (length > 20) {
+              return msg(a, "err");
+            }
+            ajax_check(a);
+            break;
+          case 'password':
+            if (a.value.length < 6) {
+              return msg(a, "err");
+            }
+            return msg(a, "ok");
+            break;
+          case 'rstpassword':
+            var pwd = $("#iCMS-reg-password").val();
+            if (pwd.length < 6) {
+              return msg(a, "perr");
+            }
+            if (pwd != a.value) {
+              return msg(a, "err");
+            }
+            return msg(a, "ok");
+            break;
+          case 'seccode':
+            ajax_check(a);
+            break;
+        }
+    }
+    */
     </script>
 </head>
 

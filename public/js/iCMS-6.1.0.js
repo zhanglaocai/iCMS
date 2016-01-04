@@ -90,28 +90,6 @@ define(["jquery"],function($){
             }
             return code;
         },
-        hover: function(a, t, l) {
-            var pop,timeOutID = null,t = t || 0, l = l || 0;
-            a.hover(function() {
-                pop = $(".popover",$(this).parent());
-                $(".popover").hide();
-                var position = $(this).position();
-                pop.show().css({
-                    top: position.top + t,
-                    left: position.left + l
-                }).hover(function() {
-                    window.clearTimeout(timeOutID);
-                    $(this).show();
-                }, function() {
-                    $(this).hide();
-                });
-                window.clearTimeout(timeOutID);
-            }, function() {
-                timeOutID = window.setTimeout(function() {
-                    pop.hide();
-                }, 2500);
-            });
-        },
         api_iframe_height:function(a,iframe){
             var height = a.height();
             $(iframe).height(height);
@@ -130,29 +108,14 @@ define(["jquery"],function($){
               opts.time    = 30000000;
               d(opts,callback);
           });
-        }
-        // placeholder: function () {
-        //     // 判断浏览器是否支持 placeholder
-        //     var _support = function () {
-        //         return 'placeholder' in document.createElement('input');
-        //     }
-        //     if(!_support()){
-        //         $('[placeholder]').focus(function() {
-        //             var input = $(this);
-        //             if (input.val() == input.attr('placeholder')) {
-        //                 input.val('');
-        //                 input.removeClass('placeholder');
-        //             }
-        //         }).blur(function() {
-        //             var input = $(this);
-        //             if (input.val() == '' || input.val() == input.attr('placeholder')) {
-        //                 input.addClass('placeholder');
-        //                 input.val(input.attr('placeholder'));
-        //             }
-        //         }).blur();
-        //     };
-        // },
-
+        },
+        callback:function (fun,msg) {
+            if (typeof(fun) === "function") {
+              fun(msg);
+            }else{
+                iCMS.alert(msg[1]);
+            }
+        },
     }
     return iCMS;
 });

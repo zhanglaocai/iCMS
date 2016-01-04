@@ -13,7 +13,7 @@
 .passport-form .form-group { margin: 15px 0px; line-height: 30px; }
 .passport-form .control-label { line-height: 30px; width: 90px; }
 .passport-form .form-control { margin-left: 5px; padding: 0 8px; width: 320px; height: 40px; display: inline; }
-.passport-form .help-block { display: none; }
+.passport-form .help-block {display: none;}
 .passport-form .opt { margin-top: 20px; width: 390px; line-height: 40px; font-size: 12px; padding-left: 40px; }
 .passport-form .opt label { font-size: 12px; margin-right: 20px; }
 .passport-form .submit { text-align: center; width: 400px; }
@@ -47,3 +47,6 @@
 .open_icon.icon_arr { background-position: 0 -197px; }
 
 #login_submit { }
+.footer{border-radius: 0px 0px 5px 5px ;}
+.login-wrap .help-block{margin: 0px;padding: 4px;float: right;}
+.login-wrap .tip_error{color: #FF0151;}

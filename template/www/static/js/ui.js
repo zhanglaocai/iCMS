@@ -21,3 +21,25 @@ $(function() {
     //     }
     // });
 })
+// function hover (a, t, l) {
+//     var pop,timeOutID = null,t = t || 0, l = l || 0;
+//     a.hover(function() {
+//         pop = $(".popover",$(this).parent());
+//         $(".popover").hide();
+//         var position = $(this).position();
+//         pop.show().css({
+//             top: position.top + t,
+//             left: position.left + l
+//         }).hover(function() {
+//             window.clearTimeout(timeOutID);
+//             $(this).show();
+//         }, function() {
+//             $(this).hide();
+//         });
+//         window.clearTimeout(timeOutID);
+//     }, function() {
+//         timeOutID = window.setTimeout(function() {
+//             pop.hide();
+//         }, 2500);
+//     });
+// }

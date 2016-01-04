@@ -15,12 +15,47 @@
     <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/passport.css" type="text/css" />
     <script>
     $(function() {
-        <!--{if $user}-->
-        iCMS.user.OPENID = <!--{$user|json_encode}-->;
+        $(".seccode-img,.seccode-text").click(function(event) {
+            iCMS.seccode(".seccode-img","#login-box");
+        });
+        $("#login_submit").click(function(event) {
+            event.preventDefault();
+
+            $(".tip_error").hide();
+
+            var param = {
+                uname:$("#uname","#login-box").val(),
+                pass:$("#pass","#login-box").val(),
+                seccode:$("#seccode","#login-box").val(),
+                remember:$('input[name="remember"]', "#login-box").val()
+            }
+            <!--{if $user}-->
+            //绑定账号
+            param.OPENID = <!--{$user|json_encode}-->;
             <!--{/if}-->
-            iCMS.user.login("#login-box", function(b) {
-                iCMS.tip(b, '<i class="fa fa-check-circle" style="color: #33B800;"></i>');
-            });
+
+            <!--{if $iCMS.CONFIG.user.login.seccode }-->
+            //检查验证码
+            param.login_seccode = true;
+            <!--{/if}-->
+
+            //登录接口 js
+            iCMS.PASSPORT.LOGIN(
+                //提交参数
+                param,
+                //登录成功 事件
+                function(ret) {
+                    window.top.location.href = ret.forward;
+                },
+                //登录失败 事件
+                function(ret) {
+                    iCMS.seccode(".seccode-img","#login-box");
+                    var tip = $('.tip_'+ret[0]);
+                    tip.text(ret[1]).show();
+                    // console.log(ret);
+                }
+            );
+        });
     })
     </script>
 </head>
@@ -44,12 +79,12 @@
                     <div class="form-group">
                         <label for="uname" class="control-label">用户名：</label>
                         <input type="text" name="uname" class="form-control" id="uname" placeholder="邮箱 或 昵称">
-                        <p class="help-block err_uname">请输入登录名</p>
+                        <p class="help-block tip_error tip_uname">请输入登录名</p>
                     </div>
                     <div class="form-group">
                         <label for="pass" class="control-label">密码：</label>
                         <input type="password" name="pass" class="form-control" id="pass" placeholder="请输入密码">
-                        <p class="help-block err_uname">请输入密码</p>
+                        <p class="help-block tip_error tip_pass">请输入密码</p>
                     </div>
                     <!--{if $iCMS.CONFIG.user.login.seccode }-->
                     <div class="form-group">
@@ -57,11 +92,11 @@
                         <input type="text" maxlength="4" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
                         <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="seccode-img r3" />
                         <a href="javascript:;" class="seccode-text" style="float: none">换一张</a>
-                        <p class="help-block err_uname">请输入验证码</p>
+                        <p class="help-block tip_error tip_seccode">请输入验证码</p>
                     </div>
                     <!--{/if}-->
                     <div class="form-group opt">
-                        <label>
+                        <label for="remember">
                             <input type="checkbox" value="1" name="remember" class="check" checked="checked"> 记住我（两周免登录）
                         </label>
                         <a class="findpwd" href="<!--{$iCMS.SAPI}-->&do=findpwd">忘记密码？</a>

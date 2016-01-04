@@ -100,21 +100,19 @@
 var iCMS_PUBLIC_URL = iCMS.getpath();
 
 requirejs.config({
-  baseUrl: iCMS_PUBLIC_URL+'/js',
+  baseUrl: iCMS_PUBLIC_URL+'js',
   paths: {
     jquery:[
         '//apps.bdimg.com/libs/jquery/1.11.3/jquery.min', //http://cdn.code.baidu.com/
         'libs/jquery-1.11.3.min'
     ],
-    artdialog:'libs/artDialog/dialog-plus-min',//v6.0.4
-    dialog:'iCMS.dialog-6.1.0',
+    artdialog:'libs/artDialog-6.0.4/dialog-plus-min',
     icms:'iCMS-6.1.0',
-    user:'user-6.1.0.min',
-    register:'register-6.1.0.min',
-    login:'login-6.1.0.min',
-    comment:'comment-6.1.0.min',
+    dialog:'iCMS.DIALOG-6.1.0',
+    passport:'iCMS.PASSPORT-6.1.0',
+    comment:'comment-6.1.0',
     poshytip:'jquery.poshytip.min',
-    insertContent:'jquery.insertContent.min',
+    // insertContent:'jquery.insertContent.min',
     // css:'style.css',
   },
   shim: {
@@ -134,29 +132,39 @@ requirejs.config({
     }
   }
 });
-// iCMS 初始化
-require(['jquery','icms'], function($,iCMS,dialog) {
-  iCMS.init({PUBLIC:iCMS_PUBLIC_URL});
-  console.log(iCMS.CONFIG);
-  console.log(iCMS);
-  // iCMS.init(iCMS_CONFIG);
-  //iCMS.alert("asdasd");
-  // $(".iCMS_search_btn").click(function(event) {
-  //   event.preventDefault();
-  //   require(['dialog'], function(d) {
-  //     var box = document.getElementById("iCMS-login-box");
-  //     d({title: '用户登陆',content:box,elemBack:'remove'});
-  //   });
-  // });
-});
+/**
+ * iCMS js 接口
+ * @param  {[type]} req  [require]
+ * @param  {[type]} iCMS [iCMS]
+ */
+(function(req,iCMS){
+  req(['jquery','icms'], function($,cms) {
+    // iCMS 初始化
+    cms.init({PUBLIC:iCMS_PUBLIC_URL});
+    console.log(cms);
+    /**
+     * [seccode 验证码刷新]
+     * @param  {[type]} a [验证码]
+     * @param  {[type]} b [容器]
+     */
+    iCMS.seccode = function(a,b) {
+      $(a,b).attr('src', cms.api('public', '&do=seccode&') + Math.random());
+    };
 
-(function(r,iCMS){
-  iCMS.alert = function(msg){
-    require(['jquery','icms'], function($,a) {
-      a.alert(msg);
-    });
-  }
+    iCMS = $.extend(iCMS,cms);
+  });
+  /**
+   * [passport 注册登陆]
+   * @type {Object}
+   */
+  iCMS.PASSPORT = {};
+  req(['passport'], function(passport) {
+    iCMS.PASSPORT = passport;
+  });
+
 })(require,iCMS);
+
+
 
 
 // require(['jquery', 'iCMS'], function($,iCMS) {
