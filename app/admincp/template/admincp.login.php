@@ -1,12 +1,11 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: login.php 2379 2014-03-19 02:37:47Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-$seccode_url = './public/api.php?app=public&do=seccode&pre=iACP&i=';
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -69,7 +68,7 @@ body { background-color:#f8f8f8;}
 $(function(){
   $(".iCMS_seccode_img,.iCMS_seccode_text").click(function(event) {
       event.preventDefault();
-      $(".iCMS_seccode_img").attr('src','<?php echo $seccode_url;?>'+ Math.random());
+      $(".iCMS_seccode_img").attr('src','<?php echo __SELF__; ?>?do=seccode&i='+ Math.random());
   });
 	$("form").submit(function(){
       var param={
@@ -101,7 +100,7 @@ $(function(){
 				if(json.code=="1"){
 					window.location.href ='<?php echo __SELF__; ?>';
 				}else{
-          $(".iCMS_seccode_img").attr('src','<?php echo $seccode_url;?>'+ Math.random());
+          $(".iCMS_seccode_img").attr('src','<?php echo __SELF__; ?>?do=seccode&i='+ Math.random());
           if(json.msg){
             iCMS.alert(json.msg);
           }else{
@@ -136,7 +135,7 @@ $(function(){
         <div class="ipt_seccode">
           <label for="seccode"><i></i><span>验证码</span></label>
           <input type="text" maxlength="4" name="seccode" id="seccode" class="iCMS_seccode">
-          <img src="<?php echo $seccode_url;?>" alt="验证码" class="iCMS_seccode_img r3"/>
+          <img src="<?php echo __SELF__; ?>?do=seccode" alt="验证码" class="iCMS_seccode_img r3"/>
           <a href="javascript:;" class="iCMS_seccode_text">换一张</a>
         </div>
         <div class="clear"></div>

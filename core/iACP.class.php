@@ -25,6 +25,8 @@ iMember::$LOGIN_TPL    = ACP_PATH;
 iMember::$AUTH         = 'ADMIN_AUTH';
 iMember::$AJAX         = iPHP::PG('ajax');
 
+$_GET['do']=='seccode' && iACP::get_seccode();
+
 class iACP {
     public static $apps       = NULL;
     public static $frames     = NULL;
@@ -46,6 +48,11 @@ class iACP {
         self::MP('__MID__','page'); //检查菜单ID
         self::$apps  = array('home', 'category', 'pushcategory','tagcategory', 'article', 'push', 'prop', 'setting', 'filter', 'cache','tags','editor');
         iFS::$userid = iMember::$userid;
+    }
+    public static function get_seccode(){
+        iPHP::loadClass("Seccode");
+        iSeccode::run('iACP');
+        exit;
     }
     public static function check_seccode(){
         if($_POST['username'] && $_POST['password']){
