@@ -212,7 +212,7 @@ class articleApp {
                 $pageArray['next']  = $iPages->next_page('array');
                 $pageArray['endof'] = $iPages->last_page('array');
                 $pagenav   = $iPages->show(0);
-                $pagetext  = $iPages->show(7);
+                $pagetext  = $iPages->show(10);
             }
             $article['page'] = array(
                 'pn'      => $page,
