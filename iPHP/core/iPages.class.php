@@ -150,8 +150,8 @@ class iPages {
 		$pnt  = $this->get_title($this->totalpage,$text);
 		return $this->_get_link($this->totalpage,$pnt,$style,true);
 	}
-	public function current_page($style='current_page'){
-		$pnt = $this->get_title($this->nowindexi);
+	public function current_page($style='page_nowindex'){
+		$pnt = $this->get_title($this->nowindex);
 		return '<span class="'.$style.'">'.$this->lang['di'].$pnt.$this->lang['unit'].'</span>';
 	}
 	//文字 说明
@@ -251,6 +251,9 @@ class iPages {
 				break;
 			case '9':
 				return $this->first_page().$this->prev_page().$this->next_page().$this->last_page();
+				break;
+			case '10':
+				return $this->first_page().$this->prev_page().$this->current_page().$this->next_page().$this->last_text();
 				break;
 			default:
 				return $this->first_page().$this->prev_page().$this->nowbar().$this->next_page().$this->last_text();
