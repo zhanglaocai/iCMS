@@ -29,6 +29,20 @@
                 seccode:$("#seccode","#login-box").val(),
                 remember:$('input[name="remember"]', "#login-box").val()
             }
+            if(param.uname==""){
+                msg({forward:'uname',msg:'请输入用户名'});
+                return false
+            }
+            if(param.pass==""){
+                msg({forward:'pass',,msg:'请输入密码'});
+                return false
+            }
+            if(param.login_seccode){
+                if(param.seccode==""){
+                    msg({forward:'seccode',,msg:'请输入验证码'});
+                    return false
+                }
+            }
             <!--{if $user}-->
             //绑定账号
             param.OPENID = <!--{$user|json_encode}-->;
@@ -49,12 +63,15 @@
                 },
                 //登录失败 事件
                 function(ret) {
-                    iCMS.seccode(".seccode-img","#login-box");
-                    var tip = $('.tip_'+ret[0]);
-                    tip.text(ret[1]).show();
                     // console.log(ret);
+                    msg(ret);
                 }
             );
+            function msg (ret) {
+                iCMS.seccode(".seccode-img","#login-box");
+                var tip = $('.tip_'+ret.forward);
+                tip.text(ret.msg).show();
+            }
         });
     })
     </script>
