@@ -437,6 +437,16 @@ CREATE TABLE `#iCMS@__search_log` (
   KEY `search_id` (`search`,`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `#iCMS@__sessions`;
+
+CREATE TABLE `#iCMS@__sessions` (
+  `session_id` varchar(255) NOT NULL DEFAULT '',
+  `expires` int(10) unsigned NOT NULL DEFAULT '0',
+  `data` varchar(5120) DEFAULT NULL,
+  PRIMARY KEY (`session_id`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS `#iCMS@__sph_counter`;
 
 CREATE TABLE `#iCMS@__sph_counter` (
