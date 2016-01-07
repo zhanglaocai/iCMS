@@ -29,7 +29,7 @@ define(["jquery","icms"],function($,iCMS){
                 }
             }, 'json');
         },
-        ajax_check:function (param,success,fail) {
+        CHECK:function (param,success,fail) {
             $.get(iCMS.api('user',"&do=check"),param,function(ret) {
                 if (ret.code) {
                     iCMS.callback(success,ret);

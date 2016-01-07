@@ -14,9 +14,11 @@
     <!--{iCMS:public:ui}-->
     <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/passport.css" type="text/css" />
     <script>
+    var login = $("#login-box");
+
     $(function() {
         $(".seccode-img,.seccode-text").click(function(event) {
-            iCMS.seccode(".seccode-img","#login-box");
+            iCMS.seccode(".seccode-img",login);
         });
         $("#login_submit").click(function(event) {
             event.preventDefault();
@@ -24,10 +26,10 @@
             $(".tip_error").hide();
 
             var param = {
-                uname:$("#uname","#login-box").val(),
-                pass:$("#pass","#login-box").val(),
-                seccode:$("#seccode","#login-box").val(),
-                remember:$('input[name="remember"]', "#login-box").val()
+                uname:$("#uname",login).val(),
+                pass:$("#pass",login).val(),
+                seccode:$("#seccode",login).val(),
+                remember:$('input[name="remember"]', login).val()
             }
             if(param.uname==""){
                 msg({forward:'uname',msg:'请输入用户名'});
@@ -68,7 +70,7 @@
                 }
             );
             function msg (ret) {
-                iCMS.seccode(".seccode-img","#login-box");
+                iCMS.seccode(".seccode-img",login);
                 var tip = $('.tip_'+ret.forward);
                 tip.text(ret.msg).show();
             }

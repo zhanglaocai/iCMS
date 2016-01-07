@@ -18,36 +18,45 @@
         var register = $("#register-box");
 
         $("input[name=agreement]").click(function() {
-          $(this).prop("checked", true);
+            $(this).prop("checked", true);
+        });
+        $("input", register).click(function() {
+          if (!$(this).data('check')) {
+            msg(this, 'def');
+          }
+        }).blur(function() {
+          check_form(this);
         });
 
         $("#register_submit").click(function(event) {
-            event.preventDefault();
-            var checkform,param=[];
+            // event.preventDefault();
+            var checkform, param = [];
             $("input", register).each(function() {
-                // check_form(this);
+                console.log(this);
+                check_form(this);
                 //console.log(this.id, this.name, !$(this).data('check'))
-                // if (!$(this).data('check')) {
-                //     checkform = true;
-                //     return false;
-                // }
+                if (!$(this).data('check')) {
+                    checkform = true;
+                    return false;
+                }
                 //console.log(this.id, 'ok')
                 if (this.name) {
                     param[this.name] = this.value;
                 }
             });
-            param.gender    = $('input[name="gender"]:checked').val();
+
+            param.gender = $('input[name="gender"]:checked').val();
             param.agreement = true;
-            console.log(param);
+            // console.log(param);
             return;
             <!--{if $user}-->
-            //绑定账号
-            param.OPENID = <!--{$user|json_encode}-->;
+                //绑定账号
+                param.OPENID = <!--{$user|json_encode}-->;
             <!--{/if}-->
 
             <!--{if $iCMS.CONFIG.user.register.seccode }-->
-            //检查验证码
-            param.register_seccode = true;
+                //检查验证码
+                param.register_seccode = true;
             <!--{/if}-->
 
             // iCMS.PASSPORT.REGISTER(
@@ -66,52 +75,106 @@
             //     }
             // );
         });
+
+        function check_form(a) {
+            if (a.value == "") {
+                return msg(a, 'empty');
+            }
+            switch (a.name) {
+                case 'username':
+                    var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9._-])+/;
+                    if (!pattern.test(a.value)) {
+                        return msg(a, "error");
+                    }
+                    iCMS.PASSPORT.CHECK({name:a.name,value:a.value},
+                    function() {
+                        msg(a, "ok");
+                    },function(ret) {
+                        msg(a, ret.msg);
+                    });
+                    break;
+                case 'nickname':
+                    var length = a.value.replace(/[^\x00-\xff]/g, 'xx').length;
+                    if (length < 4) {
+                        return msg(a, "error");
+                    }
+                    if (length > 20) {
+                        return msg(a, "error");
+                    }
+                    iCMS.PASSPORT.CHECK({name:a.name,value:a.value},
+                    function() {
+                        msg(a, "ok");
+                    },function(ret) {
+                        msg(a, ret.msg);
+                    });
+
+                    break;
+                case 'password':
+                    if (a.value.length < 6) {
+                        return msg(a, "error");
+                    }
+                    return msg(a, "ok");
+                    break;
+                case 'rstpassword':
+                    var pwd = $("#iCMS-reg-password").val();
+                    if (pwd.length < 6) {
+                        return msg(a, "len_error");
+                    }
+                    if (pwd != a.value) {
+                        return msg(a, "error");
+                    }
+                    return msg(a, "ok");
+                    break;
+                case 'seccode':
+                    iCMS.PASSPORT.CHECK({name:a.name,value:a.value},
+                    function() {
+                        msg(a, "ok");
+                    },function(ret) {
+                        msg(a, ret.msg);
+                    });
+
+                    break;
+            }
+        }
+
+        function msg(a, type) {
+            var info = {
+                'error_username': '电子邮箱格式不正确！',
+                'error_nickname': '昵称只能4~20位，每个中文字算2位字符。',
+                'error_password': '密码太短啦，至少要6位哦',
+                'error_rstpassword': '密码与确认密码不一致！',
+                'len_error_rstpassword': '请重复输入一次密码！',
+                'error_ajax_username': '邮件地址已经注册过了,请直接登陆或者换个邮件再试试。',
+                'error_ajax_nickname': '昵称已经被注册了,请换个再试试。',
+                'error_ajax_seccode': '',
+
+                'empty_username': '请填写电子邮箱！',
+                'empty_nickname': '请填写昵称！',
+                'empty_password': '请填写密码！',
+                'empty_rstpassword': '请重复输入一次密码！',
+                'empty_seccode': '请输入验证码！',
+                'def_username': '请填写正确的常用邮箱，以便找回密码。<br />比如：example@example.com',
+                'def_nickname': '支持中文，不能以数字开头，最多20个字符，中文算两个字符。',
+                'def_password': '6-20个字母、数字或者符号',
+                'def_rstpassword': '这里要重复输入一下你的密码',
+                'def_seccode': '请输入图片中的字符!',
+            }
+            var name = a.forward||a.name;
+            var tip  = $('.tip_'+name);
+            console.log(a,name,tip);
+
+            if (type == "ok") {
+                tip.hide();
+                $(a).data('check', true);
+            } else if (type && type != "ok") {
+                iCMS.seccode(".seccode-img",register);
+                var text = info[type + '_' + name] || a.msg;
+                tip.text(text).show();
+                $(a).data('check', false);
+            }
+        }
     });
-/*
-    function check_form(a) {
-        if (a.value == "") {
-          return msg(a, 'empty');
-        }
-        switch (a.name) {
-          case 'username':
-            var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9._-])+/;
-            if (!pattern.test(a.value)) {
-              return msg(a, "err");
-            }
-            ajax_check(a);
-            break;
-          case 'nickname':
-            var length = a.value.replace(/[^\x00-\xff]/g, 'xx').length;
-            if (length < 4) {
-              return msg(a, "err");
-            }
-            if (length > 20) {
-              return msg(a, "err");
-            }
-            ajax_check(a);
-            break;
-          case 'password':
-            if (a.value.length < 6) {
-              return msg(a, "err");
-            }
-            return msg(a, "ok");
-            break;
-          case 'rstpassword':
-            var pwd = $("#iCMS-reg-password").val();
-            if (pwd.length < 6) {
-              return msg(a, "perr");
-            }
-            if (pwd != a.value) {
-              return msg(a, "err");
-            }
-            return msg(a, "ok");
-            break;
-          case 'seccode':
-            ajax_check(a);
-            break;
-        }
-    }
-    */
+
     </script>
 </head>
 
@@ -132,12 +195,12 @@
                     <div class="form-group">
                         <label for="username" class="control-label">电子邮箱：</label>
                         <input type="email" name="username" class="form-control" id="username" placeholder="请输入邮箱">
-                        <p class="help-block err_username">请输入邮箱</p>
+                        <p class="help-block tip_error tip_username">请输入邮箱</p>
                     </div>
                     <div class="form-group">
                         <label for="nickname" class="control-label">昵称：</label>
                         <input type="text" name="nickname" class="form-control" id="nickname" placeholder="请输入昵称">
-                        <p class="help-block err_nickname">请输入昵称</p>
+                        <p class="help-block tip_error tip_nickname">请输入昵称</p>
                     </div>
                     <div class="radio">
                         <label class="control-label">性别：</label>
@@ -149,10 +212,12 @@
                     <div class="form-group">
                         <label for="password" class="control-label">密码：</label>
                         <input type="password" name="password" class="form-control" id="password" placeholder="请输入密码">
+                        <p class="help-block tip_error tip_password">请输入密码</p>
                     </div>
                     <div class="form-group">
                         <label for="rstpassword" class="control-label">确认密码：</label>
                         <input type="password" name="rstpassword" class="form-control" id="rstpassword" placeholder="请输入确认密码">
+                        <p class="help-block tip_error tip_rstpassword">请输入确认密码</p>
                     </div>
                     <!--{if $iCMS.CONFIG.user.register.seccode }-->
                     <div class="form-group">
@@ -160,7 +225,7 @@
                         <input type="text" maxlength="4" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
                         <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="seccode-img r3" />
                         <a href="javascript:;" class="seccode-text" style="float: none">换一张</a>
-                        <p class="help-block err_uname">请输入验证码</p>
+                        <p class="help-block tip_error tip_seccode">请输入验证码</p>
                     </div>
                     <!--{/if}-->
                     <div class="form-group opt">
