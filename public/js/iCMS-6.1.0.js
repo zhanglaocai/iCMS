@@ -29,19 +29,16 @@ define(["jquery"],function($){
             // this.style(cssUrl,"iCMS_UI_CSS");
             return this;
         },
-        api: function(app, _do) {
+        API: function(app, _do) {
             return this.CONFIG.API + '?app=' + app + (_do || '');
         },
         params: function(a) {
-            var $this = $(a),
-            $parent   = $this.parent(),
-            param     = this.param($this),
-            _param    = this.param($parent);
-            return $.extend(param,_param);
+            var $this = $(a),$parent   = $this.parent();
+            return $.extend(this.param($this),this.param($parent));
         },
-        param: function(a,_param) {
-            if(_param){
-                a.attr('data-param',this.json2str(_param));
+        param: function(a,param) {
+            if(param){
+                a.attr('data-param',this.json2str(param));
                 return;
             }
             var param = a.attr('data-param') || false;
@@ -109,11 +106,15 @@ define(["jquery"],function($){
               d(opts,callback);
           });
         },
-        callback:function (fun,msg) {
-            if (typeof(fun) === "function") {
-              fun(msg);
+        callback:function (func,ret) {
+            if (typeof(func) === "function") {
+              func(ret);
             }else{
-                iCMS.alert(msg[1]);
+                var msg = ret;
+                if (typeof(ret) === "object") {
+                    msg = ret.msg||'error';
+                }
+                iCMS.alert(msg);
             }
         },
     }

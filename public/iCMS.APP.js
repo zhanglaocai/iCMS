@@ -134,31 +134,31 @@ requirejs.config({
 });
 /**
  * iCMS js 接口
- * @param  {[type]} req  [require]
+ * @param  {[type]} REQ  [require]
  * @param  {[type]} iCMS [iCMS]
  */
-(function(req,iCMS){
-  req(['jquery','icms'], function($,cms) {
+(function(REQ,iCMS){
+  REQ(['jquery','icms'], function($,CMS) {
     // iCMS 初始化
-    cms.init({PUBLIC:iCMS_PUBLIC_URL});
-    console.log(cms);
+    CMS.init({PUBLIC:iCMS_PUBLIC_URL});
+    console.log(CMS);
     /**
      * [seccode 验证码刷新]
      * @param  {[type]} a [验证码]
      * @param  {[type]} b [容器]
      */
     iCMS.seccode = function(a,b) {
-      $(a,b).attr('src', cms.api('public', '&do=seccode&') + Math.random());
+      $(a,b).attr('src', CMS.API('public', '&do=seccode&') + Math.random());
     };
 
-    iCMS = $.extend(iCMS,cms);
+    iCMS = $.extend(iCMS,CMS);
   });
   /**
    * [passport 注册登陆]
    * @type {Object}
    */
   iCMS.PASSPORT = {};
-  req(['passport'], function(passport) {
+  REQ(['passport'], function(passport) {
     iCMS.PASSPORT = passport;
   });
 

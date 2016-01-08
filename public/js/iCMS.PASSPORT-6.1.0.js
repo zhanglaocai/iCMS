@@ -9,33 +9,33 @@
 */
 define(["jquery","icms"],function($,iCMS){
     return {
-        LOGIN:function (param,success,fail) {
-            var param = $.extend(param,{'action': 'login'});
-            $.post(iCMS.api('user'), param, function(ret) {
-                if (ret.code) {
-                    iCMS.callback(success,ret);
-                } else {
-                    iCMS.callback(fail,ret);
-                }
+        post:function (param) {
+            var a = this;
+            $.post(iCMS.API('user'), param,function(ret) {
+                a.callback(ret);
             }, 'json');
         },
-        REGISTER:function (param,success,fail) {
-            var param = $.extend(param,{'action': 'register'});
-            $.post(iCMS.api('user'), param, function(ret) {
-                if (ret.code) {
-                    iCMS.callback(success,ret);
-                } else {
-                    iCMS.callback(fail,ret);
-                }
-            }, 'json');
+        callback:function (ret,SUCCESS,FAIL) {
+            var success = SUCCESS||this.SUCCESS
+            var fail = FAIL||this.FAIL
+            if (ret.code) {
+                iCMS.callback(success,ret);
+            } else {
+                iCMS.callback(fail,ret);
+            }
         },
-        CHECK:function (param,success,fail) {
-            $.get(iCMS.api('user',"&do=check"),param,function(ret) {
-                if (ret.code) {
-                    iCMS.callback(success,ret);
-                } else {
-                    iCMS.callback(fail,ret);
-                }
+        LOGIN:function (param) {
+            param = $.extend(param,{'action': 'login'});
+            this.post(param);
+        },
+        REGISTER:function (param) {
+            param = $.extend(param,{'action': 'register'});
+            this.post(param);
+        },
+        CHECK:function (param,SUCCESS,FAIL) {
+            var a = this;
+            $.get(iCMS.API('user',"&do=check"),param,function(ret) {
+                a.callback(ret,SUCCESS,FAIL);
             }, 'json');
         }
     }

@@ -9,7 +9,7 @@
 .passport-main h1 { margin-top: 30px; color: #42650C; font-weight: normal; font-size: 32px; font-family: '\5FAE\8F6F\96C5\9ED1'; }
 .passport-main h1 span { margin-left: 10px; color: #FF5783; font-weight: normal; font-size: 12px; line-height: 48px; }
 .passport-right { float: left; margin-top: 40px; width: 250px; height: 480px; border-left: 1px solid #e5e5e5; }
-.passport-form { float: left; width: 544px; }
+.passport-form { float: left;}
 .passport-form .form-group { margin: 15px 0px; line-height: 30px; }
 .passport-form .control-label { line-height: 30px; width: 90px; }
 .passport-form .form-control { margin-left: 5px; padding: 0 8px; width: 320px; height: 40px; display: inline; }
@@ -46,7 +46,10 @@
 .open_icon.icon_wb { background-position: 0 -223px; }
 .open_icon.icon_arr { background-position: 0 -197px; }
 
-#login_submit { }
+#login-submit { }
 .footer{border-radius: 0px 0px 5px 5px ;}
 .help-block{margin: 0px;padding: 4px;float: right;}
-.tip_error{color: #FF0151;}
+.tip-error{color: #038bd8;line-height: 20px;}
+.login-wrap .tip-error{margin-left: 20px;margin-top: 3px;}
+.register-wrap .tip-error{clear: both;float: none;margin-left: 100px;}
+.register-wrap .opt .tip-error{margin-left: 35px;padding: 0px;text-align: left;}
