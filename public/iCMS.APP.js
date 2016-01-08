@@ -154,13 +154,15 @@ requirejs.config({
     iCMS = $.extend(iCMS,CMS);
   });
   /**
-   * [passport 注册登陆]
+   * [passport 注册/登陆]
    * @type {Object}
    */
   iCMS.PASSPORT = {};
-  REQ(['passport'], function(passport) {
-    iCMS.PASSPORT = passport;
-  });
+  iCMS.PASSPORT.init = function(){
+    REQ(['passport'], function(passport) {
+      iCMS.PASSPORT = $.extend(iCMS.PASSPORT,passport);
+    });
+  };
 
 })(require,iCMS);
 

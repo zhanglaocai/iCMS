@@ -14,6 +14,9 @@
     <!--{iCMS:public:ui}-->
     <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/passport.css" type="text/css" />
     <script>
+    //初始化注册接口
+    iCMS.PASSPORT.init();
+
     $(function() {
         var register = $("#register-box");
         $(".seccode-img,.seccode-text").click(function(event) {

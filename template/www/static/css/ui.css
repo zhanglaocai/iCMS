@@ -146,8 +146,10 @@ body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
 .top-wrap #user-login li>a { display: block; padding-right: 15px; height: 18px; }
 
 /* ==header== */
-.header {background-color: #fff;}
-.header .header-wrap { height: 75px; width: 1200px; margin: 0 auto; }
+.header {
+    background-color: #fff;
+}
+.header .header-wrap { height: 75px; width: 1200px; margin: 0 auto;background-color: #fff; */;}
 
 /* ==logo== */
 .header .logo { display: inline-block; }
@@ -159,10 +161,10 @@ body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
 .search-wrap .search-btn { outline: none; border-radius: 0px 5px 5px 0px; width: 60px; height: 39px; background-color: #0099cc; color: #FFFFFF; border: 1px solid #0099cc; */; }
 
 /* ==navbar== */
-.navbar { height: 41px; background-color: #333; line-height: 41px; }
+.navbar { height: 41px;background-color: #333; line-height: 41px;}
 
 /*.navbar ul {list-style: none; margin: 0px;}*/
-.navbar-wrap { width: 1200px; position: relative; margin: 0 auto; left: 0; display: block; }
+.navbar-wrap { width: 1200px; position: relative; margin: 0 auto; left: 0; display: block;background-color: #333;height: 41px;line-height: 41px;}
 .navbar-wrap>li { float: left; }
 .navbar-wrap>li a { text-decoration: none; padding: 11px 15px; color: #FFF; font-size: 14px; font-weight: bold; }
 .navbar-wrap>li a:hover { background-color: rgb(9, 119, 181); }
@@ -177,7 +179,7 @@ body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
 .dropdown-menu li a { line-height: 30px; display: block; padding: 0px 10px 0px 10px; margin-bottom: 1px; color: #333; font-size: 12px; font-weight: bold; }
 .dropdown-menu li a:hover { color: #fff; }
 .body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
-.body-wrap { margin: 10px auto; width: 1160px; background-color: #fff; padding: 15px; }
+.body-wrap { margin: 10px auto;width: 1200px; background-color: #fff; padding: 15px;}
 .body-wrap .focus-left { width: 640px; }
 .body-wrap .focus-right { width: 480px; }
 .body-wrap .main-col { float: left;width: 810px; border-right: 1px solid #EAEAEA; background: #fff;}
