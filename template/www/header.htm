@@ -19,27 +19,41 @@
             </ul>
         </div>
         <div id="user-profile" class="fr hide">
-            <span>
-              <a href="<!--{iCMS:router url='/user/publish'}-->" target="_blank">
-                  <i class="fa fa-edit"></i> 发表文章
-              </a>
-            </span>
+            <ul>
+            <li><a href="<!--{iCMS:router url='/user/publish'}-->" target="_blank"><i class="fa fa-edit"></i> 发表文章</a></li>
+            <li class="last">
+                <a class="logout" href="<!--{iCMS:router url='/api/user/logout'}-->"><i class="fa fa-edit"></i> 退出</a>
+            </li>
+            </ul>
         </div>
     </div>
 </div>
-<script type="text/javascript">
+<script>
 $(function(){
-    iCMS.USER.STATUS(
-        //登陆后事件
-        function() {
+    //由于require是异步加载 所以要延迟执行
+    window.setTimeout(function(){
+        iCMS.USER.STATUS({},
+            //登陆后事件
+            function($info) {
+                console.log($info);
+                $("#user-login").hide();
+                $("#user-profile").show();
+            },
+            //未登陆事件
+            function(f) {
+                console.log(f)
+            }
+        );
+    },1000);
 
-        },
-        //未登陆事件
-        function(f) {
-
-        }
-    );
-})
+    $(".logout").click(function(event) {
+        event.preventDefault();
+        iCMS.USER.LOGOUT({'forward':window.top.location.href},
+        function(s) {
+            window.top.location.reload();
+        });
+    });
+});
 </script>
 <div class="header clearfix">
     <div class="header-wrap">

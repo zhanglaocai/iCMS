@@ -110,6 +110,7 @@ requirejs.config({
     icms:'iCMS-6.1.0',
     dialog:'iCMS.DIALOG-6.1.0',
     passport:'iCMS.PASSPORT-6.1.0',
+    user:'iCMS.USER-6.1.0',
     comment:'comment-6.1.0',
     poshytip:'jquery.poshytip.min',
     // insertContent:'jquery.insertContent.min',
@@ -137,30 +138,53 @@ requirejs.config({
  * @param  {[type]} REQ  [require]
  * @param  {[type]} iCMS [iCMS]
  */
-(function(REQ,iCMS){
-  REQ(['jquery','icms'], function($,CMS) {
+(function(require,iCMS){
+  require(['jquery','icms'], function($,$iCMS) {
     // iCMS 初始化
-    CMS.init({PUBLIC:iCMS_PUBLIC_URL});
-    console.log(CMS);
+    $iCMS.init({PUBLIC:iCMS_PUBLIC_URL});
+    // console.log($iCMS);
     /**
      * [seccode 验证码刷新]
      * @param  {[type]} a [验证码]
      * @param  {[type]} b [容器]
      */
     iCMS.seccode = function(a,b) {
-      $(a,b).attr('src', CMS.API('public', '&do=seccode&') + Math.random());
+      $(a,b).attr('src', $iCMS.API('public', '&do=seccode&') + Math.random());
     };
 
-    iCMS = $.extend(iCMS,CMS);
+    iCMS = $.extend(iCMS,$iCMS);
   });
   /**
-   * [passport 注册/登陆]
+   * [$user 用户]
+   * @type {Object}
+   */
+
+  iCMS.USER = {};
+  require(['user'], function($user) {
+    iCMS.USER = $.extend(iCMS.USER,$user);
+  });
+  // iCMS.USER.init = function(){
+
+  // };
+  // require(['user'], function($user) {
+  //   iCMS.USER = $user;
+  // });
+
+
+  // iCMS.USER.STATUS = function (param,SUCCESS,FAIL) {
+  //   require(['user'], function($user) {
+  //     $user.STATUS(param,SUCCESS,FAIL);
+  //   });
+  // }
+
+  /**
+   * [$passport 注册/登陆]
    * @type {Object}
    */
   iCMS.PASSPORT = {};
   iCMS.PASSPORT.init = function(){
-    REQ(['passport'], function(passport) {
-      iCMS.PASSPORT = $.extend(iCMS.PASSPORT,passport);
+    require(['passport'], function($passport) {
+      iCMS.PASSPORT = $.extend(iCMS.PASSPORT,$passport);
     });
   };
 
