@@ -16,13 +16,7 @@ define(["jquery","icms"],function($,iCMS){
             }, 'json');
         },
         callback:function (ret,SUCCESS,FAIL) {
-            var success = SUCCESS||this.SUCCESS
-            var fail = FAIL||this.FAIL
-            if (ret.code) {
-                iCMS.callback(success,ret);
-            } else {
-                iCMS.callback(fail,ret);
-            }
+            iCMS.callback(ret,SUCCESS,FAIL,this);
         },
         LOGIN:function (param) {
             param = $.extend(param,{'action': 'login'});

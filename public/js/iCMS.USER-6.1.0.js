@@ -15,15 +15,7 @@ define(["jquery","icms"],function($,iCMS){
         //         a.callback(ret);
         //     }, 'json');
         // },
-        callback:function (ret,SUCCESS,FAIL) {
-            var success = SUCCESS||this.SUCCESS
-            var fail = FAIL||this.FAIL
-            if (ret.code) {
-                iCMS.callback(success,ret);
-            } else {
-                iCMS.callback(fail,ret);
-            }
-        },
+
         // LOGIN:function (param) {
         //     param = $.extend(param,{'action': 'login'});
         //     this.post(param);
@@ -32,7 +24,7 @@ define(["jquery","icms"],function($,iCMS){
         STATUS:function (param,SUCCESS,FAIL) {
             var a = this;
             $.get(iCMS.API('user', '&do=data'),param,function(ret) {
-                a.callback(ret,SUCCESS,FAIL);
+                iCMS.callback(ret,SUCCESS,FAIL,a);
             }, 'json');
         },
         AUTH: function() {
@@ -41,7 +33,7 @@ define(["jquery","icms"],function($,iCMS){
         LOGOUT: function (param,SUCCESS,FAIL) {
             var a = this;
             $.get(iCMS.API('user', "&do=logout"),param,function(ret) {
-                a.callback(ret,SUCCESS,FAIL);
+                iCMS.callback(ret,SUCCESS,FAIL,a);
             }, 'json');
         }
     }

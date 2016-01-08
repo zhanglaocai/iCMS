@@ -31,7 +31,7 @@
 <script>
 $(function(){
     //由于require是异步加载 所以要延迟执行
-    window.setTimeout(function(){
+    // window.setTimeout(function(){
         iCMS.USER.STATUS({},
             //登陆后事件
             function($info) {
@@ -44,7 +44,7 @@ $(function(){
                 console.log(f)
             }
         );
-    },1000);
+    // },1000);
 
     $(".logout").click(function(event) {
         event.preventDefault();
@@ -54,6 +54,8 @@ $(function(){
         });
     });
 });
+
+
 </script>
 <div class="header clearfix">
     <div class="header-wrap">

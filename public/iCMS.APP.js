@@ -8,24 +8,12 @@
 * @version 6.1.0
 * @$Id: iCMS.APP.js 176 2015-12.21 02:52:17Z cool.tea $
 */
-(function(doc) {
-  var root   = document.documentElement;
-  var head   = document.getElementsByTagName("head")[0]; //HEAD元素
-
-  iCMS = function(el) {
-      return new iCMS.init(el)
-  }
-
-  iCMS.init = function(el) {
-      this[0] = this.element = el
-  }
-  iCMS.fn = iCMS.prototype = iCMS.init.prototype
-
+window.iCMS = {}||window;
+(function(iCMS) {
   iCMS.slice = window.dispatchEvent ? function(nodes, start, end) {
       return Array.prototype.slice.call(nodes, start, end)
   } : function(nodes, start, end) {
-      var ret = [],
-              n = nodes.length
+      var ret = [],n = nodes.length
       start = resetNumber(start, n)
       end = resetNumber(end, n, 1)
       for (var i = start; i < end; ++i) {
@@ -33,6 +21,7 @@
       }
       return ret
   }
+
   function resetNumber(a, n, end) { //用于模拟slice, splice的效果
       if ((a === +a) && !(a % 1)) { //如果是整数
           if (a < 0) {
@@ -47,18 +36,19 @@
   }
 
   iCMS.getpath = function(el) {
+    function cleanUrl(url) {
+      return (url || "").replace(/[?#].*/, "")
+    }
+
     var cur = getCurrentScript(true)
     if (!cur) { //处理window safari的Error没有stack的问题
         cur = iCMS.slice(document.scripts).pop().src
     }
     var url = cleanUrl(cur)
+
     return url.slice(0, url.lastIndexOf("/") + 1);
   }
 
-
-  function cleanUrl(url) {
-    return (url || "").replace(/[?#].*/, "")
-  }
   function getCurrentScript(base) {
       // 参考 https://github.com/samyk/jiagra/blob/master/jiagra.js
       var stack
@@ -95,7 +85,7 @@
       }
   }
 
-})(document);
+})(iCMS);
 
 var iCMS_PUBLIC_URL = iCMS.getpath();
 

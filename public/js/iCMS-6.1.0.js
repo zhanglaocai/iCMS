@@ -106,7 +106,16 @@ define(["jquery"],function($){
               d(opts,callback);
           });
         },
-        callback:function (func,ret) {
+        callback:function (ret,SUCCESS,FAIL,a) {
+            var success = SUCCESS||a.SUCCESS
+            var fail = FAIL||a.FAIL
+            if (ret.code) {
+                iCMS.callback_func(success,ret);
+            } else {
+                iCMS.callback_func(fail,ret);
+            }
+        },
+        callback_func:function (func,ret) {
             if (typeof(func) === "function") {
               func(ret);
             }else{
