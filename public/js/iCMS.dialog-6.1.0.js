@@ -7,6 +7,8 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.1.0
 */
+"use strict"
+
 define(["jquery","icms","artdialog"],function($,iCMS,artdialog){
     return function(options,callback) {
         var cssUrl = require.toUrl("libs/artDialog-6.0.4/ui-dialog.css");

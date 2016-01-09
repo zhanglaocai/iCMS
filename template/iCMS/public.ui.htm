@@ -7,6 +7,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta content="iDreamSoft Inc." name="Copyright" />
+<script src="<!--{$site.urls.public}-->/iCMS.js"></script>
+<script>
+iCMS.CONFIG = {
+    API:"<!--{iCMS:router url='/api'}-->",
+    PUBLIC:"<!--{$site.urls.public}-->",
+    COOKIE:'<!--{$iCMS.COOKIE_PRE}-->',
+    DIALOG:{title:'<!--{$site.name}--> 提示信息'},
+};
+</script>
 <script
 class="iCMS.APP.JS"
 src="http://apps.bdimg.com/libs/require.js/2.1.11/require.min.js"

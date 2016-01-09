@@ -7,6 +7,8 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.1.0
 */
+"use strict"
+
 define(["jquery","icms"],function($,iCMS){
     return {
         post:function (param) {
