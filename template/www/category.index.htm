@@ -3,9 +3,13 @@
 
 <head>
     <title>
-        <!--{$category.name}-->_
-        <!--{$site.title}-->_
-        <!--{$site.seotitle}-->
+        <!--{if $category.title}-->
+         <!--{$category.title}-->_<!--{$site.title}--><!--{$category.name}-->
+        <!--{else}-->
+            <!--{$category.name}-->_
+            <!--{$site.title}-->_
+            <!--{$site.seotitle}-->
+        <!--{/if}-->
     </title>
     <meta name="keywords" content="<!--{$category.keywords}-->" />
     <meta name="description" content="<!--{$category.description}-->" />
