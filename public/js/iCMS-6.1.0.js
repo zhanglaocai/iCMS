@@ -26,7 +26,7 @@ define(["jquery"],function($){
         init: function(options) {
             //console.log(options);
             this.CONFIG = $.extend(this.CONFIG,options);
-            this.CONFIG.API = this.CONFIG.PUBLIC+'api.php';
+            this.CONFIG.API = this.CONFIG.PUBLIC+'/api.php';
             // var cssUrl = this.CONFIG.PUBLIC+"/ui/css/iCMS-6.1.0.css";
             // this.style(cssUrl,"iCMS_UI_CSS");
             return this;
@@ -128,6 +128,9 @@ define(["jquery"],function($){
                 iCMS.alert(msg);
             }
         },
+        RUN:function (module,exports) {
+            require(module, exports);
+        }
     }
     return iCMS;
 });

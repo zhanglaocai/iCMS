@@ -10,10 +10,8 @@
 */
 "use strict"
 
-var iCMS_PUBLIC_URL = window.iCMS.getpath();
-
 requirejs.config({
-  baseUrl: iCMS_PUBLIC_URL+'js',
+  baseUrl: iCMS.CONFIG.PUBLIC+'/js',
   paths: {
     jquery:[
         '//apps.bdimg.com/libs/jquery/1.11.3/jquery.min', //http://cdn.code.baidu.com/
@@ -55,16 +53,17 @@ requirejs.config({
 require(['jquery','icms'], function($,icms) {
   icms.init(window.iCMS.CONFIG);
   window.iCMS = $.extend(window.iCMS,icms);
-});
-
   /**
    * [seccode 验证码刷新]
    * @param  {[type]} a [验证码]
    * @param  {[type]} b [容器]
    */
-  // iCMS.seccode = function(a,b) {
-  //   $(a,b).attr('src', $iCMS.API('public', '&do=seccode&') + Math.random());
-  // };
+  iCMS.seccode = function(a,b) {
+    $(a,b).attr('src', iCMS.API('public', '&do=seccode&') + Math.random());
+  };
+});
+
+
   //
   // // require(['user'],function ($USER) {
 
