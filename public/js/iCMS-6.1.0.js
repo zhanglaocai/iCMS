@@ -1,32 +1,31 @@
 /**
-* iCMS - Intelligence Content Management System
-* Copyright (c) 2007-2015 idreamsoft.com iiimon Inc. All rights reserved.
-*
-* @author coolmoo <idreamsoft@qq.com>
-* @site http://www.idreamsoft.com
-* @licence http://www.idreamsoft.com/license.php
-* @version 6.1.0
-*/
+ * iCMS - Intelligence Content Management System
+ * Copyright (c) 2007-2015 idreamsoft.com iiimon Inc. All rights reserved.
+ *
+ * @author coolmoo <idreamsoft@qq.com>
+ * @site http://www.idreamsoft.com
+ * @licence http://www.idreamsoft.com/license.php
+ * @version 6.1.0
+ */
 "use strict"
-
-define(["jquery"],function($){
+define(["jquery"], function($) {
     var iCMS = {
-        CONFIG:{
+        CONFIG: {
             API: 'api.php',
             PUBLIC: '/public/',
             COOKIE: 'iCMS_',
-            AUTH:'USER_AUTH',
-            DIALOG:[],
-            APP:'iCMS'
+            AUTH: 'USER_AUTH',
+            DIALOG: [],
+            APP: 'iCMS'
         },
-        _$: function (i) {
+        _$: function(i) {
             var doc = $(document);
             return doc.find('[iCMS=' + i + ']');
         },
         init: function(options) {
             //console.log(options);
-            this.CONFIG = $.extend(this.CONFIG,options);
-            this.CONFIG.API = this.CONFIG.PUBLIC+'/api.php';
+            this.CONFIG = $.extend(this.CONFIG, options);
+            this.CONFIG.API = this.CONFIG.PUBLIC + '/api.php';
             // var cssUrl = this.CONFIG.PUBLIC+"/ui/css/iCMS-6.1.0.css";
             // this.style(cssUrl,"iCMS_UI_CSS");
             return this;
@@ -35,21 +34,22 @@ define(["jquery"],function($){
             return this.CONFIG.API + '?app=' + app + (_do || '');
         },
         params: function(a) {
-            var $this = $(a),$parent   = $this.parent();
-            return $.extend(this.param($this),this.param($parent));
+            var $this = $(a),
+                $parent = $this.parent();
+            return $.extend(this.param($this), this.param($parent));
         },
-        param: function(a,param) {
-            if(param){
-                a.attr('data-param',this.json2str(param));
+        param: function(a, param) {
+            if (param) {
+                a.attr('data-param', this.json2str(param));
                 return;
             }
             var param = a.attr('data-param') || false;
             if (!param) return {};
             return $.parseJSON(param);
         },
-        style:function(cssUrl,id){
-            css = '<link id="'+id+'" href="' + cssUrl + '" type="text/css" rel="stylesheet"/>';
-            if(!$("#"+id)[0]){
+        style: function(cssUrl, id) {
+            css = '<link id="' + id + '" href="' + cssUrl + '" type="text/css" rel="stylesheet"/>';
+            if (!$("#" + id)[0]) {
                 if ($('base')[0]) {
                     $('base').before(css);
                 } else {
@@ -57,15 +57,14 @@ define(["jquery"],function($){
                 }
             }
         },
-        json2str:function(o){
+        json2str: function(o) {
             var arr = [];
             var fmt = function(s) {
                 if (typeof s == 'object' && s != null) return this.json2str(s);
                 return /^(string|number)$/.test(typeof s) ? '"' + s + '"' : s;
             }
             for (var i in o)
-                 arr.push('"' + i + '":'+ fmt(o[i]));
-
+                arr.push('"' + i + '":' + fmt(o[i]));
             return '{' + arr.join(',') + '}';
         },
         setcookie: function(cookieName, cookieValue, seconds, path, domain, secure) {
@@ -89,46 +88,46 @@ define(["jquery"],function($){
             }
             return code;
         },
-        api_iframe_height:function(a,iframe){
+        api_iframe_height: function(a, iframe) {
             var height = a.height();
             $(iframe).height(height);
         },
-        alert:function (msg,ok,callback) {
-          require(['dialog'], function(d) {
-              var opts = ok ? {
-                  label: 'success',
-                  icon: 'check'
-              } : {
-                  label: 'warning',
-                  icon: 'warning'
-              }
-              opts.id      = 'iPHP-DIALOG-ALERT';
-              opts.content = msg;
-              opts.time    = 30000000;
-              d(opts,callback);
-          });
+        alert: function(msg, ok, callback) {
+            require(['dialog'], function(d) {
+                var opts = ok ? {
+                    label: 'success',
+                    icon: 'check'
+                } : {
+                    label: 'warning',
+                    icon: 'warning'
+                }
+                opts.id = 'iPHP-DIALOG-ALERT';
+                opts.content = msg;
+                opts.time = 30000000;
+                d(opts, callback);
+            });
         },
-        callback:function (ret,SUCCESS,FAIL,a) {
-            var success = SUCCESS||a.SUCCESS
-            var fail = FAIL||a.FAIL
+        callback: function(ret, SUCCESS, FAIL, a) {
+            var success = SUCCESS || a.SUCCESS
+            var fail = FAIL || a.FAIL
             if (ret.code) {
-                iCMS.callback_func(success,ret);
+                iCMS.callback_func(success, ret);
             } else {
-                iCMS.callback_func(fail,ret);
+                iCMS.callback_func(fail, ret);
             }
         },
-        callback_func:function (func,ret) {
+        callback_func: function(func, ret) {
             if (typeof(func) === "function") {
-              func(ret);
-            }else{
+                func(ret);
+            } else {
                 var msg = ret;
                 if (typeof(ret) === "object") {
-                    msg = ret.msg||'error';
+                    msg = ret.msg || 'error';
                 }
                 iCMS.alert(msg);
             }
         },
-        RUN:function (module,exports) {
+        RUN: function(module, exports) {
             require(module, exports);
         }
     }
@@ -153,7 +152,6 @@ define(["jquery"],function($){
 //                     $this.addClass((param.follow=='1' ? 'unfollow' : 'follow'));
 //                 });
 //             });
-
 //             doc.on('click', 'a[name="iCMS-follow"]', function(event) {
 //                 event.preventDefault();
 //                 var $this = $(this),$parent = $this.parent();
