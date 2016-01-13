@@ -18,60 +18,65 @@
     $(function() {
         var login = $("#login-box");
         $(".seccode-img,.seccode-text").click(function(event) {
-            iCMS.seccode(".seccode-img",login);
+            iCMS.seccode(".seccode-img", login);
         });
         $("#login-submit").click(function(event) {
             event.preventDefault();
-
             $(".tip-error").hide();
-
             var param = {
-                uname:$("#uname",login).val(),
-                pass:$("#pass",login).val(),
-                seccode:$("#seccode",login).val(),
-                remember:$('input[name="remember"]', login).val()
+                uname: $("#uname", login).val(),
+                pass: $("#pass", login).val(),
+                seccode: $("#seccode", login).val(),
+                remember: $('input[name="remember"]', login).val()
             }
-            if(param.uname==""){
-                tip({forward:'uname',msg:'请输入用户名'});
+            if (param.uname == "") {
+                tip({
+                    forward: 'uname',
+                    msg: '请输入用户名'
+                });
                 return false
             }
-            if(param.pass==""){
-                tip({forward:'pass',msg:'请输入密码'});
+            if (param.pass == "") {
+                tip({
+                    forward: 'pass',
+                    msg: '请输入密码'
+                });
                 return false
             }
             <!--{if $iCMS.CONFIG.user.login.seccode }-->
             //检查验证码
             param.login_seccode = true;
-            if(param.login_seccode){
-                if(param.seccode==""){
-                    tip({forward:'seccode',msg:'请输入验证码'});
+            if (param.login_seccode) {
+                if (param.seccode == "") {
+                    tip({
+                        forward: 'seccode',
+                        msg: '请输入验证码'
+                    });
                     return false
                 }
             }
             <!--{/if}-->
-
             <!--{if $user}-->
             //绑定账号
             param.OPENID = <!--{$user|json_encode}-->;
-            <!--{/if}-->
-
-            //登录接口
-            require(['passport'], function($PASSPORT) {
-                //登录成功 事件绑定
-                $PASSPORT.SUCCESS = function(s) {
-                    window.top.location.href = s.forward;
-                }
-                //登录失败 事件绑定
-                $PASSPORT.FAIL = function(f) {
-                    tip(f);
-                }
-                //提交参数
-                $PASSPORT.LOGIN(param);
-            });
+                <!--{/if}-->
+                //登录接口
+                require(['passport'], function($PASSPORT) {
+                    //登录成功 事件绑定
+                    $PASSPORT.SUCCESS = function(s) {
+                            window.top.location.href = s.forward;
+                        }
+                        //登录失败 事件绑定
+                    $PASSPORT.FAIL = function(f) {
+                            tip(f);
+                        }
+                        //提交参数
+                    $PASSPORT.LOGIN(param);
+                });
             //提示
             function tip(ret) {
-                iCMS.seccode(".seccode-img",login);
-                var tip = $('.tip-'+ret.forward);
+                iCMS.seccode(".seccode-img", login);
+                var tip = $('.tip-' + ret.forward);
                 tip.text(ret.msg).show();
             }
         });
@@ -88,12 +93,12 @@
         <div class="passport-wrap">
             <div class="passport-main">
                 <h1>
-        <!--{if $user}-->
-        绑定已有用户
-        <!--{else}-->
-        用户登录
-        <!--{/if}-->
-        </h1>
+                        <!--{if $user}-->
+                        绑定已有用户
+                        <!--{else}-->
+                        用户登录
+                        <!--{/if}-->
+                        </h1>
                 <div id="login-box" class="passport-form form-horizontal">
                     <div class="form-group">
                         <label for="uname" class="control-label">用户名：</label>

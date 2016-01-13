@@ -20,18 +20,21 @@
         </div>
         <div id="user-profile" class="fr hide">
             <ul>
-            <li><a href="<!--{iCMS:router url='/user/publish'}-->" target="_blank"><i class="fa fa-edit"></i> 发表文章</a></li>
-            <li class="last">
-                <a class="logout" href="<!--{iCMS:router url='/api/user/logout'}-->"><i class="fa fa-edit"></i> 退出</a>
-            </li>
+                <li><a href="<!--{iCMS:router url='/user/publish'}-->" target="_blank"><i class="fa fa-edit"></i> 发表文章</a></li>
+                <li class="last">
+                    <a class="logout" href="<!--{iCMS:router url='/api/user/logout'}-->"><i class="fa fa-edit"></i> 退出</a>
+                </li>
             </ul>
         </div>
     </div>
 </div>
 <script>
-$(function(){
+iCMS.RUN = function(a, b) {
+    require(a, b);
+};
+$(function() {
     //由于require是异步加载 所以要延迟执行
-    require(['user'], function($user) {
+    iCMS.RUN(['user'], function($user) {
         $user.STATUS({},
             //登陆后事件
             function($info) {
@@ -46,15 +49,15 @@ $(function(){
         );
         $(".logout").click(function(event) {
             event.preventDefault();
-            iCMS.USER.LOGOUT({'forward':window.top.location.href},
-            function(s) {
-                window.top.location.reload();
-            });
+            iCMS.USER.LOGOUT({
+                    'forward': window.top.location.href
+                },
+                function(s) {
+                    window.top.location.reload();
+                });
         });
     });
 });
-
-
 </script>
 <div class="header clearfix">
     <div class="header-wrap">
@@ -65,7 +68,8 @@ $(function(){
             <form id="search-form" action="<!--{iCMS:router url='/api'}-->" method="get" target="_blank">
                 <div class="search-wrap">
                     <input name="app" type="hidden" value="search" />
-                    <input type="text" class="search-query" name="q" placeholder="请输入关键词" value="<!--{$search.title}-->"><button type="submit" class="search-btn"><i class="fa fa-search"></i> 搜索</button>
+                    <input type="text" class="search-query" name="q" placeholder="请输入关键词" value="<!--{$search.title}-->">
+                    <button type="submit" class="search-btn"><i class="fa fa-search"></i> 搜索</button>
                 </div>
             </form>
         </div>
@@ -89,13 +93,13 @@ $(function(){
         <!--{/iCMS}-->
     </ul>
     <script type="text/javascript">
-        $("#navbar_c0").removeClass("active");
-        <!--{if $category.rootid}-->
-        $("#navbar_c<!--{$category.rootid}-->").addClass("active");
-        <!--{elseif $category.cid}-->
-        $("#navbar_c<!--{$category.cid}-->").addClass("active");
-        <!--{else}-->
-        $("#navbar_c0").addClass("active");
-        <!--{/if}-->
+    $("#navbar_c0").removeClass("active");
+    <!--{if $category.rootid}-->
+    $("#navbar_c<!--{$category.rootid}-->").addClass("active");
+    <!--{elseif $category.cid}-->
+    $("#navbar_c<!--{$category.cid}-->").addClass("active");
+    <!--{else}-->
+    $("#navbar_c0").addClass("active");
+    <!--{/if}-->
     </script>
 </div>

@@ -10,7 +10,7 @@
 */
 "use strict"
 
-requirejs.config({
+require.config({
   baseUrl: iCMS.CONFIG.PUBLIC+'/js',
   paths: {
     jquery:[

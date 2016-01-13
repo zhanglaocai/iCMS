@@ -181,8 +181,8 @@ body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
 .body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
 .body-wrap { margin: 10px auto;width: 1200px; background-color: #fff; padding: 15px;}
 .body-wrap .focus-left { width: 640px; }
-.body-wrap .focus-right { width: 480px; }
-.body-wrap .main-col { float: left;width: 810px; border-right: 1px solid #EAEAEA; background: #fff;}
+.body-wrap .focus-right {width: 510px;}
+.body-wrap .main-col { float: left;width: 840px; border-right: 1px solid #EAEAEA; background: #fff;}
 .body-wrap .side-col { width: 310px; padding: 0px;float: right;}
 
 /* ==carousel-box== */
@@ -237,7 +237,7 @@ body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
 
 /* ==media-list== */
 .media-list { }
-.media-list .media { width: 100%; border-bottom: 1px solid #EAEAEA; margin-bottom: 10px; padding-bottom: 10px; }
+.media-list .media { width: 100%; border-bottom: 1px solid #EAEAEA;margin-bottom: 15px;padding-bottom: 15px;}
 .media .media-object { float: left; margin-right: 15px; }
 .media .media-object img { width: 250px; height: 140px; }
 .media .media-body { display: inline; }
@@ -263,7 +263,7 @@ body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
 }
 .mod-title span.txt { position: relative; font-size: 18px; font-family: 'Microsoft YaHei'; top: -1px; display: block; float: left; }
 .mod-title span.blue { border-top: 3px solid blue; }
-.mod-title span.green { border-top: 3px solid #0099cc; color: #0084bb }
+.mod-title span.green {border-top: 1px solid #038BD8;color: #038BD8;}
 .mod-title .more-link { }
 .mod-title .more-link a { border: 1px solid #ddd; border-top: 0; display: block; padding: 0 5px; background: #eee; }
 .mod-title .more-link a.more { padding: 4px 8px; border-left: 0; float: none; }

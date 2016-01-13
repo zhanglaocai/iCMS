@@ -2,22 +2,65 @@
 iCMS.config.UI = '<!--{$iCMS.UI}-->';
 </script>
 <style>
-.form-group{width: 100%;}
-#cid,#keywords{width: 360px;}
-#title{width: 336px;}
-#keywords{width: 410px;}
-#description{height:300px;width:95%;padding:5px;}
-.manage-publish{margin-left: 20px;}
-.creative{width: 220px;display: inline-block;}
-.creative .bootstrap-switch{border-radius:0px 5px 5px 0px !important;border-color:#ccc !important;width: 106px !important;height: 35px !important;}
-.creative .bootstrap-switch-container span{width: 53px !important;height: 35px !important;}
-.creative .bootstrap-switch-container .bootstrap-switch-primary{border-radius:0px !important;}
-#source-box {width: 360px;display: inline-block;}
-#source-box .form-control{width: 320px;}
+.form-group {
+    width: 100%;
+}
+
+#cid,
+#keywords {
+    width: 360px;
+}
+
+#title {
+    width: 336px;
+}
+
+#keywords {
+    width: 410px;
+}
+
+#description {
+    height: 300px;
+    width: 95%;
+    padding: 5px;
+}
+
+.manage-publish {
+    margin-left: 20px;
+}
+
+.creative {
+    width: 220px;
+    display: inline-block;
+}
+
+.creative .bootstrap-switch {
+    border-radius: 0px 5px 5px 0px !important;
+    border-color: #ccc !important;
+    width: 106px !important;
+    height: 35px !important;
+}
+
+.creative .bootstrap-switch-container span {
+    width: 53px !important;
+    height: 35px !important;
+}
+
+.creative .bootstrap-switch-container .bootstrap-switch-primary {
+    border-radius: 0px !important;
+}
+
+#source-box {
+    width: 360px;
+    display: inline-block;
+}
+
+#source-box .form-control {
+    width: 320px;
+}
 </style>
 <link href="<!--{$site.urls.tpl}-->/static/css/bootstrap-switch.min.css" type="text/css" rel="stylesheet" />
 <script src="<!--{$site.urls.tpl}-->/static/js/bootstrap-switch.min.js"></script>
-
 <script src="<!--{$iCMS.UI}-->/iCMS.user.editor-6.0.0.js" type="text/javascript" charset="utf-8"></script>
 <script src="<!--{$iCMS.UI}-->/ueditor/ueditor.all.min.js" type="text/javascript" charset="utf-8"></script>
 <input name="id" type="hidden" value="<!--{$article.id}-->" />
@@ -76,7 +119,9 @@ iCMS.config.UI = '<!--{$iCMS.UI}-->';
     <div class="form-group">
         <label for="description" class="control-label">简 介</label>
         <div class="mb10"></div>
-        <textarea name="description" id="description" class="form-control"><!--{$article.description}--></textarea>
+        <textarea name="description" id="description" class="form-control">
+            <!--{$article.description}-->
+        </textarea>
     </div>
     <div class="mb10"></div>
     <div class="form-group creative">
@@ -85,10 +130,7 @@ iCMS.config.UI = '<!--{$iCMS.UI}-->';
                 <label for="article-type" class="control-label">文章类型？</label>
             </div>
             <div class="switch" id="article-type">
-                <input type="checkbox" name="creative"
-                data-on-text="原创" data-off-text="转贴"
-                <!--{if $article.creative}-->
-                checked
+                <input type="checkbox" name="creative" data-on-text="原创" data-off-text="转贴" <!--{if $article.creative}--> checked
                 <!--{/if}-->/>
             </div>
         </div>
@@ -141,7 +183,6 @@ $(function() {
             });
         }
     });
-
     <!--{if $article.cid}-->
     $("#cid").val("<!--{$article.cid}-->");
     <!--{/if}-->
@@ -150,7 +191,6 @@ $(function() {
     uc.parent().addClass('active');
     $("#uc_select").text(uc.text());
     <!--{/if}-->
-
     $(".iCMS_user_publish").click(function() {
         if ($("#cid option:selected").val() == "0") {
             $("#cid").focus();
@@ -175,7 +215,6 @@ $(function() {
             return false;
         }
     });
-
     // $('#article-type').on('switch-change', function(e, data) {
     //     var value = data.value;
     //     if (data.value) {
@@ -187,7 +226,6 @@ $(function() {
     //         });
     //     }
     // });
-
     $(document).on('click', '.user_category', function(event) {
         event.preventDefault();
         var $this = $(this),
@@ -239,8 +277,6 @@ $(function() {
                 return false;
             }
         });
-
     });
-
 });
 </script>

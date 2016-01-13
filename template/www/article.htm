@@ -28,7 +28,7 @@
                         <a href='<!--{$catenav.url}-->'>
                             <!--{$catenav.name}-->
                         </a>
-                   </li>
+                    </li>
                     <!--{/foreach}-->
                     <li class="active">
                         <!--{$article.link}-->
@@ -112,7 +112,7 @@
                                 }]
                             }
                             //以下为js加载部分
-                        with(document)0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion=' + ~(-new Date() / 36e5)];
+                        with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion=' + ~(-new Date() / 36e5)];
                         </script>
                     </div>
                     <div class="article-like" data-param='<!--{$article.param|json_encode}-->'>
@@ -240,8 +240,8 @@
                         <div class="pictxt-list <!--{cycle values='fl,fr'}-->">
                             <a href="<!--{$article_list.url}-->" target="_blank">
                                 <span class="pictxt-img">
-                  <img src="<!--{$article_list.pic.url}-->" alt="<!--{$article_list.title}-->">
-                </span>
+                                            <img src="<!--{$article_list.pic.url}-->" alt="<!--{$article_list.title}-->">
+                                        </span>
                                 <p class="pictxt-text">
                                     <!--{$article_list.title}-->
                                 </p>

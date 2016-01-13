@@ -16,25 +16,25 @@
     <script>
     //初始化注册接口
     iCMS.PASSPORT.init();
-
     $(function() {
         var register = $("#register-box");
         $(".seccode-img,.seccode-text").click(function(event) {
-            iCMS.seccode(".seccode-img",register);
+            iCMS.seccode(".seccode-img", register);
         });
-
         $("input", register).click(function() {
-          if (!$(this).data('check')) {
-            tip({forward:this.name,msg:'def'});
-          }
+            if (!$(this).data('check')) {
+                tip({
+                    forward: this.name,
+                    msg: 'def'
+                });
+            }
         }).blur(function() {
-          check_form(this);
+            check_form(this);
         });
-
         $("#register_submit").click(function(event) {
             event.preventDefault();
-            var checkform = false, param = {};
-
+            var checkform = false,
+                param = {};
             $("input", register).each(function() {
                 check_form(this);
             }).each(function() {
@@ -48,34 +48,34 @@
             });
             //表单检查不通过
             if (checkform) return false;
-            param.gender = $('input[name="gender"]:checked',register).val();
-
+            param.gender = $('input[name="gender"]:checked', register).val();
             <!--{if $user}-->
-                //绑定账号 接收用户信息
-                param.OPENID = <!--{$user|json_encode}-->;
-            <!--{/if}-->
-
-            <!--{if $iCMS.CONFIG.user.register.seccode }-->
+            //绑定账号 接收用户信息
+            param.OPENID = <!--{$user|json_encode}-->;
+                <!--{/if}-->
+                <!--{if $iCMS.CONFIG.user.register.seccode }-->
                 //检查验证码
                 param.register_seccode = true;
             <!--{/if}-->
-
-             //注册成功 事件绑定
+            //注册成功 事件绑定
             iCMS.PASSPORT.SUCCESS = function(s) {
-                // console.log('****',s);
-                window.top.location.href = s.forward;
-            }
-            //注册失败 事件绑定
+                    // console.log('****',s);
+                    window.top.location.href = s.forward;
+                }
+                //注册失败 事件绑定
             iCMS.PASSPORT.FAIL = function(f) {
-                iCMS.seccode(".seccode-img",register);
-                tip(f);
-            }
-            //提交参数
+                    iCMS.seccode(".seccode-img", register);
+                    tip(f);
+                }
+                //提交参数
             iCMS.PASSPORT.REGISTER(param);
         });
 
         function check_form(a) {
-            var ret = {forward:a.name,msg:'ok'}
+            var ret = {
+                forward: a.name,
+                msg: 'ok'
+            }
             if (a.value == "") {
                 ret.msg = 'empty';
                 return tip(ret);
@@ -89,7 +89,7 @@
                         return tip(ret);
                     }
                     ajax_check = true;
-                break;
+                    break;
                 case 'nickname':
                     var length = a.value.replace(/[^\x00-\xff]/g, 'xx').length;
                     if (length < 4) {
@@ -101,13 +101,13 @@
                         return tip(ret);
                     }
                     ajax_check = true;
-                break;
+                    break;
                 case 'password':
                     if (a.value.length < 6) {
                         ret.msg = 'error';
                     }
                     return tip(ret);
-                break;
+                    break;
                 case 'rstpassword':
                     var pwd = $("input[name='password']").val();
                     if (pwd.length < 6) {
@@ -117,30 +117,34 @@
                         ret.msg = 'error';
                     }
                     return tip(ret);
-                break;
+                    break;
                 case 'seccode':
                     ajax_check = true;
-                break;
+                    break;
                 case 'agreement':
-                    checked = $('input[name="agreement"]',register).prop("checked");
-                    if (!checked){
+                    checked = $('input[name="agreement"]', register).prop("checked");
+                    if (!checked) {
                         ret.msg = 'def';
                     }
                     return tip(ret);
-                break;
+                    break;
                 default:
-                    $("input[name='"+a.name+"']").data('check', true);
+                    $("input[name='" + a.name + "']").data('check', true);
             }
-            if(ajax_check){
-                iCMS.PASSPORT.CHECK({name:a.name,value:a.value},
-                function() { //CHECK成功 事件
-                    tip(ret);
-                },function(f) {//CHECK失败 事件
-                    if(a.name=='seccode'){
-                        iCMS.seccode(".seccode-img",register);
-                    }
-                    tip(f);
-                });
+            if (ajax_check) {
+                iCMS.PASSPORT.CHECK({
+                        name: a.name,
+                        value: a.value
+                    },
+                    function() { //CHECK成功 事件
+                        tip(ret);
+                    },
+                    function(f) { //CHECK失败 事件
+                        if (a.name == 'seccode') {
+                            iCMS.seccode(".seccode-img", register);
+                        }
+                        tip(f);
+                    });
             }
         }
 
@@ -154,7 +158,6 @@
                 'error_ajax_username': '邮件地址已经注册过了,请直接登陆或者换个邮件再试试。',
                 'error_ajax_nickname': '昵称已经被注册了,请换个再试试。',
                 'error_ajax_seccode': '',
-
                 'empty_username': '请填写电子邮箱！',
                 'empty_nickname': '请填写昵称！',
                 'empty_password': '请填写密码！',
@@ -165,10 +168,12 @@
                 'def_password': '6-20个字母、数字或者符号',
                 'def_rstpassword': '这里要重复输入一下你的密码',
                 'def_seccode': '请输入图片中的字符!',
-                'def_agreement':'请勾选同意网络服务使用协议'
+                'def_agreement': '请勾选同意网络服务使用协议'
             }
-            var name = a.forward,type = a.msg;
-            var tip  = $('.tip-'+name),input = $("input[name='"+name+"']");
+            var name = a.forward,
+                type = a.msg;
+            var tip = $('.tip-' + name),
+                input = $("input[name='" + name + "']");
             // console.log(a);
             if (type == "ok") {
                 tip.hide();
@@ -181,7 +186,6 @@
             }
         }
     });
-
     </script>
 </head>
 
@@ -211,8 +215,10 @@
                     </div>
                     <div class="radio">
                         <label class="control-label">性别：</label>
-                        <label style="margin-right: 5px;"><input type="radio" name="gender" value="girl" checked="checked">女</label>
-                        <label><input type="radio" name="gender" value="boy">男</label>
+                        <label style="margin-right: 5px;">
+                            <input type="radio" name="gender" value="girl" checked="checked">女</label>
+                        <label>
+                            <input type="radio" name="gender" value="boy">男</label>
                     </div>
                     <div class="form-group">
                         <label for="password" class="control-label">密码：</label>

@@ -1,72 +1,77 @@
 <!--{if $comment_vars.display=="iframe"}-->
 <!DOCTYPE html>
 <html lang="zh-CN">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title><!--{$comment_vars.title}-->评论_<!--{$site.title}-->_<!--{$site.seotitle}--></title>
-		<!--{iCMS:public:ui}-->
-		<script>
-var iCMS = window.top.iCMS;
-</script>
-	</head>
-	<body class="commentApp">
-<!--{else}-->
-<!--{assign var="tip_selector" value="iCMS:ucard:"}-->
-<!--{/if}-->
-	<link href="<!--{$site.urls.tpl}-->/static/css/comment.css" rel="stylesheet" type="text/css" />
-	<div class="commentApp-list">
-		<div class="commentApp-list-wrap">
-		<!--{iCMS:comment:list loop="true" page="true" row="10" by="ASC" vars="$comment_vars"}-->
-			<!--{include file="./comment.item.htm" import="true"}-->
-		<!--{iCMSelse}-->
-			<div class="commentApp-item empty"><i class="fa fa-ban"></i> 暂无评论...</div>
-		<!--{/iCMS}-->
-		</div>
-		<div class="pagination commentApp-pagenav" data-query="<!--{$comment_vars.query}-->">
-		<!--{$iCMS.PAGES|method:'show(4)'}-->
-		</div>
-		<div class="hide" data-query="<!--{$comment_vars.query}-->">
-			<div class="commentApp-pagenav-api"></div>
-		</div>
-		<div class="clearfix mb10"></div>
-	</div>
-<script>
 
-$(function() {
-    iCMS.comment.seccode = iCMS.config.COMMENT.seccode;
-    <!--{if $comment_vars.display=="iframe"}-->
-    iCMS.comment.iframe_height('list');
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>
+        <!--{$comment_vars.title}-->评论_
+        <!--{$site.title}-->_
+        <!--{$site.seotitle}-->
+    </title>
+    <!--{iCMS:public:ui}-->
+    <script>
+    var iCMS = window.top.iCMS;
+    </script>
+</head>
+
+<body class="commentApp">
+    <!--{else}-->
+    <!--{assign var="tip_selector" value="iCMS:ucard:"}-->
     <!--{/if}-->
-    var commentAppList = $('.commentApp-list');
-    //回复评论事件绑定
-    commentAppList.on('click', 'a.reply', function(event) {
-        event.preventDefault();
-        iCMS.comment.reply(this);
+    <link href="<!--{$site.urls.tpl}-->/static/css/comment.css" rel="stylesheet" type="text/css" />
+    <div class="commentApp-list">
+        <div class="commentApp-list-wrap">
+            <!--{iCMS:comment:list loop="true" page="true" row="10" by="ASC" vars="$comment_vars"}-->
+            <!--{include file="./comment.item.htm" import="true"}-->
+            <!--{iCMSelse}-->
+            <div class="commentApp-item empty"><i class="fa fa-ban"></i> 暂无评论...</div>
+            <!--{/iCMS}-->
+        </div>
+        <div class="pagination commentApp-pagenav" data-query="<!--{$comment_vars.query}-->">
+            <!--{$iCMS.PAGES|method:'show(4)'}-->
+        </div>
+        <div class="hide" data-query="<!--{$comment_vars.query}-->">
+            <div class="commentApp-pagenav-api"></div>
+        </div>
+        <div class="clearfix mb10"></div>
+    </div>
+    <script>
+    $(function() {
+        iCMS.comment.seccode = iCMS.config.COMMENT.seccode;
+        <!--{if $comment_vars.display=="iframe"}-->
+        iCMS.comment.iframe_height('list');
+        <!--{/if}-->
+        var commentAppList = $('.commentApp-list');
+        //回复评论事件绑定
+        commentAppList.on('click', 'a.reply', function(event) {
+            event.preventDefault();
+            iCMS.comment.reply(this);
+        });
+        //提交评论事件绑定
+        commentAppList.on('click', 'a.addnew', function(event) {
+            event.preventDefault();
+            var that = $(this),
+                param = <!--{$comment_vars.param|json_encode}-->;
+                iCMS.comment.addnew(this, param, function(c) {
+                    var item = that.closest(".commentApp-item");
+                    iCMS.comment.list(item, param['iid'], c.forward, 'after');
+                })
+        });
+        //赞评论事件绑定
+        commentAppList.on('click', 'a.like', function(event) {
+            event.preventDefault();
+            iCMS.comment.like(this);
+        });
+        //举报事件绑定
+        commentAppList.on('click', 'a.report', function(event) {
+            event.preventDefault();
+            iCMS.user.report(this);
+        });
     });
-    //提交评论事件绑定
-    commentAppList.on('click', 'a.addnew', function(event) {
-        event.preventDefault();
-        var that = $(this)
-          ,
-        param = <!--{$comment_vars.param|json_encode}-->;
-        iCMS.comment.addnew(this, param, function(c) {
-            var item = that.closest(".commentApp-item");
-            iCMS.comment.list(item, param['iid'], c.forward, 'after');
-        })
-    });
-    //赞评论事件绑定
-    commentAppList.on('click', 'a.like', function(event) {
-        event.preventDefault();
-        iCMS.comment.like(this);
-    });
-    //举报事件绑定
-    commentAppList.on('click', 'a.report', function(event) {
-        event.preventDefault();
-        iCMS.user.report(this);
-    });
-});
-</script>
-<!--{if $comment_vars.display=="iframe"}-->
+    </script>
+    <!--{if $comment_vars.display=="iframe"}-->
 </body>
+
 </html>
 <!--{/if}-->
