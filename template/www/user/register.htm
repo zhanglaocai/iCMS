@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/passport.css" type="text/css" />
     <script>
     //初始化注册接口
-    iCMS.PASSPORT.init();
     $(function() {
         var register = $("#register-box");
         $(".seccode-img,.seccode-text").click(function(event) {
@@ -52,23 +51,25 @@
             <!--{if $user}-->
             //绑定账号 接收用户信息
             param.OPENID = <!--{$user|json_encode}-->;
-                <!--{/if}-->
-                <!--{if $iCMS.CONFIG.user.register.seccode }-->
+            <!--{/if}-->
+            <!--{if $iCMS.CONFIG.user.register.seccode }-->
                 //检查验证码
                 param.register_seccode = true;
             <!--{/if}-->
-            //注册成功 事件绑定
-            iCMS.PASSPORT.SUCCESS = function(s) {
-                    // console.log('****',s);
-                    window.top.location.href = s.forward;
-                }
-                //注册失败 事件绑定
-            iCMS.PASSPORT.FAIL = function(f) {
-                    iCMS.seccode(".seccode-img", register);
-                    tip(f);
-                }
-                //提交参数
-            iCMS.PASSPORT.REGISTER(param);
+            iCMS.RUN(['passport'], function($PASSPORT) {
+                //注册成功 事件绑定
+                $PASSPORT.SUCCESS = function(s) {
+                        // console.log('****',s);
+                        window.top.location.href = s.forward;
+                    }
+                    //注册失败 事件绑定
+                $PASSPORT.FAIL = function(f) {
+                        iCMS.seccode(".seccode-img", register);
+                        tip(f);
+                    }
+                    //提交参数
+                $PASSPORT.REGISTER(param);
+            });
         });
 
         function check_form(a) {
@@ -132,20 +133,23 @@
                     $("input[name='" + a.name + "']").data('check', true);
             }
             if (ajax_check) {
-                iCMS.PASSPORT.CHECK({
-                        name: a.name,
-                        value: a.value
-                    },
-                    function() { //CHECK成功 事件
-                        tip(ret);
-                    },
-                    function(f) { //CHECK失败 事件
-                        if (a.name == 'seccode') {
-                            iCMS.seccode(".seccode-img", register);
+                iCMS.RUN(['passport'], function($PASSPORT) {
+                    $PASSPORT.CHECK({
+                            name: a.name,
+                            value: a.value
+                        },
+                        function() { //CHECK成功 事件
+                            tip(ret);
+                        },
+                        function(f) { //CHECK失败 事件
+                            if (a.name == 'seccode') {
+                                iCMS.seccode(".seccode-img", register);
+                            }
+                            tip(f);
                         }
-                        tip(f);
-                    });
-            }
+                    );
+                });
+            };
         }
 
         function tip(a) {

@@ -61,7 +61,7 @@
             param.OPENID = <!--{$user|json_encode}-->;
                 <!--{/if}-->
                 //登录接口
-                require(['passport'], function($PASSPORT) {
+                iCMS.RUN(['passport'], function($PASSPORT) {
                     //登录成功 事件绑定
                     $PASSPORT.SUCCESS = function(s) {
                             window.top.location.href = s.forward;

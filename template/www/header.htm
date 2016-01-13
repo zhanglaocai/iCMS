@@ -29,9 +29,6 @@
     </div>
 </div>
 <script>
-iCMS.RUN = function(a, b) {
-    require(a, b);
-};
 $(function() {
     //由于require是异步加载 所以要延迟执行
     iCMS.RUN(['user'], function($user) {
