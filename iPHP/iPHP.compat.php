@@ -450,3 +450,10 @@ function pinyin($str,$split="",$pn=true) {
     }
     return str_replace(array('Üe','Üan','Ün','lÜ','nÜ'),array('ue','uan','un','lv','nv'),implode('',(array)$R));
 }
+function select_fields($array,$fields='',$map=false){
+    $fields_array = explode(',', $fields);
+    foreach ($fields_array as $key => $field) {
+        $rs[$field] = $array[$field];
+    }
+    return $rs;
+}

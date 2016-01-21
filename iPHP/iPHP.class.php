@@ -231,6 +231,7 @@ class iPHP{
         //self::$iTPL->register_modifier("small","gethumb");
         self::$iTPL->register_modifier("thumb","small");
         self::$iTPL->register_modifier("random","random");
+        self::$iTPL->register_modifier("fields","select_fields");
         self::$iTPL->register_block("cache",array("iPHP","tpl_block_cache"));
 	}
     public static function app_ref($app_name=true,$out=false) {
