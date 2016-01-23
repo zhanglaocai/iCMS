@@ -30,9 +30,9 @@
 </div>
 <script>
 $(function() {
-    //由于require是异步加载 所以要延迟执行
-    iCMS.RUN(['user'], function($user) {
-        $user.STATUS({},
+    iCMS.RUN(['user'], function($USER) {
+        //用户状态
+        $USER.STATUS({},
             //登陆后事件
             function($info) {
                 console.log($info);
@@ -46,7 +46,7 @@ $(function() {
         );
         $(".logout").click(function(event) {
             event.preventDefault();
-            iCMS.USER.LOGOUT({
+            $USER.LOGOUT({
                     'forward': window.top.location.href
                 },
                 function(s) {

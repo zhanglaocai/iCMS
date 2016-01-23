@@ -52,16 +52,6 @@ class categoryApp{
         $category['subids'] = implode(',',(array)$category['subid']);
         $category  = array_merge($category,$this->get_lite($category));
 
-
-        // if($category['password']){
-        //     $category_auth        = iPHP::get_cookie('category_auth_'.$id);
-        //     list($ca_cid,$ca_psw) = explode('#=iCMS!=#',authcode($category_auth,'DECODE'));
-        // 	if($ca_psw!=md5($category['password'])){
-        // 		iPHP::assign('forward',__REF__);
-	       //  	iPHP::view('{iTPL}/category.password.htm','category.password');
-	       //  	exit;
-        // 	}
-        // }
         if($category['hasbody']){
            $category['body'] = iCache::get('iCMS/category/'.$category['cid'].'.body');
            $category['body'] && $category['body'] = stripslashes($category['body']);
@@ -80,6 +70,14 @@ class categoryApp{
             $category['mode'] && iCMS::set_html_url($iurl);
             iCMS::hooks('enable_comment',true);
             iPHP::assign('category',$category);
+            if(isset($_GET['tpl'])){
+                $tpl = iS::escapeStr($_GET['tpl']);
+                if(strpos($tpl, '..') !== false){
+                    exit('what the fuck!!');
+                }else{
+                    $tpl = $tpl.'.htm';
+                }
+            }
             if(strpos($tpl, '.htm')!==false){
             	return iPHP::view($tpl,'category');
             }

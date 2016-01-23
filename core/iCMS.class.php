@@ -83,7 +83,7 @@ class iCMS extends iPHP{
         );
         iPHP::assign('site',$site);
         iPHP::$dialog['title']  = self::$config['site']['name'];
-        iPHP::assign('get',$_GET);
+        iPHP::assign('get',iS::escapeStr($_GET));
     }
     //------------------------------------
     public static function get_rand_ids($table,$where=null,$limit='10',$primary='id'){
