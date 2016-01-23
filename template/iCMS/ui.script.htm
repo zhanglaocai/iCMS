@@ -1,0 +1,18 @@
+<script>
+window.iCMS = {
+    CONFIG: {
+        API: "<!--{iCMS:router url='/api'}-->",
+        PUBLIC: "<!--{$site.urls.public}-->",
+        COOKIE: '<!--{$iCMS.COOKIE_PRE}-->',
+        DIALOG: {
+            title: '<!--{$site.name}--> 提示信息'
+        },
+    }
+};
+</script>
+<script class="iCMS.APP.JS" src="http://apps.bdimg.com/libs/require.js/2.1.11/require.min.js" data-main="<!--{$site.urls.public}-->/iCMS.APP.js"></script>
+<script>
+iCMS.RUN = function(a, b) {
+    return require(a, b);
+};
+</script>

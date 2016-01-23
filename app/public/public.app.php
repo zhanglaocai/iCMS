@@ -9,16 +9,16 @@
 class publicApp {
 	public $methods	= array('weixin','sitemapindex','sitemap','seccode','agreement','crontab','time','qrcode');
     public function API_agreement(){
-    	iPHP::view('iCMS://agreement.htm');
+    	iPHP::view('{iTPL}/user/agreement.htm');
     }
     public function API_sitemapindex(){
         header("Content-type:text/xml");
-        iPHP::view('iCMS://sitemap.index.htm');
+        iPHP::view('/tools/sitemap.index.htm');
     }
     public function API_sitemap(){
         header("Content-type:text/xml");
         iPHP::assign('cid',(int)$_GET['cid']);
-        iPHP::view('iCMS://sitemap.baidu.htm');
+        iPHP::view('/tools/sitemap.baidu.htm');
     }
     /**
      * [API_weixin 向下兼容]
