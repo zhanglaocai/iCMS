@@ -1,75 +1,30 @@
-<script>
-iCMS.config.UI = '<!--{$iCMS.UI}-->';
-</script>
 <style>
-.form-group {
-    width: 100%;
-}
-
-#cid,
-#keywords {
-    width: 360px;
-}
-
-#title {
-    width: 336px;
-}
-
-#keywords {
-    width: 410px;
-}
-
-#description {
-    height: 300px;
-    width: 95%;
-    padding: 5px;
-}
-
-.manage-publish {
-    margin-left: 20px;
-}
-
-.creative {
-    width: 220px;
-    display: inline-block;
-}
-
-.creative .bootstrap-switch {
-    border-radius: 0px 5px 5px 0px !important;
-    border-color: #ccc !important;
-    width: 106px !important;
-    height: 35px !important;
-}
-
-.creative .bootstrap-switch-container span {
-    width: 53px !important;
-    height: 35px !important;
-}
-
-.creative .bootstrap-switch-container .bootstrap-switch-primary {
-    border-radius: 0px !important;
-}
-
-#source-box {
-    width: 360px;
-    display: inline-block;
-}
-
-#source-box .form-control {
-    width: 320px;
-}
+.form-group { width: 100%; }
+#cid, #keywords { width: 360px; }
+#title { width: 336px; }
+#keywords { width: 410px; }
+#description { height: 300px; width: 95%; padding: 5px; }
+.manage-publish { margin-left: 20px; }
+.creative { width: 220px; display: inline-block; }
+.creative .bootstrap-switch { border-radius: 0px 5px 5px 0px !important; border-color: #ccc !important; width: 106px !important; height: 35px !important; }
+.creative .bootstrap-switch-container span { width: 53px !important; height: 35px !important; }
+.creative .bootstrap-switch-container .bootstrap-switch-primary { border-radius: 0px !important; }
+#source-box { width: 360px; display: inline-block; }
+#source-box .form-control { width: 320px; }
 </style>
 <link href="<!--{$site.urls.tpl}-->/static/css/bootstrap-switch.min.css" type="text/css" rel="stylesheet" />
 <script src="<!--{$site.urls.tpl}-->/static/js/bootstrap-switch.min.js"></script>
+
 <script src="<!--{$iCMS.UI}-->/iCMS.user.editor-6.0.0.js" type="text/javascript" charset="utf-8"></script>
 <script src="<!--{$iCMS.UI}-->/ueditor/ueditor.all.min.js" type="text/javascript" charset="utf-8"></script>
+
 <input name="id" type="hidden" value="<!--{$article.id}-->" />
 <input name="ucid" id="ucid" type="hidden" value="<!--{$article.ucid}-->" />
 <input name="_ucid" type="hidden" value="<!--{$article.ucid}-->" />
 <input name="_cid" type="hidden" value="<!--{$article.cid}-->" />
 <input name="mobile" type="hidden" value="0" />
 <div class="title"><span>发表文章</span></div>
-<div class="manage-publish form-inline">
+<div class="manage-publish form-inline" id="publish">
     <div class="form-group">
         <div class="input-group">
             <div class="input-group-addon">
@@ -171,26 +126,33 @@ iCMS.config.UI = '<!--{$iCMS.UI}-->';
     <input class="span3" id="newcategoryname" type="text" placeholder="请输入分类名称">
 </div>
 <script type="text/javascript">
-var ed = UE.getEditor('editor');
+// var ed = UE.getEditor('editor');
 $(function() {
-    $('[name="creative"]').bootstrapSwitch().on('switchChange.bootstrapSwitch', function(event, state) {
-        if (state) {
-            $('#source-box').hide();
-            $('#source').val('');
-        } else {
-            $('#source-box').css({
-                display: 'inline-block',
-            });
+    var publish = $("#publish");
+
+    $('[name="creative"]',publish).bootstrapSwitch()
+    .on('switchChange.bootstrapSwitch',
+        function(event, state) {
+            if (state) {
+                $('#source-box').hide();
+                $('#source').val('');
+            } else {
+                $('#source-box').css({
+                    display: 'inline-block',
+                });
+            }
         }
-    });
+    );
     <!--{if $article.cid}-->
-    $("#cid").val("<!--{$article.cid}-->");
+    $("#cid",publish).val("<!--{$article.cid}-->");
     <!--{/if}-->
+
     <!--{if $article.ucid}-->
-    var uc = $("[cid='<!--{$article.ucid}-->']");
+    var uc = $("[cid='<!--{$article.ucid}-->']",publish);
     uc.parent().addClass('active');
     $("#uc_select").text(uc.text());
     <!--{/if}-->
+
     $(".iCMS_user_publish").click(function() {
         if ($("#cid option:selected").val() == "0") {
             $("#cid").focus();
@@ -203,8 +165,8 @@ $(function() {
             return false;
         }
         <!--{if $iCMS.CONFIG.user.post.seccode }-->
-        if ($(".iCMS_post_seccode").val() == '') {
-            $(".iCMS_post_seccode").focus();
+        if ($(".seccode").val() == '') {
+            $(".seccode").focus();
             iCMS.alert("验证码不能为空!");
             return false;
         }
