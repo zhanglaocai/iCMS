@@ -243,7 +243,7 @@ class spiderContent extends spider{
             unset($img_match,$_img_array,$_img_urls,$_img_src);
         }
         if ($data['trim']) {
-            $content = trim($content);
+            $content = str_replace('&nbsp;','',trim($content));
         }
         if ($data['capture']) {
             // $content = stripslashes($content);
