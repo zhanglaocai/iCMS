@@ -101,7 +101,7 @@ function tag_list($vars){
 	}
 
     if($vars['orderby']=='rand'){
-        $ids_array = iCMS::get_rand_ids(`#iCMS@__tags`,$where_sql,$maxperpage,'id');
+        $ids_array = iCMS::get_rand_ids('#iCMS@__tags',$where_sql,$maxperpage,'id');
     }
 
 	$hash = md5($where_sql.$order_sql.$limit);

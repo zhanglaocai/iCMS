@@ -444,7 +444,7 @@ CREATE TABLE `#iCMS@__sessions` (
   `expires` int(10) unsigned NOT NULL DEFAULT '0',
   `data` varchar(5120) DEFAULT NULL,
   PRIMARY KEY (`session_id`)
-) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `#iCMS@__sph_counter`;
