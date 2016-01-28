@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: tag.tpl.php 159 2013-03-23 04:11:53Z coolmoo $
@@ -101,7 +101,7 @@ function tag_list($vars){
 	}
 
     if($vars['orderby']=='rand'){
-        $ids_array = iCMS::get_rand_ids(`#iCMS@__tags`,$where_sql,$maxperpage,'id');
+        $ids_array = iCMS::get_rand_ids('#iCMS@__tags',$where_sql,$maxperpage,'id');
     }
 
 	$hash = md5($where_sql.$order_sql.$limit);
