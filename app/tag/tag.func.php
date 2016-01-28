@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: tag.tpl.php 159 2013-03-23 04:11:53Z coolmoo $

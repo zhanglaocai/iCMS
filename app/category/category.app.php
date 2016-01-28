@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: category.app.php 2412 2014-05-04 09:52:07Z coolmoo $
@@ -105,24 +105,18 @@ class categoryApp{
         }
         return $navArray;
     }
-    public function get_lite($C){
-        $C['iurl'] OR $C['iurl'] = (array)iURL::get('category',$C);
+    public function get_lite($category){
+        $category['iurl'] OR $category['iurl'] = (array)iURL::get('category',$category);
+        $category['sname']    = $category['subname'];
+        $category['navArray'] = $this->get_nav($category);
+        $category['url']      = $category['iurl']['href'];
+        $category['link']     = "<a href='{$category['url']}'>{$category['name']}</a>";
+        $category['pic']      = is_array($category['pic'])?$category['pic']:get_pic($category['pic']);
+        $category['mpic']     = is_array($category['mpic'])?$category['mpic']:get_pic($category['mpic']);
+        $category['spic']     = is_array($category['spic'])?$category['spic']:get_pic($category['spic']);
 
-        $category                = array();
-        $category['name']        = $C['name'];
-        $category['description'] = $C['description'];
-        $category['subname']     = $C['subname'];
-        $category['sname']       = $C['subname'];
-        // $category['pic']         = $C['pic'];
-        $category['navArray']    = $this->get_nav($C);
-        $category['url']         = $C['iurl']['href'];
-        $category['link']        = "<a href='{$category['url']}'>{$C['name']}</a>";
-        $category['pic']         = is_array($C['pic'])?$C['pic']:get_pic($C['pic']);
-        $category['mpic']        = is_array($C['mpic'])?$C['mpic']:get_pic($C['mpic']);
-        $category['spic']        = is_array($C['spic'])?$C['spic']:get_pic($C['spic']);
-
-        if($C['rootid']){
-            $_parent            = iCache::get('iCMS/category/'.$C['rootid']);
+        if($category['rootid']){
+            $_parent = iCache::get('iCMS/category/'.$category['rootid']);
             $category['parent'] = $this->get_lite($_parent);
             unset($_parent);
         }
