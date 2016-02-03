@@ -82,6 +82,7 @@ class iCMS extends iPHP{
             "mobile" => self::$config['template']['mobile']['domain'],
         );
         iPHP::assign('site',$site);
+        iPHP::assign('GET',$_GET);
         iPHP::$dialog['title']  = self::$config['site']['name'];
     }
     //------------------------------------

@@ -284,6 +284,12 @@ class spiderUrls extends spider{
                             '&title=' . urlencode(spider::$title) .
                             '" target="_blank">测试内容规则</a>) <br />';
                         echo spider::$url . "<br />";
+                        if(spiderTools::$listArray){
+                            echo '<b>其它采集结果:</b><br />';
+                            echo '<pre>';
+                            var_dump(spiderTools::$listArray);
+                            echo '</pre>';
+                        }
                         echo $hash . "<br /><hr />";
                     } else {
                         if(spider::checker($work,$pid,spider::$url,spider::$title)===true||spider::$dataTest){

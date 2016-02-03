@@ -7,7 +7,8 @@
  * @$Id: article.app.php 2408 2014-04-30 18:58:23Z coolmoo $
  */
 class articleApp {
-	public $methods	= array('iCMS','article','clink','hits','good','bad','like_comment','comment');
+    public $taoke   = false;
+    public $methods = array('iCMS','article','clink','hits','good','bad','like_comment','comment');
     public function __construct() {}
 
     public function do_iCMS($a = null) {
@@ -109,7 +110,7 @@ class articleApp {
             iPHP::assign('category',$article['category']);
             unset($article['category']);
             iPHP::assign('article',$article);
-            $html	= iPHP::view($article_tpl,'article');
+            $html = iPHP::view($article_tpl,'article');
             if(iPHP::$iTPL_MODE=="html") return array($html,$article);
         }else{
             return $article;

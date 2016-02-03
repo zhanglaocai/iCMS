@@ -12,6 +12,8 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class spiderTools extends spider{
+    public static $listArray = array();
+
     /**
      * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
      */
@@ -46,34 +48,43 @@ class spiderTools extends spider{
         }
     }
     public static function title_url($row,$rule,$baseUrl=null){
+        spiderTools::$listArray = array();
+        $responses = array();
         if(strpos($rule['list_url_rule'], '<%url%>')!==false){
-            $title = $row['title'];
-            $url   = $row['url'];
+            $responses = $row;
         }else if(is_object($row)){
-            list($title_dom,$url_dom) = explode("\n", $rule['list_url_rule']);
+            $list_url_rule = explode("\n", $rule['list_url_rule']);
             $DOM       = phpQuery::pq($row);
-            $title_dom = trim($title_dom);
-            $url_dom   = trim($url_dom);
-            if(strpos($title_dom, 'DOM::')!==false){
-                $title = spiderTools::domAttr($DOM,$title_dom);
-            }else{
-                $title_dom OR $title_dom = 'text';
-                if($title_dom=='text'){
-                    $title = $DOM->text();
+            $keyMap = array('title','url');
+            foreach ($list_url_rule as $key => $value) {
+                $dom_rule = trim($value);
+                if(strpos($dom_rule, '@@')!==false){
+                    list($dom_key,$dom_rule) = explode("@@", $dom_rule);
                 }else{
-                    $title = $DOM->attr($title_dom);
+                    $dom_key = $keyMap[$key];
                 }
+                $content = '';
+                if(strpos($dom_rule, 'DOM::')!==false){
+                    $content = spiderTools::domAttr($DOM,$dom_rule);
+                }else{
+                    if($dom_key=='url'){
+                        $dom_rule OR $dom_rule = 'href';
+                    }
+                    if($dom_key=='title'){
+                        $dom_rule OR $dom_rule = 'text';
+                    }
+                    if($dom_rule=='text'){
+                        $content = $DOM->text();
+                    }else{
+                        $content = $DOM->attr($dom_rule);
+                    }
+                }
+                $responses[$dom_key] = str_replace('&nbsp;','',trim($content));
             }
-            if(strpos($url_dom, 'DOM::')!==false){
-                $url = spiderTools::domAttr($DOM,$url_dom);
-            }else{
-                $url_dom OR $url_dom = 'href';
-                $url = $DOM->attr($url_dom);
-            }
-
-            unset($DOM,$title_dom,$url_dom);
+            unset($DOM);
         }
-
+        $title = $responses['title'];
+        $url   = $responses['url'];
         $title = trim($title);
         $url   = trim($url);
         $url   = str_replace('<%url%>',$url, $rule['list_url']);
@@ -83,7 +94,16 @@ class spiderTools extends spider{
         }
         $rule['list_url_clean'] && $url = spiderTools::dataClean($rule['list_url_clean'],$url);
         $title = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $title);
-        // $this->title = $title;
+
+        unset($responses['title'],$responses['url']);
+        if($responses){
+            foreach ($responses as $key => $value) {
+                if(!is_numeric($key) && strpos($key, 'var_')===false){
+                    spiderTools::$listArray[$key] = $value;
+                }
+            }
+            unset($responses);
+        }
         return array($title,$url);
     }
 
