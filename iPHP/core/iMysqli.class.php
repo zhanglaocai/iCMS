@@ -181,7 +181,15 @@ class iDB {
         self::query("INSERT INTO ".iPHP_DB_PREFIX_TAG."{$table} (`" . implode('`,`',$fields) . "`) VALUES ('".implode("','",$data)."')");
         return self::$insert_id;
     }
-
+    public static function insert_multi($table,$fields,$data) {
+        $datasql = array();
+        foreach ((array)$data as $key => $d) {
+            $datasql[]= "('".implode("','",$d)."')";
+        }
+        if($datasql){
+            return self::query("INSERT INTO ".iPHP_DB_PREFIX_TAG."{$table} (`" . implode('`,`',$fields) . "`) VALUES ".implode(',',$datasql));
+        }
+    }
     /**
      * Update a row in the table with an array of data
      * @param string $table WARNING: not sanitized!
