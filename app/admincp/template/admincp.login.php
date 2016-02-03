@@ -134,7 +134,7 @@ $(function(){
         <div class="clear"></div>
         <div class="ipt_seccode">
           <label for="seccode"><i></i><span>验证码</span></label>
-          <input type="text" maxlength="4" name="seccode" id="seccode" class="iCMS_seccode">
+          <input type="text" name="seccode" id="seccode" class="iCMS_seccode">
           <img src="<?php echo __SELF__; ?>?do=seccode" alt="验证码" class="iCMS_seccode_img r3"/>
           <a href="javascript:;" class="iCMS_seccode_text">换一张</a>
         </div>

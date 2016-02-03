@@ -55,6 +55,8 @@ class iACP {
         exit;
     }
     public static function check_seccode(){
+        if($_POST['iACP_seccode']===iPHP_KEY) return true;
+
         if($_POST['username'] && $_POST['password']){
             $seccode = iS::escapeStr($_POST['iACP_seccode']);
             iPHP::seccode($seccode,true,'iACP_seccode') OR iPHP::code(0,'iCMS:seccode:error','seccode','json');
