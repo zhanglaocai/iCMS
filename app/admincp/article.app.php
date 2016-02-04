@@ -306,7 +306,9 @@ class articleApp{
         if(isset($_GET['pt']) && $_GET['pt']!=''){
             $this->_postype = (int)$_GET['pt'];
         }
-
+        if(isset($_GET['sta'])){
+            $this->_status = (int)$_GET['sta'];
+        }
         $sql = "WHERE `status`='{$this->_status}'";
         $this->_postype==='all' OR $sql.= " AND `postype`='{$this->_postype}'";
 
@@ -464,6 +466,13 @@ class articleApp{
         iFS::$userid = $userid;
         $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
 
+        if($this->callback['code']){
+            $fwd = iCMS::filter($title);
+            if($fwd){
+                echo '标题中包含被系统屏蔽的字符，请重新填写。';
+                return false;
+            }
+        }
 
         if(iCMS::$config['article']['filter']) {
             $fwd = iCMS::filter($title);
@@ -781,7 +790,10 @@ class articleApp{
             $value = trim($value);
             if (stripos($value,$uri['host']) === false){
                 $filepath = iFS::http($value);
-                if($filepath && !iFS::checkHttp($filepath)){
+                $rootfilpath = iFS::fp($filepath, '+iPATH');
+                list($owidth, $oheight, $otype) = @getimagesize($rootfilpath);
+
+                if($filepath && !iFS::checkHttp($filepath) && $otype){
                     if($aid){
                         $filename = basename($filepath);
                         $filename = substr($filename,0, 32);
@@ -789,6 +801,12 @@ class articleApp{
                         empty($faid) && articleTable::filedata_update_indexid($aid,$filename);
                     }
                     $value = iFS::fp($filepath,'+http');
+                }else{
+                    if($this->DELETE_ERROR_PIC){
+                        iFS::del($rootfilpath);
+                        $array[$key]  = $match[0][$key];
+                        $value = '';
+                    }
                 }
                 $fArray[$key] = $value;
             }else{
@@ -806,7 +824,6 @@ class articleApp{
             krsort($fArray);
             $content = str_replace($array, $fArray, $content);
         }
-
         return addslashes($content);
     }
     function pic_indexid($content,$aid) {

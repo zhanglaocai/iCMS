@@ -375,7 +375,9 @@ class spiderTools extends spider{
 
     public static function url_complement($baseUrl,$href){
         $href = trim($href);
-        if (stripos($href,'http://') === false){
+        if (iFS::checkHttp($href)){
+            return $href;
+        }else{
             if ($href[0]=='/'){
                 $base_uri  = parse_url($baseUrl);
                 $base_host = $base_uri['scheme'].'://'.$base_uri['host'];
@@ -388,8 +390,6 @@ class spiderTools extends spider{
                 $baseUrl = rtrim($baseUrl,'/');
                 return iFS::path($baseUrl.'/'.ltrim($href,'/'));
             }
-        }else{
-            return $href;
         }
     }
     public static function checkpage(&$newbody, $bodyA, $_count = 1, $nbody = "", $i = 0, $k = 0) {

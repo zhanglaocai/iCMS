@@ -264,6 +264,21 @@ class spiderContent extends spider{
         if ($data['mergepage']) {
             $content = spiderTools::mergePage($content);
         }
+        if ($data['filter']) {
+            $fwd = iCMS::filter($content);
+            if($fwd){
+                $filterMsg = '['.$name.']包含被系统屏蔽的字符!';
+                if(spider::$dataTest){
+                    exit('<h1>'.$filterMsg.'</h1>');
+                }
+                if(spider::$work){
+                    echo "\n{$filterMsg}\n";
+                    return false;
+                }else{
+                    iPHP::alert($filterMsg);
+                }
+            }
+        }
         if ($data['empty'] && empty($content)) {
             $emptyMsg = '['.$name.']规则设置了不允许为空.当前抓取结果为空!请检查,规则是否正确!';
             if(spider::$dataTest){
