@@ -146,7 +146,11 @@ class spiderTools extends spider{
               $content = $rule.$content;
               continue;
             }
-
+            if(strpos($rule, 'CUT::')!==false){
+              $len = str_replace('CUT::','', $rule);
+              $content = csubstr($content,$len);
+              continue;
+            }
             if(strpos($rule, '<%SELF%>')!==false){
               $content = str_replace('<%SELF%>',$content, $rule);
               continue;

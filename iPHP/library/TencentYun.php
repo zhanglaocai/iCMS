@@ -25,7 +25,8 @@ class TencentYun
      */
     public function uploadFile($filePath,$bucket,$key=null)
     {
-        $uploadRet = ImageV2::upload($filePath,$bucket,$key);
+        $uploadRet = ImageV2::stat($bucket, $key);
+        $uploadRet['code'] && $uploadRet = ImageV2::upload($filePath,$bucket,$key);
         return json_encode(array(
                 'error' => $uploadRet['code'],
                 'msg'   => $uploadRet

@@ -211,7 +211,7 @@ class spiderData extends spider{
         gc_collect_cycles();
 
         if (spider::$dataTest) {
-            echo "<pre style='width:99%;word-wrap: break-word;'>";
+            echo "<pre style='width:99%;word-wrap: break-word;white-space: pre-wrap;'>";
             print_r(iS::escapeStr($responses));
             echo '<hr />';
             echo '使用内存:'.iFS::sizeUnit(memory_get_usage()).' 执行时间:'.iPHP::timer_stop().'s';
