@@ -31,14 +31,15 @@ class iSession {
         }
 
         if(defined('iDB')){
-            return true;
+            exit("iSession requires iDB");
         }
-        return false;
+        return true;
     }
     public static function close() {
         iSession::gc();
         // close database-connection
-        return iDB::flush();
+        iDB::flush();
+        return true;
     }
     public static function read($session_id) {
         $data = iDB::value("
@@ -143,4 +144,4 @@ session_set_save_handler(
     array('iSession','gc')
 );
 register_shutdown_function('session_write_close');
-@session_start();
+session_start();

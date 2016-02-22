@@ -1,6 +1,6 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: home.php 2393 2014-04-09 13:14:23Z coolmoo $
@@ -90,7 +90,7 @@ iACP::head();
         <tr>
           <td>服务器剩余空间</td>
           <td><?php
-            if(function_exists('diskfreespace')){
+            if(@function_exists('diskfreespace')){
               echo intval(diskfreespace(".") / (1024 * 1024))."M" ;
             }else{
               echo '∞';
@@ -112,10 +112,11 @@ iACP::head();
           <td><?php echo zend_version() ; ?></td>
         </tr>
         <tr>
+          <?php $dbver = iDB::version();?>
           <td>MySQL 数据库</td>
-          <td><?php echo $this->okorno(function_exists("mysql_close")) ; ?></td>
+          <td><?php echo $this->okorno($dbver?true:false) ; ?></td>
           <td>MySQL 版本</td>
-          <td><?php echo iDB::version() ; ?></td>
+          <td><?php echo $dbver; ?></td>
         </tr>
         <tr>
           <td>图像函数库</td>
