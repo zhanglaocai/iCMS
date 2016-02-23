@@ -183,7 +183,7 @@ class TBAPI {
 //$req = new TopRequest('taobao.poster.channels.get');
 //$top_session = "24523150b447abcb617cc1d7b58ce71ad7230";  
 //$req->set_param('iid', $iid);  
-//$req->set_param('image', '@' . $new_image_path); //上传文件，在文件路径前加上AT符号  
+//$req->set_param('image', '@' . $new_image_path); //涓婁紶鏂囦欢锛屽湪鏂囦欢璺緞鍓嶅姞涓夾T绗﹀彿  
 //$req->set_param('is_major', 'true');  
-//$result = $req->execute($top_session); // 对于不需要session的api，则可以不用session参数  
+//$result = $req->execute($top_session); // 瀵逛簬涓嶉渶瑕乻ession鐨刟pi锛屽垯鍙互涓嶇敤session鍙傛暟  
 //print_r($result); 
