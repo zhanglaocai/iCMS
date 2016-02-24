@@ -93,9 +93,12 @@ class iDB{
 
         // filter the query, if filters are available
         // NOTE: some queries are made before the plugins have been loaded, and thus cannot be filtered with this method
-        $query  = str_replace(self::$config['PREFIX_TAG'],self::$config['PREFIX'], trim($query));
+        $query = str_replace(self::$config['PREFIX_TAG'],self::$config['PREFIX'], trim($query));
         $query = str_replace('`','', $query);
 
+        if(preg_match("/limit\s*\d+,\s*\d+/is",$query)){
+            $query = preg_replace("/limit\s*(\d+),\s*(\d+)/is", "limit $2 offset $1", $query);
+        }
         // initialise return
         $return_val = 0;
         self::flush();
