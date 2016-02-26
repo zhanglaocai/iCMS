@@ -84,6 +84,16 @@ class keywordsApp{
 	}
     function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__keywords` ORDER BY CHAR_LENGTH(`keyword`) DESC");
-		iCache::set('iCMS/keywords',$rs,0);
+        // iCache::delete('iCMS/keywords');
+        if($rs){
+            foreach($rs AS $i=>$val) {
+                if($val['times']>0) {
+                    $search[]  = $val['keyword'];
+                    $replace[] = '<a class="keyword" target="_blank" href="'.$val['url'].'">'.$val['keyword'].'</a>';
+                }
+            }
+            iCache::set('iCMS/keywords.search',$search,0);
+            iCache::set('iCMS/keywords.replace',$replace,0);
+        }
     }
 }

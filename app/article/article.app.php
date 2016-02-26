@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: article.app.php 2408 2014-04-30 18:58:23Z coolmoo $
@@ -347,16 +347,10 @@ class articleApp {
     public function keywords($content) {
         if(iCMS::$config['other']['keyword_limit']==0) return $content;
 
-        $keywords = iCache::get('iCMS/keywords');
-
-        if($keywords){
-            foreach($keywords AS $i=>$val) {
-                if($val['times']>0) {
-                    $search[]  = $val['keyword'];
-                    $replace[] = '<a class="keyword" target="_blank" href="'.$val['url'].'">'.$val['keyword'].'</a>';
-                }
-           }
-           return iCMS::str_replace_limit($search, $replace,stripslashes($content),iCMS::$config['other']['keyword_limit']);
+        $search  = iCache::get('iCMS/keywords.search');
+        $replace = iCache::get('iCMS/keywords.replace');
+        if($search && $replace){
+            return iCMS::str_replace_limit($search, $replace,stripslashes($content),iCMS::$config['other']['keyword_limit']);
         }
         return $content;
     }
