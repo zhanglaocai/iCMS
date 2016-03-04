@@ -233,6 +233,8 @@ class iPHP{
         self::$iTPL->register_modifier("random","random");
         self::$iTPL->register_modifier("fields","select_fields");
         self::$iTPL->register_block("cache",array("iPHP","tpl_block_cache"));
+        self::$iTPL->assign('GET',$_GET);
+        self::$iTPL->assign('POST',$_POST);
 	}
     public static function app_ref($app_name=true,$out=false) {
         $app_name===true && $app_name = self::$app_name;
