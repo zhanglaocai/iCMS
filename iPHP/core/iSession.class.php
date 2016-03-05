@@ -31,14 +31,15 @@ class iSession {
         }
 
         if(defined('iDB')){
-            return true;
+            exit("iSession requires iDB class");
         }
-        return false;
+        return true;
     }
     public static function close() {
         iSession::gc();
         // close database-connection
-        return iDB::flush();
+        iDB::flush();
+        return true;
     }
     public static function read($session_id) {
         $data = iDB::value("
@@ -63,60 +64,40 @@ class iSession {
         // if yes,
         if($res) {
             // ...update session-data
-            $return = iDB::query("
+            iDB::query("
                 UPDATE ".iPHP_DB_PREFIX_TAG."sessions
                 SET expires = '$expires',
                 data = '$data'
                 WHERE session_id = '$session_id'"
             );
-            // if something happened, return true
-            if($return){
-                return true;
-            }
-        }
-        // if no session-data was found,
-        else {
+        } else {// if no session-data was found,
             // create a new row
             iDB::query("
                 INSERT INTO ".iPHP_DB_PREFIX_TAG."sessions
                 (session_id,expires,data)
                 VALUES('$session_id','$expires','$data')"
             );
-            // if row was created, return true
-            if(iDB::$insert_id){
-                return true;
-            }
         }
-        // an unknown error occured
-        return false;
+        return true;
     }
     public static function destroy($session_id) {
         // delete session-data
-        $return = iDB::query("
+        iDB::query("
             DELETE FROM ".iPHP_DB_PREFIX_TAG."sessions
             WHERE session_id = '$session_id'"
         );
-        // if session was deleted, return true,
-        if($return){
-            return true;
-        }
-        // ...else return false
-        return false;
+        return true;
     }
     public static function gc($sessMaxLifeTime=0) {
         // delete old sessions
-        $return = iDB::query("
+        iDB::query("
             DELETE FROM ".iPHP_DB_PREFIX_TAG."sessions
             WHERE expires < ".time()
         );
-        // return affected rows
-        if($return){
-            return true;
-        }
-        // ...else return false
-        return false;
+        return true;
     }
 }
+
 //memcached
 // ini_set("session.save_handler", "memcached");
 // ini_set("session.save_path", "127.0.0.1:11211");
@@ -142,5 +123,4 @@ session_set_save_handler(
     array('iSession','destroy'),
     array('iSession','gc')
 );
-register_shutdown_function('session_write_close');
-@session_start();
+session_start();

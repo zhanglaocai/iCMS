@@ -4,6 +4,8 @@
 更新时间：2013-05-25
 功能说明：防护XSS,SQL,代码执行，文件包含等多种高危漏洞
 */
+defined('iPHP_WAF_POST') OR define('iPHP_WAF_POST',true);// 检测POST
+
 class waf {
 	public static $URL_ARRAY = array(
 		'xss'=>"\\=\\+\\/v(?:8|9|\\+|\\/)|\\%0acontent\\-(?:id|location|type|transfer\\-encoding)",
@@ -18,7 +20,7 @@ class waf {
 		$query_string = empty($_SERVER["QUERY_STRING"]) ? array() : array($_SERVER["QUERY_STRING"]);
 		self::check_data($query_string,self::$URL_ARRAY);
 		self::check_data($_GET,self::$ARGS_ARRAY);
-		self::check_data($_POST,self::$ARGS_ARRAY);
+		iPHP_WAF_POST && self::check_data($_POST,self::$ARGS_ARRAY);
 		self::check_data($_COOKIE,self::$ARGS_ARRAY);
 		self::check_data($referer,self::$ARGS_ARRAY);
 	}

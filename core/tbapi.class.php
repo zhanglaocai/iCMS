@@ -1,23 +1,16 @@
 <?php
 function_exists('date_default_timezone_set') && date_default_timezone_set('Asia/Shanghai');
 class TBAPI {
-    public $_method_name= '';
-    public $_json_assoc	= false;
-    public $_api_params = array();
-    public $_app_key	= '21181857';
-    public $_app_Secret	= '4ec6477b9129b78db88d6107b4cbd39f';
-    public $_app_set	= false;
-    public $_app_keys	= array(
-			"21181857"=>array("21181857","4ec6477b9129b78db88d6107b4cbd39f"),
-			//"12639521"=>array("12639521","070f4c6fac7de60d9d291afefdeca7d6"),
-			"12696119"=>array("12696119","0ce77275ac1a0c6eed4475d0638a850a"),
-			"12696073"=>array("12696073","ea5f0b4272eb4e27e76c985eacffc932")
-	);
-    
-    public $_err_code	= 0;
+    public $_method_name = '';
+    public $_api_params  = array();
+    public $_app_key     = null;
+    public $_app_Secret  = null;
+    public $_app_set     = false;
+    public $_app_keys    = array();
+    public $_err_code    = 0;
     function appkey(){
     	if($this->_err_code==0) return;
-    	
+
     	if($this->_app_set) return;
 
 		$rand_key			= array_rand($this->_app_keys, 1);
@@ -91,18 +84,15 @@ class TBAPI {
             }
         }
         curl_close($ch);
-        $obj = json_decode($postResult,$this->_json_assoc);
-        foreach($obj as $k => $v) {
-            $obj = $v;
-        }
-        
-        if($obj->error_response){
-        	$this->_err_code	= $obj->error_response->code;
+        $res = json_decode($postResult,true);
+
+        if($res['error_response']){
+        	$this->_err_code = $res['error_response']['code'];
         	unset($this->_app_keys[$this->_app_key]);
         	$this->appkey();
         	return $this->getres($session);
         }
-        return $obj;
+        return $res;
     }
     function execute($session = '') {
     	if(strstr($this->method_name, '.widget.')){
@@ -145,7 +135,7 @@ class TBAPI {
 //		"Access-Control-Allow-Origin:http://".$_SERVER['HTTP_HOST']
 //		);
 //		print_r($HTTPHEADER);
-		
+
     	curl_setopt($ch, CURLOPT_HTTPHEADER, $HTTPHEADER);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -156,7 +146,7 @@ class TBAPI {
         $postResult = curl_exec($ch);
 //        echo "<pre>";
 //        print_r($postResult);
-        
+
         if (curl_errno($ch)){
             throw new Exception(curl_error($ch), 0);
         }else{
@@ -166,24 +156,22 @@ class TBAPI {
             }
         }
         curl_close($ch);
-        $obj = json_decode($postResult,$this->_json_assoc);
-        
-        if($obj->error_response){
-        	$this->_err_code	= $obj->error_response->code;
+        $res = json_decode($postResult,true);
+        if($res['error_response']){
+            $this->_err_code = $res['error_response']['code'];
         	unset($this->_app_keys[$this->_app_key]);
         	$this->appkey();
         	return $this->widget($session);
         }
- //       print_r($obj);
-        return $obj;
+        return $res;
     }
 }
 
 
 //$req = new TopRequest('taobao.poster.channels.get');
-//$top_session = "24523150b447abcb617cc1d7b58ce71ad7230";  
-//$req->set_param('iid', $iid);  
-//$req->set_param('image', '@' . $new_image_path); //上传文件，在文件路径前加上AT符号  
-//$req->set_param('is_major', 'true');  
-//$result = $req->execute($top_session); // 对于不需要session的api，则可以不用session参数  
-//print_r($result); 
+//$top_session = "24523150b447abcb617cc1d7b58ce71ad7230";
+//$req->set_param('iid', $iid);
+//$req->set_param('image', '@' . $new_image_path); //涓婁紶鏂囦欢锛屽湪鏂囦欢璺緞鍓嶅姞涓夾T绗﹀彿
+//$req->set_param('is_major', 'true');
+//$result = $req->execute($top_session); // 瀵逛簬涓嶉渶瑕乻ession鐨刟pi锛屽垯鍙互涓嶇敤session鍙傛暟
+//print_r($result);

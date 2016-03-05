@@ -136,7 +136,11 @@ class spiderContent extends spider{
                     }
                     if (stripos($page_url,'<%step%>') !== false){
                         for ($pn = $rule['page_no_start']; $pn <= $rule['page_no_end']; $pn = $pn + $rule['page_no_step']) {
-                            $page_url_array[$pn] = str_replace('<%step%>', $pn, $page_url);
+                            $pno = $pn;
+                            if($rule['page_no_fill']){
+                                $pno = sprintf("%0".$rule['page_no_fill']."s",$pn);
+                            }
+                            $page_url_array[$pn] = str_replace('<%step%>', $pno, $page_url);
                             gc_collect_cycles();
                         }
                     }
@@ -254,15 +258,30 @@ class spiderContent extends spider{
             $content = iFS::http($content);
         }
 
-        if ($data['cleanafter']) {
-            $content = spiderTools::dataClean($data['cleanafter'], $content);
-            // $content = stripslashes($content);
-        }
         if ($data['autobreakpage']) {
             $content = spiderTools::autoBreakPage($content);
         }
         if ($data['mergepage']) {
             $content = spiderTools::mergePage($content);
+        }
+        if ($data['cleanafter']) {
+            $content = spiderTools::dataClean($data['cleanafter'], $content);
+        }
+
+        if ($data['filter']) {
+            $fwd = iCMS::filter($content);
+            if($fwd){
+                $filterMsg = '['.$name.']包含被系统屏蔽的字符!';
+                if(spider::$dataTest){
+                    exit('<h1>'.$filterMsg.'</h1>');
+                }
+                if(spider::$work){
+                    echo "\n{$filterMsg}\n";
+                    return false;
+                }else{
+                    iPHP::alert($filterMsg);
+                }
+            }
         }
         if ($data['empty'] && empty($content)) {
             $emptyMsg = '['.$name.']规则设置了不允许为空.当前抓取结果为空!请检查,规则是否正确!';

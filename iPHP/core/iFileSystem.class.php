@@ -48,6 +48,8 @@ class iFS {
     public static $PROXY_URL        = null;
 
     public static $CURL_COUNT             = 3;
+    public static $CURL_HTTP_CODE         = null;
+    public static $CURL_CONTENT_TYPE      = null;
     public static $CURL_PROXY             = null;
     public static $CURL_PROXY_ARRAY       = array();
     public static $CURLOPT_ENCODING       = '';
@@ -421,6 +423,12 @@ class iFS {
             $responses	= curl_exec($ch);
             $info 		= curl_getinfo($ch);
             $errno 		= curl_errno($ch);
+            if(self::$CURL_HTTP_CODE!==null){
+                if(self::$CURL_HTTP_CODE==$info['http_code']){
+                    return $responses;
+                }
+            }
+
             if($info['http_code'] == 404 || $info['http_code'] == 500){
                 curl_close($ch);
                 echo $url."\n";
@@ -448,6 +456,17 @@ class iFS {
                 $_count++;
                 return self::remote($newurl,$_count);
             }
+
+            if(self::$CURL_CONTENT_TYPE!==null && $info['content_type']){
+                if(stripos($info['content_type'], self::$CURL_CONTENT_TYPE)===false){
+                    curl_close($ch);
+                    echo $url."\n";
+                    echo "content_type:".$info['content_type']."\n";
+                    unset($responses,$info);
+                    return false;
+                }
+            }
+
 			if ($errno > 0 || empty($responses)|| empty($info['http_code'])) {
 	            if ($_count < self::$CURL_COUNT) {
 	                $_count++;
