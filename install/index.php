@@ -305,12 +305,12 @@ $lock_file = iPATH.'cache/install.lock';
 							<td>GD库</td>
 							<td>支持</td>
 							<td><?php
-											$gd_info = @gd_info();
-											if($gd_info){
-												echo $gd_info['GD Version'];
-											}else{
-												echo '<font style="color:red;">× 不支持</font>';
-											}
+								if(function_exists('gd_info')){
+									$gd_info = gd_info();
+									echo $gd_info['GD Version'];
+								}else{
+									echo '<font style="color:red;">× 不支持</font>';
+								}
 							?></td>
 						</tr>
 						<tr>
@@ -318,12 +318,12 @@ $lock_file = iPATH.'cache/install.lock';
 							<td>CURL</td>
 							<td>支持</td>
 							<td><?php
-											$curl_version = @curl_version();
-											if($curl_version){
-												echo $curl_version['version'];
-											}else{
-												echo '<font style="color:red;">× 不支持</font>';
-											}
+								if(function_exists('curl_version')){
+									$curl_version = curl_version();
+									echo $curl_version['version'];
+								}else{
+									echo '<font style="color:red;">× 不支持</font>';
+								}
 							?></td>
 						</tr>
 					</tbody>
