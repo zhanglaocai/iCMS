@@ -6,7 +6,7 @@
  * @$Id: pushforum.add.php 2404 2013-03-02 07:32:33Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 
 <div class="iCMS-container">
@@ -21,7 +21,7 @@ iACP::head();
     </div>
     <div class="widget-content nopadding">
       <form action="<?php echo __SELF__ ; ?>" method="get" class="form-inline" id="iCMS-html" target="iPHP_FRAME">
-        <input type="hidden" name="app" value="<?php echo iACP::$app_name;?>" />
+        <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <input type="hidden" name="do" value="createArticle" />
         <input type="hidden" name="frame" value="iPHP" />
         <div id="html-add" class="tab-content">
@@ -74,4 +74,4 @@ iACP::head();
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

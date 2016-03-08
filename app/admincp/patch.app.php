@@ -59,10 +59,10 @@ class patchApp{
 		if(iPatch::$next){
 			$this->msg.= iPatch::run();//数据库升级
 		}
-		include iACP::view("patch");
+		include admincp::view("patch");
     }
     function do_update(){
 		$this->msg	= iPatch::download();//下载文件包
-		include iACP::view("patch");
+		include admincp::view("patch");
     }
 }

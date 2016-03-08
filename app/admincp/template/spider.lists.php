@@ -7,7 +7,7 @@
  * @$Id: files.manage.php 179 2013-03-29 03:21:28Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head(false);
+admincp::head(false);
 ?>
 <script type="text/javascript">
 $(function() {
@@ -75,4 +75,4 @@ $(function() {
     </form>
   </div>
 </div>
-<?php iACP::foot(); ?>
+<?php admincp::foot(); ?>

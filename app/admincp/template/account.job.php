@@ -6,7 +6,7 @@
  * @$Id: account.add.php 179 2013-03-29 03:21:28Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <style type="text/css">
 .job { font-size: 14px; }
@@ -84,4 +84,4 @@ iACP::head();
     <div class="clearfloat"></div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

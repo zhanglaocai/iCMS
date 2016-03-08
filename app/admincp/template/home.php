@@ -6,7 +6,7 @@
  * @$Id: home.php 2393 2014-04-09 13:14:23Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <div class="iCMS-container">
   <div class="row-fluid">
@@ -224,7 +224,7 @@ $(function(){
 		    }
 		);
 	},1000);
-	<?php if(iCMS::$config['system']['patch'] && iACP::is_superadmin()){?>
+	<?php if(iCMS::$config['system']['patch'] && admincp::is_superadmin()){?>
     	window.setTimeout(function(){
 			$.getJSON('<?php echo __ADMINCP__;?>=patch&do=check&ajax=1&jt=<?php echo time(); ?>',
 				function(json){
@@ -244,4 +244,4 @@ $(function(){
 	<?php } ?>
 });
 </script>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

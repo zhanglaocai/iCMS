@@ -6,7 +6,7 @@
  * @$Id: spider.php 586 2013-04-02 14:44:18Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <style>
 .rule_data_name { width:80px; }
@@ -481,4 +481,4 @@ $(function(){
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

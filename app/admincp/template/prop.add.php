@@ -6,7 +6,7 @@
 * @$Id: prop.add.php 2379 2014-03-19 02:37:47Z coolmoo $
 */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
@@ -89,4 +89,4 @@ iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

@@ -26,7 +26,7 @@ class settingApp{
     	$config['site']['indexName'] OR $config['site']['indexName'] = 'index';
         //$redis    = extension_loaded('redis');
         $memcache = extension_loaded('memcache');
-    	include iACP::view("setting");
+    	include admincp::view("setting");
     }
     /**
      * [do_save 保存配置]
@@ -76,9 +76,9 @@ class settingApp{
      * @param  [sting] $name   [应用名]
      */
     function app($appid=0,$name=null){
-        $name===null && $name = iACP::$app_name;
+        $name===null && $name = admincp::$APP_NAME;
         $config = $this->get($appid,$name);
-        include iACP::view($name.".config");
+        include admincp::view($name.".config");
     }
     /**
      * [save 其它应用配置保存]
@@ -86,7 +86,7 @@ class settingApp{
      * @param  [sting] $app   [应用名]
      */
     function save($appid=0,$name=null){
-        $name===null   && $name = iACP::$app_name;
+        $name===null   && $name = admincp::$APP_NAME;
         empty($appid) && iPHP::alert("配置程序出错缺少APPID!");
         $config = iS::escapeStr($_POST['config']);
         $this->set($config,$name,$appid,false);

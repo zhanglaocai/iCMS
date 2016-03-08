@@ -7,7 +7,7 @@
  * @$Id: files.manage.php 179 2013-03-29 03:21:28Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head(false);
+admincp::head(false);
 ?>
 <div class="iCMS-container">
   <div class="pic">
@@ -34,4 +34,4 @@ iACP::head(false);
   $(".pic img").each(function(i){iimgFix(this,0,600);});
 })($);
 </script>
-<?php iACP::foot(); ?>
+<?php admincp::foot(); ?>

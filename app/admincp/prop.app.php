@@ -11,11 +11,11 @@
 */
 class propApp{
     function __construct() {
-        $this->categoryApp = iACP::app('category','all');
-        $this->category    = $this->categoryApp->category;
         $this->pid         = (int)$_GET['pid'];
     }
     function do_add(){
+        $this->categoryApp = iPHP::app('category.admincp','all');
+        $this->category    = $this->categoryApp->category;
         $this->pid && $rs = iDB::row("SELECT * FROM `#iCMS@__prop` WHERE `pid`='$this->pid' LIMIT 1;",ARRAY_A);
         if($_GET['act']=="copy"){
             $this->pid = 0;
@@ -25,7 +25,7 @@ class propApp{
             $_GET['type'] && $rs['type']  = iS::escapeStr($_GET['type']);
             $_GET['field']&& $rs['field'] = iS::escapeStr($_GET['field']);
         }
-        include iACP::view("prop.add");
+        include admincp::view("prop.add");
     }
     function do_save(){
         $pid      = (int)$_POST['pid'];
@@ -93,6 +93,8 @@ class propApp{
 	}
 
     function do_iCMS(){
+        $this->categoryApp = iPHP::app('category.admincp','all');
+        $this->category    = $this->categoryApp->category;
         $sql			= " where 1=1";
 //        $cid			= (int)$_GET['cid'];
 //
@@ -116,7 +118,7 @@ class propApp{
         iPHP::pagenav($total,$maxperpage,"个属性");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__prop` {$sql} order by pid DESC LIMIT ".iPHP::$offset." , {$maxperpage}");
         $_count = count($rs);
-    	include iACP::view("prop.manage");
+    	include admincp::view("prop.manage");
     }
     function do_cache(){
         $this->cache();
@@ -138,7 +140,7 @@ class propApp{
     	}
     }
     function btn_group($field, $type = null,$target = null){
-        $type OR $type = iACP::$app_name;
+        $type OR $type = admincp::$APP_NAME;
         $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
         $target OR $target = $field;
         echo '<div class="btn-group">'.
@@ -151,7 +153,7 @@ class propApp{
         echo '</ul></div>';
     }
     function get_prop($field, $val = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {
-        $type OR $type = iACP::$app_name;
+        $type OR $type = admincp::$APP_NAME;
         $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
         $valArray  = explode(',', $val);
         foreach ((array)$propArray AS $k => $P) {

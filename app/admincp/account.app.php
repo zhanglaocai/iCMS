@@ -12,7 +12,7 @@
 class accountApp{
     function __construct() {
         $this->uid      = (int)$_GET['id'];
-        $this->groupApp = iACP::app('groups',1);
+        $this->groupApp = admincp::app('groups',1);
     }
 
     function do_job(){
@@ -23,7 +23,7 @@ class accountApp{
         $month  = $job->month();
         $pmonth = $job->month($job->pmonth['start']);
         $rs     = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `uid`='$this->uid' LIMIT 1;");
-		include iACP::view("account.job");
+		include admincp::view("account.job");
     }
     function do_edit(){
         $this->uid = iMember::$userid;
@@ -35,7 +35,7 @@ class accountApp{
             $rs->info && $rs->info = unserialize($rs->info);
             $rs->info = (array)$rs->info;
         }
-        include iACP::view("account.add");
+        include admincp::view("account.add");
     }
     function do_iCMS(){
     	if($_GET['job']){
@@ -51,7 +51,7 @@ class accountApp{
         iPHP::pagenav($total,$maxperpage,"个用户");
         $rs         = iDB::all("SELECT * FROM `#iCMS@__members` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
         $_count		= count($rs);
-    	include iACP::view("account.manage");
+    	include admincp::view("account.manage");
     }
     function do_save(){
         $uid      = (int)$_POST['uid'];
@@ -76,7 +76,7 @@ class accountApp{
 
         $username OR iPHP::alert('账号不能为空');
 
-        if(iACP::is_superadmin()){
+        if(admincp::is_superadmin()){
             $gid = (int)$_POST['gid'];
         }else{
             isset($_POST['gid']) && iPHP::alert('您没有权限更改角色');

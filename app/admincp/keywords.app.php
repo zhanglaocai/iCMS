@@ -20,7 +20,7 @@ class keywordsApp{
         	$rs['keyword']	= $_GET['keyword'];
         	$rs['url']		= $_GET['url'];
         }
-        include iACP::view("keywords.add");
+        include admincp::view("keywords.add");
     }
     function do_save(){
 		$id		= (int)$_POST['id'];
@@ -57,7 +57,7 @@ class keywordsApp{
         iPHP::pagenav($total,$maxperpage,"个关键词");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__keywords` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
         $_count = count($rs);
-    	include iACP::view("keywords.manage");
+    	include admincp::view("keywords.manage");
     }
     function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;

@@ -28,7 +28,7 @@ class spiderApp {
     }
     function do_update(){
         if($this->sid){
-            $data = iACP::fields($_GET['iDT']);
+            $data = admincp::fields($_GET['iDT']);
             $data && iDB::update("spider_url",$data,array('id'=>$this->sid));
         }
         iPHP::success('操作成功!','js:1');
@@ -56,7 +56,7 @@ class spiderApp {
                     list($table,$_batch) = explode('#',$batch);
                     if(in_array($table, array('url','post','project','rul'))){
                         if(strpos($_batch, ':')!==false){
-                            $data = iACP::fields($_batch);
+                            $data = admincp::fields($_batch);
                             foreach($idArray AS $id) {
                                 $data && iDB::update("spider_".$table,$data,array('id'=>$id));
                             }
@@ -74,7 +74,7 @@ class spiderApp {
         iPHP::success('删除完成','js:1');
     }
     function do_manage($doType = null) {
-        $categoryApp = iACP::app('category',iCMS_APP_ARTICLE);
+        $categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
         $category    = $categoryApp->category;
 
         $sql = " WHERE 1=1";
@@ -95,7 +95,7 @@ class spiderApp {
         iPHP::pagenav($total, $maxperpage, "个网页");
         $rs = iDB::all("SELECT * FROM `#iCMS@__spider_url` {$sql} order by {$orderby} LIMIT " . iPHP::$offset . " , {$maxperpage}");
         $_count = count($rs);
-        include iACP::view("spider.manage");
+        include admincp::view("spider.manage");
     }
 
     function do_inbox() {
@@ -115,7 +115,7 @@ class spiderApp {
     function do_listpub() {
         $responses = spiderUrls::crawl('WEB@MANUAL');
         extract($responses);
-        include iACP::view("spider.lists");
+        include admincp::view("spider.lists");
     }
 
     function do_markurl() {
@@ -219,7 +219,7 @@ class spiderApp {
         iPHP::pagenav($total, $maxperpage, "个规则");
         $rs = iDB::all("SELECT * FROM `#iCMS@__spider_rule` {$sql} order by {$orderby} LIMIT " . iPHP::$offset . " , {$maxperpage}");
         $_count = count($rs);
-        include iACP::view("spider.rule");
+        include admincp::view("spider.rule");
     }
     function do_exportrule(){
         $rs   = iDB::row("select `name`, `rule` from `#iCMS@__spider_rule` where id = '$this->rid'");
@@ -274,7 +274,7 @@ class spiderApp {
         $rule['page_no_end'] OR $rule['page_no_end'] = 5;
         $rule['page_no_step'] OR $rule['page_no_step'] = 1;
 
-        include iACP::view("spider.addrule");
+        include admincp::view("spider.addrule");
     }
 
     function do_saverule() {
@@ -322,7 +322,7 @@ class spiderApp {
         iPHP::pagenav($total, $maxperpage, "个模块");
         $rs = iDB::all("SELECT * FROM `#iCMS@__spider_post` {$sql} order by {$orderby} LIMIT " . iPHP::$offset . " , {$maxperpage}");
         $_count = count($rs);
-        include iACP::view("spider.post");
+        include admincp::view("spider.post");
     }
     function do_delpost() {
     	$this->poid OR iPHP::alert("请选择要删除的项目");
@@ -331,7 +331,7 @@ class spiderApp {
     }
     function do_addpost() {
         $this->poid && $rs = iDB::row("SELECT * FROM `#iCMS@__spider_post` WHERE `id`='$this->poid' LIMIT 1;", ARRAY_A);
-        include iACP::view("spider.addpost");
+        include admincp::view("spider.addpost");
     }
 
     function do_savepost() {
@@ -370,7 +370,7 @@ class spiderApp {
     }
 
     function do_project() {
-        $categoryApp = iACP::app('category',iCMS_APP_ARTICLE);
+        $categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
         $category    = $categoryApp->category;
 
         $sql = "where 1=1";
@@ -396,7 +396,7 @@ class spiderApp {
         iPHP::pagenav($total, $maxperpage, "个方案");
         $rs = iDB::all("SELECT * FROM `#iCMS@__spider_project` {$sql} order by {$orderby} LIMIT " . iPHP::$offset . " , {$maxperpage}");
         $_count = count($rs);
-        include iACP::view("spider.project");
+        include admincp::view("spider.project");
     }
     function do_delproject() {
     	$this->pid OR iPHP::alert("请选择要删除的项目");
@@ -408,14 +408,14 @@ class spiderApp {
         $this->pid && $rs = spider::project($this->pid);
         $cid = empty($rs['cid']) ? $this->cid : $rs['cid'];
 
-        $categoryApp = iACP::app('category',iCMS_APP_ARTICLE);
+        $categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
 
         $cata_option = $categoryApp->select(false,$cid);
         $rule_option = $this->rule_opt($rs['rid']);
         $post_option = $this->post_opt($rs['poid']);
 
         //$rs['sleep'] OR $rs['sleep'] = 30;
-        include iACP::view("spider.addproject");
+        include admincp::view("spider.addproject");
     }
 
     function do_saveproject() {

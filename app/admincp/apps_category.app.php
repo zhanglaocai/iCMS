@@ -11,7 +11,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iACP::app('category','import');
+iPHP::app('category.admincp','import');
 
 class apps_categoryApp extends categoryApp {
 

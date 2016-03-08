@@ -140,7 +140,7 @@ class iMenu {
 		return $_count;
 	}
 	function li($mType,$id,$level = 1){
-		if(!iACP::MP($id)) return false;
+		if(!admincp::MP($id)) return false;
 
 		$a		= $this->menu_array[$id];
 		if($a['app']=="separator"){

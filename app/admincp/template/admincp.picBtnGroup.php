@@ -11,14 +11,14 @@ $unid = uniqid();
 <div class="btn-group">
   <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择图片</a>
   <ul class="dropdown-menu">
-    <?php if(iACP::MP('FILE.UPLOAD')){?>
+    <?php if(admincp::MP('FILE.UPLOAD')){?>
     <li><a href="<?php echo __ADMINCP__;?>=files&do=add&from=modal&callback=<?php echo $callback;?>" data-toggle="modal" data-meta='{"width":"300px","height":"80px"}' title="本地上传"><i class="fa fa-upload"></i> 本地上传</a></li>
     <?php }?>
-    <?php if(iACP::MP('FILE.BROWSE')){?>
+    <?php if(admincp::MP('FILE.BROWSE')){?>
     <li><a href="<?php echo __ADMINCP__;?>=files&do=browse&from=modal&click=file&callback=<?php echo $callback;?>" data-toggle="modal" title="从网站选择"><i class="fa fa-search"></i> 从网站选择</a></li>
     <li class="divider"></li>
     <?php }?>
-    <?php if(iACP::MP('FILE.EDIT')){?>
+    <?php if(admincp::MP('FILE.EDIT')){?>
     <li><a href="<?php echo __ADMINCP__;?>=files&do=editpic&from=modal&callback=<?php echo $callback;?>" data-toggle="modal" title="使用美图秀秀编辑图片" class="modal_photo_<?php echo $unid;?> tip"><i class="fa fa-edit"></i> 编辑</a></li>
     <li class="divider"></li>
         <?php if($indexid){?>

@@ -6,7 +6,7 @@
  * @$Id: filter.php 2322 2013-12-09 04:00:09Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
@@ -18,7 +18,7 @@ $(function(){
     <div class="widget-title"> <span class="icon"> <i class="fa fa-cloud"></i> </span>
       <h5 class="brs">数据库</h5>
       <ul class="nav nav-tabs" id="html-tab">
-        <?php echo iACP::$menu->show("tabs",iACP::$menu->parentid); ?>
+        <?php echo admincp::$menu->show("tabs",admincp::$menu->parentid); ?>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -80,4 +80,4 @@ $(function(){
 <div class="iCMS-batch">
   <div id="backupBatch"><div class="input-prepend input-append"><span class="add-on">分卷备份</span><input name="sizelimit" type="text" value="2048" class="span1"><span class="add-on">KB</span><span class="add-on">每个分卷文件长度</span> </div></div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

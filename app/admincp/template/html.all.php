@@ -6,7 +6,7 @@
  * @$Id: pushforum.add.php 2404 2013-03-02 07:32:33Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 
 <div class="iCMS-container">
@@ -39,4 +39,4 @@ iACP::head();
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

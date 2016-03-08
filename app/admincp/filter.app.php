@@ -12,7 +12,7 @@
 class filterApp{
     private $setting;
     function __construct() {
-        $this->setting = iACP::app('setting');
+        $this->setting = admincp::app('setting');
     }
     function do_iCMS(){
         $filter  = $this->setting->get(0,'word.filter');
@@ -20,7 +20,7 @@ class filterApp{
         foreach((array)$filter AS $k=>$val) {
             $filterArray[$k]=implode("=",(array)$val);
         }
-    	include iACP::view("filter");
+    	include admincp::view("filter");
     }
     function do_save(){
         $filter  = explode("\n",$_POST['filter']);

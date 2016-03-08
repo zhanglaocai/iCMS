@@ -9,10 +9,10 @@ defined('iPHP') OR exit('What are you doing?');
 ?>
 <script type="text/javascript">
 $(function(){
-  $("[data-menu='m<?php echo iACP::$menu->rootid; ?>']").addClass("active");
-  $("[data-menu='m<?php echo iACP::$menu->parentid; ?>']").addClass("active");
-  $("[data-menu='m<?php echo iACP::$menu->do_mid; ?>']").addClass("active");
-  var c = $("[data-menu='m<?php echo iACP::$menu->parentid; ?>']","#sidebar");
+  $("[data-menu='m<?php echo admincp::$menu->rootid; ?>']").addClass("active");
+  $("[data-menu='m<?php echo admincp::$menu->parentid; ?>']").addClass("active");
+  $("[data-menu='m<?php echo admincp::$menu->do_mid; ?>']").addClass("active");
+  var c = $("[data-menu='m<?php echo admincp::$menu->parentid; ?>']","#sidebar");
   if(c.hasClass("submenu")){
     c.addClass("open");
     $("ul",c).show();
@@ -29,7 +29,7 @@ $(function(){
     </a>
       <div class="nav-collapse collapse">
         <ul class="nav" id="iCMS-menu">
-          <?php echo iACP::$menu->show(); ?>
+          <?php echo admincp::$menu->show(); ?>
         </ul>
         <ul class="nav pull-right">
           <li><a href="<?php echo iCMS_URL;?>" target="_blank"><i class="fa fa-home fa-lg"></i> 网站首页</a></li>
@@ -57,7 +57,7 @@ $(function(){
     </a>
   </div>
   <ul>
-    <?php echo iACP::$menu->sidebar(); ?>
+    <?php echo admincp::$menu->sidebar(); ?>
     <li class="last"></li>
   </ul>
   <div class="clearfloat"></div>
@@ -65,4 +65,4 @@ $(function(){
 </div>
 <?php }?>
 <div id="content">
-<div id="breadcrumb"> <a href="<?php echo __SELF__; ?>" title="返回管理首页" class="tip-bottom"><i class="fa fa-home"></i> 管理中心</a> <?php echo iACP::$menu->breadcrumb(); ?> </div>
+<div id="breadcrumb"> <a href="<?php echo __SELF__; ?>" title="返回管理首页" class="tip-bottom"><i class="fa fa-home"></i> 管理中心</a> <?php echo admincp::$menu->breadcrumb(); ?> </div>

@@ -6,7 +6,7 @@
  * @$Id: filter.php 2003 2013-07-22 07:27:56Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <style>
 #log{color: #999;font-size: 12px;line-height: 20px;}
@@ -48,4 +48,4 @@ function clearIntervals(){
 	finish();
 }
 </script>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

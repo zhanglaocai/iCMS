@@ -6,7 +6,7 @@
  * @$Id: filter.php 2003 2013-07-22 07:27:56Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head(false);
+admincp::head(false);
 ?>
 <script type="text/javascript">
 var settings = {
@@ -76,4 +76,4 @@ var settings = {
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

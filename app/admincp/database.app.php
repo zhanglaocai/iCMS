@@ -23,7 +23,7 @@ class databaseApp{
     	$pwd	= $res['pwd'];
     	$parent	= $res['parent'];
     	$URI	= $res['URI'];
-		include iACP::view("database.recover");
+		include admincp::view("database.recover");
 	}
 	function do_repair(){
 		$this->do_backup();
@@ -39,10 +39,10 @@ class databaseApp{
 //				$oTable[] = $rs[$i];
 //			}
 //		}
-    	include iACP::view("database.backup");
+    	include admincp::view("database.backup");
     }
     function do_replace(){
-    	include iACP::view("database.replace");
+    	include admincp::view("database.replace");
     }
     function do_batch(){
     	$tableA	= (array)$_POST['table'];

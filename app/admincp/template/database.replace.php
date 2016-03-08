@@ -6,14 +6,14 @@
  * @$Id: filter.php 2322 2013-12-09 04:00:09Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <div class="iCMS-container">
   <div class="widget-box" id="<?php echo APP_BOXID;?>">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-cloud"></i> </span>
       <h5 class="brs">数据库</h5>
       <ul class="nav nav-tabs" id="html-tab">
-        <?php echo iACP::$menu->show("tabs",iACP::$menu->parentid); ?>
+        <?php echo admincp::$menu->show("tabs",admincp::$menu->parentid); ?>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -52,4 +52,4 @@ iACP::head();
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

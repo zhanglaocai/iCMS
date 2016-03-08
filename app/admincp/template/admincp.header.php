@@ -58,11 +58,11 @@ window.iCMS.init({
 });
 $(function(){
 	<?php if($_GET['tab']){?>
-	var $itab = $("#<?php echo iACP::$app_name; ?>-tab");
+	var $itab = $("#<?php echo admincp::$APP_NAME; ?>-tab");
 	$("li",$itab).removeClass("active");
 	$(".tab-pane").removeClass("active").addClass("hide");
-	$("a[href ='#<?php echo iACP::$app_name; ?>-<?php echo $_GET['tab']; ?>']",$itab).parent().addClass("active");
-	$("#<?php echo iACP::$app_name; ?>-<?php echo $_GET['tab']; ?>").addClass("active").removeClass("hide");
+	$("a[href ='#<?php echo admincp::$APP_NAME; ?>-<?php echo $_GET['tab']; ?>']",$itab).parent().addClass("active");
+	$("#<?php echo admincp::$APP_NAME; ?>-<?php echo $_GET['tab']; ?>").addClass("active").removeClass("hide");
 	<?php }?>
   <?php if($body_class=='sidebar-mini'){?>
     mini_tip();

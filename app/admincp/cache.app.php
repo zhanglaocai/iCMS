@@ -16,7 +16,7 @@ class cacheApp{
     }
     function do_all(){
         foreach ($this->acp as $key => $acp) {
-            $acp = iACP::app($acp);
+            $acp = admincp::app($acp);
             $acp->cache();
         }
         $this->do_menu(false);
@@ -29,13 +29,13 @@ class cacheApp{
     }
     function do_iCMS($dialog=true){
 		if (in_array($_GET['acp'], $this->acp)) {
-	    	$acp = iACP::app($_GET['acp']);
+	    	$acp = admincp::app($_GET['acp']);
 	    	$acp->cache();
 	    	$dialog && iPHP::success('更新完成');
 		}
     }
     function do_menu($dialog=true){
-    	iACP::$menu->cache();
+    	admincp::$menu->cache();
     	$dialog && iPHP::success('更新完成','js:1');
     }
     function do_allcategory($dialog=true){
@@ -44,15 +44,15 @@ class cacheApp{
     	$dialog && iPHP::success('更新完成');
     }
     function do_category($dialog=true){
-        $categoryApp = iACP::app('category');
+        $categoryApp = iPHP::app('category.admincp');
         $categoryApp->do_cache($dialog);
     }
     function do_pushcategory($dialog=true){
-        $categoryApp = iACP::app('pushcategory');
+        $categoryApp = admincp::app('pushcategory');
         $categoryApp->do_cache($dialog);
     }
     function do_tagcategory($dialog=true){
-        $categoryApp = iACP::app('tagcategory');
+        $categoryApp = admincp::app('tagcategory');
         $categoryApp->do_cache($dialog);
     }
     function do_tpl($dialog=true){
@@ -60,7 +60,7 @@ class cacheApp{
     	$dialog && iPHP::success('清理完成');
     }
     function do_artCount($dialog=true){
-        $app = iACP::app('category');
+        $app = iPHP::app('category.admincp');
     	$app->recount();
     	$dialog && iPHP::success('更新完成');
     }

@@ -6,7 +6,7 @@
  * @$Id: keywords.add.php 2365 2014-02-23 16:26:27Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <style type="text/css">
 .add-on { width: 70px; }
@@ -40,4 +40,4 @@ iACP::head();
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

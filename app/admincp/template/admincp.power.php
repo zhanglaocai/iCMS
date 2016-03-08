@@ -18,8 +18,8 @@ $(function(){
     var power  = <?php echo $rs->power?$rs->power:'{}'?>,
         cpower = <?php echo $rs->cpower?$rs->cpower:'{}'?>;
 
-    set_select(power,'<?php echo iACP::$app_name; ?>-power');
-    set_select(cpower,'<?php echo iACP::$app_name; ?>-cpower');
+    set_select(power,'<?php echo admincp::$APP_NAME; ?>-power');
+    set_select(cpower,'<?php echo admincp::$APP_NAME; ?>-cpower');
 
 });
 function get_tree(e){
@@ -42,9 +42,9 @@ function set_select(vars,el){
 <style>
 .separator .checker{margin-top: -20px !important;}
 </style>
-<div id="<?php echo iACP::$app_name; ?>-power" class="tab-pane hide">
+<div id="<?php echo admincp::$APP_NAME; ?>-power" class="tab-pane hide">
   <div class="input-prepend input-append"><span class="add-on">全选</span><span class="add-on">
-    <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo iACP::$app_name; ?>-power"/>
+    <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo admincp::$APP_NAME; ?>-power"/>
     </span><button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
   </div>
   <div class="clearfloat mb10"></div>
@@ -77,12 +77,12 @@ function set_select(vars,el){
   <div class="clearfloat mb10 solid"></div>
   <div id="power_treecontrol"> <a style="display:none;"></a> <a style="display:none;"></a> <a class="btn btn-mini btn-info" href="javascript:;">展开/收缩</a></div>
   <ul id="power_tree">
-  <?php echo iACP::app('menu')->power_tree();?>
+  <?php echo admincp::app('menu')->power_tree();?>
   </ul>
 </div>
-<div id="<?php echo iACP::$app_name; ?>-cpower" class="tab-pane hide">
+<div id="<?php echo admincp::$APP_NAME; ?>-cpower" class="tab-pane hide">
   <div class="input-prepend input-append"><span class="add-on">全选</span><span class="add-on">
-    <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo iACP::$app_name; ?>-cpower"/>
+    <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo admincp::$APP_NAME; ?>-cpower"/>
     </span><button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
   </div>
   <div class="clearfloat mb10"></div>
@@ -96,7 +96,7 @@ function set_select(vars,el){
   <span class="label label-important">注:只有文章类型的栏目才有内容权限</span>
   <div id="cpower_treecontrol"> <a style="display:none;"></a> <a style="display:none;"></a> <a class="btn btn-mini btn-info" href="javascript:;">展开/收缩</a></div>
   <ul id="cpower_tree">
-    <?php echo iACP::app('category','all')->power_tree();?>
+    <?php echo iPHP::app('category.admincp','all')->power_tree();?>
   </ul>
 </div>
 

@@ -6,7 +6,7 @@
  * @$Id: account.add.php 179 2013-03-29 03:21:28Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
@@ -34,7 +34,7 @@ $(function(){
         <input name="type" type="hidden" value="<?php echo $this->type; ?>" />
         <div id="account-add" class="tab-content">
           <div id="account-info" class="tab-pane active">
-            <?php if(iACP::is_superadmin()){ ?>
+            <?php if(admincp::is_superadmin()){ ?>
             <div class="input-prepend"> <span class="add-on">角色</span>
               <select name="gid" id="gid" class="chosen-select" data-placeholder="请选择用户组">
                 <option value='0'>路人甲[GID:0] </option>
@@ -142,7 +142,7 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
           </div>
-          <?php include iACP::view("admincp.power"); ?>
+          <?php include admincp::view("admincp.power"); ?>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
@@ -151,4 +151,4 @@ $(function(){
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

@@ -18,10 +18,10 @@ class htmlApp{
 		$this->alltime   = $_GET['alltime']?$_GET['alltime']:0;
     }
     function do_all(){
-    	include iACP::view("html.all");
+    	include admincp::view("html.all");
     }
     function do_index(){
-    	include iACP::view("html.index");
+    	include admincp::view("html.index");
     }
     function do_createIndex(){
 		$indexTPL  = iCMS::$config['template']['index']	= $this->PG['indexTPL'];
@@ -29,7 +29,7 @@ class htmlApp{
     	$indexName OR $indexName ="index".iCMS::$config['router']['html_ext'];
     	iFS::check_ext('.'.iCMS::$config['router']['html_ext']) OR iPHP::alert('文件类型不合法!');
     	//iCMS::$config['template']['index_mode'] = 1;
-		$setting = iACP::app('setting');
+		$setting = admincp::app('setting');
 		$setting->update('template');
     	$this->CreateIndex($indexTPL,$indexName);
     }
@@ -79,8 +79,8 @@ class htmlApp{
 		iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
     function do_category(){
-        $this->categoryApp = iACP::app('category',iCMS_APP_ARTICLE);
-    	include iACP::view("html.category");
+        $this->categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
+    	include admincp::view("html.category");
     }
     function do_createCategory($cid=0,$p=1,$loop=1){
 		$category	= $this->PG['cid'];
@@ -163,8 +163,8 @@ class htmlApp{
 		iPHP::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
     }
     function do_article(){
-        $this->categoryApp = iACP::app('category',iCMS_APP_ARTICLE);
-    	include iACP::view("html.article");
+        $this->categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
+    	include admincp::view("html.article");
     }
     function do_createArticle($aid=null){
 		$category = $this->PG['cid'];

@@ -20,7 +20,7 @@ class linksApp{
             $rs['keyword'] = $_GET['keyword'];
             $rs['url']     = $_GET['url'];
         }
-        include iACP::view("links.add");
+        include admincp::view("links.add");
     }
     function do_save(){
 		$id			= (int)$_POST['id'];
@@ -61,7 +61,7 @@ class linksApp{
         iPHP::pagenav($total,$maxperpage,"个网站");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__links` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
         $_count = count($rs);
-    	include iACP::view("links.manage");
+    	include admincp::view("links.manage");
     }
     function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;

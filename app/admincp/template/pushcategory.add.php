@@ -6,7 +6,7 @@
  * @$Id: pushcategory.add.php 2379 2014-03-19 02:37:47Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
@@ -25,7 +25,7 @@ $(function(){
         <input name="cid" type="hidden" value="<?php echo $rs['cid']  ; ?>" />
         <div id="pushcategory-add" class="tab-content">
           <div class="input-prepend"> <span class="add-on">上级版块</span>
-            <?php if(iACP::CP($rootid) || empty($rootid)) {   ?>
+            <?php if(admincp::CP($rootid) || empty($rootid)) {   ?>
             <select name="rootid" class="chosen-select">
               <option value="0">======顶级版块=====</option>
               <?php echo $this->select('ca',$rootid,0,1,true);?>
@@ -40,7 +40,7 @@ $(function(){
           <div class="input-prepend"> <span class="add-on">版块属性</span>
             <select name="pid" id="pid" class="chosen-select">
               <option value="0">普通版块[pid='0']</option>
-              <?php echo iACP::getProp("pid",$rs['pid']) ; ?>
+              <?php echo admincp::getProp("pid",$rs['pid']) ; ?>
             </select>
           </div>
           <div class="clearfloat mb10"></div>
@@ -67,4 +67,4 @@ $(function(){
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

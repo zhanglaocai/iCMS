@@ -6,7 +6,7 @@
  * @$Id: menu.manage.php 2070 2013-09-09 15:34:49Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <link rel="stylesheet" href="./app/admincp/ui/jquery/treeview-0.1.0.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/jquery/ui-1.10.3.min.css" type="text/css" />
@@ -63,4 +63,4 @@ $(function(){
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

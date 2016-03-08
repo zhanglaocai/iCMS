@@ -435,9 +435,12 @@ class iPHP{
     	}
     	switch ($file_type) {
     		case 'class': $obj_name = $app_name;break;
-    		case 'table':
-				$obj_name = $app_name.'Table';
-				$args     = "static";
+            case 'admincp':
+                $obj_name = $app_name.'Admincp';break;
+                // $args===null && $args = "static";
+            case 'table':
+                $obj_name = $app_name.'Table';
+                $args     = "static";
     		break;
     		case 'func':
 				$args     = "include";

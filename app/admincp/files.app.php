@@ -21,21 +21,21 @@ class filesApp{
         $this->upload_max_filesize = get_cfg_var("upload_max_filesize");
     }
 	function do_add(){
-        iACP::MP('FILE.UPLOAD','page');
+        admincp::MP('FILE.UPLOAD','page');
 		$this->id && $rs = iFS::getFileData('id',$this->id);
-		include iACP::view("files.add");
+		include admincp::view("files.add");
 	}
 	function do_multi(){
-        iACP::MP('FILE.UPLOAD','page');
+        admincp::MP('FILE.UPLOAD','page');
 		$file_upload_limit	= $_GET['UN']?$_GET['UN']:100;
 		$file_queue_limit	= $_GET['QN']?$_GET['QN']:10;
 		$file_size_limit	= (int)$this->upload_max_filesize;
         $file_size_limit OR iPHP::alert("检测到系统环境脚本上传文件大小限制为{$this->upload_max_filesize},请联系管理员");
         stristr($this->upload_max_filesize,'m') && $file_size_limit    = $file_size_limit*1024;
-		include iACP::view("files.multi");
+		include admincp::view("files.multi");
 	}
 	function do_iCMS(){
-        iACP::MP('FILE.MANAGE','page');
+        admincp::MP('FILE.MANAGE','page');
     	$sql='WHERE 1=1 ';
         if($_GET['keywords']) {
             if($_GET['st']=="filename") {
@@ -62,7 +62,7 @@ class filesApp{
         iPHP::pagenav($total,$maxperpage,"个文件");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__filedata` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
         $_count = count($rs);
-    	include iACP::view("files.manage");
+    	include admincp::view("files.manage");
     }
     function do_IO(){
         $udir      = iS::escapeStr($_GET['udir']);
@@ -84,7 +84,7 @@ class filesApp{
         ));
     }
     function do_upload(){
-        iACP::MP('FILE.UPLOAD','alert');
+        admincp::MP('FILE.UPLOAD','alert');
 //iFS::$checkFileData = true;
     	$_POST['watermark'] OR iFS::$watermark = false;
         iFS::$callback = true;
@@ -154,7 +154,7 @@ class filesApp{
 		}
 	}
     function do_del($id = null){
-        iACP::MP('FILE.DELETE','alert');
+        admincp::MP('FILE.DELETE','alert');
         $id ===null && $id = $this->id;
         $id OR iPHP::alert("请选择要删除的文件");
         $indexid = (int)$_GET['indexid'];
@@ -178,7 +178,7 @@ class filesApp{
     	iPHP::alert($msg);
     }
     function do_mkdir(){
-        iACP::MP('FILE.MKDIR') OR iPHP::json(array('code'=>0,'msg'=>'您没有相关权限!'));
+        admincp::MP('FILE.MKDIR') OR iPHP::json(array('code'=>0,'msg'=>'您没有相关权限!'));
     	$name	= $_POST['name'];
         strstr($name,'.')!==false	&& iPHP::json(array('code'=>0,'msg'=>'您输入的目录名称有问题!'));
         strstr($name,'..')!==false	&& iPHP::json(array('code'=>0,'msg'=>'您输入的目录名称有问题!'));
@@ -193,7 +193,7 @@ class filesApp{
 		iPHP::json(array('code'=>0,'msg'=>'创建失败,请检查目录权限!!'));
     }
     function explorer($dir=NULL,$type=NULL){
-        iACP::MP('FILE.BROWSE','page');
+        admincp::MP('FILE.BROWSE','page');
         $res    = iFS::folder($dir,$type);
         $dirRs  = $res['DirArray'];
         $fileRs = $res['FileArray'];
@@ -201,7 +201,7 @@ class filesApp{
         $parent = $res['parent'];
         $URI    = $res['URI'];
         $navbar = false;
-    	include iACP::view("files.explorer");
+    	include admincp::view("files.explorer");
     }
     function do_seltpl(){
     	$this->explorer('template');
@@ -213,7 +213,7 @@ class filesApp{
     	$this->explorer(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
     }
     function do_editpic(){
-        iACP::MP('FILE.EDIT','page');
+        admincp::MP('FILE.EDIT','page');
         $pic       = iS::escapeStr($_GET['pic']);
         //$pic OR iPHP::alert("请选择图片!");
         if($pic){
@@ -250,14 +250,14 @@ class filesApp{
         }
         $max_size  = (int)$this->upload_max_filesize;
         stristr($this->upload_max_filesize,'m') && $max_size = $max_size*1024*1024;
-        include iACP::view("files.editpic");
+        include admincp::view("files.editpic");
     }
     function do_preview(){
         $_GET['pic'] && $src = iFS::fp($_GET['pic'],'+http');
-        include iACP::view("files.preview");
+        include admincp::view("files.preview");
     }
     function do_deldir(){
-        iACP::MP('FILE.DELETE','alert');
+        admincp::MP('FILE.DELETE','alert');
         $_GET['path'] OR iPHP::alert("请选择要删除的目录");
         strpos($_GET['path'], '..') !== false && iPHP::alert("目录路径中带有..");
 
@@ -274,7 +274,7 @@ class filesApp{
         iPHP::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
     }
     function do_delfile(){
-        iACP::MP('FILE.DELETE','alert');
+        admincp::MP('FILE.DELETE','alert');
         $_GET['path'] OR iPHP::alert("请选择要删除的文件");
         strpos($_GET['path'], '..') !== false && iPHP::alert("文件路径中带有..");
 

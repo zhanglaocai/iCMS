@@ -6,7 +6,7 @@
  * @$Id: keywords.manage.php 2371 2014-03-16 05:33:13Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
@@ -21,7 +21,7 @@ $(function(){
     </div>
     <div class="widget-content">
       <form action="<?php echo __SELF__ ; ?>" method="get" class="form-inline">
-        <input type="hidden" name="app" value="<?php echo iACP::$app_name;?>" />
+        <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <div class="input-prepend input-append"> <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
           <span class="add-on">条记录</span> </div>
@@ -82,4 +82,4 @@ $(function(){
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

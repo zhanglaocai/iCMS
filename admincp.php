@@ -12,5 +12,5 @@
 define('iPHP_DEBUG', true);
 define('iPHP_SESSION','SESSION');
 require dirname(__file__) . '/iCMS.php';
-require iPHP_APP_CORE.'/iACP.class.php';
-iACP::run();
+iPHP::app('admincp.class','static');
+admincp::run();

@@ -13,7 +13,7 @@ class homeApp{
     function __construct() {}
     function do_logout(){
     	iMember::logout();
-        iACP::destroy_seccode();
+        admincp::destroy_seccode();
     	iPHP::success('注销成功!','url:'.__SELF__);
     }
     function do_iCMS(){
@@ -55,7 +55,7 @@ class homeApp{
         $fdc = iDB::value("SELECT count(*) FROM `#iCMS@__filedata`");
         $lc  = iDB::value("SELECT count(*) FROM `#iCMS@__links`");
 
-    	include iACP::view("home");
+    	include admincp::view("home");
     }
     function okORno($o) {
         return $o?'<font color="green"><i class="fa fa-check"></i></font>':'<font color="red"><i class="fa fa-times"></i></font>';

@@ -22,7 +22,7 @@ class templateApp{
         $navbar    = true;
         $file_edit = true;
 
-    	include iACP::view("files.explorer");
+    	include admincp::view("files.explorer");
     }
 
 }

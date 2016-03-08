@@ -7,7 +7,7 @@
  * @$Id: files.manage.php 179 2013-03-29 03:21:28Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head(false);
+admincp::head(false);
 ?>
 <style type="text/css">
 .iCMS-container {margin: 0px;background-color: #ECEEEF;}
@@ -226,4 +226,4 @@ function loadPhoto(data,base64){
   }
 }
 </script>
-<?php iACP::foot(); ?>
+<?php admincp::foot(); ?>

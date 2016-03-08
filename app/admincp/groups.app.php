@@ -30,7 +30,7 @@ class groupsApp{
 
     function do_add(){
         $this->gid && $rs = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='$this->gid' LIMIT 1;");
-        include iACP::view("groups.add");
+        include admincp::view("groups.add");
     }
 	function select($type=null,$currentid=NULL){
 		$type===null && $type = $this->type;
@@ -43,7 +43,7 @@ class groupsApp{
     function do_iCMS(){
     	$rs		= iDB::all("SELECT * FROM `#iCMS@__group` ORDER BY `type` , `gid` ASC");
 		$_count	= count($rs);
-    	include iACP::view("groups.manage");
+    	include admincp::view("groups.manage");
     }
     function do_del($gid = null,$dialog=true){
     	$gid===null && $gid=$this->gid;

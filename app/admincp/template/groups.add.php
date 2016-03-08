@@ -6,7 +6,7 @@
  * @$Id: groups.add.php 179 2013-03-29 03:21:28Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
@@ -40,7 +40,7 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
           </div>
-          <?php include iACP::view("admincp.power"); ?>
+          <?php include admincp::view("admincp.power"); ?>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
@@ -49,4 +49,4 @@ $(function(){
     </div>
   </div>
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>

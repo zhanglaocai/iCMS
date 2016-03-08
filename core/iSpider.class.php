@@ -215,7 +215,7 @@ class spider{
         }
 
         iS::slashes($_POST);
-        $app = iACP::app($postArgs->app);
+        $app = admincp::app($postArgs->app);
         $fun = $postArgs->fun;
         $app->callback['code'] = '1001';
         /**

@@ -6,7 +6,7 @@
  * @$Id: files.manage.php 179 2013-03-29 03:21:28Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iACP::head();
+admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
@@ -181,4 +181,4 @@ $(function(){
 <div id="mkdir-box">
   <input class="span2" id="newdirname" type="text" placeholder="请输入目录名称">
 </div>
-<?php iACP::foot();?>
+<?php admincp::foot();?>
