@@ -25,8 +25,6 @@ class iCMS extends iPHP{
         define('iCMS_FS_URL',    self::$config['FS']['url']);
         define('iCMS_REWRITE',   iPHP_ROUTER_REWRITE);
         define('iCMS_API',       iCMS_PUBLIC_URL.'/api.php');
-        define('iCMS_UI',        iCMS_DIR.'app/ui/common');
-        define('iCMS_UI_URL',    iCMS_URL.'/app/ui/common');
         define('iCMS_API_URL',   iCMS_API.'?app=');
         self::assign_site();
 	}
@@ -39,8 +37,6 @@ class iCMS extends iPHP{
         iPHP::$iTPL->_iTPL_VARS = array(
             'VERSION' => iCMS_VER,
             'API'     => iCMS_API,
-            'UI'      => iCMS_UI,
-            'UI_URL'  => iCMS_UI_URL,
             'SAPI'    => iCMS_API_URL,
             'APPID'   => array(
                 'ARTICLE'  => iCMS_APP_ARTICLE,

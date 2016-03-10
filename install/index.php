@@ -31,20 +31,20 @@ $lock_file = iPATH.'cache/install.lock';
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta content="iDreamSoft Inc." name="Copyright" />
-		<link href="../app/ui/common/bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
-		<link href="../app/ui/common/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" rel="stylesheet"/>
-		<link href="../app/ui/common/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet"/>
-		<link href="../app/ui/common/artDialog/6.0.3/ui-dialog.css" type="text/css" rel="stylesheet"/>
-		<link href="../app/ui/common/iCMS-6.0.0.css" type="text/css" rel="stylesheet"/>
+		<link href="../app/admincp/ui/common/bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+		<link href="../app/admincp/ui/common/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" rel="stylesheet"/>
+		<link href="../app/admincp/ui/common/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet"/>
+		<link href="../app/admincp/ui/common/artDialog/6.0.3/ui-dialog.css" type="text/css" rel="stylesheet"/>
+		<link href="../app/admincp/ui/common/iCMS-6.0.0.css" type="text/css" rel="stylesheet"/>
 		<link href="./install-6.0.0.css" type="text/css" rel="stylesheet"/>
 		<!--[if lt IE 9]>
-		<script src="../app/ui/common/ie/html5shiv.min.js"></script>
-		<script src="../app/ui/common/ie/respond.min.js"></script>
+		<script src="../app/admincp/ui/common/ie/html5shiv.min.js"></script>
+		<script src="../app/admincp/ui/common/ie/respond.min.js"></script>
 		<![endif]-->
-		<script src="../app/ui/common/jquery-1.11.0.min.js"></script>
-		<script src="../app/ui/common/bootstrap/2.3.2/js/bootstrap.min.js"></script>
-		<script src="../app/ui/common/artDialog/6.0.3/dialog-plus-min.js"></script>
-		<script src="../app/ui/common/iCMS-6.0.0.js"></script>
+		<script src="../app/admincp/ui/common/jquery-1.11.0.min.js"></script>
+		<script src="../app/admincp/ui/common/bootstrap/2.3.2/js/bootstrap.min.js"></script>
+		<script src="../app/admincp/ui/common/artDialog/6.0.3/dialog-plus-min.js"></script>
+		<script src="../app/admincp/ui/common/iCMS-6.0.0.js"></script>
 		<script>
 		var install = {
 			start:function () {

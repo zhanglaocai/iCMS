@@ -18,23 +18,23 @@ defined('iPHP') OR exit('What are you doing?');
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <!-- <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" /> -->
 <meta content="iDreamSoft Inc." name="Copyright" />
-<link rel="stylesheet" href="./app/ui/common/bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/ui/common/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/ui/common/bootstrap/2.3.2/css/datepicker.css" type="text/css" />
-<link rel="stylesheet" href="./app/ui/common/bootstrap/2.3.2/css/bootstrap-switch.css" type="text/css" />
-<link rel="stylesheet" href="./app/ui/common/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/ui/common/artDialog/6.0.3/ui-dialog.css" type="text/css" />
-<link rel="stylesheet" href="./app/ui/common/iCMS-6.0.0.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/common/bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/common/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/common/bootstrap/2.3.2/css/datepicker.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/common/bootstrap/2.3.2/css/bootstrap-switch.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/common/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/common/artDialog/6.0.3/ui-dialog.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/common/iCMS-6.0.0.css" type="text/css" />
 <!--[if lt IE 9]>
-  <script src="./app/ui/common/ie/html5shiv.min.js"></script>
-  <script src="./app/ui/common/ie/respond.min.js"></script>
+  <script src="./app/admincp/ui/common/ie/html5shiv.min.js"></script>
+  <script src="./app/admincp/ui/common/ie/respond.min.js"></script>
 <![endif]-->
-<script src="./app/ui/common/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="./app/ui/common/artDialog/6.0.3/dialog-plus-min.js" type="text/javascript"></script>
-<script src="./app/ui/common/bootstrap/2.3.2/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="./app/ui/common/bootstrap/2.3.2/js/bootstrap-datepicker.js" type="text/javascript"></script>
-<script src="./app/ui/common/bootstrap/2.3.2/js/bootstrap-switch.min.js" type="text/javascript"></script>
-<script src="./app/ui/common/iCMS-6.0.0.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/common/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/common/artDialog/6.0.3/dialog-plus-min.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/common/bootstrap/2.3.2/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/common/bootstrap/2.3.2/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/common/bootstrap/2.3.2/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/common/iCMS-6.0.0.js" type="text/javascript"></script>
 
 <!-- admincp ui -->
 <link href="./app/admincp/ui/jquery/uniform-2.1.2.min.css" type="text/css" rel="stylesheet"/>
@@ -50,7 +50,7 @@ defined('iPHP') OR exit('What are you doing?');
 <script type="text/javascript">
 window.iCMS.init({
   API:'<?php echo __SELF__;?>',
-  UI:'./app/ui/common',
+  UI:'./app/admincp/ui/common',
   URL:'<?php echo iCMS_URL;?>',
   PUBLIC:'<?php echo iCMS_PUBLIC_URL;?>',
   DEFTPL:'<?php echo iPHP_DEFAULT_TPL;?>',
