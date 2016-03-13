@@ -16,6 +16,7 @@ class iURL {
 	public static function init($config){
         $config['router']= array(
             'http'     => array('rule'=>'0','PRI'=>''),
+            'index'    => array('rule'=>'0','PRI'=>''),
             'category' => array('rule'=>'1','PRI'=>'cid'),
             'article'  => array('rule'=>'2','PRI'=>'id'),
             'software' => array('rule'=>'2','PRI'=>'id'),
@@ -32,10 +33,6 @@ class iURL {
     }
 
     private static function domain($cid="0",$akey='dir') {
-        $domain = iCache::get('iCMS/category/domain');
-        if(!$domain){
-            return;
-        }
         $ii       = new stdClass();
         $C        = iCache::get('iCMS/category/'.$cid);
         $rootid   = $C['rootid'];
@@ -197,46 +194,46 @@ class iURL {
                 $i->pfile = $i->file;
             }
 
-	        if($rule=='0'||strpos($url,'http://')!==false){
-                $hi          = new stdClass();
-                $hi->href    = $url;
-                $hi->ext     = $i->ext;
-                $hi->pageurl = $hi->href.'/'.$i->pfile ;
-	        	return $hi;
+	        if($rule=='0'){
+	        	return self::make($i);
 	        }
 //var_dump($i);
 //exit;
 			if($rule=='1') {
                 $domainArray = iCache::get('iCMS/category/domain');
-                $m           = $domainArray[$array['cid']];
-                if($m->domain) {
-                    $i->href   = str_replace($i->hdir,$m->dmpath,$i->href);
-                    $i->hdir   = $m->dmpath;
-                    $__dir__   = $i->dir.'/'.$m->pdir;
-                    $i->path   = str_replace($i->dir,$__dir__,$i->path);
-                    $i->dir    = $__dir__;
+                if($domainArray){
+                    $m = $domainArray[$category['cid']];
+// var_dump($m);
+                    if($m->domain) {
+                        $i->href   = str_replace($i->hdir,$m->dmpath,$i->href);
+                        $i->hdir   = $m->dmpath;
+
+                    // $__dir__   = $i->dir.'/'.$m->pdir;
+                    // $i->path   = str_replace($i->dir,$__dir__,$i->path);
+                    // $i->dir    = $__dir__;
                     $i->dmdir  = iFS::path(iPATH.$html_dir.'/'.$m->pd);
                     $bits      = parse_url($i->href);
                     $i->domain = $bits['scheme'].'://'.$bits['host'];
-                }else {
-                    $i->dmdir  = iFS::path(iPATH.$html_dir);
-                    $i->domain = $sURL;
+                    }
                 }
-		        if(strpos($array['domain'],'http://')!==false){
-                    $i->href = $array['domain'];
+		        if(strpos($category['domain'],'http://')!==false){
+                    $i->href = $category['domain'];
 		        }
             }
-            $i->pageurl  = $i->hdir.'/'.$i->pfile ;
-            $i->pagepath = $i->dir.'/'.$i->pfile;
 
-
-           $i->href	= str_replace('{P}',1,$i->href);
-           $i->path	= str_replace('{P}',1,$i->path);
-           $i->file	= str_replace('{P}',1,$i->file);
-           $i->name	= str_replace('{P}',1,$i->name);
-//var_dump($i);
-//exit;
+// var_dump($i);
+// exit;
         }
+        return self::make($i);
+    }
+    public static function make($i) {
+        $i->pageurl  = $i->hdir.'/'.$i->pfile ;
+        $i->pagepath = $i->dir.'/'.$i->pfile;
+
+        $i->href     = str_replace('{P}',1,$i->href);
+        $i->path     = str_replace('{P}',1,$i->path);
+        $i->file     = str_replace('{P}',1,$i->file);
+        $i->name     = str_replace('{P}',1,$i->name);
         return $i;
     }
 }

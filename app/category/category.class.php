@@ -53,6 +53,7 @@ class category {
             }
             $domain[$dcid]= self::domain($dcid);
         }
+//var_dump($domain);
 
     	if($appid===null){
 	    	foreach((array)$appidArray AS $_appid) {
@@ -81,7 +82,7 @@ class category {
             $ii->pdir   = $dm->pdir.'/'.$C[$akey];
             $ii->dmpath = $dm->dmpath.'/'.$C[$akey];
         }else {
-            $ii->pd     = $ii->pdir   = $ii->sdir;
+            $ii->pd     = $ii->pdir   = ltrim(iFS::path(iCMS::$config['router']['html_dir'].$ii->sdir),'/') ;
             $ii->dmpath = $ii->domain = $C['domain']?('http://'.ltrim($C['domain'],'http://')):'';
         }
         return $ii;

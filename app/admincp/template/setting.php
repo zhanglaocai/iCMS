@@ -130,9 +130,16 @@ function modal_tplfile(el,a){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">首页模板</span>
               <input type="text" name="config[template][index]" class="span3" id="template_index" value="<?php echo $config['template']['index'] ; ?>"/>
-              <input type="hidden" name="config[template][index_name]" class="span3" id="index_name" value="<?php echo $config['template']['index_name'] ; ?>"/>
-              <?php iACP::files_modal_btn('模板','file','template_index','tplfile');?></div>
+              <?php iACP::files_modal_btn('模板','file','template_index','tplfile');?>
+            </div>
             <span class="help-inline">首页默认模板，注：最好使用<span class="label label-inverse">{iTPL}</span>代替模板目录,程序将会自行切换PC端或者移动端</span>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend input-append">
+              <span class="add-on">首页文件名</span>
+              <input type="text" name="config[template][index_name]" class="span3" id="template_index_name" value="<?php echo $config['template']['index_name'] ; ?>"/>
+              <span class="add-on"><?php echo $config['router']['html_ext'] ; ?></span>
+            </div>
+            <span class="help-inline">首页文件名,一般为<span class="label label-important">index</span> 不用填写文件后缀名</span>
             <div class="clearfloat mb10 solid"></div>
             <div class="input-prepend"> <span class="add-on">桌面端域名</span>
               <input type="text" name="config[router][URL]" class="span3" value="<?php echo $config['router']['URL'] ; ?>"/>
