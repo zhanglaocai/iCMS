@@ -457,3 +457,13 @@ function select_fields($array,$fields='',$map=false){
     }
     return $rs;
 }
+function get_bytes($val) {
+    $val = trim($val);
+    $last = strtolower($val{strlen($val)-1});
+    switch($last) {
+        case 'g': $val *= 1024;
+        case 'm': $val *= 1024;
+        case 'k': $val *= 1024;
+    }
+    return $val;
+}

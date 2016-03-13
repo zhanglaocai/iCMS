@@ -129,7 +129,6 @@ class iPHP{
 
         $timezone = $config['time']['zone'];
         $timezone OR $timezone = 'Asia/Shanghai';//设置中国时区
-        @ini_set('date.timezone',$timezone);
         function_exists('date_default_timezone_set') && @date_default_timezone_set($timezone);
 
         self::multiple_device($config);
@@ -356,17 +355,29 @@ class iPHP{
 	    }
 	}
 	//设置COOKIE
-	public static function set_cookie($name, $value = "", $time = 0) {
+	public static function set_cookie($name, $value = "", $life = 0, $httponly = false) {
 		// $cookiedomain = iPHP_COOKIE_DOMAIN;
 		$cookiedomain = '';
 		$cookiepath   = iPHP_COOKIE_PATH;
-		$cookietime   = ($time?$time:iPHP_COOKIE_TIME);
-		$name         = iPHP_COOKIE_PRE.'_'.$name;
+
+        $value = urlencode($value);
+        $life  = ($life?$life:iPHP_COOKIE_TIME);
+        $name  = iPHP_COOKIE_PRE.'_'.$name;
+
         if(strpos(iPHP_SESSION,'SESSION')!==false){
             $_SESSION[$name] = $value;
         }
         if(strpos(iPHP_SESSION,'COOKIE')!==false){
-    	    setcookie($name, $value,time()+$cookietime,$cookiepath, $cookiedomain, $_SERVER['SERVER_PORT'] == 443 ? 1 : 0);
+            $_COOKIE[$name] = $value;
+            $timestamp      = time();
+            $life           = $life > 0 ? $timestamp + $life : ($life < 0 ? $timestamp - 31536000 : 0);
+            $path           = $httponly && PHP_VERSION < '5.2.0' ? $cookiepath.'; HttpOnly' : $cookiepath;
+            $secure         = $_SERVER['SERVER_PORT'] == 443 ? 1 : 0;
+            if(PHP_VERSION < '5.2.0') {
+                setcookie($name, $value, $life, $path, $cookiedomain, $secure);
+            } else {
+                setcookie($name, $value, $life, $path, $cookiedomain, $secure, $httponly);
+            }
         }
 	}
 	//取得COOKIE
@@ -375,9 +386,11 @@ class iPHP{
 
         if(strpos(iPHP_SESSION,'COOKIE')!==false){
     	   $cvalue = $_COOKIE[$name];
+           $cvalue = urldecode($cvalue);
         }
         if(strpos(iPHP_SESSION,'SESSION')!==false){
             $svalue = $_SESSION[$name];
+            $svalue = urldecode($svalue);
         }
         if(iPHP_SESSION=='SESSION+COOKIE'){
             if($cvalue==$svalue){
@@ -1033,9 +1046,17 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline){
 	@header("Cache-Control: no-store, no-cache, must-revalidate");
 	@header("Cache-Control: post-check=0, pre-check=0", false);
 	@header("Pragma: no-cache");
-    $_GET['frame'] OR exit($html);
+
+    if(isset($_GET['frame'])){
+        iPHP::$dialog['lock'] = true;
+        iPHP::dialog(array("warning:#:warning-sign:#:{$html}",'系统错误!可发邮件到 idreamsoft@qq.com 反馈错误!我们将及时处理'),'js:1',300);
+        exit;
+    }
+    if($_POST){
+        $html = str_replace(array("\r","\\","\"","\n","<b>","</b>","<pre>","</pre>"), array(' ',"\\\\","\\\"",'\n',''), $html);
+        echo '<script>alert("'.$html.'")</script>';
+        exit;
+    }
     $html = str_replace("\n",'<br />',$html);
-    iPHP::$dialog['lock'] = true;
-    iPHP::dialog(array("warning:#:warning-sign:#:{$html}",'系统错误!可发邮件到 idreamsoft@qq.com 反馈错误!我们将及时处理'),'js:1',30);
-    exit;
+    exit($html);
 }
