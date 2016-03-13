@@ -32,6 +32,10 @@ class iURL {
     }
 
     private static function domain($cid="0",$akey='dir') {
+        $domain = iCache::get('iCMS/category/domain');
+        if(!$domain){
+            return;
+        }
         $ii       = new stdClass();
         $C        = iCache::get('iCMS/category/'.$cid);
         $rootid   = $C['rootid'];
@@ -203,7 +207,8 @@ class iURL {
 //var_dump($i);
 //exit;
 			if($rule=='1') {
-                $m    = self::domain($array['cid']);
+                $domainArray = iCache::get('iCMS/category/domain');
+                $m           = $domainArray[$array['cid']];
                 if($m->domain) {
                     $i->href   = str_replace($i->hdir,$m->dmpath,$i->href);
                     $i->hdir   = $m->dmpath;
