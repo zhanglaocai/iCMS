@@ -86,6 +86,7 @@ class userApp{
         }
         $rs     = iDB::all("SELECT * FROM `#iCMS@__user` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
+        $propArray = iACP::getProp("pid",null,'array');
         include iACP::view("user.manage");
     }
     function do_save(){

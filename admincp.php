@@ -10,7 +10,6 @@
 * @$Id: admincp.php 2365 2014-02-23 16:26:27Z coolmoo $
 */
 define('iPHP_DEBUG', true);
-define('iPHP_SESSION','SESSION');
 define('iPHP_WAF_POST',false);
 require dirname(__file__) . '/iCMS.php';
 require iPHP_APP_CORE.'/iACP.class.php';

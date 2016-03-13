@@ -259,7 +259,7 @@ $(function(){
                   <?php } ?>
                 </div>
                 <?php if($value['pic'] && iCMS::$config['publish']['showpic']){ ?>
-                <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $value['id'] ; ?>" data-toggle="modal" title="预览"><img src="<?php echo iFS::fp($value['pic']); ?>" style="height:120px;"/></a>
+                <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $value['id'] ; ?>" data-toggle="modal" title="预览"><img src="<?php echo iFS::fp($value['pic'],'+http'); ?>" style="height:120px;"/></a>
                 <?php } ?>
               </td>
               <td><?php if($value['pubdate']) echo get_date($value['pubdate'],'Y-m-d H:i');?><br />
@@ -276,7 +276,8 @@ $(function(){
                    }
                  }
                 ?>
-                <?php echo iACP::getProp("pid",$value['pid'],'text',APP_DOURI.'&pid={PID}&'.$uri) ; ?></td>
+                <?php $value['pid'] && iACP::propFlag($value['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?>
+              </td>
               <td><a href="<?php echo APP_DOURI; ?>&userid=<?php echo $value['userid'] ; ?>&<?php echo $uri ; ?>"><?php echo $value['editor'] ; ?></a><br /><?php echo $value['author'] ; ?></td>
               <td>
                 <a class="tip" href="javascript:;" title="

@@ -11,11 +11,11 @@
 */
 class propApp{
     function __construct() {
-        $this->categoryApp = iACP::app('category','all');
-        $this->category    = $this->categoryApp->category;
         $this->pid         = (int)$_GET['pid'];
     }
     function do_add(){
+        $this->categoryApp = iPHP::app('category.admincp','all');
+        $this->category    = $this->categoryApp->category;
         $this->pid && $rs = iDB::row("SELECT * FROM `#iCMS@__prop` WHERE `pid`='$this->pid' LIMIT 1;",ARRAY_A);
         if($_GET['act']=="copy"){
             $this->pid = 0;
@@ -93,6 +93,8 @@ class propApp{
 	}
 
     function do_iCMS(){
+        $this->categoryApp = iPHP::app('category.admincp','all');
+        $this->category    = $this->categoryApp->category;
         $sql			= " where 1=1";
 //        $cid			= (int)$_GET['cid'];
 //
@@ -154,18 +156,24 @@ class propApp{
         $type OR $type = iACP::$app_name;
         $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
         $valArray  = explode(',', $val);
+        $opt = array();
         foreach ((array)$propArray AS $k => $P) {
             if ($out == 'option') {
-                $opt.="<option value='{$P['val']}'" . (array_search($P['val'],$valArray)!==FALSE ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";
+                $opt[]="<option value='{$P['val']}'" . (array_search($P['val'],$valArray)!==FALSE ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";
+            } elseif ($out == 'array') {
+                $opt[$P['val']] = $P['name'];
             } elseif ($out == 'text') {
                 if (array_search($P['val'],$valArray)!==FALSE) {
                     $flag = '<i class="fa fa-flag"></i> '.$P['name'];
-                    $opt .= ($url?'<a href="'.str_replace('{PID}',$P['val'],$url).'">'.$flag.'</a>':$flag).'<br />';
+                    $opt[]= ($url?'<a href="'.str_replace('{PID}',$P['val'],$url).'">'.$flag.'</a>':$flag).'<br />';
                 }
             }
         }
+        if($out == 'array'){
+            return $opt;
+        }
         // $opt.='</select>';
-        return $opt;
+        return implode('', $opt);
     }
 
 }

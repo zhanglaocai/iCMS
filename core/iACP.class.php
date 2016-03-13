@@ -213,6 +213,16 @@ class iACP {
         include self::view("admincp.picBtnGroup");
     }
 
+    public static function propFlag($pids,$data,$url=null) {
+        $pidArray = explode(',',$pids);
+        foreach ((array)$pidArray as $key => $pid) {
+            $name = $data[$pid];
+            if($pid!='0'){
+                $flag = '<i class="fa fa-flag"></i> '.$name;
+                echo ($url?'<a href="'.str_replace('{PID}',$pid,$url).'">'.$flag.'</a>':$flag).'<br />';
+            }
+        }
+    }
     public static function propBtn($field, $type = null,$target = null) {
         $propApp = iACP::app('prop');
         $propApp->btn_group($field, $type,$target);
