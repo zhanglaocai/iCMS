@@ -211,7 +211,7 @@ class spiderApp {
 
     function do_rule() {
         if ($_GET['keywords']) {
-            $sql = " WHERE `name` REGEXP '{$_GET['keywords']}'";
+            $sql = " WHERE CONCAT(name,rule) REGEXP '{$_GET['keywords']}'";
         }
         $orderby = $_GET['orderby'] ? $_GET['orderby'] : "id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
@@ -323,6 +323,12 @@ class spiderApp {
         $rs = iDB::all("SELECT * FROM `#iCMS@__spider_post` {$sql} order by {$orderby} LIMIT " . iPHP::$offset . " , {$maxperpage}");
         $_count = count($rs);
         include iACP::view("spider.post");
+    }
+    function do_copypost() {
+        iDB::query("INSERT INTO `#iCMS@__spider_post` (`name`, `app`, `post`, `fun`)
+ SELECT `name`, `app`, `post`, `fun` FROM `#iCMS@__spider_post` WHERE id = '$this->poid'");
+        $poid = iDB::$insert_id;
+        iPHP::success('复制完成,编辑此规则', 'url:' . APP_URI . '&do=addpost&poid=' . $poid);
     }
     function do_delpost() {
     	$this->poid OR iPHP::alert("请选择要删除的项目");

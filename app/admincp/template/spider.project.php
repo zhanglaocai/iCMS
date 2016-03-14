@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: project.manage.php 738 2013-04-07 11:27:17Z coolmoo $
@@ -23,7 +23,11 @@ $(function(){
   <?php if($_GET['auto']){ ?>
   iCMS.checked('.auto');
   <?php } ?>
-	$("#<?php echo APP_FORMID;?>").batch();
+  $("#<?php echo APP_FORMID;?>").batch({
+    poid:function(){
+      return $("#poidBatch").clone(true);
+    }
+  });
 });
 </script>
 
@@ -52,11 +56,19 @@ $(function(){
             }?>
           </select>
         </div>
+        <div class="input-prepend"> <span class="add-on">发布规则</span>
+          <select name="poid" id="poid" class="span3 chosen-select">
+            <option value="0">所有发布规则</option>
+            <?php foreach ((array)$postArray as $poid => $poname) {
+              echo '<option value="'.$poid.'">'.$poname.'</option>';
+            }?>
+          </select>
+        </div>
+        <div class="clearfix mb10"></div>
         <div class="input-prepend input-append"><span class="add-on">自动执行</span>
           <span class="add-on">
             <input type="radio" name="auto" class="checkbox auto" value="1"/>
           </span> </div>
-        <div class="clearfix mb10"></div>
         <div class="input-prepend input-append"> <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $_GET['perpage'] ? $_GET['perpage'] : 20; ?>" style="width:36px;"/>
           <span class="add-on">条记录</span> </div>
@@ -94,7 +106,7 @@ $(function(){
             <tr id="tr<?php echo $rs[$i]['id']; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id']; ?>" /></td>
               <td><?php echo $rs[$i]['id']; ?></td>
-              <td><a href="<?php echo APP_URI; ?>&do=inbox&pid=<?php echo $rs[$i]['id']; ?>"><?php echo $rs[$i]['name']; ?></a></td>
+              <td><a href="<?php echo APP_URI; ?>&do=inbox&pid=<?php echo $rs[$i]['id']; ?>"><?php echo $rs[$i]['name']; ?></a> <br /><?php echo $rs[$i]['lastupdate']?get_date($rs[$i]['lastupdate'],'Y-m-d H:i:s'):'' ; ?></td>
               <td>
                 <a href="<?php echo APP_URI; ?>&do=project&rid=<?php echo $rs[$i]['rid']; ?>&<?php echo $uri; ?>"><?php echo $ruleArray[$rs[$i]['rid']]; ?></a>
                 <a href="<?php echo APP_URI; ?>&do=addrule&rid=<?php echo $rs[$i]['rid']; ?>" target="_blank"><i class="fa fa-edit"></i></a>
@@ -104,12 +116,14 @@ $(function(){
                 <a href="<?php echo APP_URI; ?>&do=project&poid=<?php echo $rs[$i]['poid']; ?>&<?php echo $uri; ?>"><?php echo $postArray[$rs[$i]['poid']]; ?></a>
                 <a href="<?php echo APP_URI; ?>&do=addpost&poid=<?php echo $rs[$i]['poid']; ?>" target="_blank"><i class="fa fa-edit"></i></a>
               </td>
-              <td style="text-align: right;"><a href="<?php echo APP_FURI; ?>&do=copyproject&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-copy"></i> 复制</a>
+              <td style="text-align: right;">
+                <a href="<?php echo APP_FURI; ?>&do=copyproject&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-copy"></i> 复制</a>
                 <a href="<?php echo APP_URI; ?>&do=testrule&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试</a>
                 <a href="<?php echo APP_URI; ?>&do=listpub&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small btn-primary" data-toggle="modal" title="采集列表,手动发布"><i class="fa fa-hand-o-up"></i> 手动采集</a>
                 <a href="<?php echo APP_FURI; ?>&do=start&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small btn-success tip" target="iPHP_FRAME" title="自动采集列表,并发布"><i class="fa fa-play"></i> 采集</a>
                 <a href="<?php echo APP_URI; ?>&do=addproject&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                <!-- <div class="clearfix mt5"/></div> -->
+                <a href="<?php echo APP_FURI; ?>&do=manage&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> 数据</a>
+                <div class="clearfix mt5"/></div>
                 <a href="<?php echo APP_FURI; ?>&do=dropurl&pid=<?php echo $rs[$i]['id']; ?>&type=all" class="btn btn-small btn-warning" target="iPHP_FRAME"  onclick="return confirm('确定要清空数据?');"><i class="fa fa-trash-o"></i> 清空数据</a>
                 <a href="<?php echo APP_FURI; ?>&do=dropurl&pid=<?php echo $rs[$i]['id']; ?>&type=0" class="btn btn-small btn-warning" target="iPHP_FRAME"  onclick="return confirm('确定要清除未发布数据?');"><i class="fa fa-inbox"></i> 清除未发</a>
                 <a href="<?php echo APP_FURI; ?>&do=delproject&pid=<?php echo $rs[$i]['id']; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o-sign"></i> 删除</a></td>
@@ -129,7 +143,9 @@ $(function(){
                       <li class="divider"></li>
                       <li><a data-toggle="batch" data-action="project#lastupdate:0"><i class="fa fa-calendar"></i> 重置最后采集时间</a></li>
                       <li class="divider"></li>
-                      <li><a data-toggle="batch" data-action="move"><i class="fa fa-fighter-jet"></i> 重选发布栏目</a></li>
+                      <li><a data-toggle="batch" data-action="move"><i class="fa fa-fighter-jet"></i> 重设发布栏目</a></li>
+                      <li class="divider"></li>
+                      <li><a data-toggle="batch" data-action="poid"><i class="fa fa-magnet"></i> 重设发布规则</a></li>
                       <li class="divider"></li>
                       <li><a data-toggle="batch" data-action="delproject"><i class="fa fa-trash-o"></i> 删除</a></li>
                     </ul>
@@ -139,6 +155,19 @@ $(function(){
           </tfoot>
         </table>
       </form>
+    </div>
+  </div>
+</div>
+<div class='iCMS-batch'>
+  <div id="poidBatch" style="width: 330px;">
+    <div class="input-prepend">
+        <span class="add-on">发布规则</span>
+        <select name="poid" id="poid" class="span3 chosen-select">
+          <option value="0">无</option>
+          <?php foreach ((array)$postArray as $poid => $poname) {
+            echo '<option value="'.$poid.'">'.$poname.'</option>';
+          }?>
+        </select>
     </div>
   </div>
 </div>

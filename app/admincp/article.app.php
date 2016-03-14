@@ -363,7 +363,10 @@ class articleApp{
                 case "tag":   $sql.=" AND `tags` REGEXP '{$kws}'";break;
                 case "source":$sql.=" AND `source` REGEXP '{$kws}'";break;
                 case "weight":$sql.=" AND `weight`='{$kws}'";break;
-                case "id":    $sql.=" AND `id` REGEXP '{$kws}'";break;
+                case "id":
+                $kws = str_replace(',', "','", $kws);
+                $sql.=" AND `id` IN ('{$kws}')";
+                break;
                 case "tkd":   $sql.=" AND CONCAT(title,keywords,description) REGEXP '{$kws}'";break;
             }
         }
