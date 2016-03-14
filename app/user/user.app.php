@@ -349,8 +349,8 @@ class userApp {
                 AND `id`='$id'
             ");
 
-            iPHP::import(iPHP_APP_CORE .'/iAPP.class.php');
-            $table = app::get_table($comment->appid);
+            iPHP::app('apps.class','static');
+            $table = APPS::get_table($comment->appid);
 
             iDB::query("
                 UPDATE {$table['name']}

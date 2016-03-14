@@ -48,18 +48,7 @@ class admincp {
         self::MP('__MID__','page'); //检查菜单ID
         iFS::$userid = iMember::$userid;
     }
-    public static function scan_app($pattern='*.app'){
-        foreach (glob(iPHP_APP_DIR."/*/{$pattern}.php") as $filename) {
-            $path_parts = pathinfo($filename);
-            $apps[]= str_replace(iPHP_APP_DIR.'/','',$path_parts['dirname']);
-            // var_dump($dirname);
-            // if (!in_array($dirname,array('admincp','usercp'))) {
-            //     $app = str_replace('.app','',$path_parts['filename']);
-            //     in_array($app,$this->apps) OR array_push($this->apps,$app);
-            // }
-        }
-        return $apps;
-    }
+
     public static function get_seccode(){
         iPHP::loadClass("Seccode");
         iSeccode::run('iACP');
@@ -95,8 +84,10 @@ class admincp {
         self::$APP_TPL    = ACP_PATH . '/template';
         self::$APP_FILE   = ACP_PATH . '/' . $app . '.app.php';
 
-        $admincp = self::scan_app("*.admincp");
-        if(in_array($app,$admincp)){
+        iPHP::app('apps.class','static');
+        APPS::scan("*.admincp");
+
+        if(APPS::$array[$app]){
             self::$APP_PATH = iPHP_APP_DIR.'/'.$app;
             self::$APP_TPL  = self::$APP_PATH . '/admincp';
             self::$APP_FILE = self::$APP_PATH.'/'.$app.'.admincp.php';
@@ -111,9 +102,7 @@ class admincp {
         is_file(self::$APP_FILE) OR iPHP::throwException('运行出错！找不到文件: <b>' . self::$APP_NAME . '.app.php</b>', 1002);
 		iPHP::import(self::$APP_FILE);
         $appName = self::$APP_NAME . 'App';
-        if(in_array($app,$admincp)){
-            $appName = self::$APP_NAME . 'Admincp';
-        }
+        APPS::$array[$app] && $appName = self::$APP_NAME . 'Admincp';
         self::$app   = new $appName();
         $app_methods = get_class_methods($appName);
         in_array(self::$APP_METHOD, $app_methods) OR iPHP::throwException('运行出错！ <b>' . self::$APP_NAME . '</b> 类中找不到方法定义: <b>' . self::$APP_METHOD . '</b>', 1003);

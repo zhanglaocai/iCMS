@@ -11,15 +11,15 @@
 */
 class settingApp{
     function __construct() {
-    	$this->apps	= array('index','article','tag','search','usercp','category','comment','favorite');
-		foreach (glob(iPHP_APP_DIR."/*/*.app.php") as $filename) {
-            $path_parts = pathinfo($filename);
-            $dirname    = str_replace(iPHP_APP_DIR.'/','',$path_parts['dirname']);
-			if (!in_array($dirname,array('admincp','usercp'))) {
-                $app = str_replace('.app','',$path_parts['filename']);
-				in_array($app,$this->apps) OR array_push($this->apps,$app);
-			}
-		}
+  //   	$this->apps	= array('index','article','tag','search','usercp','category','comment','favorite');
+		// foreach (glob(iPHP_APP_DIR."/*/*.app.php") as $filename) {
+  //           $path_parts = pathinfo($filename);
+  //           $dirname    = str_replace(iPHP_APP_DIR.'/','',$path_parts['dirname']);
+		// 	if (!in_array($dirname,array('admincp','usercp'))) {
+  //               $app = str_replace('.app','',$path_parts['filename']);
+		// 		in_array($app,$this->apps) OR array_push($this->apps,$app);
+		// 	}
+		// }
     }
     function do_iCMS(){
     	$config	= $this->get();
@@ -154,5 +154,10 @@ class settingApp{
     function update($k){
         $this->set(iCMS::$config[$k],$k,0);
         $this->write();
+    }
+    function view($that){
+        include admincp::view('setting',true);
+        // $app =
+        // print_r(admincp::$APP_NAME);
     }
 }

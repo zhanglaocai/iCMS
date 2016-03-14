@@ -65,7 +65,7 @@ class cacheApp{
     	$dialog && iPHP::success('更新完成');
     }
     function do_app($dialog=true){
-        iPHP::import(iPHP_APP_CORE .'/iAPP.class.php');
-        app::cache();
+        iPHP::app('apps.class','static');
+        APPS::cache();
     }
 }

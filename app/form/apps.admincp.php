@@ -11,12 +11,12 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('apps.class','static');
+iPHP::app('apps.class','include');
 
 class appsAdmincp{
     function __construct() {
     	$this->id = (int)$_GET['id'];
-      // $this->cache();
+      $this->cache();
 
     }
     function do_add(){
@@ -96,8 +96,6 @@ class appsAdmincp{
       iPHP::pagenav($total,$maxperpage,"个应用");
       $rs     = iDB::all("SELECT * FROM `#iCMS@__app` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
       $_count = count($rs);
-      APPS::scan('config/app.json');
-      $appsData = APPS::json();
     	include admincp::view("apps.manage");
     }
     function do_del($id = null,$dialog=true){

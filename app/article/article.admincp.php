@@ -28,7 +28,11 @@ class articleAdmincp{
         define('TAG_APPID',$this->appid);
 
     }
-
+    function do_setting(){
+        include admincp::view('setting',true);
+        // $setting = admincp::app('setting');
+        // $setting->view($this);
+    }
     function do_add(){
         $_GET['cid'] && admincp::CP($_GET['cid'],'ca','page');//添加权限
         $rs      = array();

@@ -182,7 +182,7 @@ VALUES ('$uid', '$cid', '$tcid', '0', '$tkey', '$tag',
 	    		$ids = iPHP::get_ids($idA,null);
                 if($ids){
                     iPHP::app('apps.class','static');
-                    $table = apps::table(TAG_APPID);
+                    $table = APPS::table(TAG_APPID);
                     iDB::query("
                         UPDATE `#iCMS@__$table`
                         SET `tags`= REPLACE(tags, '$tag->name,',''),

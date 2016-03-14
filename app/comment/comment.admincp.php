@@ -10,12 +10,12 @@
 * @$Id: comment.app.php 634 2013-04-03 06:02:53Z coolmoo $
 */
 iPHP::app('user.class','static');
+iPHP::app('apps.class','static');
 class commentAdmincp{
     function __construct() {
         $this->id = (int)$_GET['id'];
     }
     function do_iCMS($appid=0){
-    	iPHP::import(iPHP_APP_CORE .'/iAPP.class.php');
         $this->categoryApp = iPHP::app('category.admincp','all');
         $this->category    = $this->categoryApp->category;
 
@@ -70,8 +70,7 @@ class commentAdmincp{
     	$id OR iPHP::alert('请选择要删除的评论!');
     	$comment = iDB::row("SELECT * FROM `#iCMS@__comment` WHERE `id`='$id' LIMIT 1");
 
-        iPHP::import(iPHP_APP_CORE .'/iAPP.class.php');
-        $table = app::get_table($comment->appid);
+        $table = APPS::get_table($comment->appid);
 
         iDB::query("UPDATE {$table['name']} SET comments = comments-1 WHERE `comments`>0 AND `{$table['primary']}`='{$comment->iid}' LIMIT 1;");
         iDB::query("UPDATE `#iCMS@__user` SET comments = comments-1 WHERE `comments`>0 AND `uid`='{$comment->userid}' LIMIT 1;");

@@ -55,7 +55,6 @@ $(function(){
             <?php
             for($i=0;$i<$_count;$i++){
               $table = APPS::get_table($rs[$i]['id']);
-              $app =  $appsData[$rs[$i]['name']];
             ?>
             <tr id="tr<?php echo $rs[$i]['id'] ; ?>">
               <td>
@@ -68,15 +67,10 @@ $(function(){
               <td><?php echo $rs[$i]['name'] ; ?></td>
               <td><span class="label label-success"><?php echo str_replace('#iCMS@__','',$table['name']); ?></span> <span class="label label-inverse"><?php echo $table['primary'] ; ?></span></td>
               <td>
-                <?php if($app){?>
-                <a href="<?php echo APP_URI; ?>&do=uninstall&id=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small btn-danger" onclick="return confirm('确定要卸载?');"><i class="fa fa-edit"></i> 卸载</a>
-
-                <?php }else{?>
-                <a href="<?php echo APP_URI; ?>&do=install&id=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small btn-primary"><i class="fa fa-edit"></i> 安装</a>
-
-                <?php }?>
+                <?php if($rs[$i]['id']>9){ ?>
                 <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $rs[$i]['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>
+                <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $rs[$i]['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>
+                <?php } ?>
               </td>
             </tr>
             <?php }  ?>

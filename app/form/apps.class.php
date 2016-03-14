@@ -5,57 +5,11 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
-class APPS {
-    public static $table   = 'article';
-    public static $primary = 'id';
-    public static $appid   = '1';
-    public static $array   = array();
-    // public static $app_paths   = array();
+class apps {
+	public static $table   = 'article';
+	public static $primary = 'id';
+	public static $appid   = '1';
 
-    public static function scan($pattern='*.app'){
-        self::$array = array();
-        foreach (glob(iPHP_APP_DIR."/*/{$pattern}.php") as $filename) {
-
-            // if($check){
-            //     var_dump($filename, $pattern);
-            //     if(stripos($filename, $pattern) === false){
-            //         continue;
-            //     }
-            // }
-
-            $parts = pathinfo($filename);
-
-            $app = str_replace(iPHP_APP_DIR.'/','',$parts['dirname']);
-            if(stripos($app, '/') !== false){
-                list($app,$d) = explode('/', $app);
-            }
-            $path = str_replace(iPHP_APP_DIR.'/','',$filename);
-
-            self::$array[$app] = $path;
-            // self::$app_paths[$app] = $filename;
-
-            // var_dump($dirname);
-            // if (!in_array($dirname,array('admincp','usercp'))) {
-            //     $app = str_replace('.app','',$parts['filename']);
-            //     in_array($app,$this->apps) OR array_push($this->apps,$app);
-            // }
-        }
-    }
-    public static function json(){
-        $data = array();
-        foreach (self::$array as $key => $path) {
-            if(stripos($path, 'app.json') !== false){
-                $path = iPHP_APP_DIR.'/'.$path;
-                $json = file_get_contents($path);
-                $json = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>", '', $json);
-                $jdata = json_decode($json,true);
-                if($jdata && is_array($jdata)){
-                    $data[$jdata['app']] = $jdata;
-                }
-            }
-        }
-        return $data;
-    }
     public static function table($appId){
         $appMap = array(
             '1'  => 'article',   //文章

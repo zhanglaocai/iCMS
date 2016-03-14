@@ -18,8 +18,8 @@ class commentApp {
         $iid   = (int)$_GET['iid'];
         $_GET  = iS::escapeStr($_GET);
 
-        iPHP::import(iPHP_APP_CORE .'/iAPP.class.php');
-        $url = app::get_url($appid,$iid);
+        iPHP::app('apps.class','static');
+        $url = APPS::get_url($appid,$iid);
         iPHP::gotourl($url);
     }
     public function API_list(){
