@@ -151,38 +151,29 @@ class iPHP{
      */
     private static function multiple_device(&$config){
         $template = $config['template'];
-        $_device  = iPHP::PG('device');
-        if($_device){
+        if(iPHP::PG('device')){
             /**
              * 判断指定设备
-             * @var [type]
              */
-            foreach ((array)$template['device'] as $key => $device) {
-                if($device['tpl'] && ($device['ua']==$_device||$device['name']==$_device)){
-                    $device_name = $device['name'];
-                    $device_tpl  = $device['tpl'];
-                    $domain      = $device['domain'];
-                    break;
-                }
-            }
+            list($device_name,$def_tpl,$domain) = self::device_check($template['device'],'device');
         }
         /**
          * 无指定设备 判断USER_AGENT
+         *
          */
-        if(empty($device_tpl)){
-            foreach ((array)$template['device'] as $key => $device) {
-                if($device['tpl'] && self::device_agent($device['ua'])){
-                    $device_name = $device['name'];
-                    $device_tpl  = $device['tpl'];
-                    $domain      = $device['domain'];
-                    break;
-                }
-            }
+        if(empty($def_tpl)){
+            list($device_name,$def_tpl,$domain) = self::device_check($template['device'],'ua');
         }
+        /**
+         * 无指定USER_AGENT  判断域名模板
+         *
+         */
+        if(empty($def_tpl)){
+            list($device_name,$def_tpl,$domain) = self::device_check($template['device'],'domain');
+        }
+
         iPHP::$mobile = false;
-        if($device_tpl){ //设备模板
-            $def_tpl = $device_tpl;
-        }else{
+        if(empty($def_tpl)){
             //检查是否移动设备
             if(self::device_agent($template['mobile']['agent'])){
                 iPHP::$mobile = true;
@@ -198,6 +189,7 @@ class iPHP{
             $def_tpl     = $template['desktop']['tpl'];
             $domain      = false;
         }
+
         define('iPHP_ROUTER_URL',$config['router']['URL']);
         $domain && $config['router'] = str_replace($config['router']['URL'], $domain, $config['router']);
         define('iPHP_DEFAULT_TPL',$def_tpl);
@@ -206,6 +198,28 @@ class iPHP{
         define('iPHP_HOST', $config['router']['URL']);
         header("Access-Control-Allow-Origin: ".iPHP_HOST);
         header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
+    }
+    private static function device_check($deviceArray=null,$flag=false){
+        foreach ((array)$deviceArray as $key => $device) {
+            if($device['tpl']){
+                $check = false;
+                if($flag=='ua'){
+                    $device['ua'] && $check = self::device_agent($device['ua']);
+                }elseif($flag=='device'){
+                    $_device  = iPHP::PG('device');
+                    if($device['ua']==$_device||$device['name']==$_device){
+                        $check = true;
+                    }
+                }elseif($flag=='domain'){
+                    if(stripos($device['domain'], $_SERVER['HTTP_HOST'])!==false && empty($device['ua'])){
+                        $check = true;
+                    }
+                }
+                if($check){
+                    return array($device['name'],$device['tpl'],$device['domain']);
+                }
+            }
+        }
     }
     private static function device_agent($user_agent){
         $user_agent = str_replace(',','|',preg_quote($user_agent));
