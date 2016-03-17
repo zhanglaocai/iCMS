@@ -23,11 +23,7 @@ class iYun{
         $conf = self::$config['sdk'][$vendor];
         if($conf['AccessKey'] && $conf['SecretKey']){
             iPHP::import(iPHP_LIB.'/'.$vendor.'.php');
-            return new $vendor(
-                $conf['AccessKey'],
-                $conf['SecretKey'],
-                $conf['AppId']
-            );
+            return new $vendor($conf);
         }else{
             return false;
         }
