@@ -957,6 +957,7 @@ class iPHP{
                 'TOTAL'   =>$iPages->totalpage,
                 'CURRENT' =>$iPages->nowindex,
                 'PN'      =>$iPages->nowindex,
+                'PREV'    =>$iPages->prev_page(),
                 'NEXT'    =>$iPages->next_page()
             );
             iPHP::$iTPL->_iTPL_VARS['PAGES'] = $iPages;
