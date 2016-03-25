@@ -16,11 +16,13 @@ define('iPATH',dirname(strtr(__FILE__,'\\','/'))."/../");
 if($_POST['action']=='install'){
 	$db_host     = trim($_POST['DB_HOST']);
 	$db_user     = trim($_POST['DB_USER']);
+    $db_port     = intval($_POST['DB_PORT']) ? : 3306;
 	$db_password = trim($_POST['DB_PASSWORD']);
 	$db_name     = trim($_POST['DB_NAME']);
 	$db_prefix   = trim($_POST['DB_PREFIX']);
 
 	define('iPHP_DB_HOST',$db_host);	// 服务器名或服务器ip,一般为localhost
+    define('iPHP_DB_PORT', $db_port);   // 服务器端口
 	define('iPHP_DB_USER',$db_user);		// 数据库用户
 	define('iPHP_DB_PASSWORD',$db_password);//数据库密码
 	define('iPHP_DB_NAME',$db_name);		// 数据库名
