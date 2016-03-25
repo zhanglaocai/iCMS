@@ -17,7 +17,7 @@ class tagAdmincp{
     function __construct() {
         $this->appid       = iCMS_APP_TAG;
         $this->id          = (int)$_GET['id'];
-        $this->tagcategory = admincp::app('tagcategory');
+        $this->tagcategory = iPHP::app('category.admincp',$this->appid);;
         $this->categoryApp = iPHP::app('category.admincp','all');
     }
     function do_add(){

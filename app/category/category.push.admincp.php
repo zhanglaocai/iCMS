@@ -12,7 +12,7 @@
 defined('iPHP') OR exit('What are you doing?');
 
 iPHP::app('category.admincp','import');
-class pushcategoryApp extends categoryApp {
+class pushcategoryAdmincp extends categoryAdmincp {
     function __construct() {
         parent::__construct(iCMS_APP_PUSH);
         $this->category_name   = "版块";

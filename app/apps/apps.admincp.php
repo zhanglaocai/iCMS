@@ -97,7 +97,6 @@ class appsAdmincp{
       $rs     = iDB::all("SELECT * FROM `#iCMS@__app` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
       $_count = count($rs);
       APPS::scan('config/app.json');
-      $appsData = APPS::json();
     	include admincp::view("apps.manage");
     }
     function do_del($id = null,$dialog=true){

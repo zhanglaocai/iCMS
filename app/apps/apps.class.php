@@ -27,11 +27,20 @@ class APPS {
 
             $app = str_replace(iPHP_APP_DIR.'/','',$parts['dirname']);
             if(stripos($app, '/') !== false){
-                list($app,$d) = explode('/', $app);
+                list($app,) = explode('/', $app);
             }
             $path = str_replace(iPHP_APP_DIR.'/','',$filename);
-
+            list($a,$b,$c) = explode('.', $parts['filename']);
             self::$array[$app] = $path;
+
+            // if($b=='admincp' && $c===null){
+            // }else{
+                // self::$array[$app][$b] = $path;
+            // }
+            // print_r($app.PHP_EOL);
+            // print_r($parts['filename'].PHP_EOL);
+            // self::$array[$app] = $path;
+
             // self::$app_paths[$app] = $filename;
 
             // var_dump($dirname);
@@ -40,6 +49,7 @@ class APPS {
             //     in_array($app,$this->apps) OR array_push($this->apps,$app);
             // }
         }
+        // var_dump(self::$array);
     }
     public static function json(){
         $data = array();

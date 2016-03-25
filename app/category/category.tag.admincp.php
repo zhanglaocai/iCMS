@@ -11,8 +11,8 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iACP::app('category','import');
-class tagcategoryApp extends categoryApp {
+iPHP::app('category.admincp','import');
+class tagcategoryAdmincp extends categoryAdmincp {
     function __construct() {
         parent::__construct(iCMS_APP_TAG);
         $this->category_name   = "分类";
