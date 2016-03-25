@@ -70,6 +70,7 @@ if($_POST['action']=='install'){
 	$config  = iPATH.'config.php';
 	$content = iFS::read($config,false);
 	$content = preg_replace("/define\(\'iPHP_DB_HOST\',\'.*?\'\)/is", 		"define('iPHP_DB_HOST','".iPHP_DB_HOST."')",     $content);
+    $content = preg_replace("/define\(\'iPHP_DB_PORT\',\'.*?\'\)/is",       "define('iPHP_DB_PORT','".iPHP_DB_PORT."')",     $content);
 	$content = preg_replace("/define\(\'iPHP_DB_USER\',\'.*?\'\)/is", 		"define('iPHP_DB_USER','".iPHP_DB_USER."')", 	 $content);
 	$content = preg_replace("/define\(\'iPHP_DB_PASSWORD\',\'.*?\'\)/is", 	"define('iPHP_DB_PASSWORD','".iPHP_DB_PASSWORD."')", $content);
 	$content = preg_replace("/define\(\'iPHP_DB_NAME\',\'.*?\'\)/is", 		"define('iPHP_DB_NAME','".iPHP_DB_NAME."')",     $content);
