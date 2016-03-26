@@ -88,6 +88,7 @@ $lock_file = iPATH.'cache/install.lock';
 				event.preventDefault();
 
 				var db_host    = $('#DB_HOST').val(),
+				db_port    = $('DB_PORT').val(),
 				db_user        = $('#DB_USER').val(),
 				db_password    = $('#DB_PASSWORD').val(),
 				db_name        = $('#DB_NAME').val(),
@@ -97,6 +98,11 @@ $lock_file = iPATH.'cache/install.lock';
 				if(db_host==''){
 					iCMS.alert('请填写数据库服务器地址');
 					$('#DB_HOST').focus();
+					return false;
+				}
+				if (db_port == '') {
+					iCMS.alert('请填写数据库服务器端口');
+					$('#DB_PORT').focus();
 					return false;
 				}
 				if(db_user==''){
@@ -414,6 +420,13 @@ $lock_file = iPATH.'cache/install.lock';
 						<div class="controls">
 							<input type="text" class="span4" id="DB_HOST" name="DB_HOST" value="localhost">
 							<span class="help-block">数据库服务器名或服务器ip，一般为localhost</span>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="DB_PORT">服务器端口</label>
+						<div class="controls">
+							<input type="text" class="span4" id="DB_PORT" name="DB_PORT" value="3306">
+							<span class="help-block">数据库服务器端口，一般为3306</span>
 						</div>
 					</div>
 					<div class="control-group">

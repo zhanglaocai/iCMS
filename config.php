@@ -12,6 +12,7 @@
 //---------------数据库配置------------------
 define('iPHP_DB_TYPE','mysql');//数据库类型 mysql sqlite (SQLite3)
 define('iPHP_DB_HOST','localhost');// 服务器名或服务器ip,一般为localhost
+define('iPHP_DB_PORT','3306');
 define('iPHP_DB_USER','root');// 数据库用户
 define('iPHP_DB_PASSWORD','123456');//数据库密码
 define('iPHP_DB_NAME','test');// 数据库名
