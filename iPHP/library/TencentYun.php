@@ -10,11 +10,11 @@ require dirname(__file__) .'/Tencentyun/ImageV2.php';
 class TencentYun
 {
 
-    public function __construct($AccessKey=null,$SecretKey=null,$AppId=null)
+    public function __construct($conf)
     {
-        Conf::$SECRET_ID  = $AccessKey;
-        Conf::$SECRET_KEY = $SecretKey;
-        Conf::$APPID      = $AppId;
+        Conf::$SECRET_ID  = $conf['AccessKey'];
+        Conf::$SECRET_KEY = $conf['SecretKey'];
+        Conf::$APPID      = $conf['AppId'];
     }
     /**
      * [uploadFile 上传文件接口]
@@ -25,7 +25,8 @@ class TencentYun
      */
     public function uploadFile($filePath,$bucket,$key=null)
     {
-        $uploadRet = ImageV2::upload($filePath,$bucket,$key);
+        $uploadRet = ImageV2::stat($bucket, $key);
+        $uploadRet['code'] && $uploadRet = ImageV2::upload($filePath,$bucket,$key);
         return json_encode(array(
                 'error' => $uploadRet['code'],
                 'msg'   => $uploadRet

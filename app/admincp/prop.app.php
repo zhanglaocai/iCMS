@@ -156,18 +156,24 @@ class propApp{
         $type OR $type = admincp::$APP_NAME;
         $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
         $valArray  = explode(',', $val);
+        $opt = array();
         foreach ((array)$propArray AS $k => $P) {
             if ($out == 'option') {
-                $opt.="<option value='{$P['val']}'" . (array_search($P['val'],$valArray)!==FALSE ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";
+                $opt[]="<option value='{$P['val']}'" . (array_search($P['val'],$valArray)!==FALSE ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";
+            } elseif ($out == 'array') {
+                $opt[$P['val']] = $P['name'];
             } elseif ($out == 'text') {
                 if (array_search($P['val'],$valArray)!==FALSE) {
                     $flag = '<i class="fa fa-flag"></i> '.$P['name'];
-                    $opt .= ($url?'<a href="'.str_replace('{PID}',$P['val'],$url).'">'.$flag.'</a>':$flag).'<br />';
+                    $opt[]= ($url?'<a href="'.str_replace('{PID}',$P['val'],$url).'">'.$flag.'</a>':$flag).'<br />';
                 }
             }
         }
+        if($out == 'array'){
+            return $opt;
+        }
         // $opt.='</select>';
-        return $opt;
+        return implode('', $opt);
     }
 
 }

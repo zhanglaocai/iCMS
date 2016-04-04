@@ -95,7 +95,12 @@ $(function(){
       <form action="<?php echo __SELF__ ; ?>" method="get" class="form-inline">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <input type="hidden" name="do" value="<?php echo admincp::$APP_DO;?>" />
+        <?php if(isset($_GET['pt'])){ ?>
         <input type="hidden" name="pt" value="<?php echo $_GET['pt'] ; ?>" />
+        <?php } ?>
+        <?php if(isset($_GET['sta'])){ ?>
+        <input type="hidden" name="sta" value="<?php echo $_GET['sta'] ; ?>" />
+        <?php } ?>
         <input type="hidden" name="userid" value="<?php echo $_GET['userid'] ; ?>" />
         <div class="input-prepend"> <span class="add-on">文章属性</span>
           <select name="pid" id="pid" class="span2 chosen-select">
@@ -174,7 +179,7 @@ $(function(){
           </select>
         </div>
         <div class="input-prepend input-append"> <span class="add-on">关键字</span>
-          <input type="text" name="keywords" class="span2" id="keywords" value="<?php echo $_GET['keywords'] ; ?>" />
+          <input type="text" name="keywords" class="span3" id="keywords" value="<?php echo $_GET['keywords'] ; ?>" />
           <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜 索</button>
         </div>
       </form>
@@ -259,7 +264,7 @@ $(function(){
                   <?php } ?>
                 </div>
                 <?php if($value['pic'] && iCMS::$config['publish']['showpic']){ ?>
-                <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $value['id'] ; ?>" data-toggle="modal" title="预览"><img src="<?php echo iFS::fp($value['pic']); ?>" style="height:120px;"/></a>
+                <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $value['id'] ; ?>" data-toggle="modal" title="预览"><img src="<?php echo iFS::fp($value['pic'],'+http'); ?>" style="height:120px;"/></a>
                 <?php } ?>
               </td>
               <td><?php if($value['pubdate']) echo get_date($value['pubdate'],'Y-m-d H:i');?><br />
@@ -276,7 +281,9 @@ $(function(){
                    }
                  }
                 ?>
-                <?php echo admincp::getProp("pid",$value['pid'],'text',APP_DOURI.'&pid={PID}&'.$uri) ; ?></td>
+                <?php if($value['pid']){
+                  admincp::propFlag($value['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);
+                } ?></td>
               <td><a href="<?php echo APP_DOURI; ?>&userid=<?php echo $value['userid'] ; ?>&<?php echo $uri ; ?>"><?php echo $value['editor'] ; ?></a><br /><?php echo $value['author'] ; ?></td>
               <td>
                 <a class="tip" href="javascript:;" title="

@@ -199,9 +199,9 @@ class iCMS extends iPHP{
     }
     //过滤
     public static function filter(&$content){
-	    $cache		= iCache::get(array('iCMS/word.filter','iCMS/word.disable'));
-	    $filter		= $cache['iCMS/word.filter'];//filter过滤
-	    $disable    = $cache['iCMS/word.disable'];//disable禁止
+        $filter  = iCache::get('iCMS/word.filter');//filter过滤
+        $disable = iCache::get('iCMS/word.disable');//disable禁止
+
         //禁止关键词
         $subject = $content;
         $pattern = '/(~|`|!|@|\#|\$|%|\^|&|\*|\(|\)|\-|=|_|\+|\{|\}|\[|\]|;|:|"|\'|<|>|\?|\/|,|\.|\s|\n|。|，|、|；|：|？|！|…|-|·|ˉ|ˇ|¨|‘|“|”|々|～|‖|∶|＂|＇|｀|｜|〃|〔|〕|〈|〉|《|》|「|」|『|』|．|〖|〗|【|】|（|）|［|］|｛|｝|°|′|″|＄|￡|￥|‰|％|℃|¤|￠|○|§|№|☆|★|○|●|◎|◇|◆|□|■|△|▲|※|→|←|↑|↓|〓|＃|＆|＠|＾|＿|＼|№|)*/i';
