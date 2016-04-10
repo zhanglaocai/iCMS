@@ -29,8 +29,9 @@ class category {
     }
     public function cache($one=false,$appid=null) {
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__category` ORDER BY `ordernum` , `cid` ASC");
-    	foreach((array)$rs AS $C) {
-	        $C = $this->C($C);
+    	$domain = $hidden = $domain = array();
+        foreach((array)$rs AS $C) {
+	        $C = $this->data($C);
 			$one && $this->cahce_one($C);
 
             $appidArray[$C['appid']] = $C['appid'];
@@ -40,7 +41,19 @@ class category {
             $C['status'] OR $hidden[]        = $C['cid'];
             $cache[$C['appid']][$C['cid']]   = $C;
             $array[$C['appid']][$C['rootid']][$C['cid']] = $C;
+            $C['domain'] && $domainArray[$C['cid']] = $C['domain'];
     	}
+
+        foreach ((array)$domainArray as $dcid => $dval) {
+            $rootData = $rootid[$dcid];
+            if($rootid[$dcid]){
+                foreach ($rootData as $key => $subcid) {
+                    $domain[$subcid]= self::domain($subcid);
+                }
+            }
+            $domain[$dcid]= self::domain($dcid);
+        }
+//var_dump($domain);
 
     	if($appid===null){
 	    	foreach((array)$appidArray AS $_appid) {
@@ -54,12 +67,30 @@ class category {
         iCache::set('iCMS/category/rootid',	$rootid,0);
         iCache::set('iCMS/category/parent',	$parent,0);
         iCache::set('iCMS/category/dir2cid',$dir2cid,0);
-        iCache::set('iCMS/category/hidden',	$hidden,0);
+        iCache::set('iCMS/category/hidden', $hidden,0);
+        iCache::set('iCMS/category/domain', $domain,0);
+    }
+    public function domain($cid="0",$akey='dir') {
+        $ii       = new stdClass();
+        $C        = $this->category[$cid];
+        $rootid   = $C['rootid'];
+        $ii->sdir = $C[$akey];
+        if($rootid && empty($C['domain'])) {
+            $dm         = self::domain($rootid);
+            $ii->pd     = $dm->pd;
+            $ii->domain = $dm->domain;
+            $ii->pdir   = $dm->pdir.'/'.$C[$akey];
+            $ii->dmpath = $dm->dmpath.'/'.$C[$akey];
+        }else {
+            $ii->pd     = $ii->pdir   = ltrim(iFS::path(iCMS::$config['router']['html_dir'].$ii->sdir),'/') ;
+            $ii->dmpath = $ii->domain = $C['domain']?('http://'.ltrim($C['domain'],'http://')):'';
+        }
+        return $ii;
     }
     public function cahce_one($C=null){
     	if(!is_array($C)){
     		$C = iDB::row("SELECT * FROM `#iCMS@__category` where `cid`='$C' LIMIT 1;",ARRAY_A);
-			$C = $this->C($C);
+			$C = $this->data($C);
     	}
 		iCache::delete('iCMS/category/'.$C['cid']);
 		iCache::set('iCMS/category/'.$C['cid'],$C,0);
@@ -70,7 +101,7 @@ class category {
         }
         iCache::delete('iCMS/category/'.$cid);
     }
-    public function C($C){
+    public function data($C){
 	    if($C['metadata']){
 	    	$mdArray	= array();
 	    	$_metadata	= unserialize($C['metadata']);

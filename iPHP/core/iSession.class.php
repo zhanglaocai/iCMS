@@ -23,7 +23,7 @@ class iSession {
 
     public static function open($savePath, $sessName) {
         // get session-lifetime
-        if(iSession::$lifeTime === null){
+        if(iSession::$lifeTime === null && function_exists('ini_get')){
             iSession::$lifeTime = @ini_get("session.gc_maxlifetime");
         }
         if(empty(iSession::$lifeTime)){
@@ -109,11 +109,13 @@ class iSession {
 // ini_set("session.save_path", "tcp://host1:6379?weight=1, tcp://host2:6379?weight=2&timeout=2.5, tcp://host3:6379?weight=2");
 // ini_set("session.save_path", "unix:///var/run/redis/redis.sock?persistent=1&weight=1&database=0");
 //
-@ini_set('session.use_cookies',1);
-@ini_set('session.gc_probability',1);
-@ini_set('session.gc_divisor',100);
-@ini_set('session.gc_maxlifetime',iPHP_COOKIE_TIME);
-@ini_set('session.cookie_lifetime',iPHP_COOKIE_TIME);
+if(function_exists('ini_set')){
+    @ini_set('session.use_cookies',1);
+    @ini_set('session.gc_probability',1);
+    @ini_set('session.gc_divisor',100);
+    @ini_set('session.gc_maxlifetime',iPHP_COOKIE_TIME);
+    @ini_set('session.cookie_lifetime',iPHP_COOKIE_TIME);
+}
 
 session_set_save_handler(
     array('iSession','open'),

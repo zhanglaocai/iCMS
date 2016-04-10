@@ -143,7 +143,7 @@ class spiderTools extends spider{
             }
             if(strpos($rule, 'AFTER::')!==false){
               $rule = str_replace('AFTER::','', $rule);
-              $content = $rule.$content;
+              $content = $content.$rule;
               continue;
             }
             if(strpos($rule, 'CUT::')!==false){

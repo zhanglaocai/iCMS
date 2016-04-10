@@ -11,10 +11,10 @@ class QiniuYun
 	public $accessKey;
 	public $secretKey;
 
-	public function __construct($AccessKey='',$SecretKey='',$AppId=null)
+	public function __construct($conf)
 	{
-		$this->accessKey = $AccessKey;
-		$this->secretKey = $SecretKey;
+		$this->accessKey = $conf['AccessKey'];
+		$this->secretKey = $conf['SecretKey'];
 	}
 
 	public function uploadFile($filePath,$bucket,$key=null)

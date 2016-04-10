@@ -369,7 +369,10 @@ class articleAdmincp{
                 case "tag":   $sql.=" AND `tags` REGEXP '{$kws}'";break;
                 case "source":$sql.=" AND `source` REGEXP '{$kws}'";break;
                 case "weight":$sql.=" AND `weight`='{$kws}'";break;
-                case "id":    $sql.=" AND `id` REGEXP '{$kws}'";break;
+                case "id":
+                $kws = str_replace(',', "','", $kws);
+                $sql.=" AND `id` IN ('{$kws}')";
+                break;
                 case "tkd":   $sql.=" AND CONCAT(title,keywords,description) REGEXP '{$kws}'";break;
             }
         }
@@ -422,6 +425,7 @@ class articleAdmincp{
         $rs = iDB::all("SELECT * FROM `#iCMS@__article` {$sql} ORDER BY {$orderby} {$limit}");
         //iDB::debug(1);
         $_count = count($rs);
+        $propArray = iACP::getProp("pid",null,'array');
         include admincp::view("article.manage");
     }
     function do_save(){

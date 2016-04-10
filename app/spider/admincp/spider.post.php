@@ -59,7 +59,10 @@ $(function(){
               <td><?php echo $rs[$i]['name'] ; ?></td>
               <td><?php echo $rs[$i]['app'] ; ?></td>
               <td><?php echo $rs[$i]['fun'] ; ?></td>
-              <td><a href="<?php echo APP_URI; ?>&do=addpost&poid=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a> <a href="<?php echo APP_FURI; ?>&do=delpost&poid=<?php echo $rs[$i]['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a></td>
+              <td>
+                <a href="<?php echo APP_FURI; ?>&do=copypost&poid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-copy"></i> 复制</a>
+                <a href="<?php echo APP_URI; ?>&do=addpost&poid=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
+                <a href="<?php echo APP_FURI; ?>&do=delpost&poid=<?php echo $rs[$i]['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a></td>
             </tr>
             <?php }  ?>
           </tbody>

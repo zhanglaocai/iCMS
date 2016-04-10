@@ -25,8 +25,19 @@ class iSeccode {
     protected static $code   = null;
     protected static $color  = null;
 
+	//检查验证码
+	public static function check($seccode, $destroy = false, $cookie_name = 'seccode') {
+		$_seccode = iPHP::get_cookie($cookie_name);
+		$_seccode && $cookie_seccode = authcode($_seccode, 'DECODE');
+		$destroy && iPHP::set_cookie($cookie_name, '', -31536000);
+		if (empty($cookie_seccode) || strtolower($cookie_seccode) != strtolower($seccode)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
     public static function run($pre=null){
-        (extension_loaded('gd') && function_exists('gd_info')) OR self::$noGD = true;
+		(extension_loaded('gd') && function_exists('gd_info') && function_exists('imagettftext')) OR self::$noGD = true;
         $name = 'seccode';
         $pre && $name = $pre.'_seccode';
         if(self::$noGD){
@@ -124,12 +135,16 @@ class iSeccode {
         $font       = array();
         $font_size  = self::$config['size'];
         // $ttfb_box = imagettfbbox($font_size,$angle,$font_file,self::$code[0]);
-        for ($i=0; $i < 4; $i++) {
-            $x          =(self::$config['width']/4)*$i;
-            $y          = $font_size+rand(0,4);
-            $angle      = mt_rand(0, 20);
-            $text_color = imagecolorallocate(self::$im, self::$color[0], self::$color[1], self::$color[2]);
-            @imagettftext(self::$im,$font_size,$angle,$x, $y,$text_color,$font_file,self::$code[$i]);
+	if (function_exists('imagettftext')) {
+	        for ($i=0; $i < 4; $i++) {
+	            $x          =(self::$config['width']/4)*$i;
+	            $y          = $font_size+rand(0,4);
+	            $angle      = mt_rand(0, 20);
+	            $text_color = imagecolorallocate(self::$im, self::$color[0], self::$color[1], self::$color[2]);
+					imagettftext(self::$im, $font_size, $angle, $x, $y, $text_color, $font_file, self::$code[$i]);
+		}
+    	} else {
+    		return false;
         }
     }
     private static function icmsChar($name){
