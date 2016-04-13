@@ -39,6 +39,11 @@ class spiderApp {
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
+            case 'poid':
+                $poid = $_POST['poid'];
+                iDB::query("update `#iCMS@__spider_project` set `poid`='$poid' where `id` IN($ids);");
+            break;
+
     		case 'delurl':
 				iDB::query("delete from `#iCMS@__spider_url` where `id` IN($ids);");
     		break;
@@ -394,6 +399,9 @@ class spiderApp {
         if ($_GET['poid']) {
             $sql.=" AND `poid` ='" . (int) $_GET['poid'] . "'";
         }
+        $_GET['starttime'] && $sql.=" AND `lastupdate`>='".iPHP::str2time($_GET['starttime']." 00:00:00")."'";
+        $_GET['endtime']   && $sql.=" AND `lastupdate`<='".iPHP::str2time($_GET['endtime']." 23:59:59")."'";
+
         $ruleArray = $this->rule_opt(0, 'array');
         $postArray = $this->post_opt(0, 'array');
         $orderby = $_GET['orderby'] ? $_GET['orderby'] : "id DESC";

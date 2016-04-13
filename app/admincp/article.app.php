@@ -473,7 +473,7 @@ class articleApp{
         if($this->callback['code']){
             $fwd = iCMS::filter($title);
             if($fwd){
-                echo '标题中包含被系统屏蔽的字符，请重新填写。';
+                echo '标题中包含【'.$fwd.'】被系统屏蔽的字符，请重新填写。';
                 return false;
             }
         }
@@ -815,6 +815,13 @@ class articleApp{
                 $fArray[$key] = $value;
             }else{
                 unset($array[$key]);
+                $rootfilpath = iFS::fp($value, 'http2iPATH');
+                list($owidth, $oheight, $otype) = @getimagesize($rootfilpath);
+                if($this->DELETE_ERROR_PIC && empty($otype)){
+                    iFS::del($rootfilpath);
+                    $array[$key]  = $match[0][$key];
+                    $fArray[$key] = '';
+                }
             }
             if($remote==="autopic" && $key==0){
                 return $value;
@@ -868,5 +875,30 @@ class articleApp{
             $picdata['s'] = array('w'=>$width,'h'=>$height);
         }
         return $picdata?addslashes(serialize($picdata)):'';
+    }
+    function check_pic($body,$aid=0){
+        // global $status;
+        // if($status!='1'){
+        //     return;
+        // }
+        $body = stripcslashes($body);
+        preg_match_all('@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is',$body,$pic_array);
+        $p_array = array_unique($pic_array[2]);
+
+        foreach((array)$p_array as $key =>$url) {
+            $url = trim($url);
+            $filpath = iFS::fp($url, 'http2iPATH');
+            // var_dump($filpath);
+            list($owidth, $oheight, $otype) = @getimagesize($filpath);
+            if(empty($otype)){
+                var_dump($filpath,$otype);
+                if($aid){
+                    iDB::update('article',array('status'=>'0'),array('id'=>$aid));
+                    echo $aid." status:2\n";
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

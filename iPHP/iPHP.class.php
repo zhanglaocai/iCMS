@@ -222,8 +222,8 @@ class iPHP{
         }
     }
     private static function device_agent($user_agent){
-        $user_agent = str_replace(',','|',preg_quote($user_agent));
-        return ($user_agent && preg_match('/'.$user_agent.'/i',$_SERVER["HTTP_USER_AGENT"]));
+        $user_agent = str_replace(',','|',preg_quote($user_agent,'/'));
+        return ($user_agent && preg_match('@'.$user_agent.'@i',$_SERVER["HTTP_USER_AGENT"]));
     }
 	public static function template_start(){
         self::import(iPHP_CORE.'/iTemplate.class.php');

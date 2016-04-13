@@ -179,6 +179,7 @@ class articleApp {
 
             $total = $count+intval(iCMS::$config['article']['pageno_incr']);
             $article['body']     = $this->keywords($article['body']);
+            $article['body']     = $this->addBodyAD($article['body']);
             $article['body']     = $this->taoke($article['body']);
             $article['taoke']    = $this->taoke;
             $article['subtitle'] = $art_data['subtitle'];
@@ -237,7 +238,7 @@ class articleApp {
                 foreach($img_array as $key =>$img){
                     $img = str_replace('<img', '<img title="'.$article['title'].'" alt="'.$article['title'].'"', $img);
                     if(iCMS::$config['article']['pic_center']){
-                        $img_replace[$key] = '<p align="center">'.$img.'</p>';
+                        $img_replace[$key] = '<p class="article_pic">'.$img.'</p>';
                     }else{
                         $img_replace[$key] = $img;
                     }
@@ -245,8 +246,8 @@ class articleApp {
                         $clicknext = '<a href="'.$next_url.'"><b>'.iPHP::lang('iCMS:article:clicknext').'</b></a>';
                         $clickimg  = '<a href="'.$next_url.'" title="'.$article['title'].'" class="img">'.$img.'</a>';
                         if(iCMS::$config['article']['pic_center']){
-                            $img_replace[$key] = '<p align="center">'.$clicknext.'</p>';
-                            $img_replace[$key].= '<p align="center">'.$clickimg.'</p>';
+                            $img_replace[$key] = '<p class="click2next">'.$clicknext.'</p>';
+                            $img_replace[$key].= '<p class="article_pic">'.$clickimg.'</p>';
                         }else{
                             $img_replace[$key] = '<p>'.$clicknext.'</p>';
                             $img_replace[$key].= '<p>'.$clickimg.'</p>';
@@ -382,5 +383,44 @@ class articleApp {
         $title = $pn;
         $chapter && $title = $chapterArray[$pn-1]['subtitle'];
         return $title;
+    }
+    public function addBodyAD($content){
+        $pieces    = 1000;
+        $html      = str_replace('</p>', "</p>\n", $content);
+        $htmlArray = explode("\n", $html);
+        $resource  = array();
+        //计算长度
+        preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is",$content,$img_array);
+        $len = strlen($content)+(count($img_array[1])*300);
+
+        if($len<($pieces*1.5)){
+            return $content;
+        }
+        $i = 0;
+        foreach ($htmlArray as $key => $phtm) {
+            $pLen += strlen($phtm);
+            if(strpos($phtm, '<img')!==false){
+                $pLen +=100;
+            }
+            $llen = $len-$pLen;
+            // if($_GET['debug']){
+            //     var_dump(substr($phtm, 0,30));
+            //     var_dump($pLen,$llen,floor($llen/$pieces),'=========');
+            // }
+            if($pLen>$pieces && floor($llen/$pieces)>=1){
+                // if($_GET['debug']){
+                //     var_dump('---------------------------');
+                // }
+                $ad = '<script>if(typeof showBodyUI==="function")showBodyUI("body.'.$i.'");</script>';
+                $resource[$i].= $phtm.$ad;
+                $pLen = 0;
+                $len = $llen;
+                $i++;
+            }else{
+                $resource[$i].= $phtm;
+            }
+        }
+        unset($html,$htmlArray);
+        return implode('', (array)$resource);
     }
 }

@@ -377,6 +377,7 @@ class iTemplate_Compiler extends iTemplate {
 	public $_sectionelse_stack        = array();	// keeps track of whether section had 'else' part
 	public $_iPHP_else_stack          = false;	// keeps track of whether section had 'else' part
 	public $_iPHP_stack               = array();
+	public $_iPHP_compile          	  = null;
 	public $_switch_stack             = array();
 	public $_tag_stack                = array();
 	public $_require_stack            = array();	// stores all files that are "required" inside of the template
@@ -593,8 +594,13 @@ class iTemplate_Compiler extends iTemplate {
 				foreach ($_args as $key => $value){
 					$arg_list[] = "'$key' => $value";
 				}
-
-				return '<?php $this->_run_iPHP(array('.implode(',', (array)$arg_list).')); ?>'.$compile_iPHP;
+				$code = '<?php $this->_run_iPHP(array('.implode(',', (array)$arg_list).')); ?>';
+				if(isset($_args['if'])){
+					$this->_iPHP_compile = $compile_iPHP;
+					unset($compile_iPHP);
+					return $code;
+				}
+				return $code.$compile_iPHP;
 				break;
 			case iPHP_TPL_VAR.'else':
 				$this->_iPHP_else_stack = true;
@@ -726,7 +732,12 @@ class iTemplate_Compiler extends iTemplate {
 				return $this->_compile_if($arguments, true);
 				break;
 			case '/if':
-				return "<?php }; ?>";
+				$code = "<?php }; ?>";
+				if($this->_iPHP_compile){
+					$code.= $this->_iPHP_compile;
+					unset($this->_iPHP_compile);
+				}
+				return $code;
 				break;
 			case 'assign':
 				$_args = $this->_parse_arguments($arguments);
