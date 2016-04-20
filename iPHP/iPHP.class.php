@@ -445,11 +445,12 @@ class iPHP {
 		$GLOBALS['_iPHP_REQ'][$key] = true;
 		require $path;
 	}
-	public static function core($fname, $cname = null, $msg = '') {
+	public static function core($fname, $cname = null, $msg = '',$core = null) {
 		$cname === null && $cname = $fname;
 		$cname = 'i' . $cname;
 		if (!class_exists($cname)) {
-			$path = iPHP_CORE . '/i' . $fname . '.class.php';
+			$core===null && $core = iPHP_CORE;
+			$path = $core . '/i' . $fname . '.class.php';
 			if (@is_file($path)) {
 				self::import($path);
 			} else {

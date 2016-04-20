@@ -11,7 +11,14 @@ class APPS {
     public static $appid   = '1';
     public static $array   = array();
     // public static $app_paths   = array();
-
+    public static function check($app,$package='admincp'){
+        $path = iPHP_APP_DIR."/$app/{$app}.{$package}.php";
+        if(file_exists($path)){
+            return true;
+        }else{
+            return false;
+        }
+    }
     public static function scan($pattern='*.app'){
         self::$array = array();
         foreach (glob(iPHP_APP_DIR."/*/{$pattern}.php") as $filename) {

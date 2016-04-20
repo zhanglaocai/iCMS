@@ -425,7 +425,7 @@ class articleAdmincp{
         $rs = iDB::all("SELECT * FROM `#iCMS@__article` {$sql} ORDER BY {$orderby} {$limit}");
         //iDB::debug(1);
         $_count = count($rs);
-        $propArray = iACP::getProp("pid",null,'array');
+        $propArray = admincp::getProp("pid",null,'array');
         include admincp::view("article.manage");
     }
     function do_save(){

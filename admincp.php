@@ -10,7 +10,7 @@
 * @$Id: admincp.php 2365 2014-02-23 16:26:27Z coolmoo $
 */
 define('iPHP_DEBUG', true);
-define('iPHP_SESSION','SESSION');
+// define('iPHP_SESSION','SESSION');
 require dirname(__file__) . '/iCMS.php';
 iPHP::app('admincp.class','static');
 admincp::run();

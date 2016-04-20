@@ -11,16 +11,19 @@
  * @$Id: admincp.class.php 2361 2014-02-22 01:52:39Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
-iDB::$show_errors = true;
-iPHP::$dialog['title'] = 'iCMS';
 
 define('iCMS_SUPERADMIN_UID', '1');
 define('__ADMINCP__', __SELF__ . '?app');
 define('ACP_PATH', iPHP_APP_DIR . '/admincp');
 define('ACP_HOST', "http://" . $_SERVER['HTTP_HOST']);
 
-require iPHP_APP_CORE . '/iMenu.class.php';
-require iPHP_APP_CORE . '/iMember.class.php';
+iDB::$show_errors = true;
+iPHP::$dialog['title'] = 'iCMS';
+
+iCMS::core('Menu');
+iCMS::core('Member');
+iCMS::app('apps.class', 'static');
+
 iMember::$LOGIN_TPL = ACP_PATH;
 iMember::$AUTH = 'ADMIN_AUTH';
 iMember::$AJAX = iPHP::PG('ajax');
@@ -60,13 +63,10 @@ class admincp {
 		}
 
 		if ($_POST['username'] && $_POST['password']) {
-			$seccode = iS::escapeStr($_POST['iACP_seccode']);
 			iPHP::core("Seccode");
+			$seccode = iS::escapeStr($_POST['iACP_seccode']);
 			iSeccode::check($seccode, true, 'iACP_seccode') OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
-	}
-	public static function destroy_seccode() {
-		iPHP::set_cookie('iACP_seccode', '', -31536000);
 	}
 
 	public static function run($args = NULL, $prefix = "do_") {
@@ -87,14 +87,13 @@ class admincp {
 		self::$APP_TPL = ACP_PATH . '/template';
 		self::$APP_FILE = ACP_PATH . '/' . $app . '.app.php';
 
-		iPHP::app('apps.class', 'static');
-		APPS::scan("*.admincp");
-
-		if (APPS::$array[$app]) {
+		$ownAdmincp = APPS::check($app,"admincp");
+		if ($ownAdmincp) {
 			self::$APP_PATH = iPHP_APP_DIR . '/' . $app;
 			self::$APP_TPL = self::$APP_PATH . '/admincp';
 			self::$APP_FILE = self::$APP_PATH . '/' . $app . '.admincp.php';
 		}
+		strpos($app, '..') === false OR exit('what the fuck');
 
 		define('APP_URI', __ADMINCP__ . '=' . $app);
 		define('APP_FURI', APP_URI . '&frame=iPHP');
@@ -105,7 +104,7 @@ class admincp {
 		is_file(self::$APP_FILE) OR iPHP::throwException('运行出错！找不到文件: <b>' . self::$APP_NAME . '.app.php</b>', 1002);
 		iPHP::import(self::$APP_FILE);
 		$appName = self::$APP_NAME . 'App';
-		APPS::$array[$app] && $appName = self::$APP_NAME . 'Admincp';
+		$ownAdmincp && $appName = self::$APP_NAME . 'Admincp';
 		self::$app = new $appName();
 		$app_methods = get_class_methods($appName);
 		in_array(self::$APP_METHOD, $app_methods) OR iPHP::throwException('运行出错！ <b>' . self::$APP_NAME . '</b> 类中找不到方法定义: <b>' . self::$APP_METHOD . '</b>', 1003);
