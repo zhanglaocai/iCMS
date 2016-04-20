@@ -11,8 +11,8 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('iSpider.class', 'static');
-iPHP::app('iSpider.Tools', 'static');
-iPHP::app('iSpider.Content', 'static');
-iPHP::app('iSpider.Urls', 'static');
-iPHP::app('iSpider.Data', 'static');
+iPHP::app('spider.iSpider.class', 'static');
+iPHP::app('spider.iSpider.Tools', 'static');
+iPHP::app('spider.iSpider.Content', 'static');
+iPHP::app('spider.iSpider.Urls', 'static');
+iPHP::app('spider.iSpider.Data', 'static');
