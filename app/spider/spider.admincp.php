@@ -12,7 +12,7 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('iSpider.Autoload', 'static');
+iPHP::app('spider.iSpider.Autoload', 'static');
 
 class spiderAdmincp {
 
