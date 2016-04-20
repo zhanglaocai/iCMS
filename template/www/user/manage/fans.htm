@@ -1,0 +1,40 @@
+<div class="title"><span>我的粉丝</span></div>
+<table class="table table-striped">
+    <tbody>
+        <!--{iCMS:user:follow loop="true" page="true" row="10" fuid="$user.uid" followed="$user.uid"}-->
+        <!--{include file="./user.follow.htm" import="true"}-->
+        <!--{iCMSelse}-->
+        <tr>
+            <td><i class="fa fa-ban"></i> 暂无粉丝</td>
+        </tr>
+        <!--{/iCMS}-->
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3">
+                <div class="iCMS_pagination">
+                    <!--{$iCMS.PAGE.NAV}-->
+                </div>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+<script>
+$(".btn_follow").click(function(event) {
+    event.preventDefault();
+    var $this = $(this);
+    iCMS.user.follow(this, function(c, param) {
+        if (c.code) {
+            param.follow = (param.follow == '1' ? '0' : '1');
+            iCMS.param($this, param);
+            if (param.follow == '1') {
+                $this.removeClass('btn btn-success').html('<i class="fa fa-check"></i> 已关注，取消');
+            } else {
+                $this.addClass('btn btn-success').html('<i class="fa fa-plus"></i> 关注');
+            }
+        } else {
+            iCMS.alert(c.msg);
+        }
+    });
+});
+</script>
