@@ -19,9 +19,9 @@ class APPS {
             return false;
         }
     }
-    public static function scan($pattern='*.app'){
-        self::$array = array();
-        foreach (glob(iPHP_APP_DIR."/*/{$pattern}.php") as $filename) {
+    public static function scan($pattern='*.app',$appdir='*',$ret=false){
+        $array = array();
+        foreach (glob(iPHP_APP_DIR."/{$appdir}/{$pattern}.php") as $filename) {
 
             // if($check){
             //     var_dump($filename, $pattern);
@@ -38,7 +38,7 @@ class APPS {
             }
             $path = str_replace(iPHP_APP_DIR.'/','',$filename);
             list($a,$b,$c) = explode('.', $parts['filename']);
-            self::$array[$app] = $path;
+            $array[$app] = $path;
 
             // if($b=='admincp' && $c===null){
             // }else{
@@ -56,15 +56,20 @@ class APPS {
             //     in_array($app,$this->apps) OR array_push($this->apps,$app);
             // }
         }
+        if($ret){
+            return $array;
+        }
+        self::$array = $array;
         // var_dump(self::$array);
     }
-    public static function json(){
-        $data = array();
-        foreach (self::$array as $key => $path) {
-            if(stripos($path, 'app.json') !== false){
-                $path = iPHP_APP_DIR.'/'.$path;
-                $json = file_get_contents($path);
-                $json = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>", '', $json);
+    public static function config($pattern='app.json',$dir='*'){
+        $array = self::scan('config/'.$pattern,$dir,true);
+        $data  = array();
+        foreach ($array as $key => $path) {
+            if(stripos($path, $pattern) !== false){
+                $path  = iPHP_APP_DIR.'/'.$path;
+                $json  = file_get_contents($path);
+                $json  = substr($json, 56);
                 $jdata = json_decode($json,true);
                 if($jdata && is_array($jdata)){
                     $data[$jdata['app']] = $jdata;
@@ -97,7 +102,7 @@ class APPS {
 		return self;
 	}
 	public static function cache(){
-        $rs = iDB::all("SELECT `id`,`name`,`title`,`table`,`field` FROM `#iCMS@__app`");
+        $rs = iDB::all("SELECT `id`,`name`,`title`,`table`,`data` FROM `#iCMS@__app`");
 
         foreach((array)$rs AS $a) {
         	$tb_array = json_decode($a['table']);

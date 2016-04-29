@@ -19,6 +19,17 @@ class appsAdmincp{
       // $this->cache();
 
     }
+    function get_app($id=null){
+      $id === null && $id = $this->id;
+      if($id){
+        $rs = iDB::row("SELECT * FROM `#iCMS@__app` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
+        $rs['table'] && $rs['table'] = json_decode($rs['table'],true);
+        return $rs;
+      }
+    }
+    function do_install(){
+
+    }
     function do_add(){
         if($this->id) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__app` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
@@ -87,16 +98,17 @@ class appsAdmincp{
     }
 
     function do_iCMS(){
-      if($_GET['keywords']) {
-		   $sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";
-      }
-      $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
-      $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-      $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__app` {$sql}","G");
-      iPHP::pagenav($total,$maxperpage,"个应用");
-      $rs     = iDB::all("SELECT * FROM `#iCMS@__app` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
-      $_count = count($rs);
-      APPS::scan('config/app.json');
+     //  if($_GET['keywords']) {
+		   // $sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";
+     //  }
+     //  $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
+     //  $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
+     //  $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__app` {$sql}","G");
+     //  iPHP::pagenav($total,$maxperpage,"个应用");
+     //  $rs     = iDB::all("SELECT * FROM `#iCMS@__app` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+     //  $_count = count($rs);
+     //  APPS::scan('config/app.json');
+      $rs = APPS::config('app.json');
     	include admincp::view("apps.manage");
     }
     function do_del($id = null,$dialog=true){
