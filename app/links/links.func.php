@@ -5,9 +5,9 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
-function iCMS_link($vars){
-	$limit 		= isset($vars['row'])?(int)$vars['row']:"100";
-	$cache_time 	= isset($vars['time'])?(int)$vars['time']:-1;
+function links_list($vars){
+	$limit      = isset($vars['row'])?(int)$vars['row']:"100";
+	$cache_time = isset($vars['time'])?(int)$vars['time']:-1;
 
 	switch($vars['type']){
 		case "text":$sql[]=" `logo`='' ";break;

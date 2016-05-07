@@ -9,12 +9,22 @@ class APPS {
     public static $table   = 'article';
     public static $primary = 'id';
     public static $appid   = '1';
+    public static $confdir   = 'config';
     public static $array   = array();
     // public static $app_paths   = array();
+    //
+    public static function installed($app){
+        $path = self::$confdir."/install.lock.php";
+        return self::get_file($app,$path);
+    }
     public static function check($app,$package='admincp'){
-        $path = iPHP_APP_DIR."/$app/{$app}.{$package}.php";
+        $path = "{$app}.{$package}.php";
+        return self::get_file($app,$path);
+    }
+    public static function get_file($app,$path){
+        $path = iPHP_APP_DIR."/$app/".$path;
         if(file_exists($path)){
-            return true;
+            return $path;
         }else{
             return false;
         }

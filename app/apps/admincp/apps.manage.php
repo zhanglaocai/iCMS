@@ -62,6 +62,8 @@ $(function(){
             <?php
             foreach ($rs as $key => $data) {
               var_dump($data);
+              $installed = APPS::installed($data['app']);
+              var_dump($installed);
               // $table = APPS::get_table($data['appid']);
               // $app   = APPS::$array[$data['name']];
             ?>
@@ -84,15 +86,19 @@ $(function(){
               }
               ?>
               <td>
-                <?php if($data['status']){?>
-                <a href="<?php echo APP_URI; ?>&do=update&iDT=status:0&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
-                <a href="<?php echo __ADMINCP__; ?>=menu&appname=<?php echo $data['app'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 菜单</a>
-                <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> <?php echo $data['title'] ; ?>管理</a>
+                <?php if($installed){ ?>
+                  <?php if($data['status']){?>
+                  <a href="<?php echo APP_URI; ?>&do=update&iDT=status:0&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
+                  <a href="<?php echo __ADMINCP__; ?>=menu&appname=<?php echo $data['app'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 菜单</a>
+                  <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> <?php echo $data['title'] ; ?>管理</a>
+                  <?php }else{?>
+                  <a href="<?php echo APP_URI; ?>&do=update&iDT=status:1&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary"><i class="fa fa-open"></i> 启用</a>
+                  <?php }?>
+                  <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['appid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
+                  <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['appid'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
                 <?php }else{?>
-                <a href="<?php echo APP_URI; ?>&do=update&iDT=status:1&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary"><i class="fa fa-open"></i> 启用</a>
+                <a href="<?php echo APP_FURI; ?>&do=install&id=<?php echo $data['appid'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-primary" title='永久删除' /><i class="fa fa-add"></i> 安装应用</a>
                 <?php }?>
-                <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['appid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['appid'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
               </td>
             </tr>
             <?php }  ?>

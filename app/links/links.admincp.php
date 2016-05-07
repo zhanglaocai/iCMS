@@ -7,9 +7,9 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: links.app.php 634 2013-04-03 06:02:53Z coolmoo $
+* @$Id: link.admincp.php 634 2013-04-03 06:02:53Z coolmoo $
 */
-class linksApp{
+class linksAdmincp{
     function __construct() {
     	$this->id	= (int)$_GET['id'];
     }
