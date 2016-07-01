@@ -35,6 +35,8 @@ class iPages {
 		$this->total     = (int)$conf['total'];
 		$this->perpage   = $conf['perpage']?(int)$conf['perpage']:10;
 		$this->totalpage = ceil($this->total/$this->perpage);
+		$conf['lang'] && $this->lang = $conf['lang'];
+
 		if($this->totalpage<1){
 			return false;
 		}
@@ -52,7 +54,6 @@ class iPages {
 		$conf['page_name']&& $this->page_name = $conf['page_name'];
 		$conf['target']   && $this->target = $conf['target'];
 		$conf['titles']   && $this->titles = $conf['titles'];
-		$conf['lang']     && $this->lang = $conf['lang'];
 
 		$this->unit = $conf['unit']?$conf['unit']:$this->lang['sql'];
 		//设置当前页

@@ -60,17 +60,22 @@ function modal_tplfile(el,a){
         <li><a href="#setting-patch" data-toggle="tab">更新</a></li>
         <li><a href="#setting-grade" data-toggle="tab">高级</a></li>
         <li><a href="#setting-mail" data-toggle="tab">邮件</a></li>
-        <li><a href="#setting-weixin" data-toggle="tab">微信</a></li>
-        <li><a href="#setting-article" data-toggle="tab">article</a></li>
+        <?php APPS::setting('tabs');?>
       </ul>
     </div>
     <div class="widget-content nopadding iCMS-setting">
       <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-setting" target="iPHP_FRAME">
         <div id="setting" class="tab-content">
-          <?php include admincp::view("article.setting");?>
-          <div class="form-actions">
-            <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
-          </div>
+          <?php include iPHP_APP_DIR.'/admincp/template/setting.base.php';?>
+          <?php
+          $app_path = APPS::setting('content');
+          foreach ($app_path as $key => $path) {
+            include $path;
+          }
+          ?>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary btn-large" type="submit"><i class="fa fa-check"></i> 保 存</button>
         </div>
       </form>
     </div>

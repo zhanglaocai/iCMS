@@ -279,12 +279,12 @@ function _modal_dialog(cancel_text){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">出 处</span>
               <input type="text" name="source" class="span6" id="source" value="<?php echo $rs['source'] ; ?>"/>
-              <?php admincp::propBtn("source");?>
+              <?php $propApp->btn_group("source");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">作 者</span>
               <input type="text" name="author" class="span2" id="author" value="<?php echo $rs['author'] ; ?>"/>
-              <?php admincp::propBtn("author");?>
+              <?php $propApp->btn_group("author");?>
             </div>
             <div class="input-prepend"> <span class="add-on">编 辑</span>
               <input type="text" name="editor" class="span2" id="editor" value="<?php echo $rs['editor'] ; ?>"/>

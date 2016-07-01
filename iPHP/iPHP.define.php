@@ -27,7 +27,7 @@ defined('iPHP_CHARSET')	OR define('iPHP_CHARSET',	'utf-8');
 defined('iPHP_COOKIE_DOMAIN') OR define ('iPHP_COOKIE_DOMAIN','');
 defined('iPHP_COOKIE_PATH') OR define ('iPHP_COOKIE_PATH',	'/');
 defined('iPHP_COOKIE_PRE') OR define ('iPHP_COOKIE_PRE',	'iPHP_');
-defined('iPHP_COOKIE_TIME') OR define ('iPHP_COOKIE_TIME',	'8640000');
+defined('iPHP_COOKIE_TIME') OR define ('iPHP_COOKIE_TIME',	'31536000');
 defined('iPHP_AUTH_IP') OR define ('iPHP_AUTH_IP',		true);
 defined('iPHP_UAUTH_IP') OR define ('iPHP_UAUTH_IP',		false);
 //---------------时间设置------------------------

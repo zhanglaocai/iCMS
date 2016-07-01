@@ -9,7 +9,7 @@
 * @version 6.0.0
 * @$Id: prop.app.php 2369 2014-03-13 16:16:29Z coolmoo $
 */
-class propApp{
+class propAdmincp{
     function __construct() {
         $this->pid         = (int)$_GET['pid'];
     }

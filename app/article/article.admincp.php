@@ -77,6 +77,7 @@ class articleAdmincp{
         $strpos   = strpos(__REF__,'?');
         $REFERER  = $strpos===false?'':substr(__REF__,$strpos);
         $defArray = iCache::get('iCMS/defaults');
+        $propApp  = iPHP::app('prop.admincp');
         if(iCMS::$config['article']['editor']){
             include admincp::view("article.markdown");
         }else{

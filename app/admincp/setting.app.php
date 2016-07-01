@@ -24,8 +24,8 @@ class settingApp{
     function do_iCMS(){
     	$config	= $this->get();
     	$config['site']['indexName'] OR $config['site']['indexName'] = 'index';
-        //$redis    = extension_loaded('redis');
-        $memcache = extension_loaded('memcache');
+        $redis    = extension_loaded('redis');
+        $memcache = extension_loaded('memcached');
     	include admincp::view("setting");
     }
     /**

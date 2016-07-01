@@ -227,14 +227,8 @@ class admincp {
 		include self::view("admincp.picBtnGroup", true);
 	}
 
-	public static function propBtn($field, $type = null, $target = null) {
-		$propApp = admincp::app('prop');
-		$propApp->btn_group($field, $type, $target);
-	}
-
 	public static function getProp($field, $val = NULL, /*$default=array(),*/ $out = 'option', $url = "", $type = "") {
-		$propApp = admincp::app('prop');
-		return $propApp->get_prop($field, $val, $out, $url, $type);
+		return iPHP::app('prop.admincp')->get_prop($field, $val, $out, $url, $type);
 	}
 	public static function files_modal_btn($title = '', $click = 'file', $target = 'template_index', $callback = '', $do = 'seltpl', $from = 'modal') {
 		$filesApp = admincp::app('files');

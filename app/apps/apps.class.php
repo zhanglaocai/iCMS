@@ -3,8 +3,9 @@
  * @package iCMS
  * @copyright 2007-2010, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
- * @author coolmoo <idreamsoft@qq.com>
+ * @author c00lt3a <idreamsoft@qq.com>
  */
+
 class APPS {
     public static $table   = 'article';
     public static $primary = 'id';
@@ -87,6 +88,24 @@ class APPS {
             }
         }
         return $data;
+    }
+    public static function setting($t='tabs',$appdir='*',$pattern='*.setting'){
+
+        $array = self::scan('admincp/'.$pattern,$appdir,true);
+        // var_dump($array);
+        $app_array = iCache::get('iCMS/app/cache_name');
+        // var_dump($app_array);
+        $paths = array();
+        foreach ($array as $key => $path) {
+            $appinfo = $app_array[$key];
+            if($t=='tabs'){
+                echo '<li><a href="#setting-'.$key.'" data-toggle="tab">'.$appinfo['title'].'</a></li>';
+            }
+            if ($t == 'content'){
+                $paths[$key] =  iPHP_APP_DIR.'/'.$path;
+            }
+        }
+        return $paths;
     }
     public static function table($appId){
         $appMap = array(

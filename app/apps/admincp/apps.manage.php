@@ -97,7 +97,8 @@ $(function(){
                   <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['appid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                   <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['appid'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
                 <?php }else{?>
-                <a href="<?php echo APP_FURI; ?>&do=install&id=<?php echo $data['appid'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-primary" title='永久删除' /><i class="fa fa-add"></i> 安装应用</a>
+                <a href="<?php echo APP_FURI; ?>&do=install&id=<?php echo $data['appid'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-primary" title='安装' /><i class="fa fa-add"></i> 安装应用</a>
+                <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $data['appid'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='删除' /><i class="fa fa-add"></i> 删除应用</a>
                 <?php }?>
               </td>
             </tr>
