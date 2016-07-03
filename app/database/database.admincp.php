@@ -9,7 +9,7 @@
  * @version 6.0.0
  * @$Id: database.app.php 2324 2013-12-11 14:11:58Z coolmoo $
  */
-class databaseApp {
+class databaseAdmincp {
 	function __construct() {
 		$this->bakdir = $_GET['dir'];
 	}

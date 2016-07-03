@@ -9,20 +9,9 @@
 * @version 6.0.0
 * @$Id: html.app.php 2404 2013-03-02 07:32:33Z coolmoo $
 */
-class htmlApp{
-    function __construct() {
-		iPHP::$iTPL_MODE = "html";
-		$this->page      = $GLOBALS['page'];
-		$this->PG        = $_POST?$_POST:$_GET;
-		$this->CP        = iCMS::$config['router']['speed'];
-		$this->alltime   = $_GET['alltime']?$_GET['alltime']:0;
-    }
-    function do_all(){
-    	include admincp::view("html.all");
-    }
-    function do_index(){
-    	include admincp::view("html.index");
-    }
+class html{
+    function __construct() {}
+
     function do_createIndex(){
 		$indexTPL  = iCMS::$config['template']['index']	= $this->PG['indexTPL'];
 		$indexName = iCMS::$config['template']['index_name'] = $this->PG['indexName'];
@@ -78,10 +67,7 @@ class htmlApp{
 		$updateMsg = $this->page?true:false;
 		iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
-    function do_category(){
-        $this->categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
-    	include admincp::view("html.category");
-    }
+
     function do_createCategory($cid=0,$p=1,$loop=1){
 		$category	= $this->PG['cid'];
 		$rootid		= $this->PG['rootid'];
@@ -162,10 +148,7 @@ class htmlApp{
 		}
 		iPHP::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
     }
-    function do_article(){
-        $this->categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
-    	include admincp::view("html.article");
-    }
+
     function do_createArticle($aid=null){
 		$category = $this->PG['cid'];
 		$startime = $this->PG['startime'];

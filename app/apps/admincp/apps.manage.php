@@ -51,8 +51,9 @@ $(function(){
           <thead>
             <tr>
               <th>ID</th>
-              <th class="span2">应用名称</th>
-              <th class="span2">应用标识</th>
+              <th class="span2">名称</th>
+              <th class="span2">简介</th>
+              <th class="span2">标识</th>
               <th class="span2">数据表</th>
               <th class="span2">模板标签</th>
               <th>操作</th>
@@ -69,12 +70,8 @@ $(function(){
             ?>
             <tr id="tr<?php echo $data['appid'] ; ?>">
               <td><?php echo $data['appid'] ; ?></td>
-              <td><?php echo $data['title'] ; ?>
-                <?php if($data['description']){?>
-                <br />
-                <p class="app_list_desc"><?php echo $data['description'] ?></p>
-                <?php } ?>
-              </td>
+              <td><?php echo $data['title'] ; ?></td>
+              <td><p class="app_list_desc"><?php echo $data['description'] ; ?></p></td>
               <td><?php echo $data['app'] ; ?></td>
               <td><span class="label label-success"><?php echo implode('</span><br /><span class="label label-success">', $data['table']); ?></span></td>
               <td>

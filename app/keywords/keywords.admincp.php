@@ -9,7 +9,7 @@
 * @version 6.0.0
 * @$Id: keywords.app.php 2374 2014-03-17 11:46:13Z coolmoo $
 */
-class keywordsApp{
+class keywordsAdmincp{
     function __construct() {
     	$this->id	= (int)$_GET['id'];
     }
