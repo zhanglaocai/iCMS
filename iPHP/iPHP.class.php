@@ -1084,7 +1084,8 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline){
         exit;
     }
     if($_POST){
-        $html = str_replace(array("\r","\\","\"","\n","<b>","</b>","<pre>","</pre>"), array(' ',"\\\\","\\\"",'\n',''), $html);
+        $html = str_replace("\n", '\n', $html);
+        $html = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$html);
         echo '<script>alert("'.$html.'")</script>';
         exit;
     }
