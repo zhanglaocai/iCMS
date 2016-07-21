@@ -9,6 +9,7 @@
 class articleApp {
     public $taoke   = false;
     public $methods = array('iCMS','article','clink','hits','good','bad','like_comment','comment');
+    public $pregimg = "/<img.*?src\s*=[\\\\\"|\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
     public function __construct() {}
 
     public function do_iCMS($a = null) {
@@ -158,7 +159,8 @@ class articleApp {
 
             $art_data['body'] = $this->ubb($art_data['body']);
 
-            preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is",$art_data['body'],$pic_array);
+            preg_match_all($this->pregimg,$art_data['body'],$pic_array);
+
             $p_array = array_unique($pic_array[1]);
             if($p_array)foreach($p_array as $key =>$_pic) {
                 $article['pics'][$key] = trim($_pic);
@@ -390,7 +392,7 @@ class articleApp {
         $htmlArray = explode("\n", $html);
         $resource  = array();
         //计算长度
-        preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is",$content,$img_array);
+        preg_match_all($this->pregimg,$content,$img_array);
         $len = strlen($content)+(count($img_array[1])*300);
 
         if($len<($pieces*1.5)){

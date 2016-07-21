@@ -42,6 +42,12 @@ class spiderApp {
             case 'poid':
                 $poid = $_POST['poid'];
                 iDB::query("update `#iCMS@__spider_project` set `poid`='$poid' where `id` IN($ids);");
+                iPHP::success('操作成功!','js:1');
+            break;
+            case 'move':
+                $cid = $_POST['cid'];
+                iDB::query("update `#iCMS@__spider_project` set `cid`='$cid' where `id` IN($ids);");
+                iPHP::success('操作成功!','js:1');
             break;
 
     		case 'delurl':
@@ -459,6 +465,25 @@ class spiderApp {
             iDB::insert('spider_project',$data);
         }
         iPHP::success('完成', 'url:' . APP_URI . '&do=project');
+    }
+    function do_import_project(){
+        iFS::$checkFileData           = false;
+        iFS::$config['allow_ext']     = 'txt';
+        iFS::$config['yun']['enable'] = false;
+        $F    = iFS::upload('upfile');
+        $path = $F['RootPath'];
+        if($path){
+            $data = file_get_contents($path);
+            if($data){
+                $data = base64_decode($data);
+                $data = unserialize($data);
+                foreach ((array)$data as $key => $value) {
+                    iDB::insert("spider_project",$value);
+                }
+            }
+            @unlink($path);
+            iPHP::success('方案导入完成,请重新设置规则','js:1');
+        }
     }
     function do_proxy_test(){
        $a = spiderTools::proxy_test();

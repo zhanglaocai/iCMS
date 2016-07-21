@@ -28,6 +28,20 @@ $(function(){
       return $("#poidBatch").clone(true);
     }
   });
+  $("#import_project").click(function(event) {
+      var import_project_wrap = document.getElementById("import_project_wrap");
+      iCMS.dialog({
+        title: 'iCMS - 导入方案',
+        content:import_project_wrap
+      });
+  });
+  $("#local").click(function() {
+      $("#localfile").click();
+  });
+  $("#localfile").change(function() {
+      $("#import_project_wrap form").submit();
+      $(this).val('');
+  });
 });
 </script>
 
@@ -81,6 +95,9 @@ $(function(){
         <div class="input-prepend input-append"> <span class="add-on">关键字</span>
           <input type="text" name="keywords" class="span2" id="keywords" value="<?php echo $_GET['keywords']; ?>" />
           <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜 索</button>
+        </div>
+        <div style="float:right;">
+          <button class="btn btn-success" type="button" id="import_project"><i class="fa fa-send"></i> 导入方案</button>
         </div>
       </form>
     </div>
@@ -151,7 +168,7 @@ $(function(){
                       <li class="divider"></li>
                       <li><a data-toggle="batch" data-action="move"><i class="fa fa-fighter-jet"></i> 重设发布栏目</a></li>
                       <li class="divider"></li>
-                      <li><a data-toggle="batch" data-action="poid"><i class="fa fa-magnet"></i> 重设发布规则</a></li>
+                      <li><a data-toggle="batch" data-action="poid"><i class="fa fa-magnet"></i> 重设发布模块</a></li>
                       <li class="divider"></li>
                       <li><a data-toggle="batch" data-action="delproject"><i class="fa fa-trash-o"></i> 删除</a></li>
                     </ul>
@@ -167,7 +184,7 @@ $(function(){
 <div class='iCMS-batch'>
   <div id="poidBatch" style="width: 330px;">
     <div class="input-prepend">
-        <span class="add-on">发布规则</span>
+        <span class="add-on">发布模块</span>
         <select name="poid" id="poid" class="span3 chosen-select">
           <option value="0">无</option>
           <?php foreach ((array)$postArray as $poid => $poname) {
@@ -176,5 +193,16 @@ $(function(){
         </select>
     </div>
   </div>
+</div>
+<div id="import_project_wrap" style="display:none;">
+  <form action="<?php echo APP_FURI; ?>&do=import_project" method="post" enctype="multipart/form-data" target="iPHP_FRAME">
+    <div class="alert alert-info">
+      只允许导入TXT文件
+    </div>
+    <div class="clearfloat mb10"></div>
+    <a id="local" class="btn btn-primary btn-large btn-block"><i class="fa fa-upload"></i> 请选择要导入的方案</a>
+    <input id="localfile" name="upfile" type="file" class="hide"/>
+    <div class="clearfloat mb10"></div>
+  </form>
 </div>
 <?php iACP::foot(); ?>

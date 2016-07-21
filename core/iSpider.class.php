@@ -34,6 +34,7 @@ class spider{
 	public static $charset     = null;
 	public static $curl_proxy  = false;
     public static $proxy_array = array();
+    public static $PROXY_URL = false;
     public static $callback = array();
 
     public static $spider_url_ids = array();

@@ -497,6 +497,9 @@ class spiderTools extends spider{
             $proxy   = spiderTools::proxy_test();
             $proxy && $options = spiderTools::proxy($options,$proxy);
         }
+        if(spider::$PROXY_URL){
+            $options[CURLOPT_URL] = self::$PROXY_URL.urlencode($url);
+        }
         $ch = curl_init();
         curl_setopt_array($ch,$options);
         $responses = curl_exec($ch);

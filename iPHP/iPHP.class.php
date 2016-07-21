@@ -190,6 +190,10 @@ class iPHP{
             $domain      = false;
         }
 
+        define('iPHP_REQUEST_SCHEME',($_SERVER['SERVER_PORT'] == 443)?'https':'http');
+        define('iPHP_REQUEST_HOST',iPHP_REQUEST_SCHEME.'://'.$_SERVER['HTTP_HOST']);
+        define('iPHP_REQUEST_URI',$_SERVER['REQUEST_URI']);
+        define('iPHP_REQUEST_URL',iPHP_REQUEST_HOST.iPHP_REQUEST_URI);
         define('iPHP_ROUTER_URL',$config['router']['URL']);
         $domain && $config['router'] = str_replace($config['router']['URL'], $domain, $config['router']);
         define('iPHP_DEFAULT_TPL',$def_tpl);
@@ -198,6 +202,18 @@ class iPHP{
         define('iPHP_HOST', $config['router']['URL']);
         header("Access-Control-Allow-Origin: ".iPHP_HOST);
         header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
+        // self::device_url_check();
+    }
+    private static function device_url_check(){
+        if(stripos(iPHP_REQUEST_URL, iPHP_HOST) === false){
+            $redirect_url = str_replace(iPHP_REQUEST_HOST,iPHP_HOST, iPHP_REQUEST_URL);
+            header("Expires:1 January, 1970 00:00:01 GMT");
+            header("Cache-Control: no-cache");
+            header("Pragma: no-cache");
+            iPHP::http_status(301);
+            // exit($redirect_url);
+            iPHP::gotourl($redirect_url);
+        }
     }
     private static function device_check($deviceArray=null,$flag=false){
         foreach ((array)$deviceArray as $key => $device) {

@@ -216,7 +216,6 @@ class spiderContent extends spider{
         $content = implode('#--iCMS.PageBreak--#', $contentArray);
         $html    = null;
         unset($html,$contentArray,$contentHash,$_content);
-        $content = stripslashes($content);
         if (spider::$dataTest) {
             print_r('<b>['.$name.']匹配结果:</b>'.htmlspecialchars($content));
             echo "<hr />";
@@ -224,9 +223,9 @@ class spiderContent extends spider{
         if ($data['cleanbefor']) {
             $content = spiderTools::dataClean($data['cleanbefor'], $content);
         }
+        $content = stripslashes($content);
 
         if ($data['cleanhtml']) {
-            $content = stripslashes($content);
             $content = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $content);
         }
         if ($data['format'] && $content) {
@@ -234,7 +233,6 @@ class spiderContent extends spider{
         }
 
         if ($data['img_absolute'] && $content) {
-            // $content = stripslashes($content);
             preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $img_match);
             if($img_match[1]){
                 $_img_array = array_unique($img_match[1]);
@@ -250,11 +248,9 @@ class spiderContent extends spider{
             $content = str_replace('&nbsp;','',trim($content));
         }
         if ($data['capture']) {
-            // $content = stripslashes($content);
             $content = spiderTools::remote($content);
         }
         if ($data['download']) {
-            // $content = stripslashes($content);
             $content = iFS::http($content);
         }
 
