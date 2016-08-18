@@ -13,26 +13,26 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class iPHP {
-	public static $apps = null;
-	public static $app = null;
-	public static $app_name = null;
-	public static $app_do = null;
+	public static $apps       = null;
+	public static $app        = null;
+	public static $app_name   = null;
+	public static $app_do     = null;
 	public static $app_method = null;
-	public static $app_tpl = null;
-	public static $app_path = null;
-	public static $app_file = null;
-	public static $app_args = null;
-	public static $app_vars = null;
-	public static $config = array();
-	public static $hooks = array();
+	public static $app_tpl    = null;
+	public static $app_path   = null;
+	public static $app_file   = null;
+	public static $app_args   = null;
+	public static $app_vars   = null;
+	public static $config     = array();
+	public static $hooks      = array();
 
-	public static $pagenav = NULL;
-	public static $offset = NULL;
-	public static $break = true;
-	public static $dialog = array();
-	public static $iTPL = NULL;
-	public static $iTPL_MODE = null;
-	public static $mobile = false;
+	public static $pagenav    = NULL;
+	public static $offset     = NULL;
+	public static $break      = true;
+	public static $dialog     = array();
+	public static $iTPL       = NULL;
+	public static $iTPL_MODE  = null;
+	public static $mobile     = false;
 	public static $time_start = false;
 
 	public static function run($app = NULL, $do = NULL, $args = NULL, $prefix = "do_") {

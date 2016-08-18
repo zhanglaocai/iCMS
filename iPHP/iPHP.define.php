@@ -48,8 +48,8 @@ define('iPHP_LIB',  iPATH."iPHP/library");
 define('iPHP_APP_DIR',	iPATH."app");
 define('iPHP_APP_CORE',	iPATH."core");
 define('iPHP_APP_CACHE',iPATH."cache");
-define('iPHP_CONF_DIR',	iPATH."conf");
-define('iPHP_TPL_DIR',	iPATH."template");
+define('iPHP_TPL_DIR',  iPATH."template");
+define('iPHP_CONF_DIR',	iPATH."cache/conf");
 define('iPHP_TPL_CACHE',iPATH."cache/template");
 
 //---------------系统设置------------------------
@@ -63,6 +63,6 @@ defined('iPHP_MEMORY_LIMIT') OR define('iPHP_MEMORY_LIMIT', '128M');
 defined('iPHP_TPL_VAR') OR define('iPHP_TPL_VAR',iPHP_APP);//<!--{iPHP:test }--><!--{iPHP.now}-->
 //defined('iPHP_TPL_DOMAIN') OR define('iPHP_TPL_DOMAIN','www.idreamsoft.com');
 //defined('iPHP_DEFAULT_TPL') OR define('iPHP_DEFAULT_TPL','default');
-defined('iPHP_TPL_FUN') OR define('iPHP_TPL_FUN',iPHP_APP_CORE.'/function');
+defined('iPHP_TPL_FUN') OR define('iPHP_TPL_FUN',iPHP_APP_DIR.'/func');
 defined('iPHP_CHARSET') OR define('iPHP_CHARSET','UTF-8');
 defined('iPHP_SESSION') OR define('iPHP_SESSION','COOKIE');// SESSION,COOKIE,SESSION+COOKIE,
