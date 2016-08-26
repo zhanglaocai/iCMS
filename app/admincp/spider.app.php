@@ -240,6 +240,13 @@ class spiderApp {
         Header("Content-Disposition: attachment; filename=spider.rule.".$rs->name.'.txt');
         echo $data;
     }
+    function do_exportproject(){
+        $data = iDB::all("select `name`, `urls`, `list_url`, `cid`, `rid`, `poid`, `sleep`, `checker`, `self`, `auto`, `lastupdate`, `psleep` from `#iCMS@__spider_project` where rid = '$this->rid'");
+        $data = base64_encode(serialize($data));
+        Header("Content-type: application/octet-stream");
+        Header("Content-Disposition: attachment; filename=spider.rule.".$this->rid.'.project.txt');
+        echo $data;
+    }
     function do_import_rule(){
         iFS::$checkFileData           = false;
         iFS::$config['allow_ext']     = 'txt';
@@ -306,7 +313,7 @@ class spiderApp {
             iDB::update('spider_rule', $data, array('id'=>$id));
             iPHP::success('保存成功');
         } else {
-            iDB::insert('spider_rule',$data);
+            $id = iDB::insert('spider_rule',$data);
             iPHP::success('保存成功!','url:'.APP_URI."&do=addrule&rid=".$id);
         }
     }

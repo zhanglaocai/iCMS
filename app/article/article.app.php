@@ -9,7 +9,7 @@
 class articleApp {
     public $taoke   = false;
     public $methods = array('iCMS','article','clink','hits','good','bad','like_comment','comment');
-    public $pregimg = "/<img.*?src\s*=[\\\\\"|\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
+    public $pregimg = "/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
     public function __construct() {}
 
     public function do_iCMS($a = null) {
@@ -244,8 +244,9 @@ class articleApp {
                     }else{
                         $img_replace[$key] = $img;
                     }
-                    if(iCMS::$config['article']['pic_next'] && $count>1){
-                        $clicknext = '<a href="'.$next_url.'"><b>'.iPHP::lang('iCMS:article:clicknext').'</b></a>';
+
+                    if(iCMS::$config['article']['pic_next'] && $total>1){
+                        $clicknext = '<a href="'.$next_url.'"><b>'.iPHP::lang('iCMS:article:clicknext').' ('.$page.'/'.$total.')</b></a>';
                         $clickimg  = '<a href="'.$next_url.'" title="'.$article['title'].'" class="img">'.$img.'</a>';
                         if(iCMS::$config['article']['pic_center']){
                             $img_replace[$key] = '<p class="click2next">'.$clicknext.'</p>';

@@ -339,7 +339,11 @@ class spiderContent extends spider{
                     if ($data['trim']) {
                         $_content = trim($_content);
                     }
-                    $conArray[$doc_key]  = $_content;
+                    if(empty($_content)){
+                        $cmd5 = 'empty('.$doc_key.')';
+                    }else{
+                        $conArray[$doc_key]  = $_content;
+                    }
                     $match_hash[$cmd5] = true;
                 }
                 if (spider::$dataTest) {
@@ -376,7 +380,11 @@ class spiderContent extends spider{
                             if ($data['trim']) {
                                 $mat['content'] = trim($mat['content']);
                             }
-                            $conArray[$mkey]     = $mat['content'];
+                            if(empty($mat['content'])){
+                                $cmd5 = 'empty('.$mkey.')';
+                            }else{
+                                $conArray[$mkey] = $mat['content'];
+                            }
                             $match_hash[$cmd5] = true;
                         }
                         if (spider::$dataTest) {

@@ -28,6 +28,7 @@ class filterApp{
         $disable = array_unique($disable);
 
         foreach($filter AS $k=> $val) {
+            $val = trim($val);
             $filterArray[$k] = explode("=",$val);
         }
         $this->setting->set($filterArray,'word.filter',0,true);

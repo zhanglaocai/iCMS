@@ -62,7 +62,7 @@ $(function(){
             <tr>
               <th><i class="fa fa-arrows-v"></i></th>
               <th>ID</th>
-              <th class="span6">名称</th>
+              <th class="span3">名称</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -76,6 +76,7 @@ $(function(){
                 <a href="<?php echo APP_URI; ?>&do=manage&rid=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small btn-success" target="_blank"><i class="fa fa-list-alt"></i> 已采集</a>
                 <a href="<?php echo APP_URI; ?>&do=project&rid=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small btn-info" target="_blank"><i class="fa fa-magnet"></i> 方案</a>
                 <a href="<?php echo APP_FURI; ?>&do=exportrule&rid=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-download"></i> 导出</a>
+                <a href="<?php echo APP_FURI; ?>&do=exportproject&rid=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-download"></i> 导出方案</a>
                 <a href="<?php echo APP_FURI; ?>&do=copyrule&rid=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-clipboard"></i> 复制</a>
                 <a href="<?php echo APP_URI; ?>&do=testrule&rid=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small btn-inverse" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试</a>
                 <a href="<?php echo APP_URI; ?>&do=addrule&rid=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-edit"></i> 编辑</a>

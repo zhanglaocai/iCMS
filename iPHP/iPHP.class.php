@@ -191,7 +191,7 @@ class iPHP{
         }
 
         define('iPHP_REQUEST_SCHEME',($_SERVER['SERVER_PORT'] == 443)?'https':'http');
-        define('iPHP_REQUEST_HOST',iPHP_REQUEST_SCHEME.'://'.$_SERVER['HTTP_HOST']);
+        define('iPHP_REQUEST_HOST',iPHP_REQUEST_SCHEME.'://'.($_SERVER['HTTP_X_HTTP_HOST']?$_SERVER['HTTP_X_HTTP_HOST']:$_SERVER['HTTP_HOST']));
         define('iPHP_REQUEST_URI',$_SERVER['REQUEST_URI']);
         define('iPHP_REQUEST_URL',iPHP_REQUEST_HOST.iPHP_REQUEST_URI);
         define('iPHP_ROUTER_URL',$config['router']['URL']);
@@ -202,7 +202,7 @@ class iPHP{
         define('iPHP_HOST', $config['router']['URL']);
         header("Access-Control-Allow-Origin: ".iPHP_HOST);
         header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
-        // self::device_url_check();
+        self::device_url_check();
     }
     private static function device_url_check(){
         if(stripos(iPHP_REQUEST_URL, iPHP_HOST) === false){
@@ -210,9 +210,13 @@ class iPHP{
             header("Expires:1 January, 1970 00:00:01 GMT");
             header("Cache-Control: no-cache");
             header("Pragma: no-cache");
-            iPHP::http_status(301);
+            // header("X-REDIRECT-REF: ".iPHP_REQUEST_URL);
+            // header("X-iPHP_HOST: ".iPHP_HOST);
+            // header("X-REDIRECT_URL: ".$redirect_url);
+            // header("X-STRIPOS: ".(stripos(iPHP_REQUEST_URL, iPHP_HOST) === false));
+            // iPHP::http_status(301);
             // exit($redirect_url);
-            iPHP::gotourl($redirect_url);
+            // iPHP::gotourl($redirect_url);
         }
     }
     private static function device_check($deviceArray=null,$flag=false){
@@ -706,7 +710,9 @@ class iPHP{
 	        200 => 'OK',
 	        // Redirection 3xx
 	        301 => 'Moved Permanently',
-	        302 => 'Moved Temporarily ',  // 1.1
+            302 => 'Moved Temporarily',  // 1.1
+            304 => 'Not Modified',
+
 	        // Client Error 4xx
 	        400 => 'Bad Request',
 	        403 => 'Forbidden',

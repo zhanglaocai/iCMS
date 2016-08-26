@@ -141,7 +141,8 @@ $(function(){
               </td>
               <td style="text-align: right;">
                 <a href="<?php echo APP_FURI; ?>&do=copyproject&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-copy"></i> 复制</a>
-                <a href="<?php echo APP_URI; ?>&do=testrule&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试</a>
+                <a href="<?php echo APP_URI; ?>&do=testrule&rid=<?php echo $rs[$i]['rid']; ?>" class="btn btn-small" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试规则</a>
+                <a href="<?php echo APP_URI; ?>&do=testrule&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试方案</a>
                 <a href="<?php echo APP_URI; ?>&do=listpub&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small btn-primary" data-toggle="modal" title="采集列表,手动发布"><i class="fa fa-hand-o-up"></i> 手动采集</a>
                 <a href="<?php echo APP_FURI; ?>&do=start&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small btn-success tip" target="iPHP_FRAME" title="自动采集列表,并发布"><i class="fa fa-play"></i> 采集</a>
                 <a href="<?php echo APP_URI; ?>&do=addproject&pid=<?php echo $rs[$i]['id']; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
@@ -168,7 +169,7 @@ $(function(){
                       <li class="divider"></li>
                       <li><a data-toggle="batch" data-action="move"><i class="fa fa-fighter-jet"></i> 重设发布栏目</a></li>
                       <li class="divider"></li>
-                      <li><a data-toggle="batch" data-action="poid"><i class="fa fa-magnet"></i> 重设发布模块</a></li>
+                      <li><a data-toggle="batch" data-action="poid"><i class="fa fa-magnet"></i> 重设发布规则</a></li>
                       <li class="divider"></li>
                       <li><a data-toggle="batch" data-action="delproject"><i class="fa fa-trash-o"></i> 删除</a></li>
                     </ul>
@@ -184,7 +185,7 @@ $(function(){
 <div class='iCMS-batch'>
   <div id="poidBatch" style="width: 330px;">
     <div class="input-prepend">
-        <span class="add-on">发布模块</span>
+        <span class="add-on">发布规则</span>
         <select name="poid" id="poid" class="span3 chosen-select">
           <option value="0">无</option>
           <?php foreach ((array)$postArray as $poid => $poname) {
