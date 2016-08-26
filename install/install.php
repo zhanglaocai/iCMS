@@ -9,6 +9,9 @@
 * @version 6.0.0
 * @$Id: install.php 2330 2014-01-03 05:19:07Z coolmoo $
 */
+ini_set('display_errors','ON');
+error_reporting(E_ALL & ~E_NOTICE);
+
 define('iPHP',TRUE);
 define('iPHP_APP','iCMS'); //应用名
 define('iPATH',dirname(strtr(__FILE__,'\\','/'))."/../");
@@ -16,7 +19,7 @@ define('iPATH',dirname(strtr(__FILE__,'\\','/'))."/../");
 if($_POST['action']=='install'){
 	$db_host     = trim($_POST['DB_HOST']);
 	$db_user     = trim($_POST['DB_USER']);
-    $db_port     = intval($_POST['DB_PORT']) ? : 3306;
+    $db_port     = trim($_POST['DB_PORT'])?'':'3306';
 	$db_password = trim($_POST['DB_PASSWORD']);
 	$db_name     = trim($_POST['DB_NAME']);
 	$db_prefix   = trim($_POST['DB_PREFIX']);
