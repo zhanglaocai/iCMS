@@ -31,7 +31,7 @@ $(function(){
 	});
   $('#spider').on("click",'a[data-toggle="insertContent"]',function(){
     var href = $(this).attr("href");
-    console.log(href.indexOf('<%'),href.indexOf('aaaaaaaaaa'));
+    // console.log(href.indexOf('<%'),href.indexOf('aaaaaaaaaa'));
     if(href.indexOf('<%')!="-1"){
       var target= $(this).attr('data-target')
       var text = $(target).val();
