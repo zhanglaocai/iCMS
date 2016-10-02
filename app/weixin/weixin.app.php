@@ -5,9 +5,23 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
+defined('iPHP') OR exit('What are you doing?');
+
+iPHP::app('weixin.class','static');
 
 class weixinApp {
-	public $methods	= array('interface');
+    public $methods = array('interface','menu');
+    public function __construct($config=null) {
+        $config===null && $config = iCMS::$config['api']['weixin'];
+        weixin::$config = $config;
+    }
+
+    public function API_menu(){
+        weixin::init();
+        var_dump(weixin::setMenu());
+        print_r(weixin::getMenu());
+        exit;
+    }
 
     public function API_interface(){
         if(iPHP_DEBUG){
@@ -15,19 +29,18 @@ class weixinApp {
             // iDB::$show_errors = true;
         }
 
-        if ($_GET["api_token"]!=iCMS::$config['api']['weixin']['token']) {
+        if ($_GET["api_token"]!=weixin::$config['token']) {
             throw new Exception('TOKEN is error!');
         }
 
         if($_GET["echostr"] && !$_GET['msg_signature']){
-            if($this->checkSignature()){
+            if(weixin::checkSignature()){
                 echo $_GET["echostr"];
                 exit;
             }
         }
-        $input = file_get_contents("php://input");
-        if ($input){
-			$xml          = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $xml = weixin::input();
+        if ($xml){
 			$FromUserName = $xml->FromUserName;
 			$ToUserName   = $xml->ToUserName;
 			$content      = trim($xml->Content);
@@ -69,20 +82,20 @@ class weixinApp {
             if (in_array($event,array('subscribe','unsubscribe'))) {
                 if ($event=='subscribe') {
                 	$subscribe_msg = $site_name.' ('.$site_host.') '.$site_desc."\n\n回复:".$site_key.' 将会收到我们最新为您准备的信息';
-                	iCMS::$config['api']['weixin']['subscribe'] && $subscribe_msg = iCMS::$config['api']['weixin']['subscribe'];
+                	weixin::$config['subscribe'] && $subscribe_msg = weixin::$config['subscribe'];
                 	//$subscribe_msg = str_replace(array('{site.name}'), replace, subject)
-	                $this->msg_xml($subscribe_msg,$FromUserName,$ToUserName);
+	                weixin::msg_xml($subscribe_msg,$FromUserName,$ToUserName);
                 }
                 if ($event=='unsubscribe') {
-                	$subscribe_msg = "非常感谢您一直以来对我们【".iCMS::$config['api']['weixin']['name']."】的支持！我们会继续努力，做出更好的内容！\n";
-                	iCMS::$config['api']['weixin']['unsubscribe'] && $subscribe_msg = iCMS::$config['api']['weixin']['unsubscribe'];
+                	$subscribe_msg = "非常感谢您一直以来对我们【".weixin::$config['name']."】的支持！我们会继续努力，做出更好的内容！\n";
+                	weixin::$config['unsubscribe'] && $subscribe_msg = weixin::$config['unsubscribe'];
                 	//$subscribe_msg = str_replace(array('{site.name}'), replace, subject)
-	                $this->msg_xml($subscribe_msg,$FromUserName,$ToUserName);
+	                weixin::msg_xml($subscribe_msg,$FromUserName,$ToUserName);
                 }
             }
 
             if (in_array($content,array("1", "2", "3", "？","?","你好"))) {
-                $this->msg_xml($site_name.' ('.$site_host.') '.$site_desc."\n\n回复:".$site_key.' 将会收到我们最新为您准备的信息',$FromUserName,$ToUserName);
+                weixin::msg_xml($site_name.' ('.$site_host.') '.$site_desc."\n\n回复:".$site_key.' 将会收到我们最新为您准备的信息',$FromUserName,$ToUserName);
             }
 
 
@@ -96,39 +109,5 @@ class weixinApp {
             // iFS::write('weixin.api.debug.log',$output,1,'ab+');
         }
     }
-    private function checkSignature(){
-        // you must define TOKEN by yourself
-        if (!iCMS::$config['api']['weixin']['token']) {
-            throw new Exception('TOKEN is not defined!');
-        }
 
-        $signature = $_GET["signature"];
-        $timestamp = $_GET["timestamp"];
-        $nonce     = $_GET["nonce"];
-
-        $token  = iCMS::$config['api']['weixin']['token'];
-        $tmpArr = array($token, $timestamp, $nonce);
-        // use SORT_STRING rule
-        sort($tmpArr, SORT_STRING);
-        $tmpStr = implode( $tmpArr );
-        $tmpStr = sha1( $tmpStr );
-
-        if( $tmpStr == $signature ){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    private function msg_xml($text,$FromUserName,$ToUserName){
-		$CreateTime = time();
-		echo "<xml>
-		<ToUserName><![CDATA[".$FromUserName."]]></ToUserName>
-		<FromUserName><![CDATA[".$ToUserName."]]></FromUserName>
-		<CreateTime>".$CreateTime."</CreateTime>
-		<MsgType><![CDATA[text]]></MsgType>
-		<Content><![CDATA[".$text."]]></Content>
-		<FuncFlag>0</FuncFlag>
-		</xml>";
-		exit;
-	}
 }
