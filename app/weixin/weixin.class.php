@@ -71,6 +71,12 @@ class weixin {
         foreach ((array)$variable as $i => $param) {
             foreach ((array)$param as $key => $value) {
                 if($key=='name'){
+                    $value = trim($value);
+                    if(empty($value)){
+                        unset($variable[$i]);
+                        continue;
+                    }
+
                     $variable[$i][$key] = urlencode(trim($value));
                 }
                 if($key=='sub_button'){
