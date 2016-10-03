@@ -60,7 +60,6 @@ function modal_tplfile(el,a){
         <li><a href="#setting-patch" data-toggle="tab">更新</a></li>
         <li><a href="#setting-grade" data-toggle="tab">高级</a></li>
         <li><a href="#setting-mail" data-toggle="tab">邮件</a></li>
-        <li><a href="#setting-weixin" data-toggle="tab">微信</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding iCMS-setting">
@@ -1036,7 +1035,7 @@ index iCMS_article_delta : iCMS_article
             <div class="clearfloat mt10"></div>
 
           </div>
-          <?php include iACP::view("weixin.config");?>
+
           <div class="form-actions">
             <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
           </div>

@@ -10,17 +10,10 @@ defined('iPHP') OR exit('What are you doing?');
 iPHP::app('weixin.class','static');
 
 class weixinApp {
-    public $methods = array('interface','menu');
+    public $methods = array('interface');
     public function __construct($config=null) {
-        $config===null && $config = iCMS::$config['api']['weixin'];
+        $config===null && $config = iCMS::$config['weixin'];
         weixin::$config = $config;
-    }
-
-    public function API_menu(){
-        weixin::init();
-        var_dump(weixin::setMenu());
-        print_r(weixin::getMenu());
-        exit;
     }
 
     public function API_interface(){

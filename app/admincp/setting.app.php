@@ -47,7 +47,6 @@ class settingApp{
         $config['router']['html_dir']   = rtrim($config['router']['html_dir'],'/').'/';
         $config['router']['tag_dir']    = rtrim($config['router']['tag_dir'],'/').'/';
         $config['FS']['url']            = trim($config['FS']['url'],'/').'/';
-        $config['api']['weixin']['menu']= $_POST['wx_button'];
 
         foreach ((array)$config['open'] as $platform => $value) {
             if($value['appid'] && $value['appkey']){
