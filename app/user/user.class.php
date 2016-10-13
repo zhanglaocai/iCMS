@@ -16,7 +16,7 @@ class user {
 	private static $AUTH      = 'USER_AUTH';
 
 	public static function login_uri($uri=null){
-		$login_uri = iPHP::router('/api/user/login',iPHP_ROUTER_REWRITE,'?&');
+		$login_uri = iPHP::router('api:user:login','?&');
 		if(iPHP_ROUTER_REWRITE){
 			if(stripos($login_uri, 'http://')===false){
 				$login_uri = rtrim(iCMS_URL,'/').$login_uri;
@@ -28,7 +28,7 @@ class user {
 	public static function router($uid,$type,$size=0){
 	    switch($type){
 	        case 'avatar':return iCMS_FS_URL.get_user_pic($uid,$size);break;
-	        case 'url':   return iPHP::router(array('/{uid}/',$uid),iPHP_ROUTER_REWRITE);break;
+	        case 'url':   return iPHP::router(array('uid:home',$uid));break;
 	        case 'coverpic':
 	        	$dir = get_user_dir($uid,'coverpic');
 				return array(
@@ -38,13 +38,13 @@ class user {
 	        	break;
 	        case 'urls':
 	            return array(
-					'inbox'    => iPHP::router(array('/user/inbox/{uid}',$uid),iPHP_ROUTER_REWRITE),
-					'home'     => iPHP::router(array('/{uid}/',$uid),iPHP_ROUTER_REWRITE),
-					'comment'  => iPHP::router(array('/{uid}/comment/',$uid),iPHP_ROUTER_REWRITE),
-					'favorite' => iPHP::router(array('/{uid}/favorite/',$uid),iPHP_ROUTER_REWRITE),
-					//'share'  => iPHP::router(array('/{uid}/share/',$uid),iPHP_ROUTER_REWRITE),
-					'fans'     => iPHP::router(array('/{uid}/fans/',$uid),iPHP_ROUTER_REWRITE),
-					'follower' => iPHP::router(array('/{uid}/follower/',$uid),iPHP_ROUTER_REWRITE),
+					'inbox'    => iPHP::router(array('user:inbox:uid',$uid)),
+					'home'     => iPHP::router(array('uid:home',$uid)),
+					'comment'  => iPHP::router(array('uid:comment',$uid)),
+					'favorite' => iPHP::router(array('uid:favorit/',$uid)),
+					//'share'  => iPHP::router(array('uid:share',$uid)),
+					'fans'     => iPHP::router(array('uid:fans',$uid)),
+					'follower' => iPHP::router(array('uid:follower',$uid)),
 	            );
 	        break;
 	    }

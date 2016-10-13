@@ -180,21 +180,28 @@ class iMenu {
 	function sidebar(){
 		return $this->show('sidebar',0);
 	}
-	function show($mType='nav',$level = 0){
-		// print_r($this->menu_array);
+	function show($mType='nav',$id=null,$level = 0){
+        $menu_array = $this->menu_array;
+        $id && $menu_array = $this->menu_array[$id];
 
-		foreach((array)$this->menu_array AS $id=>$array) {
+		foreach((array)$menu_array AS $array) {
 			$nav.= $this->li($mType,$array,$level);
 		}
 		return $nav;
 	}
 
-
+    function children_count($variable){
+        $count = 0;
+        foreach ((array)$variable as $key => $value) {
+            $value['-'] OR $count++;
+        }
+        return $count;
+    }
 	function li($mType,$a,$level = 0){
 		// if(!admincp::MP($id)) return false;
 
 		if($a['-']){
-			return '<li class="'.(($level||$mType=='sidebar')?'divider':'divider-vertical').'"></li>';
+			return '<li data-order="'.$a['order'].'" class="'.(($level||$mType=='sidebar')?'divider':'divider-vertical').'"></li>';
 		}
 
 
@@ -217,7 +224,7 @@ class iMenu {
 		if($mType=='sidebar' && $children && $level==0){
 			$href		= 'javascript:;';
 			$a['class']	= 'submenu';
-			$label		= '<span class="label">'.$children.'</span>';
+			$label		= '<span class="label">'.$this->children_count($a['children']).'</span>';
 		}
 
 		if($mType=='tab'){
@@ -225,7 +232,7 @@ class iMenu {
 		}
 
 
-		$li = '<li class="'.$a['class'].'" title="'.$a['title'].'" data-level="'.$level.'" data-menu="'.$a['id'].'">';
+		$li = '<li class="'.$a['class'].'" title="'.$a['title'].'" data-level="'.$level.'" data-menu="'.$a['id'].'" data-order="'.$a['order'].'">';
 
 		$link = '<a href="'.$href.'"';
 		$a['title']  && $link.= ' title="'.$a['title'].'"';

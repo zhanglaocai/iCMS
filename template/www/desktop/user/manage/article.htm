@@ -87,7 +87,7 @@ $(function() {
             'pg': 'article',
             'action': 'manage'
         }
-        $.post("<!--{iCMS:router url='/user'}-->", param, function(c) {
+        $.post("<!--{iCMS:router url='user'}-->", param, function(c) {
             if (c.code) {
                 $("#id-" + param.id).hide('500', function() {
                     $(this).remove();

@@ -67,15 +67,15 @@
         <div class="home-side">
             <!--{if $status.isme}-->
             <div class="mod-box home-btn">
-                <a href="<!--{iCMS:router url='/user/publish'}-->" class="btn btn-success"><i class="icon-publish"></i> 发表文章</a>
-                <a href="<!--{iCMS:router url='/user/manage'}-->" class="btn btn-primary"><i class="icon-manage"></i> 主页管理</a>
+                <a href="<!--{iCMS:router url='user:publish'}-->" class="btn btn-success"><i class="icon-publish"></i> 发表文章</a>
+                <a href="<!--{iCMS:router url='user:manage'}-->" class="btn btn-primary"><i class="icon-manage"></i> 主页管理</a>
             </div>
             <!--{/if}-->
             <div class="mod-box home-category">
                 <div class="mod-title">
                     <h3 class="mod-txt">分类<span>CATEGORY</span></h3>
                     <!--{if $status.isme}-->
-                    <span class="fr"><a href="<!--{iCMS:router url='/user/manage/category'}-->" target="_blank" class="more">管理&gt;&gt;</a></span>
+                    <span class="fr"><a href="<!--{iCMS:router url='user:manage:category'}-->" target="_blank" class="more">管理&gt;&gt;</a></span>
                     <!--{/if}-->
                 </div>
                 <div class="mod-content">
@@ -93,7 +93,7 @@
                 <div class="mod-title">
                     <h3 class="mod-txt">粉丝<span>FANS</span></h3>
                     <!--{if $status.isme}-->
-                    <span class="fr"><a href="<!--{iCMS:router url='/user/manage/fans'}-->" target="_blank" class="more">管理&gt;&gt;</a></span>
+                    <span class="fr"><a href="<!--{iCMS:router url='user:manage:fans'}-->" target="_blank" class="more">管理&gt;&gt;</a></span>
                     <!--{/if}-->
                 </div>
                 <div class="mod-content">
@@ -113,7 +113,7 @@
                 <div class="mod-title">
                     <h3 class="mod-txt">关注<span>FOLLOW</span></h3>
                     <!--{if $status.isme}-->
-                    <span class="fr"><a href="<!--{iCMS:router url='/user/manage/follow'}-->" target="_blank" class="more">管理&gt;&gt;</a></span>
+                    <span class="fr"><a href="<!--{iCMS:router url='user:manage:follow'}-->" target="_blank" class="more">管理&gt;&gt;</a></span>
                     <!--{/if}-->
                 </div>
                 <div class="mod-content">

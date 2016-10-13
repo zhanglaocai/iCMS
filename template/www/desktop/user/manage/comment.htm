@@ -72,7 +72,7 @@ $(function() {
             'pg': 'comment',
             'action': 'manage'
         }
-        $.post("<!--{iCMS:router url='/user'}-->", param,
+        $.post("<!--{iCMS:router url='user'}-->", param,
             function(c) {
                 if (c.code) {
                     $("#id-" + param.id).hide('500', function() {

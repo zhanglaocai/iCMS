@@ -45,7 +45,7 @@ function search_url($vars){
         $query['do']  = 'search';
     }
     $query['q'] = $q;
-    $url = iPHP::router('/api',iPHP_ROUTER_REWRITE);
+    $url = iPHP::router('api');
     $url = buildurl($url,$query);
     if($vars['ret']){
         return $url;

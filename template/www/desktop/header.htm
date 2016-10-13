@@ -6,23 +6,23 @@
         <div id="user-login" class="fr">
             <ul>
                 <!--{if $iCMS.CONFIG.open.QQ.enable }-->
-                <li><a href="<!--{iCMS:router url='/api/user/login/qq'}-->" class="login_qq">QQ登录</a></li>
+                <li><a href="<!--{iCMS:router url='api:user:login:qq'}-->" class="login_qq">QQ登录</a></li>
                 <!--{/if}-->
                 <!--{if $iCMS.CONFIG.open.WB.enable }-->
-                <li><a href="<!--{iCMS:router url='/api/user/login/wb'}-->" class="login_wb">微博登录</a></li>
+                <li><a href="<!--{iCMS:router url='api:user:login:wb'}-->" class="login_wb">微博登录</a></li>
                 <!--{/if}-->
                 <!--{if $iCMS.CONFIG.open.WX.enable }-->
-                <li><a href="<!--{iCMS:router url='/api/user/login/wx'}-->" class="login_wx">微信登录</a></li>
+                <li><a href="<!--{iCMS:router url='api:user:login:wx'}-->" class="login_wx">微信登录</a></li>
                 <!--{/if}-->
-                <li><a id="user-login-btn" href="<!--{iCMS:router url='/api/user/login'}-->" title="登录">登录</a></li>
-                <li class="last"><a href="<!--{iCMS:router url='/api/user/register'}-->" target="_blank">注册</a></li>
+                <li><a id="user-login-btn" href="<!--{iCMS:router url='api:user:login'}-->" title="登录">登录</a></li>
+                <li class="last"><a href="<!--{iCMS:router url='api:user:register'}-->" target="_blank">注册</a></li>
             </ul>
         </div>
         <div id="user-profile" class="fr hide">
             <ul>
-                <li><a href="<!--{iCMS:router url='/user/publish'}-->" target="_blank"><i class="fa fa-edit"></i> 发表文章</a></li>
+                <li><a href="<!--{iCMS:router url='user:publish'}-->" target="_blank"><i class="fa fa-edit"></i> 发表文章</a></li>
                 <li class="last">
-                    <a class="logout" href="<!--{iCMS:router url='/api/user/logout'}-->"><i class="fa fa-edit"></i> 退出</a>
+                    <a class="logout" href="<!--{iCMS:router url='api:user:logout'}-->"><i class="fa fa-edit"></i> 退出</a>
                 </li>
             </ul>
         </div>
@@ -35,7 +35,7 @@
             <a target="_self" title="<!--{$site.url}-->" href="<!--{$site.url}-->"></a>
         </div>
         <div class="search">
-            <form id="search-form" action="<!--{iCMS:router url='/api'}-->" method="get" target="_blank">
+            <form id="search-form" action="<!--{iCMS:router url='api'}-->" method="get" target="_blank">
                 <div class="search-wrap">
                     <input name="app" type="hidden" value="search" />
                     <input type="text" class="search-query" name="q" placeholder="请输入关键词" value="<!--{$search.title}-->">

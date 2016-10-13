@@ -13,7 +13,7 @@ function iCMS_router($vars){
 	}
 	$router = $vars['url'];
 	unset($vars['url'],$vars['app']);
-	$url = iPHP::router($router,iPHP_ROUTER_REWRITE);
+	$url = iPHP::router($router);
 	$vars['query'] && $url = buildurl($url,$vars['query']);
 
 	if($url && stripos($url, 'http://')===false && $vars['host']){

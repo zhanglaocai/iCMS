@@ -9,6 +9,21 @@
 * @version 6.0.0
 * @$Id: menu.app.php 2090 2013-09-25 00:37:33Z coolmoo $
 */
+$rs = iDB::all("SELECT
+  `id`, `rootid`, `ordernum`, `app`, `name`, `href`, `icon`, `target`
+FROM
+  `icms6`.`icms_menu`
+ORDER BY app ASC");
+foreach ($rs as $key => $value) {
+    echo '{
+        "caption": "'.$value['name'].'",
+        "href": "'.$value['href'].'",
+        "icon": "'.str_replace('fa fa-', '', $value['icon']).'"
+    },'.PHP_EOL;
+}
+
+
+
 class menuApp{
     function __construct() {
     	admincp::$menu->get_array();

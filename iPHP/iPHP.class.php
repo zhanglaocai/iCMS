@@ -519,19 +519,27 @@ class iPHP {
 		return str_replace('{P}', $page, $path);
 	}
 
-	public static function router($key, $static = false, $var = null) {
-		if ($static) {
-			$router = false;
-		} else {
-			$path = iPHP_CONF_DIR . '/router.config.php';
+	public static function router($key, $var = null) {
+		if(isset($GLOBALS['ROUTER'])){
+			$routerArray = $GLOBALS['ROUTER'];
+		}else{
+			$path = iPHP_APP_CONF . '/router.json';
 			@is_file($path) OR self::throwException($path . ' not exist', 0013);
-			$router = self::import($path, true);
+			$routerArray = json_decode(file_get_contents($path), true);
+			$GLOBALS['ROUTER'] = $routerArray;
+		}
+
+		if (is_array($key)) {
+			$router = $routerArray[$key[0]];
+		} else {
+			$router = $routerArray[$key];
+		}
+		$url = iPHP_ROUTER_REWRITE?$router[0]:$router[1];
+
+		if (iPHP_ROUTER_REWRITE && stripos($router, 'uid:') === 0) {
+			$url = rtrim(iPHP_ROUTER_USER, '/') . $url;
 		}
 		if (is_array($key)) {
-			$url = $router ? $router[$key[0]] : $key[0];
-			if ($static && stripos($url, '/{uid}/') === 0) {
-				$url = rtrim(iPHP_ROUTER_USER, '/') . $url;
-			}
 			if (is_array($key[1])) {
 				/* 多个{} 例:/{uid}/{cid}/ */
 				preg_match_all('/\{(\w+)\}/i', $url, $matches);
@@ -540,12 +548,12 @@ class iPHP {
 				$url = preg_replace('/\{\w+\}/i', $key[1], $url);
 			}
 			$key[2] && $url = $key[2] . $url;
-		} else {
-			$url = $router ? $router[$key] : $key;
 		}
+
 		if ($var == '?&') {
 			$url .= iPHP_ROUTER_REWRITE ? '?' : '&';
 		}
+		$url = str_replace('iCMS_API', iCMS_API, $url);
 		return $url;
 	}
 

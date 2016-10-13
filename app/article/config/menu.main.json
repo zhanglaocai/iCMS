@@ -43,5 +43,11 @@
         "caption": "淘汰的文章",
         "href": "article&do=off",
         "icon": "times-circle"
+    }, {
+        "-": "-"
+    }, {
+        "caption": "文章评论管理",
+        "href": "comment&do=article",
+        "icon": "comments"
     }]
 }]

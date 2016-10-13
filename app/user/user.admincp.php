@@ -34,7 +34,7 @@ class userAdmincp{
             $user = iDB::row("SELECT * FROM `#iCMS@__user` WHERE `uid`='$this->uid' LIMIT 1;",ARRAY_A);
             iPHP::app('user.class','static');
             user::set_cookie($user['username'],$user['password'],$user);
-            $url = iPHP::router(array('/{uid}/',$this->uid),iPHP_ROUTER_REWRITE);
+            $url = iPHP::router(array('uid:home',$this->uid));
             iPHP::gotourl($url);
         }
     }

@@ -109,7 +109,7 @@
             </div>
             <input type="text" maxlength="4" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
         </div>
-        <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="seccode-img r3" />
+        <img src="<!--{iCMS:router url='api:public:seccode'}-->" alt="验证码" class="seccode-img r3" />
         <a href="javascript:;" class="seccode-text" style="float: none">换一张</a>
     </div>
     <!--{/if}-->
@@ -213,7 +213,7 @@ $(function() {
                     a.focus();
                     return false;
                 } else {
-                    $.post('<!--{iCMS:router url=' / user '}-->', {
+                    $.post('<!--{iCMS:router url='user'}-->', {
                             'action': 'add_category',
                             name: n
                         },

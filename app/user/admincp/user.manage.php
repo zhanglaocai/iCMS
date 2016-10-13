@@ -115,7 +115,7 @@ $(function(){
           </thead>
           <tbody>
             <?php for($i=0;$i<$_count;$i++){
-               $url = iPHP::router(array('/{uid}/',$rs[$i]['uid']),iPHP_ROUTER_REWRITE);
+               $url = iPHP::router(array('uid:home',$rs[$i]['uid']));
             ?>
             <tr id="tr<?php echo $rs[$i]['uid'] ; ?>">
               <td><?php if($rs[$i]['uid']!="1"){ ; ?><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['uid'] ; ?>" /><?php } ; ?></td>

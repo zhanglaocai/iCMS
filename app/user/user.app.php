@@ -120,14 +120,14 @@ class userApp {
 		iPHP::assign('status', isset($_GET['status']) ? (int) $_GET['status'] : '1');
 		iPHP::assign('cid', (int) $_GET['cid']);
 		iPHP::assign('article', array(
-			'manage' => iPHP::router('/user/article', iPHP_ROUTER_REWRITE, '?&'),
-			'edit' => iPHP::router('/user/publish', iPHP_ROUTER_REWRITE, '?&'),
+			'manage' => iPHP::router('user:article', '?&'),
+			'edit' => iPHP::router('user:publish', '?&'),
 		));
 	}
 	private function __do_manage_favorite() {
 		iPHP::assign('favorite', array(
 			'fid' => (int) $_GET['fid'],
-			'manage' => iPHP::router('/user/manage/favorite', iPHP_ROUTER_REWRITE, '?&'),
+			'manage' => iPHP::router('user:manage:favorite', '?&'),
 		));
 	}
 
@@ -314,7 +314,7 @@ class userApp {
 				'3' => 'user:article:update_examine',
 			);
 		}
-		$url = iPHP::router('/user/article', iPHP_ROUTER_REWRITE);
+		$url = iPHP::router('user:article');
 		iPHP::success($lang[$status], 'url:' . $url);
 	}
 	private function __action_manage_article() {
@@ -637,7 +637,7 @@ class userApp {
 			);
 			$authcode = base64_encode($authcode);
 			$authcode = rawurlencode($authcode);
-			$find_url = iPHP::router('/api/user/findpwd', iPHP_ROUTER_REWRITE, '?&');
+			$find_url = iPHP::router('api:user:findpwd', '?&');
 			if (iPHP_ROUTER_REWRITE) {
 				$find_url = iFS::fp($find_url, '+http');
 			}

@@ -115,7 +115,7 @@
                     <div class="form-group">
                         <label for="seccode" class="control-label">验证码：</label>
                         <input type="text" maxlength="4" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
-                        <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="seccode-img r3" />
+                        <img src="<!--{iCMS:router url='api:public:seccode'}-->" alt="验证码" class="seccode-img r3" />
                         <a href="javascript:;" class="seccode-text" style="float: none">换一张</a>
                         <p class="help-block tip-error tip-seccode">请输入验证码</p>
                     </div>
@@ -133,13 +133,13 @@
                         <span>您也可以用以下方式登录：</span>
                         <div class="platform-btn">
                             <!--{if $iCMS.CONFIG.open.QQ.enable }-->
-                            <a href="<!--{iCMS:router url='/api/user/login/qq'}-->" class="login_qq"></a>
+                            <a href="<!--{iCMS:router url='api:user:login:qq'}-->" class="login_qq"></a>
                             <!--{/if}-->
                             <!--{if $iCMS.CONFIG.open.WB.enable }-->
-                            <a href="<!--{iCMS:router url='/api/user/login/wb'}-->" class="login_wb"></a>
+                            <a href="<!--{iCMS:router url='api:user:login:wb'}-->" class="login_wb"></a>
                             <!--{/if}-->
                             <!--{if $iCMS.CONFIG.open.WX.enable }-->
-                            <a href="<!--{iCMS:router url='/api/user/login/wx'}-->" class="login_wx"></a>
+                            <a href="<!--{iCMS:router url='api:user:login:wx'}-->" class="login_wx"></a>
                             <!--{/if}-->
                         </div>
                     </div>
@@ -149,7 +149,7 @@
                 <div class="right-wrap">
                     <h2>注 册</h2>
                     <p>还没有账号？</p>
-                    <a class="btn btn-primary" href="<!--{iCMS:router url='/api/user/register'}-->">快速注册</a>
+                    <a class="btn btn-primary" href="<!--{iCMS:router url='api:user:register'}-->">快速注册</a>
                 </div>
             </div>
             <div class="clearfix"></div>

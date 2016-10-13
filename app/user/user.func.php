@@ -134,11 +134,11 @@ function user_category($vars=null){
 	$resource = array();
 	if($rs)foreach ($rs as $key => $value) {
 		if($value['appid']==iCMS_APP_ARTICLE){
-			$router ='/{uid}/{cid}/';
+			$router ='uid:cid';
 		}else if($value['appid']==iCMS_APP_FAVORITE){
-			$router ='/{uid}/fav/{cid}/';
+			$router ='uid:fav:cid';
 		}
-		$value['url'] = iPHP::router(array($router,array($value['uid'],$value['cid'])),iPHP_ROUTER_REWRITE);
+		$value['url'] = iPHP::router(array($router,array($value['uid'],$value['cid'])));
 		if(isset($vars['loop'])){
 			$resource[$key] = $value;
 		}else{
@@ -243,7 +243,7 @@ function user_inbox($vars=null){
 			$value['is_sender'] = false;
 			$value['user']      = $value['sender'];
 		}
-		$value['url'] = iPHP::router(array('/user/inbox/{uid}',$value['user']['uid']),iPHP_ROUTER_REWRITE);
+		$value['url'] = iPHP::router(array('user:inbox:uid',$value['user']['uid']));
 		$resource[$key] = $value;
 	}
 	return $resource;

@@ -9,14 +9,14 @@ defined('iPHP') OR exit('What are you doing?');
 ?>
 <script type="text/javascript">
 $(function(){
-  $("[data-menu='m<?php echo admincp::$menu->rootid; ?>']").addClass("active");
-  $("[data-menu='m<?php echo admincp::$menu->parentid; ?>']").addClass("active");
-  $("[data-menu='m<?php echo admincp::$menu->do_mid; ?>']").addClass("active");
-  var c = $("[data-menu='m<?php echo admincp::$menu->parentid; ?>']","#sidebar");
-  if(c.hasClass("submenu")){
-    c.addClass("open");
-    $("ul",c).show();
-  }
+  // $("[data-menu='m<?php echo admincp::$menu->rootid; ?>']").addClass("active");
+  // $("[data-menu='m<?php echo admincp::$menu->parentid; ?>']").addClass("active");
+  // $("[data-menu='m<?php echo admincp::$menu->do_mid; ?>']").addClass("active");
+  // var c = $("[data-menu='m<?php echo admincp::$menu->parentid; ?>']","#sidebar");
+  // if(c.hasClass("submenu")){
+  //   c.addClass("open");
+  //   $("ul",c).show();
+  // }
 })
 </script>
 <div id="header" class="navbar navbar-static-top">

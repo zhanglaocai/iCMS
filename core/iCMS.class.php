@@ -62,7 +62,7 @@ class iCMS extends iPHP{
     public static function hooks($key,$array){
         self::$hooks[$key]  = $array;
     }
-    public static function core($fname, $cname = null) {
+    public static function core($fname, $cname = null,$msg = '',$core = null) {
         iPHP::core($fname,$cname,'',iPHP_APP_CORE);
     }
     public static function assign_site(){

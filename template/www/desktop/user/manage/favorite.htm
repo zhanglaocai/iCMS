@@ -1,5 +1,5 @@
 <div class="title"><span>我的收藏</span></div>
-<form action="<!--{iCMS:router url='/user'}-->" method="post" target="iCMS_FRAME">
+<form action="<!--{iCMS:router url='user'}-->" method="post" target="iCMS_FRAME">
     <input name="action" type="hidden" value="manage" />
     <input name="pg" type="hidden" value="favorite" />
     <div class="favorite">
@@ -55,7 +55,7 @@ $(function() {
             'pg': 'favorite',
             'action': 'manage'
         }
-        $.post("<!--{iCMS:router url='/user'}-->", param, function(c) {
+        $.post("<!--{iCMS:router url='user'}-->", param, function(c) {
             if (c.code) {
                 $("#id-" + param.id).hide('500', function() {
                     $(this).remove();
