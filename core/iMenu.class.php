@@ -10,183 +10,156 @@
 * @$Id: iMenu.class.php 2334 2014-01-04 12:18:19Z coolmoo $
 */
 class iMenu {
-	public $menu_array = array();
+    public $menu_array = array();
+    public $href_array = array();
 
 	function __construct() {
-		// $a=array('a'=>'{"width":"85%","height":"640px"}');
-		// echo json_encode($a);
-		// exit;
-
-		$this->menu_array = $this->menu_array();
-		// print_r($this->menu_array);
-		// $this->show();
-		// exit;
+        // $this->get_cache();
+        $this->menu_array(true);
 	}
 
     function menu_array($cache=false){
-
         $variable = array();
-        foreach (glob(iPHP_APP_DIR."/*/config/menu.*.*") as $filename) {
+        foreach (glob(iPHP_APP_DIR."/*/etc/menu.*.php") as $index=> $filename) {
             $json  = file_get_contents($filename);
+            $json = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
             $array = json_decode($json,ture);
-            $array && $variable[]= $this->menu_id($array);
-            // $array && $variable[]= $array;
-
+            $array && $variable[]= $this->menu_id($array,$index);
         }
         $variable = call_user_func_array('array_merge_recursive',$variable);
         array_walk($variable,array($this,'menu_item_unique'));
         $this->menu_item_order($variable);
-        return $variable;
+        $this->menu_href_array($variable,$this->href_array);
+        $this->menu_array = $variable;
+        unset($variable);
+
+        if($cache){
+            $iCache = iCache::sysCache();
+            $iCache->add('iCMS/iMenu/menu_array', $this->menu_array,0);
+            $iCache->add('iCMS/iMenu/href_array', $this->href_array,0);
+        }
+    }
+    function cache(){
+        $this->menu_array(true);
+    }
+    function get_cache(){
+         $cache = iCache::sysCache();
+         $this->menu_array  = $cache->get('iCMS/iMenu/menu_array');
+         $this->href_array  = $cache->get('iCMS/iMenu/href_array');
+         if(empty($this->menu_array)||empty($this->href_array)){
+            $this->cache();
+         }
+    }
+    function menu_href_array($variable,&$out,$id=null){
+        // $array = array();
+        foreach ($variable as $key => $value) {
+            $_id = $id?$id:$value['id'];
+
+            if(!$value['-'] && $value['href']){
+                // $array[]= $value['href'];
+                $out[$value['href']] = $_id;
+            }
+            if($value['children']){
+                // $array[$value['id']]=
+                $this->menu_href_array($value['children'],$out,$_id);
+            }
+
+        }
+        // return $array;
     }
     function menu_item_order(&$variable){
         uasort ($variable,array($this,'array_order'));
     	foreach ($variable as $key => $value) {
     		if($value['children']){
-	    		usort($variable[$key]['children'],array($this,'array_order'));
 	    		$this->menu_item_order($variable[$key]['children']);
     		}
     	}
     }
-    function  array_order($a,$b){
+    function array_order($a,$b){
         if ( $a['order']  ==  $b['order'] ) {
             return  0 ;
         }
         return ( $a['order']  <  $b['order'] ) ? - 1  :  1 ;
+        // return @strnatcmp($a['order'],$b['order']);
     }
-
-    function  menu_item_unique (&$items ){
+    function menu_item_unique (&$items ){
         if(is_array($items)){
             foreach ($items as $key => $value) {
-                if(is_array($value)){
-                    if(in_array($key, array('id','name','icon','caption','order'))){
-                        $items[$key] = $value[0];
-                    }
-                    if($key=='children'){
-                        array_walk ($items[$key],array($this,'menu_item_unique'));
-                    }
+                if(in_array($key, array('id','name','icon','caption','order'))){
+                    is_array($value) &&$items[$key] = $value[0];
                 }
-
+                if($key=='children'){
+                    array_walk ($items[$key],array($this,'menu_item_unique'));
+                }
             }
         }
     }
-
-    function menu_id($variable){
+    function menu_id($variable,$index){
         if(empty($variable)) return;
         if(is_array($variable)){
-            // $array = array();
+            $i=0;
             foreach ($variable as $key => $value) {
-
-                if($value['children'] && is_array($value['children'])){
-                    $value['children'] = $this->menu_id($value['children']);
+                isset($value['order']) OR $value['order'] = $index*100+$i;
+                if($value['children']){
+                    $value['children'] = $this->menu_id($value['children'],$i);
                 }
-                empty($value['order']) && $value['order'] = $key;
                 $variable[$key] = $value;
                 if($value['id']){
                     $variable[$value['id']]= $value;
                     unset($variable[$key]);
                 }
+                $i++;
             }
             return $variable;
         }else{
-            return $this->menu_id($variable);
+            return $this->menu_id($variable,$index);
         }
-
     }
 
-
-	// function get_array($cache=false){
-	// 	$rs	= iDB::all("SELECT * FROM `#iCMS@__menu` ORDER BY `ordernum` , `id` ASC");
-	// 	$this->menu_array  = array();
-	// 	$this->root_array  = array();
-	// 	$this->parent      = array();
-	// 	$this->menu_uri    = array();
-	// 	$this->child_array = array();
-
-	// 	foreach((array)$rs AS $M) {
-	// 		$this->menu_array[$M['id']]               = $M;
-	// 		$this->root_array[$M['rootid']][$M['id']] = $M;
-	// 		$this->parent[$M['id']]                   = $M['rootid'];
-	//         $M['app']!='separator' && $this->child_array[$M['rootid']][$M['id']] = $M['id'];
-	// 		if(!$this->menu_uri[$M['app']][$M['href']]){
-	// 			$this->menu_uri[$M['app']][$M['href']] = $M['id'];
-	// 		}
-	// 		$this->menu_uri[$M['app']]['#']        = $M['rootid'];
-	// 	}
-
-	// 	foreach ((array)$this->root_array as $rid => $array) {
-	// 		uasort($array, "order_num");
-	// 		$this->root_array[$rid] = $array;
-	// 	}
-	// 	if($cache){
-	// 		$cache = iCache::sysCache();
-	// 		$cache->add('iCMS/iMenu/menu_array',	$this->menu_array,0);
-	//         $cache->add('iCMS/iMenu/root_array',	$this->root_array,0);
-	//         $cache->add('iCMS/iMenu/child_array',	$this->child_array,0);
-	//         $cache->add('iCMS/iMenu/parent',		$this->parent,0);
-	//         $cache->add('iCMS/iMenu/menu_uri',		$this->menu_uri,0);
-	//         // iCache::destroy();
-	// 	}
-	// }
-	// function getAllCache(){
-	// 	$cache = iCache::sysCache();
-	// 	$this->menu_array  = $cache->get('iCMS/iMenu/menu_array');
-	// 	$this->root_array  = $cache->get('iCMS/iMenu/root_array');
-	// 	$this->child_array = $cache->get('iCMS/iMenu/child_array');
-	// 	$this->parent      = $cache->get('iCMS/iMenu/parent');
-	// 	$this->menu_uri    = $cache->get('iCMS/iMenu/menu_uri');
-	// 	// iCache::destroy();
-	// }
-	//
-	// function cache(){
-	// 	$this->get_array(true);
-	// }
-	// function rootid($id){
-	// 	$rootid = $this->parent[$id];
-	// 	if(!$rootid){
-	// 		return $id;
-	// 	}
-	// 	return $this->rootid($rootid);
-	// }
-
-	// function h1(){
-	// 	if($this->rootid){
-	// 		$a	= $this->menu_array[$this->rootid];
-	// 		echo $a['name'];
-	// 	}
-	// }
-	// function breadcrumb(){
-	// 	$this->a($this->rootid);
-	// 	if($this->parentid!=$this->rootid){
-	// 		$this->a($this->parentid);
-	// 	}
-	// 	if($this->do_mid!=$this->parentid  && $this->do_mid!=$this->rootid){
-	// 		$this->a($this->do_mid);
-	// 	}
-	// }
+    function href($a){
+        $a['href'] && $href = __ADMINCP__.'='.$a['href'];
+        $a['target']=='iPHP_FRAME' && $href.='&frame=iPHP';
+        $a['href']=='__SELF__' && $href = __SELF__;
+        $a['href'] OR $href = 'javascript:;';
+        strstr($a['href'], 'http://') && $href = $a['href'];
+        return $href;
+    }
 	function a($a){
+		if(empty($a)||$a['-']) return;
 
-		if(empty($a)) return;
-
-		$a['href'] &&	$href	= __ADMINCP__.'='.$a['href'];
-		if(strstr($a['href'], 'http://')||strstr($a['href'], '#')) $href = $a['href'];
-		$a['href']=='__SELF__' && $href = __SELF__;
+        $a['title'] OR $a['title'] = $a['caption'];
 		$a['icon'] && $icon='<i class="'.$a['icon'].'"></i> ';
-		$link = '<a href="'.$href.'"';
+		$link = '<a href="'.$this->href($a).'"';
 		$a['title']  && $link.= ' title="'.$a['title'].'"';
-		$a['a_class']&& $link.= ' class="'.$a['a_class'].'"';
+		$link.= ' class="tip-bottom '.$a['a_class'].'"';
 		$link.='>';
-		echo $link.$icon.' '.$a['name'].'</a>';
+		return $link.$icon.' '.$a['caption'].'</a>';
 	}
+    function search_href(){
+        $path =  str_replace(__ADMINCP__.'=', '', iPHP_REQUEST_URI);
+        foreach ($this->href_array as $key => $value) {
+            if($path==$key){
+                return $value;
+            }
+        }
+        foreach ($this->href_array as $key => $value) {
+            if(strpos($path,$key)!==false){
+                return $value;
+            }
+        }
+    }
 	function sidebar(){
-		return $this->show('sidebar',0);
+        $key= $this->search_href();
+        $menu_array = $this->menu_array[$key]['children'];
+        foreach((array)$menu_array AS $array) {
+            $nav.= $this->li('sidebar',$array,0);
+        }
+        return $nav;
 	}
-	function show($mType='nav',$id=null,$level = 0){
-        $menu_array = $this->menu_array;
-        $id && $menu_array = $this->menu_array[$id];
-
-		foreach((array)$menu_array AS $array) {
-			$nav.= $this->li($mType,$array,$level);
-		}
+	function nav(){
+        foreach((array)$this->menu_array AS $array) {
+            $nav.= $this->li('nav',$array,0);
+        }
 		return $nav;
 	}
 
@@ -204,15 +177,7 @@ class iMenu {
 			return '<li data-order="'.$a['order'].'" class="'.(($level||$mType=='sidebar')?'divider':'divider-vertical').'"></li>';
 		}
 
-
-		$a['href'] && $href	= __ADMINCP__.'='.$a['href'];
-		$a['target']=='iPHP_FRAME' && $href.='&frame=iPHP';
-
-		if(strstr($a['href'], 'http://')||strstr($a['href'], '#')) $href = $a['href'];
-
-		$a['href']=='__SELF__' && $href = __SELF__;
-		$a['href'] OR $href = 'javascript:;';
-
+        $href = $this->href($a);
 		$children = count($a['children']);
 
 		if($children && $mType=='nav'){
@@ -232,7 +197,7 @@ class iMenu {
 		}
 
 
-		$li = '<li class="'.$a['class'].'" title="'.$a['title'].'" data-level="'.$level.'" data-menu="'.$a['id'].'" data-order="'.$a['order'].'">';
+		$li = '<li class="'.$a['class'].'" title="'.$a['title'].'" menu-level="'.$level.'" menu-id="'.$a['id'].'" menu-order="'.$a['order'].'">';
 
 		$link = '<a href="'.$href.'"';
 		$a['title']  && $link.= ' title="'.$a['title'].'"';
@@ -256,10 +221,6 @@ class iMenu {
 		$caret && $li.='<b class="caret"></b>';
 		$li.='</a>';
 		if($children){
-			// ksort ( $a['children'] );
-			// usort ($a['children'],array($this,'menu_order'));
-			// print_r($a['children']);
-			// sort($a['children']);
 			$SMli	= '';
 			foreach((array)$a['children'] AS $id=>$ca) {
 				$SMli.= $this->li($mType,$ca,$level+1);

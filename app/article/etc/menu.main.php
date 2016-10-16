@@ -1,3 +1,4 @@
+<?php defined('iPHP') OR exit('What are you doing?');?>
 [{
     "id": "article",
     "order": "2",
@@ -5,7 +6,7 @@
     "icon": "pencil-square-o",
     "children": [{
         "caption": "栏目管理",
-        "href": "category",
+        "href": "category&appid=1",
         "icon": "list-alt"
     }, {
         "caption": "添加栏目",
