@@ -20,23 +20,24 @@ class iMenu {
 
     function menu_array($cache=false){
         $variable = array();
-        foreach (glob(iPHP_APP_DIR."/*/etc/menu.*.php") as $index=> $filename) {
+        foreach (glob(iPHP_APP_DIR."/*/etc/iMenu.*.php",GLOB_NOSORT) as $index=> $filename) {
             $json  = file_get_contents($filename);
             $json = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
             $array = json_decode($json,ture);
-            $array && $variable[]= $this->menu_id($array,$index);
+            $array && $variable[]= $this->menu_id($array,$index,$filename);
         }
-        $variable = call_user_func_array('array_merge_recursive',$variable);
-        array_walk($variable,array($this,'menu_item_unique'));
-        $this->menu_item_order($variable);
-        $this->menu_href_array($variable,$this->href_array);
-        $this->menu_array = $variable;
-        unset($variable);
-
-        if($cache){
-            $iCache = iCache::sysCache();
-            $iCache->add('iCMS/iMenu/menu_array', $this->menu_array,0);
-            $iCache->add('iCMS/iMenu/href_array', $this->href_array,0);
+        if($variable){
+            $variable = call_user_func_array('array_merge_recursive',$variable);
+            array_walk($variable,array($this,'menu_item_unique'));
+            $this->menu_item_order($variable);
+            $this->menu_href_array($variable,$this->href_array);
+            $this->menu_array = $variable;
+            unset($variable);
+            if($cache){
+                $iCache = iCache::sysCache();
+                $iCache->add('iCMS/iMenu/menu_array', $this->menu_array,0);
+                $iCache->add('iCMS/iMenu/href_array', $this->href_array,0);
+            }
         }
     }
     function cache(){
@@ -82,26 +83,28 @@ class iMenu {
         return ( $a['order']  <  $b['order'] ) ? - 1  :  1 ;
         // return @strnatcmp($a['order'],$b['order']);
     }
-    function menu_item_unique (&$items ){
+    function menu_item_unique (&$items){
         if(is_array($items)){
             foreach ($items as $key => $value) {
                 if(in_array($key, array('id','name','icon','caption','order'))){
                     is_array($value) &&$items[$key] = $value[0];
                 }
-                if($key=='children'){
-                    array_walk ($items[$key],array($this,'menu_item_unique'));
+                if(is_array($items['children'])){
+                    array_walk ($items['children'],array($this,'menu_item_unique'));
                 }
             }
         }
     }
-    function menu_id($variable,$index){
+    function menu_id($variable,$index,$a=null){
         if(empty($variable)) return;
         if(is_array($variable)){
             $i=0;
             foreach ($variable as $key => $value) {
+                $value = (array)$value;
+
                 isset($value['order']) OR $value['order'] = $index*100+$i;
                 if($value['children']){
-                    $value['children'] = $this->menu_id($value['children'],$i);
+                    $value['children'] = $this->menu_id($value['children'],$i,$a);
                 }
                 $variable[$key] = $value;
                 if($value['id']){
