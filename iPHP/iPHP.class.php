@@ -1076,25 +1076,29 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline){
     $html.="\n</pre>";
 	$html = str_replace('\\','/',$html);
 	$html = str_replace(iPATH,'iPHP://',$html);
-	@header('HTTP/1.1 500 Internal Server Error');
-	@header('Status: 500 Internal Server Error');
-	@header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-	@header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-	@header("Cache-Control: no-store, no-cache, must-revalidate");
-	@header("Cache-Control: post-check=0, pre-check=0", false);
-	@header("Pragma: no-cache");
-
-    if(isset($_GET['frame'])){
+    if (isset($_GET['frame'])) {
         iPHP::$dialog['lock'] = true;
-        iPHP::dialog(array("warning:#:warning-sign:#:{$html}",'系统错误!可发邮件到 idreamsoft@qq.com 反馈错误!我们将及时处理'),'js:1',300);
+        $html = str_replace("\n", '<br />', $html);
+        iPHP::dialog(array("warning:#:warning-sign:#:{$html}", '系统错误!可发邮件到 idreamsoft@qq.com 反馈错误!我们将及时处理'), 'js:1', 30000000);
         exit;
     }
-    if($_POST){
-        $html = str_replace("\n", '\n', $html);
-        $html = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$html);
-        echo '<script>alert("'.$html.'")</script>';
+    if ($_POST) {
+        if($_POST['ajax']){
+            $array = array('code'=>'0','msg'=>$html);
+            echo json_encode($array);
+        }else{
+            $html = str_replace(array("\r", "\\", "\"", "\n", "<b>", "</b>", "<pre>", "</pre>"), array(' ', "\\\\", "\\\"", '\n', ''), $html);
+            echo '<script>top.alert("' . $html . '")</script>';
+        }
         exit;
     }
-    $html = str_replace("\n",'<br />',$html);
+    @header('HTTP/1.1 500 Internal Server Error');
+    @header('Status: 500 Internal Server Error');
+    @header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+    @header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+    @header("Cache-Control: no-store, no-cache, must-revalidate");
+    @header("Cache-Control: post-check=0, pre-check=0", false);
+    @header("Pragma: no-cache");
+    $html = str_replace("\n", '<br />', $html);
     exit($html);
 }
