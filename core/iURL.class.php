@@ -32,24 +32,6 @@ class iURL {
         return $dir;
     }
 
-    private static function domain($cid="0",$akey='dir') {
-        $ii       = new stdClass();
-        $C        = iCache::get('iCMS/category/'.$cid);
-        $rootid   = $C['rootid'];
-        $ii->sdir = $C[$akey];
-        if($rootid && empty($C['domain'])) {
-            $dm         = self::domain($rootid);
-            $ii->pd     = $dm->pd;
-            $ii->domain = $dm->domain;
-            $ii->pdir   = $dm->pdir.'/'.$C[$akey];
-            $ii->dmpath = $dm->dmpath.'/'.$C[$akey];
-        }else {
-            $ii->pd     = $ii->pdir   = $ii->sdir;
-            $ii->dmpath = $ii->domain = $C['domain']?('http://'.ltrim($C['domain'],'http://')):'';
-        }
-        return $ii;
-    }
-
     public static function rule($matches) {
     	$b	= $matches[1];
     	list($a,$c,$tc) = self::$uriArray;
@@ -97,6 +79,7 @@ class iURL {
         $array    = $a;
         $PRI      = $router[$uri]['PRI'];
         $rule     = $router[$uri]['rule'];
+        $document_uri = $uri.'.php?';
         switch($rule) {
             case '0':
                 $i->href = $array['url'];
@@ -107,11 +90,7 @@ class iURL {
                 $i->href  = $category['url'];
                 $url      = $category['mode']?$category['categoryRule']:'{PHP}';
                 ($category['password'] && $category['mode']=="1") && $url = '{PHP}';
-                if($url=='{PHP}'){
-                    $document_uri = $uri.'.php?';
-                    $category['categoryURI'] && $document_uri = $category['categoryURI'].'.php?';
-                    $document_uri.= $PRI.'='.$category[$PRI];
-                }
+                $category['categoryURI'] && $document_uri = $category['categoryURI'].'.php?';
                 break;
             case '2':
                 $array    = (array)$a[0];
@@ -119,11 +98,12 @@ class iURL {
                 $i->href  = $array['url'];
                 $url      = $category['mode']?$category['contentRule']:'{PHP}';
                 ($category['password'] && $category['mode']=="1") && $url = '{PHP}';
+                // $category['domain'] && $sURL = $category['domain'];
+
                 if($url=='{PHP}'){
-                    $document_uri = $uri.'.php?';
-                    $document_uri.= $PRI.'='.$array[$PRI];
                     $i->pageurl = $document_uri.'&p={P}';
-                    strpos($i->pageurl,'http://')===false && $i->pageurl = rtrim($sURL,'/').'/'.$i->pageurl;
+                    // strpos($i->pageurl,'http://')===false &&
+                    iFS::checkHttp($i->pageurl) OR $i->pageurl = rtrim($sURL,'/').'/'.$i->pageurl;
                 }
                 break;
             case '3':
@@ -137,31 +117,33 @@ class iURL {
                 $url       = $category['urlRule'];
                 $_category['urlRule'] && $url = $_category['urlRule'];
                 $url OR $url = self::$config['tag_rule'];
-                if($url=='{PHP}'){
-                    $document_uri = $uri.'.php?';
-                    $document_uri.= $PRI.'='.$array[$PRI];
-                }
                 break;
              default:
                 $url = $array['urlRule'];
         }
         if($url=='{PHP}'){
-            strpos($document_uri,'http://')===false && $document_uri = rtrim($sURL,'/').'/'.$document_uri;
+            $document_uri.= $PRI.'='.$array[$PRI];
+            // strpos($document_uri,'http://')===false && $document_uri = rtrim($sURL,'/').'/'.$document_uri;
+            iFS::checkHttp($document_uri) OR $document_uri = rtrim($sURL,'/').'/'.$document_uri;
             $i->href = $document_uri;
         }
         if($i->href) return $i;
 
         if(strpos($url,'{PHP}')===false) {
         	self::$uriArray	= array($array,$category,(array)$_category);
-
         	strpos($url,'{')===false OR $url = preg_replace_callback ("/\{(.*?)\}/",'__iurl_rule__',$url);
 
-            $i->path = rtrim(iFS::path(iPATH.$html_dir.$url),'/') ;
+            $i->href = $url;
             if(strpos($html_dir,'..')===false) {
-                $i->href = rtrim($sURL,'/').'/'.ltrim(iFS::path($html_dir.$url),'/') ;
-            }else{
-                $i->href = rtrim($sURL,'/').'/'.ltrim(iFS::path($url),'/') ;
+                $i->href = $html_dir.$url;
             }
+            $i->href = ltrim(iFS::path($i->href),'/');
+            $i->path = rtrim(iFS::path(iPATH.$html_dir.$url),'/') ;
+
+            if(iFS::checkHttp($i->href)===false){
+                $i->href = rtrim($sURL,'/').'/'.$i->href;
+            }
+
 			$pathA = pathinfo($i->path);
 
 //            if(in_array($uri,array('article','content'))) {
@@ -188,15 +170,11 @@ class iURL {
                 $i->hdir = dirname($i->href.'/'.$i->file);
             }
 //var_dump($i);
+            $i->pfile = $i->file;
             if(strpos($i->file,'{P}')===false) {
                 $i->pfile = $i->name."_{P}".$i->ext;
-			}else{
-                $i->pfile = $i->file;
-            }
+			}
 
-	        if($rule=='0'){
-	        	return self::make($i);
-	        }
 //var_dump($i);
 //exit;
 			if($rule=='1') {
@@ -208,20 +186,20 @@ class iURL {
                         $i->href   = str_replace($i->hdir,$m->dmpath,$i->href);
                         $i->hdir   = $m->dmpath;
 
-                    // $__dir__   = $i->dir.'/'.$m->pdir;
-                    // $i->path   = str_replace($i->dir,$__dir__,$i->path);
-                    // $i->dir    = $__dir__;
-                    $i->dmdir  = iFS::path(iPATH.$html_dir.'/'.$m->pd);
-                    $bits      = parse_url($i->href);
-                    $i->domain = $bits['scheme'].'://'.$bits['host'];
+                        // $__dir__   = $i->dir.'/'.$m->pdir;
+                        // $i->path   = str_replace($i->dir,$__dir__,$i->path);
+                        // $i->dir    = $__dir__;
+                        $i->dmdir  = iFS::path(iPATH.$html_dir.'/'.$m->pd);
+                        $bits      = parse_url($i->href);
+                        $i->domain = $bits['scheme'].'://'.$bits['host'];
                     }
                 }
-		        if(strpos($category['domain'],'http://')!==false){
+                if(iFS::checkHttp($category['domain'])){
                     $i->href = $category['domain'];
 		        }
             }
 
-// var_dump($i);
+// print_r($i);
 // exit;
         }
         return self::make($i);
