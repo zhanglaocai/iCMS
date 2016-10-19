@@ -66,9 +66,10 @@ body {background: url(img/bodyback.jpg) repeat; }
 #today_news .ulist .art-author { color: #aaa; font-size: 12px; }
 .fl { float: left; }
 .fr { float: right; width: 298px; border-right: 0 none; }
-#tags .bd { padding-top: 6px; }
-#tags .bd a:link, #tags .bd a:visited { display: inline; float: left; margin: 10px 10px 0 0; padding: 5px 10px; border-radius: 3px; background: #3886c2; box-shadow: 0 1px 1px 0 #ccc; color: #fff; white-space: nowrap; font-size: 14px; }
-#tags .bd a:hover { background: #68a6d6; text-decoration: none; }
+.blue_piece .bd { padding-top: 6px; }
+.blue_piece .bd a:link, .blue_piece .bd a:visited { display: inline; float: left; margin: 10px 10px 0 0; padding: 5px 10px; border-radius: 3px; background: #3886c2; box-shadow: 0 1px 1px 0 #ccc; color: #fff; white-space: nowrap; font-size: 14px; }
+.blue_piece .bd a:hover { background: #68a6d6; text-decoration: none; }
+
 .author-m { margin-top: -1px; padding: 15px 0 16px; border-top: 1px dotted #ccc; background: 0; word-wrap: break-word; word-break: break-all; }
 .author-m .author-name { margin-left: 65px; padding: 0; text-align: left; font-weight: bold; font-size: 14px; line-height: 24px; }
 .author-m .author-text { margin-left: 65px; text-align: left; font-size: 12px; }
