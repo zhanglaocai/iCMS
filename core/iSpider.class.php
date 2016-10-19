@@ -152,7 +152,9 @@ class spider{
 
     public static function publish($work = null) {
         $_POST = spiderData::crawl();
-        if(spider::$work=='shell'){
+        if(spider::$work && $work===null) $work = spider::$work;
+
+        if($work=='shell'){
            if(empty($_POST['title'])){
                echo "标题不能为空\n";
                return false;
