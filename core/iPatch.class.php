@@ -135,6 +135,7 @@ class iPatch {
 		}
      	$msg.= '清除临时文件!<iCMS>注:原文件备份在 ['.$bakDir.'] 目录<iCMS>如没有特殊用处请删除此目录!<iCMS>';
     	iFS::rmdir(PATCH_DIR,true,'version.txt');
+        $msg = str_replace(iPATH,'iPHP://',$msg);
 		return $msg;
    }
    public static function run(){
