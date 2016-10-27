@@ -152,18 +152,19 @@ class propAdmincp{
         echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&type='.$type.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
         echo '</ul></div>';
     }
-    function get_prop($field, $val = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {
+    function get_prop($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {
         $type OR $type = admincp::$APP_NAME;
         $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
-        $valArray  = explode(',', $val);
+        is_array($valArray) OR $valArray  = explode(',', $valArray);
         $opt = array();
         foreach ((array)$propArray AS $k => $P) {
             if ($out == 'option') {
-                $opt[]="<option value='{$P['val']}'" . (array_search($P['val'],$valArray)!==FALSE ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";
+                $opt[]="<option value='{$P['val']}'" . (isset($valArray[$P['val']]) ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";
             } elseif ($out == 'array') {
                 $opt[$P['val']] = $P['name'];
             } elseif ($out == 'text') {
-                if (array_search($P['val'],$valArray)!==FALSE) {
+                // if (array_search($P['val'],$valArray)!==FALSE) {
+                if(isset($valArray[$P['val']])){
                     $flag = '<i class="fa fa-flag"></i> '.$P['name'];
                     $opt[]= ($url?'<a href="'.str_replace('{PID}',$P['val'],$url).'">'.$flag.'</a>':$flag).'<br />';
                 }
@@ -175,5 +176,14 @@ class propAdmincp{
         // $opt.='</select>';
         return implode('', $opt);
     }
-
+    function flag($pids,$data,$url=null) {
+        $pidArray = explode(',',$pids);
+        foreach ((array)$pidArray as $key => $pid) {
+            $name = $data[$pid];
+            if($pid!='0'){
+                $flag = '<i class="fa fa-flag"></i> '.$name;
+                echo ($url?'<a href="'.str_replace('{PID}',$pid,$url).'">'.$flag.'</a>':$flag).'<br />';
+            }
+        }
+    }
 }

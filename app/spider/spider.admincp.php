@@ -39,6 +39,16 @@ class spiderAdmincp {
 		$ids = implode(',', $idArray);
 		$batch = $_POST['batch'];
 		switch ($batch) {
+            case 'poid':
+                $poid = $_POST['poid'];
+                iDB::query("update `#iCMS@__spider_project` set `poid`='$poid' where `id` IN($ids);");
+                iPHP::success('操作成功!','js:1');
+            break;
+            case 'move':
+                $cid = $_POST['cid'];
+                iDB::query("update `#iCMS@__spider_project` set `cid`='$cid' where `id` IN($ids);");
+                iPHP::success('操作成功!','js:1');
+            break;
 		case 'delurl':
 			iDB::query("delete from `#iCMS@__spider_url` where `id` IN($ids);");
 			break;
@@ -227,6 +237,13 @@ class spiderAdmincp {
 		$data = base64_encode(serialize($data));
 		Header("Content-type: application/octet-stream");
 		Header("Content-Disposition: attachment; filename=spider.rule." . $rs->name . '.txt');
+        echo $data;
+    }
+    function do_exportproject(){
+        $data = iDB::all("select `name`, `urls`, `list_url`, `cid`, `rid`, `poid`, `sleep`, `checker`, `self`, `auto`, `lastupdate`, `psleep` from `#iCMS@__spider_project` where rid = '$this->rid'");
+        $data = base64_encode(serialize($data));
+        Header("Content-type: application/octet-stream");
+        Header("Content-Disposition: attachment; filename=spider.rule.".$this->rid.'.project.txt');
 		echo $data;
 	}
 	function do_import_rule() {
@@ -295,7 +312,7 @@ class spiderAdmincp {
 			iDB::update('spider_rule', $data, array('id' => $id));
 			iPHP::success('保存成功');
 		} else {
-			iDB::insert('spider_rule', $data);
+            $id = iDB::insert('spider_rule',$data);
 			iPHP::success('保存成功!', 'url:' . APP_URI . "&do=addrule&rid=" . $id);
 		}
 	}
@@ -394,6 +411,8 @@ class spiderAdmincp {
 		if ($_GET['poid']) {
 			$sql .= " AND `poid` ='" . (int) $_GET['poid'] . "'";
 		}
+        $_GET['starttime'] && $sql.=" AND `lastupdate`>='".iPHP::str2time($_GET['starttime']." 00:00:00")."'";
+        $_GET['endtime']   && $sql.=" AND `lastupdate`<='".iPHP::str2time($_GET['endtime']." 23:59:59")."'";
 		$ruleArray = $this->rule_opt(0, 'array');
 		$postArray = $this->post_opt(0, 'array');
 		$orderby = $_GET['orderby'] ? $_GET['orderby'] : "id DESC";
@@ -452,6 +471,25 @@ class spiderAdmincp {
 		}
 		iPHP::success('完成', 'url:' . APP_URI . '&do=project');
 	}
+    function do_import_project(){
+        iFS::$checkFileData           = false;
+        iFS::$config['allow_ext']     = 'txt';
+        iFS::$config['yun']['enable'] = false;
+        $F    = iFS::upload('upfile');
+        $path = $F['RootPath'];
+        if($path){
+            $data = file_get_contents($path);
+            if($data){
+                $data = base64_decode($data);
+                $data = unserialize($data);
+                foreach ((array)$data as $key => $value) {
+                    iDB::insert("spider_project",$value);
+                }
+            }
+            @unlink($path);
+            iPHP::success('方案导入完成,请重新设置规则','js:1');
+        }
+    }
 	function do_proxy_test() {
 		$a = spiderTools::proxy_test();
 		var_dump($a);

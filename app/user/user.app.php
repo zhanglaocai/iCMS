@@ -681,7 +681,7 @@ class userApp {
 		if (iCMS::$config['user']['login']['seccode']) {
 			$seccode = iS::escapeStr($_POST['seccode']);
 			iPHP::core("Seccode");
-			iSeccode::chcek($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 		$remember && user::$cookietime = 14 * 86400;
 		$user = user::login($uname, $pass, (strpos($uname, '@') === false ? 'nk' : 'un'));

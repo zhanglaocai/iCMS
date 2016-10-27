@@ -95,7 +95,7 @@ admincp::head();
           <option value='multivarchar' data-len="10240">多行文本(最大10240字节)</option>
         </optgroup>
         <optgroup label="数字">
-          <option value='tinyint' data-len="1" data-default="0">数字[0-9](1位数)</option>
+          <option value='tinyint' data-len="1" data-default="0">数字[0-255]</option>
           <option value='int' data-len="10" data-default="0">数字(最大10位数)</option>
           <option value='bigint' data-len="20" data-default="0">超大数字(最大20位数)</option>
         </optgroup>
@@ -106,6 +106,7 @@ admincp::head();
           <option value='multiselect' data-dialog="1">下拉多选</option>
         </optgroup>
         <optgroup label="功能">
+          <option value='prop'  data-len="255">属性</option>
           <option value='image' data-len="255">单图片上传</option>
           <option value='multimage' data-len="10240">多图片上传</option>
           <option value='file' data-len="255">单文件上传</option>
@@ -124,9 +125,11 @@ admincp::head();
     <div class="input-prepend"> <span class="add-on">字段名称</span>
       <input type="text" name="label" class="span3" id="label" value=""/>
     </div>
+    <span class="help-inline">* 必填</span>
     <div class="input-prepend"> <span class="add-on">字 段 名</span>
       <input type="text" name="fname" class="span3" id="fname" value=""/>
     </div>
+    <span class="help-inline">* 必填</span>
     <div class="input-prepend" style="display:none"> <span class="add-on">数据长度</span>
       <input type="text" name="length" class="span3" id="length" value=""/>
     </div>
@@ -134,65 +137,98 @@ admincp::head();
     <div class="input-prepend"> <span class="add-on">默 认 值</span>
       <input type="text" name="default" class="span3" id="default" value=""/>
     </div>
-    <div class="clearfloat mb10"></div>
-    <div class="input-prepend"> <span class="add-on">数据验证</span>
-      <select name="validate[]" id="validate" class="chosen-select" style="width:360px;" data-placeholder="请选择数据验证方式..." multiple="multiple">
-        <option value=''>不验证</option>
-        <option value='empty'>不能为空</option>
-        <option value='num'>只能为数字</option>
-        <option value='len'>字数检测</option>
-        <option value='repeat'>检查重复</option>
-        <option value='email'>E-Mail地址</option>
-        <option value='url'>网址</option>
-        <option value='phone'>手机号码</option>
-        <option value='telphone'>联系电话</option>
-      </select>
-    </div>
-    <div class="clearfix"></div>
-    <div class="input-prepend input-append"> <span class="add-on">验证范围</span>
-      <span class="add-on">最小值</span>
-      <input type="text" name="validate_min" class="span1" id="validate_min" value=""/>
-      <span class="add-on">-</span>
-      <input type="text" name="validate_max" class="span1" id="validate_max" value=""/>
-      <span class="add-on">最大值</span>
-    </div>
-    <div class="clearfix"></div>
-    <div class="input-prepend"> <span class="add-on">数据处理</span>
-      <select name="fun[]" id="fun" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
-        <option value=''>不处理</option>
-        <option value='html'>清除HTML</option>
-        <option value='format'>格式化HTML</option>
-        <option value='pinyin'>拼音</option>
-        <option value='explode-n'>分割成数组(换行符)</option>
-        <option value='explode-c'>分割成数组(,)</option>
-        <option value='strtolower'>小写字母</option>
-        <option value='strtoupper'>大写字母</option>
-        <option value='rand'>随机数</option>
-        <option value='json_encode'>数组转json</option>
-        <option value='base64'>base64</option>
-        <option value='serialize'>数组序列化</option>
-      </select>
-    </div>
+    <span class="help-inline">可不填</span>
     <div class="clearfix"></div>
     <div class="input-prepend"> <span class="add-on">字段说明</span>
       <input type="text" name="tip" class="span3" id="tip" value=""/>
     </div>
+    <span class="help-inline">可不填</span>
     <div class="input-prepend"> <span class="add-on">字段样式</span>
       <input type="text" name="style" class="span3" id="style" value=""/>
     </div>
-    <span class="help-inline">支持bootstrap v2.3.2样式 或者请先定义css在填写样式名</span>
+    <span class="help-inline">可不填</span>
     <div class="clearfix"></div>
-    <div class="input-prepend"> <span class="add-on">默认提示</span>
-      <input type="text" name="holder" class="span3" id="holder" value=""/>
-    </div>
-    <div class="input-prepend"> <span class="add-on">错误提示</span>
-      <input type="text" name="error" class="span3" id="error" value=""/>
-    </div>
-    <div class="input-prepend"> <span class="add-on">关联应用</span>
-      <input type="text" name="foreign" class="span3" id="foreign" value=""/>
+    <div class="field-tab-box">
+      <ul class="nav nav-tabs" id="field-tab">
+        <li class="active"><a href="#field-tab-1" data-toggle="tab"><i class="fa fa-check-square-o"></i> 验证</a></li>
+        <li><a href="#field-tab-2" data-toggle="tab"><i class="fa fa-cog"></i> 数据处理</a></li>
+        <li><a href="#field-tab-3" data-toggle="tab"><i class="fa fa-info-circle"></i> 提示</a></li>
+      </ul>
+      <div class="tab-content">
+          <div id="field-tab-1" class="tab-pane active">
+            <div class="input-prepend"> <span class="add-on">数据验证</span>
+              <select name="validate[]" id="validate" class="chosen-select" style="width:360px;" data-placeholder="请选择数据验证方式..." multiple="multiple">
+                <option value=''>不验证</option>
+                <option value='empty'>不能为空</option>
+                <option value='num'>只能为数字</option>
+                <option value='len'>字数检测</option>
+                <option value='repeat'>检查重复</option>
+                <option value='email'>E-Mail地址</option>
+                <option value='url'>网址</option>
+                <option value='phone'>手机号码</option>
+                <option value='telphone'>联系电话</option>
+              </select>
+            </div>
+            <div class="clearfix"></div>
+            <div class="input-prepend input-append"> <span class="add-on">验证范围</span>
+              <span class="add-on">最小值</span>
+              <input type="text" name="validate_min" class="span1" id="validate_min" value=""/>
+              <span class="add-on">-</span>
+              <input type="text" name="validate_max" class="span1" id="validate_max" value=""/>
+              <span class="add-on">最大值</span>
+            </div>
+          </div>
+          <div id="field-tab-2" cla~ss="tab-pane">
+            <div class="input-prepend"> <span class="add-on">数据处理</span>
+              <select name="fun[]" id="fun" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
+                <option value=''>不处理</option>
+                <option value='html'>清除HTML</option>
+                <option value='format'>格式化HTML</option>
+                <option value='pinyin'>拼音</option>
+                <option value='explode-n'>分割成数组(换行符)</option>
+                <option value='explode-c'>分割成数组(,)</option>
+                <option value='strtolower'>小写字母</option>
+                <option value='strtoupper'>大写字母</option>
+                <option value='rand'>随机数</option>
+                <option value='json_encode'>数组转json</option>
+                <option value='base64'>base64</option>
+                <option value='serialize'>数组序列化</option>
+              </select>
+            </div>
+          </div>
+          <div id="field-tab-3" class="tab-pane">
+            <span class="help-inline">支持bootstrap v2.3.2样式 或者请先定义css在填写样式名</span>
+            <div class="clearfix"></div>
+            <div class="input-prepend"> <span class="add-on">默认提示</span>
+              <input type="text" name="holder" class="span3" id="holder" value=""/>
+            </div>
+            <div class="input-prepend"> <span class="add-on">错误提示</span>
+              <input type="text" name="error" class="span3" id="error" value=""/>
+            </div>
+            <div class="input-prepend"> <span class="add-on">关联应用</span>
+              <input type="text" name="foreign" class="span3" id="foreign" value=""/>
+            </div>
+          </div>
+      </div>
     </div>
   </form>
 </div>
+<div class="hide" id="type_config_box">
+    <div class="input-prepend input-append">
+      <span class="add-on">选项</span>
+      <input type="text" name="option_name" class="span3" id="option_name" value=""/>
+      <span class="add-on">选项值</span>
+      <input type="text" name="option_value" class="span3" id="option_value" value=""/>
+      <a href="javascript:;" class="btn btn-primary add_option"/><i class="fa fa-plus"></i> 增加</a>
+    </div>
+    <hr />
+    <div class="input-prepend">
+      <span class="add-on">选项预览</span>
+      <select name="option_list" id="option_list" class="chosen-select" style="width:285px;" data-placeholder="请在上面添加选项...">
+      </select>
+    </div>
+</div>
+
 <script type="text/javascript">
 $(function(){
   $("#field-new").on("click",'a[name="delete"]',function(event) {
@@ -224,7 +260,18 @@ $(function(){
     }
     $("#default").val(def);
     if(dialog){
-      iCMS.dialog({id:'type-config',title: '添加选项'});
+      var type_config_box = document.getElementById("type_config_box");
+      iCMS.dialog({
+        id:'type-config',
+        title: '添加选项',
+        content:type_config_box,
+        okValue: '添加',
+        ok: function () {},
+        cancelValue: '取消',
+        cancel: function(){
+          return true;
+        }
+      });
     }
   });
   $(".addfield").click(function(){
@@ -270,7 +317,7 @@ function field_dialog(ed){
           $('[name="fname[]"]',field).text(fname);
           $('[name="fields[]"]',field).val(param);
         }else{
-          var html = '<?php echo field_html() ?>';
+          var html = '<?php echo $this->field_html(); ?>';
           html = html.replace('{fid}',fid)
           .replace('{fname}',fname)
           .replace('{param}',param);

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  * @$Id: article.app.php 2408 2014-04-30 18:58:23Z coolmoo $
@@ -9,6 +9,7 @@
 class articleApp {
 	public $taoke = false;
 	public $methods = array('iCMS', 'article', 'clink', 'hits', 'good', 'bad', 'like_comment', 'comment');
+    public $pregimg = "/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
 	public function __construct() {}
 
 	public function do_iCMS($a = null) {
@@ -170,7 +171,7 @@ class articleApp {
 
 			$art_data['body'] = $this->ubb($art_data['body']);
 
-			preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is", $art_data['body'], $pic_array);
+            preg_match_all($this->pregimg,$art_data['body'],$pic_array);
 			$p_array = array_unique($pic_array[1]);
 			if ($p_array) {
 				foreach ($p_array as $key => $_pic) {
@@ -194,6 +195,7 @@ class articleApp {
 
 			$total = $count + intval(iCMS::$config['article']['pageno_incr']);
 			$article['body'] = $this->keywords($article['body']);
+            $article['body']     = $this->addBodyAD($article['body']);
 			$article['body'] = $this->taoke($article['body']);
 			$article['taoke'] = $this->taoke;
 			$article['subtitle'] = $art_data['subtitle'];
@@ -242,7 +244,7 @@ class articleApp {
 				'args' => iS::escapeStr($_GET['pageargs']),
 				'first' => ($page == "1" ? true : false),
 				'last' => ($page == $count ? true : false), //实际最后一页
-				'end' => ($page == $total ? true : false),
+                'end'     => ($page==$total?true:false)
 			) + $pageArray;
 			$next_url = $pageArray['next']['url'];
 			unset($pagenav, $pagetext, $iPages, $pageArray);
@@ -252,16 +254,16 @@ class articleApp {
 				foreach ($img_array as $key => $img) {
 					$img = str_replace('<img', '<img title="' . $article['title'] . '" alt="' . $article['title'] . '"', $img);
 					if (iCMS::$config['article']['pic_center']) {
-						$img_replace[$key] = '<p align="center">' . $img . '</p>';
+                        $img_replace[$key] = '<p class="article_pic">'.$img.'</p>';
 					} else {
 						$img_replace[$key] = $img;
 					}
-					if (iCMS::$config['article']['pic_next'] && $count > 1) {
-						$clicknext = '<a href="' . $next_url . '"><b>' . iPHP::lang('iCMS:article:clicknext') . '</b></a>';
+                    if(iCMS::$config['article']['pic_next'] && $total>1){
+                        $clicknext = '<a href="'.$next_url.'"><b>'.iPHP::lang('iCMS:article:clicknext').' ('.$page.'/'.$total.')</b></a>';
 						$clickimg = '<a href="' . $next_url . '" title="' . $article['title'] . '" class="img">' . $img . '</a>';
 						if (iCMS::$config['article']['pic_center']) {
-							$img_replace[$key] = '<p align="center">' . $clicknext . '</p>';
-							$img_replace[$key] .= '<p align="center">' . $clickimg . '</p>';
+                            $img_replace[$key] = '<p class="click2next">'.$clicknext.'</p>';
+                            $img_replace[$key].= '<p class="article_pic">'.$clickimg.'</p>';
 						} else {
 							$img_replace[$key] = '<p>' . $clicknext . '</p>';
 							$img_replace[$key] .= '<p>' . $clickimg . '</p>';
@@ -399,4 +401,43 @@ class articleApp {
 		$chapter && $title = $chapterArray[$pn - 1]['subtitle'];
 		return $title;
 	}
+    public function addBodyAD($content){
+        $pieces    = 1000;
+        $html      = str_replace('</p>', "</p>\n", $content);
+        $htmlArray = explode("\n", $html);
+        $resource  = array();
+        //计算长度
+        preg_match_all($this->pregimg,$content,$img_array);
+        $len = strlen($content)+(count($img_array[1])*300);
+
+        if($len<($pieces*1.5)){
+            return $content;
+        }
+        $i = 0;
+        foreach ($htmlArray as $key => $phtm) {
+            $pLen += strlen($phtm);
+            if(strpos($phtm, '<img')!==false){
+                $pLen +=100;
+            }
+            $llen = $len-$pLen;
+            // if($_GET['debug']){
+            //     var_dump(substr($phtm, 0,30));
+            //     var_dump($pLen,$llen,floor($llen/$pieces),'=========');
+            // }
+            if($pLen>$pieces && floor($llen/$pieces)>=1){
+                // if($_GET['debug']){
+                //     var_dump('---------------------------');
+                // }
+                $ad = '<script>if(typeof showBodyUI==="function")showBodyUI("body.'.$i.'");</script>';
+                $resource[$i].= $phtm.$ad;
+                $pLen = 0;
+                $len = $llen;
+                $i++;
+            }else{
+                $resource[$i].= $phtm;
+            }
+        }
+        unset($html,$htmlArray);
+        return implode('', (array)$resource);
+    }
 }

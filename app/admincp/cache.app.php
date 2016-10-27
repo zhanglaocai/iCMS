@@ -10,13 +10,13 @@
 * @$Id: cache.app.php 2365 2014-02-23 16:26:27Z coolmoo $
 */
 class cacheApp{
-    public $acp = array('setting','prop','filter','keywords');
+    public $acp = array('setting','prop.admincp','filter.admincp','keywords.admincp');
     function __construct() {
         $this->do_app();
     }
     function do_all(){
         foreach ($this->acp as $key => $acp) {
-            $acp = admincp::app($acp);
+            $acp = iPHP::app($acp);
             $acp->cache();
         }
         $this->do_menu(false);
@@ -29,7 +29,7 @@ class cacheApp{
     }
     function do_iCMS($dialog=true){
 		if (in_array($_GET['acp'], $this->acp)) {
-	    	$acp = admincp::app($_GET['acp']);
+	    	$acp = iPHP::app($_GET['acp']);
 	    	$acp->cache();
 	    	$dialog && iPHP::success('更新完成');
 		}

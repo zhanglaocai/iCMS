@@ -191,6 +191,10 @@ class iPHP {
 			$domain = false;
 		}
 
+        define('iPHP_REQUEST_SCHEME',($_SERVER['SERVER_PORT'] == 443)?'https':'http');
+        define('iPHP_REQUEST_HOST',iPHP_REQUEST_SCHEME.'://'.($_SERVER['HTTP_X_HTTP_HOST']?$_SERVER['HTTP_X_HTTP_HOST']:$_SERVER['HTTP_HOST']));
+        define('iPHP_REQUEST_URI',$_SERVER['REQUEST_URI']);
+        define('iPHP_REQUEST_URL',iPHP_REQUEST_HOST.iPHP_REQUEST_URI);
 		define('iPHP_ROUTER_URL', $config['router']['URL']);
 		$domain && $config['router'] = str_replace($config['router']['URL'], $domain, $config['router']);
 		define('iPHP_DEFAULT_TPL', $def_tpl);
@@ -199,6 +203,22 @@ class iPHP {
 		define('iPHP_HOST', $config['router']['URL']);
 		header("Access-Control-Allow-Origin: " . iPHP_HOST);
 		header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
+        self::device_url_check();
+    }
+    private static function device_url_check(){
+        if(stripos(iPHP_REQUEST_URL, iPHP_HOST) === false){
+            $redirect_url = str_replace(iPHP_REQUEST_HOST,iPHP_HOST, iPHP_REQUEST_URL);
+            header("Expires:1 January, 1970 00:00:01 GMT");
+            header("Cache-Control: no-cache");
+            header("Pragma: no-cache");
+            // header("X-REDIRECT-REF: ".iPHP_REQUEST_URL);
+            // header("X-iPHP_HOST: ".iPHP_HOST);
+            // header("X-REDIRECT_URL: ".$redirect_url);
+            // header("X-STRIPOS: ".(stripos(iPHP_REQUEST_URL, iPHP_HOST) === false));
+            // iPHP::http_status(301);
+            // exit($redirect_url);
+            // iPHP::gotourl($redirect_url);
+        }
 	}
 	private static function device_check($deviceArray = null, $flag = false) {
 		foreach ((array) $deviceArray as $key => $device) {
@@ -223,8 +243,8 @@ class iPHP {
 		}
 	}
 	private static function device_agent($user_agent) {
-		$user_agent = str_replace(',', '|', preg_quote($user_agent));
-		return ($user_agent && preg_match('/' . $user_agent . '/i', $_SERVER["HTTP_USER_AGENT"]));
+        $user_agent = str_replace(',','|',preg_quote($user_agent,'/'));
+        return ($user_agent && preg_match('@'.$user_agent.'@i',$_SERVER["HTTP_USER_AGENT"]));
 	}
 	public static function template_start() {
 		self::import(iPHP_CORE . '/iTemplate.class.php');
@@ -443,7 +463,7 @@ class iPHP {
 		}
 
 		$GLOBALS['_iPHP_REQ'][$key] = true;
-		require $path;
+		require_once $path;
 	}
 	public static function core($fname, $cname = null, $msg = '',$core = null) {
 		$cname === null && $cname = $fname;
@@ -603,6 +623,7 @@ class iPHP {
 			// Redirection 3xx
 			301 => 'Moved Permanently',
 			302 => 'Moved Temporarily ', // 1.1
+            304 => 'Not Modified',
 			// Client Error 4xx
 			400 => 'Bad Request',
 			403 => 'Forbidden',
@@ -743,13 +764,13 @@ class iPHP {
 	}
 	public static function msg($info, $ret = false) {
 		list($label, $icon, $content) = explode(':#:', $info);
-		$msg = '<div class="iPHP-msg"><span class="label label-' . $label . '">';
+		$msg = '<div class="iPHP-msg"><div class="label label-' . $label . '">';
 		$icon && $msg .= '<i class="fa fa-' . $icon . '"></i> ';
 		if (strpos($content, ':') !== false) {
 			$lang = self::lang($content, false);
 			$lang && $content = $lang;
 		}
-		$msg .= $content . '</span></div>';
+		$msg .= $content . '</div></div>';
 		if ($ret) {
 			return $msg;
 		}
@@ -830,10 +851,16 @@ class iPHP {
 				$val['url'] && $func = "iTOP.location.href='{$val['url']}';";
 				$val['src'] && $func = "iTOP.$('#iPHP_FRAME').attr('src','{$val['src']}');return false;";
 				$val['target'] && $func = "iTOP.window.open('{$val['url']}','_blank');";
+                if($val['close']===false){
+                    $func.= "return false;";
+                }
+                $val['time'] && $s = $val['time'];
 
-				$buttonA[] = "{" . $id . "value:'" . $val['text'] . "',callback:function(){" . $func . "}}";
-				$val['next'] && $auto_func = $func;
-			}
+                if($func){
+                    $buttonA[]="{".$id."value:'".$val['text']."',callback:function(){".$func."}}";
+                    $val['next'] && $auto_func = $func;
+                }
+            }
 			//$buttonA[] = $okbtn;
 			$button = implode(",", $buttonA);
 		}
@@ -948,34 +975,20 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline) {
 	defined('E_RECOVERABLE_ERROR') OR define('E_RECOVERABLE_ERROR', 4096);
 	$html = "<pre>\n<b>";
 	switch ($errno) {
-	case E_ERROR:$html .= "Error";
-		break;
-	case E_WARNING:$html .= "Warning";
-		break;
-	case E_PARSE:$html .= "Parse Error";
-		break;
-	case E_NOTICE:$html .= "Notice";
-		break;
-	case E_CORE_ERROR:$html .= "Core Error";
-		break;
-	case E_CORE_WARNING:$html .= "Core Warning";
-		break;
-	case E_COMPILE_ERROR:$html .= "Compile Error";
-		break;
-	case E_COMPILE_WARNING:$html .= "Compile Warning";
-		break;
-	case E_USER_ERROR:$html .= "iPHP Error";
-		break;
-	case E_USER_WARNING:$html .= "iPHP Warning";
-		break;
-	case E_USER_NOTICE:$html .= "iPHP Notice";
-		break;
-	case E_STRICT:$html .= "Strict Notice";
-		break;
-	case E_RECOVERABLE_ERROR:$html .= "Recoverable Error";
-		break;
-	default:$html .= "Unknown error ($errno)";
-		break;
+        case E_ERROR:              $html.="Error";                  break;
+        case E_WARNING:            $html.="Warning";                break;
+        case E_PARSE:              $html.="Parse Error";            break;
+        case E_NOTICE:             $html.="Notice";                 break;
+        case E_CORE_ERROR:         $html.="Core Error";             break;
+        case E_CORE_WARNING:       $html.="Core Warning";           break;
+        case E_COMPILE_ERROR:      $html.="Compile Error";          break;
+        case E_COMPILE_WARNING:    $html.="Compile Warning";        break;
+        case E_USER_ERROR:         $html.="iPHP Error";             break;
+        case E_USER_WARNING:       $html.="iPHP Warning";           break;
+        case E_USER_NOTICE:        $html.="iPHP Notice";            break;
+        case E_STRICT:             $html.="Strict Notice";          break;
+        case E_RECOVERABLE_ERROR:  $html.="Recoverable Error";      break;
+        default:                   $html.="Unknown error ($errno)"; break;
 	}
 	$html .= ":</b> $errstr\n";
 	if (function_exists('debug_backtrace')) {
@@ -991,24 +1004,29 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline) {
 	$html .= "\n</pre>";
 	$html = str_replace('\\', '/', $html);
 	$html = str_replace(iPATH, 'iPHP://', $html);
-	@header('HTTP/1.1 500 Internal Server Error');
-	@header('Status: 500 Internal Server Error');
-	@header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-	@header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-	@header("Cache-Control: no-store, no-cache, must-revalidate");
-	@header("Cache-Control: post-check=0, pre-check=0", false);
-	@header("Pragma: no-cache");
-
 	if (isset($_GET['frame'])) {
 		iPHP::$dialog['lock'] = true;
-		iPHP::dialog(array("warning:#:warning-sign:#:{$html}", '系统错误!可发邮件到 idreamsoft@qq.com 反馈错误!我们将及时处理'), 'js:1', 300);
+		$html = str_replace("\n", '<br />', $html);
+		iPHP::dialog(array("warning:#:warning-sign:#:{$html}", '系统错误!可发邮件到 idreamsoft@qq.com 反馈错误!我们将及时处理'), 'js:1', 30000000);
 		exit;
 	}
 	if ($_POST) {
-		$html = str_replace(array("\r", "\\", "\"", "\n", "<b>", "</b>", "<pre>", "</pre>"), array(' ', "\\\\", "\\\"", '\n', ''), $html);
-		echo '<script>alert("' . $html . '")</script>';
-		exit;
-	}
+        if($_POST['ajax']){
+            $array = array('code'=>'0','msg'=>$html);
+            echo json_encode($array);
+        }else{
+            $html = str_replace(array("\r", "\\", "\"", "\n", "<b>", "</b>", "<pre>", "</pre>"), array(' ', "\\\\", "\\\"", '\n', ''), $html);
+            echo '<script>top.alert("' . $html . '")</script>';
+        }
+        exit;
+    }
+    @header('HTTP/1.1 500 Internal Server Error');
+    @header('Status: 500 Internal Server Error');
+    @header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+    @header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+    @header("Cache-Control: no-store, no-cache, must-revalidate");
+    @header("Cache-Control: post-check=0, pre-check=0", false);
+    @header("Pragma: no-cache");
 	$html = str_replace("\n", '<br />', $html);
 	exit($html);
 }

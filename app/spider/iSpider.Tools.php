@@ -162,8 +162,26 @@ class spiderTools extends spider{
             $_replacement = str_replace('\n', "\n", $_replacement);
             if(strpos($_pattern, 'NEED::')!==false){
                 $need = str_replace('NEED::','', $_pattern);
-                if(strpos($content,$need)===false){
-                    return false;
+                if(strpos($need,',')===false){
+                    if(strpos($content,$need)===false){
+                        return false;
+                    }
+                }else{
+                    $needArray = explode(',', $need);
+                    $needflag = true;
+                    foreach ($needArray as $needkey => $needval) {
+                        // var_dump($needval);
+                        if(strpos($content,$needval)===false){
+                            $needflag = false;
+                        }else{
+                            $needflag = true;
+                            break;
+                        }
+                    }
+
+                    if(!$needflag){
+                        return false;
+                    }
                 }
             }
             if(strpos($_pattern, 'NOT::')!==false){
@@ -496,6 +514,9 @@ class spiderTools extends spider{
         if(spider::$curl_proxy){
             $proxy   = spiderTools::proxy_test();
             $proxy && $options = spiderTools::proxy($options,$proxy);
+        }
+        if(spider::$PROXY_URL){
+            $options[CURLOPT_URL] = self::$PROXY_URL.urlencode($url);
         }
         $ch = curl_init();
         curl_setopt_array($ch,$options);

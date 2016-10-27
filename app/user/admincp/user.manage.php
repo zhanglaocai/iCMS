@@ -139,7 +139,7 @@ $(function(){
               <td>
                 <a href="<?php echo APP_URI; ?>&gid=<?php echo $rs[$i]['gid'] ; ?>"><?php echo $group->all[$rs[$i]['gid']]['name'] ; ?></a>
                 <br />
-                <?php $rs[$i]['pid'] && admincp::propFlag($rs[$i]['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?>
+                <?php $rs[$i]['pid'] && iPHP::app('prop.admincp')->flag($rs[$i]['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?>
               </td>
               <td><?php echo $rs[$i]['lastloginip'] ; ?></td>
               <td>

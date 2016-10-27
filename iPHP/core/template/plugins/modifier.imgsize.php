@@ -8,7 +8,7 @@
  * Credit:   Taken from the original Smarty
  *           http://smarty.php.net
  * ADDED: { $text|replace:",,,,":",,,," }
- * @modifier ¿ÝÄ¾ <www.idreamsoft.com> 17:38 2007-11-13
+ * @modifier æž¯æœ¨ <www.idreamsoft.com> 17:38 2007-11-13
  */
 function tpl_modifier_imgsize($string, $width, $height)
 {

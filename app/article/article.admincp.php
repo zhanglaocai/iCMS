@@ -480,7 +480,7 @@ class articleAdmincp{
         if($this->callback['code']){
             $fwd = iCMS::filter($title);
             if($fwd){
-                echo '标题中包含被系统屏蔽的字符，请重新填写。';
+                echo '标题中包含【'.$fwd.'】被系统屏蔽的字符，请重新填写。';
                 return false;
             }
         }
@@ -574,7 +574,7 @@ class articleAdmincp{
                 );
             }
             $moreBtn = array(
-                    array("text" =>"查看该文章","target"=>'_blank',"url"=>$article_url,"o"=>'target="_blank"'),
+                    array("text" =>"查看该文章","target"=>'_blank',"url"=>$article_url,"close"=>false),
                     array("text" =>"编辑该文章","url"=>APP_URI."&do=add&id=".$aid),
                     array("text" =>"继续添加文章","url"=>APP_URI."&do=add&cid=".$cid),
                     array("text" =>"返回文章列表","url"=>$SELFURL),
@@ -822,6 +822,13 @@ class articleAdmincp{
                 $fArray[$key] = $value;
             }else{
                 unset($array[$key]);
+                $rootfilpath = iFS::fp($value, 'http2iPATH');
+                list($owidth, $oheight, $otype) = @getimagesize($rootfilpath);
+                if($this->DELETE_ERROR_PIC && empty($otype)){
+                    iFS::del($rootfilpath);
+                    $array[$key]  = $match[0][$key];
+                    $fArray[$key] = '';
+                }
             }
             if($remote==="autopic" && $key==0){
                 return $value;
@@ -875,5 +882,30 @@ class articleAdmincp{
             $picdata['s'] = array('w'=>$width,'h'=>$height);
         }
         return $picdata?addslashes(serialize($picdata)):'';
+    }
+    function check_pic($body,$aid=0){
+        // global $status;
+        // if($status!='1'){
+        //     return;
+        // }
+        $body = stripcslashes($body);
+        preg_match_all('@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is',$body,$pic_array);
+        $p_array = array_unique($pic_array[2]);
+
+        foreach((array)$p_array as $key =>$url) {
+            $url = trim($url);
+            $filpath = iFS::fp($url, 'http2iPATH');
+            // var_dump($filpath);
+            list($owidth, $oheight, $otype) = @getimagesize($filpath);
+            if(empty($otype)){
+                var_dump($filpath,$otype);
+                if($aid){
+                    iDB::update('article',array('status'=>'0'),array('id'=>$aid));
+                    echo $aid." status:2\n";
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

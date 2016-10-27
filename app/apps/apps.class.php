@@ -131,7 +131,7 @@ class APPS {
 		return self;
 	}
 	public static function cache(){
-        $rs = iDB::all("SELECT `id`,`name`,`title`,`table`,`data` FROM `#iCMS@__app`");
+        $rs = iDB::all("SELECT * FROM `#iCMS@__app`");
 
         foreach((array)$rs AS $a) {
         	$tb_array = json_decode($a['table']);

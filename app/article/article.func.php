@@ -92,23 +92,15 @@ function article_list($vars) {
 	isset($vars['nopic']) && $where_sql .= " AND `haspic`='0'";
 
 	switch ($vars['orderby']) {
-	case "id":$order_sql = " ORDER BY `id` $by";
-		break;
-	case "hot":$order_sql = " ORDER BY `hits` $by";
-		break;
-	case "week":$order_sql = " ORDER BY `hits_week` $by";
-		break;
-	case "month":$order_sql = " ORDER BY `hits_month` $by";
-		break;
-	case "comment":$order_sql = " ORDER BY `comments` $by";
-		break;
-	case "pubdate":$order_sql = " ORDER BY `pubdate` $by";
-		break;
-	case "disorder":$order_sql = " ORDER BY `ordernum` $by";
-		break;
-	// case "rand":     $order_sql = " ORDER BY rand() $by"; break;
-	case "weight":$order_sql = " ORDER BY `weight`,`ordernum` ASC";
-		break;
+        case "id":       $order_sql = " ORDER BY `id` $by"; break;
+        case "hot":      $order_sql = " ORDER BY `hits` $by"; break;
+        case "week":     $order_sql = " ORDER BY `hits_week` $by"; break;
+        case "month":    $order_sql = " ORDER BY `hits_month` $by"; break;
+        case "comment":  $order_sql = " ORDER BY `comments` $by"; break;
+        case "pubdate":  $order_sql = " ORDER BY `pubdate` $by"; break;
+        case "disorder": $order_sql = " ORDER BY `ordernum` $by"; break;
+        // case "rand":     $order_sql = " ORDER BY rand() $by"; break;
+        case "weight":   $order_sql = " ORDER BY `weight`,`ordernum` ASC"; break;
 	default:$order_sql = " ORDER BY `id` $by";
 	}
 	isset($vars['startdate']) && $where_sql .= " AND `pubdate`>='" . strtotime($vars['startdate']) . "'";

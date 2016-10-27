@@ -14,8 +14,8 @@ class iMenu {
     public $href_array = array();
 
 	function __construct() {
-        // $this->get_cache();
-        $this->menu_array(true);
+        $this->get_cache();
+        // $this->menu_array(true);
 	}
 
     function menu_array($cache=false){

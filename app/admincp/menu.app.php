@@ -9,24 +9,10 @@
 * @version 6.0.0
 * @$Id: menu.app.php 2090 2013-09-25 00:37:33Z coolmoo $
 */
-$rs = iDB::all("SELECT
-  `id`, `rootid`, `ordernum`, `app`, `name`, `href`, `icon`, `target`
-FROM
-  `icms6`.`icms_menu`
-ORDER BY app ASC");
-foreach ($rs as $key => $value) {
-    echo '{
-        "caption": "'.$value['name'].'",
-        "href": "'.$value['href'].'",
-        "icon": "'.str_replace('fa fa-', '', $value['icon']).'"
-    },'.PHP_EOL;
-}
-
-
 
 class menuApp{
     function __construct() {
-    	admincp::$menu->get_array();
+    	// admincp::$menu->get_array();
     }
     function do_add(){
     	$id	= $_GET['id'];
@@ -74,7 +60,7 @@ class menuApp{
         return $li;
     }
     function power_holder($M) {
-        $name ='<span class="add-on">'.$M['name'].'</span>';
+        $name ='<span class="add-on">'.$M['caption'].'</span>';
         if($M['app']=='separator'){
             $name ='<span class="add-on tip" title="分隔符权限,仅为UI美观">───分隔符───</span>';
         }
@@ -86,20 +72,20 @@ class menuApp{
 
     function do_ajaxtree(){
 		$expanded = $_GET['expanded']?true:false;
-	 	echo $this->tree($_GET["root"],$expanded);
+	 	echo $this->tree($expanded);
     }
 
-    function tree($id =0,$expanded=false,$func='li'){
+    function tree($expanded=false,$func='li'){
     	$id=='source' && $id=0;
-        foreach((array)admincp::$menu->root_array[$id] AS $root=>$M) {
+        foreach((array)admincp::$menu->menu_array AS $root=>$M) {
         	$a			= array();
         	$a['id']	= $M['id'];
         	$a['text']	= $this->$func($M);
-            if(admincp::$menu->child_array[$M['id']]){
+            if($M['children']){
             	if($expanded){
                     $a['hasChildren'] = false;
                     $a['expanded']    = true;
-                    $a['children']    = $this->tree($M['id'],$expanded,$func);
+                    $a['children']    = $this->tree($expanded,$func);
             	}else{
                     $a['hasChildren'] = true;
             	}
@@ -110,13 +96,13 @@ class menuApp{
         return $tr?json_encode($tr):'[]';
     }
     function li($M) {
-    	if($M['app']=='separator'){
+    	if($M['-']){
     		return '<span class="operation"><a href="'.APP_FURI.'&do=del&id='.$M['id'].'" class="btn btn-danger btn-small" onClick="return confirm(\'确定要删除此菜单?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a></span><div class="separator"><span class="ordernum" style="display:none;"><input type="text" data-id="'.$M['id'].'" name="ordernum['.$M['id'].']" value="'.$M['ordernum'].'"/></span> </div>';
     	}
         $M['rootid']==0 && $bold =' style="font-weight:bold"';
         $tr='<div class="row-fluid">
         <span class="ordernum" style="display:none;"><input type="text" data-id="'.$M['id'].'" name="ordernum['.$M['id'].']" value="'.$M['ordernum'].'" style="width:32px;"/></span>
-        <span class="name"'.$bold.'>'.$M['name'].'</span><span class="operation">';
+        <span class="name"'.$bold.'>'.$M['caption'].'</span><span class="operation">';
         $tr.='
         <a href="'.APP_URI.'&do=copy&id='.$M['id'].'" title="复制本菜单设置"  class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-copy"></i> 复制</a>
         <a href="'.APP_URI.'&do=add&rootid='.$M['id'].'" class="btn btn-info btn-small"><i class="fa fa-plus-square"></i> 子菜单</a>
@@ -189,10 +175,10 @@ class menuApp{
 			$t=$level=='1'?"":"├ ";
 			$selected=($currentid==$M['id'])?"selected":"";
 			if($M['app']=='separator'){
-				$M['name']	= "─────────────";
+				$M['caption']	= "─────────────";
 				$M['id']	= "-1";
 			}
-			$text	= str_repeat("│　", $level-1).$t.$M['name'];
+			$text	= str_repeat("│　", $level-1).$t.$M['caption'];
 			$option.="<option value='{$M['id']}' $selected>{$text}</option>";
 			admincp::$menu->child_array[$M['id']] && $option.=$this->select($currentid,$M['id'],$level+1);
         }
