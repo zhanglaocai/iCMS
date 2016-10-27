@@ -931,10 +931,16 @@ class iPHP{
 				$val['js']    && $func = $val['js'].';';
 				$val['url']   && $func = "iTOP.location.href='{$val['url']}';";
 				$val['src']   && $func = "iTOP.$('#iPHP_FRAME').attr('src','{$val['src']}');return false;";
-				$val['target']&& $func = "iTOP.window.open('{$val['url']}','_blank');";
+                $val['target']&& $func = "iTOP.window.open('{$val['url']}','_blank');";
+                if($val['close']===false){
+                    $func.= "return false;";
+                }
+                $val['time'] && $s = $val['time'];
 
-                $buttonA[]="{".$id."value:'".$val['text']."',callback:function(){".$func."}}";
-                $val['next'] && $auto_func = $func;
+                if($func){
+                    $buttonA[]="{".$id."value:'".$val['text']."',callback:function(){".$func."}}";
+                    $val['next'] && $auto_func = $func;
+                }
             }
 			//$buttonA[] = $okbtn;
 			$button    = implode(",",$buttonA);

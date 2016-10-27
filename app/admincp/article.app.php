@@ -567,7 +567,7 @@ class articleApp{
                 );
             }
             $moreBtn = array(
-                    array("text" =>"查看该文章","target"=>'_blank',"url"=>$article_url,"o"=>'target="_blank"'),
+                    array("text" =>"查看该文章","target"=>'_blank',"url"=>$article_url,"close"=>false),
                     array("text" =>"编辑该文章","url"=>APP_URI."&do=add&id=".$aid),
                     array("text" =>"继续添加文章","url"=>APP_URI."&do=add&cid=".$cid),
                     array("text" =>"返回文章列表","url"=>$SELFURL),
