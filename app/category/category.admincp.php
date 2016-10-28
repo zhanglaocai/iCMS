@@ -12,26 +12,35 @@
 defined('iPHP') OR exit('What are you doing?');
 iPHP::app('category.class','include');
 class categoryAdmincp extends category{
-    public $callback           = array();
-    protected $category_uri    = APP_URI;
-    protected $category_furi   = APP_FURI;
-    protected $category_name   = "栏目";
-    protected $_app            = 'article';
-    protected $_app_name       = '文章';
-    protected $_app_table      = 'article';
-    protected $_app_cid        = 'cid';
-    protected $_app_indexTPL   = '{iTPL}/category.index.htm';
-    protected $_app_listTPL    = '{iTPL}/category.list.htm';
-    protected $_app_contentTPL = '{iTPL}/article.htm';
+    public $callback             = array();
+    protected $category_uri      = APP_URI;
+    protected $category_furi     = APP_FURI;
+    protected $category_name     = "节点";
+    protected $_app              = 'content';
+    protected $_app_name         = '内容';
+    protected $_app_table        = 'content';
+    protected $_app_cid          = 'cid';
+    protected $_app_indexTPL     = '{iTPL}/category.index.htm';
+    protected $_app_listTPL      = '{iTPL}/category.list.htm';
+    protected $_app_contentTPL   = '{iTPL}/content.htm';
+    protected $_view_add         = 'category.add';
+    protected $_view_manage      = 'category.manage';
+    protected $_contentRule_show = true;
+    protected $_contentRule_name = '内容';
+    protected $_urlRule_show     = true;
+    protected $_urlRule_name     = '其它';
 
-    function __construct($appid = null) {
+
+    function __construct($appid = null,$dir=null) {
         $this->cid       = (int)$_GET['cid'];
-        $this->appid     = iCMS_APP_ARTICLE;
+        $this->appid     = '-1';
         $appid          && $this->appid = $appid;
         $_GET['appid']  && $this->appid = (int)$_GET['appid'];
-        $this->category_uri .='&appid='.$this->appid;
-        $this->category_furi.='&appid='.$this->appid;
         parent::__construct($this->appid);
+        // $this->category_uri .='&appid='.$this->appid;
+        // $this->category_furi.='&appid='.$this->appid;
+        // $dir && admincp::set_app_tpl($dir);
+        $this->_view_tpl_dir = $dir;
     }
 
     function do_add(){
@@ -76,7 +85,7 @@ class categoryAdmincp extends category{
                 $rs['contentTPL']   = $rootRs['contentTPL'];
 	        }
         }
-        include admincp::view("category.add");
+        include admincp::view($this->_view_add,$this->_view_tpl_dir);
     }
     function do_save(){
         $appid        = $this->appid;
@@ -330,7 +339,7 @@ class categoryAdmincp extends category{
     }
     function do_tree() {
         admincp::$APP_DO = 'tree';
-        include admincp::view("category.manage");
+        include admincp::view($this->_view_manage,$this->_view_tpl_dir);
     }
     function do_list(){
         admincp::$APP_DO = 'list';
@@ -356,7 +365,7 @@ class categoryAdmincp extends category{
         iPHP::pagenav($total,$maxperpage);
         $rs     = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
         $_count = count($rs);
-        include admincp::view("category.manage");
+        include admincp::view($this->_view_manage,$this->_view_tpl_dir);
     }
     function do_del($cid = null,$dialog=true){
         $cid===null && $cid=(int)$_GET['cid'];

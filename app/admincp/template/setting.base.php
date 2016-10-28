@@ -213,38 +213,6 @@ defined('iPHP') OR exit('What are you doing?');
             <a class="btn btn-small btn-success" href="http://www.idreamsoft.com/doc/iCMS/router_config.html" target="_blank"><i class="fa fa-question-circle"></i> 查看帮助</a>
             <span class="help-inline">此选项只对 conf 目录下 router.config.php 里的配置有效</span>
           </div>
-          <div id="setting-tag" class="tab-pane hide">
-            <div class="input-prepend"> <span class="add-on">标签URL</span>
-              <input type="text" name="config[router][tag_url]" class="span4" id="router_tag_url" value="<?php echo $config['router']['tag_url'] ; ?>"/>
-            </div>
-            <span class="help-inline">标签目录访问URL 可绑定域名</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">标签URL规则</span>
-              <input type="text" name="config[router][tag_rule]" class="span4" id="router_tag_rule" value="<?php echo $config['router']['tag_rule'] ; ?>"/>
-              <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
-                <ul class="dropdown-menu">
-                  <li><a href="{ID}" data-toggle="insertContent" data-target="#router_tag_rule"><span class="label label-important">{ID}</span> 标签ID</a></li>
-                  <li><a href="{TKEY}" data-toggle="insertContent" data-target="#router_tag_rule"><span class="label label-important">{TKEY}</span> 标签标识</a></li>
-                  <li><a href="{ZH_CN}" data-toggle="insertContent" data-target="#router_tag_rule"><span class="label label-important">{ZH_CN}</span> 标签名(中文)</a></li>
-                  <li><a href="{NAME}" data-toggle="insertContent" data-target="#router_tag_rule"><span class="label label-important">{NAME}</span> 标签名</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{TCID}" data-toggle="insertContent" data-target="#router_tag_rule"><span class="label label-inverse">{TCID}</span> 分类ID</a></li>
-                  <li><a href="{TCDIR}" data-toggle="insertContent" data-target="#router_tag_rule"><span class="label label-inverse">{TCDIR}</span> 分类目录</a></li>
-                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#router_tag_rule"><span class="label label-inverse">{CDIR}</span> 栏目目录</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{P}" data-toggle="insertContent" data-target="#router_tag_rule"><span class="label label-inverse">{P}</span> 分页数</a></li>
-                  <li><a href="{EXT}" data-toggle="insertContent" data-target="#router_tag_rule"><span class="label label-inverse">{EXT}</span> 后缀</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{PHP}" data-toggle="insertContent" data-target="#router_tag_rule"><span class="label label-inverse">{PHP}</span> 动态程序</a></li>
-                </ul>
-              </div>
-            </div>
-            <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{ID}</span>或<span class="label label-important">{NAME}</span>或<span class="label label-important">{ZH_CN}</span>或<span class="label label-important">{TKEY}</span></span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">标签目录</span>
-              <input type="text" name="config[router][tag_dir]" class="span4" id="router_tag_dir" value="<?php echo $config['router']['tag_dir'] ; ?>"/>
-            </div>
-            <span class="help-inline">存放标签静态页面目录，相对于app目录。可用../表示上级目录</span> </div>
           <div id="setting-cache" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">启用缓存</span>
               <div class="switch">

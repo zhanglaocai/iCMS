@@ -22,7 +22,7 @@ class iMenu {
         $variable = array();
         foreach (glob(iPHP_APP_DIR."/*/etc/iMenu.*.php",GLOB_NOSORT) as $index=> $filename) {
             $json  = file_get_contents($filename);
-            $json = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
+            $json  = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
             $array = json_decode($json,ture);
             $array && $variable[]= $this->menu_id($array,$index,$filename);
         }

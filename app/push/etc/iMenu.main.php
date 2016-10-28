@@ -17,11 +17,11 @@
             "-": "-"
         }, {
             "caption": "块管理",
-            "href": "pushcategory",
+            "href": "push_category",
             "icon": "sitemap"
         }, {
             "caption": "添加块",
-            "href": "pushcategory&do=add",
+            "href": "push_category&do=add",
             "icon": "edit"
         }]
     }]

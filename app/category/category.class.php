@@ -10,11 +10,12 @@ class category {
     public $_array     = array();
     public $rootid     = array();
 
-    public function __construct($appid=iCMS_APP_ARTICLE) {
+    public function __construct($appid=0) {
         $this->appid = $appid;
         $sql         = "WHERE `appid`='$this->appid'";
-        $this->appid === 'all' && $sql='';
+        $this->appid === '-1' && $sql='';
         $rs          = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} ORDER BY `ordernum` , `cid` ASC");
+
         foreach((array)$rs AS $C) {
 			$C['iurl']	= iURL::get('category',$C);
             $this->_array[$C['rootid']][$C['cid']] = $C;

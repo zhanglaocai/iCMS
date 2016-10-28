@@ -21,7 +21,7 @@ class articleAdmincp{
         $this->appid       = iCMS_APP_ARTICLE;
         $this->id          = (int)$_GET['id'];
         $this->dataid      = (int)$_GET['dataid'];
-        $this->categoryApp = iPHP::app('category.admincp',$this->appid);
+        $this->categoryApp = iPHP::app('article.category.admincp');
         $this->category    = $this->categoryApp->category;
         $this->_postype    = '1';
         $this->_status     = '1';
@@ -29,7 +29,7 @@ class articleAdmincp{
 
     }
     function do_setting(){
-        include admincp::view('setting',true);
+        include admincp::view('setting','admincp');
         // $setting = admincp::app('setting');
         // $setting->view($this);
     }

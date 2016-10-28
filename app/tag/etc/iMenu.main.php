@@ -6,6 +6,12 @@
         "caption": "标签",
         "icon": "tags",
         "children": [{
+            "caption": "标签配置",
+            "href": "tag&do=config",
+            "icon": "cog"
+        },{
+            "-": "-"
+        },{
             "caption": "标签管理",
             "href": "tag",
             "icon": "tag"
@@ -17,11 +23,11 @@
             "-": "-"
         }, {
             "caption": "分类管理",
-            "href": "tagcategory",
+            "href": "tag_category",
             "icon": "sitemap"
         }, {
             "caption": "添加分类",
-            "href": "tagcategory&do=add",
+            "href": "tag_category&do=add",
             "icon": "edit"
         }]
     }]

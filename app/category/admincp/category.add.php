@@ -174,8 +174,9 @@ $(function(){
               </div>
             </div>
             <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{CID}</span>或<span class="label label-important">{0xCID}</span>或<span class="label label-important">{CDIR}</span>或直接填写URL</span>
+            <?php if($this->_contentRule_show){?>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">内容规则</span>
+            <div class="input-prepend input-append"> <span class="add-on"><?php echo $this->_contentRule_name;?>规则</span>
               <input type="text" name="contentRule" class="span5" id="contentRule" value="<?php echo $rs['contentRule'] ; ?>"/>
               <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
                 <ul class="dropdown-menu">
@@ -208,8 +209,10 @@ $(function(){
               </div>
             </div>
             <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{ID}</span>或<span class="label label-important">{0xID}</span>或<span class="label label-important">{LINK}</span></span>
+            <?php }?>
+            <?php if($this->_urlRule_show){?>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">其它规则</span>
+            <div class="input-prepend input-append"> <span class="add-on"><?php echo $this->_urlRule_name;?>规则</span>
               <input type="text" name="urlRule" class="span5" id="urlRule" value="<?php echo $rs['urlRule'] ; ?>"/>
               <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
                 <ul class="dropdown-menu">
@@ -229,7 +232,9 @@ $(function(){
                 </ul>
               </div>
             </div>
-            <span class="help-inline">用于标签等其它应用</span> </div>
+            <span class="help-inline">用于第三方应用URL设置</span>
+            <?php }?>
+          </div>
           <div id="category-add-tpl" class="tab-pane hide">
             <div class="input-prepend input-append"> <span class="add-on">首页模板</span>
               <input type="text" name="indexTPL" class="span3" id="indexTPL" value="<?php echo $rs['indexTPL'] ; ?>"/>

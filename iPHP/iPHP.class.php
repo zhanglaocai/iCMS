@@ -488,36 +488,51 @@ class iPHP {
 			if (empty($file_type)) {
 				$file_type = $app_name;
 				$app_name = $app_dir;
+			}else{
+				if($file_type=='admincp'){
+					$file_type='subadmincp';
+					$obj_name = $app_dir.$app_name . 'Admincp';
+					// $app_name = $app_dir.'.'.$app_name;
+				}
 			}
 		}
-		switch ($file_type) {
-		case 'class':$obj_name = $app_name;
-			break;
-		case 'admincp':
-			$obj_name = $app_name . 'Admincp';
-			break;
-		// $args===null && $args = "static";
-		case 'table':
-			$obj_name = $app_name . 'Table';
-			$args = "static";
-			break;
-		case 'func':
-			$args = "include";
-			break;
-		default:$obj_name = $app_name . 'App';
-			break;
-		}
 
-		self::import(iPHP_APP_DIR . '/' . $app_dir . '/' . $app_name . '.' . $file_type . '.php');
+		$app_file = $app_name.'.'.$file_type;
+
+		switch ($file_type) {
+			case 'class':
+				$obj_name = $app_name;
+				break;
+			case 'admincp':
+				$obj_name = $app_name . 'Admincp';
+				break;
+			case 'subadmincp':
+				$app_file = $app_dir.'.'.$app_name.'.admincp';
+				break;
+			case 'table':
+				$obj_name = $app_name . 'Table';
+				$args = "static";
+				break;
+			case 'func':
+				$args = "include";
+				break;
+			default:$obj_name = $app_name . 'App';
+				break;
+		}
+		$path = iPHP_APP_DIR . '/' . $app_dir . '/' . $app_file . '.php';
+		if (@is_file($path)) {
+			self::import($path);
+		}else{
+			return false;
+		}
 
 		if ($args === "include" || $args === "static") {
 			return;
 		}
 
-		if ($arg !== NULL) {
-			return call_user_func_array($obj_name, (array) $args);
-		}
-		return new $obj_name();
+		$obj = new $obj_name();
+		$args && call_user_func_array(array($obj, '__construct'), (array) $args);
+		return $obj;
 	}
 	public static function vendor($name, $args = null) {
 		iPHP::import(iPHP_LIB . '/Vendor.' . $name . '.php');

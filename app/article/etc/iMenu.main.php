@@ -6,11 +6,11 @@
     "icon": "pencil-square-o",
     "children": [{
         "caption": "栏目管理",
-        "href": "category&appid=1",
+        "href": "article_category",
         "icon": "list-alt"
     }, {
         "caption": "添加栏目",
-        "href": "category&do=add",
+        "href": "article_category&do=add",
         "icon": "edit"
     }, {
         "-": "-"

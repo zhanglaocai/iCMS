@@ -13,17 +13,24 @@
 class iURL {
     public static $config   = null;
     public static $uriArray = null;
-	public static function init($config){
-        $config['router']= array(
-            'http'     => array('rule'=>'0','PRI'=>''),
-            'index'    => array('rule'=>'0','PRI'=>''),
-            'category' => array('rule'=>'1','PRI'=>'cid'),
-            'article'  => array('rule'=>'2','PRI'=>'id'),
-            'software' => array('rule'=>'2','PRI'=>'id'),
-            'tag'      => array('rule'=>'3','PRI'=>'id'),
+	public static function init($config=null){
+        self::$config           = $config['router'];
+        self::$config['tag']    = $config['tag'];
+        self::$config['router'] = array(
+            'http'     => array('rule'=>'0','primary'=>''),
+            'index'    => array('rule'=>'0','primary'=>''),
+            'category' => array('rule'=>'1','primary'=>'cid'),
+            'article'  => array('rule'=>'2','primary'=>'id'),
+            'software' => array('rule'=>'2','primary'=>'id'),
+            'tag'      => array('rule'=>'3','primary'=>'id'),
         );
-        self::$config = $config;
-        //var_dump($config);
+        // foreach (glob(iPHP_APP_DIR."/*/etc/iURL.router.php",GLOB_NOSORT) as $index=> $filename) {
+        //     $app = str_replace(array(iPHP_APP_DIR,'etc/iURL.router.php'), '', $filename);
+        //     $app = trim($app,'/');
+        //     self::$config['router'][$app] = include $filename;
+        // }
+        // var_dump(self::$config);
+        // exit;
 	}
     private static function CPDIR($cid="0") {
         $C    = iCache::get('iCMS/category/'.$cid);
@@ -77,8 +84,9 @@ class iURL {
         $router   = self::$config['router'];
         $category = array();
         $array    = $a;
-        $PRI      = $router[$uri]['PRI'];
+        $primary  = $router[$uri]['primary'];
         $rule     = $router[$uri]['rule'];
+        $conf     = self::$config[$uri];
         $document_uri = $uri.'.php?';
         switch($rule) {
             case '0':
@@ -110,19 +118,18 @@ class iURL {
                 $array     = (array)$a[0];
                 $category  = (array)$a[1];
                 $_category = (array)$a[2];
-                $html_dir  = self::$config['tag_dir'];
-                $sURL      = self::$config['tag_url'];
+                $html_dir  = $conf['dir'];
+                $sURL      = $conf['url'];
                 $i->href   = $array['url'];
-                //$a       = array_merge_recursive((array)$a[0],$category);
                 $url       = $category['urlRule'];
                 $_category['urlRule'] && $url = $_category['urlRule'];
-                $url OR $url = self::$config['tag_rule'];
+                $url OR $url = $conf['rule'];
                 break;
              default:
                 $url = $array['urlRule'];
         }
         if($url=='{PHP}'){
-            $document_uri.= $PRI.'='.$array[$PRI];
+            $document_uri.= $primary.'='.$array[$primary];
             // strpos($document_uri,'http://')===false && $document_uri = rtrim($sURL,'/').'/'.$document_uri;
             iFS::checkHttp($document_uri) OR $document_uri = rtrim($sURL,'/').'/'.$document_uri;
             $i->href = $document_uri;

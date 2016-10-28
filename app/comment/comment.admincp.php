@@ -16,7 +16,7 @@ class commentAdmincp{
         $this->id = (int)$_GET['id'];
     }
     function do_iCMS($appid=0){
-        $this->categoryApp = iPHP::app('category.admincp','all');
+        $this->categoryApp = iPHP::app('category.admincp',$appid);
         $this->category    = $this->categoryApp->category;
 
         $sql = "WHERE 1=1";
@@ -49,9 +49,9 @@ class commentAdmincp{
         $_count = count($rs);
     	include admincp::view("comment.manage");
     }
-    function do_article(){
-    	$this->do_iCMS(iCMS_APP_ARTICLE);
-    }
+    // function do_article(){
+    // 	$this->do_iCMS(iCMS_APP_ARTICLE);
+    // }
     function do_manage($appid=0){
     	$this->do_iCMS($appid);
     }

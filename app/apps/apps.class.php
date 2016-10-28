@@ -10,26 +10,36 @@ class APPS {
     public static $table   = 'article';
     public static $primary = 'id';
     public static $appid   = '1';
-    public static $confdir   = 'config';
+    public static $etc     = 'etc';
     public static $array   = array();
     // public static $app_paths   = array();
     //
-    public static function installed($app){
-        $path = self::$confdir."/install.lock.php";
-        return self::get_file($app,$path);
-    }
+    // public static function installed($app){
+    //     $path = self::$etc."/install.lock.php";
+    //     return self::get_file($app,$path);
+    // }
     public static function check($app,$package='admincp'){
-        $path = "{$app}.{$package}.php";
-        return self::get_file($app,$path);
-    }
-    public static function get_file($app,$path){
-        $path = iPHP_APP_DIR."/$app/".$path;
-        if(file_exists($path)){
-            return $path;
+        if(stripos($app, '_')!== false){
+            list($app,$sapp) = explode('_', $app);
+            $package = "{$sapp}.{$package}";
+        }
+        $filename = "{$app}.{$package}.php";
+        $app_path = iPHP_APP_DIR."/$app/".$filename;
+        if(file_exists($app_path)){
+            return array($app,$filename,$sapp);
         }else{
             return false;
         }
+        // return self::get_file($app,$filename,$sapp);
     }
+    // public static function get_file($app,$filename,$sapp=null){
+    //     $app_path = iPHP_APP_DIR."/$app/".$filename;
+    //     if(file_exists($app_path)){
+    //         return array($app,$filename,$sapp);
+    //     }else{
+    //         return false;
+    //     }
+    // }
     public static function scan($pattern='*.app',$appdir='*',$ret=false){
         $array = array();
         foreach (glob(iPHP_APP_DIR."/{$appdir}/{$pattern}.php") as $filename) {

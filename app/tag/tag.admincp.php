@@ -17,13 +17,22 @@ class tagAdmincp{
     function __construct() {
         $this->appid       = iCMS_APP_TAG;
         $this->id          = (int)$_GET['id'];
-        $this->tagcategory = iPHP::app('category.admincp',$this->appid);;
-        $this->categoryApp = iPHP::app('category.admincp','all');
+        $this->tagcategory = iPHP::app('tag.category.admincp');
+        $this->categoryApp = iPHP::app('category.admincp');
     }
+    function do_config(){
+        $setting = admincp::app('setting');
+        $setting->app($this->appid);
+    }
+    function do_save_config(){
+        $setting = admincp::app('setting');
+        $setting->save($this->appid);
+    }
+
     function do_add(){
         $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
         $rs['metadata'] && $rs['metadata']=json_decode($rs['metadata']);
-        include admincp::view('tags.add');
+        include admincp::view('tag.add');
     }
     function do_update(){
         if($this->id){
@@ -88,7 +97,7 @@ class tagAdmincp{
         $rs     = iDB::all("SELECT * FROM `#iCMS@__tags` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
         $propArray = admincp::getProp("pid",null,'array');
-    	include admincp::view("tags.manage");
+    	include admincp::view("tag.manage");
     }
     function do_import(){
         $_POST['cid'] OR iPHP::alert('请选择标签所属栏目！');
