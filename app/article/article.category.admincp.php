@@ -23,6 +23,5 @@ class articlecategoryAdmincp extends categoryAdmincp {
         $this->_app_cid          = 'cid';
         $this->_app_contentTPL   = '{iTPL}/article.htm';
         $this->_contentRule_name = '文章';
-        $this->_urlRule_show     = false;
     }
 }

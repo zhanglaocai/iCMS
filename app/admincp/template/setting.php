@@ -47,7 +47,6 @@ function modal_tplfile(el,a){
         <li class="active"><a href="#setting-base" data-toggle="tab">基本信息</a></li>
         <li><a href="#setting-tpl" data-toggle="tab">模板</a></li>
         <li><a href="#setting-url" data-toggle="tab">URL</a></li>
-        <li><a href="#setting-tag" data-toggle="tab">标签</a></li>
         <li><a href="#setting-cache" data-toggle="tab">缓存</a></li>
         <li><a href="#setting-file" data-toggle="tab">附件</a></li>
         <li><a href="#setting-thumb" data-toggle="tab">缩略图</a></li>

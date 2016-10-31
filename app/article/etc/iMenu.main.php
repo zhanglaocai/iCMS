@@ -28,7 +28,7 @@
         "icon": "inbox"
     }, {
         "caption": "回收站",
-        "href": "article&do=inbox",
+        "href": "article&do=trash",
         "icon": "trash-o"
     }, {
         "-": "-"

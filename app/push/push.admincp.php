@@ -14,7 +14,7 @@ class pushAdmincp{
     function __construct() {
         $this->appid       = iCMS_APP_PUSH;
         $this->id          = (int)$_GET['id'];
-        $this->categoryApp = iPHP::app('push.category.admincp');
+        $this->categoryApp = iPHP::app('category.admincp',$this->appid);
         $this->category    = $this->categoryApp->category;
     }
     function do_add(){

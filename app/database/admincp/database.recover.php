@@ -12,8 +12,8 @@ admincp::head();
   <div class="widget-box" id="<?php echo APP_BOXID;?>">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-cloud"></i> </span>
       <h5 class="brs">数据库</h5>
-      <ul class="nav nav-tabs" id="html-tab">
-        <?php echo admincp::$menu->show("tabs",admincp::$menu->parentid); ?>
+      <ul class="nav nav-tabs iMenu-tabs">
+        <?php echo admincp::$menu->app_memu(admincp::$APP_NAME); ?>
       </ul>
     </div>
     <div class="widget-content nopadding">

@@ -41,7 +41,8 @@ class iPHP {
 			$fi = iFS::name(__SELF__);
 			$app = $fi['name'];
 		}
-		if (!in_array($app, self::$apps) && iPHP_DEBUG) {
+
+		if (!in_array($app, (array)self::$apps) && iPHP_DEBUG) {
 			iPHP::throw404('运行出错！找不到应用程序: <b>' . $app . '</b>', '0001');
 		}
 		self::$app_path = iPHP_APP_DIR . '/' . $app;
