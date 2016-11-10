@@ -28,6 +28,15 @@ class settingApp{
         $memcache = extension_loaded('memcached');
     	include admincp::view("setting");
     }
+    function apps(){
+        iPHP::app('apps.class','static');
+        APPS::scan();
+        $apps  = array();
+        foreach (APPS::$array as $key => $value) {
+            $apps[] = $key;
+        }
+        return $apps;
+    }
     /**
      * [do_save 保存配置]
      * @return [type] [description]
@@ -54,7 +63,7 @@ class settingApp{
             }
         }
 
-        $config['apps']	= $this->apps;
+        $config['apps']	= $this->apps();
     	foreach($config AS $n=>$v){
     		$this->set($v,$n,0);
     	}
@@ -67,7 +76,7 @@ class settingApp{
      */
     function cache(){
         $config         = $this->get();
-        $config['apps'] = $this->apps;
+        $config['apps'] = $this->apps();
         $this->write($config);
     }
     /**

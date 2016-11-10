@@ -161,7 +161,7 @@ body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
 .search-wrap .search-btn { outline: none; border-radius: 0px 5px 5px 0px; width: 60px; height: 39px; background-color: #0099cc; color: #FFFFFF; border: 1px solid #0099cc; */; }
 
 /* ==navbar== */
-.navbar { height: 41px;background-color: #333; line-height: 41px;}
+.navbar { height: 41px;background-color: #333; line-height: 41px;overflow: hidden;}
 
 /*.navbar ul {list-style: none; margin: 0px;}*/
 .navbar-wrap { width: 1200px; position: relative; margin: 0 auto; left: 0; display: block;background-color: #333;height: 41px;line-height: 41px;}
@@ -407,3 +407,97 @@ body.articleApp { }
 #share-bd .bds_more { background: url(../img/share.png) no-repeat -140px 0 !important; width: 28px !important; height: 28px !important; padding: 0 !important; }
 .share-moreinfo .moreinfo { float: right; padding: 3px 3px 0 0; }
 .share-moreinfo .moreinfo a { margin-left: 14px; }
+
+/* dialog */
+/*.iCMS_UI_DIALOG-backdrop{opacity: 0.3 !important;}*/
+.iCMS_UI_DIALOG {
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    /*border: 1px solid #888;*/
+    border: 0px;
+    -webkit-box-shadow: 0 0 80px 0 rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 80px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 80px 0 rgba(0, 0, 0, 0.4);
+    background: #fff;
+    z-index: 99999 !important;
+}
+.iCMS_UI_DIALOG .ui-dialog {
+    opacity: 1;
+    border: 0px;
+    box-shadow: none;
+    background-color: inherit;
+}
+.iCMS_UI_DIALOG .ui-dialog-header {
+    background-color: #333;
+    background-image: -moz-linear-gradient(top, #3c3c3c, #0a0a0a);
+    background-image: -ms-linear-gradient(top, #3c3c3c, #0a0a0a);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#3c3c3c), to(#0a0a0a));
+    background-image: -webkit-linear-gradient(top, #3c3c3c, #0a0a0a);
+    background-image: -o-linear-gradient(top, #3c3c3c, #0a0a0a);
+    background-image: linear-gradient(top, #3c3c3c, #0a0a0a);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3c3c3c', endColorstr='#0a0a0a', GradientType=0);
+    position: relative;
+    padding: 0px;
+    cursor: move;
+    border-radius: 6px 6px 0 0;
+    /*border: 1px solid #0D6EB8;*/
+    border: 0px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 1px 1px rgba(0, 0, 0, 0.2);
+    margin: -1px -1px 0;
+    line-height: 14px;
+}
+
+.iCMS_UI_DIALOG .ui-dialog-header .ui-dialog-title {
+    font-family: museo-slab,Georgia,"Times New Roman",Times,serif;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .4);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 8px 15px;
+    cursor: move;
+}
+.iCMS_UI_DIALOG .ui-dialog-header .ui-dialog-close {
+    top: 0px;
+    right: 0px;
+    padding: 6px 12px;
+color: #999;
+    opacity: .4;
+    font-weight: normal;
+}
+.iCMS_UI_DIALOG .ui-dialog-body {
+    padding: 0px;
+}
+.iCMS_UI_DIALOG .ui-dialog-table { height: 100%; width: 100%; vertical-align: middle; }
+/*.iCMS_UI_DIALOG .ui-dialog-content {height: auto !important; color: #222; padding: 10px; max-width: 760px; max-height: 500px; min-width: 240px; min-height: 120px; overflow-y: scroll; }*/
+.iCMS_UI_DIALOG .ui-dialog-content {
+    height: auto !important;
+    color: #222;
+    padding: 20px;
+    display: block;
+    max-width: 760px;
+    min-width: 240px;
+    /*border: 1px solid #888;*/
+    text-align: center;
+}
+.iCMS_UI_DIALOG .ui-dialog-content .buttons {
+    text-align: right;
+    background: #fff
+}
+.iCMS_UI_DIALOG .ui-dialog-content .buttons a.cancel { color: #259; margin-right: 15px; cursor: pointer; }
+.iCMS_UI_DIALOG .ui-dialog-content .buttons a.cancel:hover { text-decoration: underline; }
+.iCMS_UI_DIALOG .ui-dialog-footer { padding-bottom: 15px; }
+
+.iCMS_dialog_alert .ui-dialog-content{text-align: center;}
+
+.iCMS_UI_DIALOG {+max-width: 620px;}
+.iCMS_UI_DIALOG .ui-dialog-header {+height: 40px;}
+.iCMS_UI_DIALOG .ui-dialog-header .ui-dialog-title { +margin-top: 4px;}
+.iCMS_UI_DIALOG .ui-dialog-header .ui-dialog-close { +padding-top: 4px;}
+
+.iPHP-msg { text-align: center; margin: 0px 5px; padding: 0px 4px; }
+.iPHP-msg .label { white-space: pre-wrap; padding: 8px 10px; font-size: 14px; letter-spacing: 1px; line-height: 160%; }
+.iPHP-msg pre { text-align: left; }
+.iPHP-msg i { font-size: 18px; }
+.iPHP-msg .label-success hr { margin: 10px 0; border-top: 1px solid #007202; border-bottom: 1px solid #6A946B; }

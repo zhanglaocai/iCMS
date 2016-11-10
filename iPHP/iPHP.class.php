@@ -823,8 +823,8 @@ class iPHP {
 			self::js("js:window.alert('{$msg}')");
 		}
 		self::$dialog = array(
-			'lock' => true,
-			'width' => 360,
+			'lock'   => true,
+			'width'  => 360,
 			'height' => 120,
 		);
 		self::dialog('warning:#:warning:#:' . $msg, $js, $s);
@@ -898,6 +898,7 @@ class iPHP {
 		$s <= 30 && $timeout = $s * 1000;
 		$s > 30 && $timeout = $s;
 		$s === false && $timeout = false;
+		$timeout=1000000;
 		if ($timeout) {
 			$dialog .= 'window.setTimeout(function(){' . $auto_func . '},' . $timeout . ');';
 		} else {

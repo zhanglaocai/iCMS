@@ -18,6 +18,7 @@ class APPS {
     //     $path = self::$etc."/install.lock.php";
     //     return self::get_file($app,$path);
     // }
+
     public static function check($app,$package='admincp'){
         if(stripos($app, '_')!== false){
             list($app,$sapp) = explode('_', $app);

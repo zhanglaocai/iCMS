@@ -12,15 +12,19 @@ $(function() {
         action: 'mouseover'
     });
 
-    // $(".search-btn").click(function(event) {
-    //     event.preventDefault();
-    //     var q = $('[name="q"]',"#search-form").val();
-    //     if(q==""){
-    //         iCMS.alert("请输入关键词");
-    //         return false;
-    //     }
-    // });
-    //
+    $(".search-btn").click(function(event) {
+        event.preventDefault();
+        var q = $('[name="q"]',"#search-form").val();
+        if(q==""){
+            iCMS.alert("请输入关键词");
+            return false;
+        }
+    });
+    $(".seccode-img,.seccode-text").click(function(event) {
+        event.preventDefault();
+        iCMS.seccode();
+    });
+
     iCMS.run('user', function($USER) {
         //用户状态
         $USER.STATUS({},
@@ -46,8 +50,14 @@ $(function() {
             });
         });
     });
-})
 
+});
+
+var iUSER = iCMS.run('user');
+
+    // $("[i='avatar']").bind("error",function(){
+    //     this.src = iCMS.CONFIG.PUBLIC+'/ui/avatar.gif';
+    // });
 // function hover (a, t, l) {
 //     var pop,timeOutID = null,t = t || 0, l = l || 0;
 //     a.hover(function() {

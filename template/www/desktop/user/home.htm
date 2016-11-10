@@ -11,7 +11,7 @@
     <meta name="description" content="<!--{$user.nickname}-->的<!--{$site.title}-->" />
     <meta name="mobile-agent" content="format=html5;url=<!--{$user.urls.home}-->" />
     <!--{iCMS:public:ui}-->
-    <link href="<!--{$site.urls.tpl}-->/static/css/home.css" rel="stylesheet" type="text/css" />
+    <link href="<!--{$site.urls.tpl}-->/static/css/user.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="userApp">
@@ -44,7 +44,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="card_avatar"> <a href="<!--{$user.urls.home}-->"> <img class="iCMS_user_avatar card_avatar_img" src="<!--{$user.avatar}-->" onerror="iCMS.user.noavatar(this);"> </a> </div>
+                <div class="card_avatar"> <a href="<!--{$user.urls.home}-->"> <img class="iCMS_user_avatar card_avatar_img" src="<!--{$user.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a> </div>
             </div>
         </div>
         <div class="home-main">
@@ -101,7 +101,7 @@
                         <!--{iCMS:user:follow loop="true" row="30" fuid=$user.uid}-->
                         <li>
                             <a href="<!--{$user_follow.url}-->" title="<!--{$user_follow.name}-->">
-                                    <img class="avatar_30" data-tip="iCMS:ucard:<!--{$user_follow.uid}-->" src="<!--{$user_follow.avatar}-->" onerror="iCMS.user.noavatar(this);"> </a>
+                                    <img class="avatar_30" data-tip="iCMS:ucard:<!--{$user_follow.uid}-->" src="<!--{$user_follow.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a>
                         </li>
                         <!--{iCMSelse}-->
                         <li><span class="fs12 gray">居然没人关注，太low了吧</span></li>
@@ -121,7 +121,8 @@
                         <!--{iCMS:user:follow loop="true" row="30" userid=$user.uid}-->
                         <li>
                             <a href="<!--{$user_follow.url}-->" title="<!--{$user_follow.name}-->">
-                                    <img class="avatar_30" data-tip="iCMS:ucard:<!--{$user_follow.uid}-->" src="<!--{$user_follow.avatar}-->" onerror="iCMS.user.noavatar(this);"></a>
+                                    <img class="avatar_30" data-tip="iCMS:ucard:<!--{$user_follow.uid}-->" src="<!--{$user_follow.avatar}-->" onerror="iUSER.NOAVATAR(this);">
+                            </a>
                         </li>
                         <!--{iCMSelse}-->
                         <li><span class="fs12 gray">没有关注</span></li>

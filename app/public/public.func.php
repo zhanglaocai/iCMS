@@ -22,6 +22,9 @@ function public_js($vars=null){
 function public_common($vars=null){
 	echo iPHP::view('iCMS://public.common.htm');
 }
+function public_seccode($vars=null){
+	echo iPHP::view('iCMS://public.seccode.htm');
+}
 function public_crontab(){
 	echo '<img src="'.iCMS_API.'?app=public&do=crontab&'.$_SERVER['REQUEST_TIME'].'" id="iCMS_public_crontab"/>';
 }

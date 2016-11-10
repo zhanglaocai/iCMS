@@ -61,26 +61,26 @@ class userApp {
 		$userdata && iPHP::assign('userdata', (array) user::data($this->user->uid));
 	}
 
-	public function do_iCMS($a = null) {
-		$this->do_home();
+	public function API_iCMS($a = null) {
+		$this->API_home();
 	}
-	public function do_home($category = true) {
+	public function API_home($category = true) {
 		$this->user(true);
 		$category && $u['category'] = user::category((int) $_GET['cid'], iCMS_APP_ARTICLE);
 		iPHP::append('user', $u, true);
 		iPHP::view('iCMS://user/home.htm');
 	}
-	public function do_fans() {
-		$this->do_home();
+	public function API_fans() {
+		$this->API_home();
 	}
-	public function do_follower() {
-		$this->do_home();
+	public function API_follower() {
+		$this->API_home();
 	}
 
-	public function do_favorite() {
-		$this->do_home();
+	public function API_favorite() {
+		$this->API_home();
 	}
-	public function do_manage() {
+	public function API_manage() {
 		$pgArray = array('publish', 'category', 'article', 'comment', 'inbox', 'favorite', 'share', 'follow', 'fans');
 		$pg = iS::escapeStr($_GET['pg']);
 		$pg OR $pg = 'article';
@@ -90,7 +90,7 @@ class userApp {
 				iPHP::assign('iAPP', $app_array);
 			}
 			$this->user(true);
-			$funname = '__do_manage_' . $pg;
+			$funname = '__API_manage_' . $pg;
 			$class_methods = get_class_methods(__CLASS__);
 			in_array($funname, $class_methods) && $this->$funname();
 			iPHP::assign('pg', $pg);
@@ -98,25 +98,8 @@ class userApp {
 			iPHP::view("iCMS://user/manage.htm");
 		}
 	}
-	public function do_profile() {
-		$pgArray = array('base', 'avatar', 'setpassword', 'bind', 'custom');
-		$pg = iS::escapeStr($_GET['pg']);
-		$pg OR $pg = 'base';
-		if (in_array($pg, $pgArray)) {
-			$this->user();
-			iPHP::assign('pg', $pg);
-			if ($pg == 'bind') {
-				$platform = user::openid(user::$userid);
-				iPHP::assign('platform', $platform);
-			}
-			if ($pg == 'base') {
-				iPHP::assign('userdata', (array) user::data(user::$userid));
-			}
-			iPHP::view("iCMS://user/profile.htm");
-		}
-	}
 
-	private function __do_manage_article() {
+	private function __API_manage_article() {
 		iPHP::assign('status', isset($_GET['status']) ? (int) $_GET['status'] : '1');
 		iPHP::assign('cid', (int) $_GET['cid']);
 		iPHP::assign('article', array(
@@ -124,14 +107,14 @@ class userApp {
 			'edit' => iPHP::router('user:publish', '?&'),
 		));
 	}
-	private function __do_manage_favorite() {
+	private function __API_manage_favorite() {
 		iPHP::assign('favorite', array(
 			'fid' => (int) $_GET['fid'],
 			'manage' => iPHP::router('user:manage:favorite', '?&'),
 		));
 	}
 
-	private function __do_manage_publish() {
+	private function __API_manage_publish() {
 		$id = (int) $_GET['id'];
 		iPHP::app('article.table');
 		list($article, $article_data) = articleTable::data($id, 0, user::$userid);
@@ -143,7 +126,7 @@ class userApp {
 
 		iPHP::assign('article', $article);
 		iPHP::assign('article_data', $article_data);
-		iPHP::assign('option', $this->select('', $cid));
+		iPHP::assign('option', $this->category('', $cid));
 	}
 	/**
 	 * [ACTION_manage description]
@@ -153,7 +136,7 @@ class userApp {
 
 		$pgArray = array('publish', 'category', 'article', 'comment', 'message', 'favorite', 'share', 'follow', 'fans');
 		$pg = iS::escapeStr($_POST['pg']);
-		$funname = '__action_manage_' . $pg;
+		$funname = '__ACTION_manage_' . $pg;
 		//print_r($funname);
 		$methods = get_class_methods(__CLASS__);
 		if (in_array($pg, $pgArray) && in_array($funname, $methods)) {
@@ -161,7 +144,7 @@ class userApp {
 		}
 	}
 
-	private function __action_manage_category() {
+	private function __ACTION_manage_category() {
 		$name_array = (array) $_POST['name'];
 		$cid_array = (array) $_POST['_cid'];
 		foreach ($name_array as $cid => $name) {
@@ -196,7 +179,7 @@ class userApp {
 
 		iPHP::success('user:category:update', 'js:1');
 	}
-	private function __action_manage_publish() {
+	private function __ACTION_manage_publish() {
 		$aid = (int) $_POST['id'];
 		$cid = (int) $_POST['cid'];
 		$_cid = (int) $_POST['_cid'];
@@ -215,7 +198,7 @@ class userApp {
 		if (iCMS::$config['user']['post']['seccode']) {
 			$seccode = iS::escapeStr($_POST['seccode']);
 			iPHP::core("Seccode");
-			iSeccode::chcek($seccode, true) OR iPHP::alert('iCMS:seccode:error');
+			iSeccode::check($seccode, true) OR iPHP::alert('iCMS:seccode:error');
 		}
 
 		if (iCMS::$config['user']['post']['interval']) {
@@ -246,7 +229,7 @@ class userApp {
 		$fwd = iCMS::filter($body);
 		$fwd && iPHP::alert('user:publish:filter_body');
 
-		$articleApp = iPHP::app("admincp.article.app");
+		$articleApp = iPHP::app("article.admincp");
 
 		if (empty($description)) {
 			$description = $articleApp->autodesc($body);
@@ -317,7 +300,7 @@ class userApp {
 		$url = iPHP::router('user:article');
 		iPHP::success($lang[$status], 'url:' . $url);
 	}
-	private function __action_manage_article() {
+	private function __ACTION_manage_article() {
 		$actArray = array('delete', 'renew', 'trash');
 		$act = iS::escapeStr($_POST['act']);
 		if (in_array($act, $actArray)) {
@@ -336,7 +319,7 @@ class userApp {
 			iPHP::code(1, 0, 0, 'json');
 		}
 	}
-	private function __action_manage_comment() {
+	private function __ACTION_manage_comment() {
 		$act = iS::escapeStr($_POST['act']);
 		if ($act == "del") {
 			$id = (int) $_POST['id'];
@@ -369,7 +352,7 @@ class userApp {
 			iPHP::code(1, 0, 0, 'json');
 		}
 	}
-	private function __action_manage_message() {
+	private function __ACTION_manage_message() {
 		$act = iS::escapeStr($_POST['act']);
 		if ($act == "del") {
 			$id = (int) $_POST['id'];
@@ -394,7 +377,7 @@ class userApp {
 			iPHP::code(1, 0, 0, 'json');
 		}
 	}
-	private function __action_manage_favorite() {
+	private function __ACTION_manage_favorite() {
 		$actArray = array('delete');
 		$act = iS::escapeStr($_POST['act']);
 		if (in_array($act, $actArray)) {
@@ -410,6 +393,23 @@ class userApp {
 			iPHP::code(1, 0, 0, 'json');
 		}
 	}
+	public function API_profile() {
+		$pgArray = array('base', 'avatar', 'setpassword', 'bind', 'custom');
+		$pg = iS::escapeStr($_GET['pg']);
+		$pg OR $pg = 'base';
+		if (in_array($pg, $pgArray)) {
+			$this->user();
+			iPHP::assign('pg', $pg);
+			if ($pg == 'bind') {
+				$platform = user::openid(user::$userid);
+				iPHP::assign('platform', $platform);
+			}
+			if ($pg == 'base') {
+				iPHP::assign('userdata', (array) user::data(user::$userid));
+			}
+			iPHP::view("iCMS://user/profile.htm");
+		}
+	}
 	/**
 	 * [ACTION_profile description]
 	 */
@@ -418,13 +418,13 @@ class userApp {
 
 		$pgArray = array('base', 'avatar', 'setpassword', 'bind', 'custom');
 		$pg = iS::escapeStr($_POST['pg']);
-		$funname = '__action_profile_' . $pg;
+		$funname = '__ACTION_profile_' . $pg;
 		$methods = get_class_methods(__CLASS__);
 		if (in_array($pg, $pgArray) && in_array($funname, $methods)) {
 			$this->$funname();
 		}
 	}
-	private function __action_profile_base() {
+	private function __ACTION_profile_base() {
 		$nickname = iS::escapeStr($_POST['nickname']);
 		$gender = iS::escapeStr($_POST['gender']);
 		$weibo = iS::escapeStr($_POST['weibo']);
@@ -499,7 +499,7 @@ class userApp {
 		}
 		iPHP::success('user:profile:success');
 	}
-	private function __action_profile_custom() {
+	private function __ACTION_profile_custom() {
 		iFS::$watermark = false;
 		iFS::$checkFileData = false;
 		$dir = get_user_dir(user::$userid, 'coverpic');
@@ -537,7 +537,7 @@ class userApp {
 		);
 		iPHP::js_callback($array);
 	}
-	private function __action_profile_avatar() {
+	private function __ACTION_profile_avatar() {
 		iFS::$watermark = false;
 		iFS::$checkFileData = false;
 		$dir = get_user_dir(user::$userid);
@@ -566,10 +566,10 @@ class userApp {
 		iPHP::js_callback($array);
 	}
 
-	private function __action_profile_setpassword() {
+	private function __ACTION_profile_setpassword() {
 
 		iPHP::core("Seccode");
-		iSeccode::chcek($_POST['seccode'], true) OR iPHP::alert('iCMS:seccode:error');
+		iSeccode::check($_POST['seccode'], true) OR iPHP::alert('iCMS:seccode:error');
 
 		$oldPwd = md5($_POST['oldPwd']);
 		$newPwd1 = md5($_POST['newPwd1']);
@@ -593,7 +593,7 @@ class userApp {
 	public function ACTION_findpwd() {
 		$seccode = iS::escapeStr($_POST['seccode']);
 		iPHP::core("Seccode");
-		iSeccode::chcek($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+		iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 
 		$uid = (int) $_POST['uid'];
 		$auth = iS::escapeStr($_POST['auth']);
@@ -766,7 +766,7 @@ class userApp {
 		if (iCMS::$config['user']['register']['seccode']) {
 			$seccode = iS::escapeStr($_POST['seccode']);
 			iPHP::core("Seccode");
-			iSeccode::chcek($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 
 		$gid = 0;
@@ -985,7 +985,7 @@ class userApp {
 			break;
 		case 'seccode':
 			iPHP::core("Seccode");
-			iSeccode::chcek($value) OR $a = iPHP::code(0, 'iCMS:seccode:error', 'seccode');
+			iSeccode::check($value) OR $a = iPHP::code(0, 'iCMS:seccode:error', 'seccode');
 			break;
 		}
 		iPHP::json($a);
@@ -1125,7 +1125,7 @@ class userApp {
 		return implode('、', $links) . $text;
 	}
 
-	public function select($permission = '', $_cid = "0", $cid = "0", $level = 1) {
+	public function category($permission = '', $_cid = "0", $cid = "0", $level = 1) {
 		$array = iCache::get('iCMS/category.' . iCMS_APP_ARTICLE . '/array');
 		foreach ((array) $array[$cid] AS $root => $C) {
 			if ($C['status'] && $C['isucshow'] && $C['issend'] && empty($C['outurl'])) {
@@ -1135,7 +1135,7 @@ class userApp {
 				$C['isexamine'] && $text .= '[审核]';
 				$option .= "<option value='{$C['cid']}' $selected>{$text}</option>";
 			}
-			$array[$C['cid']] && $option .= $this->select($permission, $_cid, $C['cid'], $level + 1, $url);
+			$array[$C['cid']] && $option .= $this->category($permission, $_cid, $C['cid'], $level + 1, $url);
 		}
 		return $option;
 	}

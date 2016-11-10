@@ -84,7 +84,7 @@ class commentApp {
 
 		if (iCMS::$config['comment']['seccode']) {
 			iPHP::core("Seccode");
-			iSeccode::chcek($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 
 		iPHP::app('user.msg.class', 'static');

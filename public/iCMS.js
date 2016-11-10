@@ -8,7 +8,7 @@
  * @version 6.1.0
  * @$Id: iCMS.js 176 2015-12.21 02:52:17Z cool.tea $
  */
-!(function() {
+(function($) {
     var __modules__ = {};
 
     function require(id) {
@@ -31,9 +31,9 @@
     /**
      * [jquery]
      */
-    define("jquery", function () {
-        return jQuery;
-    });
+    // define("jquery", function () {
+    //     return jQuery;
+    // });
     /**
      * [artdialog]
      */
@@ -49,7 +49,17 @@
         // var $    = require("jquery");
         var iCMS = require("icms");
         var User = {};
-        $.extend(User, {
+        return $.extend(User, {
+            NOAVATAR: function(img) {
+                img.src = iCMS.CONFIG.PUBLIC+'/ui/avatar.gif';
+            },
+            NOCOVER: function(img,type) {
+                var name = 'coverpic';
+                if(type=="m"){
+                    name = 'm_coverpic';
+                }
+                img.src = iCMS.CONFIG.PUBLIC+'/ui/'+name+'.jpg';
+            },
             STATUS: function(param, SUCCESS, FAIL) {
                 var a = this;
                 $.get(iCMS.API('user', '&do=data'), param, function(ret) {
@@ -57,7 +67,7 @@
                 }, 'json');
             },
             AUTH: function() {
-                return iCMS.getcookie(iCMS.config.AUTH) ? true : false;
+                return iCMS.getcookie(iCMS.CONFIG.AUTH) ? true : false;
             },
             LOGOUT: function(param, SUCCESS, FAIL) {
                 var a = this;
@@ -66,7 +76,6 @@
                 }, 'json');
             }
         });
-        return User;
     });
     /**
      * [passport]
@@ -75,31 +84,31 @@
         // var $    = require("jquery");
         var iCMS = require("icms");
         var Passport = {
-            post: function(param) {
+            _post: function(param) {
                 var a = this;
                 $.post(iCMS.API('user'), param, function(ret) {
                     a.callback(ret);
                 }, 'json');
             },
-            callback: function(ret, SUCCESS, FAIL) {
+            _callback: function(ret, SUCCESS, FAIL) {
                 iCMS.callback(ret, SUCCESS, FAIL, this);
             },
             LOGIN: function(param) {
                 param = $.extend(param, {
                     'action': 'login'
                 });
-                this.post(param);
+                this._post(param);
             },
             REGISTER: function(param) {
                 param = $.extend(param, {
                     'action': 'register'
                 });
-                this.post(param);
+                this._post(param);
             },
             CHECK: function(param, SUCCESS, FAIL) {
                 var a = this;
                 $.get(iCMS.API('user', "&do=check"), param, function(ret) {
-                    a.callback(ret, SUCCESS, FAIL);
+                    a._callback(ret, SUCCESS, FAIL);
                 }, 'json');
             }
         };
@@ -115,14 +124,14 @@
 
         return function(options, callback) {
             // var cssUrl = require.toUrl("libs/artDialog-6.0.4/ui-dialog.css");
-            var cssUrl = iCMS.CONFIG.PUBLIC+'/js/libs/artDialog-6.0.4/ui-dialog.css';
-            iCMS.css(cssUrl, "ui_dialog_css");
+            // var cssUrl = iCMS.CONFIG.PUBLIC+'/js/libs/artDialog-6.0.4/ui-dialog.css';
+            iCMS.css('/js/libs/artDialog-6.0.4/ui-dialog.css', "ui_dialog_css");
             var defaults = {
                     id: 'iCMS-DIALOG',
                     title: 'iCMS - 提示信息',
                     // width:360,height:150,
-                    className: 'iCMS_UI_DIALOG', //skin:'iCMS_dialog',
-                    backdropBackground: '#666',
+                    className: 'iCMS_UI_DIALOG',
+                    backdropBackground: '#333',
                     backdropOpacity: 0.5,
                     fixed: true,
                     autofocus: false,
@@ -132,6 +141,7 @@
                     label: 'success',
                     icon: 'check',
                     api: false,
+                    width:360,height:150,
                     elemBack: 'beforeremove'
                 },
                 timeOutID = null,
@@ -160,7 +170,6 @@
                 __callback('remove');
             };
             var d = artdialog(opts);
-            //console.log(opts.api);
             if (opts.lock) {
                 d.showModal();
                 // $(d.backdrop).addClass("ui-popup-overlay").click(function(){
@@ -200,7 +209,13 @@
             }
 
             function __msg(content) {
-                return '<table class=\"ui-dialog-table\" align=\"center\"><tr><td valign=\"middle\">' + '<div class=\"iPHP-msg\">' + '<span class=\"label label-' + opts.label + '\">' + '<i class=\"fa fa-' + opts.icon + '\"></i> ' + content + '</span></div>' + '</td></tr></table>';
+                return '<table class=\"ui-dialog-table\" align=\"center\"><tr><td valign=\"middle\">' +
+                '<div class=\"iPHP-msg\">' +
+                '<span class=\"label label-' + opts.label + '\">' +
+                '<i class=\"fa fa-' + opts.icon + '\"></i> ' +
+                content +
+                '</span></div>' +
+                '</td></tr></table>';
             }
             return d;
         }
@@ -220,9 +235,10 @@
      * [icms]
      */
     define("icms",{
-            // CONFIG:require("iCMS-config"),
-            // dialog:require("dialog"),
-            // PASSPORT:require("passport"),
+            plugins : {},
+            commands : {},
+            version : "6.2.1",
+
             init: function(options) {
                 //console.log(options);
                 iCMS.CONFIG     = $.extend(iCMS.CONFIG,options);
@@ -252,8 +268,9 @@
                 if (!param) return {};
                 return $.parseJSON(param);
             },
-            css: function(cssUrl, id) {
-                css = '<link id="' + id + '" href="' + cssUrl + '" type="text/css" rel="stylesheet"/>';
+            css: function(cssurl, id) {
+                cssurl = this.CONFIG.PUBLIC+cssurl;
+                css = '<link id="' + id + '" href="' + cssurl + '" type="text/css" rel="stylesheet"/>';
                 if (!$("#" + id)[0]) {
                     if ($('base')[0]) {
                         $('base').before(css);
@@ -284,6 +301,63 @@
                 var cookie_end = document.cookie.indexOf(";", cookie_start);
                 return cookie_start == -1 ? '' : unescape(document.cookie.substring(cookie_start + name.length + 1, (cookie_end > cookie_start ? cookie_end : document.cookie.length)));
             },
+            format:function (content,ubb) {
+                content = content.replace(/\/"/g, '"')
+                    .replace(/\\\&quot;/g, "")
+                    .replace(/\r/g, "")
+                    .replace(/on(\w+)="[^"]+"/ig, "")
+                    .replace(/<script[^>]*?>(.*?)<\/script>/ig, "")
+                    .replace(/<style[^>]*?>(.*?)<\/style>/ig, "")
+                    .replace(/style=[" ]?([^"]+)[" ]/ig, "")
+                    .replace(/<a[^>]+href=[" ]?([^"]+)[" ]?[^>]*>(.*?)<\/a>/ig, "[url=$1]$2[/url]")
+                    .replace(/<img[^>]+src=[" ]?([^"]+)[" ]?[^>]*>/ig, "[img]$1[/img]")
+                    .replace(/<embed/g, "\n<embed")
+                    .replace(/<embed[^>]+class="edui-faked-video"[^"].+src=[" ]?([^"]+)[" ]+width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]?[^>]*>/ig, "[video=$2,$3]$1[/video]")
+                    .replace(/<embed[^>]+class="edui-faked-music"[^"].+src=[" ]?([^"]+)[" ]+width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]?[^>]*>/ig, "[music=$2,$3]$1[/music]")
+                    .replace(/<b[^>]*>(.*?)<\/b>/ig, "[b]$1[/b]")
+                    .replace(/<strong[^>]*>(.*?)<\/strong>/ig, "[b]$1[/b]")
+                    .replace(/<p[^>]*?>/g, "\n\n")
+                    .replace(/<br[^>]*?>/g, "\n")
+                    .replace(/<li[^>]*?>/g, "\n")
+                    .replace(/<[^>]*?>/g, "");
+
+                function n2p(cc,ubb) {
+                    var c = '',s = cc.split("[iCMS.N]");
+                    for (var i = 0; i < s.length; i++) {
+                        while (s[i].substr(0, 1) == " " || s[i].substr(0, 1) == "　") {
+                            s[i] = s[i].substr(1, s[i].length);
+                        }
+                        if (s[i].length > 0){
+                            if(ubb){
+                                c += s[i] + "\n";
+                            }else{
+                                c += "<p>" + s[i] + "</p>";
+                            }
+                        }
+                    }
+                    return c;
+                }
+                if(ubb){
+                    content = content.replace(/\n+/g, "[iCMS.N]");
+                    content = n2p(content,ubb);
+                    return content;
+                }
+                content = content.replace(/\[url=([^\]]+)\]\n(\[img\]\1\[\/img\])\n\[\/url\]/g, "$2")
+                    .replace(/\[img\](.*?)\[\/img\]/ig, '<p><img src="$1" /></p>')
+                    .replace(/\[b\](.*?)\[\/b\]/ig, '<b>$1</b>')
+                    .replace(/\[url=([^\]|#]+)\](.*?)\[\/url\]/g, '$2')
+                    .replace(/\[url=([^\]]+)\](.*?)\[\/url\]/g, '<a target="_blank" href="$1">$2</a>')
+                   .replace(/\n+/g, "[iCMS.N]");
+                content = n2p(content);
+                content = content.replace(/#--iCMS.PageBreak--#/g, "<!---->#--iCMS.PageBreak--#")
+                    .replace(/<p>\s*<p>/g, '<p>')
+                    .replace(/<\/p>\s*<\/p>/g, '</p>')
+                    .replace(/<p>\s*<\/p>/g, '')
+                    .replace(/\[video=(\d+),(\d+)\](.*?)\[\/video\]/ig, '<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>')
+                    .replace(/\[music=(\d+),(\d+)\](.*?)\[\/music\]/ig, '<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" align="none"/>')
+                    .replace(/<p><br\/><\/p>/g, '');
+                return content;
+            },
             random: function(len) {
                 len = len || 16;
                 var chars = "abcdefhjmnpqrstuvwxyz23456789ABCDEFGHJKLMNPQRSTUVWYXZ",
@@ -297,21 +371,27 @@
                 var height = a.height();
                 $(iframe).height(height);
             },
-
+            dialog: function(opts) {
+                var dialog = require("dialog");
+                return dialog(opts);
+            },
             alert: function(msg, ok, callback) {
-                // var dialog = require("dialog");
+                var dialog = require("dialog");
                 // require(['dialog'], function(d) {
-                var opts = ok ? {
-                    label: 'success',
-                    icon: 'check'
-                } : {
-                    label: 'warning',
-                    icon: 'warning'
-                }
-                opts.id = 'iPHP-DIALOG-ALERT';
-                opts.content = msg;
-                opts.time = 30000000;
-                iCMS.dialog(opts, callback);
+                    var opts = ok ? {
+                        label: 'success',
+                        icon: 'check'
+                    } : {
+                        label: 'warning',
+                        icon: 'warning'
+                    }
+                    opts.id         = 'iCMS-DIALOG-ALERT';
+                    opts.skin       = 'iCMS_dialog_alert'
+                    opts.content    = msg;
+                    opts.time       = 30000000;
+                    opts.lock       = true;
+                    opts.quickClose = false;
+                    dialog(opts, callback);
                 // });
             },
             callback: function(ret, SUCCESS, FAIL, a) {
@@ -340,14 +420,18 @@
              * @param  {[type]} b [容器]
              */
             seccode:function(a, b) {
+                a = a||'.seccode-img';
+                b = b||'body';
                 $(a, b).attr('src', iCMS.API('public', '&do=seccode&') + Math.random());
             },
             run:function (id,callback) {
                 var mod = require(id);
                 if (typeof callback === "function") {
                     return callback(mod);
+                }else{
+                    return mod;
                 }
             }
     });
     window.iCMS = require("icms");
-})();
+})(jQuery);
