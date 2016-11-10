@@ -1,0 +1,106 @@
+define("utils",{
+        css: function(cssurl, id) {
+            cssurl = iCMS.CONFIG.PUBLIC+'/'+cssurl;
+            css = '<link id="' + id + '" href="' + cssurl + '" type="text/css" rel="stylesheet"/>';
+            if (!$("#" + id)[0]) {
+                if ($('base')[0]) {
+                    $('base').before(css);
+                } else {
+                    $('head').append(css);
+                }
+            }
+        },
+        $: function(i) {
+            var doc = $(document);
+            return doc.find('[iCMS=' + i + ']');
+        },
+        format:function (content,ubb) {
+            content = content.replace(/\/"/g, '"')
+                .replace(/\\\&quot;/g, "")
+                .replace(/\r/g, "")
+                .replace(/on(\w+)="[^"]+"/ig, "")
+                .replace(/<script[^>]*?>(.*?)<\/script>/ig, "")
+                .replace(/<style[^>]*?>(.*?)<\/style>/ig, "")
+                .replace(/style=[" ]?([^"]+)[" ]/ig, "")
+                .replace(/<a[^>]+href=[" ]?([^"]+)[" ]?[^>]*>(.*?)<\/a>/ig, "[url=$1]$2[/url]")
+                .replace(/<img[^>]+src=[" ]?([^"]+)[" ]?[^>]*>/ig, "[img]$1[/img]")
+                .replace(/<embed/g, "\n<embed")
+                .replace(/<embed[^>]+class="edui-faked-video"[^"].+src=[" ]?([^"]+)[" ]+width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]?[^>]*>/ig, "[video=$2,$3]$1[/video]")
+                .replace(/<embed[^>]+class="edui-faked-music"[^"].+src=[" ]?([^"]+)[" ]+width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]?[^>]*>/ig, "[music=$2,$3]$1[/music]")
+                .replace(/<b[^>]*>(.*?)<\/b>/ig, "[b]$1[/b]")
+                .replace(/<strong[^>]*>(.*?)<\/strong>/ig, "[b]$1[/b]")
+                .replace(/<p[^>]*?>/g, "\n\n")
+                .replace(/<br[^>]*?>/g, "\n")
+                .replace(/<li[^>]*?>/g, "\n")
+                .replace(/<[^>]*?>/g, "");
+
+            function n2p(cc,ubb) {
+                var c = '',s = cc.split("[iCMS.N]");
+                for (var i = 0; i < s.length; i++) {
+                    while (s[i].substr(0, 1) == " " || s[i].substr(0, 1) == "　") {
+                        s[i] = s[i].substr(1, s[i].length);
+                    }
+                    if (s[i].length > 0){
+                        if(ubb){
+                            c += s[i] + "\n";
+                        }else{
+                            c += "<p>" + s[i] + "</p>";
+                        }
+                    }
+                }
+                return c;
+            }
+            if(ubb){
+                content = content.replace(/\n+/g, "[iCMS.N]");
+                content = n2p(content,ubb);
+                return content;
+            }
+            content = content.replace(/\[url=([^\]]+)\]\n(\[img\]\1\[\/img\])\n\[\/url\]/g, "$2")
+                .replace(/\[img\](.*?)\[\/img\]/ig, '<p><img src="$1" /></p>')
+                .replace(/\[b\](.*?)\[\/b\]/ig, '<b>$1</b>')
+                .replace(/\[url=([^\]|#]+)\](.*?)\[\/url\]/g, '$2')
+                .replace(/\[url=([^\]]+)\](.*?)\[\/url\]/g, '<a target="_blank" href="$1">$2</a>')
+               .replace(/\n+/g, "[iCMS.N]");
+            content = n2p(content);
+            content = content.replace(/#--iCMS.PageBreak--#/g, "<!---->#--iCMS.PageBreak--#")
+                .replace(/<p>\s*<p>/g, '<p>')
+                .replace(/<\/p>\s*<\/p>/g, '</p>')
+                .replace(/<p>\s*<\/p>/g, '')
+                .replace(/\[video=(\d+),(\d+)\](.*?)\[\/video\]/ig, '<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>')
+                .replace(/\[music=(\d+),(\d+)\](.*?)\[\/music\]/ig, '<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" align="none"/>')
+                .replace(/<p><br\/><\/p>/g, '');
+            return content;
+        },
+        random: function(len) {
+            len = len || 16;
+            var chars = "abcdefhjmnpqrstuvwxyz23456789ABCDEFGHJKLMNPQRSTUVWYXZ",
+                code = '';
+            for (i = 0; i < len; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length))
+            }
+            return code;
+        },
+        callback: function(ret, SUCCESS, FAIL, a) {
+
+            var success = SUCCESS || a.SUCCESS
+            var fail = FAIL || a.FAIL
+            if (ret.code) {
+                this.__callback(success, ret);
+            } else {
+                this.__callback(fail, ret);
+            }
+        },
+        __callback: function(func, ret) {
+            if (typeof(func) === "function") {
+                func(ret);
+            } else {
+                var msg = ret;
+                if (typeof(ret) === "object") {
+                    msg = ret.msg || 'error';
+                }
+                var UI = require("ui");
+                UI.alert(msg);
+            }
+        }
+});
+
