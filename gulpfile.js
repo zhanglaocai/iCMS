@@ -40,27 +40,27 @@ var banner = [
 ].join('\n');
 
 // HTML处理
-gulp.task('html', function() {
-    var htmlSrc = './template/www/desktop/*.htm',
-        htmlDst = './template/www/';
+// gulp.task('html', function() {
+//     var htmlSrc = './template/www/desktop/*.htm',
+//         htmlDst = './template/www/';
 
-    gulp.src(htmlSrc)
-        .pipe(livereload(server))
-        // .pipe(gulp.dest(htmlDst))
-});
+//     gulp.src(htmlSrc)
+//         .pipe(livereload(server))
+//         // .pipe(gulp.dest(htmlDst))
+// });
 
 // 样式处理
 gulp.task('css', function () {
-    var cssSrc = './template/www/desktop/static/ui.css',
-        cssDst = './template/www/desktop/static/';
+    var cssSrc = './template/www/desktop/static/css/ui.css',
+        cssDst = './template/www/desktop/static/css/';
 
     gulp.src(cssSrc)
         // .pipe(sass({ style: 'expanded'}))
-        .pipe(sass({ style: 'compressed' }))
+        // .pipe(sass({ style: 'compressed' }))
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-        .pipe(gulp.dest(cssDst))
+        // .pipe(gulp.dest(cssDst))
         .pipe(rename({ suffix: '.min' }))
-        .pipe(cleancss())
+        // .pipe(cleancss())
         .pipe(livereload(server))
         .pipe(gulp.dest(cssDst));
 });
@@ -74,11 +74,7 @@ gulp.task('css', function () {
 //         .pipe(livereload(server))
 //         .pipe(gulp.dest(imgDst));
 // })
-gulp.task('php', function () {
-    gulp.src('./admincp.php')
-        .pipe(header(banner))
-        .pipe(gulp.dest('./admincp.test.php'));
-})
+
 // public js处理
 gulp.task('public', function () {
     // var uiSrc = './template/www/static/ui.js',
@@ -137,9 +133,8 @@ gulp.task('public', function () {
 
         return sources;
     }
-    var jsSrcs = fetchScripts();
 
-    gulp.src(jsSrcs)
+    gulp.src(fetchScripts())
         .pipe(uglify())
         //.pipe(concat("vendor.js"))
         // .pipe(rename({ suffix: '.min' }))
@@ -157,8 +152,11 @@ gulp.task('public', function () {
 // });
 
 // 默认任务 清空图片、样式、js并重建 运行语句 gulp
-gulp.task('default', ['clean'], function(){
-    // gulp.start('html','css','images','js');
+// gulp.task('default', ['clean'], function(){
+//     // gulp.start('html','css','images','js');
+// });
+gulp.task('default',function(){
+    gulp.start('public','css');
 });
 
 // 监听任务 运行语句 gulp watch
