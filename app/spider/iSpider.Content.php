@@ -248,10 +248,10 @@ class spiderContent extends spider{
             $content = str_replace('&nbsp;','',trim($content));
         }
         if ($data['capture']) {
-            $content = spiderTools::remote($content);
+            $content && $content = spiderTools::remote($content);
         }
         if ($data['download']) {
-            $content = iFS::http($content);
+            $content && $content = iFS::http($content);
         }
 
         if ($data['autobreakpage']) {

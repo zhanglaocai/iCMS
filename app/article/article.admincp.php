@@ -268,6 +268,43 @@ class articleAdmincp{
         articleTable::update($data ,compact('id'));
 		exit('1');
 	}
+    function do_findpic(){
+        $content = articleTable::body($this->id);
+        if($content){
+            $content = stripslashes($content);
+            preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
+            $array  = array_unique($match[1]);
+            $uri    = parse_url(iCMS_FS_URL);
+            $fArray = array();
+            $fpArray= array();
+            // iACP::head(true);
+            foreach ($array as $key => $value) {
+                $value = trim($value);
+                echo $value.PHP_EOL;
+                if (stripos($value,$uri['host']) !== false){
+                    $filepath = iFS::fp($value,'-http');
+                   if($filepath){
+                        $pf = pathinfo($filepath);
+                        // print_r($pathinfo);
+                        // $pathinfo = path
+                        // $filename = basename($filepath);
+                        // $filename = substr($filename,0, 32);
+                        $rs[] = array(
+                            'path'=> rtrim($pf['dirname'],'/').'/',
+                            'filename'=> $pf['filename'],
+                            'ext'=> $pf['extension']
+                        );
+                        // echo '<a class="btn btn-small" href="'.APP_FURI.'&do=editpic&from=modal&pic='.$filepath.'" data-toggle="modal" title="编辑图片('.$filename.')"><i class="fa fa-edit"></i> 编辑</a>';
+                        // $faid     = articleTable::filedata_value($filename);
+                        // empty($faid) && articleTable::filedata_update_indexid($aid,$filename);
+                    }
+                }
+                // echo "<hr />";
+            }
+            $_count = count($rs);
+        }
+        include iACP::view("files.manage");
+    }
     function do_preview(){
 		echo articleTable::body($this->id);
     }
@@ -572,6 +609,13 @@ class articleAdmincp{
                     "code"    => $this->callback['code'],
                     'indexid' => $aid
                 );
+            }
+            if($_GET['callback']=='json'){
+                echo json_encode(array(
+                    "code"    => '1001',
+                    'indexid' => $aid
+                ));
+                exit;
             }
             $moreBtn = array(
                     array("text" =>"查看该文章","target"=>'_blank',"url"=>$article_url,"close"=>false),

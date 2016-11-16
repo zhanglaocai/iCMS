@@ -48,7 +48,7 @@ class iYun{
             }
         }
         if(self::$config['local']){
-            iFS::del($frp);
+            iFS::del($frp,1,false);
         }
     }
     public static function delete($frp) {

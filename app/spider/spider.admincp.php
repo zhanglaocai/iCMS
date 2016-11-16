@@ -146,6 +146,24 @@ class spiderAdmincp {
 		));
 		iPHP::success("移除成功!", 'js:parent.$("#' . $hash . '").remove();');
 	}
+    function do_dropdata() {
+        $this->pid OR iPHP::alert("请选择要删除的项目");
+
+        // iDB::query("DELETE FROM `#iCMS@__article_data` where `aid` IN(
+        //     SELECT indexid FROM `#iCMS@__spider_url` where `pid` = '$this->pid'
+        // )");
+        // iDB::query("DELETE FROM `#iCMS@__article` where `id` IN(
+        //     SELECT indexid FROM `#iCMS@__spider_url` where `pid` = '$this->pid'
+        // )");
+        $article = iPHP::app('article.admincp');
+        $rs      = iDB::all("SELECT indexid FROM `#iCMS@__spider_url` where `pid` = '$this->pid'");
+        $_count  = count($rs);
+        for ($i=0; $i <$_count ; $i++) {
+            $article->delArticle($rs[$i]['indexid']);
+        }
+        iDB::query("DELETE FROM `#iCMS@__spider_url` where `pid` = '$this->pid';");
+        iPHP::success('所有采集数据删除完成');
+    }
 	function do_dropurl() {
 		$this->pid OR iPHP::alert("请选择要删除的项目");
 

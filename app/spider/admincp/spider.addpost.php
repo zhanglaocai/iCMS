@@ -39,12 +39,13 @@ $(function(){
             <input type="text" name="name" class="span6" id="name" value="<?php echo $rs['name']; ?>"/>
           </div>
           <div class="clearfloat mb10"></div>
+          <div class="input-prepend"><span class="add-on">接口</span>
+            <input type="text" name="fun" class="span6" id="fun" value="<?php echo $rs['fun']?$rs['fun']:'do_save'; ?>"/>
+          </div>
+          <span class="help-inline">可使用URL 远程发布</span>
+          <div class="clearfloat mb10"></div>
           <div class="input-prepend"><span class="add-on">发布项</span>
             <textarea name="post" id="post" class="span6" style="height: 90px;"><?php echo $rs['post'] ; ?></textarea>
-          </div>
-          <div class="clearfloat mb10"></div>
-          <div class="input-prepend"><span class="add-on">函数名</span>
-            <input type="text" name="fun" class="span6" id="fun" value="<?php echo $rs['fun']?$rs['fun']:'do_save'; ?>"/>
           </div>
           <div class="clearfloat mb10"></div>
         </div>
