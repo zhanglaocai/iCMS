@@ -1,9 +1,7 @@
 define("ui.dialog", function(require) {
-    var utils = require("utils");
     var artdialog = require("artdialog");
 
     return function(options, callback) {
-        utils.css('js/libs/artDialog-6.0.4/ui-dialog.css', "ui_dialog_css");
         var defaults = {
                 id: 'iCMS-DIALOG',
                 title: 'iCMS - 提示信息',
@@ -19,11 +17,12 @@ define("ui.dialog", function(require) {
                 label: 'success',
                 icon: 'check',
                 api: false,
-                width:360,height:150,
+                width:360,height:120,
                 elemBack: 'beforeremove'
             },
             timeOutID = null,
             opts = $.extend(defaults, iCMS.CONFIG.DIALOG, options);
+            console.log(opts);
         if (opts.follow) {
             opts.fixed = false;
             opts.lock = false;

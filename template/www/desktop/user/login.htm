@@ -18,7 +18,7 @@
     $(function() {
         var login = $("#login-box");
         $(".seccode-img,.seccode-text").click(function(event) {
-            iCMS.seccode(".seccode-img", login);
+            iCMS.UI.seccode(".seccode-img", login);
         });
         $("#login-submit").click(function(event) {
             event.preventDefault();
@@ -76,7 +76,7 @@
             });
             //提示
             function tip(ret) {
-                iCMS.seccode(".seccode-img", login);
+                iCMS.UI.seccode(".seccode-img", login);
                 var tip = $('.tip-' + ret.forward);
                 tip.text(ret.msg).show();
             }
@@ -115,8 +115,7 @@
                     <div class="form-group">
                         <label for="seccode" class="control-label">验证码：</label>
                         <input type="text" maxlength="4" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
-                        <img src="<!--{iCMS:router url='api:public:seccode'}-->" alt="验证码" class="seccode-img r3" />
-                        <a href="javascript:;" class="seccode-text" style="float: none">换一张</a>
+                        <!--{iCMS:public:seccode}-->
                         <p class="help-block tip-error tip-seccode">请输入验证码</p>
                     </div>
                     <!--{/if}-->

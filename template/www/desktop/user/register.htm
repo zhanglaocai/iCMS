@@ -18,7 +18,7 @@
     $(function() {
         var register = $("#register-box");
         $(".seccode-img,.seccode-text").click(function(event) {
-            iCMS.seccode(".seccode-img", register);
+            iCMS.UI.seccode(".seccode-img", register);
         });
         $("input", register).click(function() {
             if (!$(this).data('check')) {
@@ -64,7 +64,7 @@
                 }
                 //注册失败 事件绑定
                 $PASSPORT.FAIL = function(f) {
-                    iCMS.seccode(".seccode-img", register);
+                    iCMS.UI.seccode(".seccode-img", register);
                     tip(f);
                 }
                 //提交参数
@@ -143,7 +143,7 @@
                         },
                         function(f) { //CHECK失败 事件
                             if (a.name == 'seccode') {
-                                iCMS.seccode(".seccode-img", register);
+                                iCMS.UI.seccode(".seccode-img", register);
                             }
                             tip(f);
                         }
@@ -183,7 +183,7 @@
                 tip.hide();
                 input.data('check', true);
             } else if (type && type != "ok") {
-                // if(name=='seccode') iCMS.seccode(".seccode-img",register);
+                // if(name=='seccode') iCMS.UI.seccode(".seccode-img",register);
                 var text = info[type + '_' + name] || a.msg;
                 tip.text(text).show();
                 input.data('check', false);
@@ -219,10 +219,12 @@
                     </div>
                     <div class="radio">
                         <label class="control-label">性别：</label>
-                        <label style="margin-right: 5px;">
-                            <input type="radio" name="gender" value="girl" checked="checked">女</label>
-                        <label>
-                            <input type="radio" name="gender" value="boy">男</label>
+                        <div class="form-control" style="padding: 8px;">
+                            <label style="margin-right: 5px;">
+                                <input type="radio" name="gender" value="girl" checked="checked">女</label>
+                            <label>
+                                <input type="radio" name="gender" value="boy">男</label>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="password" class="control-label">密码：</label>
@@ -238,8 +240,7 @@
                     <div class="form-group">
                         <label for="seccode" class="control-label">验证码：</label>
                         <input type="text" maxlength="4" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
-                        <img src="<!--{iCMS:router url='api:public:seccode'}-->" alt="验证码" class="seccode-img r3" />
-                        <a href="javascript:;" class="seccode-text" style="float: none">换一张</a>
+                        <!--{iCMS:public:seccode}-->
                         <p class="help-block tip-error tip-seccode">请输入验证码</p>
                     </div>
                     <!--{/if}-->

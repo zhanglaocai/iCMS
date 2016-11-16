@@ -21,22 +21,21 @@ function user_data($vars=null){
 		$auth = user::get_cookie();
 		$auth && $uid = user::$userid;
 	}
+    $uid  = explode(',', $uid);
+    $user = (array)user::get($uid);
+    if(isset($user['uid'])){
+        $vars['data'] && $user['data']= (array)user::data($uid);
+    }else{
+        if($vars['data']){
+            $userdata = user::data($uid);
+            foreach ($user as $key => $value) {
+                $user[$key] = (array)$value;
+                $user[$key]['data'] = (array)$userdata[$key];
+            }
+        }
 
-	if(strpos($uid, ',')===false){
-		$user = (array)user::get($uid);
-		if($vars['data']){
-			$user+= (array)user::data($uid);
-		}
-	}else{
-		$uid_array = explode(',', $uid);
-		foreach ($uid_array as $key => $value) {
-			$user[$key] = (array)user::get($uid);
-			if($vars['data']){
-				$user[$key]+= (array)user::data($uid);
-			}
-		}
-	}
-	return $user[0]===false?false:(array)$user;
+    }
+    return $user;
 }
 
 function user_list($vars=null){
@@ -155,8 +154,6 @@ function user_follow($vars=null){
 		$where_sql = "WHERE `uid`='".$vars['userid']."'";//follow
 	}
 
-	$vars['followed'] && $follow_data = user::follow($vars['followed'],'all');
-
 	$offset	= 0;
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
@@ -173,7 +170,20 @@ function user_follow($vars=null){
 		$resource   = iCache::get($cache_name);
     }
 	$resource = iDB::all("SELECT * FROM `#iCMS@__user_follow` {$where_sql} {$limit}");
-	iPHP_SQL_DEBUG && iDB::debug(1);
+    iPHP_SQL_DEBUG && iDB::debug(1);
+    if($vars['data']){
+        $uidArray = array();
+        foreach ((array)$resource as $key => $value) {
+            $uidArray[] = $value['uid'];
+            $uidArray[] = $value['fuid'];
+        }
+        if($uidArray){
+            $uidArray  = array_unique($uidArray);
+            $user_data = (array) user::data($uidArray);
+        }
+    }
+    $vars['followed'] && $follow_data = user::follow($vars['followed'],'all');
+
 	if($resource)foreach ($resource as $key => $value) {
 		if($vars['fuid']){
 			$value['avatar'] = user::router($value['uid'],'avatar');
@@ -184,7 +194,8 @@ function user_follow($vars=null){
 			$value['uid']    = $value['fuid'];
 			$value['name']   = $value['fname'];
 		}
-		$follow_data && $value['followed'] = $follow_data[$value['uid']]?1:0;
+        $vars['data'] && $value['data']  = (array)$user_data[$value['uid']];
+		$vars['followed'] && $value['followed'] = $follow_data[$value['uid']]?1:0;
 		$resource[$key] = $value;
 	}
 	//var_dump($rs);

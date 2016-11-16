@@ -142,24 +142,24 @@ $(function() {
     $(".iCMS_user_publish").click(function() {
         if ($("#cid option:selected").val() == "0") {
             $("#cid").focus();
-            iCMS.alert("请选择所属栏目");
+            iCMS.UI.alert("请选择所属栏目");
             return false;
         }
         if ($("#title").val() == '') {
             $("#title").focus();
-            iCMS.alert("标题不能为空!");
+            iCMS.UI.alert("标题不能为空!");
             return false;
         }
         <!--{if $iCMS.CONFIG.user.post.seccode }-->
         if ($(".seccode").val() == '') {
             $(".seccode").focus();
-            iCMS.alert("验证码不能为空!");
+            iCMS.UI.alert("验证码不能为空!");
             return false;
         }
         <!--{/if}-->
         if (!ed.hasContents()) {
             ed.focus();
-            iCMS.alert("内容不能为空!");
+            iCMS.UI.alert("内容不能为空!");
             return false;
         }
     });
@@ -202,7 +202,7 @@ $(function() {
                     n = a.val(),
                     d = this;
                 if (n == "") {
-                    iCMS.alert("请输入分类名称!");
+                    iCMS.UI.alert("请输入分类名称!");
                     a.focus();
                     return false;
                 } else {

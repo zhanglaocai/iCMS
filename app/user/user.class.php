@@ -117,34 +117,67 @@ class user {
 		$category = iDB::row("SELECT * FROM `#iCMS@__user_category` where `cid`='".(int)$cid."' AND `appid`='".$appid."' limit 1");
 		return (array)$category;
 	}
-	public static function get($uid=0,$unpass=true){
-		if(empty($uid)) return false;
+	public static function get($uids=0,$unpass=true){
+		if(empty($uids)) return array();
 
-		$user = iDB::row("SELECT * FROM `#iCMS@__user` where `uid`='".(int)$uid."' AND `status`='1' limit 1");
-		if(empty($user)){
-			return false;
+		is_array($uids) && $uids = implode("','", $uids);
+		$data = array();
+		$rs = iDB::all("SELECT * FROM `#iCMS@__user` where `uid` IN ('$uids') AND `status`='1'",OBJECT);
+		if($rs){
+			$_count = count($rs);
+			if($_count>1){
+		        for ($i=0; $i < $_count; $i++) {
+		        	if($unpass) unset($rs[$i]->password);
+		        	$data[$rs[$i]->uid]= self::user_item($rs[$i]);
+		        }
+			}else{
+				$data = self::user_item($rs[0]);
+	   			if($unpass) unset($data->password);
+			}
 		}
-		$user->gender   = $user->gender?'male':'female';
-		$user->avatar   = self::router($user->uid,'avatar');
-		$user->urls     = self::router($user->uid,'urls');
-		$user->coverpic = self::router($user->uid,'coverpic');
-		$user->url      = $user->urls['home'];
-		$user->inbox    = $user->urls['inbox'];
-	   	if($unpass) unset($user->password);
-	   	return $user;
+		if(empty($data)){
+			return;
+		}
+	   	return $data;
 	}
-    public static function data($uid=0){
-    	if(empty($uid)){
-    		return false;
+    public static function data($uids=null,$uid=0){
+    	if(empty($uids)){
+    		return;
     	}
-        $data = iDB::row("SELECT * FROM `#iCMS@__user_data` where `uid`='{$uid}' limit 1;");
-        //iDB::debug(1);
-        if($data){
-            // if($data->coverpic){
-            // }
-            $data->enterprise && $data->enterprise = unserialize($data->enterprise);
-        }
+    	is_array($uids) && $uids = implode("','", $uids);
+
+		$data = array();
+		$rs   = iDB::all("SELECT * FROM `#iCMS@__user_data` where `uid` IN ('$uids');",OBJECT);
+		if($rs){
+			$_count = count($rs);
+			if($_count>1){
+		        for ($i=0; $i < $_count; $i++) {
+		        	$data[$rs[$i]->uid]= self::user_item($rs[$i],true);
+		        }
+		        if($uid){
+		        	$data = $data[$uid];
+		        }
+			}else{
+				$data = self::user_item($rs[0],true);
+			}
+		}
         return $data;
+    }
+    private static function user_item($rs,$data=false){
+    	if(empty($rs)){
+    		return;
+    	}
+    	if($data){
+	    	$rs->meta = json_decode($rs->meta,true);
+    	}else{
+			$rs->gender   = $rs->gender?'male':'female';
+			$rs->avatar   = self::router($rs->uid,'avatar');
+			$rs->urls     = self::router($rs->uid,'urls');
+			$rs->coverpic = self::router($rs->uid,'coverpic');
+			$rs->url      = $rs->urls['home'];
+			$rs->inbox    = $rs->urls['inbox'];
+    	}
+    	return $rs;
     }
 	public static function login($val,$pass='',$fm='un'){
 		$field_map = array(

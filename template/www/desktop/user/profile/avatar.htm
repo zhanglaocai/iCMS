@@ -34,7 +34,7 @@ window.onload = function() {
     }
     xiuxiu.onUploadResponse = function(data) {
         var a = $.parseJSON(data);
-        iCMS.alert(a.msg, a.code);
+        iCMS.UI.alert(a.msg, a.code);
         if (a.code) {
             window.setTimeout(function() {
                 window.location.reload();

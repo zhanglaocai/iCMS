@@ -33,7 +33,7 @@
                     <span class="label">未通过审核</span>
                     <!--{/if}-->
                     <span class="label label-default"><!--{$user_category[$article_list.ucid].name}--></span>
-                    <a href="<!--{if $article_list.status==" 1 "}--><!--{$article_list.url}--><!--{else}-->javascript:;<!--{/if}-->" target="_blank">
+                    <a href="<!--{if $article_list.status=="1"}--><!--{$article_list.url}--><!--{else}-->javascript:;<!--{/if}-->" target="_blank">
                         <!--{$article_list.title}-->
                     </a>
                 </td>
@@ -92,7 +92,7 @@ $(function() {
                     $(this).remove();
                 });
             } else {
-                iCMS.alert(c.msg);
+                iCMS.UI.alert(c.msg);
             }
         }, 'json');
     });

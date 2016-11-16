@@ -1,7 +1,7 @@
 <h4 class="manage-title">我的粉丝</h4>
 <table class="table table-striped">
     <tbody>
-        <!--{iCMS:user:follow loop="true" page="true" row="10" fuid="$user.uid" followed="$user.uid"}-->
+        <!--{iCMS:user:follow loop="true" page="true" data="true" row="10" fuid="$user.uid" followed="$user.uid"}-->
         <!--{include file="./user.follow.htm" import="true"}-->
         <!--{iCMSelse}-->
         <tr>
@@ -33,7 +33,7 @@ $(".btn_follow").click(function(event) {
                 $this.addClass('btn btn-success').html('<i class="fa fa-plus"></i> 关注');
             }
         } else {
-            iCMS.alert(c.msg);
+            iCMS.UI.alert(c.msg);
         }
     });
 });

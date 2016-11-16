@@ -37,9 +37,16 @@
         <div class="mb10"></div>
         <div class="input-group">
             <div class="input-group-addon">
+                <label for="weixin" class="control-label">微信</label>
+            </div>
+            <input class="form-control" id="weixin" name="meta[weixin]" type="text" value="<!--{$userdata.meta.weixin}-->">
+        </div>
+        <div class="mb10"></div>
+        <div class="input-group">
+            <div class="input-group-addon">
                 <label for="weibo" class="control-label">微博</label>
             </div>
-            <input class="form-control" id="weibo" type="text" value="<!--{$userdata.weibo}-->">
+            <input class="form-control" id="weibo" name="meta[weibo]" type="text" value="<!--{$userdata.meta.weibo}-->">
         </div>
         <div class="mb10"></div>
         <div class="input-group location">
@@ -137,7 +144,7 @@
     </form>
 </div>
 <style>
-.input-group-addon {padding: 5px 12px;width: 60px !important;}
+.input-group-addon {padding: 5px 12px;width: 70px !important;}
 .input-group-addon label{float: right;}
 
 .input-group input.form-control,

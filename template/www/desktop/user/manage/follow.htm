@@ -1,7 +1,7 @@
 <h4 class="manage-title">我的关注</h4>
 <table class="table table-striped">
     <tbody>
-        <!--{iCMS:user:follow loop="true" page="true" row="10" userid="$user.uid" followed="$user.uid"}-->
+        <!--{iCMS:user:follow loop="true" page="true" data="true" row="10" userid="$user.uid" followed="$user.uid"}-->
         <!--{include file="./user.follow.htm" import="true"}-->
         <!--{iCMSelse}-->
         <tr>
@@ -42,7 +42,7 @@ $(".btn_follow").click(function(event) {
                 $this.remove();
             });
         } else {
-            iCMS.alert(c.msg);
+            iCMS.UI.alert(c.msg);
         }
     });
 });

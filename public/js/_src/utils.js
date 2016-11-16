@@ -1,16 +1,21 @@
 define("utils",{
-        css: function(cssurl, id) {
-            cssurl = iCMS.CONFIG.PUBLIC+'/'+cssurl;
-            css = '<link id="' + id + '" href="' + cssurl + '" type="text/css" rel="stylesheet"/>';
-            if (!$("#" + id)[0]) {
-                if ($('base')[0]) {
-                    $('base').before(css);
-                } else {
-                    $('head').append(css);
-                }
-            }
+        addcss: function(url, id) {
+            url = iCMS.CONFIG.PUBLIC+'/'+url;
+            var s = document.createElement("link"), h = document.getElementsByTagName("head")[0];
+            s.id = id;
+            s.href = url;
+            s.type = "text/css";
+            s.rel = "stylesheet";
+            h.insertBefore(s, h.firstChild);
         },
-        $: function(i) {
+        addjs: function(url, id) {
+            url = iCMS.CONFIG.PUBLIC+'/'+url;
+            var s = document.createElement("script"), h = document.getElementsByTagName("head")[0];
+            s.id = id;
+            s.src = url;
+            h.insertBefore(s, h.firstChild);
+        },
+        $:function(i) {
             var doc = $(document);
             return doc.find('[iCMS=' + i + ']');
         },

@@ -22,11 +22,9 @@ var gulp    = require('gulp'),                 //基础库
     livereload = require('gulp-livereload');   //livereload
 
 var fs = require("fs");
-
 var header = require('gulp-header');
-
-var revCollector = require('gulp-rev-collector');
-
+var footer = require('gulp-footer');
+var rev = require('gulp-rev-collector');
 var pkg = JSON.parse(fs.readFileSync('./package.json'));
 
 
@@ -140,7 +138,8 @@ gulp.task('public', function () {
         // .pipe(rename({ suffix: '.min' }))
         //
         .pipe(concat("iCMS.min.js"))
-        .pipe(header(banner))
+        .pipe(header(banner + '(function($){\n\n'))
+        .pipe(footer('\n\n})(jQuery)'))
         .pipe(gulp.dest(publicDst))
         .pipe(livereload(server));
 });
@@ -182,10 +181,10 @@ gulp.task('watch',function(){
         //     gulp.run('images');
         // });
 
-        // // 监听js
-        // gulp.watch(['./template/www/static/ui.js','./template/www/static/js/*.js'], function(){
-        //     gulp.run('js');
-        // });
+        // 监听js
+        gulp.watch(['./public/js/_src/*.js'], function(){
+            gulp.run('public');
+        });
 
     });
 });

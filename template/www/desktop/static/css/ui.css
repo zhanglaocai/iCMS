@@ -471,7 +471,7 @@ color: #999;
 .iCMS_UI_DIALOG .ui-dialog-table { height: 100%; width: 100%; vertical-align: middle; }
 /*.iCMS_UI_DIALOG .ui-dialog-content {height: auto !important; color: #222; padding: 10px; max-width: 760px; max-height: 500px; min-width: 240px; min-height: 120px; overflow-y: scroll; }*/
 .iCMS_UI_DIALOG .ui-dialog-content {
-    height: auto !important;
+    height: auto;
     color: #222;
     padding: 20px;
     display: block;

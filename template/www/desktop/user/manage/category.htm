@@ -12,7 +12,7 @@
                 <!--{$user_category.count}-->
             </div>
         </div>
-        <a href="javascript:;" class="btn btn-primary del_uc tip" title="删除后,记得更新哦">删除</a>
+        <a href="javascript:;" class="btn btn-default del_uc tip" title="删除后,记得更新哦">删除</a>
     </div>
     <div class="mb10"></div>
     <!--{/iCMS}-->
@@ -27,7 +27,6 @@
 </div>
 <style>
 .info {
-    width: 120px !important;
     text-align: left;
     color: #999;
 }
@@ -45,7 +44,7 @@ function callback(a) {
     if (a.code) {
         window.location.reload();
     } else {
-        iCMS.alert(a.msg);
+        iCMS.UI.alert(a.msg);
     }
 }
 $(function() {

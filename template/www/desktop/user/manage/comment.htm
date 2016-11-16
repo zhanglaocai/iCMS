@@ -1,6 +1,6 @@
 <style>
 .cmt-reply {
-    margin-left: 20px;
+margin-left: 20px;
 }
 </style>
 <h4 class="manage-title">我的评论</h4>
@@ -10,7 +10,7 @@
             <!--{iCMS:comment:list loop="true" page="true" row="10" total_cache="G" userid="$user.uid"}-->
             <tr id="id-<!--{$comment_list.id}-->">
                 <td class="avatar_35">
-                    <a title="<!--{$comment_list.user.name}-->" href="<!--{$comment_list.user.url}-->" data-tip="iCMS:ucard:<!--{$comment_list.user.uid}-->"> <img class="iCMS_user_avatar avatar_35" src="<!--{$comment_list.user.avatar}-->" onerror="iCMS.user.noavatar(this);"> </a>
+                    <a title="<!--{$comment_list.user.name}-->" href="<!--{$comment_list.user.url}-->" data-tip="iCMS:ucard:<!--{$comment_list.user.uid}-->"> <img class="iCMS_user_avatar avatar_35" src="<!--{$comment_list.user.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a>
                 </td>
                 <td>您在
                     <!--{$iAPP[$comment_list.appid].title}-->：
@@ -35,23 +35,23 @@
                         <!--{$comment_array.user.name}-->：</a>
                         <!--{$comment_array.content}-->
                         <span class="label label-default"><!--{$comment_list.addtime|format_date}--></span> <span class="label label-info"><i class="z-icon-thumbs-up"></i> <!--{$comment_array.up}--></span> </p>
-                    <!--{else}-->
-                    <p class="alert alert-error cmt-reply">评论已被删除!</p>
-                    <!--{/if}-->
-                    <div class="clearfix"></div>
-                    <!--{/if}-->
-                    <div class="info">
-                        <span class="gray mr10"><!--{$comment_list.addtime|format_date}--></span>
-                        <span class="gray"><i class="z-icon-thumbs-up"></i><!--{$comment_list.up}--></span>
-                    </div>
-                </td>
-                <td>
-                    <a href="javascript:;" class="ml10 tip" data-action="del" data-id="<!--{$comment_list.id}-->" title="删除评论"><i class="fa fa-times"></i></a>
-                </td>
-            </tr>
-            <!--{/iCMS}-->
-        </tbody>
-        <tfoot>
+                        <!--{else}-->
+                        <p class="alert alert-error cmt-reply">评论已被删除!</p>
+                        <!--{/if}-->
+                        <div class="clearfix"></div>
+                        <!--{/if}-->
+                        <div class="info">
+                            <span class="gray mr10"><!--{$comment_list.addtime|format_date}--></span>
+                            <span class="gray"><i class="z-icon-thumbs-up"></i><!--{$comment_list.up}--></span>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="javascript:;" class="ml10 tip" data-action="del" data-id="<!--{$comment_list.id}-->" title="删除评论"><i class="fa fa-times"></i></a>
+                    </td>
+                </tr>
+                <!--{/iCMS}-->
+            </tbody>
+            <tfoot>
             <tr>
                 <td colspan="3">
                     <div class="iCMS_pagination">
@@ -59,9 +59,9 @@
                     </div>
                 </td>
             </tr>
-        </tfoot>
-    </table>
-</div>
+            </tfoot>
+        </table>
+    </div>
 <script type="text/javascript">
 $(function() {
     $("[data-action]").on('click', function(event) {
@@ -79,7 +79,7 @@ $(function() {
                         $(this).remove();
                     });
                 } else {
-                    iCMS.alert(c.msg);
+                    iCMS.UI.alert(c.msg);
                 }
             }, 'json');
     });

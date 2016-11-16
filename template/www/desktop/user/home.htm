@@ -28,7 +28,7 @@
                     <i class="icon icon-profile-<!--{$user.gender}-->"></i>
                     <a data-param='{"uid":"<!--{$user.uid}-->","name":"<!--{$user.nickname}-->","follow":"<!--{$status.followed}-->"}' class="iCMS_user_follow follow_btn <!--{if $status.followed}-->unfollow<!--{else}-->follow<!--{/if}-->"></a>
                     <p class="card_slogan">
-                        <!--{$userdata.slogan|default:'这家伙太懒了,什么都没有留下!'}-->
+                        <!--{$user.data.slogan|default:'这家伙太懒了,什么都没有留下!'}-->
                     </p>
                 </div>
                 <div class="card_data">

@@ -21,7 +21,8 @@
         ,zIndex:90000
         ,format:true
         ,formatCallback:function function_name (a) {
-            return window.iCMS.format(a);
+            var utils = window.iCMS.run('utils');
+            return utils.format(a);
         }
     };
 })();

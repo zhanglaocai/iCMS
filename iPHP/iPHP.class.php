@@ -823,17 +823,23 @@ class iPHP {
 			self::js("js:window.alert('{$msg}')");
 		}
 		self::$dialog = array(
-			'lock'   => true,
-			'width'  => 360,
-			'height' => 120,
+			'id'         => 'iCMS-DIALOG-ALERT',
+			'skin'       => 'iCMS_dialog_alert',
+			'lock'       => true,
+			'quickClose' => false,
+			'width'      => 360,
+			'height'     => 120,
 		);
 		self::dialog('warning:#:warning:#:' . $msg, $js, $s);
 	}
 	public static function success($msg, $js = null, $s = 3) {
 		self::$dialog = array(
-			'lock' => true,
-			'width' => 360,
-			'height' => 120,
+			'id'         => 'iCMS-DIALOG-ALERT',
+			'skin'       => 'iCMS_dialog_alert',
+			'lock'       => true,
+			'quickClose' => false,
+			'width'      => 360,
+			'height'     => 120,
 		);
 		self::dialog('success:#:check:#:' . $msg, $js, $s);
 	}
@@ -843,15 +849,21 @@ class iPHP {
 		$content = $info[0];
 		strstr($content, ':#:') && $content = self::msg($content, true);
 		$content = addslashes('<table class="ui-dialog-table" align="center"><tr><td valign="middle">' . $content . '</td></tr></table>');
-
 		$options = array(
-			"id:'iPHP-DIALOG'", "time:null",
+			"time:null","api:'iPHP'",
+			"id:'" . (self::$dialog['id'] ? self::$dialog['id'] : 'iPHP-DIALOG'). "'",
 			"title:'" . (self::$dialog['title'] ? self::$dialog['title'] : iPHP_APP) . " - {$title}'",
 			"lock:" . (self::$dialog['lock'] ? 'true' : 'false'),
 			"width:'" . (self::$dialog['width'] ? self::$dialog['width'] : 'auto') . "'",
 			"height:'" . (self::$dialog['height'] ? self::$dialog['height'] : 'auto') . "'",
-			"api:'iPHP'",
 		);
+		if(isset(self::$dialog['quickClose'])){
+			$options[] = "quickClose:" . (self::$dialog['quickClose'] ? 'true' : 'false');
+		}
+		if(isset(self::$dialog['skin'])){
+			$options[] = "skin:'" . self::$dialog['skin']. "'";
+		}
+
 		//$content && $options[]="content:'{$content}'";
 		$auto_func = 'd.close().remove();';
 		$func = self::js($js, true);
@@ -885,7 +897,7 @@ class iPHP {
 			$dialog .= "d = iTOP.dialog.get('iPHP-DIALOG');";
 			$auto_func = $func;
 		} else {
-			$dialog .= 'options = {' . implode(',', $options) . '},d = iTOP.' . iPHP_APP . '.dialog(options);';
+			$dialog .= 'options = {' . implode(',', $options) . '},d = iTOP.' . iPHP_APP . '.UI.dialog(options);';
 			// if(self::$dialog_lock){
 			// 	$dialog.='d.showModal();';
 			// }else{
@@ -898,7 +910,6 @@ class iPHP {
 		$s <= 30 && $timeout = $s * 1000;
 		$s > 30 && $timeout = $s;
 		$s === false && $timeout = false;
-		$timeout=1000000;
 		if ($timeout) {
 			$dialog .= 'window.setTimeout(function(){' . $auto_func . '},' . $timeout . ');';
 		} else {
@@ -1021,6 +1032,11 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline) {
 	$html .= "\n</pre>";
 	$html = str_replace('\\', '/', $html);
 	$html = str_replace(iPATH, 'iPHP://', $html);
+    if(PHP_SAPI=='cli'){
+        $html = str_replace(array("<b>", "</b>", "<pre>", "</pre>"), array('\033[31m',' \033[0m',''), $html);
+        echo $html."\n";
+        exit;
+    }
 	if (isset($_GET['frame'])) {
 		iPHP::$dialog['lock'] = true;
 		$html = str_replace("\n", '<br />', $html);

@@ -1,27 +1,10 @@
 <style>
-.label-0 {
-    background-color: #333;
-}
-
-.label-1 {
-    background-color: #468847;
-}
-
-.label-2 {
-    background-color: #FFD600;
-}
-
-.label-3 {
-    background-color: #3A87AD;
-}
-
-.info {
-    text-align: right;
-}
-
-.info span {
-    float: left;
-}
+.label-0 { background-color: #333; }
+.label-1 { background-color: #468847; }
+.label-2 { background-color: #FFD600; }
+.label-3 { background-color: #3A87AD; }
+.info { text-align: right; }
+.info span { float: left; }
 </style>
 <h4 class="manage-title">我的私信</h4>
 <form action="<!--{iCMS:router url='user'}-->" method="post" target="iCMS_FRAME">
@@ -32,7 +15,7 @@
             <tbody>
                 <!--{iCMS:user:inbox loop="true"}-->
                 <tr id="id-<!--{$user_inbox.id}-->">
-                    <td class="avatar_35"><a data-tip="iCMS:ucard:<!--{$user_inbox.user.uid}-->" href="<!--{$user_inbox.user.url}-->"> <img class="iCMS_user_avatar avatar_35" src="<!--{$user_inbox.user.avatar}-->" onerror="iCMS.user.noavatar(this);"> </a></td>
+                    <td class="avatar_35"><a data-tip="iCMS:ucard:<!--{$user_inbox.user.uid}-->" href="<!--{$user_inbox.user.url}-->"> <img class="iCMS_user_avatar avatar_35" src="<!--{$user_inbox.user.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a></td>
                     <td>
                         <!--{if $user_inbox.type=="0"}-->
                         <!--{$user_inbox.sender.link}-->
@@ -96,7 +79,7 @@ $(function() {
                     $(this).remove();
                 });
             } else {
-                iCMS.alert(c.msg);
+                iCMS.UI.alert(c.msg);
             }
         }, 'json');
     });

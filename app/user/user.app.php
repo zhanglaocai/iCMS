@@ -57,8 +57,10 @@ class userApp {
 		}
 		$this->user->hits_script = iCMS_API . '?app=user&do=hits&uid=' . $this->user->uid;
 		iPHP::assign('status', $status);
-		iPHP::assign('user', (array) $this->user);
-		$userdata && iPHP::assign('userdata', (array) user::data($this->user->uid));
+		$user = (array) $this->user;
+		$userdata && $user['data'] = (array) user::data($this->user->uid);
+
+		iPHP::assign('user',$user);
 	}
 
 	public function API_iCMS($a = null) {
@@ -425,32 +427,22 @@ class userApp {
 		}
 	}
 	private function __ACTION_profile_base() {
-		$nickname = iS::escapeStr($_POST['nickname']);
-		$gender = iS::escapeStr($_POST['gender']);
-		$weibo = iS::escapeStr($_POST['weibo']);
-		$province = iS::escapeStr($_POST['province']);
-		$city = iS::escapeStr($_POST['city']);
-		$year = iS::escapeStr($_POST['year']);
-		$month = iS::escapeStr($_POST['month']);
-		$day = iS::escapeStr($_POST['day']);
+		$nickname      = iS::escapeStr($_POST['nickname']);
+		$gender        = iS::escapeStr($_POST['gender']);
+		$province      = iS::escapeStr($_POST['province']);
+		$city          = iS::escapeStr($_POST['city']);
+		$year          = iS::escapeStr($_POST['year']);
+		$month         = iS::escapeStr($_POST['month']);
+		$day           = iS::escapeStr($_POST['day']);
 		$constellation = iS::escapeStr($_POST['constellation']);
-		$profession = iS::escapeStr($_POST['profession']);
-		$isSeeFigure = iS::escapeStr($_POST['isSeeFigure']);
-		$height = iS::escapeStr($_POST['height']);
-		$weight = iS::escapeStr($_POST['weight']);
-		$bwhB = iS::escapeStr($_POST['bwhB']);
-		$bwhW = iS::escapeStr($_POST['bwhW']);
-		$bwhH = iS::escapeStr($_POST['bwhH']);
-		$pskin = iS::escapeStr($_POST['pskin']);
-		$phair = iS::escapeStr($_POST['phair']);
-		$shoesize = iS::escapeStr($_POST['shoesize']);
-		$personstyle = iS::escapeStr($_POST['personstyle']);
-		$slogan = iS::escapeStr($_POST['slogan']);
+		$profession    = iS::escapeStr($_POST['profession']);
+		$personstyle   = iS::escapeStr($_POST['personstyle']);
+		$slogan        = iS::escapeStr($_POST['slogan']);
+		$meta          = iS::escapeStr($_POST['meta']);
 
-		$personstyle == iPHP::lang('user:profile:personstyle') && $personstyle = "";
-		$slogan == iPHP::lang('user:profile:slogan') && $slogan = "";
-		$pskin == iPHP::lang('user:profile:pskin') && $pskin = "";
-		$phair == iPHP::lang('user:profile:phair') && $phair = "";
+		($personstyle == iPHP::lang('user:profile:personstyle')) && $personstyle = "";
+		($slogan == iPHP::lang('user:profile:slogan')) && $slogan = "";
+		$meta && $meta = addslashes(json_encode($meta));
 
 		// if($nickname!=user::$nickname){
 		//     $has_nick = iDB::value("SELECT uid FROM `#iCMS@__user` where `nickname`='{$nickname}' AND `uid` <> '".user::$userid."'");
@@ -475,27 +467,21 @@ class userApp {
         ");
 
 		$fields = array(
-			'weibo', 'province', 'city', 'year', 'month', 'day',
-			'constellation', 'profession', 'isSeeFigure',
-			'height', 'weight', 'bwhB', 'bwhW', 'bwhH', 'pskin',
-			'phair', 'shoesize', 'personstyle', 'slogan', 'coverpic',
+			'province', 'city', 'year', 'month', 'day',
+			'constellation','profession','personstyle','slogan',
+			'meta',
 		);
 		if ($uid) {
-			$data = compact($fields);
-			$unickEdit && $data['unickEdit'] = 1;
-			iDB::update('user_data', $data, array('uid' => user::$userid));
+			$fdata = compact($fields);
+			$unickEdit && $fdata['unickEdit'] = 1;
+			iDB::update('user_data', $fdata, array('uid' => user::$userid));
 		} else {
 			$unickEdit = 0;
-			$uid = user::$userid;
-			$_fields = array(
-				'uid', 'realname', 'unickEdit', 'mobile',
-				'enterprise', 'address', 'zip', 'tb_nick',
-				'tb_buyer_credit', 'tb_seller_credit', 'tb_type',
-				'is_golden_seller',
-			);
-			$fields = array_merge($fields, $_fields);
-			$data = compact($fields);
-			iDB::insert('user_data', $data);
+			$uid       = user::$userid;
+			$_fields   = array('uid', 'realname', 'unickEdit', 'mobile','address');
+			$fields    = array_merge($fields, $_fields);
+			$fdata     = compact($fields);
+			iDB::insert('user_data', $fdata);
 		}
 		iPHP::success('user:profile:success');
 	}

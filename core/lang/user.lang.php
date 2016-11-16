@@ -43,10 +43,10 @@ return array(
 		'update'  =>'更新成功！',
 	),
 	'article'=>array(
-		'add_success'    =>'添加成功！',
-		'add_examine'    =>'添加成功！<br />本栏目需要审核后才能正常显示。',
-		'update_success' =>'更新成功！',
-		'update_examine' =>'更新成功！<br />本栏目需要审核后才能正常显示。',
+		'add_success'    =>'文章发表完成！',
+		'add_examine'    =>'文章发表完成！<br />本栏目需要审核后才能正常显示。',
+		'update_success' =>'文章更新完成！',
+		'update_examine' =>'文章更新完成！<br />本栏目需要审核后才能正常显示。',
 	),
 	'publish'=>array(
 		'filter_title' =>'标题中包含被系统屏蔽的字符，请重新填写。',
