@@ -124,7 +124,7 @@ class iPHP{
 
         if(iPHP_DEBUG||iPHP_TPL_DEBUG){
             ini_set('display_errors','ON');
-            error_reporting(E_ALL & ~E_NOTICE);
+            error_reporting(E_ALL & ~E_NOTICE );
         }
 
         $timezone = $config['time']['zone'];
@@ -1082,6 +1082,11 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline){
     $html.="\n</pre>";
 	$html = str_replace('\\','/',$html);
 	$html = str_replace(iPATH,'iPHP://',$html);
+    if(PHP_SAPI=='cli'){
+        $html = str_replace(array("<b>", "</b>", "<pre>", "</pre>"), array('\033[31m',' \033[0m',''), $html);
+        echo $html."\n";
+        exit;
+    }
     if (isset($_GET['frame'])) {
         iPHP::$dialog['lock'] = true;
         $html = str_replace("\n", '<br />', $html);

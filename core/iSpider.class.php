@@ -218,26 +218,38 @@ class spider{
         }
 
         iS::slashes($_POST);
-        $app = iACP::app($postArgs->app);
         $fun = $postArgs->fun;
-        $app->callback['code'] = '1001';
-        /**
-         * 主表 回调 更新关联ID
-         */
-        $app->callback['primary'] = array(
-            array('spider','update_spider_url_indexid'),
-            array('suid'=>$suid)
-        );
-        /**
-         * 数据表 回调 成功发布
-         */
-        $app->callback['data'] = array(
-            array('spider','update_spider_url_publish'),
-            array('suid'=>$suid)
-        );
+        $success_code = "1001";
+        if(iFS::checkHttp($fun)){
+            $json = self::postUrl($fun,$_POST);
+            $callback = json_decode ($json,true);
+            if($callback['code']==$success_code){
+                $indexid = $callback['indexid'];
+                self::update_spider_url_indexid($suid,$indexid);
+                self::update_spider_url_publish($suid);
+            }
+        }else{
+            $app = iACP::app($postArgs->app);
+            $app->callback['code'] = $success_code;
+            /**
+             * 主表 回调 更新关联ID
+             */
+            $app->callback['primary'] = array(
+                array('spider','update_spider_url_indexid'),
+                array('suid'=>$suid)
+            );
+            /**
+             * 数据表 回调 成功发布
+             */
+            $app->callback['data'] = array(
+                array('spider','update_spider_url_publish'),
+                array('suid'=>$suid)
+            );
 
-        $callback = $app->$fun();
-        if ($callback['code'] == $app->callback['code']) {
+            $callback = $app->$fun();
+
+        }
+        if ($callback['code'] == $success_code) {
             if (spider::$sid) {
                 $work===NULL && iPHP::success("发布成功!",'js:1');
             } else {
@@ -248,5 +260,37 @@ class spider{
             $callback['work']=$work;
             return $callback;
         }
+    }
+    public static function postUrl($url, $data) {
+        is_array($data) && $data = http_build_query($data);
+        $options = array(
+            CURLOPT_URL                  => $url,
+            CURLOPT_REFERER              => $_SERVER['HTTP_REFERER'],
+            CURLOPT_USERAGENT            => $_SERVER['HTTP_USER_AGENT'],
+            CURLOPT_POSTFIELDS           => $data,
+            // CURLOPT_HTTPHEADER           => array(
+            //     'Content-Type:application/x-www-form-urlencoded',
+            //     'Content-Length:'.strlen($data),
+            //     'Host: icms.idreamsoft.com'
+            // ),
+            CURLOPT_POST                 => 1,
+            CURLOPT_TIMEOUT              => 10,
+            CURLOPT_CONNECTTIMEOUT       => 10,
+            CURLOPT_RETURNTRANSFER       => 1,
+            CURLOPT_FAILONERROR          => 1,
+            CURLOPT_HEADER               => false,
+            CURLOPT_NOBODY               => false,
+            CURLOPT_NOSIGNAL             => true,
+            CURLOPT_DNS_USE_GLOBAL_CACHE => true,
+            CURLOPT_DNS_CACHE_TIMEOUT    => 86400,
+            CURLOPT_SSL_VERIFYPEER       => false,
+            CURLOPT_SSL_VERIFYHOST       => false
+        );
+
+        $ch = curl_init();
+        curl_setopt_array($ch,$options);
+        $responses = curl_exec($ch);
+        curl_close ($ch);
+        return $responses;
     }
 }

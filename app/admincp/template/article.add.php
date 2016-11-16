@@ -65,11 +65,13 @@ $(function(){
     }
   })
 	$("#iCMS-article").submit(function(){
-		if($("#cid option:selected").val()=="0"){
+    var cid = $("#cid option:selected").val();
+		if(cid=="0"){
       $("#cid").focus();
 			iCMS.alert("请选择所属栏目");
 			return false;
 		}
+
 		if($("#title").val()==''){
       $("#title").focus();
 			iCMS.alert("标题不能为空!");
@@ -266,11 +268,12 @@ function _modal_dialog(cancel_text){
             </div>
             <div class="input-prepend"> <span class="add-on">状 态</span>
               <select name="status" id="status" class="chosen-select span2">
-                <option value="0"> 草稿 </option>
-                <option value="1"> 正常 </option>
-                <option value="2"> 回收站 </option>
-                <option value="3"> 待审核 </option>
-                <option value="4"> 未通过 </option>
+                <option value="0"> 草稿 [status='0']</option>
+                <option value="1"> 正常 [status='1']</option>
+                <option value="2"> 回收站 [status='2']</option>
+                <option value="3"> 待审核 [status='3']</option>
+                <option value="4"> 未通过 [status='4']</option>
+                <?php echo iACP::getProp("status") ; ?>
               </select>
             </div>
             <div class="clearfloat mb10"></div>

@@ -16,6 +16,9 @@ class weixinApp{
         $this->config = iCMS::$config[iACP::$app_name];
 
         $this->config['component']==="1" && weixin::$component = true;
+        // var_dump($this->config);
+        // var_dump(iCMS::$config);
+        // exit;
         weixin::$config = $this->config;
     }
     function do_config(){
@@ -24,11 +27,11 @@ class weixinApp{
     }
     function do_save_config(){
         $setting = iACP::app('setting');
+        $_POST['config'] = array_merge((array)$this->config,(array)$_POST['config']);
         $setting->save($this->appid);
     }
     function do_save_menu(){
         $this->config['menu'] = $_POST['wx_button'];
-        $_POST['config'] = $this->config;
         $this->do_save_config();
     }
     function do_rsync_menu(){

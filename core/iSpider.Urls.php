@@ -74,12 +74,18 @@ class spiderUrls extends spider{
                 unset($urlsArray[$_key]);
             }else{
                 preg_match('|.*<(.*)>.*|is',$_url, $_matches);
+
                 if($_matches){
-                    list($format,$begin,$num,$step,$zeroize,$reverse) = explode(',',$_matches[1]);
-                    $url = str_replace($_matches[1], '*',trim($_matches[0]));
-                    $_urlsList = spiderTools::mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse);
-                    unset($urlsArray[$_key]);
-                    $urlsList = array_merge($urlsList,$_urlsList);
+                    if(strpos($_matches[1], 'DATE:')!==false){
+                        list($type,$format) = explode(':',$_matches[1]);
+                        $urlsArray[$_key] = str_replace('<'.$_matches[1].'>', date($format),trim($_matches[0]));
+                    }else{
+                        list($format,$begin,$num,$step,$zeroize,$reverse) = explode(',',$_matches[1]);
+                        $url = str_replace($_matches[1], '*',trim($_matches[0]));
+                        $_urlsList = spiderTools::mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse);
+                        unset($urlsArray[$_key]);
+                        $urlsList = array_merge($urlsList,$_urlsList);
+                    }
                 }
             }
         }

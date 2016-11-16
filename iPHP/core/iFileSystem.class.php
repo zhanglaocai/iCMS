@@ -109,10 +109,10 @@ class iFS {
             return true;
         }
     }
-    public static function del($fn, $check = 1) {
+    public static function del($fn, $check = 1,$yun=false) {
         $check && self::check($fn);
 
-        if(self::$config['yun']['enable']){
+        if(self::$config['yun']['enable'] && $yun){
             iPHP::LoadClass('Yun');
             iYun::init(self::$config['yun']);
             iYun::delete($fn);

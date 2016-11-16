@@ -20,6 +20,9 @@ $(function(){
 	<?php if($_GET['st']){ ?>
 	iCMS.select('st',"<?php echo $_GET['st'] ; ?>");
 	<?php } ?>
+  <?php if(isset($_GET['status'])){ ?>
+  iCMS.select('status',"<?php echo $_GET['status'] ; ?>");
+  <?php } ?>
 	<?php if($_GET['orderby']){ ?>
 	iCMS.select('orderby',"<?php echo $_GET['orderby'] ; ?>");
 	<?php } ?>
@@ -98,9 +101,7 @@ $(function(){
         <?php if(isset($_GET['pt'])){ ?>
         <input type="hidden" name="pt" value="<?php echo $_GET['pt'] ; ?>" />
         <?php } ?>
-        <?php if(isset($_GET['sta'])){ ?>
-        <input type="hidden" name="sta" value="<?php echo $_GET['sta'] ; ?>" />
-        <?php } ?>
+
         <input type="hidden" name="userid" value="<?php echo $_GET['userid'] ; ?>" />
         <div class="input-prepend"> <span class="add-on">文章属性</span>
           <select name="pid" id="pid" class="span2 chosen-select">
@@ -164,6 +165,16 @@ $(function(){
           <span class="add-on"><i class="fa fa-calendar"></i></span>
         </div>
         <div class="clearfloat mb10"></div>
+        <div class="input-prepend"> <span class="add-on">状 态</span>
+          <select name="status" id="status" class="chosen-select span2">
+            <option value="0"> 草稿 [status='0']</option>
+            <option value="1"selected='selected'> 正常 [status='1']</option>
+            <option value="2"> 回收站 [status='2']</option>
+            <option value="3"> 待审核 [status='3']</option>
+            <option value="4"> 未通过 [status='4']</option>
+            <?php echo iACP::getProp("status") ; ?>
+          </select>
+        </div>
         <div class="input-prepend input-append"> <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
           <span class="add-on">条记录</span> </div>
@@ -231,7 +242,8 @@ $(function(){
                   <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $value['id'] ; ?>" data-toggle="modal" title="预览"><?php echo $value['title'] ; ?></a>
                  </div>
                 <div class="row-actions">
-                  <a href="<?php echo __ADMINCP__; ?>=files&indexid=<?php echo $value['id'] ; ?>&method=database" class="tip-bottom" title="查看文章使用的图片" target="_blank"><i class="fa fa-picture-o"></i></a>
+                  <a href="<?php echo __ADMINCP__; ?>=files&indexid=<?php echo $value['id'] ; ?>&method=database" class="tip-bottom" title="查看文章图片库" target="_blank"><i class="fa fa-picture-o"></i></a>
+                  <a href="<?php echo APP_URI; ?>&do=findpic&id=<?php echo $value['id'] ; ?>" class="tip-bottom" title="查找文章所有图片" target="_blank"><i class="fa fa-picture-o"></i></a>
                   <?php if($value['postype']=="0"){ ?>
                   <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=status:1" class="tip-bottom" target="iPHP_FRAME" title="通过审核"><i class="fa fa-check-circle"></i></a>
                     <?php if($value['status']!="3"){ ?>
