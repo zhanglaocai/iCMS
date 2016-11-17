@@ -55,7 +55,6 @@ $(function() {
 
 var iUSER = iCMS.run('user');
 
-
 // function hover (a, t, l) {
 //     var pop,timeOutID = null,t = t || 0, l = l || 0;
 //     a.hover(function() {

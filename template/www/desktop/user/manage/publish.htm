@@ -2,6 +2,11 @@
 .manage-publish { margin-left: 20px; }
 .input-group-addon {padding: 5px 12px;width: 60px !important;}
 .input-group-addon label{float: right;}
+.input-group-addon #user_category_dropdown{    height: 20px;
+    display: block;
+    line-height: 20px;
+    text-decoration: none;}
+#add_category{border-radius: 0px;}
 
 .input-group input.form-control,
 .input-group textarea.form-control{width: 500px !important;}
@@ -18,6 +23,8 @@
 </style>
 <link href="<!--{$site.urls.tpl}-->/static/css/bootstrap-switch.min.css" type="text/css" rel="stylesheet" />
 <script src="<!--{$site.urls.tpl}-->/static/js/bootstrap-switch.min.js"></script>
+<script src="<!--{$site.urls.tpl}-->/static/js/bootstrap-dropdown.min.js"></script>
+
 <script>
 window.UMEDITOR_HOME_URL = "<!--{$site.urls.public}-->/js/libs/umeditor/";
 </script>
@@ -48,19 +55,21 @@ window.UMEDITOR_HOME_URL = "<!--{$site.urls.public}-->/js/libs/umeditor/";
         </div>
         <input class="form-control" name="title" id="title" type="text" value="<!--{$article.title}-->">
         <div class="input-group-addon">
-            <a class="dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> <span id="uc_select">默认分类</span></a>
-            <ul class="dropdown-menu">
-                <!--{iCMS:user:category loop="true" userid="$user.uid" appid="$iCMS.APPID.ARTICLE"}-->
-                <li>
-                    <a href="javascript:;" cid="<!--{$user_category.cid}-->" class="user_category">
-                        <!--{$user_category.name}-->
-                    </a>
-                </li>
-                <!--{/iCMS}-->
-                <li id="user_category_0"><a href="javascript:;" cid="0" class="user_category">默认分类</a></li>
-                <li class="divider"></li>
-                <li><a href="javascript:;" title="添加分类" id="add_category" class="btn"><i class="fa fa-edit"></i> 添加分类</a></li>
-            </ul>
+            <div class="dropdown">
+                <a data-toggle="dropdown" id="user_category_dropdown"> <span class="caret"></span> <span id="user_category_select">默认分类</span></a>
+                <ul class="dropdown-menu">
+                    <!--{iCMS:user:category loop="true" userid="$user.uid" appid="$iCMS.APPID.ARTICLE"}-->
+                    <li>
+                        <a href="javascript:;" cid="<!--{$user_category.cid}-->" class="user_category_item">
+                            <!--{$user_category.name}-->
+                        </a>
+                    </li>
+                    <!--{/iCMS}-->
+                    <li id="user_category_item_0"><a href="javascript:;" cid="0" class="user_category_item">默认分类</a></li>
+                    <li class="divider"></li>
+                    <li><a href="javascript:;" title="添加分类" id="add_category" class="btn"><i class="fa fa-edit"></i> 添加分类</a></li>
+                </ul>
+            </div>
         </div>
     </div>
     <div class="mb10"></div>
@@ -112,33 +121,33 @@ window.UMEDITOR_HOME_URL = "<!--{$site.urls.public}-->/js/libs/umeditor/";
         </button>
     </div>
 </div>
-<div id="add_category_box" style="display: none;">
-    <input class="span3" id="newcategoryname" type="text" placeholder="请输入分类名称">
+<div id="user_category_add" style="display: none;">
+    <input class="form-control input-lg" id="user_category_new" type="text" placeholder="请输入分类名称">
 </div>
 <script type="text/javascript">
 var ed = UM.getEditor('editor');
 
 $(function() {
     var publish = $("#publish");
-    $('[name="creative"]',publish).bootstrapSwitch()
-    .on('switchChange.bootstrapSwitch',
-        function(event, state) {
-            if (state) {
-                $('#source-box').hide();
-                $('#source').val('');
-            } else {
-                $('#source-box').show();
-            }
+    $('[name="creative"]',publish).bootstrapSwitch().on('switchChange.bootstrapSwitch',function(event, state) {
+        if (state) {
+            $('#source-box').hide();
+            $('#source').val('');
+        } else {
+            $('#source-box').show();
         }
-    );
+    });
+
     <!--{if $article.cid}-->
-    $("#cid",publish).val("<!--{$article.cid}-->");
+        $("#cid",publish).val("<!--{$article.cid}-->");
     <!--{/if}-->
+
     <!--{if $article.ucid}-->
-    var uc = $("[cid='<!--{$article.ucid}-->']",publish);
-    uc.parent().addClass('active');
-    $("#uc_select").text(uc.text());
+        var uc = $("[cid='<!--{$article.ucid}-->']",publish);
+        uc.parent().addClass('active');
+        $("#user_category_select").text(uc.text());
     <!--{/if}-->
+
     $(".iCMS_user_publish").click(function() {
         if ($("#cid option:selected").val() == "0") {
             $("#cid").focus();
@@ -150,6 +159,7 @@ $(function() {
             iCMS.UI.alert("标题不能为空!");
             return false;
         }
+
         <!--{if $iCMS.CONFIG.user.post.seccode }-->
         if ($(".seccode").val() == '') {
             $(".seccode").focus();
@@ -157,6 +167,7 @@ $(function() {
             return false;
         }
         <!--{/if}-->
+
         if (!ed.hasContents()) {
             ed.focus();
             iCMS.UI.alert("内容不能为空!");
@@ -168,64 +179,41 @@ $(function() {
         this.value=this.value.replace(/\s/ig,',');
         this.value=this.value.replace(/,{2,}/ig,',');
     });
-    // $('#article-type').on('switch-change', function(e, data) {
-    //     var value = data.value;
-    //     if (data.value) {
-    //         $('#source-box').hide();
-    //         $('#source').val('');
-    //     } else {
-    //         $('#source-box').css({
-    //             display: 'inline-block',
-    //         });
-    //     }
-    // });
-    $(document).on('click', '.user_category', function(event) {
+
+    $(document).on('click', '.user_category_item', function(event) {
         event.preventDefault();
-        var $this = $(this),
-            cid = $this.attr("cid"),
-            name = $this.text();
+        var $this = $(this),cid = $this.attr("cid"),name = $this.text();
+
         $("#ucid").val(cid);
-        $("#uc_select").text(name);
-        $(".user_category").parent().removeClass('active');
+        $("#user_category_select").text(name);
+        $(".user_category_item").parent().removeClass('active');
         $this.parent().addClass('active');
         $this.parent().parent().parent().removeClass("open");
         return false;
     });
     $('#add_category').click(function() {
-        iCMS.dialog({
-            follow: document.getElementById('user_category'),
-            title: '添加新分类',
-            content: document.getElementById('add_category_box'),
-            okValue: '添加',
+        iCMS.UI.dialog({
+            follow:document.getElementById('user_category_dropdown'),
+            content: document.getElementById('user_category_add'),
+            quickClose: false,title: null,width:"auto",height:"auto",
+            okValue: '添加新分类',
             ok: function() {
-                var a = $("#newcategoryname"),
-                    n = a.val(),
-                    d = this;
-                if (n == "") {
-                    iCMS.UI.alert("请输入分类名称!");
-                    a.focus();
+                var a = $("#user_category_new"),name = a.val(),me = this;
+                if (name == "") {
+                    alert("请输入分类名称!");
                     return false;
                 } else {
-                    $.post('<!--{iCMS:router url='user'}-->', {
-                            'action': 'add_category',
-                            name: n
-                        },
-                        function(j) {
-                            if (j.code) {
-                                d.content(j.msg)
-                                    .button([{
-                                        value: '完成',
-                                        callback: function() {
-                                            $("#user_category_0").before('<li><a href="javascript:;" cid="' + j.forward + '" class="user_category">' + n + '</a></li>');
-                                        },
-                                        autofocus: true
-                                    }]);
-                            } else {
-                                alert(j.msg);
-                                a.focus();
-                                return false;
-                            }
-                        }, "json");
+                    $.post("<!--{iCMS:router url='user'}-->",{'action': 'add_category',name: name},function(j) {
+                        if (j.code) {
+                            $("#user_category_item_0").before('<li><a href="javascript:;" cid="' + j.forward + '" class="user_category_item">' + name + '</a></li>');
+                            $(".user_category_item[cid='"+j.forward+"']").click();
+                            me.close().remove();
+                        } else {
+                            alert(j.msg);
+                            a.focus();
+                            return false;
+                        }
+                    }, "json");
                 }
                 return false;
             }

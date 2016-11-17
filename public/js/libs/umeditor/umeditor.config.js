@@ -18,7 +18,7 @@
         ,initialFrameWidth:"100%"
         ,initialFrameHeight:500
         ,focus:false
-        ,zIndex:90000
+        ,zIndex:1000
         ,format:true
         ,formatCallback:function function_name (a) {
             var utils = window.iCMS.run('utils');

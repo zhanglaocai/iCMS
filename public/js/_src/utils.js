@@ -85,19 +85,18 @@ define("utils",{
             }
             return code;
         },
-        callback: function(ret, SUCCESS, FAIL, a) {
-
-            var success = SUCCESS || a.SUCCESS
-            var fail = FAIL || a.FAIL
+        callback: function(ret, SUCCESS, FAIL, me, param) {
+            var success = SUCCESS || me.SUCCESS
+            var fail = FAIL || me.FAIL
             if (ret.code) {
-                this.__callback(success, ret);
+                this.__callback(success,ret,param);
             } else {
-                this.__callback(fail, ret);
+                this.__callback(fail,ret,param);
             }
         },
-        __callback: function(func, ret) {
+        __callback: function(func,ret,param) {
             if (typeof(func) === "function") {
-                func(ret);
+                func(ret,param);
             } else {
                 var msg = ret;
                 if (typeof(ret) === "object") {

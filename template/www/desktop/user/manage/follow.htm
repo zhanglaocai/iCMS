@@ -35,15 +35,25 @@ $("li", al).each(function() {
 });
 $(".btn_follow").click(function(event) {
     event.preventDefault();
-    var $this = $(this);
-    iCMS.user.follow(this, function(c, param) {
-        if (c.code) {
-            $("#id-" + param.uid).hide('500', function() {
-                $this.remove();
-            });
-        } else {
-            iCMS.UI.alert(c.msg);
-        }
+    var me = $(this);
+    iCMS.run('user',function($USER){
+        $USER.FOLLOW(me,
+            //取消关注
+            function(c,param) {
+                // console.log(c,param)
+                if(c.code){
+                    $("#uid_" + param.uid).hide('500', function() {
+                        $(this).remove();
+                    });
+                }else{
+                    iCMS.UI.alert(c.msg);
+                }
+            },
+            //需要登陆
+            function(){
+                iCMS.UI.alert('需要登陆');
+            }
+        );
     });
 });
 </script>
