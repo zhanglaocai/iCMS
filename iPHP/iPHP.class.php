@@ -248,7 +248,10 @@ class iPHP{
 	public static function template_start(){
         self::import(iPHP_CORE.'/iTemplate.class.php');
         self::$iTPL = new iTemplate();
-        self::$iTPL->template_callback = array("iPHP","tpl_path");
+        self::$iTPL->template_callback = array(
+            "resource" => array("iPHP","tpl_callback_path"),
+            "output"   => array("iPHP","tpl_callback_output")
+        );
         self::$iTPL->template_dir      = iPHP_TPL_DIR;
         self::$iTPL->compile_dir       = iPHP_TPL_CACHE;
         self::$iTPL->left_delimiter    = '<!--{';
@@ -300,8 +303,8 @@ class iPHP{
             return self::$iTPL->fetch($tpl);
         }else {
             self::$iTPL->display($tpl);
-            if(iPHP_DEBUG){
-	            //echo '<span class="label label-success">内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL执行:'.iDB::$num_queries.'次</span>';
+			if (iPHP_DEBUG && iPHP_TPL_DEBUG) {
+				echo '<span class="label label-success">模板:'.$tpl.' 内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL执行:'.iDB::$num_queries.'次</span>';
             }
         }
     }
@@ -337,7 +340,7 @@ class iPHP{
      * @param  [type] $tpl [description]
      * @return [type]      [description]
      */
-	public static function tpl_path($tpl){
+	public static function tpl_callback_path($tpl){
         if(strpos($tpl,iPHP_APP.':/') !==false){
 			$_tpl = str_replace(iPHP_APP.':/',iPHP_DEFAULT_TPL,$tpl);
 			if(@is_file(iPHP_TPL_DIR."/".$_tpl)) return $_tpl;
@@ -362,6 +365,11 @@ class iPHP{
         	self::throw404('运行出错！ 找不到模板文件 <b>iPHP:://template/' .$tpl. '</b>', '002','TPL');
         }
 	}
+    public static function tpl_callback_output($html,$file=null){
+
+        return $html;
+    }
+
 	public static function PG($key){
 		return isset($_POST[$key])?$_POST[$key]:$_GET[$key];
 	}
@@ -850,14 +858,22 @@ class iPHP{
     	self::msg('warning:#:warning:#:'.$info);
     }
     public static function msg($info,$ret=false) {
-    	list($label,$icon,$content)= explode(':#:',$info);
-    	$msg = '<div class="iPHP-msg"><span class="label label-'.$label.'">';
-    	$icon && $msg.= '<i class="fa fa-'.$icon.'"></i> ';
-    	if(strpos($content,':')!==false){
-    		$lang = self::lang($content,false);
-    		$lang && $content = $lang;
-    	}
-    	$msg.= $content.'</span></div>';
+        if(PHP_SAPI=='cli'){
+            exit($info.PHP_EOL);
+        }
+        if(strpos($info,':#:')===false){
+            $msg = $info;
+        }else{
+            list($label,$icon,$content)= explode(':#:',$info);
+            $msg = '<div class="iPHP-msg"><span class="label label-'.$label.'">';
+            $icon && $msg.= '<i class="fa fa-'.$icon.'"></i> ';
+            if(strpos($content,':')!==false){
+                $lang = self::lang($content,false);
+                $lang && $content = $lang;
+            }
+            $msg.= $content.'</span></div>';
+        }
+
     	if($ret) return $msg;
     	echo $msg;
     }
@@ -905,8 +921,7 @@ class iPHP{
 	public static function dialog($info=array(),$js='js:',$s=3,$buttons=null,$update=false) {
 		$info    = (array)$info;
 		$title   = $info[1]?$info[1]:'提示信息';
-		$content = $info[0];
-        strstr($content,':#:') && $content=self::msg($content,true);
+        $content = self::msg($info[0],true);
 		$content = addslashes('<table class="ui-dialog-table" align="center"><tr><td valign="middle">'.$content.'</td></tr></table>');
 
 		$options = array(
