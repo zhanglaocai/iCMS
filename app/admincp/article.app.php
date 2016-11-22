@@ -273,7 +273,7 @@ class articleApp{
             // iACP::head(true);
             foreach ($array as $key => $value) {
                 $value = trim($value);
-                echo $value.PHP_EOL;
+                // echo $value.PHP_EOL;
                 if (stripos($value,$uri['host']) !== false){
                     $filepath = iFS::fp($value,'-http');
                    if($filepath){
