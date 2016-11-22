@@ -61,7 +61,7 @@ class spiderData extends spider{
         if(empty($html)){
             $msg = '错误:001..采集 ' . $url . '文件内容为空!请检查采集规则';
             if(spider::$work=='shell'){
-                echo "{$msg}\n";
+                echo spider::errorlog("{$msg}\n",$url,array('pid'=>$pid,'sid'=>$sid,'rid'=>$rid));
                 return false;
             }else{
                 iPHP::alert($msg);

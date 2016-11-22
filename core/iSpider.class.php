@@ -15,6 +15,8 @@ class spider{
     public static $rid      = null;
     public static $pid      = null;
     public static $sid      = null;
+    public static $poid     = null;
+
     public static $title    = null;
     public static $url      = null;
     public static $work     = false;
@@ -149,19 +151,31 @@ class spider{
             iDB::update('spider_url',$data,array('id'=>$suid));
         }
     }
-
+    public static function errorlog($msg,$url=null,$a=null) {
+        $data = array(
+            'work'  =>spider::$work,
+            'rid'   =>spider::$rid,
+            'sid'   =>spider::$sid,
+            'pid'   =>spider::$pid,
+            'reurl' =>($url?$url:spider::$url),
+            'msg'   =>$msg,
+        );
+        $a && $data = array_merge($data,(array)$a);
+        file_put_contents(iPHP_APP_CACHE.'/log/spider.error.'.date("Y-m-d").'.log',var_export($data,1)."\n\n",FILE_APPEND);
+        return $msg;
+    }
     public static function publish($work = null) {
         $_POST = spiderData::crawl();
         if(spider::$work && $work===null) $work = spider::$work;
 
         if($work=='shell'){
            if(empty($_POST['title'])){
-               echo "标题不能为空\n";
-               return false;
+                echo spider::errorlog("标题不能为空\n",$_POST['reurl']);
+                return false;
            }
            if(empty($_POST['body'])){
-               echo "内容不能为空\n";
-               return false;
+                echo spider::errorlog("内容不能为空\n",$_POST['reurl']);
+                return false;
            }
         }
         $checker = spider::checker($work,spider::$pid,$_POST['reurl'],$_POST['title']);
@@ -175,7 +189,11 @@ class spider{
             $_POST['cid'] = $project['cid'];
         }
 
-        $postArgs = spider::postArgs($project['poid']);
+        $poid = $project['poid'];
+        spider::$poid && $poid = spider::$poid;
+
+        $postArgs = spider::postArgs($poid);
+
 
         if($_GET['indexid']){
             $aid = (int)$_GET['indexid'];
@@ -215,6 +233,9 @@ class spider{
 
         if (spider::$callback['post'] && is_callable(spider::$callback['post'])) {
             $_POST = call_user_func_array(spider::$callback['post'],array($_POST));
+            if($_POST['callback']){
+                return $_POST;
+            }
         }
 
         iS::slashes($_POST);

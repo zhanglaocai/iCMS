@@ -209,26 +209,37 @@ class spiderUrls extends spider{
                 $rule['list_url']   = $prule_list_url;
             }
 
+            $urlsData = self::title_url_array($lists,$rule,$url);
+
+            if (spider::$callback['urls'] && is_callable(spider::$callback['urls'])) {
+                $urlsData = call_user_func_array(spider::$callback['urls'],array($urlsData,$url));
+                $urlsData['work'] && $work = $urlsData['work'];
+            }
             //PID@xx 返回URL列表
             if($callback=='CALLBACK@URL'){
                 $cbListUrl = array();
-                foreach ($lists AS $lkey => $row) {
-                    list($_stitle,$_url) = spiderTools::title_url($row,$rule,$url);
-                    if($_surl===false){
+                foreach ($urlsData AS $lkey => $value) {
+                    if($value['url']===false){
                         continue;
                     }
                     // if(spider::checker($work)===true){
-                        $cbListUrl[] = $_surl;
+                        $cbListUrl[] = $value['url'];
                     // }
                 }
                 return $cbListUrl;
+            }
+
+            if($work=="WEB@MANUAL"){
+                $listsArray[$url] = $urlsData;
             }
             if($work=="shell"){
                 $pubCount[$url]['count'] = count($lists);
                 $pubAllCount['count']+=$pubCount[$url]['count'];
                 echo "开始采集:".$url." 列表 ".$pubCount[$url]['count']."条记录\n";
-                foreach ($lists AS $lkey => $row) {
-                    list(spider::$title,spider::$url) = spiderTools::title_url($row,$rule,$url);
+                foreach ($urlsData AS $lkey => $value) {
+                    spider::$title = $value['title'];
+                    spider::$url   = $value['url'];
+
                     if(spider::$url===false){
                         continue;
                     }
@@ -270,13 +281,12 @@ class spiderUrls extends spider{
                     unset($lists);
                 }
             }
-            if($work=="WEB@MANUAL"){
-                $listsArray[$url] = $lists;
-            }
             if($work=="WEB@AUTO"||$work=='DATA@RULE'){
                 spider::$spider_url_ids = array();
-                foreach ($lists AS $lkey => $row) {
-                    list(spider::$title,spider::$url) = spiderTools::title_url($row,$rule,$url);
+                foreach ($urlsData AS $lkey => $value) {
+                    spider::$title = $value['title'];
+                    spider::$url   = $value['url'];
+
                     if(spider::$url===false){
                         continue;
                     }
@@ -290,10 +300,11 @@ class spiderUrls extends spider{
                             '&title=' . urlencode(spider::$title) .
                             '" target="_blank">测试内容规则</a>) <br />';
                         echo spider::$url . "<br />";
-                        if(spiderTools::$listArray){
+                        unset($value['title'],$value['url']);
+                        if($value){
                             echo '<b>其它采集结果:</b><br />';
                             echo '<pre>';
-                            var_dump(spiderTools::$listArray);
+                            var_dump($value);
                             echo '</pre>';
                         }
                         echo $hash . "<br /><hr />";
@@ -358,6 +369,13 @@ class spiderUrls extends spider{
                 iDB::update('spider_project',array('lastupdate'=>time()),array('id'=>$pid));
             break;
         }
+    }
+    public static function title_url_array($lists,$rule,$url){
+        $array = array();
+        foreach ($lists AS $lkey => $row) {
+            $array[$lkey] = spiderTools::title_url($row,$rule,$url);
+        }
+        return $array;
     }
 
 }

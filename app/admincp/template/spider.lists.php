@@ -42,8 +42,10 @@ $(function() {
         </thead>
         <tbody class="spider-list" id="spider-list-<?php echo md5($furl); ?>">
     <?php
-	  	foreach ($lists AS $lkey => $row) {
-        list($_title,$_url) = spiderTools::title_url($row,$rule,$furl);
+	  	foreach ($lists AS $lkey => $value) {
+        $_title = $value['title'];
+        $_url   = $value['url'];
+        // list($_title,$_url) = spiderTools::title_url($row,$rule,$furl);
         if($_url===false){
             continue;
         }
