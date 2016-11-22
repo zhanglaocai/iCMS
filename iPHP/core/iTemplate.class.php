@@ -148,13 +148,16 @@ class iTemplate {
 			$callback = $this->template_callback[$key];
 			if(is_array($callback)){
 				if(class_exists($callback[0]) && method_exists($callback[0], $callback[1])){
-					$value = call_user_func_array($callback,array($value));
+					$value = call_user_func_array($callback,is_array($value)?$value:array($value));
 				}
 			}else{
 				if(function_exists($callback)){
 					$value = $callback($value);
 				}
 			}
+		}
+		if(is_array($value)){
+			return $value[0];
 		}
 		return $value;
 	}

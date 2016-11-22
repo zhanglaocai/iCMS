@@ -41,37 +41,47 @@ class spiderTools extends spider{
     public static function domAttr($DOM,$selectors,$fun='text'){
         $selectors = str_replace('DOM::','',$selectors);
         list($selector,$attr) = explode("@", $selectors);
+
         if($attr){
+            if($attr=='text'){
+                return trim($DOM[$selector]->text());
+            }
             return $DOM[$selector]->attr($attr);
         }else{
             return $DOM[$selector]->$fun();
         }
     }
     public static function title_url($row,$rule,$baseUrl=null){
-        spiderTools::$listArray = array();
+
         $responses = array();
         if(strpos($rule['list_url_rule'], '<%url%>')!==false){
             $responses = $row;
         }else if(is_object($row)){
+            $DOM = phpQuery::pq($row);
+
+            $dom_key_map = array('title','url');
             $list_url_rule = explode("\n", $rule['list_url_rule']);
-            $DOM       = phpQuery::pq($row);
-            $keyMap = array('title','url');
+            empty($list_url_rule) && $list_url_rule = $dom_key_map;
             foreach ($list_url_rule as $key => $value) {
                 $dom_rule = trim($value);
+                if(empty($dom_rule)){
+                    continue;
+                }
                 if(strpos($dom_rule, '@@')!==false){
                     list($dom_key,$dom_rule) = explode("@@", $dom_rule);
-                }else{
-                    $dom_key = $keyMap[$key];
                 }
-                $content = '';
+                $content  = '';
                 if(strpos($dom_rule, 'DOM::')!==false){
                     $content = spiderTools::domAttr($DOM,$dom_rule);
+                    empty($dom_key) && $dom_key  = $dom_key_map[$key];
                 }else{
-                    if($dom_key=='url'){
-                        $dom_rule OR $dom_rule = 'href';
+                    if($dom_rule=='url'||$dom_rule=='href'){
+                        $dom_key  = 'url';
+                        $dom_rule = 'href';
                     }
-                    if($dom_key=='title'){
-                        $dom_rule OR $dom_rule = 'text';
+                    if($dom_rule=='title'||$dom_rule=='text'){
+                        $dom_key  = 'title';
+                        $dom_rule = 'text';
                     }
                     if($dom_rule=='text'){
                         $content = $DOM->text();
@@ -79,14 +89,13 @@ class spiderTools extends spider{
                         $content = $DOM->attr($dom_rule);
                     }
                 }
+
                 $responses[$dom_key] = str_replace('&nbsp;','',trim($content));
             }
             unset($DOM);
         }
-        $title = $responses['title'];
-        $url   = $responses['url'];
-        $title = trim($title);
-        $url   = trim($url);
+        $title = trim($responses['title']);
+        $url   = trim($responses['url']);
         $url   = str_replace('<%url%>',$url, $rule['list_url']);
         if(strpos($url, 'AUTO::')!==false && $baseUrl){
             $url = str_replace('AUTO::','',$url);
@@ -95,16 +104,19 @@ class spiderTools extends spider{
         $rule['list_url_clean'] && $url = spiderTools::dataClean($rule['list_url_clean'],$url);
         $title = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $title);
 
-        unset($responses['title'],$responses['url']);
-        if($responses){
-            foreach ($responses as $key => $value) {
-                if(!is_numeric($key) && strpos($key, 'var_')===false){
-                    spiderTools::$listArray[$key] = $value;
-                }
-            }
-            unset($responses);
-        }
-        return array($title,$url);
+        // unset($responses['title'],$responses['url']);
+        $responses['title'] = $title;
+        $responses['url'] = $url;
+
+        // if($responses){
+        //     foreach ($responses as $key => $value) {
+        //         if(!is_numeric($key) && strpos($key, 'var_')===false){
+        //             spiderTools::$listArray[$key] = $value;
+        //         }
+        //     }
+        //     unset($responses);
+        // }
+        return $responses;
     }
 
     public static function pregTag($rule) {
@@ -183,6 +195,7 @@ class spiderTools extends spider{
                         return false;
                     }
                 }
+
             }
             if(strpos($_pattern, 'NOT::')!==false){
                 $not = str_replace('NOT::','', $_pattern);

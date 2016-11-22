@@ -272,6 +272,7 @@ class spiderContent extends spider{
                     exit('<h1>'.$filterMsg.'</h1>');
                 }
                 if(spider::$work){
+                    echo spider::errorlog($filterMsg,array($rule['__url__'],$pageurl));
                     echo "\n{$filterMsg}\n";
                     return false;
                 }else{
@@ -285,6 +286,7 @@ class spiderContent extends spider{
                 exit('<h1>'.$emptyMsg.'</h1>');
             }
             if(spider::$work){
+                echo spider::errorlog($emptyMsg,array($rule['__url__'],$pageurl));
                 echo "\n{$emptyMsg}\n";
                 return false;
             }else{

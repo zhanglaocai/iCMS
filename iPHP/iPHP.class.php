@@ -373,9 +373,9 @@ class iPHP {
 			self::throw404('运行出错！ 找不到模板文件 <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
 		}
 	}
-    public static function tpl_callback_output($output){
-    	// var_dump($output[1],self::timer_stop());
-        return $output[0];
+    public static function tpl_callback_output($html,$file=null){
+
+        return $html;
     }
 	public static function PG($key) {
 		return isset($_POST[$key]) ? $_POST[$key] : $_GET[$key];
@@ -786,18 +786,23 @@ class iPHP {
 		self::msg('warning:#:warning:#:' . $info);
 	}
 	public static function msg($info, $ret = false) {
+        if(PHP_SAPI=='cli'){
+            exit($info.PHP_EOL);
+        }
+        if(strpos($info,':#:')===false){
+            $msg = $info;
+        }else{
 		list($label, $icon, $content) = explode(':#:', $info);
-		$msg = '<div class="iPHP-msg"><div class="label label-' . $label . '">';
+            $msg = '<div class="iPHP-msg"><span class="label label-'.$label.'">';
 		$icon && $msg .= '<i class="fa fa-' . $icon . '"></i> ';
 		if (strpos($content, ':') !== false) {
 			$lang = self::lang($content, false);
 			$lang && $content = $lang;
 		}
-		$msg .= $content . '</div></div>';
-		if ($ret) {
-			return $msg;
+            $msg.= $content.'</span></div>';
 		}
 
+    	if($ret) return $msg;
 		echo $msg;
 	}
 	public static function js($str = "js:", $ret = false) {
@@ -853,8 +858,7 @@ class iPHP {
 	public static function dialog($info = array(), $js = 'js:', $s = 3, $buttons = null, $update = false) {
 		$info = (array) $info;
 		$title = $info[1] ? $info[1] : '提示信息';
-		$content = $info[0];
-		strstr($content, ':#:') && $content = self::msg($content, true);
+        $content = self::msg($info[0],true);
 		$content = addslashes('<table class="ui-dialog-table" align="center"><tr><td valign="middle">' . $content . '</td></tr></table>');
 		$options = array(
 			"time:null","api:'iPHP'",
