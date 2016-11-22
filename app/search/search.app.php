@@ -31,6 +31,13 @@ class searchApp {
         $search['keyword'] = $q;
         $tpl===false && $tpl = '{iTPL}/search.htm';
         $q && $this->slog($q);
+
+        $iurl =  new stdClass();
+        $iurl->href = iPHP::router('/api',iPHP_ROUTER_REWRITE);
+        $iurl->href.= '?app=search&q='.$q;
+        $iurl->pageurl = $iurl->href.'&page={P}';
+        iCMS::set_html_url($iurl);
+
         iPHP::assign("search",$search);
         return iPHP::view($tpl,'search');
     }
