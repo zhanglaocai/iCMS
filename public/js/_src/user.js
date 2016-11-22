@@ -41,5 +41,22 @@ define("user", function(require) {
                 utils.callback(ret,SUCCESS,SUCCESS,me,data);
             }, 'json');
         },
+        UCARD:function(){
+          require("poshytip");
+
+          $("[i^='ucard']").poshytip({
+            idName:'iCMS-UCARD',
+            className:'iCMS_UI_TOOLTIP',
+            alignTo:'target',alignX:'center',
+            offsetX:0,offsetY:5,fade:false,slide:false,
+            content: function(updateCallback) {
+                var uid = $(this).attr('i').replace('ucard:','');
+                if(uid){
+                    $.get(API.url('user', "&do=ucard"),{'uid':uid},updateCallback);
+                    return '<div class="tip_info"><img src="'+iCMS.CONFIG.PUBLIC+'/ui/loading.gif"><span> 用户信息加载中……</span></div>';
+                }
+            }
+          });
+        },
     });
 });

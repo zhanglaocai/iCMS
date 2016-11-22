@@ -24,7 +24,7 @@ function tpl_compiler_debug($params, &$tpl)
 
 	if(!function_exists("generate_compiler_debug_output"))
 	{
-		require TEMPLATE_LITE_DIR . "internal/compile.generate_compiler_debug_output.php";
+		require iTEMPLATE_PATH . "internal/compile.generate_compiler_debug_output.php";
 	}
 	$debug_output .= generate_compiler_debug_output($tpl);
 	return $debug_output;

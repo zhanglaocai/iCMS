@@ -143,6 +143,21 @@ class iTemplate {
 	function clear_compiled_tpl($file = null){
 		$this->_destroy_dir($file);
 	}
+	function template_callback($key,$value){
+		if ($this->template_callback[$key]){
+			$callback = $this->template_callback[$key];
+			if(is_array($callback)){
+				if(class_exists($callback[0]) && method_exists($callback[0], $callback[1])){
+					$value = call_user_func_array($callback,array($value));
+				}
+			}else{
+				if(function_exists($callback)){
+					$value = $callback($value);
+				}
+			}
+		}
+		return $value;
+	}
 	function register_block($block, $implementation){
 		$this->_plugins['block'][$block] = $implementation;
 	}
@@ -175,9 +190,9 @@ class iTemplate {
 		unset($this->_plugins['compiler'][$function]);
 	}
 	function _get_resource($file){
-//		if(strstr($file, 'debug.tpl')){
-//			return $file;
-//		}
+		if(strpos($file, 'debug.tpl')!==false){
+			return iTEMPLATE_PATH . "template/internal/debug.tpl";
+		}
 
 		$file = ltrim($file,'/');
 		strpos($file,'..') && $this->trigger_error("resource file has '..'", E_USER_ERROR);
@@ -186,14 +201,7 @@ class iTemplate {
 			$this->template_dir = $_dir;
 		}else{
 			strpos($file,'./') !==false && $file = str_replace('./',dirname($this->_file).'/',$file);
-			if ($this->template_callback){
-				$template_callback = $this->template_callback;
-				if(is_array($template_callback)){
-					$file = call_user_func_array($template_callback,array($file));
-				}else{
-					$file = $template_callback($file);
-				}
-			}
+			$file = $this->template_callback('resource',$file);
 		}
 
 		$this->template_dir = $this->_get_dir($this->template_dir);
@@ -267,6 +275,7 @@ class iTemplate {
 			$iTC->_iTPL_VARS                = &$this->_iTPL_VARS;
 			$iTC->default_modifiers         = &$this->default_modifiers;
 			$output                         = $iTC->_compile_file($template_file);
+			$output = $this->template_callback('output',array($output,$file));
 			file_put_contents($compile_file,$output);
 		}
 		if($ret==='file') return $compile_file;
@@ -276,6 +285,7 @@ class iTemplate {
 		if ($ret) {
 			$output = ob_get_contents();
 			ob_end_clean();
+//			$output = $this->template_callback('output',array($file,$output));
 			return $output;
 		}
 	}
@@ -627,12 +637,10 @@ class iTemplate_Compiler extends iTemplate {
 				break;
 			case 'php':
 				list (,$php_block) = each($this->_php_blocks);
-				//¹ýÂËPHP 2007-7-23 0:13
 				if($this->php_handling != "PHP_ALLOW"){
 					return htmlspecialchars($php_extract . '<?php '.$php_block.' ?>');
 					break;
 				}
-				//¹ýÂËPHP 2007-7-23 0:13
 				$this->_linenum += substr_count($php_block, "\n");
 				$php_extract = '';
 				$this->php_extract_vars && $php_extract = '<?php extract($this->_vars, EXTR_REFS); ?>' . "\n";

@@ -138,9 +138,19 @@ i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 
 .userApp-wrap .sidebar ul li:first-child { border-top: 0px; }
 .userApp-wrap .sidebar ul li:last-child { border-bottom: 0px; }
 .userApp-wrap .sidebar  ul li.f16 { font-size: 16px; padding: 10px 2px; font-weight: bold; }
-.userApp-wrap .sidebar  ul li.f18 { font-size: 18px; padding: 10px 2px; font-weight: bold; }
+.userApp-wrap .sidebar  ul li.f18 { font-size: 18px; padding: 10px 2px; font-weight: bold;
+/* background-color: #fff;
+    color: #333;
+    border-radius: 5px 0px 0px 5px;*/
+}
 .userApp-wrap .sidebar a.c { font-weight: bold; }
 .userApp-wrap .sidebar a { color: #fff; padding: 10px 0 8px 10px; display: block; text-decoration: none; }
+
+.sidebar > ul>li>ul::before { content: ""; display: block; position: absolute; z-index: 1; left: 15px; top: 0; bottom: 0; border-left: 1px solid #767676; }
+.sidebar > ul>li>ul>li{padding-left: 5px !important;}
+.sidebar > ul>li>ul>li::before {content: "";display: block;position: absolute;width: 10px;left: 0px;top: 20px;border-top: 1px solid #767676;z-index: 1;}
+.sidebar > ul>li>ul>li.divider::before { border-top: 0px; }
+
 .userApp-wrap .contents { display: block; padding: 10px 10px 40px 10px; margin-left: 200px; background-color: #fff; min-height: 600px; border-radius: 0px 5px 5px 0px; }
 .userApp-wrap .iner { _padding-top: -50px; display: inline; *vertical-align: 10px; }
 .userApp-wrap .manage-title,

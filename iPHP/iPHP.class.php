@@ -250,7 +250,10 @@ class iPHP {
 	public static function template_start() {
 		self::import(iPHP_CORE . '/iTemplate.class.php');
 		self::$iTPL = new iTemplate();
-		self::$iTPL->template_callback = array("iPHP", "tpl_path");
+        self::$iTPL->template_callback = array(
+            "resource" => array("iPHP","tpl_callback_path"),
+            "output"   => array("iPHP","tpl_callback_output")
+        );
 		self::$iTPL->template_dir = iPHP_TPL_DIR;
 		self::$iTPL->compile_dir = iPHP_TPL_CACHE;
 		self::$iTPL->left_delimiter = '<!--{';
@@ -302,8 +305,8 @@ class iPHP {
 			return self::$iTPL->fetch($tpl);
 		} else {
 			self::$iTPL->display($tpl);
-			if (iPHP_DEBUG) {
-				//echo '<span class="label label-success">内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL执行:'.iDB::$num_queries.'次</span>';
+			if (iPHP_DEBUG && iPHP_TPL_DEBUG) {
+				// echo '<span class="label label-success">模板:'.$tpl.' 内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL执行:'.iDB::$num_queries.'次</span>';
 			}
 		}
 	}
@@ -339,7 +342,7 @@ class iPHP {
 	 * @param  [type] $tpl [description]
 	 * @return [type]      [description]
 	 */
-	public static function tpl_path($tpl) {
+	public static function tpl_callback_path($tpl){
 		if (strpos($tpl, iPHP_APP . ':/') !== false) {
 			$_tpl = str_replace(iPHP_APP . ':/', iPHP_DEFAULT_TPL, $tpl);
 			if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
@@ -370,6 +373,10 @@ class iPHP {
 			self::throw404('运行出错！ 找不到模板文件 <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
 		}
 	}
+    public static function tpl_callback_output($output){
+    	// var_dump($output[1],self::timer_stop());
+        return $output[0];
+    }
 	public static function PG($key) {
 		return isset($_POST[$key]) ? $_POST[$key] : $_GET[$key];
 	}

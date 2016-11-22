@@ -8,6 +8,7 @@
             'cookie.js',
             'api.js',
             'artdialog.js',
+            'poshytip.js',
             'ui.dialog.js',
             'ui.js',
             'utils.js',

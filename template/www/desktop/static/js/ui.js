@@ -39,6 +39,7 @@ $(function() {
                 console.log(f)
             }
         );
+        $USER.UCARD();
         //退出登陆
         $(".logout").click(function(event) {
             event.preventDefault();

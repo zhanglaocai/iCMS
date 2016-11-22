@@ -8,8 +8,8 @@ define("utils",{
             s.rel = "stylesheet";
             h.insertBefore(s, h.firstChild);
         },
-        addjs: function(url, id) {
-            url = iCMS.CONFIG.PUBLIC+'/'+url;
+        addjs: function(name, id) {
+            url = iCMS.CONFIG.PUBLIC+'/'+name+'.js';
             var s = document.createElement("script"), h = document.getElementsByTagName("head")[0];
             s.id = id;
             s.src = url;
