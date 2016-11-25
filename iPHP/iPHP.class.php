@@ -304,7 +304,7 @@ class iPHP{
         }else {
             self::$iTPL->display($tpl);
 			if (iPHP_DEBUG && iPHP_TPL_DEBUG) {
-				echo '<span class="label label-success">模板:'.$tpl.' 内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL执行:'.iDB::$num_queries.'次</span>';
+				// echo '<span class="label label-success">模板:'.$tpl.' 内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL执行:'.iDB::$num_queries.'次</span>';
             }
         }
     }
