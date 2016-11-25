@@ -1098,7 +1098,7 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline){
 	$html = str_replace('\\','/',$html);
 	$html = str_replace(iPATH,'iPHP://',$html);
     if(PHP_SAPI=='cli'){
-        $html = str_replace(array("<b>", "</b>", "<pre>", "</pre>"), array('\033[31m',' \033[0m',''), $html);
+        $html = str_replace(array("<b>", "</b>", "<pre>", "</pre>"), array("\033[31m","\033[0m",''), $html);
         echo $html."\n";
         exit;
     }
