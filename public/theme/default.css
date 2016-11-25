@@ -149,6 +149,10 @@ color: #333; white-space: nowrap; font-size: 12px; }
 .article-info .article-tags { overflow: hidden; width: 260px; text-align: center; }
 .article-info .share-area { float: right; width: 200px; }
 .article-body p { margin: 6px 0; text-indent: 28px; font-size: 14px; line-height: 24px; }
+.chapterlist { border: 1px dashed #CCC; max-height: none; padding: 10px; }
+.chapterlist h3 { height: 30px; line-height: 30px; text-align: left; font-size: 14px; margin: 0px !important;}
+.chapterlist li { width: 48%; float: left; text-align: left; margin-bottom: 5px; }
+.chapterlist li a { border: 0px; text-align: left; padding: 3px !important; }
 .article-pagenav { position: relative; margin: 0 auto; padding: 10px; background: #f3f3f3; text-align: center; font-size: 14px; }
 .article-pagenav a { color: #666; }
 .comments_list { }
@@ -157,3 +161,4 @@ color: #333; white-space: nowrap; font-size: 12px; }
 /* --- */
 .prev-next { float: right; margin-right: 20px; }
 #bdshare { float: right !important; line-height: 28px; margin-right: 10px; margin-top: 8px;}
+

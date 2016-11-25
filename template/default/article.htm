@@ -84,10 +84,30 @@
           <!--{/if}-->
 
         </div>
+        <!--{if $article.chapter}-->
+          <div class="pagenav iCMS_pagination clr chapterlist">
+            <h3>内容导航</h3>
+            <ul>
+            <!--{foreach value="pagelist" from="$article.page.list"}-->
+              <li>第<!--{$pagelist.pn}-->章：
+                <a href="<!--{$pagelist.url}-->" title="<!--{$pagelist.title}-->">
+                  <!--{if $pagelist.title}-->
+                  <!--{$pagelist.title|default:'下一页更精彩'}-->
+                  <!--{else}-->
+                  第<!--{$pagelist.pn}-->章
+                  <!--{/if}-->
+                </a>
+              </li>
+            <!--{/foreach}-->
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+        <!--{else}-->
         <div class="article-pagenav iCMS_pagination">
           <!--{$article.page.nav}-->
-          <div class="clearfix"></div>
         </div>
+        <!--{/if}-->
+
         <div class="tip clr">提示：键盘也能翻页，试试"← →"键</div>
       </div>
       <script type="text/javascript">
