@@ -344,17 +344,18 @@ function modal_icms(el,a){
 
 
             $('[data-toggle="batch"]').click(function(){
-                var checkbox = $("input[name]:checkbox:checked",im);
+                var checkbox = $("input:checkbox:checked",im);
                 if(checkbox.length==0){
                     iCMS.alert("请选择要操作项目!");
                     return true;
                 }
 
                 var a = $(this),b = this,
-                act   = a.attr('data-action').replace(',','_'),
+                act   = a.attr('data-action');
+                _act  = act.replace(',','_').replace(':','_'),
                 dia   = a.attr('data-dialog'),
-                ab    = $('#'+act+'Batch'),
-                box   = document.getElementById(act+'Batch'),
+                ab    = $('#'+_act+'Batch'),
+                box   = document.getElementById(_act+'Batch'),
                 title = a.text();
 
                 if(dia==="no"){
