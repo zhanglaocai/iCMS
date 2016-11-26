@@ -22,7 +22,6 @@ function marker_html($vars){
         $where_sql.= " AND `id`='{$vars['id']}'";
     }
     $marker = iDB::row("SELECT * FROM `#iCMS@__marker` {$where_sql}",ARRAY_A);
-    iPHP_SQL_DEBUG && iDB::debug(1);
     if($marker){
         echo $marker['data'];
     }

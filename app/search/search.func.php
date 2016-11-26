@@ -24,7 +24,6 @@ function search_list($vars){
 	}
 	if(empty($resource)){
         $resource = iDB::all("SELECT * FROM `#iCMS@__search_log` {$where_sql} {$order_sql} LIMIT $maxperpage");
-		iPHP_SQL_DEBUG && iDB::debug(1);
         if($resource)foreach ($resource as $key => $value) {
             $value['name']  = $value['search'];
             $value['url']   = search_url(array('query'=>$value['name'],'ret'=>true));

@@ -149,7 +149,6 @@ function article_list($vars) {
 		if (empty($ids_array)) {
 			$ids_order_sql = $map_order_sql ? $map_order_sql : $order_sql;
 			$ids_array = iDB::all("SELECT `#iCMS@__article`.`id` FROM `#iCMS@__article` {$where_sql} {$ids_order_sql} {$limit}");
-			iPHP_SQL_DEBUG && iDB::debug(1);
 			$vars['cache'] && iCache::set($map_cache_name, $ids_array, $cache_time);
 		}
 	} else {
@@ -173,7 +172,6 @@ function article_list($vars) {
 	// }
 	if (empty($resource)) {
 		$resource = iDB::all("SELECT `#iCMS@__article`.* FROM `#iCMS@__article` {$where_sql} {$order_sql} {$limit}");
-		iPHP_SQL_DEBUG && iDB::debug(1);
 		$resource = __article_array($vars, $resource);
 		$vars['cache'] && iCache::set($cache_name, $resource, $cache_time);
 	}
@@ -268,7 +266,6 @@ function article_search($vars) {
 		$offset = $multi->offset;
 	}
 	$resource = iDB::all("SELECT * FROM `#iCMS@__article` WHERE {$where_sql} {$order_sql} LIMIT {$maxperpage}");
-	iPHP_SQL_DEBUG && iDB::debug(1);
 	$resource = __article_array($vars, $resource);
 	return $resource;
 }
@@ -332,11 +329,23 @@ function __article_array($vars, $variable) {
 	if ($variable) {
 		$articleApp = iPHP::app("article");
 		$vars['category_lite'] = true;
+        if($vars['data']){
+            $aidArray = iPHP::get_ids($variable,'id','array',null);
+            $aidArray && $article_data = (array) $articleApp->data($aidArray);
+        }
+        if($vars['tags']){
+            $tagArray = iPHP::get_ids($variable,'tags','array',null,'id');
+            $tagArray && $tags_data = (array) $articleApp->tags($tagArray);
+        }
 		foreach ($variable as $key => $value) {
 			$value = $articleApp->value($value, false, $vars);
 			if ($value === false) {
 				continue;
 			}
+            if($vars['data'] && $article_data){
+                $value['data']  = (array)$article_data[$value['id']];
+            }
+
 			if ($vars['page']) {
 				$value['page'] = $GLOBALS['page'] ? $GLOBALS['page'] : 1;
 				$value['total'] = $total;

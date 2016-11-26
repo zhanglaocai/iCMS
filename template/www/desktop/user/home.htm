@@ -22,11 +22,14 @@
             <div class="card_banner"> <img src="<!--{$user.coverpic.pc}-->" alt="<!--{$user.nickname}-->的封面" onerror="iCMS.user.nocover(this);"> </div>
             <div class="card_top">
                 <div class="card_info">
-                    <a class="card_title_name" data-tip="iCMS:ucard:<!--{$user.uid}-->" href="<!--{$user.urls.home}-->">
+                    <a class="card_title_name" i="ucard:<!--{$user.uid}-->" href="<!--{$user.urls.home}-->">
                         <!--{$user.nickname}-->
                     </a>
                     <i class="icon icon-profile-<!--{$user.gender}-->"></i>
-                    <a data-param='{"uid":"<!--{$user.uid}-->","name":"<!--{$user.nickname}-->","follow":"<!--{$status.followed}-->"}' class="iCMS_user_follow follow_btn <!--{if $status.followed}-->unfollow<!--{else}-->follow<!--{/if}-->"></a>
+
+                    <a i="follow:<!--{$user.uid}-->:1" class="follow_btn follow <!--{if $status.followed}-->hide<!--{/if}-->"></a>
+                    <a i="follow:<!--{$user.uid}-->:0" class="follow_btn unfollow <!--{if !$status.followed}-->hide<!--{/if}-->"></a>
+
                     <p class="card_slogan">
                         <!--{$user.data.slogan|default:'这家伙太懒了,什么都没有留下!'}-->
                     </p>
@@ -44,7 +47,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="card_avatar"> <a href="<!--{$user.urls.home}-->"> <img class="iCMS_user_avatar card_avatar_img" src="<!--{$user.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a> </div>
+                <div class="card_avatar"> <a i="ucard:<!--{$user.uid}-->" href="<!--{$user.urls.home}-->"> <img class="iCMS_user_avatar card_avatar_img" src="<!--{$user.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a> </div>
             </div>
         </div>
         <div class="home-main">
@@ -100,8 +103,8 @@
                     <ul class="avatar_list">
                         <!--{iCMS:user:follow loop="true" row="30" fuid=$user.uid}-->
                         <li>
-                            <a href="<!--{$user_follow.url}-->" title="<!--{$user_follow.name}-->">
-                                    <img class="avatar_30" data-tip="iCMS:ucard:<!--{$user_follow.uid}-->" src="<!--{$user_follow.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a>
+                            <a i="ucard:<!--{$user_follow.uid}-->"  href="<!--{$user_follow.url}-->" title="<!--{$user_follow.name}-->">
+                                    <img class="avatar_30" src="<!--{$user_follow.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a>
                         </li>
                         <!--{iCMSelse}-->
                         <li><span class="fs12 gray">居然没人关注，太low了吧</span></li>
@@ -120,8 +123,8 @@
                     <ul class="avatar_list">
                         <!--{iCMS:user:follow loop="true" row="30" userid=$user.uid}-->
                         <li>
-                            <a href="<!--{$user_follow.url}-->" title="<!--{$user_follow.name}-->">
-                                    <img class="avatar_30" data-tip="iCMS:ucard:<!--{$user_follow.uid}-->" src="<!--{$user_follow.avatar}-->" onerror="iUSER.NOAVATAR(this);">
+                            <a i="ucard:<!--{$user_follow.uid}-->"  href="<!--{$user_follow.url}-->" title="<!--{$user_follow.name}-->">
+                                    <img class="avatar_30" src="<!--{$user_follow.avatar}-->" onerror="iUSER.NOAVATAR(this);">
                             </a>
                         </li>
                         <!--{iCMSelse}-->

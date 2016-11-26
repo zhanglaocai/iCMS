@@ -276,19 +276,19 @@ class articleApp {
 		}
 
 		if ($vars['tags']) {
-			$article['tags_fname'] = $category['name'];
-			if ($article['tags']) {
-				$tagApp = iPHP::app("tag");
-				$tagArray = $tagApp->get_array($article['tags']);
-				$article['tag_array'] = array();
-				foreach ((array) $tagArray AS $tk => $tag) {
-					$article['tag_array'][$tk] = $tag;
-					$article['tags_link'] .= $tag['link'];
-					$tag_name_array[] = $tag['name'];
-				}
-				$tag_name_array && $article['tags_fname'] = $tag_name_array[0];
-				unset($tagApp, $tagArray, $tag_name_array);
-			}
+			// $article['tags_fname'] = $category['name'];
+			// if ($article['tags']) {
+			// 	$tagApp = iPHP::app("tag");
+			// 	$tagArray = $tagApp->get_array($article['tags']);
+			// 	$article['tag_array'] = array();
+			// 	foreach ((array) $tagArray AS $tk => $tag) {
+			// 		$article['tag_array'][$tk] = $tag;
+			// 		$article['tags_link'] .= $tag['link'];
+			// 		$tag_name_array[] = $tag['name'];
+			// 	}
+			// 	$tag_name_array && $article['tags_fname'] = $tag_name_array[0];
+			// 	unset($tagApp, $tagArray, $tag_name_array);
+			// }
 		}
 
 		if ($vars['meta']) {
@@ -346,6 +346,62 @@ class articleApp {
 		);
 		return $article;
 	}
+	public function tags($tags=0){
+		if(empty($tags)) return array();
+
+		if(!is_array($tags) && strpos($tags, ',') !== false){
+			$tags = explode(',', $tags);
+		}
+		$multi = array();
+		foreach ($tags as $key => $value) {
+			if($value){
+				$a = explode(',', $value);
+				foreach ($a as $ak => $av) {
+					// $multi[$av] = $key;
+					$tArray[] = $av;
+				}
+			}
+		}
+		$tagApp = iPHP::app("tag");
+		$tagArray = $tagApp->multi($tArray);
+
+		// $sql  = iPHP::where($tagArray,'name',false,true);
+		var_dump($tagArray);
+		// $data = array();
+		// $rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}",OBJECT);
+		// if($rs){
+		// 	$_count = count($rs);
+		// 	if($_count>1){
+		//         for ($i=0; $i < $_count; $i++) {
+		//         	$data[$rs[$i]->aid]= $rs[$i];
+		//         }
+		// 	}else{
+		// 		$data = $rs[0];
+		// 	}
+		// }
+	 //   	return $data;
+	}
+	public function data($aids=0){
+		if(empty($aids)) return array();
+		if(!is_array($aids) && strpos($aids, ',') !== false){
+			$aids = explode(',', $aids);
+		}
+		$sql  = iPHP::where($aids,'aid',false,true);
+		$data = array();
+		$rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}",OBJECT);
+		if($rs){
+			$_count = count($rs);
+			if($_count>1){
+		        for ($i=0; $i < $_count; $i++) {
+		        	$data[$rs[$i]->aid]= $rs[$i];
+		        }
+			}else{
+				$data = $rs[0];
+			}
+		}
+	   	return $data;
+	}
+
 	public function ubb($content) {
 		if (strpos($content, '[img]') !== false) {
 			$content = stripslashes($content);

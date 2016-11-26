@@ -19,31 +19,4 @@
         </tr>
     </tfoot>
 </table>
-<script>
-$(".btn_follow").click(function(event) {
-    event.preventDefault();
-    var me = $(this);
 
-    iCMS.run('user',function($USER){
-        $USER.FOLLOW(me,
-            //关注
-            function(c,$param) {
-                $param.follow = ($param.follow == '1' ? '0' : '1');
-
-                iCMS.run('api').param(me,$param);
-
-                if ($param.follow == '1') {
-                    me.removeClass('btn btn-success').html('<i class="fa fa-check"></i> 已关注，取消');
-                } else {
-                    me.addClass('btn btn-success').html('<i class="fa fa-plus"></i> 关注');
-                }
-            },
-            //需要登陆
-            function(){
-                iCMS.UI.alert('需要登陆');
-            }
-        );
-    });
-
-});
-</script>

@@ -2,6 +2,7 @@ window.iCMS = {
     version : "6.2.0",
     plugins : {},
     modules : {},
+    data : {},
     UI:{},
     API:require("api"),
     init: function(options) {

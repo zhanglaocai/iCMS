@@ -448,7 +448,6 @@ class articleAdmincp{
                     SELECT `id` FROM `#iCMS@__article` {$sql}
                     ORDER BY {$orderby} {$limit}
                 ");
-                //iDB::debug(1);
                 $ids = iCMS::get_ids($ids_array);
                 $ids = $ids?$ids:'0';
                 $sql = "WHERE `id` IN({$ids})";
@@ -461,7 +460,6 @@ class articleAdmincp{
             $limit = '';
         }
         $rs = iDB::all("SELECT * FROM `#iCMS@__article` {$sql} ORDER BY {$orderby} {$limit}");
-        //iDB::debug(1);
         $_count = count($rs);
         $propArray = admincp::getProp("pid",null,'array');
         include admincp::view("article.manage");
@@ -547,9 +545,9 @@ class articleAdmincp{
             $description = $this->autodesc($body);
         }
 
-        stripos($pic, 'http://') ===false OR $pic  = iFS::http($pic);
-        stripos($mpic, 'http://')===false OR $mpic = iFS::http($mpic);
-        stripos($spic, 'http://')===false OR $spic = iFS::http($spic);
+        (iFS::checkHttp($pic)  && !isset($_POST['pic_http']))  && $pic  = iFS::http($pic);
+        (iFS::checkHttp($mpic) && !isset($_POST['mpic_http'])) && $mpic = iFS::http($mpic);
+        (iFS::checkHttp($spic) && !isset($_POST['spic_http'])) && $spic = iFS::http($spic);
 
 
         $haspic   = empty($pic)?0:1;

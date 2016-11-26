@@ -214,13 +214,6 @@ defined('iPHP') OR exit('What are you doing?');
             <span class="help-inline">此选项只对 conf 目录下 router.config.php 里的配置有效</span>
           </div>
           <div id="setting-cache" class="tab-pane hide">
-            <div class="input-prepend"> <span class="add-on">启用缓存</span>
-              <div class="switch">
-                <input type="checkbox" data-type="switch" name="config[cache][enable]" id="cache_enable" <?php echo $config['cache']['enable']?'checked':''; ?>/>
-              </div>
-            </div>
-            <span class="help-inline">启用缓存可减轻数据库压力</span>
-            <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">缓存引擎</span>
               <select name="config[cache][engine]" id="cache_engine" class="chosen-select">
                 <option value="file">文件缓存 FileCache</option>

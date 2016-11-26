@@ -56,10 +56,10 @@ class userApp {
 			iPHP::assign('me', (array) $this->me);
 		}
 		$this->user->hits_script = iCMS_API . '?app=user&do=hits&uid=' . $this->user->uid;
-		iPHP::assign('status', $status);
 		$user = (array) $this->user;
 		$userdata && $user['data'] = (array) user::data($this->user->uid);
 
+		iPHP::assign('status', $status);
 		iPHP::assign('user',$user);
 	}
 
@@ -871,14 +871,27 @@ class userApp {
 		$uid = (int) user::$userid;
 		$name = user::$nickname;
 		$fuid = (int) $_POST['uid'];
-		$fname = iS::escapeStr($_POST['name']);
 		$follow = (bool) $_POST['follow'];
 
 		$uid OR iPHP::code(0, 'iCMS:error', 0, 'json');
 		$fuid OR iPHP::code(0, 'iCMS:error', 0, 'json');
 
 		if ($follow) {
-			//1 取消关注
+			//1 关注
+			$uid == $fuid && iPHP::code(0, 'user:follow:self', 0, 'json');
+			$check = user::follow($uid, $fuid);
+			if ($check) {
+				iPHP::code(1, 'user:follow:success', 0, 'json');
+			} else {
+				$fname  = user::value($fuid,'uid','nickname');
+				$fields = array('uid', 'name', 'fuid', 'fname');
+				$data   = compact($fields);
+				iDB::insert('user_follow', $data);
+				user::update_count($uid, 1, 'follow');
+				user::update_count($fuid, 1, 'fans');
+				iPHP::code(1, 'user:follow:success', 0, 'json');
+			}
+		} else {
 			iDB::query("
                 DELETE FROM `#iCMS@__user_follow`
                 WHERE `uid` = '$uid'
@@ -888,19 +901,6 @@ class userApp {
 			user::update_count($uid, 1, 'follow', '-');
 			user::update_count($fuid, 1, 'fans', '-');
 			iPHP::code(1, 0, 0, 'json');
-		} else {
-			$uid == $fuid && iPHP::code(0, 'user:follow:self', 0, 'json');
-			$check = user::follow($uid, $fuid);
-			if ($check) {
-				iPHP::code(1, 'user:follow:success', 0, 'json');
-			} else {
-				$fields = array('uid', 'name', 'fuid', 'fname');
-				$data = compact($fields);
-				iDB::insert('user_follow', $data);
-				user::update_count($uid, 1, 'follow');
-				user::update_count($fuid, 1, 'fans');
-				iPHP::code(1, 'user:follow:success', 0, 'json');
-			}
 		}
 	}
 	public function ACTION_favorite() {
@@ -1082,7 +1082,7 @@ class userApp {
 			$secondary = $this->__secondary();
 			iPHP::assign('secondary', $secondary);
 		}
-		iPHP::view('iCMS://user/card.htm');
+		iPHP::view('iCMS://user/user.card.htm');
 	}
 
 	private function __secondary() {

@@ -172,7 +172,7 @@ $(function(){
             <option value="2"> 回收站 [status='2']</option>
             <option value="3"> 待审核 [status='3']</option>
             <option value="4"> 未通过 [status='4']</option>
-            <?php echo iACP::getProp("status") ; ?>
+            <?php echo admincp::getProp("status") ; ?>
           </select>
         </div>
         <div class="input-prepend input-append"> <span class="add-on">每页</span>

@@ -16,7 +16,6 @@ function comment_array($vars){
 	isset($vars['userid']) && $where_sql.= " AND `userid`='".(int)$vars['userid']."'";
 
 	$rs = iDB::row("SELECT * FROM `#iCMS@__comment` WHERE {$where_sql} LIMIT 1;",ARRAY_A);
-	iPHP_SQL_DEBUG && iDB::debug(1);
 	if($rs){
 		$rs['user'] = user::info($rs['userid'],$rs['username']);
 	}
@@ -128,7 +127,6 @@ function comment_list($vars){
 	}
 	if(empty($resource)){
 		$resource		= iDB::all("SELECT * FROM `#iCMS@__comment` WHERE {$where_sql} {$order_sql} {$limit}");
-		//iDB::debug(1);
 		$ln		= ($GLOBALS['page']-1)<0?0:$GLOBALS['page']-1;
 		if($resource)foreach ($resource as $key => $value) {
 			if($vars['date_format']){

@@ -11,7 +11,7 @@
  * @$Id: iCache.class.php 2408 2014-04-30 18:58:23Z coolmoo $
  */
 //array(
-//	'enable'	=> true,falsh,
+//	'enable'	=> true,false,
 //	'engine'	=> memcached,redis,file,
 //	'host'		=> 127.0.0.1,/tmp/redis.sock,
 //	'port'		=> 11211,
@@ -25,9 +25,9 @@ class iCache {
 
 	public static function init($config) {
 		self::$config = $config;
-		if (!self::$config['enable']) {
-			return;
-		}
+		// if(!self::$config['enable']){
+		// 	return;
+		// }
 		if (isset($GLOBALS['iCache']['link'])) {
 			self::$link = $GLOBALS['iCache']['link'];
 			return self::$link;
@@ -99,15 +99,15 @@ class iCache {
 	public static function get($keys, $ckey = NULL, $unserialize = true) {
 		$keys = self::prefix($keys, self::$config['prefix']);
 		$_keys = implode('', (array) $keys);
-		if (!self::$config['enable']) {
-			if (strpos($keys, iPHP_APP) === false) {
-				return NULL;
-			} else {
-				return self::sysCache();
-			}
-		} else {
+        // if(!self::$config['enable']){
+        //     if(strpos($keys,iPHP_APP)===false){
+        //         return NULL;
+        //     }else{
+        //         return self::sysCache();
+        //     }
+        // }else{
 			self::connect();
-		}
+        // }
 		if (!isset($GLOBALS['iCache'][$_keys])) {
 			$GLOBALS['iCache'][$_keys] = is_array($keys) ?
 			self::$link->get_multi($keys, $unserialize) :
@@ -117,15 +117,15 @@ class iCache {
 	}
 	public static function set($keys, $res, $cachetime = "-1") {
 		$keys = self::prefix($keys, self::$config['prefix']);
-		if (!self::$config['enable']) {
-			if (strpos($keys, iPHP_APP) === false) {
-				return NULL;
-			} else {
-				return self::sysCache();
-			}
-		} else {
+        // if(!self::$config['enable']){
+        //     if(strpos($keys,iPHP_APP)===false){
+        //         return NULL;
+        //     }else{
+        //         return self::sysCache();
+        //     }
+        // }else{
 			self::connect();
-		}
+        // }
 		if (self::$config['engine'] == 'memcached') {
 			self::$link->delete($keys);
 		}

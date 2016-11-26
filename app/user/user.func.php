@@ -21,7 +21,6 @@ function user_data($vars=null){
 		$auth = user::get_cookie();
 		$auth && $uid = user::$userid;
 	}
-    $uid  = explode(',', $uid);
     $user = (array)user::get($uid);
     if(isset($user['uid'])){
         $vars['data'] && $user['data']= (array)user::data($uid);
@@ -93,10 +92,8 @@ function user_list($vars=null){
         }
         if(empty($ids_array)){
             $ids_array = iDB::all("SELECT `id` FROM `#iCMS@__user` {$where_sql} {$order_sql} {$limit}");
-            iPHP_SQL_DEBUG && iDB::debug(1);
             $vars['cache'] && iCache::set($map_cache_name,$ids_array,$cache_time);
         }
-        //iDB::debug(1);
         $ids       = iCMS::get_ids($ids_array,'uid');
         $ids       = $ids?$ids:'0';
         $where_sql = "WHERE `uid` IN({$ids})";
@@ -107,16 +104,19 @@ function user_list($vars=null){
     }
 	if(empty($resource)){
         $resource = iDB::all("SELECT * FROM `#iCMS@__user` {$where_sql} {$order_sql} {$limit}");
-		iPHP_SQL_DEBUG && iDB::debug(1);
+        if($vars['data']){
+            $uidArray = iPHP::get_ids($resource,'uid','array',null);
+            $uidArray && $user_data = (array) user::data($uidArray);
+        }
         if($resource)foreach ($resource as $key => $value) {
             unset($value['password']);
 			$value['url']    = user::router($value['uid'],"url");
 			$value['urls']   = user::router($value['uid'],"urls");
-			$value['avatar'] = user::router($value['uid'],"avatar",$vars['size']?$vars['size']:0);
-			$value['at']     = '<a href="'.$value['url'].'" class="iCMS_user_link" target="_blank" data-tip="iCMS:ucard:'.$value['uid'].'">@'.$value['nickname'].'</a>';
-			$value['link']   = '<a href="'.$value['url'].'" class="iCMS_user_link" target="_blank" data-tip="iCMS:ucard:'.$value['uid'].'">'.$value['nickname'].'</a>';
+            $value+=user::info($value['uid'],$value['nickname'],$vars['size']);
 			$value['gender'] = $value['gender']?'male':'female';
-			isset($vars['data']) && $value['data'] = (array)user::data($value['uid']);
+            if($vars['data'] && $user_data){
+                $value['data']  = (array)$user_data[$value['uid']];
+            }
 			$resource[$key]  = $value;
         }
 		$vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
@@ -129,7 +129,6 @@ function user_category($vars=null){
 	$where_sql = "WHERE `uid`='".(int)$vars['userid']."' ";
 	$where_sql.= " AND `appid`='".(int)$vars['appid']."'";
 	$rs  = iDB::all("SELECT * FROM `#iCMS@__user_category` {$where_sql} ORDER BY `cid` ASC LIMIT $row");
-	iPHP_SQL_DEBUG && iDB::debug(1);
 	$resource = array();
 	if($rs)foreach ($rs as $key => $value) {
 		if($value['appid']==iCMS_APP_ARTICLE){
@@ -170,17 +169,9 @@ function user_follow($vars=null){
 		$resource   = iCache::get($cache_name);
     }
 	$resource = iDB::all("SELECT * FROM `#iCMS@__user_follow` {$where_sql} {$limit}");
-    iPHP_SQL_DEBUG && iDB::debug(1);
     if($vars['data']){
-        $uidArray = array();
-        foreach ((array)$resource as $key => $value) {
-            $uidArray[] = $value['uid'];
-            $uidArray[] = $value['fuid'];
-        }
-        if($uidArray){
-            $uidArray  = array_unique($uidArray);
-            $user_data = (array) user::data($uidArray);
-        }
+        $uidArray = iPHP::get_ids($resource,array('uid','fuid'),'array',null);
+        $uidArray && $user_data = (array) user::data($uidArray);
     }
     $vars['followed'] && $follow_data = user::follow($vars['followed'],'all');
 
@@ -194,7 +185,9 @@ function user_follow($vars=null){
 			$value['uid']    = $value['fuid'];
 			$value['name']   = $value['fname'];
 		}
-        $vars['data'] && $value['data']  = (array)$user_data[$value['uid']];
+        if($vars['data'] && $user_data){
+            $value['data']  = (array)$user_data[$value['uid']];
+        }
 		$vars['followed'] && $value['followed'] = $follow_data[$value['uid']]?1:0;
 		$resource[$key] = $value;
 	}
@@ -234,7 +227,6 @@ function user_inbox($vars=null){
     $multi	= iCMS::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iPHP::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
     $offset	= $multi->offset;
 	$resource = iDB::all("SELECT {$s_fields} FROM `#iCMS@__message` {$where_sql} {$group_sql} ORDER BY `id` DESC LIMIT {$offset},{$maxperpage}");
-	iPHP_SQL_DEBUG && iDB::debug(1);
 	$msg_type_map = array(
 		'0'=>'系统信息',
 		'1'=>'私信',

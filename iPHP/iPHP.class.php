@@ -127,6 +127,8 @@ class iPHP {
 		if (iPHP_DEBUG || iPHP_TPL_DEBUG) {
 			ini_set('display_errors', 'ON');
 			error_reporting(E_ALL & ~E_NOTICE);
+			iDB::$debug = true;
+			iDB::$show_errors = true;
 		}
 
 		$timezone = $config['time']['zone'];
@@ -138,7 +140,10 @@ class iPHP {
 		iCache::init($config['cache']);
 		iPHP::template_start();
 
-		iPHP_DEBUG && iDB::$show_errors = true;
+		if(iPHP_DEBUG){
+		}
+
+		iPHP_SQL_DEBUG && iDB::$show_explain = true;
 		iPHP_TPL_DEBUG && self::clear_compiled_tpl();
 
 		self::$apps = $config['apps'];
@@ -306,7 +311,10 @@ class iPHP {
 		} else {
 			self::$iTPL->display($tpl);
 			if (iPHP_DEBUG && iPHP_TPL_DEBUG) {
-				// echo '<span class="label label-success">模板:'.$tpl.' 内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL执行:'.iDB::$num_queries.'次</span>';
+				echo '<span class="label label-success">模板:'.$tpl.' 内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL执行:'.iDB::$num_queries.'次</span>';
+				echo '<pre>';
+				print_r(iDB::$debug_info);
+				echo '</pre>';
 			}
 		}
 	}
@@ -686,23 +694,40 @@ class iPHP {
 		}
 		return 'SELECT ' . $_field . ' AS ' . $field . ' FROM ' . implode(',', $_FROM) . ' WHERE ' . implode(' AND ', $_WHERE);
 	}
-	public static function get_ids($rs, $field = 'id') {
+	public static function get_ids($rs, $field = 'id',$ret='string',$quote="'",$key=null) {
 		if (empty($rs)) {
 			return false;
 		}
+
 		$resource = array();
-		foreach ((array) $rs AS $_vars) {
+		foreach ((array) $rs AS $rkey =>$_vars) {
+			if($key===null){
+				$_key = $rkey;
+			}else{
+				$_key = $_vars[$key];
+			}
+
 			if ($field === null) {
-				$resource[] = "'" . $_vars . "'";
+				$_vars!=='' && $resource[$_key] = $quote . $_vars . $quote;
 			} else {
-				$resource[] = "'" . $_vars[$field] . "'";
+				if(is_array($field)){
+					foreach ($field as $fk => $fv) {
+						$_vars[$fv]!=='' && $resource[$_key][$fk] = $quote . $_vars[$fv] . $quote;
+					}
+				}else{
+					$_vars[$field]!=='' && $resource[$_key] = $quote . $_vars[$field] . $quote;
+				}
 			}
 		}
 		unset($rs);
 		if ($resource) {
-			$resource = array_unique($resource);
-			$resource = implode(',', $resource);
-			return $resource;
+			is_array($field) OR $resource = array_unique($resource);
+			if($ret=='array'){
+				return $resource;
+			}else{
+				$resource = implode(',', $resource);
+				return $resource;
+			}
 		}
 		return false;
 	}
@@ -749,12 +774,12 @@ class iPHP {
 	 * Stops the debugging timer
 	 * @return int total time spent on the query, in milliseconds
 	 */
-	public static function timer_stop() {
+	public static function timer_stop($restart=false) {
 		$mtime = microtime();
 		$mtime = explode(' ', $mtime);
 		$time_end = $mtime[1] + $mtime[0];
 		$time_total = $time_end - self::$time_start;
-		//self::$time_start = $time_end;
+		$restart && self::$time_start = $time_end;
 		return round($time_total, 4);
 	}
 	public static function json($a, $break = true, $ret = false) {
@@ -1006,10 +1031,7 @@ class iPHP {
 
 function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline) {
 	$errno = $errno & error_reporting();
-	if ($errno == 0) {
-		return;
-	}
-
+    if($errno == 0) return;
 	defined('E_STRICT') OR define('E_STRICT', 2048);
 	defined('E_RECOVERABLE_ERROR') OR define('E_RECOVERABLE_ERROR', 4096);
 	$html = "<pre>\n<b>";
@@ -1044,7 +1066,7 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline) {
 	$html = str_replace('\\', '/', $html);
 	$html = str_replace(iPATH, 'iPHP://', $html);
     if(PHP_SAPI=='cli'){
-        $html = str_replace(array("<b>", "</b>", "<pre>", "</pre>"), array('\033[31m',' \033[0m',''), $html);
+        $html = str_replace(array("<b>", "</b>", "<pre>", "</pre>"), array("\033[31m","\033[0m",''), $html);
         echo $html."\n";
         exit;
     }

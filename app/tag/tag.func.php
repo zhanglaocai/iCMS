@@ -117,10 +117,8 @@ function tag_list($vars){
         }
         if(empty($ids_array)){
             $ids_array = iDB::all("SELECT `id` FROM `#iCMS@__tags` {$where_sql} {$order_sql} {$limit}");
-            iPHP_SQL_DEBUG && iDB::debug(1);
             $vars['cache'] && iCache::set($map_cache_name,$ids_array,$cache_time);
         }
-        //iDB::debug(1);
     }
     if($ids_array){
         $ids       = iCMS::get_ids($ids_array);
@@ -134,7 +132,6 @@ function tag_list($vars){
     }
 	if(empty($resource)){
 		$resource = iDB::all("SELECT * FROM `#iCMS@__tags` {$where_sql} {$order_sql} {$limit}");
-		iPHP_SQL_DEBUG && iDB::debug(1);
 		$resource = __tag_array($vars,$resource);
 		$vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
 	}

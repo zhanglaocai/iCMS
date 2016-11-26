@@ -17,8 +17,7 @@ define("ui.dialog", function(require) {
                 label: 'success',
                 icon: 'check',
                 api: false,
-                width:360,height:120,
-                elemBack: 'beforeremove'
+                width:360,height:120
             },
             timeOutID = null,
             opts = $.extend(defaults, iCMS.CONFIG.DIALOG, options);
@@ -33,7 +32,7 @@ define("ui.dialog", function(require) {
         var content = opts.content;
         //console.log(typeof content);
         if (content instanceof jQuery) {
-            opts.content = content.html();
+            opts.content = content;
         } else if (typeof content === "string") {
             opts.content = __msg(content);
         }
@@ -73,13 +72,6 @@ define("ui.dialog", function(require) {
 
         function __callback(type) {
             window.clearTimeout(timeOutID);
-            //console.log('opts.elemBack:'+opts.elemBack,'type:'+type);
-            // if(opts.elemBack==type){
-            //     //console.log('_elemBack:'+_elemBack);
-            //     if (_elemBack) { //删除前把元素返回原来的地方
-            //         _elemBack();
-            //     }
-            // }
             if (typeof(callback) === "function") {
                 callback(type);
             }

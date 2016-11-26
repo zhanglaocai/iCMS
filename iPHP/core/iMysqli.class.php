@@ -14,15 +14,17 @@ define('OBJECT', 'OBJECT');
 define('ARRAY_A', 'ARRAY_A');
 define('ARRAY_N', 'ARRAY_N');
 
-defined('SAVEQUERIES') OR define('SAVEQUERIES', true);
 defined('iPHP_DB_PORT') OR define('iPHP_DB_PORT', '3306');
 
 class iDB {
+    public static $debug = false;
     public static $show_errors = false;
+    public static $show_explain = false;
     public static $num_queries = 0;
+    public static $debug_info;
     public static $last_query;
     public static $col_info;
-    public static $queries;
+    public static $backtrace;
     public static $func_call;
     public static $last_result;
     public static $num_rows;
@@ -107,12 +109,9 @@ class iDB {
         self::$last_query = $query;
 
         // Perform the query via std mysql_query function..
-        SAVEQUERIES && self::timer_start();
+        self::$debug && self::timer_start();
 
         $result = self::$link->real_query($query);
-
-        self::$num_queries++;
-        SAVEQUERIES && self::$queries[] = array('sql'=>$query, 'exec_time'=>self::timer_stop());
 
         if(!$result){
             // If there is an error then take note of it..
@@ -120,12 +119,24 @@ class iDB {
         }
         self::$num_queries++;
 
-        SAVEQUERIES && self::$queries[] = array( $query, self::timer_stop());
+        if(self::$debug){
+            $trace = '';
+            $backtrace = debug_backtrace();
+            // $backtrace = array_slice($backtrace,1,2);
+            foreach ($backtrace as $i => $l) {
+                $trace .= "\n[$i] in function <b>{$l['class']}{$l['type']}{$l['function']}</b>";
+                $l['file'] = str_replace('\\', '/', $l['file']);
+                $l['file'] = str_replace(iPATH, 'iPHP://', $l['file']);
+                $l['file'] && $trace .= " in <b>{$l['file']}</b>";
+                $l['line'] && $trace .= " on line <b>{$l['line']}</b>";
+            }
+            self::$debug_info[] = array('sql'=>$query, 'exec_time'=>self::timer_stop(true),'backtrace'=>$trace);
+            unset($trace,$backtrace);
+        }
 
-        if($QT=='get') return $result;
-
-
+	   if($QT=='get') return $result;
         $QH = strtoupper(substr($query,0,strpos($query, ' ')));
+
         if (in_array($QH,array('INSERT','DELETE','UPDATE','REPLACE','SET','CREATE','DROP','ALTER'))) {
             // Take note of the insert_id
             if (in_array($QH,array("INSERT","REPLACE"))) {
@@ -139,6 +150,7 @@ class iDB {
             if($QT=="field") {
                 self::$col_info = $store->fetch_fields();
             }else {
+                $QH=='EXPLAIN' OR self::show_explain();
                 $num_rows = 0;
                 if($store){
                     while ( $row = $store->fetch_object() ) {
@@ -284,7 +296,7 @@ class iDB {
      * @return mixed results
      */
     public static function all($query = null, $output = ARRAY_A) {
-        self::$func_call = __CLASS__."::array(\"$query\", $output)";
+        self::$func_call = __CLASS__."::all(\"$query\", $output)";
 
         $query && self::query($query);
 
@@ -338,7 +350,6 @@ class iDB {
         if ( self::$col_info ) {
             if ( $col_offset == -1 ) {
                 $i = 0;
-                //var_dump(self::$col_info);
                 foreach(self::$col_info as $col ) {
                     $new_array[$i] = $col->{$info_type};
                     $i++;
@@ -359,22 +370,6 @@ class iDB {
             self::bail('database_version<strong>ERROR</strong>: iPHP %s requires MySQL 4.0.0 or higher');
         }else{
             return $mysql_version;
-        }
-    }
-    public static function debug($show=false){
-        if(!self::$show_errors) return false;
-        $last_query = self::$last_query;
-        $explain    = self::row('EXPLAIN EXTENDED '.self::$last_query);
-        if($show){
-            echo "<pre>".
-            var_dump($last_query);
-            print_r($explain);
-            echo "</pre>";
-        }else{
-            echo "<!--\n";
-            var_dump($last_query);
-            print_r($explain);
-            echo "-->\n";
         }
     }
 
@@ -400,25 +395,50 @@ class iDB {
      * Stops the debugging timer
      * @return int total time spent on the query, in milliseconds
      */
-    public static function timer_stop() {
+    public static function timer_stop($restart=false) {
         $mtime      = microtime();
         $mtime      = explode(' ', $mtime);
         $time_end   = $mtime[1] + $mtime[0];
         $time_total = $time_end - self::$time_start;
-        return $time_total;
+        $restart && self::$time_start = $time_end;
+        return round($time_total, 5);
     }
     // ==================================================================
+    public static function show_explain(){
+        if(!self::$show_explain) return;
+
+        $query = self::$last_query;
+
+        $explain = self::row('EXPLAIN EXTENDED '.$query);
+        $explain && $explain->query = $query;
+        if(self::$show_explain=='print'){
+            echo "<pre>".
+            var_dump($explain);
+            echo "</pre>";
+        }else{
+            echo "<!--\n";
+            print_r($explain);
+            echo "-->\n";
+        }
+    }
+    // public static function show_errors(){
+    //     if(!self::$show_errors) return false;
+    //     self::bail('<strong>iDB SQL error:</strong>'.self::$last_query);
+    // }
+    //
     //  Print SQL/DB error.
 
     public static function print_error($error = '') {
+        if(!self::$show_errors) return;
+
         self::$last_error = self::$link->error;
         $error OR $error  = self::$last_error;
 
         $error = htmlspecialchars($error, ENT_QUOTES);
         $query = htmlspecialchars(self::$last_query, ENT_QUOTES);
         // Is error output turned on or not..
-        if ( self::$show_errors ) {
-            self::bail("<strong>iPHP database error:</strong> [$error]<br /><code>$query</code>");
+        if ($error) {
+            self::bail("<strong>iDB error:</strong> [$error]<br /><code>$query</code>");
         } else {
             return false;
         }
@@ -428,9 +448,8 @@ class iDB {
      * @param string $message
      */
     public static function bail($message){ // Just wraps errors in a nice header and footer
-        if ( !self::$show_errors ) {
-            return false;
-        }
+        if(!self::$show_errors) return;
+
         trigger_error($message,E_USER_ERROR);
     }
 }

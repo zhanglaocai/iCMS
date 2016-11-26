@@ -1,4 +1,11 @@
 define("ui",{
+        widget:{
+             'ucard':['<div class="tip_info">',
+                    '<img src="'+require("config").PUBLIC+'/ui/loading.gif">',
+                    '<span> 用户信息加载中……</span>',
+                    '</div>'].join('')
+        },
+
         dialog: function(opts) {
             var dialog = require("ui.dialog");
             return dialog(opts);
@@ -16,9 +23,9 @@ define("ui",{
                 opts.id         = 'iCMS-DIALOG-ALERT';
                 opts.skin       = 'iCMS_dialog_alert'
                 opts.content    = msg;
-                opts.time       = 30000000;
+                opts.time       = 3000;
                 opts.lock       = true;
-                opts.quickClose = false;
+                // opts.quickClose = false;
                 dialog(opts, callback);
             // });
         },

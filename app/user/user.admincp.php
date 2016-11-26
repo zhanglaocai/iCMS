@@ -78,7 +78,6 @@ class userAdmincp{
                 SELECT `uid` FROM `#iCMS@__user` {$sql}
                 ORDER BY {$orderby} {$limit}
             ");
-            //iDB::debug(1);
             $ids   = iCMS::get_ids($ids_array,'uid');
             $ids   = $ids?$ids:'0';
             $sql   = "WHERE `uid` IN({$ids})";

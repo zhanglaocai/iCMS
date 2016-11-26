@@ -39,7 +39,6 @@ $(function() {
                 console.log(f)
             }
         );
-        $USER.UCARD();
         //退出登陆
         $(".logout").click(function(event) {
             event.preventDefault();
@@ -50,6 +49,34 @@ $(function() {
                 window.top.location.reload();
             });
         });
+        var doc = $(document);
+        doc.on('click', "[i^='follow']", function(event) {
+            event.preventDefault();
+            $USER.FOLLOW(this,
+                //关注成功
+                function(ret,$param){
+                    if(ret.code){
+                        var show = ($param.follow == '1' ? '0' : '1');
+                        $("[i='follow:"+$param.uid+":"+$param.follow+"']").hide();
+                        $("[i='follow:"+$param.uid+":"+show+"']").show();
+                    }
+                },
+                //关注失败
+                function (ret) {
+                    iCMS.UI.alert(ret.msg);
+                }
+            );
+        });
+        doc.on('click', '[i="pm"]', function(event) {
+            event.preventDefault();
+            $USER.PM(this);
+        });
+        doc.on('click', '[i="report"]', function(event) {
+            event.preventDefault();
+            $USER.REPORT(this);
+        });
+        $USER.UCARD();
+
     });
 
 });

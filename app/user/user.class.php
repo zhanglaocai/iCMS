@@ -8,6 +8,7 @@
 defined('iPHP') OR exit('What are you doing?');
 
 define("USER_AUTHASH",'#=(iCMS@'.iPHP_KEY.'@iCMS)=#');
+
 class user {
 	public static $userid     = 0;
 	public static $nickname   = '';
@@ -71,12 +72,19 @@ class user {
 			//'inbox'  => $urls['inbox'],
 			'url'    => $url,
 			'avatar' => self::router($uid,"avatar",$size?$size:0),
-			'at'     => '<a href="'.$url.'" class="iCMS_user_link" target="_blank" data-tip="iCMS:ucard:'.$uid.'">@'.$name.'</a>',
-			'link'   => '<a href="'.$url.'" class="iCMS_user_link" target="_blank" data-tip="iCMS:ucard:'.$uid.'">'.$name.'</a>',
+			'at'     => '<a href="'.$url.'" class="iCMS_user_link" target="_blank" i="ucard:'.$uid.'">@'.$name.'</a>',
+			'link'   => '<a href="'.$url.'" class="iCMS_user_link" target="_blank" i="ucard:'.$uid.'">'.$name.'</a>',
 		);
 	}
+	public static function value($val,$where='uid',$field='username'){
+		$row = iDB::row("SELECT {$field} FROM `#iCMS@__user` where `$where`='{$val}'");
+		if(strpos($field, ',') !== false||$field=='*'){
+			return $row;
+		}
+		return $row->$field;
+	}
 	public static function check($val,$field='username'){
-		$uid = iDB::value("SELECT uid FROM `#iCMS@__user` where `$field`='{$val}'");
+		$uid = self::value($val,$field,'uid');
 		return empty($uid)?false:$uid;
 	}
 	public static function follow($uid=0,$fuid=0){
@@ -119,10 +127,12 @@ class user {
 	}
 	public static function get($uids=0,$unpass=true){
 		if(empty($uids)) return array();
-
-		is_array($uids) && $uids = implode("','", $uids);
+		if(!is_array($uids) && strpos($uids, ',') !== false){
+			$uids = explode(',', $uids);
+		}
+    	$sql = iPHP::where($uids,'uid',false,true);
 		$data = array();
-		$rs = iDB::all("SELECT * FROM `#iCMS@__user` where `uid` IN ('$uids') AND `status`='1'",OBJECT);
+		$rs = iDB::all("SELECT * FROM `#iCMS@__user` where {$sql} AND `status`='1'",OBJECT);
 		if($rs){
 			$_count = count($rs);
 			if($_count>1){
@@ -144,10 +154,13 @@ class user {
     	if(empty($uids)){
     		return;
     	}
-    	is_array($uids) && $uids = implode("','", $uids);
+		if(!is_array($uids) && strpos($uids, ',') !== false){
+			$uids = explode(',', $uids);
+		}
 
+    	$sql = iPHP::where($uids,'uid',false,true);
 		$data = array();
-		$rs   = iDB::all("SELECT * FROM `#iCMS@__user_data` where `uid` IN ('$uids');",OBJECT);
+		$rs   = iDB::all("SELECT * FROM `#iCMS@__user_data` where {$sql};",OBJECT);
 		if($rs){
 			$_count = count($rs);
 			if($_count>1){

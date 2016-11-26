@@ -7,7 +7,19 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta content="iDreamSoft Inc." name="Copyright" />
-<!--{*include file="/iCMS/ui.script.htm"*}-->
-<!--{include file="/iCMS/ui.script2.htm"}-->
-<!--{*include file="/iCMS/ui.script3.htm"*}-->
-
+<script src="http://apps.bdimg.com/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="<!--{$site.urls.public}-->/js/iCMS.min.js"></script>
+<!--{*
+<script src="<!--{$site.urls.public}-->/iCMS.min.js"></script>
+*}-->
+<script>
+iCMS.init({
+    API: "<!--{iCMS:router url='api'}-->",
+    UHOME: "<!--{iCMS:router url='uid:home'}-->",
+    PUBLIC: "<!--{$site.urls.public}-->",
+    COOKIE: '<!--{$iCMS.COOKIE_PRE}-->',
+    DIALOG: {
+        title: '<!--{$site.name}--> 提示信息'
+    },
+});
+</script>

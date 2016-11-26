@@ -40,7 +40,8 @@ class tagApp {
 
     public function tag($val, $field = 'name', $tpl = 'tag') {
         $val OR iPHP::throw404('运行出错！TAG不能为空', 30002);
-        $tag = iDB::row("SELECT * FROM `#iCMS@__tags` where `$field`='$val' AND `status`='1'  LIMIT 1;", ARRAY_A);
+        is_array($val) OR $tag = iDB::row("SELECT * FROM `#iCMS@__tags` where `$field`='$val' AND `status`='1'  LIMIT 1;", ARRAY_A);
+
         if(empty($tag)){
             if($tpl){
                 iPHP::throw404('运行出错！找不到标签: <b>'.$field.':'. $val.'</b>', 30003);
@@ -109,6 +110,19 @@ class tagApp {
             $tag && $tag_array[$key] = $this->tag($tag,'name',false);
         }
         return $tag_array;
+    }
+    public function multi($array) {
+        if(empty($array)){
+            return;
+        }
+        $sql  = iPHP::where($array,'name',false,true);
+        var_dump($sql);
+
+        $rs = iDB::all("SELECT * FROM `#iCMS@__tags` where {$sql} AND `status`='1'", ARRAY_A);
+        // foreach ($rs as $key => $tag) {
+        //     $tag && $tagArray[$key] = $this->value($tag);
+        // }
+        // var_dump($tagArray);
     }
 
 }
