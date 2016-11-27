@@ -33,7 +33,7 @@
                         ：
                         <div class="inbox_content"><!--{$user_inbox.content}--></div>
                         <div class="clearfix mt10"></div>
-                        <div class="info" data-param='{"id":"<!--{$user_inbox.id}-->"}'>
+                        <div class="info">
                             <span class="label"><!--{$user_inbox.sendtime|format_date}--></span>
                         <!--{if $msg_count}-->
                             <a href="<!--{$user_inbox.url}-->"> 共 <!--{$user_inbox.msg_count}--> 条对话 </a>
@@ -41,8 +41,7 @@
 
                         <!--{if $user_inbox.type}-->
                             <a href="javascript:;" class="btn btn-small btn-primary"
-                                i="pm"
-                                data-param='{"uid":"<!--{$user_inbox.user.uid}-->","name":"<!--{$user_inbox.user.name}-->"}'>
+                                i="pm:<!--{$user_inbox.user.uid}-->:<!--{$user_inbox.user.name}-->:<!--{$user_inbox.id|authcode:'ENCODE'}-->">
                                     <i class="fa fa-reply"></i> 回复
                             </a>
                         <!--{/if}-->

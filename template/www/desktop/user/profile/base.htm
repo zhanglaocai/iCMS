@@ -136,6 +136,21 @@
             </div>
             <textarea id="slogan" name="slogan" rows="5" class="form-control" placeholder="随便写点什么，让大家了解你吧。"><!--{$userdata.slogan}--></textarea>
         </div>
+        <h4 class="manage-title">隐私/安全</h4>
+        <div class="input-group">
+            <div class="input-group-addon">
+                <label class="control-label">有人给我发了私信</label>
+            </div>
+            <div class="form-control">
+                <label class="radio-inline">
+                    <input type="radio" class="inbox-receive" name="setting[inbox][receive]"  value="all"> 允许所有人给我发私信
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" class="inbox-receive" name="setting[inbox][receive]" value="follow" checked> 只允许我关注的人给我发私信
+                </label>
+            </div>
+        </div>
+        <div class="mb10"></div>
         <div class="form-actions">
             <button class="btn btn-lg btn-primary" type="submit">
             <i class="fa fa-check"></i> 提 交
@@ -157,6 +172,9 @@ $(function() {
     initPlace('<!--{$userdata.city}-->', '<!--{$userdata.province}-->');
     <!--{if $me.gender}-->
     $("[name=gender][value=<!--{$me.gender}-->]").attr("checked", true);
+    <!--{/if}-->
+    <!--{if $me.setting.inbox.receive}-->
+    $(".inbox-receive[value=<!--{$me.setting.inbox.receive}-->]").attr("checked", true);
     <!--{/if}-->
     <!--{if $userdata.isSeeFigure}-->
     $("#isSeeFigure").val("<!--{$userdata.isSeeFigure}-->");

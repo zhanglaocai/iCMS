@@ -93,10 +93,10 @@ class articleApp {
 			}
 		}
 		$vars = array(
-			'tags' => true,
-			'user' => true,
-			'meta' => true,
-			'prev_next' => true,
+			'tag'           => true,
+			'user'          => true,
+			'meta'          => true,
+			'prev_next'     => true,
 			'category_lite' => false,
 		);
 		$article = $this->value($article, $article_data, $vars, $page, $tpl);
@@ -275,7 +275,11 @@ class articleApp {
 
 		}
 
-		if ($vars['tags']) {
+		if ($vars['tag']) {
+			if ($article['tags']) {
+				$tA=$this->tagArray(array($article['id']=>$article['tags']));
+				$article+=(array)$tA[$article['id']];
+			}
 			// $article['tags_fname'] = $category['name'];
 			// if ($article['tags']) {
 			// 	$tagApp = iPHP::app("tag");
@@ -346,41 +350,42 @@ class articleApp {
 		);
 		return $article;
 	}
-	public function tags($tags=0){
+	public function tag($array,$aid=null){
+		$tArray = array();
+		foreach ((array) $array AS $_aid => $tag) {
+			if(isset($tag['id'])){
+				$aid===null && $aid = $_aid;
+				$tArray[$aid]['tags_array'][$tag['id']] = $tag;
+				$tArray[$aid]['tags_link'].= $tag['link'];
+			}else{
+				$tArray+=(array)$this->tag($tag,$_aid);
+			}
+		}
+		return $tArray;
+	}
+	public function tagArray($tags=0){
 		if(empty($tags)) return array();
 
 		if(!is_array($tags) && strpos($tags, ',') !== false){
 			$tags = explode(',', $tags);
 		}
 		$multi = array();
-		foreach ($tags as $key => $value) {
+		foreach ($tags as $aid => $value) {
 			if($value){
 				$a = explode(',', $value);
 				foreach ($a as $ak => $av) {
-					// $multi[$av] = $key;
-					$tArray[] = $av;
+					$tMap[$av] = $aid;
+					$tArray[]  = $av;
 				}
 			}
 		}
 		$tagApp = iPHP::app("tag");
 		$tagArray = $tagApp->multi($tArray);
-
-		// $sql  = iPHP::where($tagArray,'name',false,true);
-		var_dump($tagArray);
-		// $data = array();
-		// $rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}",OBJECT);
-		// if($rs){
-		// 	$_count = count($rs);
-		// 	if($_count>1){
-		//         for ($i=0; $i < $_count; $i++) {
-		//         	$data[$rs[$i]->aid]= $rs[$i];
-		//         }
-		// 	}else{
-		// 		$data = $rs[0];
-		// 	}
-		// }
-	 //   	return $data;
+		$tagArray = $tagApp->map($tagArray,$tMap);
+		$tagArray = $this->tag($tagArray);
+		return $tagArray;
 	}
+
 	public function data($aids=0){
 		if(empty($aids)) return array();
 		if(!is_array($aids) && strpos($aids, ',') !== false){

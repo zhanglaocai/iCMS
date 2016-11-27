@@ -5,6 +5,14 @@ window.iCMS = {
     data : {},
     UI:{},
     API:require("api"),
+    $:function(i) {
+        var doc = $(document);
+        return doc.find('[i=' + i + ']');
+    },
+    $v:function(a,i) {
+        var param = $(a).attr('i').replace(i+':','');
+        return param.split(":");
+    },
     init: function(options) {
         var config      = require("config");
         iCMS.CONFIG     = $.extend(config,options);

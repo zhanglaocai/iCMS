@@ -39,5 +39,20 @@ define("ui",{
             a = a||'.seccode-img',
             b = b||'body';
             $(a, b).attr('src', API.url('public', '&do=seccode&') + Math.random());
+        },
+        imgFix: function(im, x, y) {
+            x = x || 99999
+            y = y || 99999
+            im.removeAttribute("width");
+            im.removeAttribute("height");
+            if (im.width / im.height > x / y && im.width > x) {
+                im.height = im.height * (x / im.width)
+                im.width = x
+                im.parentNode.style.height = im.height * (x / im.width) + 'px'
+            } else if (im.width / im.height <= x / y && im.height > y) {
+                im.width = im.width * (y / im.height)
+                im.height = y
+                im.parentNode.style.height = y + 'px'
+            }
         }
 });

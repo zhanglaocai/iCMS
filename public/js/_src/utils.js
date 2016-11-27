@@ -15,10 +15,6 @@ define("utils",{
             s.src = url;
             h.insertBefore(s, h.firstChild);
         },
-        $:function(i) {
-            var doc = $(document);
-            return doc.find('[iCMS=' + i + ']');
-        },
         format:function (content,ubb) {
             content = content.replace(/\/"/g, '"')
                 .replace(/\\\&quot;/g, "")

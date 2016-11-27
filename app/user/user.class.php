@@ -78,6 +78,9 @@ class user {
 	}
 	public static function value($val,$where='uid',$field='username'){
 		$row = iDB::row("SELECT {$field} FROM `#iCMS@__user` where `$where`='{$val}'");
+		if(isset($row->setting)){
+			$row->setting = (array)json_decode($row->setting,true);
+		}
 		if(strpos($field, ',') !== false||$field=='*'){
 			return $row;
 		}
@@ -183,6 +186,7 @@ class user {
     	if($data){
 	    	$rs->meta = json_decode($rs->meta,true);
     	}else{
+			$rs->setting  = (array)json_decode($rs->setting,true);
 			$rs->gender   = $rs->gender?'male':'female';
 			$rs->avatar   = self::router($rs->uid,'avatar');
 			$rs->urls     = self::router($rs->uid,'urls');

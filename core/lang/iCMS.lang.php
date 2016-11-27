@@ -46,6 +46,7 @@ return array(
 	'pm'=>array(
 		'empty'   =>'请填写私信内容。',
 		'success' =>'发送成功！',
+		'nofollow'=>'发送失败！您无法给对方发送私信！',
 	),
 	'favorite'=>array(
 		'create_empty'   =>'请输入标题！',

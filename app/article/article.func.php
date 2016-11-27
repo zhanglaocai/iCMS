@@ -335,7 +335,7 @@ function __article_array($vars, $variable) {
         }
         if($vars['tags']){
             $tagArray = iPHP::get_ids($variable,'tags','array',null,'id');
-            $tagArray && $tags_data = (array) $articleApp->tags($tagArray);
+            $tagArray && $tags_data = (array) $articleApp->tagArray($tagArray);
         }
 		foreach ($variable as $key => $value) {
 			$value = $articleApp->value($value, false, $vars);
@@ -344,6 +344,9 @@ function __article_array($vars, $variable) {
 			}
             if($vars['data'] && $article_data){
                 $value['data']  = (array)$article_data[$value['id']];
+            }
+            if($vars['tags'] && $tags_data){
+                $value+= (array)$tags_data[$value['id']];
             }
 
 			if ($vars['page']) {

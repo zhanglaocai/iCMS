@@ -16,7 +16,7 @@ function iCMS_router($vars){
 	$url = iPHP::router($router);
 	$vars['query'] && $url = buildurl($url,$vars['query']);
 
-	if($url && stripos($url, 'http://')===false && $vars['host']){
+	if($url && !iFS::checkHttp($url) && $vars['host']){
 		$url = rtrim(iCMS_URL,'/').'/'.ltrim($url, '/');;
 	}
 	echo $url?$url:'javascript:;';

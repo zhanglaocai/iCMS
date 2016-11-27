@@ -10,7 +10,7 @@
 * @$Id: cache.app.php 2365 2014-02-23 16:26:27Z coolmoo $
 */
 class cacheApp{
-    public $acp = array('setting','prop.admincp','filter.admincp','keywords.admincp');
+    public $acp = array('admincp.setting.app','prop.admincp','filter.admincp','keywords.admincp');
     function __construct() {
         $this->do_app();
     }
@@ -48,11 +48,11 @@ class cacheApp{
         $categoryApp->do_cache($dialog);
     }
     function do_pushcategory($dialog=true){
-        $categoryApp = admincp::app('pushcategory');
+        $categoryApp = iPHP::app('push.category.admincp');
         $categoryApp->do_cache($dialog);
     }
     function do_tagcategory($dialog=true){
-        $categoryApp = admincp::app('tagcategory');
+        $categoryApp = iPHP::app('tag.category.admincp');
         $categoryApp->do_cache($dialog);
     }
     function do_tpl($dialog=true){

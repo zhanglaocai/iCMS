@@ -16,7 +16,7 @@ function tpl_modifier_debug_print_var($var, $depth = 0, $length = 40)
         foreach ($var as $curr_key => $curr_val)
 		{
             $return = tpl_modifier_debug_print_var($curr_val, $depth+1, $length);
-            $results .= "<br>&nbsp;&nbsp;".str_repeat('&nbsp;', $depth*2)."<b>$curr_key</b> =&gt; $return";
+            $results .= "<br>&nbsp;&nbsp;&nbsp;&nbsp;".str_repeat('&nbsp;&nbsp;', $depth*2)."<b>$curr_key</b> =&gt; $return";
         }
         return $results;
     }
@@ -27,7 +27,7 @@ function tpl_modifier_debug_print_var($var, $depth = 0, $length = 40)
         foreach ($object_vars as $curr_key => $curr_val)
 		{
             $return = tpl_modifier_debug_print_var($curr_val, $depth+1, $length);
-            $results .= '<br>&nbsp;&nbsp;'.str_repeat('&nbsp;', $depth*2)."<b>$curr_key</b> =&gt; $return";
+            $results .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;'.str_repeat('&nbsp;&nbsp;', $depth*2)."<b>$curr_key</b> =&gt; $return";
         }
         return $results;
     }
@@ -39,7 +39,7 @@ function tpl_modifier_debug_print_var($var, $depth = 0, $length = 40)
         }
         if (strlen($var) > $length )
 		{
-            $results = substr($var, 0, $length-3).'...';
+            $results = substr($var, 0, $length).'...';
         }
 		else
 		{

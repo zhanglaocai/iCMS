@@ -116,13 +116,31 @@ class tagApp {
             return;
         }
         $sql  = iPHP::where($array,'name',false,true);
-        var_dump($sql);
 
+        if(empty($sql)){
+            return;
+        }
         $rs = iDB::all("SELECT * FROM `#iCMS@__tags` where {$sql} AND `status`='1'", ARRAY_A);
-        // foreach ($rs as $key => $tag) {
-        //     $tag && $tagArray[$key] = $this->value($tag);
-        // }
-        // var_dump($tagArray);
+        foreach ((array)$rs as $key => $tag) {
+            $tag && $tagArray[$tag['id']] = $this->value($tag);
+        }
+        return $tagArray;
+    }
+    public function map($tagArray,$tMap){
+        $array = array();
+        $map   = $tMap;
+        foreach ((array)$tagArray as $tid => $tag) {
+            $aid = $tMap[$tag['name']];
+            unset($map[$tag['name']]);
+            $akey = array_search($aid, $map);
+            $map = $tMap;
+            if($akey){
+                $array[$aid][$tid]= $tag;
+            }else{
+                $array[$aid] = $tag;
+            }
+        }
+        return $array;
     }
 
 }

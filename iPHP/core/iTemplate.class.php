@@ -193,9 +193,7 @@ class iTemplate {
 		unset($this->_plugins['compiler'][$function]);
 	}
 	function _get_resource($file){
-		if(strpos($file, 'debug.tpl')!==false){
-			return iTEMPLATE_PATH . "template/internal/debug.tpl";
-		}
+		if(strpos($file, 'debug.tpl')!==false) return 'debug.tpl';
 
 		$file = ltrim($file,'/');
 		strpos($file,'..') && $this->trigger_error("resource file has '..'", E_USER_ERROR);
@@ -311,7 +309,7 @@ class iTemplate {
 	}
 
 	function _run_iPHP($a){
-		$keys			= isset($a['as'])?$a['as']:$a['app'];
+		$keys = isset($a['as'])?$a['as']:$a['app'];
 		if($a['method']){
 			$callback	= $a['app'].'_'.$a['method'];
 			function_exists($callback) OR $this->require_one(iPHP_APP_DIR."/".$a['app']."/".$a['app'].".func.php");
@@ -325,7 +323,7 @@ class iTemplate {
 			unset($a['vars']);
 		 	$a = array_merge($a,$_a);
 		}
-		//var_dump(function_exists($callback),$callback,$a,$callback($a));
+
 		$this->assign($keys,$callback($a));
 	}
 
@@ -466,8 +464,10 @@ class iTemplate_Compiler extends iTemplate {
 
 	}
 
-	function _compile_file($template_file){
-		$file_contents = file_get_contents($template_file);
+	function _compile_file($tfile){
+		$tfile=='debug.tpl' && $tfile = iTEMPLATE_PATH . 'template/internal/debug.tpl';
+
+		$file_contents = file_get_contents($tfile);
 		$ldq           = preg_quote($this->left_delimiter);
 		$rdq           = preg_quote($this->right_delimiter);
 		$_match        = array();		// a temp variable for the current regex match

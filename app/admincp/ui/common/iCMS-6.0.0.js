@@ -7,6 +7,14 @@
             AUTH:'USER_AUTH',
             DIALOG:[]
         },
+        UI:{
+            alert: function(msg,ok,callback) {
+                return iCMS.alert(msg,ok,callback);
+            },
+            dialog: function(options,callback) {
+                return iCMS.dialog(options,callback);
+            }
+        },
         init: function(options) {
             this.config = $.extend(this.config,options);
         },

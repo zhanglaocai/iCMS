@@ -42,7 +42,7 @@
             "-": "-"
         }, {
             "caption": "更新系统设置",
-            "href": "cache&acp=setting",
+            "href": "cache&acp=admincp.setting.app",
             "icon": "refresh",
             "target": "iPHP_FRAME"
         }, {
@@ -84,12 +84,12 @@
             "target": "iPHP_FRAME"
         }, {
             "caption": "更新内链缓存",
-            "href": "cache&acp=keywords",
+            "href": "cache&acp=keywords.admincp",
             "icon": "refresh",
             "target": "iPHP_FRAME"
         }, {
             "caption": "更新过滤缓存",
-            "href": "cache&acp=filter",
+            "href": "cache&acp=filter.admincp",
             "icon": "refresh",
             "target": "iPHP_FRAME"
         }, {

@@ -23,7 +23,7 @@
                 "icon": "cog"
             }, {
                 "caption": "标签设置",
-                "href": "setting&tab=tag",
+                "href": "tag&do=config&f=setting",
                 "icon": "cog"
             }, {
                 "caption": "缓存设置",

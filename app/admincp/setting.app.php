@@ -51,10 +51,8 @@ class settingApp{
         $config['router']['URL']        = trim($config['router']['URL'],'/');
         $config['router']['public_url'] = rtrim($config['router']['public_url'],'/');
         $config['router']['user_url']   = rtrim($config['router']['user_url'],'/');
-        $config['router']['tag_url']    = trim($config['router']['tag_url'],'/');
         $config['router']['DIR']        = rtrim($config['router']['DIR'],'/').'/';
         $config['router']['html_dir']   = rtrim($config['router']['html_dir'],'/').'/';
-        $config['router']['tag_dir']    = rtrim($config['router']['tag_dir'],'/').'/';
         $config['FS']['url']            = trim($config['FS']['url'],'/').'/';
 
         foreach ((array)$config['open'] as $platform => $value) {
@@ -63,11 +61,10 @@ class settingApp{
             }
         }
 
-        $config['apps']	= $this->apps();
     	foreach($config AS $n=>$v){
     		$this->set($v,$n,0);
     	}
-    	$this->write($config);
+    	$this->cache();
     	iPHP::success('更新完成','js:1');
     }
     /**

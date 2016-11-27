@@ -26,6 +26,8 @@ class tagAdmincp{
     }
     function do_save_config(){
         $setting = admincp::app('setting');
+        $_POST['config']['url'] = trim($_POST['config']['url'],'/');
+        $_POST['config']['dir'] = rtrim($_POST['config']['dir'],'/').'/';
         $setting->save($this->appid);
     }
 

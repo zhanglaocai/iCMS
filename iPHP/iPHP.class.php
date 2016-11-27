@@ -111,8 +111,13 @@ class iPHP {
 
 		//config.php 中开启后 此处设置无效
 		defined('iPHP_DEBUG') OR define('iPHP_DEBUG', $config['debug']['php']); //程序调试模式
+		defined('iPHP_DB_DEBUG') OR define('iPHP_DB_DEBUG', $config['debug']['db']); //数据调试
+		defined('iPHP_DB_TRACE') OR define('iPHP_DB_TRACE', $config['debug']['trace']); //SQL跟踪
+		defined('iPHP_DB_EXPLAIN') OR define('iPHP_DB_EXPLAIN', $config['debug']['explain']); //SQL解释
+
 		defined('iPHP_TPL_DEBUG') OR define('iPHP_TPL_DEBUG', $config['debug']['tpl']); //模板调试
-		defined('iPHP_SQL_DEBUG') OR define('iPHP_SQL_DEBUG', $config['debug']['sql']); //模板调试
+		defined('iPHP_TPL_DEBUGGING') OR define('iPHP_TPL_DEBUGGING', $config['debug']['debugging']); //模板数据调试
+
 		defined('iPHP_TIME_CORRECT') OR define('iPHP_TIME_CORRECT', $config['time']['cvtime']);
 		defined('iPHP_ROUTER_REWRITE') OR define('iPHP_ROUTER_REWRITE', $config['router']['rewrite']);
 		defined('iPHP_APP_SITE') && $config['cache']['prefix'] = iPHP_APP_SITE;
@@ -124,11 +129,9 @@ class iPHP {
 		ini_set('display_errors', 'OFF');
 		error_reporting(0);
 
-		if (iPHP_DEBUG || iPHP_TPL_DEBUG) {
+		if (iPHP_DEBUG ||iPHP_DB_DEBUG||iPHP_TPL_DEBUG) {
 			ini_set('display_errors', 'ON');
 			error_reporting(E_ALL & ~E_NOTICE);
-			iDB::$debug = true;
-			iDB::$show_errors = true;
 		}
 
 		$timezone = $config['time']['zone'];
@@ -139,15 +142,12 @@ class iPHP {
 		iFS::init($config['FS'], $config['watermark'], 'filedata');
 		iCache::init($config['cache']);
 		iPHP::template_start();
-
-		if(iPHP_DEBUG){
-		}
-
-		iPHP_SQL_DEBUG && iDB::$show_explain = true;
-		iPHP_TPL_DEBUG && self::clear_compiled_tpl();
-
 		self::$apps = $config['apps'];
 
+		iPHP_DB_DEBUG  && iDB::$show_errors = true;
+		iPHP_DB_TRACE  && iDB::$debug = true;
+		iPHP_DB_EXPLAIN&& iDB::$show_explain = true;
+		iPHP_TPL_DEBUG && self::clear_compiled_tpl();
 		return $config;
 	}
 
@@ -259,8 +259,9 @@ class iPHP {
             "resource" => array("iPHP","tpl_callback_path"),
             "output"   => array("iPHP","tpl_callback_output")
         );
+		self::$iTPL->debugging    = iPHP_TPL_DEBUGGING;
 		self::$iTPL->template_dir = iPHP_TPL_DIR;
-		self::$iTPL->compile_dir = iPHP_TPL_CACHE;
+		self::$iTPL->compile_dir  = iPHP_TPL_CACHE;
 		self::$iTPL->left_delimiter = '<!--{';
 		self::$iTPL->right_delimiter = '}-->';
 		self::$iTPL->register_modifier("date", "get_date");
@@ -305,23 +306,29 @@ class iPHP {
 	public static function fetch($tpl) {
 		return self::$iTPL->fetch($tpl);
 	}
-	public static function pl($tpl) {
+	public static function view($tpl, $p = 'index') {
+		$tpl OR self::throw404('运行出错！请设置模板文件', '001', 'TPL');
 		if (self::$iTPL_MODE == 'html') {
 			return self::$iTPL->fetch($tpl);
 		} else {
 			self::$iTPL->display($tpl);
-			if (iPHP_DEBUG && iPHP_TPL_DEBUG) {
-				echo '<span class="label label-success">模板:'.$tpl.' 内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL执行:'.iDB::$num_queries.'次</span>';
-				echo '<pre>';
-				print_r(iDB::$debug_info);
-				echo '</pre>';
-			}
+			self::debug_info();
 		}
 	}
-	public static function view($tpl, $p = 'index') {
-		$tpl OR self::throw404('运行出错！ 请设置模板文件', '001', 'TPL');
-		return self::pl($tpl);
-
+	public static function debug_info() {
+		if (iPHP_DEBUG) {
+			echo '<div class="well">';
+			echo '<h3 class="label label-default">调试信息</h3>';
+			echo '<span class="label label-success">模板:'.$tpl.' 内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL累计执行:'.iDB::$num_queries.'次</span>';
+			if(iDB::$debug_info && iPHP_DB_TRACE){
+				echo '<br /><h3 class="label label-default">数据调用汇总:</h3>';
+				echo '<pre class="alert alert-info">';
+				print_r(iDB::$debug_info);
+				echo '</pre>';
+				iDB::$debug_info = null;
+			}
+			echo '</div>';
+		}
 	}
 	public static function tpl_block_cache($vars, $content, &$tpl) {
 		$vars['id'] OR iPHP::warning('cache 标签出错! 缺少"id"属性或"id"值为空.');
@@ -382,7 +389,6 @@ class iPHP {
 		}
 	}
     public static function tpl_callback_output($html,$file=null){
-
         return $html;
     }
 	public static function PG($key) {
@@ -579,17 +585,15 @@ class iPHP {
 			$routerArray = json_decode(file_get_contents($path), true);
 			$GLOBALS['ROUTER'] = $routerArray;
 		}
-
-		if (is_array($key)) {
-			$router = $routerArray[$key[0]];
-		} else {
-			$router = $routerArray[$key];
-		}
+		$routerKey = $key;
+		is_array($key) && $routerKey = $key[0];
+		$router = $routerArray[$routerKey];
 		$url = iPHP_ROUTER_REWRITE?$router[0]:$router[1];
 
-		if (iPHP_ROUTER_REWRITE && stripos($router, 'uid:') === 0) {
+		if (iPHP_ROUTER_REWRITE && stripos($routerKey, 'uid:') === 0) {
 			$url = rtrim(iPHP_ROUTER_USER, '/') . $url;
 		}
+
 		if (is_array($key)) {
 			if (is_array($key[1])) {
 				/* 多个{} 例:/{uid}/{cid}/ */
@@ -738,10 +742,17 @@ class iPHP {
 
 		if (is_array($vars)) {
 			foreach ($vars as $key => $value) {
-				$vas[] = "'" . addslashes($value) . "'";
+				if (is_array($value)) {
+					foreach ($value as $vk => $vv) {
+						$vas[] = "'" . addslashes($vv) . "'";
+					}
+				}else{
+					$vas[] = "'" . addslashes($value) . "'";
+				}
 			}
+			$vas  = array_unique($vas);
 			$vars = implode(',', $vas);
-			$sql = $not ? " NOT IN ($vars)" : " IN ($vars) ";
+			$sql  = $not ? " NOT IN ($vars)" : " IN ($vars) ";
 		} else {
 			$vars = addslashes($vars);
 			$sql = $not ? "<>'$vars' " : "='$vars' ";

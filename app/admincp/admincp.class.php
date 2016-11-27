@@ -17,7 +17,10 @@ define('__ADMINCP__', __SELF__ . '?app');
 define('ACP_PATH', iPHP_APP_DIR . '/admincp');
 define('ACP_HOST', (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://" . $_SERVER['HTTP_HOST']);
 
+iDB::$debug = true;
 iDB::$show_errors = true;
+iDB::$show_explain = false;
+
 iPHP::$dialog['title'] = 'iCMS';
 
 iCMS::core('Menu');

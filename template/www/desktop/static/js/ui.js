@@ -31,6 +31,7 @@ $(function() {
             //登陆后事件
             function($info) {
                 console.log($info);
+                iCMS.$('user_nickname').text($info.nickname);
                 $("#user-login").hide();
                 $("#user-profile").show();
             },
@@ -67,7 +68,7 @@ $(function() {
                 }
             );
         });
-        doc.on('click', '[i="pm"]', function(event) {
+        doc.on('click', '[i^="pm"]', function(event) {
             event.preventDefault();
             $USER.PM(this);
         });
@@ -76,9 +77,13 @@ $(function() {
             $USER.REPORT(this);
         });
         $USER.UCARD();
-
     });
-
+    iCMS.run('common', function($C) {
+        doc.on('click', '[i^="vote"]', function(event) {
+            event.preventDefault();
+            $C.vote(this);
+        });
+    });
 });
 
 var iUSER = iCMS.run('user');

@@ -439,6 +439,7 @@ class userApp {
 		$personstyle   = iS::escapeStr($_POST['personstyle']);
 		$slogan        = iS::escapeStr($_POST['slogan']);
 		$meta          = iS::escapeStr($_POST['meta']);
+		$setting       = $_POST['setting'];
 
 		($personstyle == iPHP::lang('user:profile:personstyle')) && $personstyle = "";
 		($slogan == iPHP::lang('user:profile:slogan')) && $slogan = "";
@@ -458,6 +459,11 @@ class userApp {
 		// }
 		if ($gender != $this->me->gender) {
 			iDB::update('user', array('gender' => $gender), array('uid' => user::$userid));
+		}
+		if ($setting) {
+			$setting = array_merge((array)$this->me->setting,(array)$setting);
+			$setting = json_encode($setting);
+			iDB::update('user', array('setting' => $setting), array('uid' => user::$userid));
 		}
 
 		$uid = iDB::value("
@@ -754,6 +760,9 @@ class userApp {
 			iPHP::core("Seccode");
 			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
+		$_setting = array();
+		$_setting['inbox']['receive'] = 'follow';
+		$setting = addslashes(json_encode($_setting));
 
 		$gid = 0;
 		$pid = 0;
@@ -766,6 +775,7 @@ class userApp {
 			'gender', 'fans', 'follow', 'article', 'comments',
 			'share', 'credit', 'regip', 'regdate', 'lastloginip',
 			'lastlogintime', 'hits', 'hits_today', 'hits_yday', 'hits_week',
+			'setting',
 			'hits_month', 'type', 'status',
 		);
 		$data = compact($fields);
@@ -857,8 +867,24 @@ class userApp {
 		$content OR iPHP::code(0, 'iCMS:pm:empty', 0, 'json');
 
 		$receiv_name = iS::escapeStr($_POST['name']);
+
 		$send_uid = user::$userid;
 		$send_name = user::$nickname;
+
+		$setting = (array)user::value($receiv_uid,'uid','setting');
+		if($setting['inbox']['receive']=='follow'){
+			if($mid){
+				$mid = iS::escapeStr($_POST['mid']);
+				$mid = authcode($mid);
+				// $row = iDB::row("SELECT `send_uid`,`receiv_uid` FROM `#iCMS@__message` where `id`='$mid'");
+				$muserid = iDB::value("SELECT `userid` FROM `#iCMS@__message` where `id`='$mid'");
+			}
+			if($muserid!=user::$userid){
+				$check = user::follow($receiv_uid, $send_uid);
+				$check OR iPHP::code(0, 'iCMS:pm:nofollow', 0, 'json');
+			}
+
+		}
 
 		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');
 		$data = compact($fields);

@@ -1,7 +1,9 @@
 define("user", function(require) {
     var utils = require("utils"),
     API = require("api"),
-    User = {};
+    User = {
+        INBOX_URL:iCMS.CONFIG.API+'?app=user&do=manage&pg=inbox'
+    };
     return $.extend(User, {
         NOAVATAR: function(img) {
             img.src = iCMS.CONFIG.PUBLIC+'/ui/avatar.gif';
@@ -25,6 +27,9 @@ define("user", function(require) {
         AUTH: function() {
             var cookie = require("cookie");
             return cookie.get(iCMS.CONFIG.AUTH) ? true : false;
+        },
+        UHOME: function(uid) {
+            return iCMS.CONFIG.UHOME.replace('{uid}',uid);
         },
         LOGIN: function() {
 
@@ -81,30 +86,36 @@ define("user", function(require) {
                     quickClose: false,width:"auto",height:"auto",
                     content:box
                 }),
-                inbox  = $this.attr('href'),
-                data   = API.param(a),
+                iv      = iCMS.$v(a,'pm')
+                param   = {'uid':iv[0],'name':iv[1]}
                 content = $("[name='content']", box).val('');
+
+            if(iv[2]){
+                param.mid = iv[2];
+            }
             $(".pm_warnmsg", box).hide();
-            $('.pm_uname', box).text(data.name);
-            if(inbox){
-                $('.pm_inbox', box).attr("href",inbox);
+            $('.pm_uname', box).text(param.name);
+
+            if(User.INBOX_URL){
+                $('.pm_inbox', box).attr("href",User.INBOX_URL);
             }else{
                 $('.pm_inbox', box).hide();
             }
+
             $('.cancel', box).click(function(event) {
                 event.preventDefault();
                 dialog.remove();
             });
             $('[name="send"]', box).click(function(event) {
                 event.preventDefault();
-                data.content = content.val();
-                if (!data.content) {
+                param.content = content.val();
+                if (!param.content) {
                     content.focus();
                     $(".pm_warnmsg", box).show();
                     return false;
                 }
-                data.action = 'pm';
-                $.post(API.url('user'), data, function(c) {
+                param.action = 'pm';
+                $.post(API.url('user'), param, function(c) {
                     dialog.remove();
                     UI.alert(c.msg,c.code);
                 }, 'json');

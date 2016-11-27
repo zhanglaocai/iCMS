@@ -47,14 +47,41 @@ defined('iPHP') OR exit('What are you doing?');
                 <input type="checkbox" data-type="switch" name="config[debug][tpl]" id="debug_tpl" <?php echo $config['debug']['tpl']?'checked':''; ?>/>
               </div>
             </div>
-            <span class="help-inline">模板错误提示!如果网站显示空白或者不完整,可开启此项,方便排除错误!模板调整时也可开启,开启此项也要开"程序提示"</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">mysql调试</span>
-              <div class="switch">
-                <input type="checkbox" data-type="switch" name="config[debug][sql]" id="debug_sql" <?php echo $config['debug']['sql']?'checked':''; ?>/>
+            <span class="help-inline">模板错误提示!如果网站显示空白或者不完整,可开启此项,方便排除错误!模板调整时也可开启</span>
+            <div class="hide">
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">模板数据调试</span>
+                <div class="switch">
+                  <input type="checkbox" data-type="switch" name="config[debug][debugging]" id="debug_debugging" <?php echo $config['debug']['debugging']?'checked':''; ?>/>
+                </div>
               </div>
             </div>
-            <span class="help-inline">开启后将显示 EXPLAIN 信息</span>
+            <span class="help-inline">模板所有数据调试</span>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">mysql提示</span>
+              <div class="switch">
+                <input type="checkbox" data-type="switch" name="config[debug][db]" id="debug_db" <?php echo $config['debug']['db']?'checked':''; ?>/>
+              </div>
+            </div>
+            <span class="help-inline">开启后将显示所有数据库错误信息</span>
+            <div class="hide">
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">SQL跟踪</span>
+                <div class="switch">
+                  <input type="checkbox" data-type="switch" name="config[debug][trace]" id="debug_trace" <?php echo $config['debug']['trace']?'checked':''; ?>/>
+                </div>
+              </div>
+              <span class="help-inline">开启后将显示所有SQL执行情况</span>
+            </div>
+            <div class="hide">
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">SQL解释</span>
+                <div class="switch">
+                  <input type="checkbox" data-type="switch" name="config[debug][explain]" id="debug_explain" <?php echo $config['debug']['explain']?'checked':''; ?>/>
+                </div>
+              </div>
+              <span class="help-inline">开启后将显示 SQL EXPLAIN 信息</span>
+            </div>
           </div>
           <div id="setting-tpl" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">首页静态跳转</span>
