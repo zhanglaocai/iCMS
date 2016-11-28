@@ -24,6 +24,7 @@ $(function() {
         event.preventDefault();
         iCMS.UI.seccode();
     });
+    var doc = $(document);
 
     iCMS.run('user', function($USER) {
         //用户状态
@@ -50,7 +51,6 @@ $(function() {
                 window.top.location.reload();
             });
         });
-        var doc = $(document);
         doc.on('click', "[i^='follow']", function(event) {
             event.preventDefault();
             $USER.FOLLOW(this,
@@ -78,10 +78,22 @@ $(function() {
         });
         $USER.UCARD();
     });
-    iCMS.run('common', function($C) {
+    iCMS.run('common', function($COMMON) {
         doc.on('click', '[i^="vote"]', function(event) {
             event.preventDefault();
-            $C.vote(this);
+            var me = this;
+            $COMMON.vote(this,function(ret,param) {
+                if (ret.code) {
+                   var numObj = iCMS.$('vote_'+param['type']+'_num',me),
+                       count = parseInt(numObj.text());
+                    numObj.text(count + 1);
+                }
+            });
+        });
+        doc.on('click', '[i^="favorite"]', function(event) {
+            event.preventDefault();
+            var me = this;
+            $COMMON.favorite(this);
         });
     });
 });

@@ -5,8 +5,8 @@ window.iCMS = {
     data : {},
     UI:{},
     API:require("api"),
-    $:function(i) {
-        var doc = $(document);
+    $:function(i,doc) {
+        var doc = $(doc)||$(document);
         return doc.find('[i=' + i + ']');
     },
     $v:function(a,i) {

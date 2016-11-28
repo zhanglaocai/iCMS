@@ -1,6 +1,7 @@
 define("user", function(require) {
     var utils = require("utils"),
-    API = require("api"),
+    API = require("api"),UI = require("ui");
+
     User = {
         INBOX_URL:iCMS.CONFIG.API+'?app=user&do=manage&pg=inbox'
     };
@@ -57,7 +58,7 @@ define("user", function(require) {
             }, 'json');
         },
         UCARD:function(){
-            var UI = require("ui"),$poshytip = require("poshytip");
+            var $poshytip = require("poshytip");
             $("[i^='ucard']").poshytip({
                 idName:'iCMS-UCARD',className:'iCMS_UI_TOOLTIP',
                 alignTo:'target',alignX:'center',
@@ -77,7 +78,6 @@ define("user", function(require) {
             if (!auth) {
               return this.LOGIN();
             }
-            var UI = require("ui");
 
             var $this  = $(a),
                 box    = document.getElementById("iCMS-PM-DIALOG"),
@@ -127,7 +127,6 @@ define("user", function(require) {
             if (!auth) {
               return this.LOGIN();
             }
-            var UI = require("ui");
 
             var $this = $(a),
             _title    = $this.attr('title')||'为什么举报这个评论?',
@@ -176,7 +175,6 @@ define("user", function(require) {
                 }, 'json');
             });
         },
-
 
     });
 });

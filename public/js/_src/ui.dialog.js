@@ -21,7 +21,7 @@ define("ui.dialog", function(require) {
             },
             timeOutID = null,
             opts = $.extend(defaults, iCMS.CONFIG.DIALOG, options);
-            console.log(opts);
+
         if (opts.follow) {
             opts.fixed = false;
             opts.lock = false;

@@ -8,7 +8,7 @@
  */
 class articleApp {
 	public $taoke = false;
-	public $methods = array('iCMS', 'article', 'clink', 'hits', 'good', 'bad', 'like_comment', 'comment');
+	public $methods = array('iCMS', 'article', 'clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
     public $pregimg = "/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
 	public function __construct() {}
 
@@ -33,11 +33,11 @@ class articleApp {
 			iDB::query("UPDATE `#iCMS@__article` SET {$sql} WHERE `id` ='$id'");
 		}
 	}
-	public function API_good() {
-		$this->vote('good');
-	}
-	public function API_bad() {
-		$this->vote('bad');
+	public function ACTION_vote() {
+		$type = $_POST['type'];
+		$this->vote($type);
+		// $type=='up' && $this->vote('good');
+		// $type=='down' && $this->vote('bad');
 	}
 	public function API_comment() {
 		$appid = (int) $_GET['appid'];
@@ -45,25 +45,25 @@ class articleApp {
 		$iid = (int) $_GET['iid'];
 		$this->article($iid, 1, '{iTPL}/article.comment.htm');
 	}
-	private function vote($_do) {
+	private function vote($type) {
 		// iPHP::app('user.class','static');
 		// user::get_cookie() OR iPHP::code(0,'iCMS:!login',0,'json');
 
-		$aid = (int) $_GET['iid'];
+		$aid = (int) $_POST['iid'];
 		$aid OR iPHP::code(0, 'iCMS:article:empty_id', 0, 'json');
 
-		$ackey = 'article_' . $_do . '_' . $aid;
+		$ackey = 'article_' . $type . '_' . $aid;
 		$vote = iPHP::get_cookie($ackey);
-		$vote && iPHP::code(0, 'iCMS:article:!' . $_do, 0, 'json');
+		$vote && iPHP::code(0, 'iCMS:article:!' . $type, 0, 'json');
 
-		if ($_do == 'good') {
+		if ($type == 'good') {
 			$sql = '`good`=good+1';
 		} else {
 			$sql = '`bad`=bad+1';
 		}
 		iDB::query("UPDATE `#iCMS@__article` SET {$sql} WHERE `id` ='{$aid}' limit 1");
 		iPHP::set_cookie($ackey, time(), 86400);
-		iPHP::code(1, 'iCMS:article:' . $_do, 0, 'json');
+		iPHP::code(1, 'iCMS:article:' . $type, 0, 'json');
 
 	}
 	public function article($id, $page = 1, $tpl = true) {

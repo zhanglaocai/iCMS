@@ -14,6 +14,7 @@
             'utils.js',
             'user.js',
             'passport.js',
+            'common.js',
             'icms.js',
         ],
         baseURL = '/public/js/_src/';
