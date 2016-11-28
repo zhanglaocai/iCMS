@@ -257,6 +257,30 @@ class categoryApp extends category{
                 $this->cache(true,$this->appid);
                 iPHP::success('更新完成!','js:1');
             break;
+            case 'dir':
+                $mdir = iS::escapeStr($_POST['mdir']);
+                if($_POST['pattern']=='replace') {
+                    $sql = "`dir` = '$dir'";
+                }
+                if($_POST['pattern']=='addtobefore'){
+                    $sql = "`dir` = CONCAT('{$mdir}',dir)";
+                }
+                if($_POST['pattern']=='addtoafter'){
+                    $sql = "`dir` = CONCAT(dir,'{$mdir}')";
+                }
+                foreach($id_array as $k=>$cid){
+                    $sql && iDB::query("UPDATE `#iCMS@__category` SET {$sql} WHERE `cid` ='".(int)$cid."' LIMIT 1");
+                }
+                iPHP::success('目录更改完成!','js:1');
+            break;
+            case 'mkdir':
+                foreach($id_array as $k=>$cid){
+                    $name = iS::escapeStr($_POST['name'][$cid]);
+                    $dir  = pinyin($name);
+                    iDB::query("UPDATE `#iCMS@__category` SET `dir` = '$dir' WHERE `cid` ='".(int)$cid."' LIMIT 1");
+                }
+                iPHP::success('更新完成!','js:1');
+            break;
             case 'name':
                 foreach($id_array as $k=>$cid){
                     $name   = iS::escapeStr($_POST['name'][$cid]);

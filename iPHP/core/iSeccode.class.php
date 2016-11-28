@@ -44,6 +44,7 @@ class iSeccode {
         header("Expires: 0".PHP_EOL);
         header("Cache-Control: no-cache".PHP_EOL);
         header("Pragma: no-cache".PHP_EOL);
+        @ob_clean();
         if(function_exists('imagejpeg')) {
             header('Content-type:image/jpeg'.PHP_EOL);
             $void = imagejpeg(self::$im);

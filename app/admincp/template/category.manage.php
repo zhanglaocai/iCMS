@@ -133,8 +133,9 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
               <th style="width:10px;"><i class="fa fa-arrows-v"></i></th>
               <th style="width:24px;">cid</th>
               <th>pid</th>
-              <th style="span3">父<?php echo $this->category_name;?></th>
               <th class="span4"><?php echo $this->category_name;?></th>
+              <th class="span3">目录</th>
+              <th style="span3">父<?php echo $this->category_name;?></th>
               <th style="width:40px;">记录数</th>
               <th>操作</th>
             </tr>
@@ -145,11 +146,12 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['cid'] ; ?>" /></td>
               <td><?php echo $rs[$i]['cid'] ; ?></td>
               <td><?php echo $rs[$i]['pid'] ; ?></td>
-              <td><a href="<?php echo APP_DOURI; ?>&rootid=<?php echo $rs[$i]['rootid'] ; ?>"><?php echo  $this->category[$rs[$i]['rootid']]['name'] ; ?></a></td>
-              <td><input <?php if($rs[$i]['rootid']=="0"){ ?> style="font-weight:bold"<?php } ?> type="text" name="name[<?php echo $rs[$i]['cid'] ; ?>]" value="<?php echo $rs[$i]['name'] ; ?>" class='tip' title='创建者:<?php echo $rs[$i]['creator']; ?><br />创建时间:<?php echo get_date($rs[$i]['createtime']); ?>'>
+              <td><input <?php if($rs[$i]['rootid']=="0"){ ?> style="font-weight:bold"<?php } ?> type="text" name="name[<?php echo $rs[$i]['cid'] ; ?>]" value="<?php echo $rs[$i]['name'] ; ?>" class='tip' title='创建者:<?php echo $rs[$i]['creator']; ?><br />创建时间:<?php echo get_date($rs[$i]['createtime']); ?><br />栏目规则:<?php echo $rs[$i]['categoryRule']; ?><br />内容规则:<?php echo $rs[$i]['contentRule']; ?>'>
                 <?php if(!$rs[$i]['status']){ ?>
                 <i class="fa fa-eye-slash" title="隐藏<?php echo $this->category_name;?>"></i>
                 <?php } ?></td>
+              <td><?php echo $rs[$i]['dir'] ; ?></td>
+              <td><a href="<?php echo APP_DOURI; ?>&rootid=<?php echo $rs[$i]['rootid'] ; ?>"><?php echo  $this->category[$rs[$i]['rootid']]['name'] ; ?></a></td>
               <td><?php echo $rs[$i]['count'] ; ?></td>
               <td><?php echo $this->listbtn($rs[$i]) ; ?>
                 <?php if(iACP::CP($rs[$i]['cid'],'a') ){?>
@@ -176,6 +178,8 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
                       <li><a data-toggle="batch" data-action="move"><i class="fa fa-fighter-jet"></i> 移动<?php echo $this->category_name;?></a></li>
                       <li><a data-toggle="batch" data-action="recount"><i class="fa fa-refresh"></i> 更新记录数</a></li>
                       <li><a data-toggle="batch" data-action="name"><i class="fa fa-info-circle"></i> 更新名称</a></li>
+                      <li><a data-toggle="batch" data-action="mkdir"><i class="fa fa-gavel"></i> 重建目录</a></li>
+                      <li><a data-toggle="batch" data-action="dir"><i class="fa fa-gavel"></i> 更改目录</a></li>
                       <li><a data-toggle="batch" data-action="status"><i class="fa fa-square"></i> <?php echo $this->category_name;?>状态</a></li>
                       <?php echo $this->batchbtn();?>
                       <li class="divider"></li>
@@ -196,6 +200,20 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
               <option value="2">伪静态</option>
             </select>
           </div>
+        </div>
+        <div id="dirBatch">
+          <div class="input-prepend input-append"><span class="add-on">目录</span>
+            <input type="text" class="span2" name="mdir"/>
+          </div>
+          <div class="clearfloat mb10"></div>
+          <div class="input-prepend input-append"><span class="add-on">前追加
+            <input type="radio" name="pattern" value="addtobefore"/>
+            </span><span class="add-on">后追加
+            <input type="radio" name="pattern" value="addtoafter"/>
+            </span>
+            <span class="add-on">替换
+            <input type="radio" name="pattern" value="replace" checked/>
+            </span></div>
         </div>
         <div id="mergeBatch">
           <div class="input-prepend"> <span class="add-on">请选择目标<?php echo $this->category_name;?></span>

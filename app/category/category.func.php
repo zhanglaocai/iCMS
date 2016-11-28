@@ -71,6 +71,7 @@ function category_list($vars){
 		if($resource)foreach ($resource as $key => $value) {
 			$value['child'] = $rootid_array[$value['cid']]?true:false;
 			$value['url']   = iURL::get('category',$value)->href;
+			$value['url']   = str_replace('[DIR]', $vars['dir'], $value['url']);
 			$value['link']  = "<a href='{$value['url']}'>{$value['name']}</a>";
 
 	        if($value['metadata']){
