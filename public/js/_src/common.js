@@ -1,5 +1,5 @@
 define("common", function(require) {
-    var API = require("api"),utils = require("utils");;
+    var API = require("api"),utils = require("utils"),USER = require("user"),UI = require("ui");
     return {
         __post: function(param,uri,SUCCESS,FAIL) {
             var me = this;
@@ -8,6 +8,8 @@ define("common", function(require) {
             }, 'json');
         },
         vote: function(a, SUCCESS, FAIL) {
+            if (!USER.CHECK.LOGIN()) return;
+
             var vars = iCMS.$v(a,'vote');
             var param = API.param(a);
             param = $.extend(param, {
@@ -17,11 +19,17 @@ define("common", function(require) {
             this.__post(param,vars[0],SUCCESS,FAIL);
         },
         favorite: function(a,callback) {
-            var me = this,USER = require("user"),UI = require("ui")
-            var auth = USER.AUTH();
-            if (!auth) {
-              return USER.LOGIN();
-            }
+            if (!USER.CHECK.LOGIN()) return;
+
+            var me = this;
+            var tpl ='<a class="favo-list-item-link r5 " href="javascript:;" data-fid="<%=id%>">'
+                +'<span class="favo-list-item-title"><%=title%></span>'
+                +'<span class="meta gray">'
+                    +'<span class="num"><%=count%></span> 篇文章'
+                    +'<span class="bull">•</span> <%=follow%> 人关注'
+                +'</span>'
+                +'</a>'
+                +'<div class="clearfix mt10"></div>';
 
             var $this = $(a),
             box       = document.getElementById("iCMS-FAVORITE-DIALOG"),
@@ -61,7 +69,7 @@ define("common", function(require) {
                 }
                 $.post(API.url('favorite'), data, function(c) {
                     if(c.code){
-                        var item = __item({
+                        var item = $.parseTmpl(tpl,{
                             'id':c.forward,
                             'title':data.title,
                             'count':0,'follow':0
@@ -78,19 +86,10 @@ define("common", function(require) {
                 }, 'json');
             });
 
-            function __item(val){
-                return '<a class="favo-list-item-link r5 " href="javascript:;" data-fid="'+val.id+'">'
-                +'<span class="favo-list-item-title">'+val.title+'</span>'
-                +'<span class="meta gray">'
-                    +'<span class="num">'+val.count+'</span> 篇文章'
-                    +'<span class="bull">•</span> '+val.follow+' 人关注'
-                +'</span></a><div class="clearfix mt10"></div>';
-            }
-
             $.get(API.url('favorite',"&do=list"),function(json) {
                 var item ='';
                 $.each(json, function(i,val){
-                    item+=__item(val);
+                    item+=$.parseTmpl(tpl,val);
                 });
                 $(".favorite_list_content",box).html(item);
                 dialog.reset();

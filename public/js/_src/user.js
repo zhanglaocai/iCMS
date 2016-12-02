@@ -2,10 +2,10 @@ define("user", function(require) {
     var utils = require("utils"),
     API = require("api"),UI = require("ui");
 
-    User = {
+    $User = {
         INBOX_URL:iCMS.CONFIG.API+'?app=user&do=manage&pg=inbox'
     };
-    return $.extend(User, {
+    return $.extend($User, {
         NOAVATAR: function(img) {
             img.src = iCMS.CONFIG.PUBLIC+'/ui/avatar.gif';
         },
@@ -20,7 +20,7 @@ define("user", function(require) {
             var me = this;
             $.get(API.url('user', '&do=data'), $param, function(ret) {
                 if (ret.code) {
-                    User.data = ret;
+                    $User.data = ret;
                 }
                 utils.callback(ret, SUCCESS, FAIL, me);
             }, 'json');
@@ -29,11 +29,22 @@ define("user", function(require) {
             var cookie = require("cookie");
             return cookie.get(iCMS.CONFIG.AUTH) ? true : false;
         },
+        CHECK:{
+            LOGIN:function(){
+                var auth = $User.AUTH();
+                if (!auth) {
+                  return $User.LOGIN();
+                }else{
+                    return true;
+                }
+            }
+        },
         UHOME: function(uid) {
             return iCMS.CONFIG.UHOME.replace('{uid}',uid);
         },
         LOGIN: function() {
-
+            alert('asd');
+            return false;
         },
         LOGOUT: function($param, SUCCESS, FAIL) {
             var me = this;
@@ -96,8 +107,8 @@ define("user", function(require) {
             $(".pm_warnmsg", box).hide();
             $('.pm_uname', box).text(param.name);
 
-            if(User.INBOX_URL){
-                $('.pm_inbox', box).attr("href",User.INBOX_URL);
+            if($User.INBOX_URL){
+                $('.pm_inbox', box).attr("href",$User.INBOX_URL);
             }else{
                 $('.pm_inbox', box).hide();
             }

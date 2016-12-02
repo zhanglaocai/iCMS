@@ -8,9 +8,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta content="iDreamSoft Inc." name="Copyright" />
 <script src="http://apps.bdimg.com/libs/jquery/1.7.2/jquery.min.js"></script>
-<script src="<!--{$site.urls.public}-->/js/iCMS.min.js"></script>
+<script src="<!--{$site.urls.public}-->/iCMS.js"></script>
 <!--{*
-<script src="<!--{$site.urls.public}-->/iCMS.min.js"></script>
+<script src="<!--{$site.urls.public}-->/js/iCMS.min.js"></script>
 *}-->
 <script>
 iCMS.init({
@@ -18,8 +18,13 @@ iCMS.init({
     UHOME: "<!--{iCMS:router url='uid:home'}-->",
     PUBLIC: "<!--{$site.urls.public}-->",
     COOKIE: '<!--{$iCMS.COOKIE_PRE}-->',
+    COMMENT:{
+        seccode: "<!--{$iCMS.CONFIG.comment.seccode}-->"
+    },
     DIALOG: {
         title: '<!--{$site.name}--> 提示信息'
     },
 });
 </script>
+
+

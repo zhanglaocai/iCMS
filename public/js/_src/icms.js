@@ -6,8 +6,8 @@ window.iCMS = {
     UI:{},
     API:require("api"),
     $:function(i,doc) {
-        var doc = $(doc)||$(document);
-        return doc.find('[i=' + i + ']');
+        var doc = doc||document;
+        return $('[i=' + i + ']',$(doc));
     },
     $v:function(a,i) {
         var param = $(a).attr('i').replace(i+':','');

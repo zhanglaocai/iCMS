@@ -61,11 +61,11 @@ class commentApp {
 		$_GET['by'] && $vars['by'] = iS::escapeStr($_GET['by']);
 		$_GET['date_format'] && $vars['date_format'] = iS::escapeStr($_GET['date_format']);
 		$vars['page'] = true;
-		iPHP::app('comment.func', 'static');
-		$array = comment_list($vars);
-		iPHP::json($array);
-		//iPHP::assign('vars',$vars);
-		//iPHP::view('iCMS://comment/api.json.htm');
+		// iPHP::app('comment.func', 'static');
+		// $array = comment_list($vars);
+		// iPHP::json($array);
+		iPHP::assign('vars',$vars);
+		iPHP::view('iCMS://comment/api.json.htm');
 	}
 	function pm($a) {
 		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');

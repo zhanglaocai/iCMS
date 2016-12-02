@@ -16,26 +16,26 @@
             classname: "active",
             item: "li",
             time: 3000,
-            sync: null 
+            sync: null
         }
         var options = $.extend(defaults, options);
         return this.each(function() {
             var a = $(this)
-              , 
+              ,
             b = $(options.num_btn)
-              , 
+              ,
             l = $(options.left_btn)
-              , 
+              ,
             r = $(options.right_btn)
-              , 
+              ,
             current = 0
-              , 
-            timeOut = null 
-              , 
+              ,
+            timeOut = null
+              ,
             auto = true
-              , 
+              ,
             len = $(options.item, a).length;
-            
+
             if (options.sync) {
                 var s = $(options.sync);
             }
@@ -61,7 +61,7 @@
             }
             start();
             overout($(options.item, a));
-            
+
             if (options.sync) {
                 overout($(options.item, s));
             }
@@ -103,7 +103,7 @@
                     $(options.item, s).hide().eq(i).fadeIn();
                 }
                 $(options.item, a).hide().eq(i).fadeIn();
-                
+
                 if (b) {
                     $(options.item, b)
                     .removeClass(options.classname)
@@ -137,7 +137,7 @@
                 });
             }
         });
-        
+
         function show(that) {
             var a = $(that)
               , target = a.attr('date-target');
@@ -152,39 +152,39 @@
  * Lazy Load - jQuery plugin for lazy loading images
  *
  */
-(function(a) {
-    a.fn.lazyload = function(b) {
+(function($) {
+    $.fn.lazyload = function(b) {
         var c = {
             attr: "data-src",
-            container: a(window),
-            callback: a.noop
+            container: $(window),
+            callback: $.noop
         };
-        var d = a.extend({}, c, b || {});
+        var d = $.extend({}, c, b || {});
         d.cache = [];
-        a(this).each(function() {
+        $(this).each(function() {
             var h = this.nodeName.toLowerCase()
-              , g = a(this).attr(d.attr);
+              , g = $(this).attr(d.attr);
             var i = {
-                obj: a(this),
+                obj: $(this),
                 tag: h,
                 url: g
             };
             d.cache.push(i)
         });
         var f = function(g) {
-            if (a.isFunction(d.callback)) {
+            if ($.isFunction(d.callback)) {
                 d.callback.call(g.get(0))
             }
         }
         ;
         var e = function() {
             var g = d.container.height();
-            if (a(window).get(0) === window) {
-                contop = a(window).scrollTop()
+            if ($(window).get(0) === window) {
+                contop = $(window).scrollTop()
             } else {
                 contop = d.container.offset().top
             }
-            a.each(d.cache, function(m, n) {
+            $.each(d.cache, function(m, n) {
                 var p = n.obj, j = n.tag, k = n.url, l, h;
                 if (p) {
                     l = p.offset().top - contop,
@@ -201,7 +201,7 @@
                         } else {
                             f(p)
                         }
-                        n.obj = null 
+                        n.obj = null
                     }
                 }
             })

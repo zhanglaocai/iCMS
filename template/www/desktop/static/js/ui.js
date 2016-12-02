@@ -20,18 +20,17 @@ $(function() {
             return false;
         }
     });
-    $(".seccode-img,.seccode-text").click(function(event) {
+    var doc = $(document);
+    doc.on('click', ".seccode-img,.seccode-text", function(event) {
         event.preventDefault();
         iCMS.UI.seccode();
     });
-    var doc = $(document);
-
+    //user模块
     iCMS.run('user', function($USER) {
         //用户状态
         $USER.STATUS({},
             //登陆后事件
             function($info) {
-                console.log($info);
                 iCMS.$('user_nickname').text($info.nickname);
                 $("#user-login").hide();
                 $("#user-profile").show();
@@ -51,6 +50,7 @@ $(function() {
                 window.top.location.reload();
             });
         });
+        //点击关注
         doc.on('click', "[i^='follow']", function(event) {
             event.preventDefault();
             $USER.FOLLOW(this,
@@ -68,57 +68,49 @@ $(function() {
                 }
             );
         });
+        //点击私信
         doc.on('click', '[i^="pm"]', function(event) {
             event.preventDefault();
             $USER.PM(this);
         });
+        //点击举报
         doc.on('click', '[i="report"]', function(event) {
             event.preventDefault();
             $USER.REPORT(this);
         });
+        //用户信息浮层
         $USER.UCARD();
     });
+    //通用事件
     iCMS.run('common', function($COMMON) {
+        //点赞
         doc.on('click', '[i^="vote"]', function(event) {
             event.preventDefault();
             var me = this;
-            $COMMON.vote(this,function(ret,param) {
-                if (ret.code) {
-                   var numObj = iCMS.$('vote_'+param['type']+'_num',me),
-                       count = parseInt(numObj.text());
-                    numObj.text(count + 1);
+            $COMMON.vote(this,
+                //点赞成功后
+                function(ret,param) {
+                       var numObj = iCMS.$('vote_'+param['type']+'_num',me),
+                           count = parseInt(numObj.text());
+                        numObj.text(count + 1);
                 }
-            });
+            );
         });
+        //收藏
         doc.on('click', '[i^="favorite"]', function(event) {
             event.preventDefault();
-            var me = this;
             $COMMON.favorite(this);
         });
     });
+    //通用事件
+    iCMS.run('comment', function($COMMENT) {
+        //点赞
+        doc.on('click', '[i^="comment"]', function(event) {
+            event.preventDefault();
+            var me = this;
+            $COMMENT.start(this);
+        });
+    });
 });
-
+//定义user模块API
 var iUSER = iCMS.run('user');
-
-// function hover (a, t, l) {
-//     var pop,timeOutID = null,t = t || 0, l = l || 0;
-//     a.hover(function() {
-//         pop = $(".popover",$(this).parent());
-//         $(".popover").hide();
-//         var position = $(this).position();
-//         pop.show().css({
-//             top: position.top + t,
-//             left: position.left + l
-//         }).hover(function() {
-//             window.clearTimeout(timeOutID);
-//             $(this).show();
-//         }, function() {
-//             $(this).hide();
-//         });
-//         window.clearTimeout(timeOutID);
-//     }, function() {
-//         timeOutID = window.setTimeout(function() {
-//             pop.hide();
-//         }, 2500);
-//     });
-// }

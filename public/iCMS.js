@@ -4,6 +4,7 @@
 (function (){
     var paths  = [
             'require.js',
+            'widget.js',
             'config.js',
             'cookie.js',
             'api.js',
@@ -15,6 +16,7 @@
             'user.js',
             'passport.js',
             'common.js',
+            'comment.js',
             'icms.js',
         ],
         baseURL = '/public/js/_src/';

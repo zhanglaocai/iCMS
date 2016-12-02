@@ -47,6 +47,7 @@ function comment_list($vars){
 	if(iCMS::$config['comment']['plugin']['changyan']['enable']){
 		return;
 	}
+
 	// if($vars['ref']){
 	// 	$_vars = iCMS::app_ref($vars['ref']);
 	// 	$vars  = array_merge($vars,$_vars);
@@ -101,7 +102,7 @@ function comment_list($vars){
 			'total'     => $total,
 			'perpage'   => $maxperpage,
 			'unit'      => iPHP::lang('iCMS:page:comment'),
-			'ajax'      => $vars['page_ajax']?'iCMS.comment.page':FALSE,
+			'ajax'      => $vars['page_ajax']?'page_ajax':FALSE,
 			'nowindex'  => $GLOBALS['page'],
 		);
 		if($vars['display'] == 'iframe' || $vars['page_ajax']){
@@ -143,7 +144,7 @@ function comment_list($vars){
 				$value['page']  = array('total'=>$multi->totalpage,'perpage'=>$multi->perpage);
 			}
 	        $value['param'] = array(
-				"appid"  => iCMS_APP_COMMENT,
+				"appid"  => $value['appid'],
 				"iid"    => $value['iid'],
 				"id"     => $value['id'],
 				"userid" => $value['userid'],
@@ -171,8 +172,8 @@ function comment_form($vars){
 		}
 		return;
 	}
-	if($vars['ref']){
-		$_vars = iCMS::app_ref($vars['ref']);
+	if(!isset($vars['ref'])){
+		$_vars = iCMS::app_ref(true);
 		$vars  = array_merge($vars,$_vars);
 		unset($vars['ref'],$_vars);
 	}

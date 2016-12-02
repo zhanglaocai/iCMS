@@ -48,11 +48,11 @@ define("ui",{
             if (im.width / im.height > x / y && im.width > x) {
                 im.height = im.height * (x / im.width)
                 im.width = x
-                im.parentNode.style.height = im.height * (x / im.width) + 'px'
+                // im.parentNode.style.height = im.height * (x / im.width) + 'px'
             } else if (im.width / im.height <= x / y && im.height > y) {
                 im.width = im.width * (y / im.height)
                 im.height = y
-                im.parentNode.style.height = y + 'px'
+                // im.parentNode.style.height = y + 'px'
             }
         }
 });

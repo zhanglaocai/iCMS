@@ -345,6 +345,7 @@ body.articleApp { }
 .article-wrap .article-tags .tag { margin-right: 15px; color: #69b0f6; }
 .article-wrap .article-body { margin: 15px 0px 10px 0px; }
 .article-wrap .article-body tkbox { margin: 0px auto; }
+/*.article-wrap .article-body p.imgFix{padding-bottom: 20px; display: block;}*/
 .article-wrap .article-body p { margin: 0; padding: 0; margin-top: 8px; word-wrap: break-word; text-indent: 2em; color: #000; font-size: 16px; }
 .article-wrap .article-body p strong { font-weight: bold; font-size: 16px; }
 .article-wrap .article-body a { text-decoration: none; }
@@ -606,8 +607,97 @@ color: #999;
 .iCMS_FAVORITE_DIALOG .favorite_list_content .favo-list-item-link { display: block; margin: 0 12px; border: solid 1px #DDD; padding: 8px 12px; box-shadow: 0 1px 1px rgba(0, 0, 0, .05) }
 .iCMS_FAVORITE_DIALOG .favorite_list_content .favo-list-item-link .meta { display: block }
 .iCMS_FAVORITE_DIALOG .favorite_list_content .favo-list-item-link:hover { text-decoration: none; background-color: #F5F5F5 }
-.iCMS_FAVORITE_DIALOG .favorite_list_content .active { background: url(img/check.png) no-repeat 96% center; }
+.iCMS_FAVORITE_DIALOG .favorite_list_content .active { background: url(../img/check.png) no-repeat 96% center; }
 .iCMS_FAVORITE_DIALOG .favorite_create {text-align: left;}
 .iCMS_FAVORITE_DIALOG .favorite_create .form-group{margin-bottom: 10px;}
 .iCMS_FAVORITE_DIALOG .favorite_create_error { color: #C33;  display: none;margin-bottom: 10px;padding-left: 18%;}
 .iCMS_FAVORITE_DIALOG .buttons .create { margin-top: 5px; }
+/* ===========commentApp=========== */
+/* icon */
+.commentApp-icon { width: 16px; height: 16px; background-image: url(../img/sprites-1.9.1.png); background-repeat: no-repeat; display: inline-block; vertical-align: middle }
+.comment-like-icon { background-position: -222px -92px }
+.comment-reply-icon { background-position: -250px -92px }
+.comment-report-icon { background-position: -71px -183px }
+.comment-spike-icon { position: absolute; top: -8px; left: 23px; width: 13px; height: 8px; background-position: -200px -165px }
+a:hover>.comment-reply-icon { background-position: -250px -79px }
+a:hover>.comment-like-icon { background-position: -222px -79px }
+a:hover>.comment-report-icon { background-position: -71px -170px }
+
+.spinner-gray, .spinner-lightgray { display: inline-block; margin: 0 5px; width: 14px; height: 15px; vertical-align: -3px; background-size: 14px 15px; background-repeat: no-repeat; background-image: url(/img/grey-loading.gif); }
+.spinner-lightgray { background-image: url(../img/lightgray-loading.gif); }
+.commentApp-wrap { margin: 10px 0 0 35px; background: #fff; /*max-width: 540px; */position: relative; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 1px 1px rgba(0, 0, 0, .05) }
+.commentApp-wrap .load-more { padding: 8px 0; display: block; font-size: 13px; height: 42px; text-align: center; border: 1px solid #eee; border-width: 1px 0 0; color: #698ebf; box-shadow: 0 0 5px rgba(180, 180, 180, .1) inset; text-shadow: 0 1px 0 #fff }
+.commentApp-wrap .load-more .text { position: relative }
+.commentApp-wrap .load-more .spinner { position: absolute; top: 0; right: -20px; display: none }
+.commentApp-wrap .load-more.loading .spinner { display: block }
+.commentApp-wrap .load-more:active { background: #fbfbfb; box-shadow: 0 0 5px rgba(180, 180, 180, .2) inset }
+.commentApp-wrap .load-more+.commentApp-item { margin: 0; padding: 8px 12px; border-top: 1px solid #eee }
+.commentApp-wrap .commentApp-bubble { position: absolute; top: -8px; left: 81px; display: none }
+.commentApp-wrap.empty { border: 0; box-shadow: none }
+.commentApp-wrap.empty.cannot-comment { border: 1px solid #ddd }
+.commentApp-wrap.cannot-comment .editable, .commentApp-wrap.cannot-comment .cmt-command, .commentApp-wrap.cannot-comment .commentApp-op-link.reply { display: none !important }
+.commentApp-wrap.empty .commentApp-bubble { display: none !important }
+.commentApp-wrap.empty.cannot-comment .commentApp-bubble { display: block !important }
+.commentApp-wrap.empty .commentApp-wrap-ft { margin: 0 30px 0 0; padding: 0; border: 0 !important; background: 0 }
+.commentApp-wrap.empty.cannot-comment .commentApp-form { margin: 0 }
+.commentApp-wrap.empty.cannot-comment .commentApp-form, .commentApp-wrap .commentApp-form { padding: 15px }
+.commentApp-wrap.empty.cannot-comment .commentApp-wrap-ft, .commentApp-wrap .commentApp-wrap-ft { background: #fbfbfb; border-radius: 0 0 4px 4px; border-top: 1px solid #EEE; position: relative }
+.commentApp-wrap.empty.cannot-comment .commentApp-wrap-ft { background: #fff }
+.commentApp-spinner { padding: 6px 12px; font-size: 13px; }
+.commentApp-item { position: relative; margin: 0 12px; padding: 8px 0 }
+.commentApp-item .commentApp-content-wrap { margin: 0 0 0 35px }
+.commentApp-item>.cmt-item-link-avatar { float: left; margin: 4px 0 0 }
+.commentApp-item .cmt-item-img-avatar { width: 25px; height: 25px; border-radius: 2px }
+.commentApp-item .commentApp-content { color: #222; min-height: 22px }
+.commentApp-item .commentApp-content-hd, .commentApp-item .commentApp-content-ft { color: #999 }
+.commentApp-item .commentApp-content-hd .desc, .commentApp-item .commentApp-content-ft .desc { font-size: 14px }
+.commentApp-item .commentApp-content-ft { font-size: 12px }
+.commentApp-item .like-num { float: right; margin-top: -1px }
+.commentApp-item .like-num>span, .commentApp-item .like-num>em { font-style: normal; vertical-align: -2px }
+.commentApp-item .like-num.nil { display: none }
+.commentApp-item.focusin .commentApp-op-link, .commentApp-item:hover .commentApp-op-link { visibility: visible }
+.commentApp-item+.commentApp-item { border-top: solid 1px #eee }
+.commentApp-item .commentApp-form { padding: 15px 0 }
+.commentApp-info { text-align: center }
+.commentApp-item.empty { margin-top: 10px; margin-left: 10px; color: #b1b1b1; }
+.commentApp-op-link>.commentApp-icon { margin-right: 5px; width: 11px; height: 11px; vertical-align: -1px }
+/* ===========commentApp-form=========== */
+.commentApp-form .commentApp-textarea { padding: 7px 8px; color: #222; font-size: 13px; line-height: 22px; min-height: 22px; width: 95% }
+.commentApp-form.expanded .cmt-command { display: block; line-height: 33px; }
+.commentApp-form.expanded .cmt-seccode{float: left;overflow: hidden; line-height: 30px; room: 1; _width: 100%; }
+.commentApp-form.expanded .cmt-seccode span{color: #333;vertical-align: middle;text-align: center;font-size: 14px;}
+.commentApp-form.expanded .cmt-seccode .commentApp-seccode{width: 80px;display: inline-block; margin-right: 10px;}
+.commentApp-form .cmt-command { display: none; padding: 10px 0; text-align: right }
+.commentApp-form .cmt-command .btn-primary { float: right; }
+.commentApp-form .cmt-command .cmt-command-cancel { float: right; }
+.with-self-avatar .commentApp-form .avatar { display: block }
+.commentApp-form .avatar { float: left; display: none; margin: 2px 10px 0 0; width: 34px; height: 34px; border-radius: 4px }
+.commentApp-form .avatar+.editable { overflow: hidden }
+.commentApp-op-link { margin-left: .5em; color: #999; font-size: 12px; visibility: hidden }
+.cmt-command-cancel { margin: 0 15px 0 0; cursor: pointer; float: left; }
+.cmt-command-cancel:hover { text-decoration: underline }
+
+
+/* ===========comment-list=========== */
+.comment-list .commentApp-pagenav{margin: 10px auto;}
+.comment-list .cmt-item-img-avatar{width: 60px;height: 60px;}
+.comment-list .commentApp-content-wrap{margin-left: 70px;}
+/* ===========comment-form=========== */
+.comment-form {border-top: 1px solid #eaeaea;}
+.comment-form .commentApp-form {margin: 10px auto;width: 80%; }
+.comment-form .commentApp-form .alert { margin: 10px 0px; padding: 4px 10px; font-size: 12px }
+.comment-form .profile { display: none }
+.comment-form .login { margin: 10px 0px }
+.comment-form .commentApp-editor { }
+.comment-form .commentApp-textarea {    /* padding: 5px 10px; */
+width: 100%; height: 120px; background: url(../img/iCMS.logo.bg.png) no-repeat center center; font-size: 14px; line-height: 1.7 }
+.comment-form .commentApp-seccode { float: left; overflow: hidden; margin-top: 8px; line-height: 30px; }
+.comment-form .commentApp-seccode label,
+.comment-form .commentApp-seccode input,
+.comment-form .commentApp-seccode img,
+.comment-form .commentApp-seccode a { float: left; display: inline-block; vertical-align: middle; }
+.comment-form .commentApp-seccode .seccode-img { margin-top: 2px; }
+.comment-form .commentApp-seccode .seccode-text { color: #999; margin-left: 5px; font-size: 12px; }
+.comment-form .commentApp-command { text-align: right }
+.comment-form .commentApp-command .cmt-add { float: right; margin: 8px 0px 8px 8px; padding: 5px 10px; font-size: 18px; width: 90px; height: 36px; }
+.comment-form .commentApp-command .cmt-cancel { float: right; margin: 15px 15px 0 0; cursor: pointer }

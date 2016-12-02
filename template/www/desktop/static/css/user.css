@@ -88,7 +88,7 @@ i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 
 .home-article ul,
 .home-favorite ul { padding: 0 30px; }
 .home-article li,
-.home-favorite li { width: 100%; overflow-y: hidden; padding: 16px 0 18px; border-bottom: 1px dotted #E4E4E4; line-height: 23px; }
+.home-favorite li { position: relative;width: 100%; padding: 16px 0 18px; border-bottom: 1px dotted #E4E4E4; line-height: 23px; }
 .home-article .rep_num { float: left; font-size: 12px; padding: 0 4px 0 1px; overflow: hidden; width: 60px; height: 23px; line-height: 23px; text-align: center; color: #333; background: url(../img/reply_num_bg.gif) no-repeat; }
 .home-article .list_top { height: 24px; line-height: 24px; overflow: hidden; }
 .home-article .list_top .title { width: auto; float: left; margin: 0px; font-size: 18px; line-height: 24px; }
