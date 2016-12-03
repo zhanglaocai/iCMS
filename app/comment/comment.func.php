@@ -8,28 +8,41 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('user.class','static');
+function comment_user_info($uid=0,$username=null,$facesize=null){
+	iPHP::app('user.class','static');
+	return user::info($uid,$username,$facesize);
+}
+
 function comment_array($vars){
 	$where_sql = " `status`='1'";
-
-	isset($vars['id'])    &&  $where_sql.= " AND `id`='".(int)$vars['id']."'";
-	isset($vars['userid']) && $where_sql.= " AND `userid`='".(int)$vars['userid']."'";
-
-	$rs = iDB::row("SELECT * FROM `#iCMS@__comment` WHERE {$where_sql} LIMIT 1;",ARRAY_A);
-	if($rs){
-		$rs['user'] = user::info($rs['userid'],$rs['username']);
+	$is_multi = false;
+	if(isset($vars['id'])){
+		if(is_array($vars['id'])){
+			$is_multi = true;
+			$where_sql.= iPHP::where($vars['id'],'id',false,false);
+		}else{
+			$where_sql.= " AND `id`='".(int)$vars['id']."'";
+		}
 	}
-	return $rs;
+	isset($vars['userid']) && $where_sql.= " AND `userid`='".(int)$vars['userid']."'";
+	$rs = iDB::all("SELECT * FROM `#iCMS@__comment` WHERE {$where_sql}",ARRAY_A);
+	if($is_multi){
+		$_count = count($rs);
+        for ($i=0; $i < $_count; $i++) {
+        	$data[$rs[$i]['id']] = $rs[$i];
+        	$data[$rs[$i]['id']]['user']= comment_user_info($rs[$i]['userid'],$rs[$i]['username'],$vars['facesize']);;
+        }
+	}else{
+		$data = $rs[0];
+		$data['user'] = comment_user_info($data['userid'],$data['username'],$vars['facesize']);
+	}
+	return $data;
 }
 function comment_list_display($vars){
 	$vars['do']          = 'list';
 	$vars['page_ajax']   = 1;
 	$vars['total_cahce'] = 1;
 	$tpl = 'list.default';
-	if($vars['display'] === 'iframe'){
-		$vars['page_ajax'] = 0;
-		$tpl = 'list.iframe';
-	}
 	isset($vars['_display']) && $vars['display'] = $vars['_display'];
 	unset($vars['method'],$vars['_display']);
 	$vars['query'] = http_build_query($vars);
@@ -48,22 +61,19 @@ function comment_list($vars){
 		return;
 	}
 
-	// if($vars['ref']){
-	// 	$_vars = iCMS::app_ref($vars['ref']);
+	// if(!isset($vars['ref'])){
+	// 	$_vars = iCMS::app_ref(true);
 	// 	$vars  = array_merge($vars,$_vars);
 	// 	unset($vars['ref'],$_vars);
 	// }
 
 	if ($vars['display'] && empty($vars['loop'])) {
-		if(empty($vars['_display'])){
-			$_vars = iCMS::app_ref(true);
-			$vars  = array_merge($vars,$_vars);
-		}
+		$_vars = iCMS::app_ref(true);
+		$vars  = array_merge($vars,$_vars);
 		$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"iid"属性或"iid"值为空.');
 		$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"appid"属性或"appid"值为空.');
 		return comment_list_display($vars);
 	}
-
 
 	$where_sql = " `status`='1'";
 	if(isset($vars['appid'])){
@@ -102,7 +112,7 @@ function comment_list($vars){
 			'total'     => $total,
 			'perpage'   => $maxperpage,
 			'unit'      => iPHP::lang('iCMS:page:comment'),
-			'ajax'      => $vars['page_ajax']?'page_ajax':FALSE,
+			'ajax'      => $vars['page_ajax']?'comment_page_ajax':FALSE,
 			'nowindex'  => $GLOBALS['page'],
 		);
 		if($vars['display'] == 'iframe' || $vars['page_ajax']){
@@ -127,19 +137,36 @@ function comment_list($vars){
 		$resource   = iCache::get($cache_name);
 	}
 	if(empty($resource)){
-		$resource		= iDB::all("SELECT * FROM `#iCMS@__comment` WHERE {$where_sql} {$order_sql} {$limit}");
-		$ln		= ($GLOBALS['page']-1)<0?0:$GLOBALS['page']-1;
+		$resource = iDB::all("SELECT * FROM `#iCMS@__comment` WHERE {$where_sql} {$order_sql} {$limit}");
+        if($vars['reply']){
+            $ridArray = iPHP::get_ids($resource,'reply_id','array',null);
+            if($ridArray){
+            	$rkey = array_search (0,$ridArray);
+            	unset($ridArray[$rkey]);
+            }
+            $ridArray && $reply_array = comment_array(array('id'=>$ridArray));
+        }
+		$ln = ($pgconf['nowindex']-1)<0?0:$pgconf['nowindex']-1;
+
 		if($resource)foreach ($resource as $key => $value) {
 			if($vars['date_format']){
 				$value['addtime'] = get_date($value['addtime'],$vars['date_format']);
 			}
 			$value['url']     = iCMS_API.'?app=comment&do=goto&iid='.$value['iid'].'&appid='.$value['appid'].'&cid='.$value['cid'];
-			$value['lou']     = $total-($i+$ln*$maxperpage);
+			if($vars['by']=='ASC'){
+				$value['lou'] = $key+$ln*$maxperpage+1;
+			}else{
+				$value['lou'] = $total-($key+$ln*$maxperpage);
+			}
 			$value['content'] = nl2br($value['content']);
-			$value['user']    = user::info($value['userid'],$value['username'],$vars['facesize']);
-			$value['reply_uid'] && $value['reply'] = user::info($value['reply_uid'],$value['reply_name'],$vars['facesize']);
+			$value['user']    = comment_user_info($value['userid'],$value['username'],$vars['facesize']);
+			$value['reply_uid'] && $value['reply'] = comment_user_info($value['reply_uid'],$value['reply_name'],$vars['facesize']);
 
 			$value['total'] = $total;
+			if($vars['reply'] && $reply_array){
+				$value['reply_data'] = $reply_array[$value['reply_id']];
+				unset($reply_array[$value['reply_id']]);
+			}
 			if($vars['page']){
 				$value['page']  = array('total'=>$multi->totalpage,'perpage'=>$multi->perpage);
 			}

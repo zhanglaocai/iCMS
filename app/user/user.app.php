@@ -337,13 +337,15 @@ class userApp {
 			iPHP::app('apps.class', 'static');
 			$table = APPS::get_table($comment->appid);
 
-			iDB::query("
-                UPDATE {$table['name']}
-                SET comments = comments-1
-                WHERE `comments`>0
-                AND `{$table['primary']}`='{$comment->iid}'
-                LIMIT 1
-            ");
+			if($table['name']&&$table['primary']){
+				iDB::query("
+	                UPDATE {$table['name']}
+	                SET comments = comments-1
+	                WHERE `comments`>0
+	                AND `{$table['primary']}`='{$comment->iid}'
+	                LIMIT 1
+	            ");
+			}
 
 			iDB::query("
                 DELETE FROM `#iCMS@__comment`
@@ -508,11 +510,11 @@ class userApp {
 			}
 		}
 		$F OR iPHP::code(0, 'user:iCMS:error', 0, 'json');
-		$F['code'] && iDB::update(
-			'user_data',
-			array('coverpic' => $F["path"]),
-			array('uid' => user::$userid)
-		);
+		// $F['code'] && iDB::update(
+		// 	'user_data',
+		// 	array('coverpic' => $F["path"]),
+		// 	array('uid' => user::$userid)
+		// );
 		$url = iFS::fp($F['path'], '+http');
 		if ($_POST['format'] == 'json') {
 			iPHP::code(1, 'user:profile:custom', $url, 'json');

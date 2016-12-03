@@ -16,6 +16,10 @@
                 <!--{$comment_list.reply.name}-->
             </a>
             <!--{/if}-->
+            <span class="lou-num">
+                <em><!--{$comment_list.lou}--></em>
+                <em>楼</em>
+            </span>
         </div>
         <div class="commentApp-content">
             <!--{$comment_list.content}-->
@@ -26,7 +30,7 @@
             <a href="javascript:;" i="like" class="commentApp-op-link"><i class="commentApp-icon comment-like-icon"></i>赞</a>
             <!--{if $comment_list.up!='0'}-->
             <span class="like-num" i="tip:<!--{$comment_list.up}--> 人觉得这个很赞">
-                <em><!--{$comment_list.up}--></em>
+                <em i="comment_up"><!--{$comment_list.up}--></em>
                 <em>赞</em>
             </span>
             <!--{/if}-->

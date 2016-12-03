@@ -222,7 +222,7 @@
                         <div class="author-list <!--{if $user_list.last}-->author-last<!--{/if}-->">
                             <div class="author-pic">
                                 <a href="<!--{$user_list.url}-->" target="_blank">
-                                        <img class="lazy" src="http://7tea1z.com1.z0.glb.clouddn.com/QQ图片20151218154902.jpg" data-src="<!--{$user_list.avatar}-->">
+                                        <img class="lazy" src="<!--{$site.urls.ui}-->/img-default.png" data-src="<!--{$user_list.avatar}-->" onerror="iUSER.NOAVATAR(this);">
                                     </a>
                             </div>
                             <div class="author-name">

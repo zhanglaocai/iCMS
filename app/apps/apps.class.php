@@ -147,11 +147,11 @@ class APPS {
         foreach((array)$rs AS $a) {
         	$tb_array = json_decode($a['table']);
         	$table = array(
-				'name'    => '#iCMS@__'.$tb_array[0][0],
+				'name'    => $tb_array[0][0]?'#iCMS@__'.$tb_array[0][0]:'',
 				'primary' => $tb_array[0][1],
         	);
         	if($tb_array[1]){
-				$table['join'] = '#iCMS@__'.$tb_array[1][0];
+				$table['join'] = $tb_array[1][0]?'#iCMS@__'.$tb_array[1][0]:'';
 				$table['on']   = $tb_array[1][1];
         	}
         	$a['table'] = $table;
@@ -175,7 +175,7 @@ class APPS {
 	}
 	public static function get_url($appid=1,$primary=''){
 		$rs	= self::get_app($appid);
-		return iCMS_URL.'/'.$rs['name'].'.php?'.$rs['table']['primary'].'='.$primary;
+		return iCMS_URL.'/'.$rs['app'].'.php?'.$rs['table']['primary'].'='.$primary;
 	}
 	public static function get_table($appid=1){
 		$rs	= self::get_app($appid);

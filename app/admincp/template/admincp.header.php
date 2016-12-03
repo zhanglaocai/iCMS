@@ -16,31 +16,24 @@ defined('iPHP') OR exit('What are you doing?');
 <meta name="force-rendering" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<!-- <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" /> -->
 <meta content="iDreamSoft Inc." name="Copyright" />
-<link rel="stylesheet" href="./app/admincp/ui/common/bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/common/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/common/bootstrap/2.3.2/css/datepicker.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/common/bootstrap/2.3.2/css/bootstrap-switch.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/common/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/common/artDialog/6.0.3/ui-dialog.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/common/iCMS-6.0.0.css" type="text/css" />
-<!--[if lt IE 9]>
-  <script src="./app/admincp/ui/common/ie/html5shiv.min.js"></script>
-  <script src="./app/admincp/ui/common/ie/respond.min.js"></script>
-<![endif]-->
-<script src="./app/admincp/ui/common/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="./app/admincp/ui/common/artDialog/6.0.3/dialog-plus-min.js" type="text/javascript"></script>
-<script src="./app/admincp/ui/common/bootstrap/2.3.2/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="./app/admincp/ui/common/bootstrap/2.3.2/js/bootstrap-datepicker.js" type="text/javascript"></script>
-<script src="./app/admincp/ui/common/bootstrap/2.3.2/js/bootstrap-switch.min.js" type="text/javascript"></script>
-<script src="./app/admincp/ui/common/iCMS-6.0.0.js" type="text/javascript"></script>
+<link rel="stylesheet" href="./app/admincp/ui/bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/bootstrap/2.3.2/css/datepicker.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/bootstrap/2.3.2/css/bootstrap-switch.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/artDialog/6.0.3/ui-dialog.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/iCMS-6.0.0.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/jquery/uniform-2.1.2.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/jquery/chosen-1.1.0.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/admincp-6.0.0.css" type="text/css" />
 
-<!-- admincp ui -->
-<link href="./app/admincp/ui/jquery/uniform-2.1.2.min.css" type="text/css" rel="stylesheet"/>
-<link href="./app/admincp/ui/jquery/chosen-1.1.0.min.css" type="text/css" rel="stylesheet"/>
-<link href="./app/admincp/ui/admincp-6.0.0.css" type="text/css" rel="stylesheet"/>
-
+<script src="./app/admincp/ui/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/artDialog/6.0.3/dialog-plus-min.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/bootstrap/2.3.2/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/bootstrap/2.3.2/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/bootstrap/2.3.2/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/iCMS-6.0.0.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/jquery/migrate-1.2.1.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/jquery/scrollUp-1.1.0.min.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/jquery/uniform-2.1.2.min.js" type="text/javascript"></script>
@@ -78,6 +71,6 @@ $(function(){
     <h3 class="modal-title">iCMS 提示</h3>
   </div>
   <div class="modal-body">
-    <p><img src="./app/admincp/ui/loading.gif" /></p>
+    <p><img src="./app/admincp/ui/img/loading.gif" /></p>
   </div>
 </div>

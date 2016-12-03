@@ -3,7 +3,13 @@ define("user", function(require) {
     API = require("api"),UI = require("ui");
 
     $User = {
-        INBOX_URL:iCMS.CONFIG.API+'?app=user&do=manage&pg=inbox'
+        INBOX_URL:iCMS.CONFIG.API+'?app=user&do=manage&pg=inbox',
+        widget:{
+             loading:'<div class="tip_info">'+
+                        '<img src="'+iCMS.CONFIG.PUBLIC+'/ui/loading.gif">'+
+                        '<span> 用户信息加载中……</span>'+
+                    '</div>'
+        }
     };
     return $.extend($User, {
         NOAVATAR: function(img) {
@@ -79,7 +85,7 @@ define("user", function(require) {
                     if(uid){
                         $.get(API.url('user', "&do=ucard"),{'uid':uid},update);
                     }
-                    return UI.widget.ucard;
+                    return $User.widget.loading;
                 }
             });
         },

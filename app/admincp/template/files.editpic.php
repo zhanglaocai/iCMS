@@ -15,7 +15,7 @@ admincp::head(false);
 .savetodir{margin-bottom: 0px;}
 .ui-dialog-footer button{padding: 10px 20px;}
 </style>
-<script src="./app/admincp/ui/common/meitu/xiuxiu.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/meitu/xiuxiu.js" type="text/javascript"></script>
 <div id="onBrowse" class="well" style="display:none;">
   <a class="btn btn-success" href="<?php echo __ADMINCP__; ?>=files&do=picture&from=modal&click=file&callback=brofile" data-toggle="modal" data-meta='{"width":"75%","height":"480px"}' data-zIndex="9999999" title="从网站选择图片"><i class="fa fa-picture-o"></i> 从网站选择</a>
   <hr />

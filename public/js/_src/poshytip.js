@@ -1,11 +1,9 @@
-// define("poshytip", function(require) {
-
 /*
  * Poshy Tip jQuery plugin v1.2+
  * http://vadikom.com/tools/poshy-tip-jquery-plugin-for-stylish-tooltips/
  * Copyright 2010-2013, Vasil Dinkov, http://vadikom.com/
  */
- 
+
  (function ($) {
     var tips = [],
         reBgImage = /^url\(["']?([^"'\)]*)["']?\);?$/i,
@@ -28,7 +26,7 @@
                 '<div class="arrow"></div>',
                 '<div class="popover-content"></div>',
                 // '<div class="tip-arrow tip-arrow-top tip-arrow-right tip-arrow-bottom tip-arrow-left"></div>',
-			'</div>'].join('')).appendTo(document.body);
+			'</div>'].join(''));
         // this.$arrow = this.$tip.find('div.tip-arrow');
         this.$inner = this.$tip.find('div.popover-content');
         this.disabled = false;
@@ -454,4 +452,3 @@
     };
 
 })(jQuery);
-// });

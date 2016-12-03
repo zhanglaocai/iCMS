@@ -130,15 +130,21 @@ class user {
 	}
 	public static function get($uids=0,$unpass=true){
 		if(empty($uids)) return array();
+		$is_multi = false;
+		if(is_array($uids)){
+			$is_multi = true;
+		}
 		if(!is_array($uids) && strpos($uids, ',') !== false){
 			$uids = explode(',', $uids);
+			$is_multi = true;
 		}
+
     	$sql = iPHP::where($uids,'uid',false,true);
 		$data = array();
 		$rs = iDB::all("SELECT * FROM `#iCMS@__user` where {$sql} AND `status`='1'",OBJECT);
 		if($rs){
-			$_count = count($rs);
-			if($_count>1){
+			if($is_multi){
+				$_count = count($rs);
 		        for ($i=0; $i < $_count; $i++) {
 		        	if($unpass) unset($rs[$i]->password);
 		        	$data[$rs[$i]->uid]= self::user_item($rs[$i]);
@@ -157,16 +163,22 @@ class user {
     	if(empty($uids)){
     		return;
     	}
+		$is_multi = false;
+		if(is_array($uids)){
+			$is_multi = true;
+		}
+
 		if(!is_array($uids) && strpos($uids, ',') !== false){
 			$uids = explode(',', $uids);
+			$is_multi = true;
 		}
 
     	$sql = iPHP::where($uids,'uid',false,true);
 		$data = array();
 		$rs   = iDB::all("SELECT * FROM `#iCMS@__user_data` where {$sql};",OBJECT);
 		if($rs){
-			$_count = count($rs);
-			if($_count>1){
+			if($is_multi){
+				$_count = count($rs);
 		        for ($i=0; $i < $_count; $i++) {
 		        	$data[$rs[$i]->uid]= self::user_item($rs[$i],true);
 		        }

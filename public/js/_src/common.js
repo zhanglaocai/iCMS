@@ -32,13 +32,13 @@ define("common", function(require) {
                 +'<div class="clearfix mt10"></div>';
 
             var $this = $(a),
-            box       = document.getElementById("iCMS-FAVORITE-DIALOG"),
-            dialog    = UI.dialog({
+            box       = document.getElementById("iCMS-FAVORITE-DIALOG");
+            box.innerHTML = box.innerHTML.replace('data-src', 'src');
+            var dialog    = UI.dialog({
                 title: '添加到收藏夹',content:box,
                 quickClose: false,width:"auto",height:"auto"
             });
-            //console.log(dialog);
-            $(".favorite_list_content",box).empty();
+
             $('.cancel', box).click(function(event) {
                 event.preventDefault();
                 dialog.remove();
@@ -70,8 +70,7 @@ define("common", function(require) {
                 $.post(API.url('favorite'), data, function(c) {
                     if(c.code){
                         var item = $.parseTmpl(tpl,{
-                            'id':c.forward,
-                            'title':data.title,
+                            'id':c.forward,'title':data.title,
                             'count':0,'follow':0
                         });
                         $(".favorite_list_content",box).append(item);

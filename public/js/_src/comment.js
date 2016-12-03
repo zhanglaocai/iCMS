@@ -48,7 +48,7 @@ define("comment", function(require) {
                             '</a>'+
                             '<%if(up != "0"){%>'+
                                 '<span class="like-num" i="tip:<%=up%> 人觉得这个很赞">' +
-                                '<em><%=up%></em> <span>赞</span></span>'+
+                                '<em i="comment_up"><%=up%></em> <span>赞</span></span>'+
                             '<%}%>'+
                             '<a href="javascript:;" i="report" data-param=\'{"appid":"5","iid":"<%=id%>","userid":"<%=userid%>"}\' class="report commentApp-op-link needsfocus">' +
                             '<i class="commentApp-icon comment-report-icon"></i>举报</a>' +
@@ -104,24 +104,26 @@ define("comment", function(require) {
                 //$COMMENT.iframe_height('list');
             });
         },
-        like:function (a) {
+        like:function (a,SUCCESS, FAIL) {
             if (!USER.CHECK.LOGIN()) return;
 
-            var $this = $(a),param = API.param($this);
-            param["do"] = 'like';
-            $.get(API.url('comment'), param, function(c) {
-                if (c.code) {
-                    var p = $this.parent(),
-                        like_num = $('.like-num em', p).text();
-                    if (like_num) {
-                        like_num = parseInt(like_num) + 1;
-                        $('.like-num em', p).text(like_num);
-                    } else {
-                        $this.parent().append($COMMENT.widget.like_text);
-                    }
+
+            var me=this,$this = $(a),param = API.param($this);
+
+            me.SUCCESS = function (ret,param) {
+                var p = $this.parent(),
+                    num = $('[i="comment_up"]', p).text();
+                if (num) {
+                    num = parseInt(num) + 1;
+                    $('[i="comment_up"]', p).text(num);
                 } else {
-                    UI.alert(c.msg);
+                    p.append($COMMENT.widget.like_text);
                 }
+            };
+
+            param["do"] = 'like';
+            $.get(API.url('comment'), param, function(ret) {
+                utils.callback(ret, SUCCESS, FAIL, me);
             }, 'json');
         },
         addnew:function (a,param,SUCCESS, FAIL) {

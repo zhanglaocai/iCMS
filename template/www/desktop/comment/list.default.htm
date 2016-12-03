@@ -16,7 +16,8 @@
 </div>
 <script>
     var iCOMMENT = iCMS.run('comment');
-    var page_ajax = function (pn,a) {
+    //评论ajax翻页
+    var comment_page_ajax = function (pn,a) {
         var pp = $(a).parent().parent();
         iCOMMENT.page(pn,a,function (html) {
             var list = $(".commentApp-list-wrap",$(html)).html(),
@@ -26,7 +27,6 @@
             // iUSER.UCARD();
         });
     }
-
     $(function() {
         var commentAppList = $('.commentApp-list');
         //回复评论
@@ -37,6 +37,7 @@
         //赞评论
         .on('click', '[i="like"]', function(event) {
             event.preventDefault();
+            var me = this;
             iCOMMENT.like(this);
         })
         //提交评论事件绑定

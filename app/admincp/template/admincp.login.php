@@ -16,18 +16,14 @@ defined('iPHP') OR exit('What are you doing?');
 <meta name="force-rendering" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 <meta content="iDreamSoft Inc." name="Copyright" />
-<link rel="stylesheet" href="./app/admincp/ui/common/bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/common/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/common/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/common/artDialog/6.0.3/ui-dialog.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/common/iCMS-6.0.0.css" type="text/css" />
-<!--[if lt IE 9]>
-  <script src="./app/admincp/ui/common/ie/html5shiv.min.js"></script>
-  <script src="./app/admincp/ui/common/ie/respond.min.js"></script>
-<![endif]-->
-<script type="text/javascript" src="./app/admincp/ui/common/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="./app/admincp/ui/common/artDialog/6.0.3/dialog-plus-min.js"></script>
-<script type="text/javascript" src="./app/admincp/ui/common/iCMS-6.0.0.js"></script>
+<link rel="stylesheet" href="./app/admincp/ui/bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/artDialog/6.0.3/ui-dialog.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/iCMS-6.0.0.css" type="text/css" />
+
+<script type="text/javascript" src="./app/admincp/ui/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="./app/admincp/ui/artDialog/6.0.3/dialog-plus-min.js"></script>
+<script type="text/javascript" src="./app/admincp/ui/iCMS-6.0.0.js"></script>
 <style>
 /* dialog */
 .iCMS_dialog .ui-dialog-header { background-color: #333; background-image: -moz-linear-gradient(top, #3c3c3c, #0a0a0a); background-image: -ms-linear-gradient(top, #3c3c3c, #0a0a0a); background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#3c3c3c), to(#0a0a0a)); background-image: -webkit-linear-gradient(top, #3c3c3c, #0a0a0a); background-image: -o-linear-gradient(top, #3c3c3c, #0a0a0a); background-image: linear-gradient(top, #3c3c3c, #0a0a0a); background-repeat: repeat-x; filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3c3c3c', endColorstr='#0a0a0a', GradientType=0); border: 1px solid #111; }
@@ -117,7 +113,7 @@ $(function(){
 <div class="container">
   <div class="iCMS_login">
     <a class="iCMS-logo" href="http://www.idreamsoft.com" target="_blank">
-      <img src="./app/admincp/ui/iCMS.login-6.0.png" />
+      <img src="./app/admincp/ui/iCMS.logo.login.png" />
     </a>
     <div class="clear mt10"></div>
     <div class="login">

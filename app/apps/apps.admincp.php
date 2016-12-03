@@ -127,17 +127,21 @@ class appsAdmincp{
         $idArray OR iPHP::alert("请选择要操作的应用");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
-    	switch($batch){
-    		case 'dels':
-				iPHP::$break	= false;
-	    		foreach($idArray AS $id){
-	    			$this->do_del($id,false);
-	    		}
-	    		iPHP::$break	= true;
-				iPHP::success('应用全部删除完成!','js:1');
-    		break;
-		}
-	}
+      	switch($batch){
+      		case 'dels':
+  				iPHP::$break	= false;
+  	    		foreach($idArray AS $id){
+  	    			$this->do_del($id,false);
+  	    		}
+  	    		iPHP::$break	= true;
+  				iPHP::success('应用全部删除完成!','js:1');
+      		break;
+  		  }
+	  }
+    function do_cache(){
+      $this->cache();
+      iPHP::success('更新完成');
+    }
     function cache(){
     	APPS::cache();
     }

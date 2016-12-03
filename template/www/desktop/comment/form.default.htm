@@ -28,13 +28,13 @@
 </div>
 <script>
     $(function() {
-        var doc = $('.commentApp-form');
+        var $form = $('.commentApp-form');
         iUSER.STATUS({},
             //登陆后事件
             function($info) {
                 console.log($info);
-                $(".passport",doc).hide();
-                $(".profile",doc).show();
+                $(".passport",$form).hide();
+                $(".profile",$form).show();
             },
             //未登陆事件
             function(f) {
@@ -53,8 +53,9 @@
             var param = <!--{$comment_vars.param|json_encode}-->;
             iCOMMENT.addnew(this, param, function(ret) {
                 if (ret.code) {
-                    var list = $(".commentApp-list-wrap", doc);
-                    iCOMMENT.list(list, param.iid, ret.forward,'append');
+                    $(".empty",".commentApp-list-wrap").remove();
+                    var $list = $(".commentApp-list-wrap");
+                    iCOMMENT.list($list, param.iid, ret.forward,'append');
                 }
             })
         });

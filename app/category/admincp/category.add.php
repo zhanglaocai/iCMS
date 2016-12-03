@@ -326,8 +326,8 @@ $(function(){
             </table>
           </div>
           <div id="category-add-body" class="tab-pane hide">
-            <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/common/iCMS.editor-6.0.0.js"></script>
-            <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/common/ueditor/ueditor.all.min.js"></script>
+            <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.editor-6.0.0.js"></script>
+            <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/ueditor/ueditor.all.min.js"></script>
             <a class="btn btn-inverse" href="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</a>
             <a class="btn btn-success" href="javascript:createEditor();"><i class="fa fa-times"></i> 使用编辑器</a>
             <a class="btn btn-inverse" href="javascript:deleteEditor();"><i class="fa fa-times"></i> 关闭编辑器</a>

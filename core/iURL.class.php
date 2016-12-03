@@ -10,6 +10,8 @@
 * @package iURL
 * @$Id: iURL.class.php 2408 2014-04-30 18:58:23Z coolmoo $
 */
+define('PAGE_SIGN', '{P}');
+
 class iURL {
     public static $config   = null;
     public static $uriArray = null;
@@ -20,7 +22,7 @@ class iURL {
             'http'     => array('rule'=>'0','primary'=>''),
             'index'    => array('rule'=>'0','primary'=>''),
             'category' => array('rule'=>'1','primary'=>'cid'),
-            'article'  => array('rule'=>'2','primary'=>'id'),
+            'article'  => array('rule'=>'2','primary'=>'id','PHP_PAGE'=>'p'),
             'software' => array('rule'=>'2','primary'=>'id'),
             'tag'      => array('rule'=>'3','primary'=>'id'),
         );
@@ -73,7 +75,7 @@ class iURL {
             case 'EXT':		$e = $c['htmlext']?$c['htmlext']:self::$config['html_ext'];break;
             case 'TITLE':   $e = urlencode(iS::escapeStr($a['title']));break;
             case 'LINK':    $e = $a['clink'];break;
-            case 'P':       $e = '{P}';break;
+            case 'P':       $e = PAGE_SIGN;break;
         }
         return $e;
     }
@@ -106,13 +108,6 @@ class iURL {
                 $i->href  = $array['url'];
                 $url      = $category['mode']?$category['contentRule']:'{PHP}';
                 ($category['password'] && $category['mode']=="1") && $url = '{PHP}';
-                // $category['domain'] && $sURL = $category['domain'];
-
-                if($url=='{PHP}'){
-                    $i->pageurl = $document_uri.'&p={P}';
-                    // strpos($i->pageurl,'http://')===false &&
-                    iFS::checkHttp($i->pageurl) OR $i->pageurl = rtrim($sURL,'/').'/'.$i->pageurl;
-                }
                 break;
             case '3':
                 $array     = (array)$a[0];
@@ -130,7 +125,10 @@ class iURL {
         }
         if($url=='{PHP}'){
             $document_uri.= $primary.'='.$array[$primary];
-            // strpos($document_uri,'http://')===false && $document_uri = rtrim($sURL,'/').'/'.$document_uri;
+            if($router[$uri]['PHP_PAGE']){
+                $i->pageurl = $document_uri.'&'.$router[$uri]['PAGE'].'='.PAGE_SIGN;
+                iFS::checkHttp($i->pageurl) OR $i->pageurl = rtrim($sURL,'/').'/'.$i->pageurl;
+            }
             iFS::checkHttp($document_uri) OR $document_uri = rtrim($sURL,'/').'/'.$document_uri;
             $i->href = $document_uri;
         }
@@ -178,8 +176,8 @@ class iURL {
             }
 //var_dump($i);
             $i->pfile = $i->file;
-            if(strpos($i->file,'{P}')===false) {
-                $i->pfile = $i->name."_{P}".$i->ext;
+            if(strpos($i->file,PAGE_SIGN)===false) {
+                $i->pfile = $i->name.'_'.PAGE_SIGN.$i->ext;
 			}
 
 //var_dump($i);
@@ -215,10 +213,10 @@ class iURL {
         $i->pageurl  = $i->hdir.'/'.$i->pfile ;
         $i->pagepath = $i->dir.'/'.$i->pfile;
 
-        $i->href     = str_replace('{P}',1,$i->href);
-        $i->path     = str_replace('{P}',1,$i->path);
-        $i->file     = str_replace('{P}',1,$i->file);
-        $i->name     = str_replace('{P}',1,$i->name);
+        $i->href     = str_replace(PAGE_SIGN,1,$i->href);
+        $i->path     = str_replace(PAGE_SIGN,1,$i->path);
+        $i->file     = str_replace(PAGE_SIGN,1,$i->file);
+        $i->name     = str_replace(PAGE_SIGN,1,$i->name);
         return $i;
     }
 }

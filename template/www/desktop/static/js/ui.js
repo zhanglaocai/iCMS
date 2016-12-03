@@ -13,7 +13,6 @@ $(function() {
     });
 
     $(".search-btn").click(function(event) {
-        event.preventDefault();
         var q = $('[name="q"]',"#search-form").val();
         if(q==""){
             iCMS.UI.alert("请输入关键词");

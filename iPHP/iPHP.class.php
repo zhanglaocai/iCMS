@@ -312,7 +312,7 @@ class iPHP {
 			return self::$iTPL->fetch($tpl);
 		} else {
 			self::$iTPL->display($tpl);
-			// self::debug_info();
+			//self::debug_info();
 		}
 	}
 	public static function debug_info() {

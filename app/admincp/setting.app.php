@@ -10,17 +10,7 @@
 * @$Id: setting.app.php 2365 2014-02-23 16:26:27Z coolmoo $
 */
 class settingApp{
-    function __construct() {
-  //   	$this->apps	= array('index','article','tag','search','usercp','category','comment','favorite');
-		// foreach (glob(iPHP_APP_DIR."/*/*.app.php") as $filename) {
-  //           $path_parts = pathinfo($filename);
-  //           $dirname    = str_replace(iPHP_APP_DIR.'/','',$path_parts['dirname']);
-		// 	if (!in_array($dirname,array('admincp','usercp'))) {
-  //               $app = str_replace('.app','',$path_parts['filename']);
-		// 		in_array($app,$this->apps) OR array_push($this->apps,$app);
-		// 	}
-		// }
-    }
+    function __construct() {}
     function do_iCMS(){
     	$config	= $this->get();
     	$config['site']['indexName'] OR $config['site']['indexName'] = 'index';

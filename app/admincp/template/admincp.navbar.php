@@ -48,7 +48,7 @@ console.log(index);
     <span class="fa fa-bars"></span>
     </a>
     <a class="brand iCMS-logo" href="http://www.idreamsoft.com" target="_blank">
-      <img src="./app/admincp/ui/iCMS.logo-6.0.png" />
+      <img src="./app/admincp/ui/iCMS.logo.mini.png" />
     </a>
       <div class="nav-collapse collapse">
         <ul class="nav iMenu-nav" id="iCMS-menu">
@@ -76,7 +76,7 @@ console.log(index);
 <div id="sidebar" class="navbar">
 	<div id="sidebartop" class="navbar-inner">
     <a class="brand iCMS-logo" href="http://www.idreamsoft.com" target="_blank">
-    <img src="./app/admincp/ui/iCMS.logo-6.0.png" />
+    <img src="./app/admincp/ui/iCMS.logo.mini.png" />
     </a>
   </div>
   <ul class="iMenu-sidebar">

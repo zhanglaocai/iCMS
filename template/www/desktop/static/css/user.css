@@ -122,7 +122,7 @@ i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 
 .userhome-wrap .mod-title .mod-txt { border-bottom: 1px solid #BFBFBF; line-height: 40px; }
 .userhome-wrap .mod-title h3 span { padding-left: 10px; color: #ccc; letter-spacing: 1px; font: italic 14px/18px Palatino Linotype, simsun; }
 .home-category .mod-content { padding-top: 10px; }
-.home-category .mod-content li a { color: #999; background-color: #EFEFEF; float: left; margin: 0px 1px 1px 0px; padding: 2px 4px; height: 29px; line-height: 24px; overflow: hidden; text-align: center; width: 32.99%; box-shadow: none; outline: none; }
+.home-category .mod-content li a { color: #999; background-color: #EFEFEF; float: left; margin: 0px 4px 1px 0px; padding: 2px 4px; height: 29px; line-height: 24px; overflow: hidden; text-align: center; width: 32.99%; box-shadow: none; outline: none; }
 .home-category .mod-content li a:hover { color: #fff; background-color: #61B3E6; text-decoration: none; }
 
 /* ----userApp-box------- */
