@@ -102,12 +102,10 @@ $(function() {
             $COMMON.favorite(this);
         });
     });
-    //通用事件
+    //用户主页评论
     iCMS.run('comment', function($COMMENT) {
-        //点赞
         doc.on('click', '[i^="comment"]', function(event) {
             event.preventDefault();
-            var me = this;
             $COMMENT.start(this);
         });
     });

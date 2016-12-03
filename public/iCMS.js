@@ -4,7 +4,7 @@
 (function (){
     var paths  = [
             'require.js',
-            'widget.js',
+            'plugin.js',
             'config.js',
             'cookie.js',
             'api.js',
