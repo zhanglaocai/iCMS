@@ -27,15 +27,12 @@
     <div class="clearfix mb10"></div>
 </div>
 <script>
-    var iCOMMENT = iCMS.run('comment');
     $(function() {
         var doc = $('.commentApp-form');
-
         iUSER.STATUS({},
             //登陆后事件
             function($info) {
                 console.log($info);
-                // iCMS.$('user_nickname',doc).text($info.nickname);
                 $(".passport",doc).hide();
                 $(".profile",doc).show();
             },

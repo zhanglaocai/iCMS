@@ -1,10 +1,16 @@
-define("poshytip", function(require) {
+// define("poshytip", function(require) {
+
+/*
+ * Poshy Tip jQuery plugin v1.2+
+ * http://vadikom.com/tools/poshy-tip-jquery-plugin-for-stylish-tooltips/
+ * Copyright 2010-2013, Vasil Dinkov, http://vadikom.com/
+ */
+ 
+ (function ($) {
     var tips = [],
         reBgImage = /^url\(["']?([^"'\)]*)["']?\);?$/i,
         rePNG = /\.png$/i,
-        IE = !!window.createPopup,
-        IE6 = IE && typeof document.documentElement.currentStyle.minWidth == 'undefined',
-        IElt9 = IE && !document.defaultView;
+		ie6 = !!window.createPopup && document.documentElement.currentStyle.minWidth == 'undefined';
 
     // make sure the tips' position is updated on resize
     function handleWindowResize() {
@@ -22,7 +28,7 @@ define("poshytip", function(require) {
                 '<div class="arrow"></div>',
                 '<div class="popover-content"></div>',
                 // '<div class="tip-arrow tip-arrow-top tip-arrow-right tip-arrow-bottom tip-arrow-left"></div>',
-            '</div>'].join(''));
+			'</div>'].join('')).appendTo(document.body);
         // this.$arrow = this.$tip.find('div.tip-arrow');
         this.$inner = this.$tip.find('div.popover-content');
         this.disabled = false;
@@ -47,19 +53,19 @@ define("poshytip", function(require) {
 
             // hook element events
             if (this.opts.showOn != 'none') {
-                this.$elm.bind({
+                this.$elm.on({
                     'mouseenter.poshytip': $.proxy(this.mouseenter, this),
                     'mouseleave.poshytip': $.proxy(this.mouseleave, this)
                 });
                 switch (this.opts.showOn) {
                     case 'hover':
                         if (this.opts.alignTo == 'cursor')
-                            this.$elm.bind('mousemove.poshytip', $.proxy(this.mousemove, this));
+                            this.$elm.on('mousemove.poshytip', $.proxy(this.mousemove, this));
                         if (this.opts.allowTipHover)
                             this.$tip.hover($.proxy(this.clearTimeouts, this), $.proxy(this.mouseleave, this));
                         break;
                     case 'focus':
-                        this.$elm.bind({
+                        this.$elm.on({
                             'focus.poshytip': $.proxy(this.showDelayed, this),
                             'blur.poshytip': $.proxy(this.hideDelayed, this)
                         });
@@ -71,7 +77,7 @@ define("poshytip", function(require) {
             if (this.disabled)
                 return true;
 
-            this.updateCursorPos(e);
+            //this.updateCursorPos(e);
 
             this.$elm.attr('title', '');
             if (this.opts.showOn == 'focus')
@@ -97,8 +103,8 @@ define("poshytip", function(require) {
             if (this.disabled)
                 return true;
 
-            this.updateCursorPos(e);
-
+			this.eventX = e.pageX;
+			this.eventY = e.pageY;
             if (this.opts.followCursor && this.$tip.data('active')) {
                 this.calcPos();
                 this.$tip.css({left: this.pos.l, top: this.pos.t});
@@ -205,7 +211,7 @@ define("poshytip", function(require) {
                 this.asyncAnimating = true;
                 var self = this;
                 this.$tip.css(currPos).css({left:this.pos.l,top:this.pos.t}).show();
-                // this.$tip.css(currPos).animate({left: this.pos.l, top: this.pos.t}, this.opts.refreshAniDuration, function() { self.asyncAnimating = false; });
+                //this.$tip.css(currPos).animate({left: this.pos.l, top: this.pos.t}, this.opts.refreshAniDuration, function() { self.asyncAnimating = false; });
             } else {
                 this.$tip.css({left: this.pos.l, top: this.pos.t});
             }
@@ -258,7 +264,7 @@ define("poshytip", function(require) {
             this.$tip.remove();
             delete this.$tip;
             this.content = null;
-            this.$elm.unbind('.poshytip').removeData('title.poshytip').removeData('poshytip');
+            this.$elm.off('.poshytip').removeData('title.poshytip').removeData('poshytip');
             tips.splice($.inArray(this, tips), 1);
         },
         clearTimeouts: function() {
@@ -375,7 +381,7 @@ define("poshytip", function(require) {
             if (method == 'destroy') {
                 this.die ?
                     this.die('mouseenter.poshytip').die('focus.poshytip') :
-                    $(document).undelegate(this.selector, 'mouseenter.poshytip').undelegate(this.selector, 'focus.poshytip');
+                    $(document).off(this.selector, 'mouseenter.poshytip').off(this.selector, 'focus.poshytip');
             }
             return this.each(function() {
                 var poshytip = $(this).data('poshytip');
@@ -385,7 +391,6 @@ define("poshytip", function(require) {
         }
 
         var opts = $.extend({}, $.fn.poshytip.defaults, options);
-
         // check if we need to hook live events
         if (opts.liveEvents && opts.showOn != 'none') {
             var handler,
@@ -400,7 +405,7 @@ define("poshytip", function(require) {
                     // support 1.4.2+ & 1.9+
                     this.live ?
                         this.live('mouseenter.poshytip', handler) :
-                        $(document).delegate(this.selector, 'mouseenter.poshytip', handler);
+                        $(document).on(this.selector, 'mouseenter.poshytip', handler);
                     break;
                 case 'focus':
                     handler = function() {
@@ -410,12 +415,11 @@ define("poshytip", function(require) {
                     };
                     this.live ?
                         this.live('focus.poshytip', handler) :
-                        $(document).delegate(this.selector, 'focus.poshytip', handler);
+                        $(document).on(this.selector, 'focus.poshytip', handler);
                     break;
             }
             return this;
         }
-
         return this.each(function() {
             new $.Poshytip(this, opts);
         });
@@ -449,5 +453,5 @@ define("poshytip", function(require) {
         refreshAniDuration: 200     // refresh animation duration - set to 0 if you don't want animation when updating the tooltip asynchronously
     };
 
-
-});
+})(jQuery);
+// });

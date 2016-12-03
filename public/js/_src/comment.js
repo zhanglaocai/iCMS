@@ -197,7 +197,6 @@ define("comment", function(require) {
                             $list.append(item);
                         }
                     });
-                    USER.UCARD();
                     if(!id){
                         $(".load-more",container).remove();
                         if ($COMMENT.page_no[iid] < $COMMENT.page_total[iid]) {

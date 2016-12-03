@@ -5,11 +5,11 @@
     var paths  = [
             'require.js',
             'plugin.js',
+            'poshytip.js',
             'config.js',
             'cookie.js',
             'api.js',
             'artdialog.js',
-            'poshytip.js',
             'ui.dialog.js',
             'ui.js',
             'utils.js',

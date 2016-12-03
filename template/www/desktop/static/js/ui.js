@@ -110,5 +110,8 @@ $(function() {
         });
     });
 });
-//定义user模块API
+//user模块API
 var iUSER = iCMS.run('user');
+//comment模块API
+var iCOMMENT = iCMS.run('comment');
+

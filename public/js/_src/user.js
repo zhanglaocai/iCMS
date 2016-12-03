@@ -69,10 +69,10 @@ define("user", function(require) {
             }, 'json');
         },
         UCARD:function(){
-            var $poshytip = require("poshytip");
             $("[i^='ucard']").poshytip({
                 idName:'iCMS-UCARD',className:'iCMS_UI_TOOLTIP',
                 alignTo:'target',alignX:'center',
+                liveEvents: true,
                 offsetX:0,offsetY:5,fade:false,slide:false,
                 content: function(update) {
                     var uid = $(this).attr('i').replace('ucard:','');
