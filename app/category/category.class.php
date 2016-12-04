@@ -42,19 +42,11 @@ class category {
             $C['status'] OR $hidden[]        = $C['cid'];
             $cache[$C['appid']][$C['cid']]   = $C;
             $array[$C['appid']][$C['rootid']][$C['cid']] = $C;
-            $C['domain'] && $domainArray[$C['cid']] = $C['domain'];
-    	}
-
-        foreach ((array)$domainArray as $dcid => $dval) {
-            $rootData = $rootid[$dcid];
-            if($rootid[$dcid]){
-                foreach ($rootData as $key => $subcid) {
-                    $domain[$subcid]= self::domain($subcid);
-                }
+            if($C['domain']){
+                $domain_array[]          = $C['cid'];
+                $domaincid[$C['domain']] = $C['cid'];
             }
-            $domain[$dcid]= self::domain($dcid);
-        }
-//var_dump($domain);
+    	}
 
     	if($appid===null){
 	    	foreach((array)$appidArray AS $_appid) {
@@ -65,26 +57,47 @@ class category {
 	        iCache::set('iCMS/category.'.$appid.'/cache',$cache[$appid],0);
 	        iCache::set('iCMS/category.'.$appid.'/array',$array[$appid],0);
     	}
+        $domain = $this->domain_array($domain_array,$rootid);
+        $this->domain_setting($domaincid);
+
         iCache::set('iCMS/category/rootid',	$rootid,0);
         iCache::set('iCMS/category/parent',	$parent,0);
         iCache::set('iCMS/category/dir2cid',$dir2cid,0);
         iCache::set('iCMS/category/hidden', $hidden,0);
-        iCache::set('iCMS/category/domain', $domain,0);
+        iCache::set('iCMS/category/domain',$domain,0);
     }
+    public function domain_array($array,$rootid){
+        $domain = array();
+        foreach ((array)$array as $akey => $cid) {
+            $rootData = $rootid[$cid];
+            if($rootData){
+                $domain+=$this->domain_array($rootData,$rootid);
+            }
+            $domain[$cid] = $this->domain($cid);
+        }
+        return $domain;
+    }
+    public function domain_setting($domain){
+        $setting = iPHP::app('admincp.setting.app');
+        $setting->set(array('domain'=>$domain),'category',0,false);
+        $setting->cache();
+        unset($setting);
+    }
+
     public function domain($cid="0",$akey='dir') {
         $ii       = new stdClass();
         $C        = $this->category[$cid];
         $rootid   = $C['rootid'];
         $ii->sdir = $C[$akey];
         if($rootid && empty($C['domain'])) {
-            $dm         = self::domain($rootid);
+            $dm         = $this->domain($rootid);
             $ii->pd     = $dm->pd;
             $ii->domain = $dm->domain;
             $ii->pdir   = $dm->pdir.'/'.$C[$akey];
             $ii->dmpath = $dm->dmpath.'/'.$C[$akey];
         }else {
             $ii->pd     = $ii->pdir   = ltrim(iFS::path(iCMS::$config['router']['html_dir'].$ii->sdir),'/') ;
-            $ii->dmpath = $ii->domain = $C['domain']?('http://'.ltrim($C['domain'],'http://')):'';
+            $ii->dmpath = $ii->domain = iFS::checkHttp($C['domain'])?$C['domain']:'http://'.$C['domain'];
         }
         return $ii;
     }

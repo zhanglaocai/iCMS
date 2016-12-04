@@ -10,6 +10,10 @@ class indexApp {
 	public $methods	= array('iCMS','index');
     public function __construct() {}
     public function do_iCMS($a = null) {
+        if(iPHP::$iTPL_MODE!="html"){
+            $domain = $this->domain();
+            if($domain) return;
+        }
         return $this->index($a);
     }
     public function API_iCMS(){
@@ -28,5 +32,19 @@ class indexApp {
         }
         $html = iPHP::view($index_tpl);
         if(iPHP::$iTPL_MODE=="html") return array($html,$iurl);
+    }
+    public function domain(){
+        $domain = iCMS::$config['category']['domain'];
+        if($domain){
+            $host = iS::escapeStr($_GET['host']);
+            empty($host) && $host = $_SERVER['HTTP_HOST'];
+            $cid  = (int)$domain[$host];
+            if($cid){
+                $app = iPHP::app("category");
+                $app->category($cid);
+                return true;
+            }
+        }
+        return false;
     }
 }
