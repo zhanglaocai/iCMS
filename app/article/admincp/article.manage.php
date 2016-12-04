@@ -238,7 +238,7 @@ $(function(){
                   <?php if($value['postype']=="0"){ ?>
                   <span class="label label-info">用户</span>
                   <?php } ?>
-                  <?php if($value['haspic']) echo '<img src="./app/admincp/ui/image.gif" align="absmiddle">'?>
+                  <?php if($value['haspic']) echo '<img src="./app/admincp/ui/img/image.gif" align="absmiddle">'?>
                   <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $value['id'] ; ?>" data-toggle="modal" title="预览"><?php echo $value['title'] ; ?></a>
                  </div>
                 <div class="row-actions">

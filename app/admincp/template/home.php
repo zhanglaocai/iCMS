@@ -79,7 +79,7 @@ admincp::head();
           <td>当前程序版本</td>
           <td>iCMS <?php echo iCMS_VER ; ?>[<?php echo iCMS_RELEASE ; ?>]</td>
           <td><a href="<?php echo __ADMINCP__;?>=patch&do=check&force=1&frame=iPHP" target="iPHP_FRAME" id="home_patch">最新版本</a></td>
-          <td><span id="newversion"><img src="./app/admincp/ui/ajax_loader.gif" width="16" height="16" align="absmiddle"></span></td>
+          <td><span id="newversion"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span></td>
         </tr>
         <tr>
           <td>服务器操作系统</td>
@@ -147,7 +147,7 @@ admincp::head();
 </div>
 <div class="iCMS-container">
   <div class="row-fluid">
-    <div class="span6">
+    <div class="span5">
       <div class="widget-box">
         <div class="widget-title"> <span class="icon"> <i class="fa fa-info-circle"></i> </span>
           <h5>iCMS 开发信息</h5>
@@ -163,7 +163,7 @@ admincp::head();
             <tr>
               <td>开 发 者</td>
               <td>
-                <a class="btn btn-inverse" href="http://t.qq.com/idreamsoft" target="_blank"><i class="fa fa-at"></i> 枯木(@idreamsoft)</a>
+                <a class="btn" href="http://git.oschina.net/php/icms" target="_blank"><i class="fa fa-github"></i> Git@OSC</a>
                 <a class="btn" href="https://github.com/idreamsoft/iCMS" target="_blank"><i class="fa fa-github"></i> GitHub</a>
               </td>
             </tr>
@@ -184,7 +184,9 @@ admincp::head();
               <td><a class="btn btn-small" href="http://www.idreamsoft.com" target="_blank">iDreamSoft</a>
                 <a class="btn btn-small" href="http://www.idreamsoft.com/iCMS/" target="_blank">iCMS</a>
                 <a class="btn btn-small" href="http://www.idreamsoft.com/template/" target="_blank">&#x6A21;&#x677F;</a>
-                <a class="btn btn-small" href="http://www.idreamsoft.com/doc" target="_blank">&#x6587;&#x6863;</a> <a class="btn btn-small" href="http://www.idreamsoft.com/feedback/" target="_blank">&#x8BA8;&#x8BBA;&#x533A;</a></td>
+                <a class="btn btn-small" href="http://www.idreamsoft.com/doc" target="_blank">&#x6587;&#x6863;</a>
+                <a class="btn btn-small" href="http://www.idreamsoft.com/feedback/" target="_blank">&#x8BA8;&#x8BBA;&#x533A;</a>
+              </td>
             </tr>
           </table>
         </div>
@@ -196,10 +198,11 @@ admincp::head();
           <h5>iCMS 微信公众平台</h5>
         </div>
         <div class="widget-content nopadding">
+          <img src="./app/admincp/ui/iCMS.qrcode.jpg" alt="iCMS 微信公众平台" style="height: 230px">
         </div>
       </div>
     </div>
-    <div class="span3">
+    <div class="span4">
       <div class="widget-box">
         <div class="widget-title"> <span class="icon"> <i class="fa fa-bug"></i> </span>
           <h5>BUG提交</h5>
@@ -216,7 +219,7 @@ admincp::head();
   问题描述:</textarea>
             <div class="clearfix mt10"></div>
             <button id="bug_button" class="btn btn-primary fr mr20" type="submit"><i class="fa fa-check"></i> 提交</button>
-            <input id="bug_email" name="email" type="text" class="span4 ml10" placeholder="您的邮箱">
+            <input id="bug_email" name="email" type="text" class="ml10" placeholder="您的邮箱">
             <div class="clearfix mt10"></div>
           </form>
         </div>

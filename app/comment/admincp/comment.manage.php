@@ -26,7 +26,7 @@ $(function(){
         function(html) {
           update_popover(html,a);
       });
-      return '<p><img src="./app/admincp/ui/loading.gif" /></p>';
+      return '<p><img src="./app/admincp/ui/img/loading.gif" /></p>';
   }});
 });
 function update_popover(html,a){

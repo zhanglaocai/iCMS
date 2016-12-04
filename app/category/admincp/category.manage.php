@@ -11,7 +11,6 @@ admincp::head();
 ?>
 <?php if(admincp::$APP_DO=='tree'){ ?>
 <link rel="stylesheet" href="./app/admincp/ui/jquery/treeview-0.1.0.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/jquery/jquery-ui.min.css" type="text/css" />
 <script type="text/javascript" src="./app/admincp/ui/jquery/jquery-ui.min.js"></script>
 <script type="text/javascript" src="./app/admincp/ui/jquery/treeview-0.1.0.js"></script>
 <script type="text/javascript" src="./app/admincp/ui/jquery/treeview-0.1.0.async.js"></script>
@@ -111,7 +110,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
       <form action="<?php echo $this->category_furi; ?>&do=update" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <div id="category-list" class="tab-content">
           <div id="category-tree" class="row-fluid category-treeview">
-            <ul id="tree"><p id="tree-loading"><img src="./app/admincp/ui/loading.gif" /></p></ul>
+            <ul id="tree"><p id="tree-loading"><img src="./app/admincp/ui/img/loading.gif" /></p></ul>
           </div>
         </div>
         <div class="form-actions">

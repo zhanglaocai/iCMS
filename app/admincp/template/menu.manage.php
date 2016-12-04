@@ -56,7 +56,7 @@ $(function(){
       <div id="menu-list" class="tab-content">
         <div id="menu-tree" class="row-fluid menu-treeview">
           <ul id="tree">
-            <p id="tree-loading"><img src="./app/admincp/ui/loading.gif" />
+            <p id="tree-loading"><img src="./app/admincp/ui/img/loading.gif" />
           </ul>
         </div>
       </div>

@@ -23,7 +23,7 @@ body{background-color:#EDEDED;color:#000;}
 .btn-primary:hover,.btn-primary:focus,.btn-primary:active,.btn-primary.active,.btn-primary.disabled,.btn-primary[disabled]{background-color:#08c;}
 
 /* bootstrap admincp */
-.table th{background:#fafafa url("table_head.gif") repeat-x 0 100%;}
+.table th{background:#fafafa url("img/table_head.gif") repeat-x 0 100%;}
 .table td{background-color:#fff;}
 .table tbody .checker{margin-left:3px!important;}
 .help-inline hr{margin:2px 0px;}
@@ -70,7 +70,7 @@ body{background-color:#EDEDED;color:#000;}
 */
 #header #iCMS-menu{margin:0px;}
 #header .iCMS-logo{padding:0px;width:135px;height:27px;margin-left:5px;margin-right:52px;}
-#scrollUp{bottom:20px;right:20px;height:38px; /* Height of image */width:38px; /* Width of image */background:url("top.png") no-repeat;}
+#scrollUp{bottom:20px;right:20px;height:38px; /* Height of image */width:38px; /* Width of image */background:url("img/top.png") no-repeat;}
 .iCMS-batch{display:none;}
 .iCMS-container{padding-right:0;padding-left:0;margin:4px 10px 0px 10px;}
 .iCMS-container .form-actions{margin-top:10px;margin-bottom:0px;}
@@ -524,3 +524,4 @@ form{margin-bottom:0;}
   #sidebar > ul ul:after{border-right:6px solid #222222;}
 }
 .page_select{width:48px;height:20px;margin-bottom:3px;line-height:16px;padding:0px}
+
