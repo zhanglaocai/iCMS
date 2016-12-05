@@ -99,7 +99,7 @@ class propAdmincp{
 //        $cid			= (int)$_GET['cid'];
 //
 //        if($cid) {
-//	        $cids	= $_GET['sub']?iCMS::get_category_ids($cid,true):$cid;
+//	        $cids	= $_GET['sub']?iPHP::app("category")->get_ids($cid,true):$cid;
 //	        $cids OR $cids	= $vars['cid'];
 //	        $sql.= iPHP::where($cids,'cid');
 //        }

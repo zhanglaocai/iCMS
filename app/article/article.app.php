@@ -97,7 +97,7 @@ class articleApp {
 			'user'          => true,
 			'meta'          => true,
 			'prev_next'     => true,
-			'category_lite' => false,
+			'category_lite' => true,
 		);
 		$article = $this->value($article, $article_data, $vars, $page, $tpl);
 
@@ -107,7 +107,6 @@ class articleApp {
 		}
 
 		if ($tpl) {
-			iCMS::hooks('enable_comment', true);
 			$article_tpl = empty($article['tpl']) ? $article['category']['contentTPL'] : $article['tpl'];
 			strstr($tpl, '.htm') && $article_tpl = $tpl;
 			iPHP::assign('category', $article['category']);
@@ -153,11 +152,8 @@ class articleApp {
 
 		($tpl && $category['mode'] == '1') && iCMS::gotohtml($article['iurl']->path, $article['iurl']->href);
 
-		if ($vars['category_lite']) {
-			$article['category'] = $categoryApp->get_lite($category);
-		} else {
-			$article['category'] = $category;
-		}
+		$article['category'] = $categoryApp->get_lite($category);
+
 		$this->taoke = false;
 		if ($art_data) {
 			$pkey = intval($page - 1);

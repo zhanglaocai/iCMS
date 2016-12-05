@@ -36,7 +36,7 @@ class categoryAdmincp extends category{
         $this->appid     = '-1';
         $appid          && $this->appid = $appid;
         $_GET['appid']  && $this->appid = (int)$_GET['appid'];
-        parent::__construct($this->appid);
+        parent::init($this->appid);
         // $this->category_uri .='&appid='.$this->appid;
         // $this->category_furi.='&appid='.$this->appid;
         // $dir && admincp::set_app_tpl($dir);

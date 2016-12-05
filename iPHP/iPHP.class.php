@@ -312,7 +312,7 @@ class iPHP {
 			return self::$iTPL->fetch($tpl);
 		} else {
 			self::$iTPL->display($tpl);
-			//self::debug_info();
+			self::debug_info();
 		}
 	}
 	public static function debug_info() {
@@ -1017,13 +1017,14 @@ class iPHP {
 		$tnkey == 'sql.md5' && $tnkey = md5($sql);
 		$tnkey = substr($tnkey, 8, 16);
 		$total = (int) $_GET['total_num'];
+		$cache_key = 'total/'.$tnkey;
 		if (empty($total) && $type === null && !isset($_GET['total_cahce'])) {
-			$total = (int) iCache::get('total/' . $tnkey);
+			$total = (int) iCache::get($cache_key);
 		}
 		if (empty($total) || $type === 'nocache' || isset($_GET['total_cahce'])) {
 			$total = iDB::value($sql);
 			if ($type === null) {
-				iCache::set('total/' . $tnkey, $total);
+				iCache::set($cache_key,$total,3600);
 			}
 		}
 		return $total;

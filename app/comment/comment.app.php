@@ -33,7 +33,6 @@ class commentApp {
 		$_GET['_display'] = $_GET['display'];
 		$_GET['display'] = 'default';
 		$_GET = iS::escapeStr($_GET);
-		iCMS::hooks('enable_comment', true);
 		iPHP::app('comment.func');
 		return comment_form($_GET);
 	}

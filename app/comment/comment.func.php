@@ -82,12 +82,12 @@ function comment_list($vars){
 	}
     if(isset($vars['cid!'])){
     	$ncids    = explode(',',$vars['cid!']);
-        $vars['sub'] && $ncids+=iCMS::get_category_ids($ncids,true);
+        $vars['sub'] && $ncids+=iPHP::app("category")->get_ids($ncids,true);
         $where_sql.= iPHP::where($ncids,'cid','not');
     }
     if(isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
-        $vars['sub'] && $cid+=iCMS::get_category_ids($cid,true);
+        $vars['sub'] && $cid+=iPHP::app("category")->get_ids($cid,true);
         $where_sql.= iPHP::where($cid,'cid');
     }
     isset($vars['userid'])&& $where_sql.= " AND `userid`='{$vars['userid']}'";
@@ -123,7 +123,7 @@ function comment_list($vars){
 
 		isset($vars['total_cache']) && $pgconf['total_type'] = $vars['total_cache'];
 
-		$multi  = iCMS::page($pgconf);
+		$multi  = iPHP::page($pgconf);
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
 		// if($offset>1000){
@@ -185,9 +185,9 @@ function comment_list($vars){
 	return $resource;
 }
 function comment_form($vars){
-	if(!iCMS::$hooks['enable_comment']){
-		iPHP::warning('此页面禁止调用 iCMS&#x3a;comment&#x3a;form 标签！');
-	}
+	// if(!iCMS::$hooks['enable_comment']){
+	// 	iPHP::warning('此页面禁止调用 iCMS&#x3a;comment&#x3a;form 标签！');
+	// }
 	if(iCMS::$config['comment']['plugin']['changyan']['enable']|| $vars['display']==="changyan"){
 		iCMS::$config['comment']['plugin']['changyan']['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少"appid"属性或"appid"值为空.');
 		iCMS::$config['comment']['plugin']['changyan']['appkey'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少"appkey"属性或"appkey"值为空.');

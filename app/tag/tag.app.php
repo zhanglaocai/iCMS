@@ -60,7 +60,6 @@ class tagApp {
         );
 
         if ($tpl) {
-            iCMS::hooks('enable_comment',true);
             iPHP::assign('category',$tag['category']);
             iPHP::assign('tag_category',$tag['tag_category']);
             unset($tag['category'],$tag['tag_category']);

@@ -368,8 +368,8 @@ class iDB{
         self::$link OR self::connect();
         // Make sure the server has MySQL 4.0
         $mysql_version = preg_replace('|[^0-9\.]|', '', @mysql_get_server_info(self::$link));
-        if ( version_compare($mysql_version, '4.0.0', '<') )
-            self::bail('database_version<strong>ERROR</strong> iPHP %s requires MySQL 4.0.0 or higher');
+        if ( version_compare($mysql_version, '4.0.0', '<') ){
+            self::bail('database_version<strong>ERROR</strong> iPHP requires MySQL 4.0.0 or higher');
         }else{
             return $mysql_version;
         }

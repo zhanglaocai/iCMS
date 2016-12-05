@@ -33,17 +33,17 @@ function article_list($vars) {
 
 	if (isset($vars['cid!'])) {
 		$ncids = explode(',', $vars['cid!']);
-		$vars['sub'] && $ncids += iCMS::get_category_ids($ncids, true);
+		$vars['sub'] && $ncids += iPHP::app("category")->get_ids($ncids, true);
 		$where_sql .= iPHP::where($ncids, 'cid', 'not');
 	}
 	if ($vars['cid'] && !isset($vars['cids'])) {
 		$cid = explode(',', $vars['cid']);
-		$vars['sub'] && $cid += iCMS::get_category_ids($cid, true);
+		$vars['sub'] && $cid += iPHP::app("category")->get_ids($cid, true);
 		$where_sql .= iPHP::where($cid, 'cid');
 	}
 	if (isset($vars['cids']) && !$vars['cid']) {
 		$cids = explode(',', $vars['cids']);
-		$vars['sub'] && $cids += iCMS::get_category_ids($vars['cids'], true);
+		$vars['sub'] && $cids += iPHP::app("category")->get_ids($vars['cids'], true);
 
 		if ($cids) {
 			iPHP::import(iPHP_APP_CORE . '/iMAP.class.php');
@@ -128,7 +128,7 @@ function article_list($vars) {
 		$total = iPHP::total('sql.md5', "SELECT count(*) FROM `#iCMS@__article` {$where_sql}", $total_type);
 		$pagenav = isset($vars['pagenav']) ? $vars['pagenav'] : "pagenav";
 		$pnstyle = isset($vars['pnstyle']) ? $vars['pnstyle'] : 0;
-		$multi = iCMS::page(array('total_type' => $total_type, 'total' => $total, 'perpage' => $maxperpage, 'unit' => iPHP::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
+		$multi = iPHP::page(array('total_type' => $total_type, 'total' => $total, 'perpage' => $maxperpage, 'unit' => iPHP::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit = "LIMIT {$offset},{$maxperpage}";
 		iPHP::assign("article_list_total", $total);
@@ -216,7 +216,7 @@ function article_search($vars) {
 	isset($vars['postype']) && $SPH->SetFilter('postype', array($vars['postype']));
 
 	if (isset($vars['cid'])) {
-		$cids = $vars['sub'] ? iCMS::get_category_ids($vars['cid'], true) : (array) $vars['cid'];
+		$cids = $vars['sub'] ? iPHP::app("category")->get_ids($vars['cid'], true) : (array) $vars['cid'];
 		$cids OR $cids = (array) $vars['cid'];
 		$cids = array_map("intval", $cids);
 		$SPH->SetFilter('cid', $cids);
@@ -262,7 +262,7 @@ function article_search($vars) {
 		iPHP::assign("article_search_total", $total);
 		$pagenav = isset($vars['pagenav']) ? $vars['pagenav'] : "pagenav";
 		$pnstyle = isset($vars['pnstyle']) ? $vars['pnstyle'] : 0;
-		$multi = iCMS::page(array('total' => $total, 'perpage' => $maxperpage, 'unit' => iPHP::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
+		$multi = iPHP::page(array('total' => $total, 'perpage' => $maxperpage, 'unit' => iPHP::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
 		$offset = $multi->offset;
 	}
 	$resource = iDB::all("SELECT * FROM `#iCMS@__article` WHERE {$where_sql} {$order_sql} LIMIT {$maxperpage}");

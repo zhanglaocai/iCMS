@@ -145,23 +145,6 @@ class iCMS extends iPHP{
         );
     }
 
-    public static function get_category_ids($cid = "0",$all=true,$root_array=null) {
-        $root_array OR $root_array = iCache::get('iCMS/category/rootid');
-        $cids = array();
-        is_array($cid) OR $cid = explode(',', $cid);
-        foreach($cid AS $_id) {
-            $cids+=(array)$root_array[$_id];
-        }
-        if($all){
-            foreach((array)$cids AS $_cid) {
-                $root_array[$_cid] && $cids+= self::get_category_ids($_cid,$all,$root_array);
-            }
-        }
-        $cids = array_unique($cids);
-        $cids = array_filter($cids);
-        return $cids;
-    }
-
     public static function sphinx(){
     	iPHP::import(iPHP_APP_CORE.'/sphinx.class.php');
 

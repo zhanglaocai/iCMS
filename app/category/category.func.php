@@ -41,7 +41,8 @@ function category_list($vars){
 		// 	$vars['cid'] && $where_sql.= iPHP::where($vars['cid'],'cid');
 		// break;
 		case "suball":
-			$where_sql.= iPHP::where(iCMS::get_category_ids($vars['cid'],false),'cid');
+			$cids = iPHP::app("category")->get_ids($vars['cid'],false);
+			$where_sql.= iPHP::where($cids,'cid');
 		break;
 		case "self":
 			$parent=iCache::get('iCMS/category/parent',$vars['cid']);
@@ -65,24 +66,14 @@ function category_list($vars){
 		$resource   = iCache::get($cache_name);
 	}
 	if(empty($resource)){
-		$rootid_array = iCache::get('iCMS/category/rootid');
-		$resource     = iDB::all("SELECT * FROM `#iCMS@__category` {$where_sql} ORDER BY `ordernum`,`cid` ASC LIMIT $row");
-		if($resource)foreach ($resource as $key => $value) {
-			$value['child'] = $rootid_array[$value['cid']]?true:false;
-			$value['url']   = iURL::get('category',$value)->href;
-			$value['link']  = "<a href='{$value['url']}'>{$value['name']}</a>";
-
-	        if($value['metadata']){
-				$mdArray   = array();
-				$_metadata = unserialize($value['metadata']);
-		    	foreach((array)$_metadata as $mkey => $md){
-		    		$mdArray[$mkey] = $md;
-		    	}
-	        	$value['metadata'] = $mdArray;
-	        	unset($_metadata);
-	        }
-	        unset($value['contentprop']);
-	        $resource[$key] = $value;
+		$resource = iDB::all("SELECT `cid`,`appid` FROM `#iCMS@__category` {$where_sql} ORDER BY `ordernum`,`cid` ASC LIMIT $row");
+		if($resource){
+			$categoryArray = iCache::get('iCMS/category.'.$appid.'/cache');
+			$categoryApp   = iPHP::app("category");
+			foreach ($resource as $key => $c) {
+				$value = $categoryArray[$c['cid']];
+				$value && $resource[$key] = $categoryApp->get_lite($value);
+			}
 		}
 		$vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
 	}

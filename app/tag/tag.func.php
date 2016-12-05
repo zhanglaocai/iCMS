@@ -40,12 +40,12 @@ function tag_list($vars){
 
     if(!isset($vars['cids']) && isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
-        $vars['sub'] && $cid+=iCMS::get_category_ids($cid,true);
+        $vars['sub'] && $cid+=iPHP::app("category")->get_ids($cid,true);
         $where_sql.= iPHP::where($cid,'cid');
     }
     if(isset($vars['cids']) && !isset($vars['cid'])){
         $cids = explode(',',$vars['cids']);
-        $vars['sub'] && $cids+=iCMS::get_category_ids($vars['cids'],true);
+        $vars['sub'] && $cids+=iPHP::app("category")->get_ids($vars['cids'],true);
 
         if($cids){
             iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
@@ -55,7 +55,7 @@ function tag_list($vars){
     }
     if(isset($vars['cid!'])){
         $ncids    = explode(',',$vars['cid!']);
-        $vars['sub'] && $ncids+=iCMS::get_category_ids($ncids,true);
+        $vars['sub'] && $ncids+=iPHP::app("category")->get_ids($ncids,true);
         $where_sql.= iPHP::where($ncids,'cid','not');
     }
 
@@ -94,7 +94,7 @@ function tag_list($vars){
 	if($vars['page']){
 		$total	= iPHP::total('sql.md5',"SELECT count(*) FROM `#iCMS@__tags` {$where_sql} ");
 		iPHP::assign("tags_total",$total);
-		$multi  = iCMS::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iPHP::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
+		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iPHP::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
         iPHP::assign("tags_list_total",$total);

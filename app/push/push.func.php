@@ -16,12 +16,12 @@ function push_list($vars){
 
     if(isset($vars['cid!'])){
         $ncids    = explode(',',$vars['cid!']);
-        $vars['sub'] && $ncids+=iCMS::get_category_ids($ncids,true);
+        $vars['sub'] && $ncids+=iPHP::app("category")->get_ids($ncids,true);
         $where_sql.= iPHP::where($ncids,'cid','not');
     }
     if(isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
-        $vars['sub'] && $cid+=iCMS::get_category_ids($cid,true);
+        $vars['sub'] && $cid+=iPHP::app("category")->get_ids($cid,true);
         $where_sql.= iPHP::where($cid,'cid');
     }
 

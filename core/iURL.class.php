@@ -180,20 +180,16 @@ class iURL {
                 $i->pfile = $i->name.'_'.PAGE_SIGN.$i->ext;
 			}
 
-//var_dump($i);
+// var_dump($i);
 //exit;
 			if($rule=='1') {
                 $domainArray = iCache::get('iCMS/category/domain');
+// var_dump($domainArray);
                 if($domainArray){
                     $m = $domainArray[$category['cid']];
-// var_dump($m);
                     if($m->domain) {
                         $i->href   = str_replace($i->hdir,$m->dmpath,$i->href);
                         $i->hdir   = $m->dmpath;
-
-                        // $__dir__   = $i->dir.'/'.$m->pdir;
-                        // $i->path   = str_replace($i->dir,$__dir__,$i->path);
-                        // $i->dir    = $__dir__;
                         $i->dmdir  = iFS::path(iPATH.$html_dir.'/'.$m->pd);
                         $bits      = parse_url($i->href);
                         $i->domain = $bits['scheme'].'://'.$bits['host'];
@@ -203,8 +199,10 @@ class iURL {
                     $i->href = $category['domain'];
 		        }
             }
-
-// print_r($i);
+// if($rule=='2') {
+// var_dump($category['iurl'],$i);
+// }
+// var_dump($i);
 // exit;
         }
         return self::make($i);
