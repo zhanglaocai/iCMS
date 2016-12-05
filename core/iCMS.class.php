@@ -145,31 +145,6 @@ class iCMS extends iPHP{
         );
     }
 
-    public static function sphinx(){
-    	iPHP::import(iPHP_APP_CORE.'/sphinx.class.php');
-
-		if(isset($GLOBALS['iSPH'])) return $GLOBALS['iSPH'];
-
-		$hosts				= self::$config['sphinx']['host'];
-		$GLOBALS['iSPH']	= new SphinxClient();
-		if(strstr($hosts, 'unix:')){
-			$hosts	= str_replace("unix://",'',$hosts);
-			$GLOBALS['iSPH']->SetServer($hosts);
-		}else{
-			list($host,$port)=explode(':',$hosts);
-			$GLOBALS['iSPH']->SetServer($host,(int)$port);
-		}
-		return $GLOBALS['iSPH'];
-    }
-    public static function TBAPI(){
-    	iPHP::import(iPHP_APP_CORE.'/tbapi.class.php');
-
-    	if(isset($GLOBALS['TBAPI'])) return $GLOBALS['TBAPI'];
-
-		$GLOBALS['TBAPI'] = new TBAPI;
-		return $GLOBALS['TBAPI'];
-    }
-
     //------------------------------------
     public static function gotohtml($fp,$url='') {
         if(iPHP::$iTPL_MODE=='html'||empty($url)||stristr($url, '.php?')||iPHP_DEVICE!='desktop') return;

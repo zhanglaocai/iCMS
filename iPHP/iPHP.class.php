@@ -557,7 +557,7 @@ class iPHP {
 		return $obj;
 	}
 	public static function vendor($name, $args = null) {
-		iPHP::import(iPHP_LIB . '/Vendor.' . $name . '.php');
+		iPHP::import(iPHP_LIB . '/vendor/Vendor.' . $name . '.php');
 		if (function_exists($name)) {
 			return call_user_func_array($name, $args);
 		} else {
