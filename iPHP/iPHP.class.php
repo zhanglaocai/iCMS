@@ -559,7 +559,10 @@ class iPHP {
 	public static function vendor($name, $args = null) {
 		iPHP::import(iPHP_LIB . '/vendor/Vendor.' . $name . '.php');
 		if (function_exists($name)) {
-			return call_user_func_array($name, $args);
+			if($args === null){
+				return $name();
+			}
+			return call_user_func_array($name, (array)$args);
 		} else {
 			return false;
 		}
@@ -965,6 +968,12 @@ class iPHP {
 		echo self::$dialog['code'] ? $dialog : '<script>' . $dialog . '</script>';
 		self::$break && exit();
 	}
+    public static function set_page_url($iurl){
+        if(isset($GLOBALS['iPage'])) return;
+        $iurl = (array)$iurl;
+        $GLOBALS['iPage']['url']  = $iurl['pageurl'];
+        $GLOBALS['iPage']['html'] = array('enable'=>true,'index'=>$iurl['href'],'ext'=>$iurl['ext']);
+    }
 	//模板翻页函数
 	public static function page($conf) {
 		iPHP::core("Pages");

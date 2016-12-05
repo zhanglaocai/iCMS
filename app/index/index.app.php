@@ -23,12 +23,12 @@ class indexApp {
         $index_name = $a[1]?$a[1]:iCMS::$config['template']['index_name'];
         $index_tpl  = $a[0]?$a[0]:iCMS::$config['template']['index'];
         $index_name OR $index_name = 'index';
-        $iurl = iURL::get('index',array('urlRule'=>$index_name.iCMS::$config['router']['html_ext']));
+        $iurl = iURL::get('index',array('rule'=>$index_name.iCMS::$config['router']['html_ext']));
         if(iCMS::$config['template']['index_mode'] && iPHP_DEVICE=="desktop"){
             iCMS::gotohtml($iurl->path,$iurl->href);
         }
         if(iPHP::$iTPL_MODE=="html" || iCMS::$config['template']['index_rewrite']){
-            iCMS::set_html_url($iurl);
+            iPHP::set_page_url($iurl);
         }
         $html = iPHP::view($index_tpl);
         if(iPHP::$iTPL_MODE=="html") return array($html,$iurl);

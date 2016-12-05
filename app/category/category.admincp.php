@@ -12,24 +12,35 @@
 defined('iPHP') OR exit('What are you doing?');
 iPHP::app('category.class','include');
 class categoryAdmincp extends category{
-    public $callback             = array();
-    protected $category_uri      = APP_URI;
-    protected $category_furi     = APP_FURI;
-    protected $category_name     = "节点";
+    public $callback         = array();
+    protected $category_uri  = APP_URI;
+    protected $category_furi = APP_FURI;
+    protected $category_name = "节点";
+    /**
+     *  模板
+     */
+    protected $category_template = array(
+        'index'   =>array('首页','{iTPL}/category.index.htm'),
+        'list'    =>array('列表','{iTPL}/category.list.htm'),
+    );
+    /**
+     *  URL规则
+     */
+    protected $category_rule = array(
+        'index'   => array('首页','/{CDIR}/index{EXT}','{CID},{0xCID},{CDIR}'),
+        'list'    => array('列表','/{CDIR}/index_{P}{EXT}','{CID},{0xCID},{CDIR}'),
+    );
+    /**
+     *  URL规则选项
+     */
+    protected $category_rule_list = array();
+
     protected $_app              = 'content';
     protected $_app_name         = '内容';
     protected $_app_table        = 'content';
     protected $_app_cid          = 'cid';
-    protected $_app_indexTPL     = '{iTPL}/category.index.htm';
-    protected $_app_listTPL      = '{iTPL}/category.list.htm';
-    protected $_app_contentTPL   = '{iTPL}/content.htm';
-    protected $_view_add         = 'category.add';
-    protected $_view_manage      = 'category.manage';
-    protected $_contentRule_show = true;
-    protected $_contentRule_name = '内容';
-    protected $_urlRule_show     = true;
-    protected $_urlRule_name     = '其它';
-
+    protected $_view_add          = 'category.add';
+    protected $_view_manage       = 'category.manage';
 
     function __construct($appid = null,$dir=null) {
         $this->cid       = (int)$_GET['cid'];
@@ -48,41 +59,33 @@ class categoryAdmincp extends category{
             admincp::CP($this->cid,'e','page');
             $rs		= iDB::row("SELECT * FROM `#iCMS@__category` WHERE `cid`='$this->cid' LIMIT 1;",ARRAY_A);
             $rootid	= $rs['rootid'];
-            $rs['metadata']   && $rs['metadata']    = unserialize($rs['metadata']);
-            $rs['contentprop']&& $rs['contentprop'] = unserialize($rs['contentprop']);
+            $rs['rule']     = json_decode($rs['rule'],true);
+            $rs['template'] = json_decode($rs['template'],true);
+            $rs['metadata'] = json_decode($rs['metadata'],true);
             $rs['body'] = iCache::get('iCMS/category/'.$this->cid.'.body');
             $rs['body'] && $rs['body'] = stripslashes($rs['body']);
+
         }else {
             $rootid = (int)$_GET['rootid'];
             $rootid && admincp::CP($rootid,'a','page');
         }
         if(empty($rs)) {
             $rs = array(
-                'pid'          => '0',
-                'status'       => '1',
-                'isexamine'    => '1',
-                'issend'       => '1',
-                'hasbody'      => '2',
-                'ordernum'     => '0',
-                'mode'         => '0',
-                'htmlext'      => iCMS::$config['router']['html_ext'],
-                'categoryURI'  => 'category',
-                'categoryRule' => '/{CDIR}/index'.iCMS::$config['router']['html_ext'],
-                'contentRule'  => '/{CDIR}/{YYYY}/{MM}{DD}/{ID}'.iCMS::$config['router']['html_ext'],
-                'indexTPL'     => $this->_app_indexTPL,
-                'listTPL'      => $this->_app_listTPL,
-                'contentTPL'   => $this->_app_contentTPL,
-                'metadata'     => '',
-                'contentprop'  => '',
+                'pid'       => '0',
+                'status'    => '1',
+                'isexamine' => '1',
+                'issend'    => '1',
+                'hasbody'   => '2',
+                'ordernum'  => '0',
+                'mode'      => '0',
+                'htmlext'   => iCMS::$config['router']['html_ext'],
+                'metadata'  => ''
             );
 	        if($rootid){
                 $rootRs = iDB::row("SELECT * FROM `#iCMS@__category` WHERE `cid`='".$rootid."' LIMIT 1;",ARRAY_A);
-                $rs['htmlext']      = $rootRs['htmlext'];
-                $rs['categoryRule'] = $rootRs['categoryRule'];
-                $rs['contentRule']  = $rootRs['contentRule'];
-                $rs['indexTPL']     = $rootRs['indexTPL'];
-                $rs['listTPL']      = $rootRs['listTPL'];
-                $rs['contentTPL']   = $rootRs['contentTPL'];
+                $rs['htmlext']  = $rootRs['htmlext'];
+                $rs['rule']     = json_decode($rootRs['rule'],true);
+                $rs['template'] = json_decode($rootRs['template'],true);
 	        }
         }
         include admincp::view($this->_view_add,$this->_view_tpl_dir);
@@ -113,15 +116,9 @@ class categoryAdmincp extends category{
         $title        = iS::escapeStr($_POST['title']);
         $keywords     = iS::escapeStr($_POST['keywords']);
         $description  = iS::escapeStr($_POST['description']);
-        $categoryURI  = iS::escapeStr($_POST['categoryURI']);
-        $categoryRule = iS::escapeStr($_POST['categoryRule']);
-        $contentRule  = iS::escapeStr($_POST['contentRule']);
-        $urlRule      = iS::escapeStr($_POST['urlRule']);
-        $indexTPL     = iS::escapeStr($_POST['indexTPL']);
-        $listTPL      = iS::escapeStr($_POST['listTPL']);
-        $contentTPL   = iS::escapeStr($_POST['contentTPL']);
+        $rule         = iS::escapeStr($_POST['rule']);
+        $template     = iS::escapeStr($_POST['template']);
         $metadata     = iS::escapeStr($_POST['metadata']);
-        $contentprop  = iS::escapeStr($_POST['contentprop']);
         $body         = $_POST['body'];
         $hasbody      = (int)$_POST['hasbody'];
         $hasbody OR $hasbody = $body?1:0;
@@ -147,30 +144,32 @@ class categoryAdmincp extends category{
             }else if(is_array($metadata)){
                 $md = $metadata;
             }
-            $metadata = addslashes(serialize($md));
+            $metadata = addslashes(json_encode($md));
 		}
-		if($contentprop){
-	        $ca = array();
-			foreach($contentprop['key'] AS $_cak=>$_caval){
-				$_caval OR $_caval = strtolower(pinyin($contentprop['name'][$_cak]));
-				!preg_match("/[a-zA-Z0-9_\-]/",$_caval) && iPHP::alert('内容附加属性字段只能由英文字母、数字或_-组成(不支持中文)');
-				$ca[$_caval]=$contentprop['name'][$_cak];
-			}
-			$contentprop = addslashes(serialize($ca));
-		}
-
         if($mode=="2"){
-        	if(strpos($categoryRule,'{CDIR}')=== FALSE && strpos($categoryRule,'{CID}')=== FALSE && strpos($categoryRule,'{0xCID}')=== FALSE){
-        		iPHP::alert('伪静态模式下版块URL规则<hr />必需要有<br />{CDIR}版块目录<br />或者<br />{CID},{0xCID}版块ID');
-        	}
-        	if(strpos($contentRule,'{ID}')=== FALSE && strpos($contentRule,'{0xID}')=== FALSE && strpos($contentRule,'{LINK}')=== FALSE){
-        		iPHP::alert('伪静态模式下内容URL规则<hr />必需要有<br />{ID}'.$this->_app_name.'ID <br />或者<br />{0xID}'.$this->_app_name.'ID补零<br />或者<br />{LINK}'.$this->_app_name.'自定义链接');
-        	}
+            foreach ($rule as $key => $value) {
+                $CR = $this->category_rule[$key];
+                $CRKW = explode(',', $CR[2]);
+                $cr_check = true;
+                foreach ($CRKW as $i => $crk) {
+                    if(strpos($value,$crk) !== FALSE){
+                        $cr_check = false;
+                    }
+                }
+                $cr_check && iPHP::alert('伪静态模式'.$CR[0].'规则必需要有'.$CR[2].'其中之一');
+            }
         }
+
+        $rule     = addslashes(json_encode($rule));
+        $template = addslashes(json_encode($template));
+
         iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
         map::init('prop',iCMS_APP_CATEGORY);
 
-        $fields = array('rootid','appid','ordernum','name','subname','password','title','keywords','description','dir','mode','domain','url','pic','mpic','spic','htmlext','categoryURI','categoryRule','contentRule','urlRule','indexTPL','listTPL','contentTPL','metadata','contentprop','hasbody','pid','isexamine','issend','isucshow','status');
+        $fields = array('rootid','pid','appid','ordernum','name','subname','password','title','keywords','description','dir',
+            'mode','domain','url','pic','mpic','spic','htmlext',
+            'rule','template','metadata',
+            'hasbody','isexamine','issend','isucshow','status');
         $data   = compact ($fields);
 
         if(empty($cid)) {
@@ -188,12 +187,12 @@ class categoryAdmincp extends category{
                 }else{
                     empty($url) && $dir = strtolower(pinyin($_name));
                 }
-                $this->check_dir($dir,$appid,$url);
+                $mode=="2" && $this->check_dir($dir,$appid,$url);
                 $data['name']       = $_name;
                 $data['dir']        = $dir;
                 $data['userid']     = iMember::$userid;
                 $data['creator']    = iMember::$nickname;
-                $data['createtime'] = time();
+                $data['pubdate'] = time();
                 $data['count']      = '0';
                 $data['comments']   = '0';
                 $data['ordernum']   = $nkey;
@@ -209,7 +208,7 @@ class categoryAdmincp extends category{
                 $dir = strtolower(pinyin($name));
             }
             admincp::CP($cid,'e','alert');
-            $this->check_dir($dir,$appid,$url,$cid);
+            $mode=="2" && $this->check_dir($dir,$appid,$url,$cid);
 
             $data['dir'] = $dir;
             iDB::update('category', $data, array('cid'=>$cid));

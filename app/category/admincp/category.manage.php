@@ -145,7 +145,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['cid'] ; ?>" /></td>
               <td><?php echo $rs[$i]['cid'] ; ?></td>
               <td><?php echo $rs[$i]['pid'] ; ?></td>
-              <td><input <?php if($rs[$i]['rootid']=="0"){ ?> style="font-weight:bold"<?php } ?> type="text" name="name[<?php echo $rs[$i]['cid'] ; ?>]" value="<?php echo $rs[$i]['name'] ; ?>" class='tip' title='创建者:<?php echo $rs[$i]['creator']; ?><br />创建时间:<?php echo get_date($rs[$i]['createtime']); ?><br />栏目规则:<?php echo $rs[$i]['categoryRule']; ?><br />内容规则:<?php echo $rs[$i]['contentRule']; ?>'>
+              <td><input <?php if($rs[$i]['rootid']=="0"){ ?> style="font-weight:bold"<?php } ?> type="text" name="name[<?php echo $rs[$i]['cid'] ; ?>]" value="<?php echo $rs[$i]['name'] ; ?>" class='tip' title='创建者:<?php echo $rs[$i]['creator']; ?><br />创建时间:<?php echo get_date($rs[$i]['pubdate']); ?><br />栏目规则:<?php echo $rs[$i]['categoryRule']; ?><br />内容规则:<?php echo $rs[$i]['contentRule']; ?>'>
                 <?php if(!$rs[$i]['status']){ ?>
                 <i class="fa fa-eye-slash" title="隐藏<?php echo $this->category_name;?>"></i>
                 <?php } ?></td>

@@ -186,7 +186,7 @@ function article_search($vars) {
 	$resource = array();
 	$hidden = iCache::get('iCMS/category/hidden');
 	$hidden && $where_sql .= iPHP::where($hidden, 'cid', 'not');
-	$SPH = iCMS::sphinx();
+	$SPH = iPHP::vendor('SPHINX',iCMS::$config['sphinx']['host']);
 	$SPH->init();
 	$SPH->SetArrayResult(true);
 	if (isset($vars['weights'])) {

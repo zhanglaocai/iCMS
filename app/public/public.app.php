@@ -58,6 +58,6 @@ class publicApp {
 
 	public function API_qrcode() {
 		$url = iS::escapeStr($_GET['url']);
-		iPHP::vendor('QRcode', array($url));
+		iPHP::vendor('QRcode', $url);
 	}
 }

@@ -60,6 +60,11 @@ class tagApp {
         );
 
         if ($tpl) {
+            $tag_tpl = $tag['category']['template']['tag'];
+            $tag_tpl OR $tag_tpl = $tag['tag_category']['template']['tag'];
+            $tag_tpl OR $tag_tpl = iCMS::$config['tag']['tpl'];
+            $tag_tpl OR $tag_tpl = '{iTPL}/tag.index.htm';
+
             iPHP::assign('category',$tag['category']);
             iPHP::assign('tag_category',$tag['tag_category']);
             unset($tag['category'],$tag['tag_category']);
@@ -67,7 +72,7 @@ class tagApp {
             if (strstr($tpl, '.htm')) {
                 return iPHP::view($tpl, 'tag');
             }
-            $html = iPHP::view($tag['tpl'] ? $tag['tpl'] : '{iTPL}/tag.index.htm', 'tag');
+            $html = iPHP::view($tag_tpl,'tag');
             if(iPHP::$iTPL_MODE=="html") return array($html,$tag);
         }else{
             return $tag;
@@ -89,7 +94,7 @@ class tagApp {
         $tag['link']  = '<a href="'.$tag['url'].'" class="tag" target="_blank">'.$tag['name'].'</a>';
 
         if($category['mode'] && stripos($tag['url'], '.php?')===false){
-            iCMS::set_html_url($tag['iurl']);
+            iPHP::set_page_url($tag['iurl']);
         }
         $tag['metadata'] && $tag['meta'] = json_decode($tag['metadata']);
         $tag['related']  && $tag['relArray'] = explode(',', $tag['related']);

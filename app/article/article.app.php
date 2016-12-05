@@ -107,7 +107,7 @@ class articleApp {
 		}
 
 		if ($tpl) {
-			$article_tpl = empty($article['tpl']) ? $article['category']['contentTPL'] : $article['tpl'];
+			$article_tpl = empty($article['tpl']) ? $article['category']['template']['article'] : $article['tpl'];
 			strstr($tpl, '.htm') && $article_tpl = $tpl;
 			iPHP::assign('category', $article['category']);
 			unset($article['category']);
@@ -201,7 +201,7 @@ class articleApp {
 			if ($total > 1) {
 				iPHP::core("Pages");
 				$_GLOBALS_iPage = $GLOBALS['iPage'];
-				$category['mode'] && iCMS::set_html_url($article['iurl']);
+				$category['mode'] && iPHP::set_page_url($article['iurl']);
 				$pageconf = array(
 					'page_name' => 'p',
 					'url' => $pageurl,

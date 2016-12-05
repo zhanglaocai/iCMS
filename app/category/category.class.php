@@ -16,15 +16,15 @@ class category {
     public function init($appid=null) {
         $this->appid = $appid;
         $sql         = "WHERE `appid`='$this->appid'";
-        $this->appid === null && $sql='';
+        $this->appid === '-1' && $sql='';
         $this->rs    = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} ORDER BY `ordernum` , `cid` ASC");
 
         foreach((array)$this->rs AS $C) {
             $C['iurl']  = iURL::get('category',$C);
-            $this->_array[$C['rootid']][$C['cid']] = $C;
-            $this->rootid[$C['rootid']][$C['cid']] = $C['cid'];
             $this->category[$C['cid']] = $C;
             $this->parent[$C['cid']]   = $C['rootid'];
+            $this->_array[$C['rootid']][$C['cid']] = $C;
+            $this->rootid[$C['rootid']][$C['cid']] = $C['cid'];
         }
         foreach ((array)$this->_array as $rootid => $_array) {
             uasort($_array, "order_num");
@@ -133,21 +133,31 @@ class category {
         $C['subid']  = $this->rootid[$C['cid']];
         $C['child']  = $C['subid']?true:false;
         $C['subids'] = implode(',',(array)$C['subid']);
+        $C['dirs']   = $this->data_dirs($C['cid']);
         $C['self:appid'] = iCMS_APP_CATEGORY;
 
         $C = $this->data_pic($C);
         $C = $this->data_parent($C);
         $C = $this->data_nav($C);
 
+        $C['rule']     = json_decode($C['rule'],true);
+        $C['template'] = json_decode($C['template'],true);
+
 	    if($C['metadata']){
 	    	$mdArray	= array();
-	    	$_metadata	= unserialize($C['metadata']);
+	    	$_metadata	= json_decode($C['metadata'],true);
 	    	foreach((array)$_metadata as $key => $value){
 	    		$mdArray[$key] = $value;
 	    	}
 	    	$C['metadata'] = $mdArray;
 	    }
 		return $C;
+    }
+    public function data_dirs($cid="0") {
+        $C = $this->category[$cid];
+        $C['rootid'] && $dir.=$this->data_dirs($C['rootid']);
+        $dir.='/'.$C['dir'];
+        return $dir;
     }
     public function data_pic($C){
         $C['pic']  = is_array($C['pic'])?$C['pic']:get_pic($C['pic']);

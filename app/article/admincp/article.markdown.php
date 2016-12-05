@@ -420,16 +420,6 @@ function _modal_dialog(cancel_text){
                </div><span class="help-inline">不填写请留空!</span>
             <div class="clearfloat mb10"></div>
           </div>
-          <div id="article-add-metadata" cid="<?php echo $rs['cid'];?>" class="tab-pane hide">
-            <?php if($contentprop)foreach((array)$contentprop AS $cpKey=>$cpName){?>
-            <div class="MD_Box" id="md_<?php echo $rs['cid'];?>_<?php echo $cpKey ?>">
-              <div class="input-prepend input-append"> <span class="add-on tip" title="<?php echo $cpName; ?>:article.meta.<?php echo $cpKey ?>"><?php echo $cpName; ?></span>
-                <textarea  id="MD_<?php echo $cpKey ?>" name="metadata[<?php echo $cpKey ?>]" class="metadata span6" style="height: 100px;"><?php echo $rs['metadata'][$cpKey];?></textarea>
-                <a class="btn btn-small delMD"><i class="fa fa-trash-o"></i> 删除</a> </div>
-              <div class="clearfloat mb10"></div>
-            </div>
-            <?php }?>
-          </div>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>

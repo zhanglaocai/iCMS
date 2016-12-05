@@ -34,28 +34,21 @@ class iURL {
         // var_dump(self::$config);
         // exit;
 	}
-    private static function CPDIR($cid="0") {
-        $C    = iCache::get('iCMS/category/'.$cid);
-        $C['rootid'] && $dir.=self::CPDIR($C['rootid']);
-        $dir.='/'.$C['dir'];
-        return $dir;
-    }
 
     public static function rule($matches) {
     	$b	= $matches[1];
     	list($a,$c,$tc) = self::$uriArray;
-
         switch($b) {
             case 'ID':		$e = $a['id'];break;
             case '0xID':	$e = sprintf("%08s",$a['id']);break;
             case '0x3ID':	$e = substr(sprintf("%08s",$a['id']), 0, 4);break;
             case '0x3,2ID':	$e = substr(sprintf("%08s",$a['id']), 4, 2);break;
-            case 'MD5':     $e = md5($c['id']);$e=substr(md5($e),8,16);break;
+            case 'MD5':     $e = substr(md5($c['id']),8,16);break;
 
             case 'CID':     $e = $c['cid'];break;
             case '0xCID':   $e = sprintf("%08s",$c['cid']);break;
             case 'CDIR':    $e = $c['dir'];break;
-            case 'CPDIR':   $e = substr(self::CPDIR($c['rootid']),1);break;
+            case 'CDIRS':   $e = $c['dirs'];break;
 
             case 'TIME':	$e = $a['pubdate'];break;
             case 'YY':		$e = get_date($a['pubdate'],'y');break;
@@ -66,18 +59,28 @@ class iURL {
             case 'DD':		$e = get_date($a['pubdate'],'d');break;
 
             case 'NAME':    $e = urlencode(iS::escapeStr($a['name']));break;
-            case 'ZH_CN':	$e = $a['name'];break;
+            case 'TITLE':   $e = urlencode(iS::escapeStr($a['title']));break;
+            case 'ZH_CN':	$e = ($a['name']?$a['name']:$a['title']);break;
             case 'TKEY':    $e = $a['tkey'];break;
+            case 'LINK':    $e = $a['clink'];break;
 
             case 'TCID':	$e = $tc['tcid'];break;
             case 'TCDIR':	$e = $tc['dir'];break;
 
             case 'EXT':		$e = $c['htmlext']?$c['htmlext']:self::$config['html_ext'];break;
-            case 'TITLE':   $e = urlencode(iS::escapeStr($a['title']));break;
-            case 'LINK':    $e = $a['clink'];break;
             case 'P':       $e = PAGE_SIGN;break;
         }
         return $e;
+    }
+    public static function rule_data($C,$key) {
+        if(empty($C['mode'])||$C['password']){
+            return '{PHP}';
+        }else{
+            if(!is_array($C['rule'])){
+                $C['rule'] = json_decode($C['rule'],true);
+            }
+            return $C['rule'][$key];
+        }
     }
     public static function get($uri,$a=array()) {
         $i        = new stdClass();
@@ -88,40 +91,41 @@ class iURL {
         $array    = $a;
         $primary  = $router[$uri]['primary'];
         $rule     = $router[$uri]['rule'];
-        $conf     = self::$config[$uri];
         $document_uri = $uri.'.php?';
         switch($rule) {
             case '0':
                 $i->href = $array['url'];
-                $url     = $array['urlRule'];
+                $url     = $array['rule'];
                 break;
             case '1':
                 $category = $array;
                 $i->href  = $category['url'];
-                $url      = $category['mode']?$category['categoryRule']:'{PHP}';
-                ($category['password'] && $category['mode']=="1") && $url = '{PHP}';
-                $category['categoryURI'] && $document_uri = $category['categoryURI'].'.php?';
+                $url      = self::rule_data($category,'index');
                 break;
             case '2':
                 $array    = (array)$a[0];
                 $category = (array)$a[1];
                 $i->href  = $array['url'];
-                $url      = $category['mode']?$category['contentRule']:'{PHP}';
-                ($category['password'] && $category['mode']=="1") && $url = '{PHP}';
+                $url      = self::rule_data($category,$uri);
                 break;
             case '3':
                 $array     = (array)$a[0];
                 $category  = (array)$a[1];
                 $_category = (array)$a[2];
-                $html_dir  = $conf['dir'];
-                $sURL      = $conf['url'];
                 $i->href   = $array['url'];
-                $url       = $category['urlRule'];
-                $_category['urlRule'] && $url = $_category['urlRule'];
-                $url OR $url = $conf['rule'];
+                $url       = self::rule_data($category,$uri);
+
+                if($_category['rule'][$uri]){
+                    $url = self::rule_data($_category,$uri);
+                }
+
+                $tagconf  = self::$config[$uri];
+                $html_dir = $tagconf['dir'];
+                $sURL     = $tagconf['url'];
+                $url OR $url = $tagconf['rule'];
                 break;
              default:
-                $url = $array['urlRule'];
+                $url = $array['rule'];
         }
         if($url=='{PHP}'){
             $document_uri.= $primary.'='.$array[$primary];
@@ -148,22 +152,13 @@ class iURL {
             if(iFS::checkHttp($i->href)===false){
                 $i->href = rtrim($sURL,'/').'/'.$i->href;
             }
-
 			$pathA = pathinfo($i->path);
-
-//            if(in_array($uri,array('article','content'))) {
-//                $i->path    = FS::path($Curl->dmdir.'/'.$url);
-//                $i->href    = FS::path($Curl->domain.'/'.$url);
-//            }
             $i->hdir = pathinfo($i->href,PATHINFO_DIRNAME);
             $i->dir  = $pathA['dirname'];
             $i->file = $pathA['basename'];
             $i->name = $pathA['filename'];
             $i->ext  = '.'.$pathA['extension'];
             $i->name OR $i->name = $i->file;
-//var_dump($GLOBALS['page']);
-//var_dump($i);
-//var_dump($pathA);
 
             if(empty($i->file)||substr($url,-1)=='/'||empty($pathA['extension'])) {
                 $i->name = 'index';
@@ -174,7 +169,7 @@ class iURL {
                 $i->dir  = dirname($i->path);
                 $i->hdir = dirname($i->href.'/'.$i->file);
             }
-//var_dump($i);
+
             $i->pfile = $i->file;
             if(strpos($i->file,PAGE_SIGN)===false) {
                 $i->pfile = $i->name.'_'.PAGE_SIGN.$i->ext;

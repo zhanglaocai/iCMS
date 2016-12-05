@@ -20,10 +20,35 @@ class tagcategoryAdmincp extends categoryAdmincp {
         $this->_app_name         = '标签';
         $this->_app_table        = 'tags';
         $this->_app_cid          = 'tcid';
-        $this->_app_contentTPL   = '{iTPL}/tag.htm';
-        $this->_contentRule_show = false;
-        $this->_urlRule_show     = true;
-        $this->_urlRule_name     = '标签';
+       /**
+         *  模板
+         */
+        $this->category_template+=array(
+            'tag'     => array('标签','{iTPL}/tag.index.htm'),
+        );
+
+        /**
+         *  URL规则
+         */
+        $this->category_rule+= array(
+            'tag'     => array('标签','/{CDIR}/{TKEY}{EXT}','{ID},{0xID},{TKEY},{NAME},{ZH_CN}')
+        );
+        /**
+         *  URL规则选项
+         */
+        $this->category_rule_list+= array(
+            'tag' => array(
+                array('----'),
+                array('{ID}','标签ID'),
+                array('{0xID}','8位ID'),
+                array('{TKEY}','标签标识'),
+                array('{ZH_CN}','标签名(中文)'),
+                array('{NAME}','标签名'),
+                array('----'),
+                array('{TCID}','分类ID',fasle),
+                array('{TCDIR}','分类目录',fasle),
+            ),
+        );
     }
 
 }

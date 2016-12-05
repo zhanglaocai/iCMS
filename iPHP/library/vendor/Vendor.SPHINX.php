@@ -14,11 +14,14 @@ defined('iPHP') OR exit('What are you doing?');
 defined('iPHP_LIB') OR exit('iPHP vendor need define iPHP_LIB');
 iPHP::import(iPHP_LIB.'/sphinx.class.php');
 
-function SPHINX($content) {
-	if(isset($GLOBALS['iSPH'])) return $GLOBALS['iSPH'];
+function SPHINX($hosts) {
 
-	$hosts				= iCMS::$config['sphinx']['host'];
-	$GLOBALS['iSPH']	= new SphinxClient();
+	if(isset($GLOBALS['iSPH'])) return $GLOBALS['iSPH'];
+	if(empty($hosts)){
+		return false;
+	}
+
+	$GLOBALS['iSPH'] = new SphinxClient();
 	if(strstr($hosts, 'unix:')){
 		$hosts	= str_replace("unix://",'',$hosts);
 		$GLOBALS['iSPH']->SetServer($hosts);

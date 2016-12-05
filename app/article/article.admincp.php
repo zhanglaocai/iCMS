@@ -62,7 +62,6 @@ class articleAdmincp{
         $bodyCount OR $bodyCount = 1;
         $cid                 = empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
         $cata_option         = $this->categoryApp->select('ca',$cid);
-        $cid && $contentprop =  unserialize($this->category[$cid]['contentprop']);
 
         //$metadata          = array_merge((array)$contentprop,(array)$rs['metadata']);
         $rs['pubdate']       = get_date($rs['pubdate'],'Y-m-d H:i:s');
@@ -239,8 +238,6 @@ class articleAdmincp{
     }
     function do_getmeta(){
         $cid = $_GET['cid'];
-        $cid && $contentprop =  unserialize($this->category[$cid]['contentprop']);
-        iPHP::json($contentprop);
     }
 	function do_updatetitle(){
         $id          = (int)$_POST['id'];

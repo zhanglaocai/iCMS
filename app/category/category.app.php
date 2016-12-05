@@ -37,11 +37,11 @@ class categoryApp{
             iPHP::throw404('运行出错！找不到该栏目<b>cid:'. $id.'</b> 请更新栏目缓存或者确认栏目是否存在', 20001);
         }
         if($category['status']==0) return false;
-
+        $iurl = $category['iurl'];
         if($tpl){
-            if(iPHP::$iTPL_MODE=="html" && (strstr($category['contentRule'],'{PHP}')||$category['outurl']||!$category['mode']) ) return false;
+            if(iPHP::$iTPL_MODE=="html" && (strstr($category['rule']['index'],'{PHP}')||$category['outurl']||!$category['mode']) ) return false;
             $category['outurl'] && iPHP::gotourl($category['outurl']);
-            $category['mode']=='1' && iCMS::gotohtml($iurl->path,$iurl->href);
+            $category['mode']=='1' && iCMS::gotohtml($iurl['path'],$iurl['href']);
         }
 
         if($category['hasbody']){
@@ -60,7 +60,7 @@ class categoryApp{
         );
 
         if($tpl) {
-            $category['mode'] && iCMS::set_html_url($iurl);
+            $category['mode'] && iPHP::set_page_url($iurl);
 
             iPHP::assign('category',$category);
             if(isset($_GET['tpl'])){
@@ -75,7 +75,7 @@ class categoryApp{
             	return iPHP::view($tpl,'category');
             }
             $GLOBALS['page']>1 && $tpl='list';
-            $html = iPHP::view($category[$tpl.'TPL'],'category.'.$tpl);
+            $html = iPHP::view($category['template'][$tpl],'category.'.$tpl);
             if(iPHP::$iTPL_MODE=="html") return array($html,$category);
         }else{
         	return $category;
@@ -84,11 +84,8 @@ class categoryApp{
     public function get_lite($category){
         $keyArray = array(
             'ordernum','password','mode','domain',
-            'categoryURI','categoryRule','contentRule','urlRule',
-            // 'indexTPL','listTPL','contentTPL','htmlext',
-            'contentprop',
             'isexamine','issend','isucshow',
-            'createtime'
+            'pubdate'
         );
         foreach ($keyArray as $i => $key) {
             if(is_array($category[$key])){

@@ -30,7 +30,31 @@ $(function(){
 	});
 });
 </script>
+<style>
+.category_rule>li>a{width: auto;}
+.category_rule:before {
+    position: absolute;
+    top: -7px;
+    left: 9px;
+    display: inline-block;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #ccc;
+    border-left: 7px solid transparent;
+    border-bottom-color: rgba(0,0,0,0.2);
+    content: ''
+}
 
+.category_rule:after {
+    position: absolute;
+    top: -6px;
+    left: 10px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #fff;
+    border-left: 6px solid transparent;
+    content: ''
+}
+</style>
 <div class="iCMS-container">
   <div class="widget-box">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-plus-square"></i> </span>
@@ -41,7 +65,6 @@ $(function(){
         <li><a href="#category-add-tpl" data-toggle="tab"><i class="fa fa-columns"></i> 模版设置</a></li>
         <li><a href="#category-add-user" data-toggle="tab"><i class="fa fa-user"></i> 用户设置</a></li>
         <li><a href="#category-add-prop" data-toggle="tab"><i class="fa fa-wrench"></i> <?php echo $this->category_name;?>附加属性</a></li>
-        <li><a href="#category-add-art" data-toggle="tab"><i class="fa fa-wrench"></i> 内容扩展属性</a></li>
         <li><a href="#category-add-body" data-toggle="tab"><i class="fa fa-wrench"></i> HTML</a></li>
       </ul>
     </div>
@@ -138,11 +161,6 @@ $(function(){
               </select>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">前台 URI</span>
-              <input type="text" name="categoryURI" class="span3" id="categoryURI" value="<?php echo $rs['categoryURI'] ; ?>" />
-            </div>
-            <span class="help-inline"><span class="label label-important">一般情况下不用修改,如是自定义前台文件可修改成文件名</span></span>
-            <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">绑定域名</span>
               <input type="text" name="domain" class="span3" id="domain" value="<?php echo $rs['domain'] ; ?>"/>
             </div>
@@ -155,98 +173,57 @@ $(function(){
             <div class="input-prepend"> <span class="add-on">静态后缀</span>
               <input type="text" name="htmlext" class="span3" id="htmlext" value="<?php echo $rs['htmlext'] ; ?>"/>
             </div>
+            <?php if($this->category_rule)foreach ($this->category_rule as $key => $value) {
+                $rule_id = 'rule_'.$key;
+            ?>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on"><?php echo $this->category_name;?>规则</span>
-              <input type="text" name="categoryRule" class="span5" id="categoryRule" value="<?php echo $rs['categoryRule'] ; ?>"/>
+            <div class="input-prepend input-append"> <span class="add-on"><?php echo $value[0];?>规则</span>
+              <input type="text" name="rule[<?php echo $key;?>]" class="span5" id="<?php echo $rule_id;?>" value="<?php echo $rs['rule'][$key]?$rs['rule'][$key]:$value[1]; ?>"/>
               <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
-                <ul class="dropdown-menu">
-                  <li><a href="{CID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{CID}</span> <?php echo $this->category_name;?>ID</a></li>
-                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{CDIR}</span> <?php echo $this->category_name;?>目录</a></li>
-                  <li><a href="{0xCID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{0xCID}</span> <?php echo $this->category_name;?>ID补零（8位）</a></li>
+                <ul class="dropdown-menu category_rule">
+                  <li><a href="{CID}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-important">{CID}</span> <?php echo $this->category_name;?>ID</a></li>
+                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-important">{CDIR}</span> <?php echo $this->category_name;?>目录</a></li>
+                  <li><a href="{0xCID}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-important">{0xCID}</span> <?php echo $this->category_name;?>ID补零（8位）</a></li>
+                  <li><a href="{CPDIR}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{CPDIR}</span> <?php echo $this->category_name;?>目录(含父目录)</a></li>
+                  <?php if($this->category_rule_list[$key])foreach ($this->category_rule_list[$key] as $lk => $lv) {?>
+                    <?php if($lv[0]=='----'){?>
+                    <li class="divider"></li>
+                    <?php }else{?>
+                    <li><a href="<?php echo $lv[0];?>" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-<?php echo ($lv[2]===fasle?'inverse':'important');?>"><?php echo $lv[0];?></span> <?php echo $lv[1];?></a></li>
+                    <?php }?>
+                  <?php }?>
                   <li class="divider"></li>
-                  <li><a href="{MD5}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{MD5}</span> 文章ID(16位)</a></li>
+                  <li><a href="{MD5}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{MD5}</span> ID MD5(16位)</a></li>
                   <li class="divider"></li>
-                  <li><a href="{P}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{P}</span> 分页数</a></li>
-                  <li><a href="{EXT}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{EXT}</span> 后缀</a></li>
+                  <li><a href="{YYYY}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{YYYY}</span> 4位数年份2012</a></li>
+                  <li><a href="{YY}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{YY}</span> 2位数年份12</a></li>
+                  <li><a href="{MM}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{MM}</span> 月份 01-12月份</a></li>
+                  <li><a href="{M}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{M}</span> 月份 1-12 月份</a></li>
+                  <li><a href="{DD}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{DD}</span> 日期 01-31</a></li>
+                  <li><a href="{D}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{D}</span> 日期1-31</a></li>
+                  <li><a href="{TIME}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{TIME}</span> 文章发布时间戳</a></li>
                   <li class="divider"></li>
-                  <li><a href="{PHP}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{PHP}</span> 动态程序</a></li>
+                  <li><a href="{P}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{P}</span> 分页数</a></li>
+                  <li><a href="{EXT}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{EXT}</span> 后缀</a></li>
+                  <li class="divider"></li>
+                  <li><a href="{PHP}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-inverse">{PHP}</span> 动态程序</a></li>
                 </ul>
               </div>
             </div>
-            <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{CID}</span>或<span class="label label-important">{0xCID}</span>或<span class="label label-important">{CDIR}</span>或直接填写URL</span>
-            <?php if($this->_contentRule_show){?>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on"><?php echo $this->_contentRule_name;?>规则</span>
-              <input type="text" name="contentRule" class="span5" id="contentRule" value="<?php echo $rs['contentRule'] ; ?>"/>
-              <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
-                <ul class="dropdown-menu">
-                  <li><a href="{CID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CID}</span> <?php echo $this->category_name;?>ID</a></li>
-                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CDIR}</span> <?php echo $this->category_name;?>目录</a></li>
-                  <li><a href="{CPDIR}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CPDIR}</span> <?php echo $this->category_name;?>目录(含父目录)</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{YYYY}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{YYYY}</span> 4位数年份2012</a></li>
-                  <li><a href="{YY}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{YY}</span> 2位数年份12</a></li>
-                  <li><a href="{MM}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{MM}</span> 月份 01-12月份</a></li>
-                  <li><a href="{M}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{M}</span> 月份 1-12 月份</a></li>
-                  <li><a href="{DD}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{DD}</span> 日期 01-31</a></li>
-                  <li><a href="{D}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{D}</span> 日期1-31</a></li>
-                  <li><a href="{TIME}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{TIME}</span> 文章发布时间戳</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{ID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-important">{ID}</span> 文章ID</a></li>
-                  <li><a href="{0xID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-important">{0xID}</span> 文章ID补零（8位）</a></li>
-                  <li><a href="{0x3ID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{0x3ID}</span> 文章ID补零(8位前3位)</a></li>
-                  <li><a href="{0x3,2ID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{0x3,2ID}</span> 文章ID补零(8位从第3位起两位)</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{TITLE}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{TITLE}</span> 文章标题</a></li>
-                  <li><a href="{LINK}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-important">{LINK}</span> 文章自定义链接</a></li>
-                  <li><a href="{MD5}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{MD5}</span> 文章ID(16位)</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{P}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{P}</span> 分页数</a></li>
-                  <li><a href="{EXT}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{EXT}</span> 后缀</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{PHP}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{PHP}</span> 动态程序</a></li>
-                </ul>
-              </div>
-            </div>
-            <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{ID}</span>或<span class="label label-important">{0xID}</span>或<span class="label label-important">{LINK}</span></span>
+            <span class="help-inline">伪静态模式时规则一定要包含<?php echo str_replace(',', '或者', $value[2]);?></span>
             <?php }?>
-            <?php if($this->_urlRule_show){?>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on"><?php echo $this->_urlRule_name;?>规则</span>
-              <input type="text" name="urlRule" class="span5" id="urlRule" value="<?php echo $rs['urlRule'] ; ?>"/>
-              <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
-                <ul class="dropdown-menu">
-                  <li><a href="{ID}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-important">{ID}</span> 标签ID</a></li>
-                  <li><a href="{TKEY}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-important">{TKEY}</span> 标签标识</a></li>
-                  <li><a href="{ZH_CN}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-important">{ZH_CN}</span> 标签名(中文)</a></li>
-                  <li><a href="{NAME}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-important">{NAME}</span> 标签名</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{TCID}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{TCID}</span> <?php echo $this->category_name;?>ID</a></li>
-                  <li><a href="{TCDIR}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{TCDIR}</span> <?php echo $this->category_name;?>目录</a></li>
-                  <li><a href="{CDIR}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{CDIR}</span> <?php echo $this->category_name;?>目录</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{P}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{P}</span> 分页数</a></li>
-                  <li><a href="{EXT}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{EXT}</span> 后缀</a></li>
-                  <li class="divider"></li>
-                  <li><a href="{PHP}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{PHP}</span> 动态程序</a></li>
-                </ul>
-              </div>
-            </div>
-            <span class="help-inline">用于第三方应用URL设置</span>
-            <?php }?>
+
           </div>
           <div id="category-add-tpl" class="tab-pane hide">
-            <div class="input-prepend input-append"> <span class="add-on">首页模板</span>
-              <input type="text" name="indexTPL" class="span3" id="indexTPL" value="<?php echo $rs['indexTPL'] ; ?>"/>
-              <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=indexTPL" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
+            <?php if($this->category_template)foreach ($this->category_template as $key => $value) {
+                $template_id = 'template_'.$key;
+            ?>
+            <div class="input-prepend input-append"> <span class="add-on"><?php echo $value[0];?>模板</span>
+              <input type="text" name="template[<?php echo $key;?>]" class="span3" id="<?php echo $template_id;?>" value="<?php echo $rs['template'][$key]?$rs['template'][$key]:$value[1];; ?>"/>
+              <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=<?php echo $template_id;?>" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a>
+            </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">列表模板</span>
-              <input type="text" name="listTPL" class="span3" id="listTPL" value="<?php echo $rs['listTPL'] ; ?>"/>
-              <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=listTPL" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">内容模板</span>
-              <input type="text" name="contentTPL" class="span3" id="contentTPL" value="<?php echo $rs['contentTPL'] ; ?>"/>
-              <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=contentTPL" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
+            <?php }?>
           </div>
           <div id="category-add-user" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">用户中心</span>
@@ -292,35 +269,6 @@ $(function(){
                 </tr>
                 <tr>
                   <td colspan="2"><a href="#category-add-prop" class="btn addprop"/>增加附加属性</a></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          <div id="category-add-art" class="tab-pane hide">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th class="span1">名称</th>
-                  <th>字段<span>(只能由英文字母、数字或_-组成(不支持中文),留空则自动以名称拼音填充)<span></th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php if($rs['contentprop'])foreach((array)$rs['contentprop'] AS $caKey=>$caname){?>
-                <tr>
-                  <td><input name="contentprop[name][]" type="text" value="<?php echo $caname;?>" class="span3"/></td>
-                  <td><input name="contentprop[key][]" type="text" value="<?php echo $caKey;?>" class="span3"/>
-                    <a class="btn delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
-                </tr>
-                <?php }?>
-              </tbody>
-              <tfoot>
-                <tr class="hide aclone">
-                  <td><input name="contentprop[name][]" type="text" disabled="disabled" class="span3" value="" /></td>
-                  <td ><input name="contentprop[key][]" type="text" disabled="disabled" class="span3" value=""/>
-                    <a class="btn delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
-                </tr>
-                <tr>
-                  <td colspan="2"><a href="#category-add-art" class="btn addprop"/>增加文章附加属性</a></td>
                 </tr>
               </tfoot>
             </table>

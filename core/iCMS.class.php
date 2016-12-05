@@ -152,12 +152,6 @@ class iCMS extends iPHP{
         @is_file($fp) && iPHP::gotourl($url);
     }
 
-    public static function set_html_url($iurl){
-        if(isset($GLOBALS['iPage'])) return;
-
-        $GLOBALS['iPage']['url']  = $iurl->pageurl;
-        $GLOBALS['iPage']['html'] = array('enable'=>true,'index'=>$iurl->href,'ext'=>$iurl->ext);
-    }
     //过滤
     public static function filter(&$content){
         $filter  = iCache::get('iCMS/word.filter');//filter过滤
