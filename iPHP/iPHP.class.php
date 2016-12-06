@@ -312,10 +312,10 @@ class iPHP {
 			return self::$iTPL->fetch($tpl);
 		} else {
 			self::$iTPL->display($tpl);
-			self::debug_info();
+			self::debug_info($tpl);
 		}
 	}
-	public static function debug_info() {
+	public static function debug_info($tpl) {
 		if (iPHP_DEBUG) {
 			echo '<div class="well">';
 			echo '<h3 class="label label-default">调试信息</h3>';
