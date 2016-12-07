@@ -118,8 +118,8 @@ class userApp {
 
 	private function __API_manage_publish() {
 		$id = (int) $_GET['id'];
-		iPHP::app('article.table');
-		list($article, $article_data) = articleTable::data($id, 0, user::$userid);
+		iPHP::app('article.class');
+		list($article, $article_data) = article::data($id, 0, user::$userid);
 		$cid = empty($article['cid']) ? (int) $_GET['cid'] : $article['cid'];
 
 		if (iPHP_DEVICE !== "desktop" && empty($article)) {
@@ -244,17 +244,17 @@ class userApp {
 		$status = $category['isexamine'] ? 3 : 1;
 
 		iPHP::import(iPHP_APP_CORE . '/iMAP.class.php');
-		iPHP::app('article.table');
-		$fields = articleTable::fields($aid);
-		$data_fields = articleTable::data_fields($aid);
+		iPHP::app('article.class');
+		$fields = article::fields($aid);
+		$data_fields = article::data_fields($aid);
 		if (empty($aid)) {
 			$postime = $pubdate;
 			$chapter = $hits = $good = $bad = $comments = 0;
 
 			$data = compact($fields);
-			$aid = articleTable::insert($data);
+			$aid = article::insert($data);
 			$article_data = compact($data_fields);
-			articleTable::data_insert($article_data);
+			article::data_insert($article_data);
 
 			map::init('category', iCMS_APP_ARTICLE);
 			map::add($cid, $aid);
@@ -271,9 +271,9 @@ class userApp {
 				'3' => 'user:article:add_examine',
 			);
 		} else {
-			if (articleTable::update(compact($fields),
+			if (article::update(compact($fields),
 				array('id' => $aid, 'userid' => user::$userid))) {
-				articleTable::data_update(compact($data_fields), array('aid' => $aid));
+				article::data_update(compact($data_fields), array('aid' => $aid));
 			}
 			map::init('category', iCMS_APP_ARTICLE);
 			map::diff($cid, $_cid, $aid);

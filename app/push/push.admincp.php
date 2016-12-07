@@ -109,7 +109,7 @@ class pushAdmincp{
         $userid   = (int)$_POST['userid'];
         $pid      = (int)$_POST['pid'];
         $editor   = iS::escapeStr($_POST['editor']);
-        $ordernum = _int($_POST['ordernum']);
+        $ordernum = (int)$_POST['ordernum'];
         $addtime  = iPHP::str2time($_POST['addtime']);
 
 

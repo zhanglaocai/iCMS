@@ -20,7 +20,7 @@
         "icon": "edit"
     }, {
         "caption": "文章管理",
-        "href": "article",
+        "href": "article&do=manage",
         "icon": "list-alt"
     }, {
         "caption": "草稿箱",

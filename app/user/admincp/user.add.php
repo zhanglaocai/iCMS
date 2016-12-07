@@ -120,15 +120,15 @@ $(function(){
             <div class="clearfix mb10"></div>
             <div class="input-prepend input-append">
               <span class="add-on">总点击数</span>
-              <input type="text" name="user[hits]" class="span2" id="hits" value="<?php echo $rs->hits ; ?>"/>
+              <input type="text" name="user[hits]" class="span1" id="hits" value="<?php echo $rs->hits ; ?>"/>
               <span class="add-on">当天点击数</span>
-              <input type="text" name="user[hits_today]" class="span2" id="hits_today" value="<?php echo $rs->hits_today ; ?>"/>
+              <input type="text" name="user[hits_today]" class="span1" id="hits_today" value="<?php echo $rs->hits_today ; ?>"/>
               <span class="add-on">昨天点击数</span>
-              <input type="text" name="user[hits_yday]" class="span2" id="hits_yday" value="<?php echo $rs->hits_yday ; ?>"/>
+              <input type="text" name="user[hits_yday]" class="span1" id="hits_yday" value="<?php echo $rs->hits_yday ; ?>"/>
               <span class="add-on">周点击</span>
-              <input type="text" name="user[hits_week]" class="span2" id="hits_week" value="<?php echo $rs->hits_week ; ?>"/>
+              <input type="text" name="user[hits_week]" class="span1" id="hits_week" value="<?php echo $rs->hits_week ; ?>"/>
               <span class="add-on">月点击</span>
-              <input type="text" name="user[hits_month]" class="span2" id="hits_month" value="<?php echo $rs->hits_month ; ?>"/>
+              <input type="text" name="user[hits_month]" class="span1" id="hits_month" value="<?php echo $rs->hits_month ; ?>"/>
             </div>
 
             <div class="clearfix mb10"></div>
@@ -153,10 +153,6 @@ $(function(){
               <input type="text" name="userdata[enterprise]" class="span3" id="enterprise" value="<?php echo $userdata->enterprise ; ?>"/>
               <span class="add-on">街道地址</span>
               <input type="text" name="userdata[address]" class="span3" id="address" value="<?php echo $userdata->address ; ?>"/>
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">微博</span>
-              <input type="text" name="userdata[weibo]" id="weibo" class="span3" value="<?php echo $userdata->weibo ; ?>" />
             </div>
             <div class="clearfix mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">省份</span>
@@ -230,46 +226,6 @@ $(function(){
             <div class="input-prepend"> <span class="add-on">职业</span>
               <input type="text" name="userdata[profession]" class="span3" id="profession" value="<?php echo $userdata->profession ; ?>"/>
             </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">身材信息是否可见</span>
-              <select name="userdata[isSeeFigure]" id="isSeeFigure" class="chosen-select">
-                <option value="0">自己</option>
-                <option value="1">所有人</option>
-              </select>
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">身高</span>
-              <input type="text" name="userdata[height]" id="height" class="span3" value="<?php echo $userdata->height ; ?>"  maxlength="12"/>
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">体重</span>
-              <input type="text" name="userdata[weight]" id="weight" class="span3" value="<?php echo $userdata->weight ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">胸围</span>
-              <input type="text" name="userdata[bwhB]" id="bwhB" class="span3" value="<?php echo $userdata->bwhB ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">腰围</span>
-              <input type="text" name="userdata[bwhW]" id="bwhW" class="span3" value="<?php echo $userdata->bwhW ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">臀围</span>
-              <input type="text" name="userdata[bwhH]" id="bwhH" class="span3" value="<?php echo $userdata->bwhH ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">肤质</span>
-              <input type="text" name="userdata[pskin]" id="pskin" class="span3" value="<?php echo $userdata->pskin ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">发质</span>
-              <input type="text" name="userdata[phair]" id="phair" class="span3" value="<?php echo $userdata->phair ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">鞋码尺寸</span>
-              <input type="text" name="userdata[shoesize]" id="shoesize" class="span3" value="<?php echo $userdata->shoesize ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
             <div class="input-prepend"> <span class="add-on">个人标签</span>
               <input type="text" name="userdata[personstyle]" id="personstyle" class="span3" value="<?php echo $userdata->personstyle ; ?>" />
             </div>
@@ -285,28 +241,6 @@ $(function(){
             <div class="input-prepend"> <span class="add-on">自定义封面</span>
               <input type="text" name="userdata[coverpic]" id="coverpic" class="span3" value="<?php echo $userdata->coverpic ; ?>" />
             </div>
-            <div class="clearfix mb10"></div>
-
-            <div class="input-prepend"> <span class="add-on">淘宝用户名</span>
-              <input type="text" name="userdata[tb_nick]" id="tb_nick" class="span3" value="<?php echo $userdata->tb_nick ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">买家信用</span>
-              <input type="text" name="userdata[tb_buyer_credit]" id="tb_buyer_credit" class="span3" value="<?php echo $userdata->tb_buyer_credit ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">卖家信用</span>
-              <input type="text" name="userdata[tb_seller_credit]" id="tb_seller_credit" class="span3" value="<?php echo $userdata->tb_seller_credit ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">淘宝用户类型</span>
-              <input type="text" name="userdata[tb_type]" id="tb_type" class="span3" value="<?php echo $userdata->tb_type ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">是否金牌卖家</span>
-              <input type="text" name="userdata[is_golden_seller]" id="is_golden_seller" class="span3" value="<?php echo $userdata->is_golden_seller ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
           </div>
         </div>
         <div class="form-actions">

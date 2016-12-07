@@ -11,7 +11,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('article.table');
+iPHP::app('article.class');
 
 class articleAdmincp{
     public $callback    = array();
@@ -37,7 +37,7 @@ class articleAdmincp{
         $_GET['cid'] && admincp::CP($_GET['cid'],'ca','page');//添加权限
         $rs      = array();
         if($this->id){
-            list($rs,$adRs) = articleTable::data($this->id,$this->dataid);
+            list($rs,$adRs) = article::data($this->id,$this->dataid);
             admincp::CP($rs['cid'],'ce','page');//编辑权限
             if($adRs){
                 if($rs['chapter']){
@@ -89,16 +89,16 @@ class articleAdmincp{
             if(isset($data['pid'])){
                 iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
                 map::init('prop',$this->appid);
-                $_pid = articleTable::value('pid',$this->id);
+                $_pid = article::value('pid',$this->id);
                 map::diff($data['pid'],$_pid,$this->id);
             }
-            articleTable::update($data,array('id'=>$this->id));
+            article::update($data,array('id'=>$this->id));
         }
     	iPHP::success('操作成功!','js:1');
     }
     function do_updateorder(){
         foreach((array)$_POST['ordernum'] as $ordernum=>$id){
-            articleTable::update(compact('ordernum'),compact('id'));
+            article::update(compact('ordernum'),compact('id'));
         }
     }
     function do_batch(){
@@ -108,7 +108,7 @@ class articleAdmincp{
     	switch($batch){
     		case 'order':
 		        foreach((array)$_POST['ordernum'] AS $id=>$ordernum) {
-                    articleTable::update(compact('ordernum'),compact('id'));
+                    article::update(compact('ordernum'),compact('id'));
 		        }
 		        iPHP::success('排序已更新!','js:1');
     		break;
@@ -125,8 +125,8 @@ class articleAdmincp{
                 $cid = (int)$_POST['cid'];
                 admincp::CP($cid,'ca','alert');
 		        foreach((array)$_POST['id'] AS $id) {
-                    $_cid = articleTable::value('cid',$id);
-                    articleTable::update(compact('cid'),compact('id'));
+                    $_cid = article::value('cid',$id);
+                    article::update(compact('cid'),compact('id'));
 		            if($_cid!=$cid) {
                         map::diff($cid,$_cid,$id);
                         $this->categoryApp->update_count_one($_cid,'-');
@@ -141,8 +141,8 @@ class articleAdmincp{
                 map::init('category',$this->appid);
                 $scid = implode(',', (array)$_POST['scid']);
                 foreach((array)$_POST['id'] AS $id) {
-                    $_scid = articleTable::value('scid',$id);
-                    articleTable::update(compact('scid'),compact('id'));
+                    $_scid = article::value('scid',$id);
+                    article::update(compact('scid'),compact('id'));
                     map::diff($scid,$_scid,$id);
                 }
                 iPHP::success('文章副栏目设置完成!','js:1');
@@ -152,23 +152,23 @@ class articleAdmincp{
                 map::init('prop',$this->appid);
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {
-                    $_pid = articleTable::value('pid',$id);
-                    articleTable::update(compact('pid'),compact('id'));
+                    $_pid = article::value('pid',$id);
+                    article::update(compact('pid'),compact('id'));
                     map::diff($pid,$_pid,$id);
                 }
                 iPHP::success('文章属性设置完成!','js:1');
     		break;
     		case 'weight':
-                $data = array('weight'=>_int($_POST['mweight']));
+                $data = array('weight'=>$_POST['mweight']);
     		break;
     		case 'keyword':
     			if($_POST['pattern']=='replace') {
                     $data = array('keywords'=>iS::escapeStr($_POST['mkeyword']));
     			}elseif($_POST['pattern']=='addto') {
 		        	foreach($_POST['id'] AS $id){
-                        $keywords = articleTable::value('keywords',$id);
+                        $keywords = article::value('keywords',$id);
                         $keywords = $keywords?$keywords.','.iS::escapeStr($_POST['mkeyword']):iS::escapeStr($_POST['mkeyword']);
-                        articleTable::update(compact('keywords'),compact('id'));
+                        article::update(compact('keywords'),compact('id'));
 		        	}
 		        	iPHP::success('文章关键字更改完成!','js:1');
     			}
@@ -176,7 +176,7 @@ class articleAdmincp{
     		case 'tag':
     			iPHP::app('tag.class','static');
 		     	foreach($_POST['id'] AS $id){
-                    $art  = articleTable::row($id,'tags,cid');
+                    $art  = article::row($id,'tags,cid');
                     $mtag = iS::escapeStr($_POST['mtag']);
 			        if($_POST['pattern']=='replace') {
 			        }elseif($_POST['pattern']=='addto') {
@@ -184,13 +184,13 @@ class articleAdmincp{
 			        }
 			        $tags = tag::diff($mtag,$art['tags'],iMember::$userid,$id,$art['cid']);
                     $tags = addslashes($tags);
-                    articleTable::update(compact('tags'),compact('id'));
+                    article::update(compact('tags'),compact('id'));
 		    	}
 		    	iPHP::success('文章标签更改完成!','js:1');
     		break;
     		case 'thumb':
 		        foreach((array)$_POST['id'] AS $id) {
-		            $body	= articleTable::body($id);
+		            $body	= article::body($id);
                     $picurl = $this->remotepic($body,'autopic',$id);
                     $this->pic($picurl,$id);
 		        }
@@ -214,13 +214,13 @@ class articleAdmincp{
     		default:
 				$data = admincp::fields($batch);
     	}
-        $data && articleTable::batch($data,$ids);
+        $data && article::batch($data,$ids);
 		iPHP::success('操作成功!','js:1');
     }
     function do_baiduping($id = null,$dialog=true){
         $id===null && $id=$this->id;
         $id OR iPHP::alert('请选择要推送的文章!');
-        $rs   = articleTable::row($id);
+        $rs   = article::row($id);
         $C    = $this->category[$rs['cid']];
         $iurl = iURL::get('article',array($rs,$C));
         $url  = $iurl->href;
@@ -233,7 +233,7 @@ class articleAdmincp{
     }
     function do_getjson(){
         $id = (int)$_GET['id'];
-        $rs = articleTable::row($id);
+        $rs = article::row($id);
         iPHP::json($rs);
     }
     function do_getmeta(){
@@ -248,7 +248,7 @@ class articleAdmincp{
         $tags        = iS::escapeStr($_POST['tags']);
         $description = iS::escapeStr($_POST['description']);
 
-		$art = articleTable::row($id,'tags,cid');
+		$art = article::row($id,'tags,cid');
 		if($tags){
 			iPHP::app('tag.class','static');
 			$tags = tag::diff($tags,$art['tags'],iMember::$userid,$id,$art['cid']);
@@ -262,11 +262,11 @@ class articleAdmincp{
             $data['status']  = 1;
             $data['pubdate'] = time();
 		}
-        articleTable::update($data ,compact('id'));
+        article::update($data ,compact('id'));
 		exit('1');
 	}
     function do_findpic(){
-        $content = articleTable::body($this->id);
+        $content = article::body($this->id);
         if($content){
             $content = stripslashes($content);
             preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
@@ -292,8 +292,8 @@ class articleAdmincp{
                             'ext'=> $pf['extension']
                         );
                         // echo '<a class="btn btn-small" href="'.APP_FURI.'&do=editpic&from=modal&pic='.$filepath.'" data-toggle="modal" title="编辑图片('.$filename.')"><i class="fa fa-edit"></i> 编辑</a>';
-                        // $faid     = articleTable::filedata_value($filename);
-                        // empty($faid) && articleTable::filedata_update_indexid($aid,$filename);
+                        // $faid     = article::filedata_value($filename);
+                        // empty($faid) && article::filedata_update_indexid($aid,$filename);
                     }
                 }
                 // echo "<hr />";
@@ -303,7 +303,7 @@ class articleAdmincp{
         include iACP::view("files.manage");
     }
     function do_preview(){
-		echo articleTable::body($this->id);
+		echo article::body($this->id);
     }
     function do_iCMS(){
     	admincp::$APP_DO="manage";
@@ -347,8 +347,8 @@ class articleAdmincp{
         if(isset($_GET['pt']) && $_GET['pt']!=''){
             $this->_postype = (int)$_GET['pt'];
         }
-        if(isset($_GET['sta'])){
-            $this->_status = (int)$_GET['sta'];
+        if(isset($_GET['status'])){
+            $this->_status = (int)$_GET['status'];
         }
         $sql = "WHERE `status`='{$this->_status}'";
         $this->_postype==='all' OR $sql.= " AND `postype`='{$this->_postype}'";
@@ -434,7 +434,7 @@ class articleAdmincp{
             $sql     = ",({$map_sql}) map {$sql} AND `id` = map.`iid`";
         }
 
-        $total = iPHP::total(false,articleTable::count_sql($sql),"G");
+        $total = iPHP::total(false,article::count_sql($sql),"G");
         iPHP::pagenav($total,$maxperpage,"篇文章");
 
         $limit = 'LIMIT '.iPHP::$offset.','.$maxperpage;
@@ -472,7 +472,19 @@ class articleAdmincp{
         $pid         = implode(',', (array)$_POST['pid']);
         $status      = (int)$_POST['status'];
         $chapter     = (int)$_POST['chapter'];
-        $ordernum    = _int($_POST['ordernum']);
+        $ordernum    = (int)$_POST['ordernum'];
+        $weight      = (int)$_POST['weight'];
+
+        $hits        = (int)$_POST['hits'];
+        $hits_today  = (int)$_POST['hits_today'];
+        $hits_yday   = (int)$_POST['hits_yday'];
+        $hits_week   = (int)$_POST['hits_week'];
+        $hits_month  = (int)$_POST['hits_month'];
+        $favorite    = (int)$_POST['favorite'];
+        $comments    = (int)$_POST['comments'];
+        $good        = (int)$_POST['good'];
+        $bad         = (int)$_POST['bad'];
+
         $_cid        = iS::escapeStr($_POST['_cid']);
         $_pid        = iS::escapeStr($_POST['_pid']);
         $_scid       = iS::escapeStr($_POST['_scid']);
@@ -500,9 +512,7 @@ class articleAdmincp{
         empty($cid)  && iPHP::alert('请选择所属栏目');
         empty($body) && empty($url) && iPHP::alert('文章内容不能为空！');
 
-        empty($_POST['pubdate']) && $_POST['pubdate'] = get_date(0,'Y-m-d H:i:s');
         $pubdate   = iPHP::str2time($_POST['pubdate']);
-        $weight    = _int($_POST['weight']);
         $postype   = $_POST['postype']?$_POST['postype']:0;
         isset($_POST['inbox']) && $status = "0";
         $userid OR $userid = iMember::$userid;
@@ -527,13 +537,13 @@ class articleAdmincp{
         }
 
         if(empty($aid) && iCMS::$config['publish']['repeatitle']) {
-            articleTable::check_title($title) && iPHP::alert('该标题的文章已经存在!请检查是否重复');
+            article::check_title($title) && iPHP::alert('该标题的文章已经存在!请检查是否重复');
         }
 
         if(strstr($this->category[$cid]['contentRule'],'{LINK}')!==false){
             empty($clink) && $clink = strtolower(pinyin($title));
             if(empty($aid) && $clink) {
-                articleTable::check_clink($clink) && iPHP::alert('该文章自定义链接已经存在!请检查是否重复');
+                article::check_clink($clink) && iPHP::alert('该文章自定义链接已经存在!请检查是否重复');
             }
         }
 
@@ -560,14 +570,14 @@ class articleAdmincp{
         $picdata = '';
         $ucid    = 0;
 
-        $fields  = articleTable::fields($aid);
+        $fields  = article::fields($aid);
 
         if(empty($aid)) {
             $postime = $pubdate;
-            $hits    = $good = $bad = $comments = $chapter = 0;
+            $chapter = 0;
             $mobile  = 0;
 
-            $aid  = articleTable::insert(compact($fields));
+            $aid  = article::insert(compact($fields));
 
             admincp::callback($aid,$this,'primary');
 
@@ -578,7 +588,7 @@ class articleAdmincp{
                     tag::$addStatus = $_POST['tag_status'];
                 }
                 tag::add($tags,$userid,$aid,$cid);
-                //articleTable::update(compact('tags'),array('id'=>$aid));
+                //article::update(compact('tags'),array('id'=>$aid));
             }
 
             map::init('prop',$this->appid);
@@ -629,7 +639,7 @@ class articleAdmincp{
             }
             $picdata = $this->picdata($pic,$mpic,$spic);
 
-            articleTable::update(compact($fields),array('id'=>$aid));
+            article::update(compact($fields),array('id'=>$aid));
 
             admincp::callback($aid,$this,'primary');
 
@@ -679,7 +689,7 @@ class articleAdmincp{
 //              $msg.= $this->del_msg('缩略图 '.$wh.' 文件删除');
 //      }
         $filename   = iFS::info($pic)->filename;
-        articleTable::del_filedata($filename,'filename');
+        article::del_filedata($filename,'filename');
         $msg.= $this->del_msg($pic.'数据删除');
         return $msg;
     }
@@ -687,9 +697,9 @@ class articleAdmincp{
         $id = (int)$id;
         $id OR iPHP::alert("请选择要删除的文章");
         $uid && $sql="and `userid`='$uid' and `postype`='$postype'";
-        $art = articleTable::row($id,'cid,pic,tags',$sql);
+        $art = article::row($id,'cid,pic,tags',$sql);
         admincp::CP($art['cid'],'cd','alert');
-        $frs = articleTable::select_filedata_indexid($id);
+        $frs = article::select_filedata_indexid($id);
         for($i=0;$i<count($frs);$i++) {
             if($frs[$i]){
                 $path = $frs[$i]['path'].'/'.$frs[$i]['filename'].'.'.$frs[$i]['ext'];
@@ -705,12 +715,12 @@ class articleAdmincp{
         iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."';");
         iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."' ;");
 
-        articleTable::del_filedata($id,'indexid');
+        article::del_filedata($id,'indexid');
         $msg.= $this->del_msg('相关文件数据删除');
-        articleTable::del_comment($id);
+        article::del_comment($id);
         $msg.= $this->del_msg('评论数据删除');
-        articleTable::del($id);
-        articleTable::del_data($id);
+        article::del($id);
+        article::del_data($id);
         $msg.= $this->del_msg('文章数据删除');
         $this->categoryApp->update_count_one($art['cid'],'-');
         $msg.= $this->del_msg('栏目数据更新');
@@ -718,7 +728,7 @@ class articleAdmincp{
         return $msg;
     }
     function chapter_count($aid){
-        articleTable::chapter_count($aid);
+        article::chapter_count($aid);
     }
     function article_data($bodyArray,$aid=0,$haspic=0){
         if(isset($_POST['ischapter']) || is_array($_POST['adid'])){
@@ -730,7 +740,7 @@ class articleAdmincp{
                 $subtitle = iS::escapeStr($chaptertitle[$key]);
                 $this->body($body,$subtitle,$aid,$adid,$haspic);
             }
-            articleTable::update(compact('chapter'),array('id'=>$aid));
+            article::update(compact('chapter'),array('id'=>$aid));
         }else{
             $adid     = (int)$_POST['adid'];
             $subtitle = iS::escapeStr($_POST['subtitle']);
@@ -750,15 +760,15 @@ class articleAdmincp{
             iCMS::$config['publish']['autoformat'] && $body = addslashes(autoformat($body));
         }
 
-        articleTable::$ID = $aid;
+        article::$ID = $aid;
 
-        $fields = articleTable::data_fields($id);
+        $fields = article::data_fields($id);
         $data   = compact ($fields);
 
         if($id){
-            articleTable::data_update($data,compact('id'));
+            article::data_update($data,compact('id'));
         }else{
-            $id = articleTable::data_insert($data);
+            $id = article::data_insert($data);
         }
 
         $_POST['isredirect'] && iFS::$redirect  = true;
@@ -769,7 +779,7 @@ class articleAdmincp{
             $body = $this->remotepic($body,true,$aid);
             $body = $this->remotepic($body,true,$aid);
             if($body && $id){
-                articleTable::data_update(array('body'=>$body),compact('id'));
+                article::data_update(array('body'=>$body),compact('id'));
             }
         }
 
@@ -816,14 +826,14 @@ class articleAdmincp{
     function pic($picurl,$aid){
         $uri = parse_url(iCMS_FS_URL);
         if (stripos($picurl,$uri['host']) !== false){
-            $picdata = (array)articleTable::value('picdata',$aid);
+            $picdata = (array)article::value('picdata',$aid);
             $picdata && $picdata = @unserialize($picdata);
             $pic = iFS::fp($picurl,'-http');
             list($width, $height, $type, $attr) = @getimagesize(iFS::fp($pic,'+iPATH'));
             $picdata['b'] = array('w'=>$width,'h'=>$height);
             $picdata = addslashes(serialize($picdata));
             $haspic  = 1;
-            articleTable::update(compact('haspic','pic','picdata'),array('id'=>$aid));
+            article::update(compact('haspic','pic','picdata'),array('id'=>$aid));
         }
     }
     function remotepic($content,$remote = false,$aid=0) {
@@ -847,8 +857,8 @@ class articleAdmincp{
                     if($aid){
                         $filename = basename($filepath);
                         $filename = substr($filename,0, 32);
-                        $faid     = articleTable::filedata_value($filename);
-                        empty($faid) && articleTable::filedata_update_indexid($aid,$filename);
+                        $faid     = article::filedata_value($filename);
+                        empty($faid) && article::filedata_update_indexid($aid,$filename);
                     }
                     $value = iFS::fp($filepath,'+http');
                 }else{
@@ -900,8 +910,8 @@ class articleAdmincp{
                 if($filepath){
                     $filename = basename($filepath);
                     $filename = substr($filename,0, 32);
-                    $faid     = articleTable::filedata_value($filename);
-                    empty($faid) && articleTable::filedata_update_indexid($aid,$filename);
+                    $faid     = article::filedata_value($filename);
+                    empty($faid) && article::filedata_update_indexid($aid,$filename);
                 }
             }
         }

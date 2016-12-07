@@ -183,8 +183,8 @@ class tagAdmincp{
         $url         = iS::escapeStr($_POST['url']);
         $related     = iS::escapeStr($_POST['related']);
         $tpl         = iS::escapeStr($_POST['tpl']);
-        $weight      = _int($_POST['weight']);
-        $ordernum    = _int($_POST['ordernum']);
+        $weight      = (int)$_POST['weight'];
+        $ordernum    = (int)$_POST['ordernum'];
         $status      = (int)$_POST['status'];
         $haspic      = $pic?'1':'0';
         $pubdate     = time();
@@ -399,7 +399,7 @@ class tagAdmincp{
                 iPHP::success('属性设置完成!','js:1');
     		break;
     		case 'weight':
-		        $weight	=_int($_POST['mweight']);
+		        $weight	=(int)$_POST['mweight'];
 		        $sql	="`weight` = '$weight'";
     		break;
             case 'tpl':

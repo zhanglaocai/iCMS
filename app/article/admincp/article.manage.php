@@ -17,12 +17,8 @@ $(function(){
 	<?php if($_GET['cid']){  ?>
 	iCMS.select('cid',"<?php echo $_GET['cid'] ; ?>");
 	<?php } ?>
-	<?php if($_GET['st']){ ?>
-	iCMS.select('st',"<?php echo $_GET['st'] ; ?>");
-	<?php } ?>
-  <?php if(isset($_GET['status'])){ ?>
-  iCMS.select('status',"<?php echo $_GET['status'] ; ?>");
-  <?php } ?>
+
+  iCMS.select('status',"<?php echo isset($_GET['status'])?$_GET['status']:$this->_status ; ?>");
 	<?php if($_GET['orderby']){ ?>
 	iCMS.select('orderby',"<?php echo $_GET['orderby'] ; ?>");
 	<?php } ?>

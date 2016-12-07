@@ -78,8 +78,8 @@ class articleApp {
 			}
 		}
 		if (iCMS_ARTICLE_DATA === "TEXT") {
-			iPHP::app('article.table');
-			$article_data = articleTable::get_text($id);
+			iPHP::app('article.class');
+			$article_data = article::get_text($id);
 		} else {
 			if ($article['chapter']) {
 				$all = iDB::all("SELECT id,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $id . "';", ARRAY_A);

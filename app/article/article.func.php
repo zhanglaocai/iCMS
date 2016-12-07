@@ -25,7 +25,7 @@ function article_list($vars) {
 	$maxperpage = isset($vars['row']) ? (int) $vars['row'] : 10;
 	$cache_time = isset($vars['time']) ? (int) $vars['time'] : -1;
 	isset($vars['userid']) && $where_sql .= " AND `userid`='{$vars['userid']}'";
-	isset($vars['weight']) && $where_sql .= " AND `weight`='" . _int($vars['weight']) . "'";
+	isset($vars['weight']) && $where_sql .= " AND `weight`='{$vars['weight']}'";
 
 	if (isset($vars['ucid']) && $vars['ucid'] != '') {
 		$where_sql .= " AND `ucid`='{$vars['ucid']}'";

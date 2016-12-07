@@ -7,21 +7,25 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 ?>
+
 <script type="text/javascript">
 $(function(){
-  var found = false;
+  var uri = {
+    app:'<?php echo admincp::$APP_NAME; ?>',
+    ado:'<?php echo admincp::$APP_DO; ?>'
+  }
   $("a",".iMenu-nav,.iMenu-sidebar,.iMenu-tabs").each(function(i,a){
     if(this.href==window.location.href){
-      found = true;
       find_parent(this);
       return;
-    }
-  }).each(function(){
-    var index = window.location.href.lastIndexOf(this.href);
-    if(index!=-1 && found==false){
-console.log(this.href);
-console.log(index);
-      find_parent(this);
+    }else{
+      var pos   = this.href.indexOf('?')+1;
+      var query = this.href.substring(pos);
+      var args  = get_args(query);
+      if(args['app']==uri.app && args['do']==uri.ado){
+        find_parent(this);
+        return;
+      }
     }
   });
   $("li.active>a","#iCMS-menu").each(function(){
@@ -40,8 +44,23 @@ console.log(index);
       find_parent(p[0]);
     }
   }
+  function get_args(query) {
+      var args = new Object( );
+      var query = query||location.search.substring(1);
+      var pairs = query.split("&");
+      for(var i = 0; i < pairs.length; i++) {
+          var pos = pairs[i].indexOf('=');
+          if (pos == -1) continue;
+          var argname = pairs[i].substring(0,pos);
+          var value = pairs[i].substring(pos+1);
+          value = decodeURIComponent(value);
+          args[argname] = value;
+      }
+      return args;
+  }
 })
 </script>
+
 <div id="header" class="navbar navbar-static-top">
   <div class="navbar-inner">
     <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">

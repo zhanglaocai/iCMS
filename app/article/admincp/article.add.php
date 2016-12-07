@@ -238,7 +238,6 @@ function _modal_dialog(cancel_text){
       <ul class="nav nav-tabs" id="article-add-tab">
         <li class="active"><a href="#article-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
         <li><a href="#article-add-publish" data-toggle="tab"><i class="fa fa-rocket"></i> 发布设置</a></li>
-        <li><a href="#article-add-metadata" data-toggle="tab"><i class="fa fa-cog"></i> 扩展属性</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding iCMS-article-add">
@@ -464,15 +463,39 @@ function _modal_dialog(cancel_text){
           </div>
           <div id="article-add-publish" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">发布时间</span>
-              <input id="pubdate" class="<?php echo $readonly?'':'ui-datepicker'; ?>" value="<?php echo $rs['pubdate'] ; ?>"  name="pubdate" type="text" style="width:230px" <?php echo $readonly ; ?>/>
+              <input id="pubdate" class="<?php echo $readonly?'':'ui-datepicker'; ?>" value="<?php echo $rs['pubdate']?$rs['pubdate']:get_date(0,'Y-m-d H:i:s') ; ?>"  name="pubdate" type="text" style="width:230px" <?php echo $readonly ; ?>/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">排序</span>
-              <input id="ordernum" class="span2" value="<?php echo _int($rs['ordernum']) ; ?>" name="ordernum" type="text"/>
+              <input id="ordernum" class="span2" value="<?php echo $rs['ordernum']?$rs['ordernum']:time() ; ?>" name="ordernum" type="text"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">权重</span>
-              <input id="weight" class="span2" value="<?php echo _int($rs['weight']) ; ?>" name="weight" type="text"/>
+              <input id="weight" class="span2" value="<?php echo $rs['weight']?$rs['weight']:time(); ?>" name="weight" type="text"/>
+            </div>
+            <div class="clearfix mb10"></div>
+            <div class="input-prepend input-append">
+              <span class="add-on">总点击数</span>
+              <input type="text" name="hits" class="span1" id="hits" value="<?php echo $rs['hits']?$rs['hits']:'0'; ?>"/>
+              <span class="add-on">当天点击数</span>
+              <input type="text" name="hits_today" class="span1" id="hits_today" value="<?php echo $rs['hits_today']?$rs['hits_today']:'0'; ?>"/>
+              <span class="add-on">昨天点击数</span>
+              <input type="text" name="hits_yday" class="span1" id="hits_yday" value="<?php echo $rs['hits_yday']?$rs['hits_yday']:'0'; ?>"/>
+              <span class="add-on">周点击</span>
+              <input type="text" name="hits_week" class="span1" id="hits_week" value="<?php echo $rs['hits_week']?$rs['hits_week']:'0'; ?>"/>
+              <span class="add-on">月点击</span>
+              <input type="text" name="hits_month" class="span1" id="hits_month" value="<?php echo $rs['hits_month']?$rs['hits_month']:'0'; ?>"/>
+            </div>
+            <div class="clearfix mb10"></div>
+            <div class="input-prepend input-append">
+              <span class="add-on">收藏数</span>
+              <input type="text" name="favorite" class="span1" id="favorite" value="<?php echo $rs['favorite']?$rs['favorite']:'0'; ?>"/>
+              <span class="add-on">评论数</span>
+              <input type="text" name="comments" class="span1" id="comments" value="<?php echo $rs['comments']?$rs['comments']:'0'; ?>"/>
+              <span class="add-on">点赞数</span>
+              <input type="text" name="good" class="span1" id="good" value="<?php echo $rs['good']?$rs['good']:'0'; ?>"/>
+              <span class="add-on">点踩数</span>
+              <input type="text" name="bad" class="span1" id="bad" value="<?php echo $rs['bad']?$rs['bad']:'0'; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">模板</span>

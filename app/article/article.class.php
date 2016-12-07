@@ -4,9 +4,9 @@
  * @copyright 2007-2015, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: article.table.php 2408 2014-04-30 18:58:23Z coolmoo $
+ * @$Id: article.class.php 2408 2014-04-30 18:58:23Z coolmoo $
  */
-class articleTable {
+class article {
     public static $ID = 0;
 
     public static function select($sql='',$orderby='',$offset=0,$maxperpage=10){
@@ -20,19 +20,17 @@ class articleTable {
             'author', 'editor', 'userid',
             'haspic','pic','mpic','spic', 'picdata',
             'related', 'metadata', 'pubdate', 'chapter', 'url','clink',
+            'hits','hits_today','hits_yday','hits_week','hits_month','favorite','comments', 'good', 'bad',
             'ordernum','weight', 'postype', 'creative', 'tpl','status');
 
         if(!$update){ //更新
-            $_fields = array('mobile','postime','hits','hits_today','hits_yday','hits_week','hits_month','favorite','comments', 'good', 'bad');
+            $_fields = array('mobile','postime');
             $fields  = array_merge ($fields,$_fields);
         }
 
         return $fields;
     }
-    public static function update_hits(){
 
-        iDB::query("UPDATE `#iCMS@__article` SET `hits_today` = '0', `hits_yday` = '0', `hits_week` = '0', `hits_month` = '0'");
-    }
     public static function count_sql($sql=''){
         return "SELECT count(*) FROM `#iCMS@__article` {$sql}";
     }
