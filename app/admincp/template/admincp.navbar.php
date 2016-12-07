@@ -7,60 +7,6 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 ?>
-
-<script type="text/javascript">
-$(function(){
-  var uri = {
-    app:'<?php echo admincp::$APP_NAME; ?>',
-    ado:'<?php echo admincp::$APP_DO; ?>'
-  }
-  $("a",".iMenu-nav,.iMenu-sidebar,.iMenu-tabs").each(function(i,a){
-    if(this.href==window.location.href){
-      find_parent(this);
-      return;
-    }else{
-      var pos   = this.href.indexOf('?')+1;
-      var query = this.href.substring(pos);
-      var args  = get_args(query);
-      if(args['app']==uri.app && args['do']==uri.ado){
-        find_parent(this);
-        return;
-      }
-    }
-  });
-  $("li.active>a","#iCMS-menu").each(function(){
-    var a = $(this).clone();
-    a.removeClass('dropdown-toggle').removeAttr('data-toggle');
-    $("#breadcrumb").append(a);
-  });
-
-  function find_parent (a) {
-    var p = $(a).parent();
-    if(p[0].nodeName=="LI"||p[0].nodeName=="UL"){
-      $(p).addClass("active");
-      if(p[0].nodeName=="UL" && !$(p).hasClass("dropdown-menu")){
-        $(p).addClass("open").show();
-      }
-      find_parent(p[0]);
-    }
-  }
-  function get_args(query) {
-      var args = new Object( );
-      var query = query||location.search.substring(1);
-      var pairs = query.split("&");
-      for(var i = 0; i < pairs.length; i++) {
-          var pos = pairs[i].indexOf('=');
-          if (pos == -1) continue;
-          var argname = pairs[i].substring(0,pos);
-          var value = pairs[i].substring(pos+1);
-          value = decodeURIComponent(value);
-          args[argname] = value;
-      }
-      return args;
-  }
-})
-</script>
-
 <div id="header" class="navbar navbar-static-top">
   <div class="navbar-inner">
     <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -110,4 +56,39 @@ $(function(){
   <div id="breadcrumb">
     <a href="<?php echo __SELF__; ?>" title="返回管理首页" class="tip-bottom"><i class="fa fa-home"></i> 管理中心</a>
   </div>
+<script type="text/javascript">
+$(".iMenu-nav,.iMenu-sidebar")
+.find('a[href="<?php echo admincp::$menu->url; ?>"]')
+.each(function(){
+  find_parent(this);
+});
+var href = '/'+window.location.href.split("/")[3];
 
+$(".submenu,.dropdown-submenu").find('a[href="'+href+'"]').each(function(){
+  $(this).addClass("active");
+  $(this).parent().addClass("active");
+});
+
+$("li.active>a","#iCMS-menu").each(function(){
+  var a = $(this).clone();
+  a.removeClass('dropdown-toggle').removeAttr('data-toggle');
+  $("#breadcrumb").append(a);
+});
+
+function find_parent (a) {
+  var p = $(a).parent();
+  if(p[0].nodeName=="LI"||p[0].nodeName=="UL"){
+    $(p).addClass("active");
+    if($(p).hasClass("submenu")){
+      $(p).addClass("open");
+      $("ul",$(p)).show();
+    }
+    if(p[0].nodeName=="UL" && !$(p).hasClass("dropdown-menu")){
+      $(p).addClass("open").show();
+    }
+    find_parent(p[0]);
+  }
+  return true;
+}
+
+</script>

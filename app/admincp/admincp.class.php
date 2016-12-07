@@ -89,6 +89,8 @@ class admincp {
 		self::$APP_PATH = ACP_PATH;
 		self::$APP_TPL = ACP_PATH . '/template';
 		self::$APP_FILE = ACP_PATH . '/' . $app . '.app.php';
+		self::$menu->url = __ADMINCP__.'='.$app.(($do&&$do!='iCMS')?'&do='.$do:'');
+
 		$appName = self::$APP_NAME . 'App';
 
 		iCMS::app('apps.class', 'static');

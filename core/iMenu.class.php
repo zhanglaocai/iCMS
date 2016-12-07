@@ -12,6 +12,7 @@
 class iMenu {
     public $menu_array = array();
     public $href_array = array();
+    public $url = null;
 
 	function __construct() {
         $this->get_cache();
@@ -207,7 +208,7 @@ class iMenu {
 		}
 
 		if($mType=='sidebar' && $children && $level==0){
-			$href		= 'javascript:;';
+            // $href       = 'javascript:;';
 			$a['class']	= 'submenu';
 			$label		= '<span class="label">'.$this->children_count($a['children']).'</span>';
 		}

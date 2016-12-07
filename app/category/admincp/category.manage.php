@@ -131,10 +131,10 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
             <tr>
               <th style="width:10px;"><i class="fa fa-arrows-v"></i></th>
               <th style="width:24px;">cid</th>
-              <th>pid</th>
-              <th class="span4"><?php echo $this->category_name;?></th>
-              <th class="span3">目录</th>
-              <th style="span3">父<?php echo $this->category_name;?></th>
+              <th style="width:24px;">pid</th>
+              <th><?php echo $this->category_name;?></th>
+              <th>目录</th>
+              <th>父<?php echo $this->category_name;?></th>
               <th style="width:40px;">记录数</th>
               <th>操作</th>
             </tr>
@@ -145,7 +145,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['cid'] ; ?>" /></td>
               <td><?php echo $rs[$i]['cid'] ; ?></td>
               <td><?php echo $rs[$i]['pid'] ; ?></td>
-              <td><input <?php if($rs[$i]['rootid']=="0"){ ?> style="font-weight:bold"<?php } ?> type="text" name="name[<?php echo $rs[$i]['cid'] ; ?>]" value="<?php echo $rs[$i]['name'] ; ?>" class='tip' title='创建者:<?php echo $rs[$i]['creator']; ?><br />创建时间:<?php echo get_date($rs[$i]['pubdate']); ?><br />栏目规则:<?php echo $rs[$i]['categoryRule']; ?><br />内容规则:<?php echo $rs[$i]['contentRule']; ?>'>
+              <td><input <?php if($rs[$i]['rootid']=="0"){ ?> style="font-weight:bold"<?php } ?> type="text" name="name[<?php echo $rs[$i]['cid'] ; ?>]" value="<?php echo $rs[$i]['name'] ; ?>">
                 <?php if(!$rs[$i]['status']){ ?>
                 <i class="fa fa-eye-slash" title="隐藏<?php echo $this->category_name;?>"></i>
                 <?php } ?></td>
@@ -154,7 +154,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
               <td><?php echo $rs[$i]['count'] ; ?></td>
               <td><?php echo $this->listbtn($rs[$i]) ; ?>
                 <?php if(admincp::CP($rs[$i]['cid'],'a') ){?>
-                <a href="<?php echo $this->category_uri; ?>&do=add&rootid=<?php echo $rs[$i]['cid'] ; ?>" class="btn btn-small"><i class="fa fa-plus-square"></i> 添加子<?php echo $this->category_name;?></a>
+                <a href="<?php echo $this->category_uri; ?>&do=add&rootid=<?php echo $rs[$i]['cid'] ; ?>" class="btn btn-small"><i class="fa fa-plus-square"></i> 子<?php echo $this->category_name;?></a>
                 <?php } ?>
                 <?php if(admincp::CP($rs[$i]['cid'],'e') ){?>
                 <a href="<?php echo $this->category_uri; ?>&do=add&cid=<?php echo $rs[$i]['cid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>

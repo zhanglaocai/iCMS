@@ -361,10 +361,12 @@ class categoryAdmincp extends category{
         $tabs=="list"?$this->do_list():$this->do_tree();
     }
     function do_tree() {
+        admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
         admincp::$APP_DO = 'tree';
         include admincp::view($this->_view_manage,$this->_view_tpl_dir);
     }
     function do_list(){
+        admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
         admincp::$APP_DO = 'list';
         $sql  = " where `appid`='{$this->appid}'";
         $cids = admincp::CP('__CID__');
@@ -505,7 +507,7 @@ class categoryAdmincp extends category{
         $html.=' <span class="label label-info">'.$C['count'].'条记录</span>';
         $C['creator'] && $html.=' <span class="label">创建者:'.$C['creator'].'</span>';
         $html.='</span><span class="operation">';
-        admincp::CP($C['cid'],'a')  && $html.='<a href="'.$this->category_uri.'&do=add&rootid='.$C['cid'].'" class="btn btn-small"><i class="fa fa-plus-square"></i> 添加子'.$this->category_name.'</a> ';
+        admincp::CP($C['cid'],'a')  && $html.='<a href="'.$this->category_uri.'&do=add&rootid='.$C['cid'].'" class="btn btn-small"><i class="fa fa-plus-square"></i> 子'.$this->category_name.'</a> ';
         $html.=$this->treebtn($C);
         admincp::CP($C['cid'],'e') && $html.='<a href="'.$this->category_uri.'&do=add&cid='.$C['cid'].'" title="编辑'.$this->category_name.'设置"  class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a> ';
         admincp::CP($C['cid'],'d') && $html.='<a href="'.$this->category_furi.'&do=del&cid='.$C['cid'].'" class="btn btn-small" onClick="return confirm(\'确定要删除此'.$this->category_name.'?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a>';
