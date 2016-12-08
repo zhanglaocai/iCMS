@@ -73,18 +73,19 @@ class articleAdmincp{
         //$metadata          = array_merge((array)$contentprop,(array)$rs['metadata']);
         $rs['pubdate']       = get_date($rs['pubdate'],'Y-m-d H:i:s');
         $rs['metadata'] && $rs['metadata'] = unserialize($rs['metadata']);
-
+        $rs['markdown'] &&  $this->config['markdown'] = "1";
         if(empty($this->id)){
             $rs['status']  = "1";
             $rs['postype'] = "1";
             $rs['editor']  = empty(iMember::$data->nickname)?iMember::$data->username:iMember::$data->nickname;
             $rs['userid']  = iMember::$userid;
 		}
+
         $strpos   = strpos(__REF__,'?');
         $REFERER  = $strpos===false?'':substr(__REF__,$strpos);
         $defArray = iCache::get('iCMS/defaults');
         $propApp  = iPHP::app('prop.admincp');
-        if($this->config['WYSIWYG']=='editor.md'){
+        if($this->config['markdown']){
             include admincp::view("article.markdown");
         }else{
             include admincp::view("article.add");
@@ -514,6 +515,7 @@ class articleAdmincp{
         $metadata    = $metadata?addslashes(serialize($metadata)):'';
         $body        = (array)$_POST['body'];
         $creative    = (int)$_POST['creative'];
+        $markdown    = (int)$_POST['markdown'];
 
         empty($title)&& iPHP::alert('标题不能为空！');
         empty($cid)  && iPHP::alert('请选择所属栏目');
@@ -761,8 +763,8 @@ class articleAdmincp{
         $body = preg_replace(array('/<script.+?<\/script>/is','/<form.+?<\/form>/is'),'',$body);
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
 
-        if($_POST['WYSIWYG']=='editor.md'){
-            $body = '#--iCMS.Markdown--#'.$body;
+        if($_POST['markdown']){
+            $body = $body;
         }else{
             $this->config['autoformat'] && $body = addslashes(autoformat($body));
         }

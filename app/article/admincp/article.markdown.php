@@ -17,7 +17,7 @@ admincp::head();
 .editormd-form input[type=text], .editormd-form input[type=number]{color: #999 !important;border:1px solid #ddd;}
 .editormd-dialog-container .editormd-btn, .editormd-dialog-container button, .editormd-dialog-container input[type=submit], .editormd-dialog-footer .editormd-btn, .editormd-dialog-footer button, .editormd-dialog-footer input[type=submit], .editormd-form .editormd-btn, .editormd-form button, .editormd-form input[type=submit]{padding: 1px 2px;}
 </style>
-<script type="text/javascript" charset="utf-8" src="./app/admincp/ui/editor.md/editormd.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./app/admincp/ui/editor.md/editormd.js"></script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.editormd.js"></script>
 <script type="text/javascript">
 $(function(){
@@ -101,11 +101,12 @@ $(function(){
 
 });
 function mergeEditorPage(){
+  return;
   var html = [];
   $(".iCMS-editor").each(function(n,a){
     var id = a.id,eid = id.replace('editor-','');
     if(iCMS.editor.container[eid]){
-        iCMS.editor.container[eid].destroy();
+        iCMS.editor.container[eid].remove();
     }
     var content = $("textarea",this).val();
     content && html.push(content);
@@ -122,7 +123,7 @@ function mergeEditorPage(){
     width: "100%",
     height: '500px'
   });
-  iCMS.editor.create(neid).focus();
+  // iCMS.editor.create(neid).focus();
   $(".iCMS-editor-page").html('<option value="1">第 1 页</option>').val(1).trigger("chosen:updated");
 
 }
@@ -258,7 +259,7 @@ function _modal_dialog(cancel_text){
         <input name="postype" type="hidden" value="<?php echo $rs['postype'] ; ?>" />
         <input name="REFERER" type="hidden" value="<?php echo $REFERER ; ?>" />
         <input name="chapter" type="hidden" value="<?php echo $rs['chapter']; ?>" />
-        <input name="WYSIWYG" type="hidden" value="editor.md" />
+        <input name="markdown" type="hidden" value="<?php echo $this->config['markdown']; ?>" />
         <div id="article-add" class="tab-content">
           <div id="article-add-base" class="tab-pane active">
             <div class="input-prepend"> <span class="add-on">栏 目</span>
@@ -391,10 +392,8 @@ function _modal_dialog(cancel_text){
                 </div>
                 <a class="btn" href="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</a>
                 <a class="btn" href="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</a>
-                <a class="btn" href="javascript:mergeEditorPage();"><i class="fa fa-align-justify"></i> 合并编辑</a>
                 <a class="btn" href="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</a>
                 <a class="btn" href="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</a>
-                <a class="btn" href="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</a>
               </div>
               <!--div class="btn-group">
                 <a class="btn" href="<?php echo __ADMINCP__; ?>=files&do=multi&from=modal&callback=sweditor" data-toggle="modal" title="批量上传"><i class="fa fa-upload"></i> 批量上传</a>
@@ -428,26 +427,26 @@ function _modal_dialog(cancel_text){
             <?php for($i=0;$i<$bodyCount;$i++){
                 $idNum  = $i+1;
             ?>
-            <div class="iCMS-editor<?php if($i){ echo ' hide';}?>" id="editor-<?php echo $idNum;?>">
-              <div class="chapter-title
+            <div class="chapter-title
+              <?php
+                if(!$rs['chapter']){
+                  echo ' hide';
+                }
+              ?>
+            ">
+              <input name="adid[]" id="adid-<?php echo $idNum;?>"
                 <?php
                   if(!$rs['chapter']){
-                    echo ' hide';
+                    echo ' disabled="true"';
                   }
                 ?>
-              ">
-                <input name="adid[]" id="adid-<?php echo $idNum;?>"
-                  <?php
-                    if(!$rs['chapter']){
-                      echo ' disabled="true"';
-                    }
-                  ?>
-                type="hidden" value="<?php echo $adIdArray[$i] ; ?>" />
-                <div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>
-                    <input type="text" id="chapter-title-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> name="chaptertitle[]" class="span6" value="<?php echo $cTitArray[$i] ; ?>" />
-                </div>
-                <div class="clearfloat mb10"></div>
+              type="hidden" value="<?php echo $adIdArray[$i] ; ?>" />
+              <div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>
+                  <input type="text" id="chapter-title-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> name="chaptertitle[]" class="span6" value="<?php echo $cTitArray[$i] ; ?>" />
               </div>
+              <div class="clearfloat mb10"></div>
+            </div>
+            <div class="iCMS-editor<?php if($i){ echo ' hide';}?>" id="editor-<?php echo $idNum;?>">
               <textarea type="text/plain" id="iCMS-editor-<?php echo $idNum;?>" name="body[]"><?php echo $bodyArray[$i];?></textarea>
             </div>
             <?php }?>
@@ -461,10 +460,8 @@ function _modal_dialog(cancel_text){
               <div class="btn-group">
                 <a class="btn" href="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</a>
                 <a class="btn" href="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</a>
-                <a class="btn" href="javascript:mergeEditorPage();"><i class="fa fa-align-justify"></i> 合并分页</a>
                 <a class="btn" href="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</a>
                 <a class="btn" href="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</a>
-                <a class="btn" href="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</a>
               </div>
             </div>
           </div>

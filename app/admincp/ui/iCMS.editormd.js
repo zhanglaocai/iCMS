@@ -8,13 +8,12 @@ var MD_CONFIG = {
         // markdown : md,
         codeFold : true,
         //syncScrolling : false,
-        saveHTMLToTextarea : false,    // 保存 HTML 到 Textarea
+        saveHTMLToTextarea : true,    // 保存 HTML 到 Textarea
         searchReplace : true,
         //watch : false,                // 关闭实时预览
         htmlDecode : "style,script,iframe|on*",            // 开启 HTML 标签解析，为了安全性，默认不开启
         //toolbar  : false,             //关闭工具栏
         //previewCodeHighlight : false, // 关闭预览 HTML 的代码块高亮，默认开启
-        emoji : true,
         taskList : true,
         tocm : true,         // Using [TOCM]
         tex : true,                   // 开启科学公式TeX语言支持，默认关闭
@@ -70,25 +69,25 @@ var MD_CONFIG = {
         },
         insPageBreak:function (argument) {
             var ed = this.container[this.id];
-            ed.execCommand('pagebreak');
+            ed.insertValue("\n#--iCMS.PageBreak--#\n");
             ed.focus();
         },
         delPageBreakflag:function() {
-            var ed = this.container[this.id], html = ed.getContent();
-            html = html.replace(/#--iCMS.PageBreak--#/g, '');
-            ed.setContent(html);
+            var ed = this.container[this.id], html = ed.getMarkdown();
+            html = html.replace(/#--iCMS\.PageBreak--#/g, '');
+            ed.setMarkdown(html);
             ed.focus();
         },
         cleanup:function(eid) {
-            if(eid){
-                var ed = UE.getEditor('iCMS-editor-'+eid);
-            }else{
-                var ed = this.container[this.id];
-            }
-            var html = iCMS.format(ed.getContent());
-            ed.setContent(html);
-            //ed.execCommand("autoTypeset");
-            ed.focus();
+            // if(eid){
+            //     var ed = editormd('iCMS-editor-'+eid, MD_CONFIG)
+            // }else{
+            //     var ed = this.container[this.id];
+            // }
+            // var html = iCMS.format(ed.getMarkdown());
+            // ed.setMarkdown(html);
+            // //ed.execCommand("autoTypeset");
+            // ed.focus();
         },
     };
 })(jQuery);

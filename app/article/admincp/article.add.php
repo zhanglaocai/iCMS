@@ -252,7 +252,7 @@ function _modal_dialog(cancel_text){
         <input name="postype" type="hidden" value="<?php echo $rs['postype'] ; ?>" />
         <input name="REFERER" type="hidden" value="<?php echo $REFERER ; ?>" />
         <input name="chapter" type="hidden" value="<?php echo $rs['chapter']; ?>" />
-        <input name="WYSIWYG" type="hidden" value="ueditor" />
+        <input name="markdown" type="hidden" value="<?php echo $this->config['markdown']; ?>" />
         <div id="article-add" class="tab-content">
           <div id="article-add-base" class="tab-pane active">
             <div class="input-prepend"> <span class="add-on">栏 目</span>
@@ -422,7 +422,6 @@ function _modal_dialog(cancel_text){
             <?php for($i=0;$i<$bodyCount;$i++){
                 $idNum  = $i+1;
             ?>
-            <div class="iCMS-editor<?php if($i){ echo ' hide';}?>" id="editor-<?php echo $idNum;?>">
               <div class="chapter-title
                 <?php
                   if(!$rs['chapter']){
@@ -442,6 +441,7 @@ function _modal_dialog(cancel_text){
                 </div>
                 <div class="clearfloat mb10"></div>
               </div>
+            <div class="iCMS-editor<?php if($i){ echo ' hide';}?>" id="editor-<?php echo $idNum;?>">
               <textarea type="text/plain" id="iCMS-editor-<?php echo $idNum;?>" name="body[]"><?php echo $bodyArray[$i];?></textarea>
             </div>
             <?php }?>
