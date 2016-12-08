@@ -5,6 +5,12 @@
     "caption": "文章",
     "icon": "pencil-square-o",
     "children": [{
+        "caption": "文章系统配置",
+        "href": "article&do=config",
+        "icon": "cog"
+    },{
+        "-": "-"
+    }, {
         "caption": "栏目管理",
         "href": "article_category",
         "icon": "list-alt"

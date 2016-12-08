@@ -100,7 +100,7 @@ class APPS {
         }
         return $data;
     }
-    public static function setting($t='tabs',$appdir='*',$pattern='*.setting'){
+    public static function setting($t='setting',$appdir='*',$pattern='*.setting'){
 
         $array = self::scan('admincp/'.$pattern,$appdir,true);
         // var_dump($array);
@@ -112,7 +112,7 @@ class APPS {
             if($t=='tabs'){
                 echo '<li><a href="#setting-'.$key.'" data-toggle="tab">'.$appinfo['title'].'</a></li>';
             }
-            if ($t == 'content'){
+            if ($t == 'setting'){
                 $paths[$key] =  iPHP_APP_DIR.'/'.$path;
             }
         }

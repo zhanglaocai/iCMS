@@ -10,8 +10,10 @@ defined('iPHP') OR exit('What are you doing?');
 
 class commentApp {
 	public $methods = array('like', 'json', 'add', 'form', 'list', 'goto');
+	public $config  = null;
 	public function __construct() {
-		$this->id = (int) $_GET['id'];
+		$this->config = iCMS::$config['comment'];
+		$this->id     = (int) $_GET['id'];
 	}
 	public function API_goto() {
 		$appid = (int) $_GET['appid'];
@@ -73,7 +75,7 @@ class commentApp {
 
 	}
 	public function ACTION_add() {
-		if (!iCMS::$config['comment']['enable']) {
+		if (!$this->config['enable']) {
 			iPHP::code(0, 'iCMS:comment:close', 0, 'json');
 		}
 
@@ -81,7 +83,7 @@ class commentApp {
 		user::get_cookie() OR iPHP::code(0, 'iCMS:!login', 0, 'json');
 		$seccode = iS::escapeStr($_POST['seccode']);
 
-		if (iCMS::$config['comment']['seccode']) {
+		if ($this->config['seccode']) {
 			iPHP::core("Seccode");
 			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
@@ -108,7 +110,7 @@ class commentApp {
 		$ip = iPHP::getIp();
 		$userid = user::$userid;
 		$username = user::$nickname;
-		$status = iCMS::$config['comment']['examine'] ? '0' : '1';
+		$status = $this->config['examine'] ? '0' : '1';
 		$up = '0';
 		$down = '0';
 		$quote = '0';
@@ -119,7 +121,7 @@ class commentApp {
 		$id = iDB::insert('comment', $data);
 		iDB::query("UPDATE `#iCMS@__article` SET comments=comments+1 WHERE `id` ='{$iid}' limit 1");
 		user::update_count($userid, 1, 'comments');
-		if (iCMS::$config['comment']['examine']) {
+		if ($this->config['examine']) {
 			iPHP::code(0, 'iCMS:comment:examine', $id, 'json');
 		}
 		iPHP::code(1, 'iCMS:comment:success', $id, 'json');

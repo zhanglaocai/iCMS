@@ -52,14 +52,12 @@ function modal_tplfile(el,a){
         <li><a href="#setting-thumb" data-toggle="tab">缩略图</a></li>
         <li><a href="#setting-watermark" data-toggle="tab">水印</a></li>
         <li><a href="#setting-user" data-toggle="tab">用户</a></li>
-        <li><a href="#setting-publish" data-toggle="tab">发布</a></li>
-        <li><a href="#setting-comment" data-toggle="tab">评论</a></li>
         <li><a href="#setting-time" data-toggle="tab">时间</a></li>
         <li><a href="#setting-other" data-toggle="tab">其它</a></li>
         <li><a href="#setting-patch" data-toggle="tab">更新</a></li>
         <li><a href="#setting-grade" data-toggle="tab">高级</a></li>
         <li><a href="#setting-mail" data-toggle="tab">邮件</a></li>
-        <?php APPS::setting('tabs');?>
+        <?php //APPS::setting('tabs');?>
       </ul>
     </div>
     <div class="widget-content nopadding iCMS-setting">
@@ -67,10 +65,10 @@ function modal_tplfile(el,a){
         <div id="setting" class="tab-content">
           <?php include iPHP_APP_DIR.'/admincp/template/setting.base.php';?>
           <?php
-          $app_path = APPS::setting('content');
-          foreach ($app_path as $key => $path) {
-            include $path;
-          }
+          // $app_path = APPS::setting();
+          // foreach ($app_path as $key => $path) {
+          //   include $path;
+          // }
           ?>
         </div>
         <div class="form-actions">

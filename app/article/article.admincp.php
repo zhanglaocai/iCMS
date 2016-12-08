@@ -14,8 +14,9 @@ defined('iPHP') OR exit('What are you doing?');
 iPHP::app('article.class');
 
 class articleAdmincp{
-    public $callback    = array();
-    public $chapter     = false;
+    public $callback = array();
+    public $chapter  = false;
+    public $config   = null;
 
     function __construct() {
         $this->appid       = iCMS_APP_ARTICLE;
@@ -25,14 +26,20 @@ class articleAdmincp{
         $this->category    = $this->categoryApp->category;
         $this->_postype    = '1';
         $this->_status     = '1';
+        $this->config      = iCMS::$config['article'];
+
         define('TAG_APPID',$this->appid);
 
     }
-    function do_setting(){
-        include admincp::view('setting','admincp');
-        // $setting = admincp::app('setting');
-        // $setting->view($this);
+    function do_config(){
+        $setting = admincp::app('setting');
+        $setting->app($this->appid);
     }
+    function do_save_config(){
+        $setting = admincp::app('setting');
+        $setting->save($this->appid);
+    }
+
     function do_add(){
         $_GET['cid'] && admincp::CP($_GET['cid'],'ca','page');//添加权限
         $rs      = array();
@@ -49,7 +56,7 @@ class articleAdmincp{
                 }else{
                     $adRs['body'] = htmlspecialchars($adRs['body']);
                     if(substr($adRs['body'], 0,19)=='#--iCMS.Markdown--#'){
-                        iCMS::$config['article']['editor'] = true;
+                        $this->config['editor'] = true;
                         $adRs['body'] = substr($adRs['body'], 19);
                     }
                     $adIdArray = array($adRs['id']);
@@ -77,7 +84,7 @@ class articleAdmincp{
         $REFERER  = $strpos===false?'':substr(__REF__,$strpos);
         $defArray = iCache::get('iCMS/defaults');
         $propApp  = iPHP::app('prop.admincp');
-        if(iCMS::$config['article']['editor']){
+        if($this->config['editor']){
             include admincp::view("article.markdown");
         }else{
             include admincp::view("article.add");
@@ -527,7 +534,7 @@ class articleAdmincp{
             }
         }
 
-        if(iCMS::$config['article']['filter']) {
+        if($this->config['filter']) {
             $fwd = iCMS::filter($title);
             $fwd && iPHP::alert('标题中包含被系统屏蔽的字符，请重新填写。');
             $fwd = iCMS::filter($description);
@@ -536,7 +543,7 @@ class articleAdmincp{
             // $fwd && iPHP::alert('内容中包含被系统屏蔽的字符，请重新填写。');
         }
 
-        if(empty($aid) && iCMS::$config['publish']['repeatitle']) {
+        if(empty($aid) && $this->config['repeatitle']) {
             article::check_title($title) && iPHP::alert('该标题的文章已经存在!请检查是否重复');
         }
 
@@ -757,7 +764,7 @@ class articleAdmincp{
         if(isset($_POST['markdown'])){
             $body = '#--iCMS.Markdown--#'.$body;
         }else{
-            iCMS::$config['publish']['autoformat'] && $body = addslashes(autoformat($body));
+            $this->config['autoformat'] && $body = addslashes(autoformat($body));
         }
 
         article::$ID = $aid;
@@ -792,7 +799,7 @@ class articleAdmincp{
         $this->pic_indexid($body,$aid);
     }
     function autodesc($body){
-        if(iCMS::$config['publish']['autodesc'] && iCMS::$config['publish']['descLen']) {
+        if($this->config['autodesc'] && $this->config['descLen']) {
             is_array($body) && $bodyText   = implode("\n",$body);
             $bodyText   = str_replace('#--iCMS.PageBreak--#',"\n",$bodyText);
             $bodyText   = str_replace('</p><p>', "</p>\n<p>", $bodyText);
@@ -807,7 +814,7 @@ class articleAdmincp{
                 // $outputLen = strlen($output);
                 $output    = implode('',$resource);
                 $outputLen = strlen($output);
-                if($outputLen>iCMS::$config['publish']['descLen']){
+                if($outputLen>$this->config['descLen']){
                     // $pageNum++;
                     // $resource[$pageNum] = $p;
                     break;
@@ -816,7 +823,7 @@ class articleAdmincp{
                 }
             }
             $description = implode("\n", $resource);
-            // $description = csubstr($body_text,iCMS::$config['publish']['descLen']);
+            // $description = csubstr($body_text,$this->config['descLen']);
             // $description = addslashes(trim($description));
             // $description = str_replace('#--iCMS.PageBreak--#','',$description);
             unset($bodyText);

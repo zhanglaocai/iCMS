@@ -109,13 +109,13 @@ class iFS {
 			return true;
 		}
 	}
-    public static function del($fn, $check = 1,$yun=false) {
+    public static function del($fn, $check = 1,$cloud=false) {
 		$check && self::check($fn);
 
-        if(self::$config['yun']['enable'] && $yun){
-			iPHP::core('Yun');
-			iYun::init(self::$config['yun']);
-			iYun::delete($fn);
+        if(self::$config['cloud']['enable'] && $cloud){
+			iPHP::core('Cloud');
+			iCloud::init(self::$config['cloud']);
+			iCloud::delete($fn);
 		}
 
 		@chmod($fn, 0777);
@@ -563,9 +563,6 @@ class iFS {
 		$FileDir = ltrim($FileDir, './');
 		$RootPath = self::get_dir() . $FileDir;
 		$RootPath = rtrim($RootPath, '/') . '/';
-		// if(self::$config['yun']['enable'] && self::$config['yun']['local']){
-		//     return array($RootPath,$FileDir);
-		// }
 		self::mkdir($RootPath);
 		return array($RootPath, $FileDir);
 	}
@@ -619,11 +616,16 @@ class iFS {
 			}
 		}
 	}
-	public static function yun_write($frp) {
-		if (self::$config['yun']['enable']) {
-			iPHP::core('Yun');
-			iYun::init(self::$config['yun']);
-			iYun::write($frp);
+	public static function cloud_write($frp) {
+		if (self::$config['cloud']['enable']) {
+			iPHP::core('Cloud');
+			iCloud::init(self::$config['cloud']);
+			iCloud::write($frp,
+				array(
+					array("iFS","del"),
+					array($frp,1,false)
+				)
+			);
 		}
 	}
 
@@ -646,7 +648,7 @@ class iFS {
 		$FileRootPath = $RootPath . $FileName . "." . $FileExt;
 		self::write($FileRootPath, $filedata);
 		self::watermark($FileExt, $FileRootPath);
-		self::yun_write($FileRootPath);
+		self::cloud_write($FileRootPath);
 
 		$fid = self::insFileData(array(
 			'filename' => $FileName,
@@ -686,7 +688,7 @@ class iFS {
 		$FileRootPath = $RootPath . $FileName . "." . $FileExt;
 		self::write($FileRootPath, $filedata);
 		self::watermark($FileExt, $FileRootPath);
-		self::yun_write($FileRootPath);
+		self::cloud_write($FileRootPath);
 
 		$fid = self::insFileData(array(
 			'filename' => $file_md5,
@@ -760,7 +762,7 @@ class iFS {
 			$ret = self::save_ufile($tmp_file, $FileRootPath);
 			@unlink($tmp_file);
 			self::watermark($FileExt, $FileRootPath);
-			self::yun_write($FileRootPath);
+			self::cloud_write($FileRootPath);
 			if ($fid) {
 				self::upFileData(array(
 					'ofilename' => $oFileName,
@@ -936,7 +938,7 @@ class iFS {
 					self::mkdir(dirname($FileRootPath));
 					self::write($FileRootPath, $fdata);
 					self::watermark($FileExt, $FileRootPath);
-					self::yun_write($FileRootPath);
+					self::cloud_write($FileRootPath);
 				}
 				if ($ret == 'array') {
 					return self::_array(1, $frs, $RootPath);
@@ -947,7 +949,7 @@ class iFS {
 				$FileRootPath = $RootPath . $FileName;
 				self::write($FileRootPath, $fdata);
 				self::watermark($FileExt, $FileRootPath);
-				self::yun_write($FileRootPath);
+				self::cloud_write($FileRootPath);
 				$FileSize = @filesize($FileRootPath);
 				empty($FileSize) && $FileSize = 0;
 				$fid = self::insFileData(array(

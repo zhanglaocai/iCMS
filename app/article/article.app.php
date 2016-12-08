@@ -7,10 +7,13 @@
  * @$Id: article.app.php 2408 2014-04-30 18:58:23Z coolmoo $
  */
 class articleApp {
-	public $taoke = false;
+	public $taoke   = false;
 	public $methods = array('iCMS', 'article', 'clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
-    public $pregimg = "/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
-	public function __construct() {}
+	public $pregimg = "/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
+	public $config  = null;
+	public function __construct() {
+		$this->config = iCMS::$config['article'];
+	}
 
 	public function do_iCMS($a = null) {
 		return $this->article((int) $_GET['id'], isset($_GET['p']) ? (int) $_GET['p'] : 1);
@@ -189,7 +192,7 @@ class articleApp {
 				$article['body'] = $body[$pkey];
 			}
 
-			$total = $count + intval(iCMS::$config['article']['pageno_incr']);
+			$total = $count + intval($this->config['pageno_incr']);
 			$article['body'] = $this->keywords($article['body']);
             $article['body']     = $this->addBodyAD($article['body']);
 			$article['body'] = $this->taoke($article['body']);
@@ -249,15 +252,15 @@ class articleApp {
 				$img_array = array_unique($pic_array[0]);
 				foreach ($img_array as $key => $img) {
 					$img = str_replace('<img', '<img title="' . $article['title'] . '" alt="' . $article['title'] . '"', $img);
-					if (iCMS::$config['article']['pic_center']) {
+					if ($this->config['pic_center']) {
                         $img_replace[$key] = '<p class="article_pic">'.$img.'</p>';
 					} else {
 						$img_replace[$key] = $img;
 					}
-                    if(iCMS::$config['article']['pic_next'] && $total>1){
+                    if($this->config['pic_next'] && $total>1){
                         $clicknext = '<a href="'.$next_url.'"><b>'.iPHP::lang('iCMS:article:clicknext').' ('.$page.'/'.$total.')</b></a>';
 						$clickimg = '<a href="' . $next_url . '" title="' . $article['title'] . '" class="img">' . $img . '</a>';
-						if (iCMS::$config['article']['pic_center']) {
+						if ($this->config['pic_center']) {
                             $img_replace[$key] = '<p class="click2next">'.$clicknext.'</p>';
                             $img_replace[$key].= '<p class="article_pic">'.$clickimg.'</p>';
 						} else {

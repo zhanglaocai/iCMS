@@ -7,17 +7,17 @@
 * @site http://www.iiiphp.com
 * @licence http://www.iiiphp.com/license
 * @version 1.0.1
-* @package iYun
-* @$Id: iYun.class.php 2408 2014-04-30 18:58:23Z coolmoo $
+* @package iCloud
+* @$Id: iCloud.class.php 2408 2014-04-30 18:58:23Z coolmoo $
 */
-class iYun{
+class iCloud{
     public static $config = null;
     public static $error  = null;
 
     public static function init($config) {
         self::$config = $config;
     }
-    public static function yun($vendor=null) {
+    public static function sdk($vendor=null) {
         if($vendor===null) return false;
 
         $conf = self::$config['sdk'][$vendor];
@@ -28,12 +28,12 @@ class iYun{
             return false;
         }
     }
-    public static function write($frp){
+    public static function write($frp,$local=null){
         if(!self::$config['enable']) return false;
 
         foreach ((array)self::$config['sdk'] as $vendor => $conf) {
             $fp     = ltrim(iFS::fp($frp,'-iPATH'),'/');
-            $client = self::yun($vendor);
+            $client = self::sdk($vendor);
             if($client){
                 $res    = $client->uploadFile($frp,$conf['Bucket'],$fp);
                 $res    = json_decode($res,true);
@@ -48,7 +48,7 @@ class iYun{
             }
         }
         if(self::$config['local']){
-            iFS::del($frp,1,false);
+            $value = call_user_func_array($local[0],(array)$local[1]);
         }
     }
     public static function delete($frp) {
@@ -56,7 +56,7 @@ class iYun{
 
         foreach ((array)self::$config['sdk'] as $vendor => $conf) {
             $fp     = ltrim(iFS::fp($frp,'-iPATH'),'/');
-            $client = self::yun($vendor);
+            $client = self::sdk($vendor);
             if($client){
                 $res = $client->delete($conf['Bucket'],$fp);
                 $res = json_decode($res,true);

@@ -67,6 +67,12 @@ class settingApp{
         $config['apps'] = $this->apps();
         $this->write($config);
     }
+    public static function head($title=null){
+        include admincp::view("setting.head","admincp");
+    }
+    public static function foot(){
+        include admincp::view("setting.foot","admincp");
+    }
     /**
      * [app 其它应用配置接口]
      * @param  integer $appid [应用ID]
@@ -75,7 +81,7 @@ class settingApp{
     function app($appid=0,$name=null){
         $name===null && $name = admincp::$APP_NAME;
         $config = $this->get($appid,$name);
-        include admincp::view($name.".config");
+        include admincp::view($name.".setting");
     }
     /**
      * [save 其它应用配置保存]
@@ -152,9 +158,7 @@ class settingApp{
         $this->set(iCMS::$config[$k],$k,0);
         $this->write();
     }
-    function view($that){
+    function view(){
         include admincp::view('setting',null,true);
-        // $app =
-        // print_r(admincp::$APP_NAME);
     }
 }

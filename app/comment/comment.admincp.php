@@ -13,7 +13,16 @@ iPHP::app('user.class','static');
 iPHP::app('apps.class','static');
 class commentAdmincp{
     function __construct() {
-        $this->id = (int)$_GET['id'];
+        $this->appid = iCMS_APP_COMMENT;
+        $this->id    = (int)$_GET['id'];
+    }
+    function do_config(){
+        $setting = admincp::app('setting');
+        $setting->app($this->appid);
+    }
+    function do_save_config(){
+        $setting = admincp::app('setting');
+        $setting->save($this->appid);
     }
     function do_iCMS($appid=0){
         $this->categoryApp = iPHP::app('category.admincp',$appid);

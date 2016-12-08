@@ -271,7 +271,7 @@ $(function(){
                   <i class="fa fa-bookmark"></i>(<?php echo $value['chapter'];?>)
                   <?php } ?>
                 </div>
-                <?php if($value['pic'] && iCMS::$config['publish']['showpic']){ ?>
+                <?php if($value['pic'] && $this->config['showpic']){ ?>
                 <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $value['id'] ; ?>" data-toggle="modal" title="预览"><img src="<?php echo iFS::fp($value['pic'],'+http'); ?>" style="height:120px;"/></a>
                 <?php } ?>
               </td>

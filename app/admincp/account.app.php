@@ -9,6 +9,7 @@
 * @version 6.0.0
 * @$Id: account.app.php 634 2013-04-03 06:02:53Z coolmoo $
 */
+// class accountApp extends admincp{
 class accountApp{
     function __construct() {
         $this->uid      = (int)$_GET['id'];

@@ -163,8 +163,8 @@ class filesApp{
     	if($rs){
             $rs->filepath = rtrim($rs->path,'/').'/'.$rs->filename.'.'.$rs->ext;
             $FileRootPath = iFS::fp($rs->filepath,"+iPATH");
+            iDB::query("DELETE FROM `#iCMS@__filedata` WHERE `id` = '$id' {$sql};");
 	    	if(iFS::del($FileRootPath)){
-                iDB::query("DELETE FROM `#iCMS@__filedata` WHERE `id` = '$id' {$sql};");
                 $msg = 'success:#:check:#:文件删除完成!';
 	    		$_GET['ajax'] && iPHP::json(array('code'=>1,'msg'=>$msg));
 	    	}else{
