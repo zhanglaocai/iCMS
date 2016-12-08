@@ -205,10 +205,13 @@
             var cookie_end = document.cookie.indexOf(";", cookie_start);
             return cookie_start == -1 ? '' : unescape(document.cookie.substring(cookie_start + name.length + 1, (cookie_end > cookie_start ? cookie_end : document.cookie.length)));
         },
-        random: function(len) {
+        random: function(len,ischar) {
             len = len || 16;
-            var chars = "abcdefhjmnpqrstuvwxyz23456789ABCDEFGHJKLMNPQRSTUVWYXZ",
-                code = '';
+            var chars = "abcdefhjmnpqrstuvwxyz23456789ABCDEFGHJKLMNPQRSTUVWYXZ";
+            if(ischar){
+                var chars = "abcdefhjmnpqrstuvwxyz";
+            }
+            var code = '';
             for (i = 0; i < len; i++) {
                 code += chars.charAt(Math.floor(Math.random() * chars.length))
             }
