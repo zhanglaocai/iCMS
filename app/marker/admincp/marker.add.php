@@ -53,7 +53,7 @@ iCMS.select('pid',"<?php echo $rs['pid']?$rs['pid']:0 ; ?>");
             </div>
           </div>
           <div class="clearfloat mb10"></div>
-            <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.editor-6.0.0.js"></script>
+            <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.ueditor.js"></script>
             <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/ueditor/ueditor.all.min.js"></script>
             <a id="cleanupEditor-btn" class="btn btn-inverse hide" href="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</a>
             <a id="createEditor-btn" class="btn btn-success" href="javascript:createEditor();"><i class="fa fa-check"></i> 使用编辑器</a>

@@ -11,7 +11,7 @@ admincp::head();
 <script type="text/javascript">
 window.iCMS.config.catchRemoteImageEnable = <?php echo $this->config['catch_remote']=="1"?'true':'false';?>;
 </script>
-<script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.editor-6.0.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.ueditor.js"></script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/ueditor/ueditor.all.min.js"></script>
 <script type="text/javascript">
 $(function(){
@@ -165,7 +165,7 @@ function delEditorPage(){
     var index = p.val();
 	}
   s.remove();
-  UE.delEditor("iCMS-editor-"+i);
+  iCMS.editor.destroy(i);
   //iCMS.editor.get(i).destroy();
   $("#iCMS-editor-"+i).remove();
   $("#editor-"+i).remove();
@@ -252,6 +252,7 @@ function _modal_dialog(cancel_text){
         <input name="postype" type="hidden" value="<?php echo $rs['postype'] ; ?>" />
         <input name="REFERER" type="hidden" value="<?php echo $REFERER ; ?>" />
         <input name="chapter" type="hidden" value="<?php echo $rs['chapter']; ?>" />
+        <input name="WYSIWYG" type="hidden" value="ueditor" />
         <div id="article-add" class="tab-content">
           <div id="article-add-base" class="tab-pane active">
             <div class="input-prepend"> <span class="add-on">栏 目</span>

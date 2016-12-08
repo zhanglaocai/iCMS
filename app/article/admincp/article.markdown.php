@@ -18,7 +18,7 @@ admincp::head();
 .editormd-dialog-container .editormd-btn, .editormd-dialog-container button, .editormd-dialog-container input[type=submit], .editormd-dialog-footer .editormd-btn, .editormd-dialog-footer button, .editormd-dialog-footer input[type=submit], .editormd-form .editormd-btn, .editormd-form button, .editormd-form input[type=submit]{padding: 1px 2px;}
 </style>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/editor.md/editormd.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.editor.md-6.0.0.js"></script>
+<script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.editormd.js"></script>
 <script type="text/javascript">
 $(function(){
   iCMS.editor.create();
@@ -26,7 +26,7 @@ $(function(){
 	$(".iCMS-editor-page").change(function(){
 		$(".iCMS-editor").hide();
 		$("#editor-"+this.value).show();
-    iCMS.editor.get(this.value).focus();
+    iCMS.editor.create(this.value).focus();
 		$(".iCMS-editor-page").val(this.value).trigger("chosen:updated");
 	});
   iCMS.select('pid',"<?php echo $rs['pid']?trim($rs['pid']):0 ; ?>");
@@ -43,17 +43,21 @@ $(function(){
 	$("#cid").change(function() {
     var cid = this.value;
 		$.getJSON("<?php echo APP_URI; ?>",{'do':'getmeta','cid':cid},function(prop){
+      var metahtml='';
       $.each(prop,function(n,v){
         var mdId='md_'+cid+'_'+n;
         if($("#"+mdId).length==0){
-          var MD_Box='<div class="MD_Box" id="'+mdId+'">'+
+          metahtml+='<div class="MD_Box" id="'+mdId+'">'+
           '<div class="input-prepend input-append">  '+
-          '<span class="add-on">'+v+'</span><textarea  id="md_'+n+'" name="metadata['+n+']" class="metadata span6" style="height: 100px;"></textarea>'+
+                          '<span class="add-on">'+v+'</span>'+
+                          '<textarea  id="md_'+n+'" name="metadata['+n+']" class="metadata span6" style="height: 100px;"></textarea>'+
           '<a class="btn btn-small delMD"><i class="fa fa-trash-o"></i> 删除</a>'+
-          '</div><div class="clearfloat mb10"></div></div>';
-          $("#article-add-metadata").html(MD_Box);
+                        '</div>'+
+                        '<div class="clearfloat mb10"></div>'+
+                      '</div>';
         }
-      })
+      });
+      $("#article-add-metadata").html(metahtml);
 		});
 	});
   $("#article-add-metadata").on("click",".delMD",function(){
@@ -61,13 +65,14 @@ $(function(){
   });
   $('#ischapter').click(function(){
     var checkedStatus = $(this).prop("checked"),chapter = $("input[name=chapter]").val();
-    $('#chapterText').text(checkedStatus?'章节标题':'副标题')
+    subtitleToggle (checkedStatus);
     if(!checkedStatus && chapter>1){
       return confirm('您之前添加过其它章节!确定要取消章节模式?');
     }
   })
 	$("#iCMS-article").submit(function(){
-		if($("#cid option:selected").val()=="0"){
+    var cid = $("#cid option:selected").val();
+		if(cid=="0"){
       $("#cid").focus();
 			iCMS.alert("请选择所属栏目");
 			return false;
@@ -87,11 +92,11 @@ $(function(){
 				return false;
 			}
 		}
-    if($('#ischapter').prop("checked") && $("#subtitle").val()==''){
-      $("#subtitle").focus();
-      iCMS.alert("章节模式下 章节标题不能为空!");
-      return false;
-    }
+    // if($('#ischapter').prop("checked") && $("#subtitle").val()==''){
+    //   $("#subtitle").focus();
+    //   iCMS.alert("章节模式下 章节标题不能为空!");
+    //   return false;
+    // }
 	});
 
 });
@@ -125,9 +130,35 @@ function addEditorPage(){
 	//iCMSed.cleanup(iCMSed.id);
 	var index	= parseInt($(".iCMS-editor-page option:last").val()),n	= index+1;
 	$(".iCMS-editor").hide();
-	$("#editor-"+index).after('<div class="iCMS-editor" id="editor-'+n+'"><textarea type="text/plain" id="iCMS-editor-'+n+'" name="body[]"></textarea></div>');
+	$("#editor-"+index).after(
+    '<div class="iCMS-editor" id="editor-'+n+'">'+
+      '<div class="chapter-title hide">'+
+        '<input name="adid[]" id="adid-'+n+'" type="hidden" value="" />'+
+        '<div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>'+
+            '<input type="text"  id="chapter-title-'+n+'" disabled="true" name="chaptertitle[]" class="span6" value="" />'+
+        '</div>'+
+        '<div class="clearfloat mb10"></div>'+
+      '</div>'+
+      '<textarea type="text/plain" id="iCMS-editor-'+n+'" name="body[]"></textarea>'+
+    '</div>'
+  );
 	$(".iCMS-editor-page").append('<option value="'+n+'">第 '+n+' 页</option>').val(n).trigger("chosen:updated");
 	iCMS.editor.create(n).focus();
+  var checkedStatus = $('#ischapter').prop("checked");
+  subtitleToggle (checkedStatus);
+}
+function subtitleToggle (checkedStatus) {
+  if(checkedStatus){
+    $(".subtitle-box").hide();
+    $("input",".subtitle-box").attr("disabled","disabled");
+    $(".chapter-title").show();
+    $("input",".chapter-title").removeAttr("disabled");
+  }else{
+    $(".subtitle-box").show();
+    $("input",".subtitle-box").removeAttr("disabled");
+    $(".chapter-title").hide();
+    $("input",".chapter-title").attr("disabled","disabled");
+  }
 }
 function delEditorPage(){
 	if($(".iCMS-editor-page:eq(0) option").length==1) return;
@@ -140,8 +171,8 @@ function delEditorPage(){
     var index = p.val();
 	}
   s.remove();
-  iCMS.editor.get(i).editor.remove();
-
+  iCMS.editor.destroy(i);
+  //iCMS.editor.get(i).destroy();
   $("#iCMS-editor-"+i).remove();
   $("#editor-"+i).remove();
 
@@ -213,7 +244,6 @@ function _modal_dialog(cancel_text){
       <ul class="nav nav-tabs" id="article-add-tab">
         <li class="active"><a href="#article-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
         <li><a href="#article-add-publish" data-toggle="tab"><i class="fa fa-rocket"></i> 发布设置</a></li>
-        <li><a href="#article-add-metadata" data-toggle="tab"><i class="fa fa-cog"></i> 扩展属性</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding iCMS-article-add">
@@ -224,12 +254,11 @@ function _modal_dialog(cancel_text){
         <input name="_pid" type="hidden" value="<?php echo $rs['pid']; ?>" />
 
         <input name="aid" type="hidden" value="<?php echo $this->id ; ?>" />
-        <input name="adid" type="hidden" value="<?php echo $adRs['id']; ?>" />
         <input name="userid" type="hidden" value="<?php echo $rs['userid'] ; ?>" />
         <input name="postype" type="hidden" value="<?php echo $rs['postype'] ; ?>" />
         <input name="REFERER" type="hidden" value="<?php echo $REFERER ; ?>" />
         <input name="chapter" type="hidden" value="<?php echo $rs['chapter']; ?>" />
-        <input name="markdown" type="hidden" value="editor.md" />
+        <input name="WYSIWYG" type="hidden" value="editor.md" />
         <div id="article-add" class="tab-content">
           <div id="article-add-base" class="tab-pane active">
             <div class="input-prepend"> <span class="add-on">栏 目</span>
@@ -244,11 +273,12 @@ function _modal_dialog(cancel_text){
             </div>
             <div class="input-prepend"> <span class="add-on">状 态</span>
               <select name="status" id="status" class="chosen-select span2">
-                <option value="0"> 草稿 </option>
-                <option value="1"> 正常 </option>
-                <option value="2"> 回收站 </option>
-                <option value="3"> 待审核 </option>
-                <option value="4"> 未通过 </option>
+                <option value="0"> 草稿 [status='0']</option>
+                <option value="1"> 正常 [status='1']</option>
+                <option value="2"> 回收站 [status='2']</option>
+                <option value="3"> 待审核 [status='3']</option>
+                <option value="4"> 未通过 [status='4']</option>
+                <?php echo admincp::getProp("status") ; ?>
               </select>
             </div>
             <div class="clearfloat mb10"></div>
@@ -293,16 +323,34 @@ function _modal_dialog(cancel_text){
             <div class="input-prepend input-append"> <span class="add-on">缩略图</span>
               <input type="text" name="pic" class="span6" id="pic" value="<?php echo $rs['pic'] ; ?>"/>
               <?php admincp::picBtnGroup("pic",$this->id);?>
+              <span class="add-on" title="远程文件不执行本地化"><input type="checkbox" name="pic_http"/> <s>http</s></span>
+              <script>
+              <?php if(iFS::checkHttp($rs['pic'])){ ?>
+                $('[name="pic_http"]').prop('checked','checked');
+              <?php } ?>
+              </script>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图2</span>
               <input type="text" name="mpic" class="span6" id="mpic" value="<?php echo $rs['mpic'] ; ?>"/>
               <?php admincp::picBtnGroup("mpic",$this->id);?>
+              <span class="add-on" title="远程文件不执行本地化"><input type="checkbox" name="mpic_http" /> <s>http</s></span>
+              <script>
+              <?php if(iFS::checkHttp($rs['mpic'])){ ?>
+                $('[name="mpic_http"]').prop('checked','checked');
+              <?php } ?>
+              </script>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图3</span>
               <input type="text" name="spic" class="span6" id="spic" value="<?php echo $rs['spic'] ; ?>"/>
               <?php admincp::picBtnGroup("spic",$this->id);?>
+              <span class="add-on" title="远程文件不执行本地化"><input type="checkbox" name="spic_http"/> <s>http</s></span>
+              <script>
+              <?php if(iFS::checkHttp($rs['spic'])){ ?>
+                $('[name="spic_http"]').prop('checked','checked');
+              <?php } ?>
+              </script>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">关键字</span>
@@ -317,10 +365,15 @@ function _modal_dialog(cancel_text){
               <textarea name="description" id="description" class="span6" style="height: 150px;"><?php echo $rs['description'] ; ?></textarea>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on" id="chapterText">副标题</span>
+            <?php if(!$rs['chapter']){?>
+            <div class="subtitle-box">
+              <input name="adid" type="hidden" value="<?php echo $adRs['id']; ?>" />
+              <div class="input-prepend "> <span class="add-on">副标题</span>
                 <input type="text" name="subtitle" class="span6" id="subtitle" value="<?php echo $adRs['subtitle'] ; ?>" />
               </div>
             <div class="clearfloat mb10"></div>
+            </div>
+            <?php } ?>
             <div class="input-prepend input-append">
               <div class="btn-group">
                 <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
@@ -341,6 +394,7 @@ function _modal_dialog(cancel_text){
                 <a class="btn" href="javascript:mergeEditorPage();"><i class="fa fa-align-justify"></i> 合并编辑</a>
                 <a class="btn" href="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</a>
                 <a class="btn" href="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</a>
+                <a class="btn" href="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</a>
               </div>
               <!--div class="btn-group">
                 <a class="btn" href="<?php echo __ADMINCP__; ?>=files&do=multi&from=modal&callback=sweditor" data-toggle="modal" title="批量上传"><i class="fa fa-upload"></i> 批量上传</a>
@@ -349,16 +403,16 @@ function _modal_dialog(cancel_text){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append">
-              <!-- <span class="add-on wauto">
+              <span class="add-on wauto">
               <input name="ischapter" type="checkbox" id="ischapter" value="1" <?php if($rs['chapter']) echo 'checked="checked"'  ?>/>
-              章节模式</span>  -->
+              章节模式</span>
               <span class="add-on wauto">
               <input name="inbox" type="checkbox" id="inbox" value="1" <?php if($rs['status']=="0")echo 'checked="checked"'  ?>/>
               存为草稿</span>
               <span class="add-on wauto">
-              <input name="remote" type="checkbox" id="remote" value="1" <?php if(iCMS::$config['publish']['remote']=="1")echo 'checked="checked"'  ?>/>
+              <input name="remote" type="checkbox" id="remote" value="1" <?php if($this->config['remote']=="1")echo 'checked="checked"'  ?>/>
               下载远程图片</span><span class="add-on wauto">
-              <input name="autopic" type="checkbox" id="autopic" value="1" <?php if(iCMS::$config['publish']['autopic']=="1")echo 'checked="checked"'  ?>/>
+              <input name="autopic" type="checkbox" id="autopic" value="1" <?php if($this->config['autopic']=="1")echo 'checked="checked"'  ?>/>
               提取缩略图 </span><span class="add-on wauto">
               <input name="dellink" type="checkbox" id="dellink" value="1"/>
               清除链接 </span>  <span class="add-on wauto">
@@ -375,6 +429,25 @@ function _modal_dialog(cancel_text){
                 $idNum  = $i+1;
             ?>
             <div class="iCMS-editor<?php if($i){ echo ' hide';}?>" id="editor-<?php echo $idNum;?>">
+              <div class="chapter-title
+                <?php
+                  if(!$rs['chapter']){
+                    echo ' hide';
+                  }
+                ?>
+              ">
+                <input name="adid[]" id="adid-<?php echo $idNum;?>"
+                  <?php
+                    if(!$rs['chapter']){
+                      echo ' disabled="true"';
+                    }
+                  ?>
+                type="hidden" value="<?php echo $adIdArray[$i] ; ?>" />
+                <div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>
+                    <input type="text" id="chapter-title-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> name="chaptertitle[]" class="span6" value="<?php echo $cTitArray[$i] ; ?>" />
+                </div>
+                <div class="clearfloat mb10"></div>
+              </div>
               <textarea type="text/plain" id="iCMS-editor-<?php echo $idNum;?>" name="body[]"><?php echo $bodyArray[$i];?></textarea>
             </div>
             <?php }?>
@@ -391,20 +464,45 @@ function _modal_dialog(cancel_text){
                 <a class="btn" href="javascript:mergeEditorPage();"><i class="fa fa-align-justify"></i> 合并分页</a>
                 <a class="btn" href="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</a>
                 <a class="btn" href="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</a>
+                <a class="btn" href="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</a>
               </div>
             </div>
           </div>
           <div id="article-add-publish" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">发布时间</span>
-              <input id="pubdate" class="<?php echo $readonly?'':'ui-datepicker'; ?>" value="<?php echo $rs['pubdate'] ; ?>"  name="pubdate" type="text" style="width:230px" <?php echo $readonly ; ?>/>
+              <input id="pubdate" class="<?php echo $readonly?'':'ui-datepicker'; ?>" value="<?php echo $rs['pubdate']?$rs['pubdate']:get_date(0,'Y-m-d H:i:s') ; ?>"  name="pubdate" type="text" style="width:230px" <?php echo $readonly ; ?>/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">排序</span>
-              <input id="ordernum" class="span2" value="<?php echo _int($rs['ordernum']) ; ?>" name="ordernum" type="text"/>
+              <input id="ordernum" class="span2" value="<?php echo $rs['ordernum']?$rs['ordernum']:time() ; ?>" name="ordernum" type="text"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">权重</span>
-              <input id="weight" class="span2" value="<?php echo _int($rs['weight']) ; ?>" name="weight" type="text"/>
+              <input id="weight" class="span2" value="<?php echo $rs['weight']?$rs['weight']:time(); ?>" name="weight" type="text"/>
+            </div>
+            <div class="clearfix mb10"></div>
+            <div class="input-prepend input-append">
+              <span class="add-on">总点击数</span>
+              <input type="text" name="hits" class="span1" id="hits" value="<?php echo $rs['hits']?$rs['hits']:'0'; ?>"/>
+              <span class="add-on">当天点击数</span>
+              <input type="text" name="hits_today" class="span1" id="hits_today" value="<?php echo $rs['hits_today']?$rs['hits_today']:'0'; ?>"/>
+              <span class="add-on">昨天点击数</span>
+              <input type="text" name="hits_yday" class="span1" id="hits_yday" value="<?php echo $rs['hits_yday']?$rs['hits_yday']:'0'; ?>"/>
+              <span class="add-on">周点击</span>
+              <input type="text" name="hits_week" class="span1" id="hits_week" value="<?php echo $rs['hits_week']?$rs['hits_week']:'0'; ?>"/>
+              <span class="add-on">月点击</span>
+              <input type="text" name="hits_month" class="span1" id="hits_month" value="<?php echo $rs['hits_month']?$rs['hits_month']:'0'; ?>"/>
+            </div>
+            <div class="clearfix mb10"></div>
+            <div class="input-prepend input-append">
+              <span class="add-on">收藏数</span>
+              <input type="text" name="favorite" class="span1" id="favorite" value="<?php echo $rs['favorite']?$rs['favorite']:'0'; ?>"/>
+              <span class="add-on">评论数</span>
+              <input type="text" name="comments" class="span1" id="comments" value="<?php echo $rs['comments']?$rs['comments']:'0'; ?>"/>
+              <span class="add-on">点赞数</span>
+              <input type="text" name="good" class="span1" id="good" value="<?php echo $rs['good']?$rs['good']:'0'; ?>"/>
+              <span class="add-on">点踩数</span>
+              <input type="text" name="bad" class="span1" id="bad" value="<?php echo $rs['bad']?$rs['bad']:'0'; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">模板</span>

@@ -84,7 +84,7 @@ class articleAdmincp{
         $REFERER  = $strpos===false?'':substr(__REF__,$strpos);
         $defArray = iCache::get('iCMS/defaults');
         $propApp  = iPHP::app('prop.admincp');
-        if($this->config['editor']){
+        if($this->config['WYSIWYG']=='editor.md'){
             include admincp::view("article.markdown");
         }else{
             include admincp::view("article.add");
@@ -761,7 +761,7 @@ class articleAdmincp{
         $body = preg_replace(array('/<script.+?<\/script>/is','/<form.+?<\/form>/is'),'',$body);
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
 
-        if(isset($_POST['markdown'])){
+        if($_POST['WYSIWYG']=='editor.md'){
             $body = '#--iCMS.Markdown--#'.$body;
         }else{
             $this->config['autoformat'] && $body = addslashes(autoformat($body));

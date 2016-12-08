@@ -33,7 +33,7 @@ settingApp::head("文章系统设置");
 <div class="input-prepend">
   <span class="add-on">编辑器</span>
   <div class="switch" data-on-label="Editor.md" data-off-label="UEditor">
-    <input type="checkbox" data-type="switch" name="config[editor]" id="article_editor" <?php echo $config['editor']?'checked':''; ?>/>
+    <input type="checkbox" data-type="switch" name="config[WYSIWYG]" id="article_WYSIWYG" <?php echo $config['WYSIWYG']?'checked':''; ?>/>
   </div>
 </div>
 <span class="help-inline">Editor.md为markdown编辑器,默认使用UEditor</span>
