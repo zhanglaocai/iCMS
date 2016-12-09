@@ -122,10 +122,11 @@ class category {
 
     public function data($C){
         if($C['url']){
+            $C['iurl']   = array('href'=>$C['url']);
             $C['outurl'] = $C['url'];
-            $C['url']    = '';
+        }else{
+            $C['iurl'] = (array) iURL::get('category',$C);
         }
-        $C['iurl'] = (array) iURL::get('category',$C);
         $C['url']  = $C['iurl']['href'];
         $C['link'] = "<a href='{$C['url']}'>{$C['name']}</a>";
 
