@@ -160,6 +160,7 @@ class spider{
             'msg'   =>$msg,
         );
         $a && $data = array_merge($data,(array)$a);
+        iFS::mkdir(iPHP_APP_CACHE.'/log/');
         file_put_contents(iPHP_APP_CACHE.'/log/spider.error.'.date("Y-m-d").'.log',var_export($data,1)."\n\n",FILE_APPEND);
         return $msg;
     }

@@ -1,166 +1,237 @@
-var iFormer ={
-  // element:{
-      //   input:'<input/>',
-  //   textarea:'<textarea/>',
-  //   // input:function (type) {
-  //   //   type = type||'text';
-  //   //   // button
-  //   //   // checkbox
-  //   //   // file
-  //   //   // hidden
-  //   //   // image
-  //   //   // password
-  //   //   // radio
-  //   //   // reset
-  //   //   // submit
-  //   //   // text
-      //   //   return '<input type="'+type+'"/>'
-  //   // },
-  //   // textarea:function(){
-  //   //   return '<textarea/>';
-  //   // }
-  // },
-  ui:function (t) {
-    var tags = {
-          input:'<input/>',
-      textarea:'<textarea/>'
-    };
-    return $(tags[t]);
-  },
-  render:function (a) {
-    if(a.field=='br'){
-          return $('<div class="clearfloat"></div>');
-    }
-    var $div = $('<div class="input-prepend"></div>'),
-    $label   = $('<label class="add-on"></label>'),
-    $help   = $('<span class="help-inline">asdasdasd</span>'),
-    $ui     = this.ui(a.ui);
-
-    $label.text(a.label);
-    a.type  = a.type||'text'
-    a.class = a.class||'span6'
-    a.value = a.value||''
-    $ele.prop(a)
-    $div.append($label);
-    $div.append($ui);
-    // $div.push($help);
-
-    $div.dblclick(function(event) {
-      event.preventDefault();
-      var me = this;
-      iFormer.field.edit(a,function(ui){
-          ui.name  = 'iformer['+ui.id+']';
-          ui.field = a.field;
-          var ndiv  = iFormer.render(ui);
-          $div.replaceWith(ndiv);
-      });
-    });
-    return $div;
-  },
-  unserialize:function(query) {
-      var pairs = query.split("&");                 // Break at ampersand
-      for(var i = 0; i < pairs.length; i++) {
-          var pos = pairs[i].indexOf('=');          // Look for "name=value"
-          if (pos == -1) continue;                  // If not found, skip
-          var argname = pairs[i].substring(0,pos);  // Extract the name
-          var value = pairs[i].substring(pos+1);    // Extract the value
-          value = decodeURIComponent(value);        // Decode it, if needed
-          args[argname] = value;                    // Store as a property
-      }
-      return args;                                  // Return the object
-  },
-  field:{
-    freset:function(a) {
-      // a.reset();
-      document.getElementById("field_form").reset();
-      // $("#field_form",$(a))[0].reset();
-      $(".chosen-select",$(a)).trigger("chosen:updated");
+var iFormer = {
+    ui:{
+        class:'iFormer-ui'
     },
-    edit:function (data,callback){
-      var me = this;
-      var fbox = document.getElementById("field_box");
-      me.freset(fbox);
+    widget: function(t) {
+        var tags = {
+            input: '<input/>',
+            textarea: '<textarea/>'
+        };
+        if(tags[t]){
+          return $(tags[t]);
+        }else{
+          return $('<'+t+'/>');
+        }
+    },
+    render: function(obj,data) {
+        var $container = this.widget('div').addClass(this.ui.class);
+        var $fdata     = this.widget('input').prop({'type':'hidden','name':'data[]'});
 
-      $("#label",fbox).val(data.label);
-      $("#id",fbox).val(data.id);
-      $("#class",fbox).val(data.class);
-      $("#value",fbox).val(data.value);
 
-      return iCMS.dialog({
-          id:'apps-field-dialog',
-          title: 'iCMS - 字段设置',
-          content:fbox,
-          okValue: '确定',
-          ok: function () {
-            var ui = {
-              'label':$("#label",fbox).val(),
-              'id':$("#id",fbox).val(),
-              'class':$("#class",fbox).val(),
-              'value':$("#value",fbox).val()
+        if (obj['tag'] == 'br') {
+            $container.addClass('pagebreak');
+            $fdata.val('br');
+            $container.append($fdata);
+            return $container;
+        }
+        var $div = this.widget('div').addClass('input-prepend'),
+        $label   = this.widget('span').addClass('add-on'),
+        $help    = this.widget('span').addClass('help-inline'),
+        $elem    = this.widget(obj['tag']);
+console.log(obj);
+
+        obj['class'] = obj['class']||'span3';
+
+        $elem.attr({
+            'id': obj['id'],
+            'name': obj['name'],
+            'type': obj['type'] || 'text',
+            'class': obj['class'],
+            'value': obj['value'] || ''
+        });
+
+        $label.text(obj['label']);
+        $help.text(obj['help']);
+
+        // $elem.prop(obj)
+        $div.append($label);
+        $div.append($elem);
+
+        $container.append($div);
+        $container.append($help);
+
+        if(data){
+            $fdata.val(data);
+        }else{
+            $fdata.val(this.urlEncode(obj));
+        }
+
+        $container.append($fdata);
+
+        iFormer.edit($container);
+
+        return $container;
+    },
+
+    urlEncode:function(param, key) {
+      if(param==null) return '';
+
+      var query = [],t = typeof (param);
+      if (t == 'string' || t == 'number' || t == 'boolean') {
+        query.push(key + '=' + encodeURIComponent(param));
+      } else {
+        for (var i in param) {
+          var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);
+          var q = this.urlEncode(param[i], k);
+          query.push(q);
+        }
+      }
+      return query.join('&');
+    },
+    urlDecode: function(query) {
+        var args = [],pairs = query.split("&");
+        for (var i = 0; i < pairs.length; i++) {
+            var pos = pairs[i].indexOf('=');
+            if (pos == -1) continue;
+            var argname = pairs[i].substring(0, pos);
+            argname = decodeURIComponent(argname);
+            var value = pairs[i].substring(pos + 1);
+            value = decodeURIComponent(value);
+
+            if(argname.indexOf('[]')!=-1){
+              argname = argname.replace('[]', '');
+              if(!args[argname]){
+                args[argname] = [];
+              }
+              args[argname].push(value);
+            }else{
+              args[argname] = value;
             }
-            param = $("form",fbox).serialize();
+        };
+        return args; // Return the object
+    },
+    callback: function(func,ret,param) {
+        if (typeof(func) === "function") {
+            func(ret,param);
+        } else {
+            var msg = ret;
+            if (typeof(ret) === "object") {
+                msg = ret.msg || 'error';
+            }
+            var UI = require("ui");
+            UI.alert(msg);
+        }
+    },
+    freset: function(a) {
+        // a.reset();
+        document.getElementById("field_form").reset();
+        // $("#field_form",$(a))[0].reset();
+        $(".chosen-select", $(a)).trigger("chosen:updated");
+    },
+    edit: function($container) {
+        $container.dblclick(function(event) {
+            event.preventDefault();
+            var me   = $(this);
+            var data = $("[name='data[]']",$container).val();
+            var obj  = iFormer.urlDecode(data);
+            iFormer.edit_dialog(obj, function(param,qt) {
+                var render = iFormer.render(param,qt);
+                $container.replaceWith(render);
+            });
+        });
+    },
+    edit_dialog: function(obj, func) {
+        var me = this;
+        var fbox = document.getElementById("field_box");
 
-            // if(!label){
-            //   iCMS.alert("请填写字段名称!");
-            //   return false;
-            // }
-            // if(!fname){
-            //   iCMS.alert("请填写字段名!");
-            //   return false;
-            // }
-            console.log(param);
-            callback(ui);
-            // if(field.length){
-            //   if(!ed){
-            //     iCMS.alert("该字段名已经存在");
-            //     return false;
-            //   }
-            //   $('[name="fname[]"]',field).text(fname);
-            //   $('[name="fields[]"]',field).val(param);
-            // }else{
-              // var html = '<?php echo $this->field_html(); ?>';
-              // html = html.replace('{fid}',fid)
-              // .replace('{fname}',fname)
-              // .replace('{param}',param);
-              // $('#field-new').append(html);
-            // }
-            me.freset(fbox);
-            return true;
-          },
-          cancelValue: '取消',
-          cancel: function(){
-            me.freset(fbox);
-            return true;
-          }
-      });
+        for(var i in obj) {
+            $("#iFormer-"+i, fbox).val(obj[i]);
+            if(typeof(obj[i])==='object'){
+                $("#iFormer-"+i, fbox).trigger("chosen:updated");
+            }
+        }
+
+
+        return iCMS.dialog({
+            id: 'apps-field-dialog',
+            title: 'iCMS - 表单字段设置',
+            content: fbox,
+            okValue: '确定',
+            ok: function() {
+                var data = $.extend(obj,{
+                    'label': $("#iFormer-label", fbox).val(),
+                    'name': $("#iFormer-name", fbox).val(),
+                    'class': $("#iFormer-class", fbox).val(),
+                    'help': $("#iFormer-help", fbox).val(),
+                    'value': $("#iFormer-value", fbox).val()
+                });
+
+                param = $("form", fbox).serialize();
+
+                if(!data.label){
+                  iCMS.alert("请填写字段名称!");
+                  return false;
+                }
+                if(!data.name){
+                  iCMS.alert("请填写字段名!");
+                  return false;
+                }
+                func(data,param);
+                me.freset(fbox);
+                return true;
+
+
+                // if(field.length){
+                //   if(!ed){
+                //     iCMS.alert("该字段名已经存在");
+                //     return false;
+                //   }
+                //   $('[name="fname[]"]',field).text(fname);
+                //   $('[name="fields[]"]',field).val(param);
+                // }else{
+                // var html = '<?php echo $this->field_html(); ?>';
+                // html = html.replace('{fid}',fid)
+                // .replace('{fname}',fname)
+                // .replace('{param}',param);
+                // $('#field-new').append(html);
+                // }
+            },
+            cancelValue: '取消',
+            cancel: function() {
+                me.freset(fbox);
+                return true;
+            }
+        });
     }
-  }
 };
-$( function() {
-  $( "#custom_field_list" ).sortable({
-    placeholder: "ui-state-highlight",
-    receive:function(event, ui){
-      var helper = ui.helper;
-      var ui     = helper.attr('ui');
-      var field  = helper.attr('field');
-      var type   = helper.attr('type');
-      var label  = helper.attr('label');
-      var id     = iCMS.random(6,true);
-      var html   = iFormer.render({
-        'id':id,
-        'label':(label||'表单')+id,
-        'name':'iformer['+id+']',
-        'ui':ui,
-        'type':type,
-        'class':'span6',
-      });
-      helper.replaceWith(html);
-    }
-  });
-  $( "[i='layout'],[i='field']").draggable({
-    connectToSortable: "#custom_field_list",
-    helper: "clone",
-    revert: "invalid",
-  });
-  $("#custom_field_list,.fields-container").disableSelection();
+$(function() {
+    $("#custom_field_list").sortable({
+        placeholder: "ui-state-highlight",
+        cancel: ".clearfloat",
+        start:function(event, ui) {
+
+        },
+        stop:function(event, ui) {
+            var target = $(event.target);
+            target.append('<div class="clearfloat"></div>');
+        },
+        receive: function(event, ui) {
+            var helper = ui.helper,
+            tag        = helper.attr('tag'),
+            field      = helper.attr('field'),
+            type       = helper.attr('type'),
+            label      = helper.attr('label'),
+            len        = helper.attr('len'),
+            id         = iCMS.random(6, true);
+            var html   = iFormer.render({
+                'id': id,
+                'label': (label || '表单') + id,
+                'field': field,
+                'name': id,
+                'tag': tag,
+                'type': type,
+                'len': len
+            });
+            helper.replaceWith(html);
+            var target = $(event.target);
+            $(".clearfloat",target).remove();
+        }
+    });
+    $("[i='layout'],[i='field']").draggable({
+        placeholder: "ui-state-highlight",
+        connectToSortable: "#custom_field_list",
+        helper: "clone",
+        revert: "invalid",
+    });
+    $("#custom_field_list,.fields-container").disableSelection();
 });

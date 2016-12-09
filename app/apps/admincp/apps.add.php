@@ -86,6 +86,7 @@ admincp::head();
               <div class="col-left">
                 <ul id="custom_field_list">
                 </ul>
+                <div class="clearfloat"></div>
               </div>
               <div class="col-right">
                 <div class="fields-container">
@@ -97,8 +98,8 @@ admincp::head();
                   <div id="fields-tab-content" class="tab-content">
                     <div id="fields-base" class="tab-pane active">
                       <ul>
-                        <li i="layout" ui="br">
-                          <span class="fa fa-list-ul"></span>
+                        <li i="layout" tag="br" class="br">
+                          <span class="fa fa-arrows-h"></span>
                           <p>换行符</p>
                         </li>
                         <!--                         <li i="layout" fieldtype="row">
@@ -113,24 +114,23 @@ admincp::head();
                           <span class="fa fa-list-ul"></span>
                           <p>一行三列</p>
                         </li> -->
-                        <li i="field" ui="input" field="varchar" length="255">
+                        <li i="field" tag="input" field="varchar" len="255">
                           <span class="fb-icon fb-icon-input"></span>
                           <p>单行</p>
                         </li>
-                        <li i="field" ui="input" field="varchar" length="5120">
+                        <li i="field" tag="input" field="varchar" len="5120">
                           <span class="fb-icon fb-icon-input"></span>
                           <p>单行长文本</p>
                         </li>
-                        <li i="field" ui="textarea" field="text">
+                        <li i="field" tag="textarea" field="text">
                           <span class="fb-icon fb-icon-textarea"></span>
                           <p>多行</p>
                         </li>
-                        <li i="field" ui="input" field="varchar" length="255" label="邮箱">
+                        <li i="field" tag="input" field="varchar" len="255" label="邮箱">
                           <span class="emailIcon fb-icon fb-icon-Mail"></span>
                           <p class="emailText">邮箱</p>
                         </li>
-
-                        <li i="field" ui="editor" field="mediumtext">
+                        <li i="field" tag="editor" field="mediumtext">
                           <span class="textAreaIcon fb-icon fb-icon-RichText"></span>
                           <p class="richtextConent">富文本</p>
                         </li>
@@ -234,135 +234,132 @@ admincp::head();
       </div>
     </div>
   </div>
-  <style>
-  #custom_field_list{padding-bottom: 50px;}
-  .ui-state-highlight{border: 1px dotted black;}
-  #custom_field_list .row-fluid{height: 35px;}
-  #custom_field_list .row-fluid div{background-color: #efefef;}
-  #custom_field_list .clearfloat{border: 1px dotted #333;height: 10px;}
-  </style>
 
-<div id="field_box" class="hide" style="width:600px;">
-  <form id="field_form">
-    <div class="input-prepend">
-      <span class="add-on">字段名称</span>
-      <input type="text" name="label" class="span3" id="label" value=""/>
-    </div>
-    <span class="help-inline">* 必填</span>
-    <div class="input-prepend">
-      <span class="add-on">字 段 名</span>
-      <input type="text" name="id" class="span3" id="id" value=""/>
-    </div>
-    <span class="help-inline">* 必填</span>
-    <div class="input-prepend">
-      <span class="add-on">数据长度</span>
-      <input type="text" name="length" class="span3" id="length" value=""/>
-    </div>
-    <span class="help-inline"><i class="fa fa-question-circle"></i> 最大数据的长度,一个中文字算3个字节.</span>
-    <div class="clearfix mb10"></div>
-    <div class="input-prepend">
-      <span class="add-on">默 认 值</span>
-      <input type="text" name="value" class="span3" id="value" value=""/>
-    </div>
-    <span class="help-inline">选填</span>
-    <div class="clearfix"></div>
-    <div class="input-prepend">
-      <span class="add-on">字段说明</span>
-      <input type="text" name="tip" class="span3" id="tip" value=""/>
-    </div>
-    <span class="help-inline">选填</span>
-    <div class="input-prepend">
-      <span class="add-on">字段样式</span>
-      <input type="text" name="class" class="span3" id="class" value=""/>
-    </div>
-    <span class="help-inline">选填</span>
-    <div class="clearfix"></div>
-    <div class="field-tab-box">
-      <ul class="nav nav-tabs" id="field-tab">
-        <li class="active"><a href="#field-tab-1" data-toggle="tab"><i class="fa fa-check-square-o"></i> 验证</a></li>
-        <li><a href="#field-tab-2" data-toggle="tab"><i class="fa fa-cog"></i> 数据处理</a></li>
-        <li><a href="#field-tab-3" data-toggle="tab"><i class="fa fa-info-circle"></i> 提示</a></li>
-      </ul>
-      <div class="tab-content">
-        <div id="field-tab-1" class="tab-pane active">
-          <div class="input-prepend">
-            <span class="add-on">数据验证</span>
-            <select name="validate[]" id="validate" class="chosen-select" style="width:360px;" data-placeholder="请选择数据验证方式..." multiple="multiple">
-              <option value=''>不验证</option>
-              <option value='empty'>不能为空</option>
-              <option value='num'>只能为数字</option>
-              <option value='len'>字数检测</option>
-              <option value='repeat'>检查重复</option>
-              <option value='email'>E-Mail地址</option>
-              <option value='url'>网址</option>
-              <option value='phone'>手机号码</option>
-              <option value='telphone'>联系电话</option>
-            </select>
+  <div id="field_box" class="hide" style="width:600px;">
+    <form id="field_form">
+      <input type="hidden" name="id" id="iFormer-id"/>
+      <input type="hidden" name="tag" id="iFormer-tag"/>
+      <input type="hidden" name="field" id="iFormer-field"/>
+      <div class="input-prepend">
+        <span class="add-on">字段名称</span>
+        <input type="text" name="label" class="span3" id="iFormer-label" value=""/>
+      </div>
+      <span class="help-inline">* 必填</span>
+      <div class="input-prepend">
+        <span class="add-on">字&nbsp;&nbsp;段&nbsp;名</span>
+        <input type="text" name="name" class="span3" id="iFormer-name" value=""/>
+      </div>
+      <span class="help-inline">* 必填</span>
+      <div class="clearfix"></div>
+      <div class="input-prepend">
+        <span class="add-on">默&nbsp;&nbsp;认&nbsp;值</span>
+        <input type="text" name="value" class="span3" id="iFormer-value" value=""/>
+      </div>
+      <span class="help-inline">选填</span>
+      <div class="clearfix"></div>
+      <div class="input-prepend">
+        <span class="add-on">字段说明</span>
+        <input type="text" name="help" class="span3" id="iFormer-help" value=""/>
+      </div>
+      <span class="help-inline">选填</span>
+      <div class="input-prepend">
+        <span class="add-on">字段样式</span>
+        <input type="text" name="class" class="span3" id="iFormer-class" value=""/>
+      </div>
+      <span class="help-inline">选填</span>
+      <div class="input-prepend">
+        <span class="add-on">数据长度</span>
+        <input type="text" name="len" class="span3" id="iFormer-len" value=""/>
+      </div>
+      <span class="help-inline">选填</span>
+
+      <div class="clearfix"></div>
+      <div class="field-tab-box">
+        <ul class="nav nav-tabs" id="field-tab">
+          <li class="active"><a href="#field-tab-1" data-toggle="tab"><i class="fa fa-check-square-o"></i> 验证</a></li>
+          <li><a href="#field-tab-2" data-toggle="tab"><i class="fa fa-cog"></i> 数据处理</a></li>
+          <li><a href="#field-tab-3" data-toggle="tab"><i class="fa fa-info-circle"></i> 提示</a></li>
+        </ul>
+        <div class="tab-content">
+          <div id="field-tab-1" class="tab-pane active">
+            <div class="input-prepend">
+              <span class="add-on">数据验证</span>
+              <select name="validate[]" id="iFormer-validate" class="chosen-select" style="width:360px;" data-placeholder="请选择数据验证方式..." multiple="multiple">
+                <option value=''>不验证</option>
+                <option value='empty'>不能为空</option>
+                <option value='num'>只能为数字</option>
+                <option value='len'>字数检测</option>
+                <option value='repeat'>检查重复</option>
+                <option value='email'>E-Mail地址</option>
+                <option value='url'>网址</option>
+                <option value='phone'>手机号码</option>
+                <option value='telphone'>联系电话</option>
+              </select>
+            </div>
+            <div class="clearfix"></div>
+            <div class="input-prepend input-append">
+              <span class="add-on">验证范围</span>
+              <span class="add-on">最小值</span>
+              <input type="text" name="validate_min" class="span1" id="iFormer-validate_min" value=""/>
+              <span class="add-on">-</span>
+              <input type="text" name="validate_max" class="span1" id="iFormer-validate_max" value=""/>
+              <span class="add-on">最大值</span>
+            </div>
           </div>
-          <div class="clearfix"></div>
-          <div class="input-prepend input-append">
-            <span class="add-on">验证范围</span>
-            <span class="add-on">最小值</span>
-            <input type="text" name="validate_min" class="span1" id="validate_min" value=""/>
-            <span class="add-on">-</span>
-            <input type="text" name="validate_max" class="span1" id="validate_max" value=""/>
-            <span class="add-on">最大值</span>
+          <div id="field-tab-2" class="tab-pane">
+            <div class="input-prepend">
+              <span class="add-on">数据处理</span>
+              <select name="fun[]" id="iFormer-fun" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
+                <option value=''>不处理</option>
+                <option value='html'>清除HTML</option>
+                <option value='format'>格式化HTML</option>
+                <option value='pinyin'>拼音</option>
+                <option value='explode-n'>分割成数组(换行符)</option>
+                <option value='explode-c'>分割成数组(,)</option>
+                <option value='strtolower'>小写字母</option>
+                <option value='strtoupper'>大写字母</option>
+                <option value='rand'>随机数</option>
+                <option value='json_encode'>数组转json</option>
+                <option value='base64'>base64</option>
+                <option value='serialize'>数组序列化</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div id="field-tab-2" class="tab-pane">
-          <div class="input-prepend">
-            <span class="add-on">数据处理</span>
-            <select name="fun[]" id="fun" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
-              <option value=''>不处理</option>
-              <option value='html'>清除HTML</option>
-              <option value='format'>格式化HTML</option>
-              <option value='pinyin'>拼音</option>
-              <option value='explode-n'>分割成数组(换行符)</option>
-              <option value='explode-c'>分割成数组(,)</option>
-              <option value='strtolower'>小写字母</option>
-              <option value='strtoupper'>大写字母</option>
-              <option value='rand'>随机数</option>
-              <option value='json_encode'>数组转json</option>
-              <option value='base64'>base64</option>
-              <option value='serialize'>数组序列化</option>
-            </select>
-          </div>
-        </div>
-        <div id="field-tab-3" class="tab-pane">
-          <span class="help-inline">支持bootstrap v2.3.2样式 或者请先定义css在填写样式名</span>
-          <div class="clearfix"></div>
-          <div class="input-prepend">
-            <span class="add-on">默认提示</span>
-            <input type="text" name="holder" class="span3" id="holder" value=""/>
-          </div>
-          <div class="input-prepend">
-            <span class="add-on">错误提示</span>
-            <input type="text" name="error" class="span3" id="error" value=""/>
-          </div>
-          <div class="input-prepend">
-            <span class="add-on">关联应用</span>
-            <input type="text" name="foreign" class="span3" id="foreign" value=""/>
+          <div id="field-tab-3" class="tab-pane">
+            <span class="help-inline">支持bootstrap v2.3.2样式 或者请先定义css在填写样式名</span>
+            <div class="clearfix"></div>
+            <div class="input-prepend">
+              <span class="add-on">默认提示</span>
+              <input type="text" name="holder" class="span3" id="iFormer-holder" value=""/>
+            </div>
+            <div class="input-prepend">
+              <span class="add-on">错误提示</span>
+              <input type="text" name="error" class="span3" id="iFormer-error" value=""/>
+            </div>
+            <div class="input-prepend">
+              <span class="add-on">关联应用</span>
+              <input type="text" name="app" class="span3" id="iFormer-app" value=""/>
+            </div>
           </div>
         </div>
       </div>
+    </form>
+  </div>
+  <div class="hide" id="type_config_box">
+    <div class="input-prepend input-append">
+      <span class="add-on">选项</span>
+      <input type="text" name="option_name" class="span3" id="option_name" value=""/>
+      <span class="add-on">选项值</span>
+      <input type="text" name="option_value" class="span3" id="option_value" value=""/>
+      <a href="javascript:;" class="btn btn-primary add_option"/><i class="fa fa-plus"></i> 增加</a>
     </div>
-  </form>
-</div>
-<div class="hide" id="type_config_box">
-  <div class="input-prepend input-append">
-    <span class="add-on">选项</span>
-    <input type="text" name="option_name" class="span3" id="option_name" value=""/>
-    <span class="add-on">选项值</span>
-    <input type="text" name="option_value" class="span3" id="option_value" value=""/>
-    <a href="javascript:;" class="btn btn-primary add_option"/><i class="fa fa-plus"></i> 增加</a>
+    <hr />
+    <div class="input-prepend">
+      <span class="add-on">选项预览</span>
+      <select name="option_list" id="option_list" class="chosen-select" style="width:285px;" data-placeholder="请在上面添加选项...">
+      </select>
+    </div>
   </div>
-  <hr />
-  <div class="input-prepend">
-    <span class="add-on">选项预览</span>
-    <select name="option_list" id="option_list" class="chosen-select" style="width:285px;" data-placeholder="请在上面添加选项...">
-    </select>
-  </div>
-</div>
 <script type="text/javascript">
 $(function(){
   $("#field-new").on("click",'a[name="delete"]',function(event) {
@@ -413,6 +410,5 @@ $(function(){
     field_dialog();
   });
 })
-
 </script>
-<?php admincp::foot();?>
+  <?php admincp::foot();?>
