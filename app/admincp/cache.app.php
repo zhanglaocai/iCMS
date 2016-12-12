@@ -59,9 +59,9 @@ class cacheApp{
     	iPHP::clear_compiled_tpl();
     	$dialog && iPHP::success('清理完成');
     }
-    function do_artCount($dialog=true){
-        $app = iPHP::app('category.admincp');
-    	$app->recount();
+    function do_article_count($dialog=true){
+        $app = iPHP::app('article.category.admincp');
+    	$app->re_app_count();
     	$dialog && iPHP::success('更新完成');
     }
     function do_app($dialog=true){

@@ -13,16 +13,14 @@
  *
  */
 
-;
-(function($) {
+;(function($) {
 	function load(settings, root, child, container) {
 		$.getJSON(settings.url, {root: root}, function(response) {
 			$("#tree-loading").remove();
 			function createNode(parent) {
 				var html = template('tree_li', this.data);
-				// var current = $("<li/>").attr("id", this.id || "").html(this.text).appendTo(parent);
 				var current = $("<li/>")
-				.attr("id", this.id || "")
+				.attr("id", this.id)
 				.html(html)
 				.appendTo(parent)
 				.mouseover(function() {
@@ -37,46 +35,9 @@
 					var branch = $("<ul/>").appendTo(current);
 					if (this.hasChildren) {
 						current.addClass("hasChildren");
-						createNode.call({
-							text: "数据加载中...请稍候!",
-							id: "iCMS-category-Tree-0",
-							children: []
-						}, branch);
 					}
 					if (this.children && this.children.length) {
 						$.each(this.children, createNode, [branch])
-					}
-					if (settings.sortable) {
-						branch.sortable({
-							//items: ".row-fluid",
-							helper: "clone",
-							placeholder: "ui-state-highlight",
-							delay: 100,
-							//appendTo:'#tree > li',
-							//containment: 'parent',
-							start: function(event, ui) {
-								var ul = ui.item.parent();
-								$(ui.item).show().css({
-									'opacity': 0.5
-								});
-							},
-							stop: function(event, ui) {
-								$(ui.item).css({
-									'opacity': 1
-								});
-								var ul = ui.item.parent();
-								var ord = $(".ordernum > input", ul);
-								var ordernum = new Array();
-								ord.each(function(i) {
-									$(this).val(i);
-									var id = $(this).attr("data-id");
-									ordernum.push(id);
-								});
-								$.post(upordurl, {
-									ordernum: ordernum
-								});
-							}
-						}).disableSelection();
 					}
 				}
 			}
@@ -84,6 +45,37 @@
 			$(container).treeview({
 				add: child
 			});
+
+			function update_ordernum (ui) {
+				var ul = ui.item.parent();
+				var ordernum = new Array();
+				$(".ordernum > input", ul).each(function(i) {
+					$(this).val(i);
+					var cid = $(this).attr("cid");
+					ordernum.push(cid);
+				});
+				$.post(upordurl, {
+					ordernum: ordernum
+				});
+			}
+			if (settings.sortable) {
+				$(container).sortable({
+					delay: 300,
+					helper: "clone",
+					placeholder: "ui-state-highlight",
+					start: function(event, ui) {
+						$(ui.item).show().css({
+							'opacity': 0.5
+						});
+					},
+					stop: function(event, ui) {
+						$(ui.item).css({
+							'opacity': 1
+						});
+						update_ordernum (ui);
+					}
+				}).disableSelection();
+			}
 		});
 	}
 
@@ -93,7 +85,7 @@
 			return proxied.apply(this, arguments);
 		}
 		var container = this;
-		load(settings, "0", this, container);
+		load(settings,0,this, container);
 		var userToggle = settings.toggle;
 		return proxied.call(this, $.extend({}, settings, {
 			collapsed: true,

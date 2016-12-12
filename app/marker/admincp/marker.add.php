@@ -34,7 +34,7 @@ iCMS.select('pid',"<?php echo $rs['pid']?$rs['pid']:0 ; ?>");
           <div class="input-prepend"> <span class="add-on">标记属性</span>
             <select name="pid" id="pid" class="chosen-select span3" data-placeholder="请选择标记属性...">
               <option value="0">普通标记[pid='0']</option>
-              <?php echo admincp::getProp("pid") ; ?>
+              <?php echo admincp::prop_get("pid") ; ?>
             </select>
           </div>
           <div class="clearfloat mb10"></div>

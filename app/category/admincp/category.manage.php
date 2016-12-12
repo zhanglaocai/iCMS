@@ -18,7 +18,7 @@ admincp::head();
 <script id="tree_li" type="text/html">
 <div class="row-fluid status{{cid}}">
     <span class="ordernum">
-        <input type="text" cid="{{cid}}" name="ordernum[{{cid}}]" value="{{cid}}" style="width:32px;"/>
+        <input type="text" cid="{{cid}}" name="ordernum[{{cid}}]" value="{{ordernum}}" style="width:32px;"/>
     </span>
     <span class="name">
         <input {{if rootid=="0"}}style="font-weight:bold"{{/if}} type="text" name="name[{{cid}}]" value="{{name}}"/>
@@ -57,7 +57,6 @@ admincp::head();
     </span>
 </div>
 </script>
-
 <script type="text/javascript">
 var upordurl="<?php echo $this->category_uri; ?>&do=updateorder";
 $(function(){
@@ -67,26 +66,7 @@ $(function(){
       sortable: true,
       animated: "medium",
       control:"#treecontrol",
-    }).sortable({
-        helper: "clone",
-        placeholder: "ui-state-highlight",
-        delay: 100,
-        start: function(event, ui) {
-            $(ui.item).show().css({'opacity': 0.5});
-        },
-        stop: function(event, ui) {
-            $(ui.item).css({'opacity': 1});
-            var pt = ui.item.parent();
-            var ord = $(".ordernum > input",pt);
-            var ordernum = new Array();
-            ord.each(function(i) {
-                $(this).val(i);
-            	var id = $(this).attr("data-id");
-            	ordernum.push(id);
-            });
-            $.post(upordurl,{ordernum: ordernum});
-        }
-    }).disableSelection();
+    });
 });
 </script>
 <?php } ?>

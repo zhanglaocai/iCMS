@@ -53,7 +53,7 @@ $(function(){
           <div class="input-prepend"> <span class="add-on">属性</span>
             <select name="pid" id="pid" class="chosen-select span3">
               <option value="0">普通推送[pid='0']</option>
-              <?php echo admincp::getProp("pid",$rs['pid']) ; ?>
+              <?php echo admincp::prop_get("pid",$rs['pid']) ; ?>
             </select>
           </div>
           <div class="clearfloat mb10"></div>
@@ -77,7 +77,7 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图</span>
               <input type="text" name="pic" class="span6" id="pic" value="<?php echo $rs['pic'] ; ?>"/>
-              <?php admincp::picBtnGroup("pic");?>
+              <?php admincp::pic_btn_group("pic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">链 接</span>
@@ -97,7 +97,7 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图</span>
               <input type="text" name="pic2" class="span6" id="pic2" value="<?php echo $rs['pic2'] ; ?>"/>
-              <?php admincp::picBtnGroup("pic2");?>
+              <?php admincp::pic_btn_group("pic2");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">链 接</span>
@@ -117,7 +117,7 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图</span>
               <input type="text" name="pic3" class="span6" id="pic3" value="<?php echo $rs['pic3'] ; ?>"/>
-              <?php admincp::picBtnGroup("pic3");?>
+              <?php admincp::pic_btn_group("pic3");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">链 接</span>

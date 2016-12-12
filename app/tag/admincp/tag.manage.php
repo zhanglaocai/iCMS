@@ -65,7 +65,7 @@ $(function(){
         <div class="input-prepend"> <span class="add-on">标签属性</span>
           <select name="pid" id="pid" class="span2 chosen-select">
             <option value="-1">所有标签</option>
-            <?php echo $pid_select = admincp::getProp("pid") ; ?>
+            <?php echo $pid_select = admincp::prop_get("pid") ; ?>
           </select>
         </div>
         <div class="input-prepend input-append"> <span class="add-on">栏目</span>

@@ -85,7 +85,7 @@ class userAdmincp{
         }
         $rs     = iDB::all("SELECT * FROM `#iCMS@__user` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
-        $propArray = admincp::getProp("pid",null,'array');
+        $propArray = admincp::prop_get("pid",null,'array');
         include admincp::view("user.manage");
     }
     function do_save(){

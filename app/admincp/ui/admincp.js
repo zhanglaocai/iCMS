@@ -20,8 +20,9 @@ $(function() {
 
     $(':checkbox[data-type!=switch],:radio[data-type!=switch]').uniform();
     $(".chosen-select").chosen({
-        search_contains:true,
-        disable_search_threshold:30,
+        allow_single_deselect:true,
+        // search_contains:true,
+        disable_search_threshold:20,
         no_results_text:'没找到相关结果',
         placeholder_text_single:'请选择...',
         placeholder_text_multiple:'请选择(可多选)...'

@@ -35,12 +35,12 @@ class categoryAdmincp extends category{
      */
     protected $category_rule_list = array();
 
-    protected $_app              = 'content';
-    protected $_app_name         = '内容';
-    protected $_app_table        = 'content';
-    protected $_app_cid          = 'cid';
-    protected $_view_add          = 'category.add';
-    protected $_view_manage       = 'category.manage';
+    protected $_app         = 'content';
+    protected $_app_name    = '内容';
+    protected $_app_table   = 'content';
+    protected $_app_cid     = 'cid';
+    protected $_view_add    = 'category.add';
+    protected $_view_manage = 'category.manage';
 
     function __construct($appid = null,$dir=null) {
         $this->cid       = (int)$_GET['cid'];
@@ -163,7 +163,9 @@ class categoryAdmincp extends category{
         iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
         map::init('prop',iCMS_APP_CATEGORY);
 
-        $fields = array('rootid','pid','appid','ordernum','name','subname','password','title','keywords','description','dir',
+        $fields = array(
+            'rootid','pid','appid','ordernum','name','subname','password',
+            'title','keywords','description','dir',
             'mode','domain','url','pic','mpic','spic','htmlext',
             'rule','template','metadata',
             'hasbody','isexamine','issend','isucshow','status');
@@ -185,16 +187,15 @@ class categoryAdmincp extends category{
                     empty($url) && $dir = strtolower(pinyin($_name));
                 }
                 $mode=="2" && $this->check_dir($dir,$appid,$url);
-                $data['name']       = $_name;
-                $data['dir']        = $dir;
-                $data['userid']     = iMember::$userid;
-                $data['creator']    = iMember::$nickname;
-                $data['pubdate'] = time();
-                $data['count']      = '0';
-                $data['comments']   = '0';
-                $data['ordernum']   = $nkey;
-
+                $data['name']     = $_name;
+                $data['dir']      = $dir;
+                $data['userid']   = iMember::$userid;
+                $data['creator']  = iMember::$nickname;
+                $data['pubdate']  = time();
+                $data['count']    = '0';
+                $data['comments'] = '0';
                 $cid = iDB::insert('category',$data);
+                iDB::update('category', array('ordernum'=>$cid), array('cid'=>$cid));
                 $pid && map::add($pid,$cid);
 	            $this->cache(false,$this->appid);
 	            $this->cahce_one($cid);
@@ -258,7 +259,7 @@ class categoryAdmincp extends category{
                     $this->mergecontent($tocid,$cid);
                     $this->do_del($cid,false);
                 }
-                $this->update_count($tocid);
+                $this->update_app_count($tocid);
                 $this->cache(true,$this->appid);
                 iPHP::success('更新完成!','js:1');
             break;
@@ -328,7 +329,7 @@ class categoryAdmincp extends category{
             break;
             case 'recount':
                 foreach($id_array as $k=>$cid){
-                    $this->update_count($cid);
+                    $this->update_app_count($cid);
                 }
                 iPHP::success('操作成功!','js:1');
             break;
@@ -421,7 +422,7 @@ class categoryAdmincp extends category{
             iDB::query("DELETE FROM `#iCMS@__category` WHERE `cid` = '$cid'");
             iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `node` = '$cid' AND `appid` = '".$this->appid."';");
             iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$cid' AND `appid` = '".iCMS_APP_CATEGORY."' ;");
-            $this->del_cahce($cid);
+            $this->cahce_del($cid);
             $msg = '删除成功!';
         }else {
             $msg = '请先删除本'.$this->category_name.'下的子'.$this->category_name.'!';
@@ -434,8 +435,68 @@ class categoryAdmincp extends category{
 	 	echo $this->tree((int)$_GET["root"],$expanded);
     }
     function do_cache($dialog=true){
-        $this->cache(true,$this->appid);
+        $_count = $this->cache(true,$this->appid);
+        if($_count>1000){
+            // $this->do_cacheall($_count);
+        }else{
+            $this->cache_all(0,$_count);
+        }
         $dialog && iPHP::success('更新完成');
+   }
+    function do_cacheall($total){
+        $page    = (int)$_GET['page'];
+        $alltime = (int)$_GET['alltime'];
+
+        if(isset($_GET['total'])){
+            $total = (int)$_GET['total'];
+        }
+        $maxperpage = 100;
+        $totalpage  = ceil($total/$maxperpage);
+        $offset     = $page*$maxperpage;
+
+        $this->cache_all($offset,$maxperpage);
+
+        $use_time         = iPHP::timer_stop();
+        $query['total']   = $total;
+        $query['page']    = $page+1;
+        $query['alltime'] = $alltime+$use_time;
+        $loopurl = $this->loopurl($totalpage,$query);
+        $memory = memory_get_usage();
+        $msg = "共<span class='label label-info'>{$total}</span>个栏目,".
+        "将分成<span class='label label-info'>{$totalpage}</span>次完成".
+        "<hr />开始执行第<span class='label label-info'>".$query['page']."</span>次缓存更新,".
+        "共<span class='label label-info'>{$maxperpage}</span>个栏目";
+        $msg.="<hr />用时<span class='label label-info'>{$use_time}</span>秒,";
+        $msg.="使用内存:".iFS::sizeUnit($memory);
+        if($loopurl){
+            $moreBtn = array(
+                array("id"=>"btn_stop","text"=>"停止","url"=>APP_URI),
+                array("id"=>"btn_next","text"=>"继续","src"=>$loopurl,"next"=>true)
+            );
+            $dtime    = 0.5;
+            $all_time = ($totalpage-$query['page'])*$use_time+1;
+            $msg.="<hr />预计全部缓存更新还需要<span class='label label-info'>{$all_time}</span>秒";
+        }else{
+            $moreBtn = array(
+                array("id"=>"btn_next","text"=>"完成","url"=>APP_URI)
+            );
+            $dtime = 5;
+            $msg.="<hr />已全部生成完成<hr />总共用时<span class='label label-info'>".$query["alltime"]."</span>秒";
+        }
+        $updateMsg  = $page?true:false;
+        iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
+    }
+    function loopurl($total,$_query){
+        if ($total>0 && $_GET['page']<$total){
+            $url  = $_SERVER["REQUEST_URI"];
+            $urlA = parse_url($url);
+
+            parse_str($urlA["query"], $query);
+            $query              = array_merge($query, (array)$_query);
+            $urlA["query"]      = http_build_query($query);
+            $url    = $urlA["path"].'?'.$urlA["query"];
+            return $url;
+        }
     }
     function search_sql($cid,$field='cid'){
         if($cid){
@@ -529,7 +590,7 @@ class categoryAdmincp extends category{
                 $a && $html[] = $a;
             // }
         }
-        if($ret||($expanded && $cid!='source')){
+        if($ret||($expanded && $cid)){
             return $html;
         }
 
@@ -541,13 +602,6 @@ class categoryAdmincp extends category{
         $sql ="SELECT `dir` FROM `#iCMS@__category` where `dir` ='$dir' AND `appid`='$appid'";
         $cid && $sql.=" AND `cid` !='$cid'";
         iDB::value($sql) && empty($url) && iPHP::alert('该'.$this->category_name.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
-    }
-
-    function recount(){
-        $rs = iDB::all("SELECT `cid` FROM `#iCMS@__category` where `appid`='$this->appid'");
-        foreach ((array)$rs as $key => $value) {
-            $this->update_count($value['cid']);
-        }
     }
 
     function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false) {
@@ -579,10 +633,22 @@ class categoryAdmincp extends category{
         //iDB::query("UPDATE `#iCMS@__push` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
         iDB::query("UPDATE `#iCMS@__prop` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
     }
-    function update_count($cid){
+    function re_app_count(){
+        $rs = iDB::all("SELECT `cid` FROM `#iCMS@__category` where `appid`='$this->appid'");
+        foreach ((array)$rs as $key => $value) {
+            $this->update_app_count($value['cid']);
+        }
+    }
+    function update_app_count($cid){
         $cc = iDB::value("SELECT count(*) FROM `#iCMS@__".$this->_app_table."` where `".$this->_app_cid."`='$cid'");
         iDB::query("UPDATE `#iCMS@__category` SET `count` ='$cc' WHERE `cid` ='$cid'");
     }
+
+    public function update_count_one($cid,$math='+'){
+        $math=='-' && $sql = " AND `count`>0";
+        iDB::query("UPDATE `#iCMS@__category` SET `count` = count".$math."1 WHERE `cid` ='$cid' {$sql}");
+    }
+
     function batchbtn(){
         return '<li><a data-toggle="batch" data-action="mode"><i class="fa fa-cogs"></i> 访问模式</a></li>
                 <li class="divider"></li>

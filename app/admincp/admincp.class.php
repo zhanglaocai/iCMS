@@ -238,11 +238,11 @@ class admincp {
 	public static function foot() {
 		include self::view("admincp.footer",'admincp');
 	}
-	public static function picBtnGroup($callback, $indexid = 0, $type = 'pic') {
-		include self::view("admincp.picBtnGroup",'admincp');
+	public static function pic_btn_group($callback, $indexid = 0, $type = 'pic') {
+		include self::view("admincp.picbtngroup",'admincp');
 	}
 
-	public static function getProp($field, $val = NULL, /*$default=array(),*/ $out = 'option', $url = "", $type = "") {
+	public static function prop_get($field, $val = NULL, /*$default=array(),*/ $out = 'option', $url = "", $type = "") {
 		return iPHP::app('prop.admincp')->get_prop($field, $val, $out, $url, $type);
 	}
 	public static function files_modal_btn($title = '', $click = 'file', $target = 'template_index', $callback = '', $do = 'seltpl', $from = 'modal') {
@@ -271,5 +271,9 @@ class admincp {
 			}
 		}
 
+	}
+	public static function debug_info(){
+		$memory = memory_get_usage();
+		return "使用内存:".iFS::sizeUnit($memory)." 执行时间:".iPHP::timer_stop()."s";
 	}
 }

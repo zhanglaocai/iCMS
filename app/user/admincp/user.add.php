@@ -52,7 +52,7 @@ $(function(){
             <div class="input-prepend"> <span class="add-on">属 性</span>
               <select name="pid[]" id="pid" class="chosen-select span6" multiple="multiple">
                 <option value="0">普通用户[pid='0']</option>
-                <?php echo admincp::getProp("pid") ; ?>
+                <?php echo admincp::prop_get("pid") ; ?>
               </select>
             </div>
             <?php if($this->uid){;?>

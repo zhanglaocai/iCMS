@@ -88,7 +88,7 @@ class iURL {
         $html_dir = self::$config['html_dir'];
         $router   = self::$config['router'];
         $category = array();
-        $array    = $a;
+        $array    = (array)$a;
         $primary  = $router[$uri]['primary'];
         $rule     = $router[$uri]['rule'];
         $document_uri = $uri.'.php?';
@@ -98,7 +98,7 @@ class iURL {
                 $url     = $array['rule'];
                 break;
             case '1':
-                $category = (array)$array;
+                $category = $array;
                 $i->href  = $category['url'];
                 $url      = self::rule_data($category,'index');
                 break;
@@ -139,7 +139,7 @@ class iURL {
         if($i->href) return $i;
 
         if(strpos($url,'{PHP}')===false) {
-        	self::$uriArray	= array($array,$category,(array)$_category);
+        	self::$uriArray	= array($array,$category,$_category);
         	strpos($url,'{')===false OR $url = preg_replace_callback ("/\{(.*?)\}/",'__iurl_rule__',$url);
 
             $i->href = $url;

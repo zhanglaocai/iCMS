@@ -97,7 +97,7 @@ class tagAdmincp{
         }
         $rs     = iDB::all("SELECT * FROM `#iCMS@__tags` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
-        $propArray = admincp::getProp("pid",null,'array');
+        $propArray = admincp::prop_get("pid",null,'array');
     	include admincp::view("tag.manage");
     }
     function do_import(){

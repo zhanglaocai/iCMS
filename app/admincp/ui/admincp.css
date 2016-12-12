@@ -44,7 +44,7 @@ body{background-color:#EDEDED;color:#000;}
 
 /* chosen */
 
-/*.chosen-container{position: absolute;}*/
+.chosen-container{min-width: 120px;}
 .chosen-container .default{color:#999!important}
 .chosen-container-single .chosen-single,.chosen-container-multi .chosen-choices{
     background-image:none!important;
@@ -69,6 +69,7 @@ body{background-color:#EDEDED;color:#000;}
     -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(82,168,236,0.6);
     box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(82,168,236,0.6)
 }
+.chosen-results em{color: #08c;font-weight: bold;}
 .iCMS_dialog .ui-dialog-content .chosen-container{position:absolute;}
 
 /* uniform */

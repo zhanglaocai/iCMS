@@ -90,7 +90,7 @@ $(function(){
             <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>属性</span>
               <select name="pid[]" id="pid" class="chosen-select span6" data-placeholder="请选择<?php echo $this->category_name;?>属性..." multiple="multiple">
                 <option value="0">普通<?php echo $this->category_name;?>[pid='0']</option>
-                <?php echo admincp::getProp("pid") ; ?>
+                <?php echo admincp::prop_get("pid") ; ?>
               </select>
             </div>
             <div class="clearfloat mb10"></div>
@@ -111,17 +111,17 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图</span>
               <input type="text" name="pic" class="span6" id="pic" value="<?php echo $rs['pic'] ; ?>"/>
-              <?php admincp::picBtnGroup("pic");?>
+              <?php admincp::pic_btn_group("pic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图2</span>
               <input type="text" name="mpic" class="span6" id="mpic" value="<?php echo $rs['mpic'] ; ?>"/>
-              <?php admincp::picBtnGroup("mpic");?>
+              <?php admincp::pic_btn_group("mpic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图3</span>
               <input type="text" name="spic" class="span6" id="spic" value="<?php echo $rs['spic'] ; ?>"/>
-              <?php admincp::picBtnGroup("spic");?>
+              <?php admincp::pic_btn_group("spic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">SEO 标题</span>
@@ -153,7 +153,7 @@ $(function(){
           </div>
           <div id="category-add-url" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">访问模式</span>
-              <select name="mode" id="mode" class="chosen-select">
+              <select name="mode" id="mode" class="chosen-select span3">
                 <option value="0">动态</option>
                 <option value="1">静态</option>
                 <option value="2">伪静态</option>

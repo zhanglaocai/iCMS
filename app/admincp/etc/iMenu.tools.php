@@ -96,7 +96,7 @@
             "-": "-"
         }, {
             "caption": "重计栏目文章数",
-            "href": "cache&do=artCount",
+            "href": "cache&do=article_count",
             "icon": "refresh",
             "target": "iPHP_FRAME"
         }]
