@@ -47,10 +47,7 @@ class categoryAdmincp extends category{
         $this->appid     = '-1';
         $appid          && $this->appid = $appid;
         $_GET['appid']  && $this->appid = (int)$_GET['appid'];
-        parent::init($this->appid);
-        // $this->category_uri .='&appid='.$this->appid;
-        // $this->category_furi.='&appid='.$this->appid;
-        // $dir && admincp::set_app_tpl($dir);
+        parent::__construct($this->appid);
         $this->_view_tpl_dir = $dir;
     }
 
@@ -123,15 +120,15 @@ class categoryAdmincp extends category{
         $hasbody      = (int)$_POST['hasbody'];
         $hasbody OR $hasbody = $body?1:0;
 
-        if($_rootid_hash){
-            $_rootid = authcode($_rootid_hash);
-            if($rootid!=$_rootid){
-                iPHP::alert('非法数据提交!');
-            }else{
-                admincp::CP($_rootid,'a','alert');
-                exit;
-            }
-        }
+        // if($_rootid_hash){
+        //     $_rootid = authcode($_rootid_hash);
+        //     if($rootid!=$_rootid){
+        //         iPHP::alert('非法数据提交!');
+        //     }else{
+        //         admincp::CP($_rootid,'a','alert');
+        //         exit;
+        //     }
+        // }
         ($cid && $cid==$rootid) && iPHP::alert('不能以自身做为上级'.$this->category_name);
         empty($name) && iPHP::alert($this->category_name.'名称不能为空!');
 		if($metadata){
@@ -392,6 +389,28 @@ class categoryAdmincp extends category{
         $_count = count($rs);
         include admincp::view($this->_view_manage,$this->_view_tpl_dir);
     }
+    function do_copy(){
+        iDB::query("
+            INSERT INTO `#iCMS@__category` (
+                `name`,`dir`,
+               `rootid`, `pid`, `appid`, `userid`, `creator`,
+               `subname`, `ordernum`, `password`, `title`, `keywords`, `description`,
+               `url`, `pic`, `mpic`, `spic`, `count`, `mode`, `domain`, `htmlext`,
+               `rule`, `template`, `metadata`, `hasbody`, `comments`, `isexamine`, `issend`,
+               `isucshow`, `status`, `pubdate`
+            ) SELECT
+                CONCAT(`name`,'副本'),CONCAT(`dir`,'fuben'),
+                `rootid`, `pid`, `appid`, `userid`, `creator`,
+                `subname`, `ordernum`, `password`, `title`, `keywords`, `description`,
+                `url`, `pic`, `mpic`, `spic`, `count`, `mode`, `domain`, `htmlext`,
+                `rule`, `template`, `metadata`, `hasbody`, `comments`, `isexamine`, `issend`,
+                `isucshow`, `status`, `pubdate`
+            FROM `#iCMS@__category`
+            WHERE cid = '$this->cid'");
+        $cid = iDB::$insert_id;
+        iPHP::success('克隆完成,编辑此'.$this->category_name, 'url:' . APP_URI . '&do=add&cid=' . $cid);
+
+    }
     function do_del($cid = null,$dialog=true){
         $cid===null && $cid=(int)$_GET['cid'];
         admincp::CP($cid,'d','alert');
@@ -412,7 +431,7 @@ class categoryAdmincp extends category{
     }
     function do_ajaxtree(){
 		$expanded=$_GET['expanded']?true:false;
-	 	echo $this->tree($_GET["root"],$expanded);
+	 	echo $this->tree((int)$_GET["root"],$expanded);
     }
     function do_cache($dialog=true){
         $this->cache(true,$this->appid);
@@ -421,7 +440,7 @@ class categoryAdmincp extends category{
     function search_sql($cid,$field='cid'){
         if($cid){
             $cids  = (array)$cid;
-            $_GET['sub'] && $cids+=$this->get_ids($cid,true);
+            $_GET['sub'] && $cids+=iPHP::app("category")->get_ids($cid,true);
             $sql= iPHP::where($cids,$field);
         }
         return $sql;
@@ -463,18 +482,42 @@ class categoryAdmincp extends category{
         </div>';
         return $div;
     }
+    public static function tree_unset($C){
+        unset($C->rule,
+            $C->template,
+            $C->description,
+            $C->keywords,
+            $C->metadata,
+            $C->mpic,
+            $C->password,
+            $C->spic,
+            $C->title,
+            $C->subname,
+            $C->iurl,
+            $C->dir,
+            $C->hasbody,
+            $C->htmlext,
+            $C->isexamine,
+            $C->issend,
+            $C->isucshow,
+            $C->comments
+        );
+        return $C;
+    }
     function tree($cid = 0,$expanded=false,$ret=false){
-    	$cid=='source' && $cid=0;
         $html = array();
-        foreach((array)$this->_array[$cid] AS $root=>$C) {
-            if(!admincp::CP($C['cid'])){
-                if($this->_array[$C['cid']]){
-                    $a    = $this->tree($C['cid'],true,true);
-                    $html = array_merge($html,$a);
-                }
-            }else{
-                $a = array('id'=>$C['cid'],'text'=>$this->li($C));
-                if($this->_array[$C['cid']]){
+        $cidArray = (array)$this->_array($cid);
+        $CARRAY= (array)$this->get($cidArray,array('categoryAdmincp','tree_unset'));
+        foreach($cidArray AS $root=>$_cid) {
+            // if(!admincp::CP($C['cid'])){
+            //     if($this->_array[$C['cid']]){
+            //         $a    = $this->tree($C['cid'],true,true);
+            //         $html = array_merge($html,$a);
+            //     }
+            // }else{
+                $C = (array)$CARRAY[$_cid];
+                $a = array('id'=>$C['cid'],'data'=>$C);
+                if($this->_array($C['cid'])){
                     if($expanded){
                         $a['hasChildren'] = false;
                         $a['expanded']    = true;
@@ -484,7 +527,7 @@ class categoryAdmincp extends category{
                     }
                 }
                 $a && $html[] = $a;
-            }
+            // }
         }
         if($ret||($expanded && $cid!='source')){
             return $html;
@@ -494,26 +537,6 @@ class categoryAdmincp extends category{
         return $html?json_encode($html):'[]';
     }
 
-    function li($C) {
-        $html='<div class="row-fluid status'.$C['status'].'">';
-        $html.='<span class="ordernum"><input'.$readonly.' type="text" cid="'.$C['cid'].'" name="ordernum['.$C['cid'].']" value="'.$C['ordernum'].'" style="width:32px;"/></span>';
-        $html.='<span class="name">';
-        $html.='<input'.$readonly.($C['rootid']==0?' style="font-weight:bold"':'').' type="text" name="name['.$C['cid'].']" value="'.$C['name'].'"/> ';
-        $C['status'] OR $html.=' <i class="fa fa-eye-slash" title="隐藏'.$this->category_name.'"></i> ';
-        $html.='<span class="label label-success">cid:<a href="'.$C['iurl']->href.'" target="_blank">'.$C['cid'].'</a></span> ';
-        $C['url'] && $html.=' <span class="label label-warning">∞</span>';
-        $C['pid'] && $html.=' <span class="label label-inverse">pid:'.$C['pid'].'</span>';
-        ($C['mode'] && $C['domain']) && $html.=' <span class="label label-important">绑定域名</span>';
-        $html.=' <span class="label label-info">'.$C['count'].'条记录</span>';
-        $C['creator'] && $html.=' <span class="label">创建者:'.$C['creator'].'</span>';
-        $html.='</span><span class="operation">';
-        admincp::CP($C['cid'],'a')  && $html.='<a href="'.$this->category_uri.'&do=add&rootid='.$C['cid'].'" class="btn btn-small"><i class="fa fa-plus-square"></i> 子'.$this->category_name.'</a> ';
-        $html.=$this->treebtn($C);
-        admincp::CP($C['cid'],'e') && $html.='<a href="'.$this->category_uri.'&do=add&cid='.$C['cid'].'" title="编辑'.$this->category_name.'设置"  class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a> ';
-        admincp::CP($C['cid'],'d') && $html.='<a href="'.$this->category_furi.'&do=del&cid='.$C['cid'].'" class="btn btn-small" onClick="return confirm(\'确定要删除此'.$this->category_name.'?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a>';
-        $html.='</span></div>';
-        return $html;
-    }
     function check_dir($dir,$appid,$url,$cid=0){
         $sql ="SELECT `dir` FROM `#iCMS@__category` where `dir` ='$dir' AND `appid`='$appid'";
         $cid && $sql.=" AND `cid` !='$cid'";
@@ -526,34 +549,22 @@ class categoryAdmincp extends category{
             $this->update_count($value['cid']);
         }
     }
-    function get_ids($cid = "0",$all=true,$root_array=null) {
-        $root_array OR $root_array = $this->rootid;
-        $cids = array();
-        is_array($cid) OR $cid = explode(',', $cid);
-        foreach($cid AS $_id) {
-            $cids+=(array)$root_array[$_id];
-        }
-        if($all){
-            foreach((array)$cids AS $_cid) {
-                $root_array[$_cid] && $cids+=$this->get_ids($_cid,$all,$root_array);
-            }
-        }
-        $cids = array_unique($cids);
-        $cids = array_filter($cids);
 
-        return $cids;
-    }
+    function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false) {
+        $cidArray  = (array)$this->_array($cid);
+        $CARRAY    = (array)$this->get($cidArray,array('categoryAdmincp','tree_unset'));
+        $ROOTARRAY = (array)$this->rootid($cidArray);
 
-    function select($permission='',$_cid="0",$cid="0",$level = 1,$url=false) {
-        foreach((array)$this->_array[$cid] AS $root=>$C) {
-            if(admincp::CP($C['cid'],$permission) && $C['status']) {
+        foreach($cidArray AS $root=>$_cid) {
+            $C = (array)$CARRAY[$_cid];
+            if(admincp::CP($_cid,$permission) && $C['status']) {
                 $tag      = ($level=='1'?"":"├ ");
-                $selected = ($_cid==$C['cid'])?"selected":"";
-                $text     = str_repeat("│　", $level-1).$tag.$C['name']."[cid:{$C['cid']}][pid:{$C['pid']}]".($C['url']?"[∞]":"");
+                $selected = ($select_cid==$_cid)?"selected":"";
+                $text     = str_repeat("│　", $level-1).$tag.$C['name']."[cid:{$_cid}][pid:{$C['pid']}]".($C['url']?"[∞]":"");
                 ($C['url'] && !$url) && $selected ='disabled';
-                $option.="<option value='{$C['cid']}' $selected>{$text}</option>";
+                $option.="<option value='{$_cid}' $selected>{$text}</option>";
             }
-            $this->rootid[$C['cid']] && $option.=$this->select($permission,$_cid,$C['cid'],$level+1,$url);
+            $ROOTARRAY[$_cid] && $option.=$this->select($permission,$select_cid,$C['cid'],$level+1,$url);
         }
         return $option;
     }
@@ -571,15 +582,6 @@ class categoryAdmincp extends category{
     function update_count($cid){
         $cc = iDB::value("SELECT count(*) FROM `#iCMS@__".$this->_app_table."` where `".$this->_app_cid."`='$cid'");
         iDB::query("UPDATE `#iCMS@__category` SET `count` ='$cc' WHERE `cid` ='$cid'");
-    }
-    function listbtn($rs){
-        $a='<a href="'.iURL::get('category',$rs)->href.'" class="btn btn-small"><i class="fa fa-link"></i> 访问</a> ';
-        admincp::CP($rs['cid'],'ca') && $a.='<a href="'.__ADMINCP__.'='.$this->_app.'&do=add&'.$this->_app_cid.'='.$rs['cid'] .'" class="btn btn-small"><i class="fa fa-edit"></i> 添加'.$this->_app_name.'</a> ';
-        admincp::CP($rs['cid'],'cs') && $a.='<a href="'.__ADMINCP__.'='.$this->_app.'&'.$this->_app_cid.'='.$rs['cid'] .'&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> '.$this->_app_name.'管理</a> ';
-        return $a;
-    }
-    function treebtn($rs){
-        return $this->listbtn($rs);
     }
     function batchbtn(){
         return '<li><a data-toggle="batch" data-action="mode"><i class="fa fa-cogs"></i> 访问模式</a></li>

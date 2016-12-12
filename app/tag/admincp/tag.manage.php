@@ -155,9 +155,16 @@ $(function(){
           </tr>
         </thead>
         <tbody>
-          <?php for($i=0;$i<$_count;$i++){
-              $C             = $this->categoryApp->category[$rs[$i]['cid']];
-              $TC            = $this->tagcategory->category[$rs[$i]['tcid']];
+          <?php
+          $cidArray = iPHP::values($rs,'cid','array',null);
+          $cidArray && $category_data = (array) $this->categoryApp->get($cidArray);
+
+          $tcidArray = iPHP::values($rs,'tcid','array',null);
+          $tcidArray && $tcategory_data = (array) $this->tagcategory->get($tcidArray);
+
+          for($i=0;$i<$_count;$i++){
+              $C             = (array)$category_data[$rs[$i]['cid']];
+              $TC            = (array)$tcategory_data[$rs[$i]['tcid']];
               $iurl          = iURL::get('tag',array($rs[$i],$C,$TC));
               $rs[$i]['url'] = $iurl->href;
     	   ?>

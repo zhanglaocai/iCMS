@@ -89,7 +89,7 @@ class accountApp{
             iDB::value("SELECT `uid` FROM `#iCMS@__members` where `username` ='$username' LIMIT 1") && iPHP::alert('该账号已经存在');
             $_data = compact(array('password','regtime', 'lastip', 'lastlogintime', 'logintimes', 'post', 'type', 'status'));
             $_data['regtime']       = time();
-            $_data['lastip']        = iPHP::getIp();
+            $_data['lastip']        = iPHP::get_ip();
             $_data['lastlogintime'] = time();
             $_data['status']        = '1';
             $data = array_merge($data, $_data);

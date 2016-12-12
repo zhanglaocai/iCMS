@@ -196,7 +196,7 @@ $(function(){
     <div class="widget-title"> <span class="icon">
       <input type="checkbox" class="checkAll" data-target="#<?php echo APP_BOXID;?>" title="点击全选/反选"/>
       </span>
-      <h5><?php if($cid){echo ' <span class="label label-info">'.$this->category[$cid]['name'].'</span>';}?>文章列表</h5>
+      <h5><?php if($cid){echo ' <span class="label label-info">'.$this->category($cid)->name.'</span>';}?>文章列表</h5>
       <span title="总共<?php echo $total;?>篇文章" class="badge badge-info tip-left"><?php echo $total;?></span>
     </div>
     <div class="widget-content nopadding">
@@ -215,12 +215,16 @@ $(function(){
             </tr>
           </thead>
           <tbody>
-            <?php if($rs)foreach ($rs as $key => $value) {
+            <?php
+                $cidArray = iPHP::values($rs,'cid','array',null);
+                $cidArray && $category_data = (array) $this->categoryApp->get($cidArray);
+
+                if($rs)foreach ($rs as $key => $value) {
                   $ourl = $value['url'];
-                  $C    = $this->category[$value['cid']];
+                  $C    = (array)$category_data[$value['cid']];
                   $iurl = iURL::get('article',array($value,$C));
                   empty($ourl) && $htmlurl = $iurl->path;
-                  $value['url']           = $iurl->href;
+                  $value['url'] = $iurl->href;
             ?>
             <tr id="id<?php echo $value['id'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $value['id'] ; ?>" /></td>
@@ -282,9 +286,10 @@ $(function(){
                 <?php
                  if($value['scid']){
                    $scid_array = explode(',', $value['scid']);
-                   foreach ($scid_array as $sc_key => $sc_id) {
-                    if($sc_id!=$value['cid']){
-                      echo '<a href="'.APP_DOURI.'&cid='.$value['cid'].'&'.$uri.'">'.$this->category[$sc_id]['name'].'</a><br />';
+                   $sc_data = (array) $this->categoryApp->get($scid_array);
+                   foreach ($sc_data as $scid => $sc_va) {
+                    if($scid!=$value['cid']){
+                      echo '<a href="'.APP_DOURI.'&cid='.$scid.'&'.$uri.'">'.$sc_va->name.'</a><br />';
                     }
                    }
                  }

@@ -75,8 +75,10 @@ $(function(){
           </thead>
           <tbody>
             <?php
-                for ($i = 0; $i < $_count; $i++) {
-                    $C = $category[$rs[$i]['cid']];
+            $cidArray = iPHP::values($rs,'cid','array',null);
+            $cidArray && $category_data = (array) $categoryApp->get($cidArray);
+            for($i=0;$i<$_count;$i++){
+              $C = (array)$category_data[$rs[$i]['cid']];
             ?>
             <tr id="tr<?php echo $rs[$i]['id']; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id']; ?>" /></td>

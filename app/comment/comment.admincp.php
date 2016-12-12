@@ -38,7 +38,7 @@ class commentAdmincp{
 		if($_GET['cid']){
             $cid = (int)$_GET['cid'];
             if(isset($_GET['sub'])){
-                $cids  = $this->categoryApp->get_ids($cid,true);
+                $cids  = iPHP::app("category")->get_ids($cid,true);
                 array_push ($cids,$cid);
                 $sql.=" AND cid IN(".implode(',', $cids).")";
             }else{

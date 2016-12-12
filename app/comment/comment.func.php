@@ -62,13 +62,13 @@ function comment_list($vars){
 	}
 
 	// if(!isset($vars['ref'])){
-	// 	$_vars = iCMS::app_ref(true);
+	// 	$_vars = iPHP::app_vars(true);
 	// 	$vars  = array_merge($vars,$_vars);
 	// 	unset($vars['ref'],$_vars);
 	// }
 
 	if ($vars['display'] && empty($vars['loop'])) {
-		$_vars = iCMS::app_ref(true);
+		$_vars = iPHP::app_vars(true);
 		$vars  = array_merge($vars,$_vars);
 		$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"iid"属性或"iid"值为空.');
 		$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"appid"属性或"appid"值为空.');
@@ -82,12 +82,12 @@ function comment_list($vars){
 	}
     if(isset($vars['cid!'])){
     	$ncids    = explode(',',$vars['cid!']);
-        $vars['sub'] && $ncids+=iPHP::app("category")->get_ids($ncids,true);
+        $vars['sub'] && $ncids+=iPHP::app("category")->get_cids($ncids,true);
         $where_sql.= iPHP::where($ncids,'cid','not');
     }
     if(isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
-        $vars['sub'] && $cid+=iPHP::app("category")->get_ids($cid,true);
+        $vars['sub'] && $cid+=iPHP::app("category")->get_cids($cid,true);
         $where_sql.= iPHP::where($cid,'cid');
     }
     isset($vars['userid'])&& $where_sql.= " AND `userid`='{$vars['userid']}'";
@@ -139,7 +139,7 @@ function comment_list($vars){
 	if(empty($resource)){
 		$resource = iDB::all("SELECT * FROM `#iCMS@__comment` WHERE {$where_sql} {$order_sql} {$limit}");
         if($vars['reply']){
-            $ridArray = iPHP::get_ids($resource,'reply_id','array',null);
+            $ridArray = iPHP::values($resource,'reply_id','array',null);
             if($ridArray){
             	$rkey = array_search (0,$ridArray);
             	unset($ridArray[$rkey]);
@@ -200,7 +200,7 @@ function comment_form($vars){
 		return;
 	}
 	if(!isset($vars['ref'])){
-		$_vars = iCMS::app_ref(true);
+		$_vars = iPHP::app_vars(true);
 		$vars  = array_merge($vars,$_vars);
 		unset($vars['ref'],$_vars);
 	}

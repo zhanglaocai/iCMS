@@ -27,6 +27,7 @@ class categoryApp{
 		}
     	return $this->category($cid,$tpl);
     }
+
     public function API_iCMS(){
         return $this->do_iCMS();
     }
@@ -96,7 +97,7 @@ class categoryApp{
         }
         return $category;
     }
-    public function get_ids($cid = "0",$all=true,$root_array=null) {
+    public function get_cids($cid = "0",$all=true,$root_array=null) {
         $root_array OR $root_array = iCache::get(CACHE_CATEGORY_ROOTID);
         $cids = array();
         is_array($cid) OR $cid = explode(',', $cid);
@@ -105,7 +106,7 @@ class categoryApp{
         }
         if($all){
             foreach((array)$cids AS $_cid) {
-                $root_array[$_cid] && $cids+= $this->get_ids($_cid,$all,$root_array);
+                $root_array[$_cid] && $cids+= $this->get_cids($_cid,$all,$root_array);
             }
         }
         $cids = array_unique($cids);

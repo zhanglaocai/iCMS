@@ -41,11 +41,11 @@ function category_list($vars){
 		// 	$vars['cid'] && $where_sql.= iPHP::where($vars['cid'],'cid');
 		// break;
 		case "suball":
-			$cids = iPHP::app("category")->get_ids($vars['cid'],false);
+			$cids = iPHP::app("category")->get_cids($vars['cid'],false);
 			$where_sql.= iPHP::where($cids,'cid');
 		break;
 		case "self":
-			$parent=iCache::get('iCMS/category/parent',$vars['cid']);
+			$parent = iCache::get('iCMS/category/parent',$vars['cid']);
 			$where_sql.=" AND `rootid`='$parent'";
 		break;
 	}
@@ -68,11 +68,10 @@ function category_list($vars){
 	if(empty($resource)){
 		$resource = iDB::all("SELECT `cid`,`appid` FROM `#iCMS@__category` {$where_sql} ORDER BY `ordernum`,`cid` ASC LIMIT $row");
 		if($resource){
-			$categoryArray = iCache::get('iCMS/category.'.$appid.'/cache');
 			$categoryApp   = iPHP::app("category");
-			foreach ($resource as $key => $c) {
-				$value = $categoryArray[$c['cid']];
-				$value && $resource[$key] = $categoryApp->get_lite($value);
+			foreach ($resource as $key => $value) {
+				$cate = iCache::get(CACHE_CATEGORY_ID.$value['cid']);
+				$cate && $resource[$key] = $categoryApp->get_lite($cate);
 			}
 		}
 		$vars['cache'] && iCache::set($cache_name,$resource,$cache_time);

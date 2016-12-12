@@ -40,12 +40,12 @@ function tag_list($vars){
 
     if(!isset($vars['cids']) && isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
-        $vars['sub'] && $cid+=iPHP::app("category")->get_ids($cid,true);
+        $vars['sub'] && $cid+=iPHP::app("category")->get_cids($cid,true);
         $where_sql.= iPHP::where($cid,'cid');
     }
     if(isset($vars['cids']) && !isset($vars['cid'])){
         $cids = explode(',',$vars['cids']);
-        $vars['sub'] && $cids+=iPHP::app("category")->get_ids($vars['cids'],true);
+        $vars['sub'] && $cids+=iPHP::app("category")->get_cids($vars['cids'],true);
 
         if($cids){
             iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
@@ -55,7 +55,7 @@ function tag_list($vars){
     }
     if(isset($vars['cid!'])){
         $ncids    = explode(',',$vars['cid!']);
-        $vars['sub'] && $ncids+=iPHP::app("category")->get_ids($ncids,true);
+        $vars['sub'] && $ncids+=iPHP::app("category")->get_cids($ncids,true);
         $where_sql.= iPHP::where($ncids,'cid','not');
     }
 
@@ -121,7 +121,7 @@ function tag_list($vars){
         }
     }
     if($ids_array){
-        $ids       = iCMS::get_ids($ids_array);
+        $ids       = iPHP::values($ids_array);
         $ids       = $ids?$ids:'0';
         $where_sql = "WHERE `#iCMS@__tags`.`id` IN({$ids})";
         $limit     = '';

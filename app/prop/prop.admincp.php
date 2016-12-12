@@ -12,10 +12,9 @@
 class propAdmincp{
     function __construct() {
         $this->pid         = (int)$_GET['pid'];
+        $this->categoryApp = iPHP::app('category.admincp','all');
     }
     function do_add(){
-        $this->categoryApp = iPHP::app('category.admincp','all');
-        $this->category    = $this->categoryApp->category;
         $this->pid && $rs = iDB::row("SELECT * FROM `#iCMS@__prop` WHERE `pid`='$this->pid' LIMIT 1;",ARRAY_A);
         if($_GET['act']=="copy"){
             $this->pid = 0;
@@ -93,13 +92,11 @@ class propAdmincp{
 	}
 
     function do_iCMS(){
-        $this->categoryApp = iPHP::app('category.admincp','all');
-        $this->category    = $this->categoryApp->category;
         $sql			= " where 1=1";
 //        $cid			= (int)$_GET['cid'];
 //
 //        if($cid) {
-//	        $cids	= $_GET['sub']?iPHP::app("category")->get_ids($cid,true):$cid;
+//	        $cids	= $_GET['sub']?iPHP::app("category")->get_cids($cid,true):$cid;
 //	        $cids OR $cids	= $vars['cid'];
 //	        $sql.= iPHP::where($cids,'cid');
 //        }

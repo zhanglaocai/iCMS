@@ -12,9 +12,9 @@ admincp::head();
 #field-default .add-on { width: 70px;text-align: right; }
 .iCMS_dialog .ui-dialog-content .chosen-container{position: relative;}
 </style>
-<link rel="stylesheet" href="./app/admincp/ui/formbuilder.css" type="text/css" />
 <script type="text/javascript" src="./app/admincp/ui/jquery/jquery-ui.min.js"></script>
-<script type="text/javascript" src="./app/admincp/ui/formbuilder.js"></script>
+<script type="text/javascript" src="./app/admincp/ui/iFormer/iFormer.js"></script>
+<link rel="stylesheet" href="./app/admincp/ui/iFormer/iFormer.css" type="text/css" />
 <div class="iCMS-container">
   <div class="widget-box">
     <div class="widget-title">
@@ -90,11 +90,16 @@ admincp::head();
               </div>
               <div class="col-right">
                 <div class="fields-container">
-                  <ul class="nav nav-tabs" id="fields-tab">
-                    <li class="active"><a href="#fields-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基础字段</a></li>
-                    <li><a href="#fields-func" data-toggle="tab"><i class="fa fa-cog"></i> 功能字段</a></li>
-                    <li><a href="#fields-addons" data-toggle="tab"><i class="fa fa-cog"></i> 附加字段</a></li>
-                  </ul>
+                  <div class="widget-title">
+                    <span class="icon"> <i class="fa fa-cog"></i> </span>
+                    <h5 class="brs">字段</h5>
+                    <ul class="nav nav-tabs" id="fields-tab">
+                      <li class="active"><a href="#fields-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基础字段</a></li>
+                      <li><a href="#fields-func" data-toggle="tab"><i class="fa fa-cog"></i> 功能字段</a></li>
+                      <li><a href="#fields-addons" data-toggle="tab"><i class="fa fa-cog"></i> 附加字段</a></li>
+                    </ul>
+                  </div>
+
                   <div id="fields-tab-content" class="tab-content">
                     <div id="fields-base" class="tab-pane active">
                       <ul>
@@ -102,121 +107,150 @@ admincp::head();
                           <span class="fa fa-arrows-h"></span>
                           <p>换行符</p>
                         </li>
-                        <!--                         <li i="layout" fieldtype="row">
-                          <span class="fa fa-list-ul"></span>
-                          <p>一行一列</p>
-                        </li>
-                        <li i="layout" fieldtype="col2">
-                          <span class="fa fa-list-ul"></span>
-                          <p>一行两列</p>
-                        </li>
-                        <li i="layout" fieldtype="col3">
-                          <span class="fa fa-list-ul"></span>
-                          <p>一行三列</p>
-                        </li> -->
-                        <li i="field" tag="input" field="varchar" len="255">
+                        <li i="field" tag="input" field="VARCHAR" len="255">
                           <span class="fb-icon fb-icon-input"></span>
                           <p>单行</p>
                         </li>
-                        <li i="field" tag="input" field="varchar" len="5120">
+                        <li i="field" tag="input" field="VARCHAR" len="5120">
                           <span class="fb-icon fb-icon-input"></span>
                           <p>单行长文本</p>
                         </li>
-                        <li i="field" tag="textarea" field="text">
+                        <li i="field" tag="textarea" field="TEXT">
                           <span class="fb-icon fb-icon-textarea"></span>
                           <p>多行</p>
                         </li>
-                        <li i="field" tag="input" field="varchar" len="255" label="邮箱">
-                          <span class="emailIcon fb-icon fb-icon-Mail"></span>
-                          <p class="emailText">邮箱</p>
+
+                        <li i="field" tag="input" field="VARCHAR" len="255" label="邮箱">
+                          <span class="fb-icon fb-icon-mail"></span>
+                          <p>邮箱</p>
                         </li>
-                        <li i="field" tag="editor" field="mediumtext">
-                          <span class="textAreaIcon fb-icon fb-icon-RichText"></span>
-                          <p class="richtextConent">富文本</p>
+                        <li i="field" tag="input" field="INT" len="10" label="日期">
+                          <span class="fb-icon fb-icon-date"></span>
+                          <p>日期</p>
                         </li>
-                        <li i="field" field="input" fieldlabel="日期">
-                          <span class="dateIcon fb-icon fb-icon-Date"></span>
-                          <p class="dateText">日期</p>
+                        <li i="field" tag="input" field="INT" len="10" label="时间">
+                          <span class="timeIcon fb-icon fb-icon-datetime"></span>
+                          <p>日期时间</p>
                         </li>
-                        <li i="field" fieldtype="22">
-                          <span class="timeIcon fb-icon fb-icon-Date-Time"></span>
-                          <p class="datetimeText">日期时间</p>
+                        <li i="field" tag="input" type="radio" field="TINYINT" len="1" label="单选">
+                          <span class="fb-icon fb-icon-radio"></span>
+                          <p>单选框</p>
                         </li>
-                        <li i="field" fieldtype="1100">
-                          <span class="dropdownIcon fb-icon fb-icon-DropDown"></span>
-                          <p class="dropdown">下拉列表</p>
+                        <li i="field" tag="input" type="checkbox" field="TINYINT" len="1" label="复选">
+                          <span class="fb-icon fb-icon-checkbox"></span>
+                          <p>复选框</p>
                         </li>
-                        <li i="field" fieldtype="1101">
-                          <span class="radioIcon fb-icon fb-icon-Radio"></span>
-                          <p class="radioText">单选框</p>
+                        <li i="field" tag="select" field="TINYINT" len="1" label="列表">
+                          <span class="fb-icon fb-icon-dropdown"></span>
+                          <p>下拉列表</p>
                         </li>
-                        <li i="field" fieldtype="102">
-                          <span class="multiselect fb-icon fb-icon-MultiSelect"></span>
-                          <p class="multiselectText">多选列表</p>
+                        <li i="field" tag="select" type="multiple" field="VARCHAR" len="255" label="多选">
+                          <span class="multiselect fb-icon fb-icon-multiselect"></span>
+                          <p>多选列表</p>
                         </li>
-                        <li i="field" fieldtype="103">
-                          <span class="checkIcon fb-icon fb-icon-CheckBox"></span>
-                          <p class="checkText">复选框</p>
+                        <li i="field" tag="input" field="TINYINT" len="1" label="数字">
+                          <span class="fb-icon fb-icon-number"></span>
+                          <p>数字</p>
                         </li>
-                        <li i="field" fieldtype="5">
-                          <span class="numberIcon fb-icon fb-icon-Number"></span>
-                          <p class="numberText">整数</p>
+                        <li i="field" tag="input" field="INT" len="10" label="数字">
+                          <span class="fb-icon fb-icon-number"></span>
+                          <p>数字</p>
                         </li>
-                        <li i="field" id="decimalIconnew" fieldtype="19">
-                          <span class="decimalIcon fb-icon fb-icon-Decimal"></span>
-                          <p class="percentText">小数</p>
+                        <li i="field" tag="input" field="BIGINT" len="20" label="数字">
+                          <span class="fb-icon fb-icon-number"></span>
+                          <p>超大数字</p>
                         </li>
-                        <li i="field" id="decimalIcon" fieldtype="7">
-                          <span class="percentIcon fb-icon fb-icon-Percentage"></span>
-                          <p class="decimalText">百分比</p>
+                        <li i="field" tag="input" field="DECIMAL" len="6,2" label="小数">
+                          <span class="fb-icon fb-icon-decimal"></span>
+                          <p>小数</p>
                         </li>
-                        <li i="field" fieldtype="6">
-                          <span class="currencyIcon fb-icon fb-icon-Currency2"></span>
-                          <p class="currencyText">货币</p>
+                        <li i="field" tag="input" field="DECIMAL" len="3,2" label="百分比" label-after="%">
+                          <span class="fb-icon fb-icon-percentage"></span>
+                          <p>百分比</p>
                         </li>
-                        <li i="field" fieldtype="21">
-                          <span class="websiteIcon fb-icon fb-icon-Url"></span>
-                          <p class="urlText">Url</p>
+                        <li i="field" tag="input" field="INT" len="10" label="货币" label-after="¥">
+                          <span class="fb-icon fb-icon-currency2"></span>
+                          <p>货币</p>
                         </li>
-                        <li i="field" id="imageIconnewicon" fieldtype="20">
-                          <span class="imageIcon fb-icon fb-icon-Image"></span>
-                          <p class="imageText">图片</p>
+                        <li i="field" tag="input" field="VARCHAR" len="255" label="链接">
+                          <span class="fb-icon fb-icon-url"></span>
+                          <p>Url</p>
                         </li>
-                        <li i="field" fieldtype="9">
-                          <span class="decisionbox fb-icon fb-icon-Deciton"></span>
-                          <p class="decisionboxText">选择框</p>
-                        </li>
-                        <li i="field" fieldtype="18">
-                          <span class="fileuploadIcon fb-icon fb-icon-FileUpload"></span>
-                          <p class="fileuploadText">上传文件</p>
-                        </li>
-                        <li i="field" fieldtype="32">
-                          <span class="lookupIcon fb-icon fb-icon-LookUp"></span>
+
+<!--                         <li i="field" fieldtype="32">
+                          <span class="lookupIcon fb-icon fb-icon-lookup"></span>
                           <p class="lookupConent">查找</p>
                         </li>
                         <li i="field" fieldtype="14">
-                          <span class="addnotesIcon fb-icon fb-icon-AddNotes"></span>
+                          <span class="addnotesIcon fb-icon fb-icon-addnotes"></span>
                           <p class="addnotestext">添加备注</p>
                         </li>
                         <li i="field" fieldtype="99">
-                          <span class="subformIcon fb-icon fb-icon-SubForm"></span>
+                          <span class="subformIcon fb-icon fb-icon-subform"></span>
                           <p class="subformText">子表单</p>
                         </li>
                         <li i="field" fieldtype="31">
-                          <span class="autonumberIcon fb-icon fb-icon-AutoNumber"></span>
+                          <span class="autonumberIcon fb-icon fb-icon-autonumber"></span>
                           <p class="lookupConent">自动编号</p>
                         </li>
                         <li i="field" fieldtype="15">
-                          <span class="formulaIcon fb-icon fb-icon-Formula"></span>
+                          <span class="formulaIcon fb-icon fb-icon-formula"></span>
                           <p class="formulaText">公式</p>
                         </li>
                         <li i="field" fieldtype="36">
-                          <span class="signatureIcon fb-icon fb-icon-Signature"></span>
+                          <span class="signatureIcon fb-icon fb-icon-signature"></span>
                           <p class="lookupConent">签名 </p>
                         </li>
                         <li i="field" fieldtype="30">
-                          <span class="usersIcon fb-icon fb-icon-Name" style="margin-top:1px;"></span>
+                          <span class="usersIcon fb-icon fb-icon-name" style="margin-top:1px;"></span>
                           <p class="lookupConent">用户</p>
+                        </li> -->
+                      </ul>
+                    </div>
+                    <div id="fields-func" class="tab-pane">
+                      <ul>
+                        <li i="field" tag="dialog" field="VARCHAR" len="255" label="选择框">
+                          <span class="fb-icon fb-icon-deciton"></span>
+                          <p>选择框</p>
+                        </li>
+
+                        <li i="field" tag="image" field="VARCHAR" len="255" label="图片">
+                          <span class="fb-icon fb-icon-image"></span>
+                          <p>图片上传</p>
+                        </li>
+                        <li i="field" tag="multimage" field="text" label="多图">
+                          <span class="fb-icon fb-icon-image"></span>
+                          <p>多图上传</p>
+                        </li>
+
+                        <li i="field" tag="file" field="VARCHAR" len="255" label="上传">
+                          <span class="fb-icon fb-icon-fileupload"></span>
+                          <p>上传文件</p>
+                        </li>
+                        <li i="field" tag="multifile" field="text" label="批量上传">
+                          <span class="fb-icon fb-icon-fileupload"></span>
+                          <p>上传文件</p>
+                        </li>
+
+                        <li i="field" tag="prop" field="VARCHAR" len="255" label="属性">
+                          <span class="fb-icon fb-icon-prop"></span>
+                          <p>属性</p>
+                        </li>
+                        <li i="field" tag="seccode" label="验证码">
+                          <span class="fb-icon fb-icon-url"></span>
+                          <p>验证码</p>
+                        </li>
+                      </ul>
+                    </div>
+                    <div id="fields-addons" class="tab-pane">
+                      <ul>
+                        <li i="field" tag="textarea" field="MEDIUMTEXT">
+                          <span class="fb-icon fb-icon-textarea"></span>
+                          <p>超大文本</p>
+                        </li>
+                        <li i="field" tag="editor" field="MEDIUMTEXT">
+                          <span class="fb-icon fb-icon-richtext"></span>
+                          <p>编辑器</p>
                         </li>
                       </ul>
                     </div>
@@ -224,11 +258,16 @@ admincp::head();
                 </div>
               </div>
             </div>
-            <div class="clearfloat mb30"></div>
-            <a href="javascript:;" class="btn btn-inverse addfield"/><i class="fa fa-plus"></i> 增加字段</a>
           </div>
+          <div class="clearfloat"></div>
+<div class="alert alert-info alert-block">
+<h5><i class="fa fa-support"></i> 注意事项</h5>
+<p><i class="fa fa-arrows-h"></i> 换行符 双击可删除</p>
+<p><i class="fa fa-arrows-h"></i> 换行符 属于占位符 最终界面上将以10px空白替换.效果请参考文章添加页</p>
+
+</div>
           <div class="form-actions">
-            <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
+            <button class="btn btn-primary btn-large" type="submit"><i class="fa fa-check"></i> 提交</button>
           </div>
         </form>
       </div>
@@ -362,6 +401,9 @@ admincp::head();
   </div>
 <script type="text/javascript">
 $(function(){
+  //{handle: ".widget-title"}
+  $( ".fields-container" ).draggable();
+
   $("#field-new").on("click",'a[name="delete"]',function(event) {
     event.preventDefault();
     $(this).parent().parent().remove();

@@ -15,7 +15,6 @@ class pushAdmincp{
         $this->appid       = iCMS_APP_PUSH;
         $this->id          = (int)$_GET['id'];
         $this->categoryApp = iPHP::app('category.admincp',$this->appid);
-        $this->category    = $this->categoryApp->category;
     }
     function do_add(){
         $id = (int)$_GET['id'];
@@ -74,7 +73,7 @@ class pushAdmincp{
         	break;
        		default:
 	       		$sql.=" `status` ='1'";
-		       	$cid && $position=$this->category[$cid]['name'];
+		       	$cid && $position=$this->categoryApp->get($cid)->name;
 		}
 
         if($_GET['keywords']) {

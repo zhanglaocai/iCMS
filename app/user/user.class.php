@@ -130,14 +130,8 @@ class user {
 	}
 	public static function get($uids=0,$unpass=true){
 		if(empty($uids)) return array();
-		$is_multi = false;
-		if(is_array($uids)){
-			$is_multi = true;
-		}
-		if(!is_array($uids) && strpos($uids, ',') !== false){
-			$uids = explode(',', $uids);
-			$is_multi = true;
-		}
+
+		list($is_multi,$uids)  = iPHP::multi_ids($uids);
 
     	$sql = iPHP::where($uids,'uid',false,true);
 		$data = array();
@@ -163,16 +157,7 @@ class user {
     	if(empty($uids)){
     		return;
     	}
-		$is_multi = false;
-		if(is_array($uids)){
-			$is_multi = true;
-		}
-
-		if(!is_array($uids) && strpos($uids, ',') !== false){
-			$uids = explode(',', $uids);
-			$is_multi = true;
-		}
-
+		list($is_multi,$uids)  = iPHP::multi_ids($uids);
     	$sql = iPHP::where($uids,'uid',false,true);
 		$data = array();
 		$rs   = iDB::all("SELECT * FROM `#iCMS@__user_data` where {$sql};",OBJECT);

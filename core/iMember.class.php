@@ -46,7 +46,7 @@ class iMember{
 
         $a   = iS::escapeStr($_POST['username']);
         $p   = iS::escapeStr($_POST['password']);
-        $ip  = iPHP::getIp();
+        $ip  = iPHP::get_ip();
         $sep = iPHP_AUTH_IP?'#=iCMS['.$ip.']=#':'#=iCMS=#';
         if(empty($a) && empty($p)) {
             $auth       = iPHP::get_cookie(self::$AUTH);

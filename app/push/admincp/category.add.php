@@ -32,7 +32,7 @@ $(function(){
             </select>
             <?php }else {  ?>
             <input name="rootid" id="rootid" type="hidden" value="<?php echo $rootid ; ?>" />
-            <input readonly="true" value="<?php echo $this->category->category[$rootid]['name'] ; ?>" type="text" class="txt" />
+            <input readonly="true" value="<?php echo $this->get($rootid)->name ; ?>" type="text" class="txt" />
             <?php }  ?>
           </div>
           <span class="help-inline">本版块的上级版块或分类</span>

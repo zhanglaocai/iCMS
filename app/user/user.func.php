@@ -94,7 +94,7 @@ function user_list($vars=null){
             $ids_array = iDB::all("SELECT `id` FROM `#iCMS@__user` {$where_sql} {$order_sql} {$limit}");
             $vars['cache'] && iCache::set($map_cache_name,$ids_array,$cache_time);
         }
-        $ids       = iCMS::get_ids($ids_array,'uid');
+        $ids       = iPHP::values($ids_array,'uid');
         $ids       = $ids?$ids:'0';
         $where_sql = "WHERE `uid` IN({$ids})";
     }
@@ -105,7 +105,7 @@ function user_list($vars=null){
 	if(empty($resource)){
         $resource = iDB::all("SELECT * FROM `#iCMS@__user` {$where_sql} {$order_sql} {$limit}");
         if($vars['data']){
-            $uidArray = iPHP::get_ids($resource,'uid','array',null);
+            $uidArray = iPHP::values($resource,'uid','array',null);
             $uidArray && $user_data = (array) user::data($uidArray);
         }
         if($resource)foreach ($resource as $key => $value) {
@@ -170,7 +170,7 @@ function user_follow($vars=null){
     }
 	$resource = iDB::all("SELECT * FROM `#iCMS@__user_follow` {$where_sql} {$limit}");
     if($vars['data']){
-        $uidArray = iPHP::get_ids($resource,array('uid','fuid'),'array',null);
+        $uidArray = iPHP::values($resource,array('uid','fuid'),'array',null);
         $uidArray && $user_data = (array) user::data($uidArray);
     }
     $vars['followed'] && $follow_data = user::follow($vars['followed'],'all');

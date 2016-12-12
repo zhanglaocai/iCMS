@@ -98,7 +98,7 @@ class iURL {
                 $url     = $array['rule'];
                 break;
             case '1':
-                $category = $array;
+                $category = (array)$array;
                 $i->href  = $category['url'];
                 $url      = self::rule_data($category,'index');
                 break;

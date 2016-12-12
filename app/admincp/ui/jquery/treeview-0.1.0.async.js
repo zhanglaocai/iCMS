@@ -16,14 +16,16 @@
 ;
 (function($) {
 	function load(settings, root, child, container) {
-		$.getJSON(settings.url, {
-			root: root
-		}, function(response) {
+		$.getJSON(settings.url, {root: root}, function(response) {
 			$("#tree-loading").remove();
 			function createNode(parent) {
-				//	alert(this.text);
-				var current = $("<li/>").attr("id", this.id || "").html(this.text).appendTo(parent);
-				current.mouseover(function() {
+				var html = template('tree_li', this.data);
+				// var current = $("<li/>").attr("id", this.id || "").html(this.text).appendTo(parent);
+				var current = $("<li/>")
+				.attr("id", this.id || "")
+				.html(html)
+				.appendTo(parent)
+				.mouseover(function() {
 					$(this).css("background-color", "#E7E7E7");
 				}).mouseout(function() {
 					$(this).css("background-color", "#FFFFFF");
@@ -91,7 +93,7 @@
 			return proxied.apply(this, arguments);
 		}
 		var container = this;
-		load(settings, "source", this, container);
+		load(settings, "0", this, container);
 		var userToggle = settings.toggle;
 		return proxied.call(this, $.extend({}, settings, {
 			collapsed: true,

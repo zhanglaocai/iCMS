@@ -62,7 +62,7 @@ class map {
 
 		$sql = self::sql($nodes);
 		$all = iDB::all($ids.'Limit 10000');
-		return iCMS::get_ids($all,'iid');
+		return iPHP::values($all,'iid');
 	}
 	public static function where($nodes=0){
 		if(empty($nodes)) return false;

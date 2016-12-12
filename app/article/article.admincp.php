@@ -23,13 +23,15 @@ class articleAdmincp{
         $this->id          = (int)$_GET['id'];
         $this->dataid      = (int)$_GET['dataid'];
         $this->categoryApp = iPHP::app('category.admincp',$this->appid);
-        $this->category    = $this->categoryApp->category;
         $this->_postype    = '1';
         $this->_status     = '1';
         $this->config      = iCMS::$config['article'];
 
         define('TAG_APPID',$this->appid);
 
+    }
+    function category($cid){
+        return $this->categoryApp->get($cid);
     }
     function do_config(){
         $setting = admincp::app('setting');
@@ -229,7 +231,7 @@ class articleAdmincp{
         $id===null && $id=$this->id;
         $id OR iPHP::alert('请选择要推送的文章!');
         $rs   = article::row($id);
-        $C    = $this->category[$rs['cid']];
+        $C    = $this->category($rs['cid']);
         $iurl = iURL::get('article',array($rs,$C));
         $url  = $iurl->href;
         $res  = baidu_ping($url);
@@ -282,33 +284,25 @@ class articleAdmincp{
             $uri    = parse_url(iCMS_FS_URL);
             $fArray = array();
             $fpArray= array();
-            // iACP::head(true);
             foreach ($array as $key => $value) {
                 $value = trim($value);
-                echo $value.PHP_EOL;
+                // echo $value.PHP_EOL;
                 if (stripos($value,$uri['host']) !== false){
                     $filepath = iFS::fp($value,'-http');
                    if($filepath){
-                        $pf = pathinfo($filepath);
-                        // print_r($pathinfo);
-                        // $pathinfo = path
-                        // $filename = basename($filepath);
-                        // $filename = substr($filename,0, 32);
+                        $pf   = pathinfo($filepath);
                         $rs[] = array(
-                            'path'=> rtrim($pf['dirname'],'/').'/',
-                            'filename'=> $pf['filename'],
-                            'ext'=> $pf['extension']
+                            'path'     => rtrim($pf['dirname'],'/').'/',
+                            'filename' => $pf['filename'],
+                            'ext'      => $pf['extension']
                         );
-                        // echo '<a class="btn btn-small" href="'.APP_FURI.'&do=editpic&from=modal&pic='.$filepath.'" data-toggle="modal" title="编辑图片('.$filename.')"><i class="fa fa-edit"></i> 编辑</a>';
-                        // $faid     = article::filedata_value($filename);
-                        // empty($faid) && article::filedata_update_indexid($aid,$filename);
                     }
                 }
                 // echo "<hr />";
             }
             $_count = count($rs);
         }
-        include iACP::view("files.manage");
+        include admincp::view("files.manage","admincp");
     }
     function do_preview(){
 		echo article::body($this->id);
@@ -391,7 +385,7 @@ class articleAdmincp{
                 $cids = $cid;
             }
             if($_GET['sub'] && $cid){
-                $cids = $this->categoryApp->get_ids($cid,true);
+                $cids = iPHP::app("category")->get_ids($cid,true);
                 array_push ($cids,$cid);
             }
             if($_GET['scid'] && $cid){
@@ -453,7 +447,7 @@ class articleAdmincp{
                     SELECT `id` FROM `#iCMS@__article` {$sql}
                     ORDER BY {$orderby} {$limit}
                 ");
-                $ids = iCMS::get_ids($ids_array);
+                $ids = iPHP::values($ids_array);
                 $ids = $ids?$ids:'0';
                 $sql = "WHERE `id` IN({$ids})";
             // }else{
@@ -548,8 +542,8 @@ class articleAdmincp{
         if(empty($aid) && $this->config['repeatitle']) {
             article::check_title($title) && iPHP::alert('该标题的文章已经存在!请检查是否重复');
         }
-
-        if(strstr($this->category[$cid]['contentRule'],'{LINK}')!==false){
+        $category = $this->category($cid);
+        if(strstr($category->rule->article,'{LINK}')!==false){
             empty($clink) && $clink = strtolower(pinyin($title));
             if(empty($aid) && $clink) {
                 article::check_clink($clink) && iPHP::alert('该文章自定义链接已经存在!请检查是否重复');
@@ -612,7 +606,12 @@ class articleAdmincp{
             $url OR $this->article_data($body,$aid,$haspic);
             $this->categoryApp->update_count_one($cid);
 
-            $article_url = iURL::get('article',array(array('id'=>$aid,'url'=>$url,'cid'=>$cid,'pubdate'=>$pubdate),$this->category[$cid]))->href;
+            $article_url = iURL::get('article',array(array(
+                'id'      =>$aid,
+                'url'     =>$url,
+                'cid'     =>$cid,
+                'pubdate' =>$pubdate
+            ),(array)$category))->href;
 
             if($status && iCMS::$config['api']['baidu']['sitemap']['sync']){
                 baidu_ping($article_url);
@@ -672,10 +671,6 @@ class articleAdmincp{
                 );
             }
 
-   //       if(!strstr($this->category[$cid]['contentRule'],'{PHP}')&&!$this->category[$cid]['url']&&$this->category[$cid]['mode']=="1" && $status) {
-			// 	$htmlApp = admincp::app('html');
-			// 	$htmlApp->Article($aid);
-			// }
             iPHP::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$SELFURL);
         }
     }

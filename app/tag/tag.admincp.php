@@ -90,7 +90,7 @@ class tagAdmincp{
                 SELECT `id` FROM `#iCMS@__tags` {$sql}
                 ORDER BY {$orderby} {$limit}
             ");
-            $ids   = iCMS::get_ids($ids_array);
+            $ids   = iPHP::values($ids_array);
             $ids   = $ids?$ids:'0';
             $sql   = "WHERE `id` IN({$ids})";
             $limit = '';

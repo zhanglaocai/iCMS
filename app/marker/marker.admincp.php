@@ -12,7 +12,6 @@
 class markerAdmincp{
     function __construct() {
         $this->categoryApp = iPHP::app('category.admincp','all');
-        $this->category    = $this->categoryApp->category;
         $this->id         = (int)$_GET['id'];
     }
     function do_add(){

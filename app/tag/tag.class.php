@@ -179,7 +179,7 @@ VALUES ('$uid', '$cid', '$tcid', '0', '$tkey', '$tag',
 	    		$idA[]=$TL['iid'];
 	    	}
 	    	if($idA){
-	    		$ids = iPHP::get_ids($idA,null);
+	    		$ids = iPHP::values($idA,null);
                 if($ids){
                     iPHP::app('apps.class','static');
                     $table = APPS::table(TAG_APPID);

@@ -5,7 +5,7 @@
 .avatar_90 { width: 90px; height: 90px; border-radius: 4px; }
 .avatar_120 { width: 120px; height: 120px; border-radius: 4px; }
 i[class^=z-icon-],
-i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 10px; vertical-align: 0; background-image: url(../img/sprites-1.9.2.4c54885a.png); background-repeat: no-repeat; margin-right: 5px }
+i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 10px; vertical-align: 0; background-image: url(../img/sprites-1.9.2.png); background-repeat: no-repeat; margin-right: 5px }
 .z-icon-comment { width: 9px; height: 10px; background-position: -28px -22px }
 .z-icon-collect { width: 7px; height: 10px; background-position: -56px -22px }
 .z-icon-thank { width: 10px; height: 10px; background-position: -41px -22px }
@@ -22,7 +22,7 @@ i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 
 .list_fun a:hover .z-icon-collect { background-position: -56px -37px }
 .list_fun a:hover .z-icon-comment { background-position: -28px -37px }
 .list_fun a { color: #999; vertical-align: middle; font-size: 13px; }
-.icon { width: 16px; height: 16px; background-image: url(../img/sprites-1.9.2.4c54885a.png); background-repeat: no-repeat; display: inline-block; vertical-align: middle; }
+.icon { width: 16px; height: 16px; background-image: url(../img/sprites-1.9.2.png); background-repeat: no-repeat; display: inline-block; vertical-align: middle; }
 .icon-profile-male { background-position: -144px -110px; margin-top: 10px; margin-left: 5px; }
 .icon-profile-female { background-position: -127px -110px; margin-top: 10px; margin-left: 5px; }
 .form-actions { padding: 19px 20px 20px; margin-top: 20px; margin-bottom: 20px; background-color: #f5f5f5; border-top: 1px solid #e5e5e5; *zoom: 1 }

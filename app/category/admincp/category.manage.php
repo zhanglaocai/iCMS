@@ -11,18 +11,62 @@ admincp::head();
 ?>
 <?php if(admincp::$APP_DO=='tree'){ ?>
 <link rel="stylesheet" href="./app/admincp/ui/jquery/treeview-0.1.0.css" type="text/css" />
+<script type="text/javascript" src="./app/admincp/ui/template-3.0.js"></script>
 <script type="text/javascript" src="./app/admincp/ui/jquery/jquery-ui.min.js"></script>
 <script type="text/javascript" src="./app/admincp/ui/jquery/treeview-0.1.0.js"></script>
 <script type="text/javascript" src="./app/admincp/ui/jquery/treeview-0.1.0.async.js"></script>
+<script id="tree_li" type="text/html">
+<div class="row-fluid status{{cid}}">
+    <span class="ordernum">
+        <input type="text" cid="{{cid}}" name="ordernum[{{cid}}]" value="{{cid}}" style="width:32px;"/>
+    </span>
+    <span class="name">
+        <input {{if rootid=="0"}}style="font-weight:bold"{{/if}} type="text" name="name[{{cid}}]" value="{{name}}"/>
+        {{if !status}}
+        <i class="fa fa-eye-slash" title="隐藏<?php echo $this->category_name;?>"></i>
+        {{/if}}
+        <span class="label label-success">cid:<a href="{{href}}" target="_blank">{{cid}}</a></span>
+        {{if url}}
+        <span class="label label-warning">∞</span>
+        {{/if}}
+        {{if pid}}
+        <span class="label label-inverse">pid:{{pid}}</span>
+        {{/if}}
+        {{if mode && domain}}
+        <span class="label label-important">绑定域名</span>
+        {{/if}}
+        <span class="label label-info">{{count}}条记录</span>
+        {{if creator}}
+        <span class="label">创建者:{{creator}}</span>
+        {{/if}}
+    </span>
+    <span class="operation">
+        {{if CP_ADD}}
+        <a href="<?php echo $this->category_uri;?>&do=add&rootid={{cid}}" class="btn btn-small"><i class="fa fa-plus-square"></i> 子<?php echo $this->category_name;?></a>
+        {{/if}}
+        <a href="{{href}}" class="btn btn-small"><i class="fa fa-link"></i> 访问</a>
+        <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&do=add&<?php echo $this->_app_cid;?>={{cid}}" class="btn btn-small"><i class="fa fa-edit"></i> 添加<?php echo $this->_app_name;?></a>
+        <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&<?php echo $this->_app_cid;?>={{cid}}&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> <?php echo $this->_app_name;?>管理</a>
+        {{if CP_EDIT}}
+        <a href="<?php echo $this->category_uri;?>&do=copy&cid={{cid}}" target="iPHP_FRAME"  class="btn btn-small"><i class="fa fa-clipboard"></i> 克隆</a>
+        <a href="<?php echo $this->category_uri;?>&do=add&cid={{cid}}" title="编辑<?php echo $this->category_name;?>设置"  class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
+        {{/if}}
+        {{if CP_DEL}}
+        <a href="<?php echo $this->category_furi;?>&do=del&cid={{cid}}" class="btn btn-small" onClick="return confirm(\'确定要删除此<?php echo $this->category_name;?>?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a>
+        {{/if}}
+    </span>
+</div>
+</script>
+
 <script type="text/javascript">
 var upordurl="<?php echo $this->category_uri; ?>&do=updateorder";
 $(function(){
     $("#tree").treeview({
-    	url:'<?php echo $this->category_uri; ?>&do=ajaxtree&expanded=<?php echo admincp::$APP_DO=='all'?'1':'0';?>',
-        collapsed: false,
-        sortable: true,
-        animated: "medium",
-        control:"#treecontrol",
+      url:'<?php echo $this->category_uri; ?>&do=ajaxtree&expanded=<?php echo admincp::$APP_DO=='all'?'1':'0';?>',
+      collapsed: false,
+      sortable: true,
+      animated: "medium",
+      control:"#treecontrol",
     }).sortable({
         helper: "clone",
         placeholder: "ui-state-highlight",
@@ -140,7 +184,10 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
             </tr>
           </thead>
           <tbody>
-            <?php for($i=0;$i<$_count;$i++){?>
+            <?php
+                $rootidArray = iPHP::values($rs,'rootid','array',null);
+                $rootidArray && $root_data = (array) $this->get($rootidArray);
+            for($i=0;$i<$_count;$i++){?>
             <tr id="<?php echo $rs[$i]['cid'] ; ?>" class="status<?php echo $rs[$i]['status'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['cid'] ; ?>" /></td>
               <td><?php echo $rs[$i]['cid'] ; ?></td>
@@ -150,13 +197,21 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
                 <i class="fa fa-eye-slash" title="隐藏<?php echo $this->category_name;?>"></i>
                 <?php } ?></td>
               <td><?php echo $rs[$i]['dir'] ; ?></td>
-              <td><a href="<?php echo APP_DOURI; ?>&rootid=<?php echo $rs[$i]['rootid'] ; ?>"><?php echo  $this->category[$rs[$i]['rootid']]['name'] ; ?></a></td>
+              <td><a href="<?php echo APP_DOURI; ?>&rootid=<?php echo $rs[$i]['rootid'] ; ?>"><?php echo  $root_data[$rs[$i]['rootid']]->name ; ?></a></td>
               <td><?php echo $rs[$i]['count'] ; ?></td>
-              <td><?php echo $this->listbtn($rs[$i]) ; ?>
+              <td>
+               <a href="<?php echo iURL::get('category',$rs)->href;?>" class="btn btn-small"><i class="fa fa-link"></i> 访问</a>
+                <?php if(admincp::CP($rs[$i]['cid'],'ca') ){?>
+                <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&do=add&<?php echo $this->_app_cid;?>=<?php echo $rs['cid'] ;?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加<?php echo $this->_app_name;?></a>
+                <?php } ?>
+                <?php if(admincp::CP($rs[$i]['cid'],'cs') ){?>
+                <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&<?php echo $this->_app_cid;?>=<?php echo $rs['cid'] ;?>&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> <?php echo $this->_app_name;?>管理</a>
+                <?php } ?>
                 <?php if(admincp::CP($rs[$i]['cid'],'a') ){?>
                 <a href="<?php echo $this->category_uri; ?>&do=add&rootid=<?php echo $rs[$i]['cid'] ; ?>" class="btn btn-small"><i class="fa fa-plus-square"></i> 子<?php echo $this->category_name;?></a>
                 <?php } ?>
                 <?php if(admincp::CP($rs[$i]['cid'],'e') ){?>
+                <a href="<?php echo $this->category_uri; ?>&do=copy&cid=<?php echo $rs[$i]['cid'] ; ?>" target="iPHP_FRAME" class="btn btn-small"><i class="fa fa-clipboard"></i> 克隆</a>
                 <a href="<?php echo $this->category_uri; ?>&do=add&cid=<?php echo $rs[$i]['cid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                 <?php } ?>
                 <?php if(admincp::CP($rs[$i]['cid'],'d') ){?>

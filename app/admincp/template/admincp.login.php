@@ -70,7 +70,7 @@ $(function(){
       var param={
         username:$("#username").val(),
         password:$("#password").val(),
-        iACP_seccode :$("#seccode").val(),
+        admincp_seccode :$("#seccode").val(),
         ajax:1
       };
 

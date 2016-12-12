@@ -33,17 +33,17 @@ function article_list($vars) {
 
 	if (isset($vars['cid!'])) {
 		$ncids = explode(',', $vars['cid!']);
-		$vars['sub'] && $ncids += iPHP::app("category")->get_ids($ncids, true);
+		$vars['sub'] && $ncids += iPHP::app("category")->get_cids($ncids, true);
 		$where_sql .= iPHP::where($ncids, 'cid', 'not');
 	}
 	if ($vars['cid'] && !isset($vars['cids'])) {
 		$cid = explode(',', $vars['cid']);
-		$vars['sub'] && $cid += iPHP::app("category")->get_ids($cid, true);
+		$vars['sub'] && $cid += iPHP::app("category")->get_cids($cid, true);
 		$where_sql .= iPHP::where($cid, 'cid');
 	}
 	if (isset($vars['cids']) && !$vars['cid']) {
 		$cids = explode(',', $vars['cids']);
-		$vars['sub'] && $cids += iPHP::app("category")->get_ids($vars['cids'], true);
+		$vars['sub'] && $cids += iPHP::app("category")->get_cids($vars['cids'], true);
 
 		if ($cids) {
 			iPHP::import(iPHP_APP_CORE . '/iMAP.class.php');
@@ -157,7 +157,7 @@ function article_list($vars) {
 		}
 	}
 	if ($ids_array) {
-		$ids = iCMS::get_ids($ids_array);
+		$ids = iPHP::values($ids_array);
 		$ids = $ids ? $ids : '0';
 		$where_sql = "WHERE `#iCMS@__article`.`id` IN({$ids})";
 		$limit = '';
@@ -216,7 +216,7 @@ function article_search($vars) {
 	isset($vars['postype']) && $SPH->SetFilter('postype', array($vars['postype']));
 
 	if (isset($vars['cid'])) {
-		$cids = $vars['sub'] ? iPHP::app("category")->get_ids($vars['cid'], true) : (array) $vars['cid'];
+		$cids = $vars['sub'] ? iPHP::app("category")->get_cids($vars['cid'], true) : (array) $vars['cid'];
 		$cids OR $cids = (array) $vars['cid'];
 		$cids = array_map("intval", $cids);
 		$SPH->SetFilter('cid', $cids);
@@ -330,11 +330,11 @@ function __article_array($vars, $variable) {
 		$articleApp = iPHP::app("article");
 		$vars['category_lite'] = true;
         if($vars['data']){
-            $aidArray = iPHP::get_ids($variable,'id','array',null);
+            $aidArray = iPHP::values($variable,'id','array',null);
             $aidArray && $article_data = (array) $articleApp->data($aidArray);
         }
         if($vars['tags']){
-            $tagArray = iPHP::get_ids($variable,'tags','array',null,'id');
+            $tagArray = iPHP::values($variable,'tags','array',null,'id');
             $tagArray && $tags_data = (array) $articleApp->tagArray($tagArray);
         }
 		foreach ($variable as $key => $value) {

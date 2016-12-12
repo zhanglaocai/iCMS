@@ -47,7 +47,7 @@ class commentApp {
 		$lckey = 'like_comment_' . $this->id;
 		$like = iPHP::get_cookie($lckey);
 		$like && iPHP::code(0, 'iCMS:comment:!like', 0, 'json');
-		//$ip = iPHP::getIp();
+		//$ip = iPHP::get_ip();
 		iDB::query("UPDATE `#iCMS@__comment` SET `up`=up+1 WHERE `id`='$this->id'");
 		iPHP::set_cookie($lckey, $_SERVER['REQUEST_TIME'], 86400);
 		iPHP::code(1, 'iCMS:comment:like', 0, 'json');
@@ -107,7 +107,7 @@ class commentApp {
 
 		$appid OR $appid = iCMS_APP_ARTICLE;
 		$addtime = $_SERVER['REQUEST_TIME'];
-		$ip = iPHP::getIp();
+		$ip = iPHP::get_ip();
 		$userid = user::$userid;
 		$username = user::$nickname;
 		$status = $this->config['examine'] ? '0' : '1';

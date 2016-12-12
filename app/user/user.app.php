@@ -714,7 +714,7 @@ class userApp {
 	public function ACTION_register() {
 		iCMS::$config['user']['register']['enable'] OR exit(iPHP::lang('user:register:forbidden'));
 
-		$regip = iS::escapeStr(iPHP::getIp());
+		$regip = iS::escapeStr(iPHP::get_ip());
 		$regdate = time();
 
 		if (iCMS::$config['user']['register']['interval']) {
@@ -850,7 +850,7 @@ class userApp {
 		$reason OR $content OR iPHP::code(0, 'iCMS:report:empty', 0, 'json');
 
 		$addtime = time();
-		$ip = iPHP::getIp();
+		$ip = iPHP::get_ip();
 		$userid = user::$userid;
 		$status = 0;
 

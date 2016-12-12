@@ -101,7 +101,12 @@ class spiderTools extends spider{
             $url = str_replace('AUTO::','',$url);
             $url = spiderTools::url_complement($baseUrl,$url);
         }
-        $rule['list_url_clean'] && $url = spiderTools::dataClean($rule['list_url_clean'],$url);
+        if($rule['list_url_clean']){
+            $url = spiderTools::dataClean($rule['list_url_clean'],$url);
+            if($url===null){
+                return array();
+            }
+        }
         $title = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $title);
 
         // unset($responses['title'],$responses['url']);
@@ -145,86 +150,54 @@ class spiderTools extends spider{
     public static function dataClean($rules, $content) {
         iPHP::import(iPHP_LIB.'/phpQuery.php');
         $ruleArray = explode("\n", $rules);
+        $NEED = $NOT = array();
         foreach ($ruleArray AS $key => $rule) {
             $rule = trim($rule);
             $rule = str_replace('<BR>', "\n", $rule);
+            $rule = str_replace('<n>', "\n", $rule);
             if(strpos($rule, 'BEFOR::')!==false){
-              $rule = str_replace('BEFOR::','', $rule);
-              $content = $rule.$content;
-              continue;
-            }
-            if(strpos($rule, 'AFTER::')!==false){
-              $rule = str_replace('AFTER::','', $rule);
-              $content = $content.$rule;
-              continue;
-            }
-            if(strpos($rule, 'CUT::')!==false){
+              $befor = str_replace('BEFOR::','', $rule);
+              $content = $befor.$content;
+            }else if(strpos($rule, 'AFTER::')!==false){
+              $after = str_replace('AFTER::','', $rule);
+              $content = $content.$after;
+            }else if(strpos($rule, 'CUT::')!==false){
               $len = str_replace('CUT::','', $rule);
               $content = csubstr($content,$len);
-              continue;
-            }
-            if(strpos($rule, '<%SELF%>')!==false){
+            }else if(strpos($rule, '<%SELF%>')!==false){
               $content = str_replace('<%SELF%>',$content, $rule);
-              continue;
-            }
-
-            list($_pattern, $_replacement) = explode("==", $rule);
-            $_pattern     = trim($_pattern);
-            $_replacement = trim($_replacement);
-            $_replacement = str_replace('\n', "\n", $_replacement);
-            if(strpos($_pattern, 'NEED::')!==false){
-                $need = str_replace('NEED::','', $_pattern);
-                if(strpos($need,',')===false){
-                    if(strpos($content,$need)===false){
-                        return false;
+            }else if(strpos($rule, 'HTML::')!==false){
+                $tag = str_replace('HTML::','', $rule);
+                if($tag=='ALL'){
+                    $content = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$content);
+                }else {
+                    $rep ="\\1";
+                    if(strpos($tag, '*')!==false){
+                        $rep ='';
+                        $tag =str_replace('*', '', $tag);
                     }
-                }else{
-                    $needArray = explode(',', $need);
-                    $needflag = true;
-                    foreach ($needArray as $needkey => $needval) {
-                        // var_dump($needval);
-                        if(strpos($content,$needval)===false){
-                            $needflag = false;
-                        }else{
-                            $needflag = true;
-                            break;
-                        }
-                    }
-
-                    if(!$needflag){
-                        return false;
-                    }
+                    $content = preg_replace("/<{$tag}[^>].*?>(.*?)<\/{$tag}>/si", $rep,$content);
+                    $content = preg_replace("@<{$tag}[^>]*>@is", "",$content);
                 }
-
-            }
-            if(strpos($_pattern, 'NOT::')!==false){
-                $not = str_replace('NOT::','', $_pattern);
-                if(strpos($content,$not)!==false){
-                    return false;
-                }
-            }
-            if(strpos($_pattern, 'LEN::')!==false){
-                $len        = str_replace('LEN::','', $_pattern);
+            }else if(strpos($rule, 'LEN::')!==false){
+                $len        = str_replace('LEN::','', $rule);
                 $len_content = preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$content);
                 if(cstrlen($len_content)<$len){
-                    return false;
+                    return null;
                 }
-            }
-            if(strpos($_pattern, 'IMG::')!==false){
-                $img_count = str_replace('IMG::','', $_pattern);
+            }else if(strpos($rule, 'IMG::')!==false){
+                $img_count = str_replace('IMG::','', $rule);
                 preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
                 $img_array  = array_unique($match[1]);
                 if(count($img_array)<$img_count){
-                    return false;
+                    return null;
                 }
-            }
-
-            if(strpos($_pattern, 'DOM::')!==false){
+            }else if(strpos($rule, 'DOM::')!==false){
                 iPHP::import(iPHP_LIB.'/phpQuery.php');
                 $doc      = phpQuery::newDocumentHTML($content,'UTF-8');
                 //echo 'dataClean:getDocumentID:'.$doc->getDocumentID()."\n";
-                $_pattern = str_replace('DOM::','', $_pattern);
-                list($pq_dom, $pq_fun,$pq_attr) = explode("::", $_pattern);
+                $rule = str_replace('DOM::','', $rule);
+                list($pq_dom, $pq_fun,$pq_attr) = explode("::", $rule);
                 $pq_array = phpQuery::pq($pq_dom);
                 foreach ($pq_array as $pq_key => $pq_val) {
                     if($pq_fun){
@@ -237,15 +210,18 @@ class spiderTools extends spider{
                         $pq_content = (string)phpQuery::pq($pq_val);
                     }
                     $pq_pattern[$pq_key]     = $pq_content;
-                    $pq_replacement[$pq_key] = $_replacement;
+                    // $pq_replacement[$pq_key] = $_replacement;
                 }
                 phpQuery::unloadDocuments($doc->getDocumentID());
-                //var_dump(array_map('htmlspecialchars', $pq_pattern));
-                $content = str_replace($pq_pattern,$pq_replacement, $content);
+                $content = str_replace($pq_pattern,'', $content);
                 unset($doc,$pq_array);
-            }else{
-                if($_pattern=='~SELF~'){
-                    $_pattern = $content;
+            }else if(strpos($rule, '==')!==false){
+                list($_pattern, $_replacement) = explode("==", $rule);
+                $_pattern     = trim($_pattern);
+                $_replacement = trim($_replacement);
+                $_replacement = str_replace('\n', "\n", $_replacement);
+                if(strpos($_pattern, '~SELF~')!==false){
+                    $_pattern = str_replace('~SELF~',$content, $_pattern);
                 }
                 if(strpos($_replacement, '~SELF~')!==false){
                     $_replacement = str_replace('~SELF~',$content, $_replacement);
@@ -253,16 +229,59 @@ class spiderTools extends spider{
                 if(strpos($_replacement, '~S~')!==false){
                     $_replacement = str_replace('~S~',' ', $_replacement);
                 }
-
+                if(strpos($_replacement, '~N~')!==false){
+                    $_replacement = str_replace('~N~',"\n", $_replacement);
+                }
                 $replacement[$key] = $_replacement;
                 $pattern[$key] = '|' . self::pregTag($_pattern) . '|is';
+                $content = preg_replace($pattern, $replacement, $content);
+            }else if(strpos($rule, 'NEED::')!==false){
+                $NEED[$key]= self::data_check('NEED::',$rule,$content);
+            }else if(strpos($rule, 'NOT::')!==false){
+                $NOT[$key]= self::data_check('NOT::',$rule,$content);
+            }else{
+                $content = preg_replace('|' . self::pregTag($rule) . '|is','', $content);
             }
         }
-        if($pattern){
-            return preg_replace($pattern, $replacement, $content);
-        }else{
-            return $content;
+        $NOT && $content = self::data_check_result($NOT,'NOT::');
+        $NEED&& $content = self::data_check_result($NEED,'NEED::');
+        unset($NOT,$NEED);
+        return $content;
+    }
+    public static function data_check_result($variable,$prefix){
+        foreach ((array)$variable as $key => $value) {
+            if($value!=$prefix){
+                return $value;
+            }
         }
+        return null;
+    }
+    public static function data_check($prefix,$rule,$content){
+        $check = str_replace($prefix,'', $rule);
+        $bool  = array(
+            'NOT::'  => false,
+            'NEED::' => true
+        );
+        if(strpos($check,',')===false){
+            if(strpos($content,$check)===false){
+                $checkflag = false;
+            }else{
+                $checkflag = true;
+            }
+        }else{
+            $checkArray = explode(',', $check);
+            foreach ($checkArray as $key => $value) {
+                if(strpos($content,$value)===false){
+                    $checkflag = false;
+                }else{
+                    $checkflag = true;
+                }
+                if($checkflag==$bool[$prefix]){
+                    break;
+                }
+            }
+        }
+        return $checkflag===$bool[$prefix]?$content:$prefix;
     }
     public static function charsetTrans($html,$content_charset,$encode, $out = 'UTF-8') {
         if (spider::$dataTest || spider::$ruleTest) {

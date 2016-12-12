@@ -373,7 +373,10 @@ class spiderUrls extends spider{
     public static function title_url_array($lists,$rule,$url){
         $array = array();
         foreach ($lists AS $lkey => $row) {
-            $array[$lkey] = spiderTools::title_url($row,$rule,$url);
+            $arr = spiderTools::title_url($row,$rule,$url);
+            if($arr){
+                $array[$lkey] = $arr;
+            }
         }
         return $array;
     }

@@ -143,15 +143,10 @@ class iMenu {
 		return $link.$icon.' '.$a['caption'].'</a>';
 	}
     function search_href(){
-        $path =  str_replace(__ADMINCP__.'=', '', iPHP_REQUEST_URI);
+        $path =  str_replace(__ADMINCP__.'=', '', $this->url);
         foreach ($this->href_array as $key => $value) {
             if($path==$key){
-                return $value;
-            }
-        }
-        foreach ($this->href_array as $key => $value) {
-            if(strpos($path,$key)!==false){
-                return $value;
+               return $value;
             }
         }
     }

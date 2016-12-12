@@ -85,7 +85,6 @@ class spiderAdmincp {
 	}
 	function do_manage($doType = null) {
 		$categoryApp = iPHP::app('category.admincp', iCMS_APP_ARTICLE);
-		$category = $categoryApp->category;
 
 		$sql = " WHERE 1=1";
 		$_GET['keywords'] && $sql .= "  AND `title` REGEXP '{$_GET['keywords']}'";
@@ -412,7 +411,6 @@ class spiderAdmincp {
 
 	function do_project() {
 		$categoryApp = iPHP::app('category.admincp', iCMS_APP_ARTICLE);
-		$category = $categoryApp->category;
 
 		$sql = "where 1=1";
 		if ($_GET['keywords']) {

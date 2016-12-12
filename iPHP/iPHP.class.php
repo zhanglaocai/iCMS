@@ -101,14 +101,14 @@ class iPHP {
 			$site = $matches[0];
 		}
 		iPHP_MULTI_SITE && define('iPHP_APP_SITE', $site);
-		strpos($site, '..') === false OR exit('<h1>What are you doing?(code:001)</h1>');
+		strpos($site, '..') === false OR self::throwException('What are you doing','001');
 
 		//config.php 中开启iPHP_APP_CONF后 此处设置无效,
 		define('iPHP_APP_CONF', iPHP_CONF_DIR . '/' . $site); //网站配置目录
 		define('iPHP_APP_CONFIG', iPHP_APP_CONF . '/config.php'); //网站配置文件
-		@is_file(iPHP_APP_CONFIG) OR exit('<h1>' . iPHP_APP . ' 运行出错.找不到"' . $site . '"网站的配置文件!(code:002)</h1>');
-		$config = require iPHP_APP_CONFIG;
+		@is_file(iPHP_APP_CONFIG) OR self::throwException('运行出错.找不到"' . $site . '"网站的配置文件(config.php)!请先安装本程序或者确认('.iPHP_APP_CONFIG.')文件是否存在!', '002');
 
+		$config = require iPHP_APP_CONFIG;
 		//config.php 中开启后 此处设置无效
 		defined('iPHP_DEBUG') OR define('iPHP_DEBUG', $config['debug']['php']); //程序调试模式
 		defined('iPHP_DB_DEBUG') OR define('iPHP_DB_DEBUG', $config['debug']['db']); //数据调试
@@ -280,7 +280,7 @@ class iPHP {
 		self::$iTPL->assign('GET', $_GET);
 		self::$iTPL->assign('POST', $_POST);
 	}
-	public static function app_ref($app_name = true, $out = false) {
+	public static function app_vars($app_name = true, $out = false) {
 		$app_name === true && $app_name = self::$app_name;
 		$rs = iPHP::get_vars($app_name);
 		return $rs['param'];
@@ -395,7 +395,7 @@ class iPHP {
 		return isset($_POST[$key]) ? $_POST[$key] : $_GET[$key];
 	}
 	// 获取客户端IP
-	public static function getIp($format = 0) {
+	public static function get_ip($format = 0) {
 		if (getenv('HTTP_CLIENT_IP') && strcasecmp(getenv('HTTP_CLIENT_IP'), 'unknown')) {
 			$onlineip = getenv('HTTP_CLIENT_IP');
 		} elseif (getenv('HTTP_X_FORWARDED_FOR') && strcasecmp(getenv('HTTP_X_FORWARDED_FOR'), 'unknown')) {
@@ -701,7 +701,7 @@ class iPHP {
 		}
 		return 'SELECT ' . $_field . ' AS ' . $field . ' FROM ' . implode(',', $_FROM) . ' WHERE ' . implode(' AND ', $_WHERE);
 	}
-	public static function get_ids($rs, $field = 'id',$ret='string',$quote="'",$key=null) {
+	public static function values($rs, $field = 'id',$ret='string',$quote="'",$key=null) {
 		if (empty($rs)) {
 			return false;
 		}
@@ -737,6 +737,17 @@ class iPHP {
 			}
 		}
 		return false;
+	}
+	public static function multi_ids($ids) {
+        $is_multi = false;
+        if(is_array($ids)){
+            $is_multi = true;
+        }
+        if(!is_array($ids) && strpos($ids, ',') !== false){
+            $ids = explode(',', $ids);
+            $is_multi = true;
+        }
+        return array($is_multi,$ids);
 	}
 	public static function where($vars, $field, $not = false, $noand = false, $table = '') {
 		if (is_bool($vars) || empty($vars)) {

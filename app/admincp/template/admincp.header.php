@@ -25,7 +25,7 @@ defined('iPHP') OR exit('What are you doing?');
 <link rel="stylesheet" href="./app/admincp/ui/artDialog/6.0.3/ui-dialog.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/iCMS.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/jquery/uniform-2.1.2.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/jquery/chosen-1.1.0.min.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/jquery/chosen.min.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/admincp.css" type="text/css" />
 
 <script src="./app/admincp/ui/jquery-1.11.0.min.js" type="text/javascript"></script>
@@ -37,7 +37,7 @@ defined('iPHP') OR exit('What are you doing?');
 <script src="./app/admincp/ui/jquery/migrate-1.2.1.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/jquery/scrollUp-1.1.0.min.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/jquery/uniform-2.1.2.min.js" type="text/javascript"></script>
-<script src="./app/admincp/ui/jquery/chosen-1.1.0.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/jquery/chosen.jquery.min.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/admincp.js" type="text/javascript"></script>
 
 <script type="text/javascript">

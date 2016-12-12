@@ -45,8 +45,7 @@ $(function() {
 	  	if($lists) foreach ($lists AS $lkey => $value) {
         $_title = $value['title'];
         $_url   = $value['url'];
-        // list($_title,$_url) = spiderTools::title_url($row,$rule,$furl);
-        if($_url===false){
+        if(empty($value)){
             continue;
         }
 				$hash = md5($_url);

@@ -56,18 +56,18 @@ class admincp {
 
 	public static function get_seccode() {
 		iPHP::core("Seccode");
-		iSeccode::run('iACP');
+		iSeccode::run('admincp');
 		exit;
 	}
 	public static function check_seccode() {
-		if ($_POST['iACP_seccode'] === iPHP_KEY) {
+		if ($_POST['admincp_seccode'] === iPHP_KEY) {
 			return true;
 		}
 
 		if ($_POST['username'] && $_POST['password']) {
 			iPHP::core("Seccode");
-			$seccode = iS::escapeStr($_POST['iACP_seccode']);
-			iSeccode::check($seccode, true, 'iACP_seccode') OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+			$seccode = iS::escapeStr($_POST['admincp_seccode']);
+			iSeccode::check($seccode, true, 'admincp_seccode') OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 	}
 

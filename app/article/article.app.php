@@ -387,15 +387,14 @@ class articleApp {
 
 	public function data($aids=0){
 		if(empty($aids)) return array();
-		if(!is_array($aids) && strpos($aids, ',') !== false){
-			$aids = explode(',', $aids);
-		}
+
+		list($is_multi,$aids)  = iPHP::multi_ids($aids);
 		$sql  = iPHP::where($aids,'aid',false,true);
 		$data = array();
 		$rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}",OBJECT);
 		if($rs){
-			$_count = count($rs);
-			if($_count>1){
+			if($is_multi){
+				$_count = count($rs);
 		        for ($i=0; $i < $_count; $i++) {
 		        	$data[$rs[$i]->aid]= $rs[$i];
 		        }
@@ -403,6 +402,9 @@ class articleApp {
 				$data = $rs[0];
 			}
 		}
+        if(empty($data)){
+            return;
+        }
 	   	return $data;
 	}
 
