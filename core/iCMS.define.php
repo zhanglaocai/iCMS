@@ -20,7 +20,3 @@ define('iCMS_APP_FAVORITE',	8); //收藏
 define('iCMS_APP_USER',		9); //用户
 define('iCMS_APP_WEIXIN',	10); //微信
 define('iCMS_APP_DOWNLOAD',	11); //下载
-
-//---------------文章存储模式------------------------
-defined('iCMS_ARTICLE_DATA') OR define('iCMS_ARTICLE_DATA',"DB"); //TEXT:文本 DB:数据库
-defined('iCMS_DOWNLOAD_DATA') OR define('iCMS_DOWNLOAD_DATA',"DB"); //TEXT:文本 DB:数据库

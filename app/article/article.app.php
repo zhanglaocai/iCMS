@@ -79,21 +79,18 @@ class articleApp {
 				iPHP::redirect($article['url']);
 			}
 		}
-		if (iCMS_ARTICLE_DATA === "TEXT") {
-			iPHP::app('article.class');
-			$article_data = article::get_text($id);
-		} else {
-			if ($article['chapter']) {
-				$all = iDB::all("SELECT id,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $id . "';", ARRAY_A);
-				foreach ($all as $akey => $value) {
-					$article_data[] = $value;
-				}
-				unset($all);
-				ksort($article_data);
-			} else {
-				$article_data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $id . "' LIMIT 1;", ARRAY_A);
+
+		if ($article['chapter']) {
+			$all = iDB::all("SELECT id,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $id . "';", ARRAY_A);
+			foreach ($all as $akey => $value) {
+				$article_data[] = $value;
 			}
+			unset($all);
+			ksort($article_data);
+		} else {
+			$article_data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $id . "' LIMIT 1;", ARRAY_A);
 		}
+
 		$vars = array(
 			'tag'           => true,
 			'user'          => true,
