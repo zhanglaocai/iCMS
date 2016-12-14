@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: app.app.php 2374 2014-03-17 11:46:13Z coolmoo $
 */
 defined('iPHP') OR exit('What are you doing?');
 
@@ -19,6 +18,7 @@ class appsAdmincp{
       // $this->cache();
 
     }
+
     function get_app($id=null){
       $id === null && $id = $this->id;
       if($id){
@@ -28,7 +28,11 @@ class appsAdmincp{
       }
     }
     function do_install(){
-
+      $app = iS::escapeStr($_GET['appname']);
+      strstr($app,'..')!==false  && iPHP::alert('您的应用有问题!');
+      $path = APPS::installed($app,'path');
+      iFS::write($path,'1');
+      iPHP::success('安装完成!','url:'.APP_URI);
     }
     function do_add(){
         if($this->id) {
@@ -40,42 +44,46 @@ class appsAdmincp{
     }
 
     function do_save(){
+        $id          = (int)$_POST['app_id'];
+        $name        = iS::escapeStr($_POST['app_name']);
+        $app         = iS::escapeStr($_POST['app_app']);
+        $description = iS::escapeStr($_POST['app_description']);
+        $fieldata    = $_POST['data'];
 
-        $id          = (int)$_POST['id'];
-        $title       = iS::escapeStr($_POST['title']);
-        $name        = iS::escapeStr($_POST['name']);
-        $description = iS::escapeStr($_POST['description']);
-        $field       = $_POST['fields'];
-
-        $title OR iPHP::alert('应用名称不能为空!');
-        empty($name) && $name = pinyin($title);
-        $table_array = array(array($name,'id'));
+        $name OR iPHP::alert('应用名称不能为空!');
+        empty($app) && $app = pinyin($name);
+        $table_array = array(array($app,'id'));
         $table       = json_encode($table_array);
 
-        $fields = array('title', 'name','table','field','description');
-        $data   = compact ($fields);
 
-        if(is_array($field)){
-          foreach ($field as $key => $value) {
+        if(is_array($fieldata)){
+          foreach ($fieldata as $key => $value) {
             $output = array();
             parse_str($value,$output);
-            $output['label'] OR iPHP::alert('发现自定义字段中空字段名称!');
-            $fname = $output['fname'];
-            $fname OR iPHP::alert('发现自定义字段中有空字段名!');
-            $field_array[$fname] = $value;
+            if(isset($output['UI:BR'])){
+              $field_array['UI:BR'] = true;
+            }else{
+              $output['label'] OR iPHP::alert('发现自定义字段中空字段名称!');
+              $fname = $output['name'];
+              $fname OR iPHP::alert('发现自定义字段中有空字段名!');
+              $field_array[$fname] = $value;
+            }
           }
-          $data['field'] = addslashes(json_encode($field_array));
+          $data = addslashes(json_encode($field_array));
         }
 
+        $fields = array('title', 'name','table','data','description');
+        $array  = compact ($fields);
+
         if(empty($id)) {
-            iDB::value("SELECT `id` FROM `#iCMS@__app` where `name` ='$name'") && iPHP::alert('该应用已经存在!');
-            iDB::insert('app',$data);
-            $this->CREATE_TABLE($data['name'],$field);
+            iDB::value("SELECT `id` FROM `#iCMS@__app` where `app` ='$app'") && iPHP::alert('该应用已经存在!');
+            $this->CREATE_TABLE($array['name'],$fieldata);
+            iDB::insert('app',$array);
             $this->cache();
-            $msg = "应用添加完成!";
+            $msg = "应用创建完成!";
         }else {
-            iDB::value("SELECT `id` FROM `#iCMS@__app` where `name` ='$name' AND `id` !='$id'") && iPHP::alert('该应用已经存在!');
-            $_field = iDB::value("SELECT `field` FROM `#iCMS@__app` where `id` ='$id'");
+            iDB::value("SELECT `id` FROM `#iCMS@__app` where `app` ='$app' AND `id` !='$id'") && iPHP::alert('该应用已经存在!');
+            $_field = iDB::value("SELECT `data` FROM `#iCMS@__app` where `id` ='$id'");
             if($_field){
               $_field_array = json_decode($_field);
               $diff = array_diff_values($field_array,$_field_array);
@@ -108,7 +116,8 @@ class appsAdmincp{
      //  $rs     = iDB::all("SELECT * FROM `#iCMS@__app` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
      //  $_count = count($rs);
      //  APPS::scan('config/app.json');
-      $rs = APPS::config('app.json');
+      $rs = APPS::config('iApp.json');
+
     	include admincp::view("apps.manage");
     }
     function do_del($id = null,$dialog=true){
@@ -268,11 +277,13 @@ class appsAdmincp{
       if($fields){
         $fsql_array = array();
         foreach ($fields as $key => $_field) {
-          $output = array();
-          parse_str($_field,$output);
-          $output && $fsql_array[] = $this->MAKE_SQL($output);
+          if(stripos($_field, 'UI:')===false){
+            $output = array();
+            parse_str($_field,$output);
+            $output && $fsql_array[] = $this->MAKE_SQL($output);
+          }
         }
-        $fsql_array && $CREATE_SQL.= implode(',', $fsql_array).',';
+        $fsql_array && $CREATE_SQL.= implode(',', $fsql_array).",\n";
       }
       $CREATE_SQL.="
         PRIMARY KEY (`id`),

@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: category.app.php 2406 2014-04-28 02:24:46Z coolmoo $
 */
 defined('iPHP') OR exit('What are you doing?');
 iPHP::app('category.class','include');

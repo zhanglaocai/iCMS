@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: admincp.php 2365 2014-02-23 16:26:27Z coolmoo $
 */
 define('iPHP_DEBUG', true);
 // define('iPHP_SESSION','SESSION');

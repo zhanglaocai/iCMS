@@ -8,7 +8,6 @@
 * @licence http://www.iiiphp.com/license
 * @version 1.0.1
 * @package iDB
-* @$Id: iPgsql.class.php 2412 2014-05-04 09:52:07Z coolmoo $
 */
 define('OBJECT', 'OBJECT');
 define('ARRAY_A', 'ARRAY_A');

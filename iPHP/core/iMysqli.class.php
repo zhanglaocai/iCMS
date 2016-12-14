@@ -8,7 +8,6 @@
 * @licence http://www.iiiphp.com/license
 * @version 1.0.1
 * @package iDB
-* @$Id: iMysql.class.php 2412 2014-05-04 09:52:07Z coolmoo $
 */
 define('OBJECT', 'OBJECT');
 define('ARRAY_A', 'ARRAY_A');
@@ -119,20 +118,7 @@ class iDB {
         }
         self::$num_queries++;
 
-        if(self::$debug){
-            $trace = '';
-            $backtrace = debug_backtrace();
-            // $backtrace = array_slice($backtrace,1,2);
-            foreach ($backtrace as $i => $l) {
-                $trace .= "\n[$i] in function <b>{$l['class']}{$l['type']}{$l['function']}</b>";
-                $l['file'] = str_replace('\\', '/', $l['file']);
-                $l['file'] = str_replace(iPATH, 'iPHP://', $l['file']);
-                $l['file'] && $trace .= " in <b>{$l['file']}</b>";
-                $l['line'] && $trace .= " on line <b>{$l['line']}</b>";
-            }
-            self::$debug_info[] = array('sql'=>$query, 'exec_time'=>self::timer_stop(true),'backtrace'=>$trace);
-            unset($trace,$backtrace);
-        }
+        self::$debug && self::backtrace($query);
 
 	   if($QT=='get') return $result;
         $QH = strtoupper(substr($query,0,strpos($query, ' ')));
@@ -442,6 +428,20 @@ class iDB {
         } else {
             return false;
         }
+    }
+    public static function backtrace($query){
+        $trace = '';
+        $backtrace = debug_backtrace();
+        // $backtrace = array_slice($backtrace,1,2);
+        foreach ($backtrace as $i => $l) {
+            $trace .= "\n[$i] in function <b>{$l['class']}{$l['type']}{$l['function']}</b>";
+            $l['file'] = str_replace('\\', '/', $l['file']);
+            $l['file'] = str_replace(iPATH, 'iPHP://', $l['file']);
+            $l['file'] && $trace .= " in <b>{$l['file']}</b>";
+            $l['line'] && $trace .= " on line <b>{$l['line']}</b>";
+        }
+        self::$debug_info[] = array('sql'=>$query, 'exec_time'=>self::timer_stop(true),'backtrace'=>$trace);
+        unset($trace,$backtrace);
     }
     /**
      * Wraps fatal errors in a nice header and footer and dies.

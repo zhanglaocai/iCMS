@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: home.app.php 2412 2014-05-04 09:52:07Z coolmoo $
 */
 class homeApp{
     function __construct() {}

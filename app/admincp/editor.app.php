@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: editor.app.php 2095 2013-09-26 07:48:11Z coolmoo $
 */
 class editorApp{
     function __construct() {

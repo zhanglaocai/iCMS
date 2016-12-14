@@ -1,9 +1,8 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: pushforum.add.php 2404 2013-03-02 07:32:33Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();

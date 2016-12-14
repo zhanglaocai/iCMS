@@ -8,7 +8,6 @@
 * @licence http://www.iiiphp.com/license
 * @version 1.0.1
 * @package iFC
-* @$Id: iFileCache.class.php 2406 2014-04-28 02:24:46Z coolmoo $
 */
 class iFC {
 	protected $_cache_sock;

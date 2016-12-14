@@ -4,7 +4,6 @@
  * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: tag.tpl.php 159 2013-03-23 04:11:53Z coolmoo $
  */
 function tag_list($vars){
 	$where_sql ="WHERE status='1' ";
@@ -81,7 +80,6 @@ function tag_list($vars){
 		case "hot":		$order_sql=" ORDER BY `count` $by";		break;
 		case "new":		$order_sql=" ORDER BY `id` $by";			break;
 		case "order":	$order_sql=" ORDER BY `ordernum` $by";	break;
-//		case "rand":	$order_sql=" ORDER BY rand() $by";		break;
 		default:		$order_sql=" ORDER BY `id` $by";
 	}
     if($map_where){
@@ -93,7 +91,6 @@ function tag_list($vars){
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
 		$total	= iPHP::total('sql.md5',"SELECT count(*) FROM `#iCMS@__tags` {$where_sql} ");
-		iPHP::assign("tags_total",$total);
 		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iPHP::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
@@ -107,8 +104,12 @@ function tag_list($vars){
 	$hash = md5($where_sql.$order_sql.$limit);
 
 	if($vars['cache']){
-		$cache_name = iPHP_DEVICE.'/tags/'.$md5."/".(int)$GLOBALS['page'];
-		$resource   = iCache::get($cache_name);
+		$cache_name = iPHP_DEVICE.'/tags/'.$hash;
+        $vars['page'] && $cache_name.= "/".(int)$GLOBALS['page'];
+		$resource = iCache::get($cache_name);
+        if($resource){
+            return $resource;
+        }
 	}
     if($map_sql || $offset){
         if($vars['cache']){
@@ -126,21 +127,29 @@ function tag_list($vars){
         $where_sql = "WHERE `#iCMS@__tags`.`id` IN({$ids})";
         $limit     = '';
     }
-    if($vars['cache']){
-        $cache_name = iPHP_DEVICE.'/tags/'.$hash;
-        $resource   = iCache::get($cache_name);
-    }
-	if(empty($resource)){
-		$resource = iDB::all("SELECT * FROM `#iCMS@__tags` {$where_sql} {$order_sql} {$limit}");
-		$resource = __tag_array($vars,$resource);
-		$vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
-	}
 
+	$resource = iDB::all("SELECT * FROM `#iCMS@__tags` {$where_sql} {$order_sql} {$limit}");
+	if($resource){
+        $resource = tag_array($vars,$resource);
+        $vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
+    }
 	return $resource;
 }
 
-function __tag_array($vars,$resource){
+function tag_array($vars,$resource=null){
 	$tagApp = iPHP::app("tag");
+    if($resource===null){
+        if(isset($vars['name'])){
+            $array = array($vars['name'],'name');
+        }else if(isset($vars['id'])){
+            $array = array($vars['id'],'id');
+        }
+        if($array){
+            return $tagApp->tag($array[0],$array[1],false);
+        }else{
+            iPHP::warning('iCMS&#x3a;tag&#x3a;array 标签出错! 缺少参数"id"或"name".');
+        }
+    }
     if($resource)foreach ($resource as $key => $value) {
 		$resource[$key] = $tagApp->value($value);
     }

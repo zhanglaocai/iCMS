@@ -8,7 +8,6 @@
  * @licence http://www.iiiphp.com/license
  * @version 1.0.1
  * @package common
- * @$Id: iPHP.php 2330 2014-01-03 05:19:07Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 defined('iPHP_LIB') OR exit('iPHP vendor need define iPHP_LIB');

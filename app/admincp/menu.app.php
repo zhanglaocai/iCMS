@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: menu.app.php 2090 2013-09-25 00:37:33Z coolmoo $
 */
 
 class menuApp{

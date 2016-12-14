@@ -79,6 +79,16 @@
             }, {
                 "-": "-"
             }, {
+                "caption": "表单管理",
+                "href": "form",
+                "icon": "building"
+            },{
+                "caption": "添加表单",
+                "href": "form&do=add",
+                "icon": "pencil-square-o"
+            }, {
+                "-": "-"
+            }, {
                 "caption": "菜单管理",
                 "href": "menu",
                 "icon": "bars"

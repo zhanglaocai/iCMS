@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: define.php 2006 2013-07-22 09:18:24Z coolmoo $
 */
 //---------------应用ID------------------------
 define('iCMS_APP_ARTICLE',	1); //文章

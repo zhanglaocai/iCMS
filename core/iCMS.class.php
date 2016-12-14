@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: iCMS.class.php 2412 2014-05-04 09:52:07Z coolmoo $
 */
 defined('iPHP') OR exit('What are you doing?');
 
@@ -149,7 +148,7 @@ class iCMS extends iPHP{
     public static function gotohtml($fp,$url='') {
         if(iPHP::$iTPL_MODE=='html'||empty($url)||stristr($url, '.php?')||iPHP_DEVICE!='desktop') return;
 
-        @is_file($fp) && iPHP::gotourl($url);
+        @is_file($fp) && iPHP::redirect($url);
     }
 
     //过滤

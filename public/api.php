@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: admincp.php 2329 2014-01-02 13:43:18Z coolmoo $
 */
 require dirname(__file__) . '/../iCMS.php';
 iCMS::API();

@@ -54,7 +54,7 @@ class weixinAdmincp{
         $url = iCMS_WEIXIN_COMPONENT.'/iCMS/login?'.
         'token='.$token.
         '&url='.urlencode(iCMS::$config['router']['public_url']);
-        iPHP::gotourl($url);
+        iPHP::redirect($url);
     }
     function do_event(){
         $sql = " where ";

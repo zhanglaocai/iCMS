@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: cache.app.php 2365 2014-02-23 16:26:27Z coolmoo $
 */
 class cacheApp{
     public $acp = array('admincp.setting.app','prop.admincp','filter.admincp','keywords.admincp');

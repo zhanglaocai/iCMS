@@ -1,12 +1,17 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: apps.manage.php 2371 2014-03-16 05:33:13Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();
+function  cmp( $a ,  $b ){
+    if ( $a['appid'] ==  $b['appid'] ) {
+        return  0 ;
+    }
+    return ( $a['appid']  <  $b['appid'] ) ? - 1  :  1 ;
+}
 ?>
 <style>
 .app_list_desc{font-size: 12px;color: #666;}
@@ -50,35 +55,32 @@ $(function(){
         <table class="table table-bordered table-condensed table-hover">
           <thead>
             <tr>
-              <th>ID</th>
-              <th class="span2">名称</th>
-              <th class="span2">简介</th>
-              <th class="span2">标识</th>
+              <th style="width:60px;">ID</th>
+              <th>名称</th>
+              <th>标识</th>
+              <th>简介</th>
               <th class="span2">数据表</th>
-              <th class="span2">模板标签</th>
+              <th class="span3">模板标签</th>
               <th>操作</th>
             </tr>
           </thead>
           <tbody>
             <?php
+            usort ( $rs ,  "cmp" );
             foreach ($rs as $key => $data) {
-              var_dump($data);
               $installed = APPS::installed($data['app']);
-              var_dump($installed);
-              // $table = APPS::get_table($data['appid']);
-              // $app   = APPS::$array[$data['name']];
             ?>
             <tr id="tr<?php echo $data['appid'] ; ?>">
               <td><?php echo $data['appid'] ; ?></td>
               <td><?php echo $data['title'] ; ?></td>
-              <td><p class="app_list_desc"><?php echo $data['description'] ; ?></p></td>
               <td><?php echo $data['app'] ; ?></td>
-              <td><span class="label label-success"><?php echo implode('</span><br /><span class="label label-success">', $data['table']); ?></span></td>
+              <td><p class="app_list_desc"><?php echo $data['description'] ; ?></p></td>
+              <td><?php echo implode('<br />', $data['table']); ?></td>
               <td>
               <?php
               if($data['template']){
                 foreach ($data['template'] as $key => $tpltags) {
-                  echo '<a href="http://www.idreamsoft.com/cms/doc_search?q='.urlencode($tpltags).'" target="_blank" title="点击查看模板标签说明"><span class="label label-success">&lt;!--{'.$tpltags.'}--&gt;</span></a>';
+                  echo '<a href="http://www.idreamsoft.com/cms/doc_search?q='.urlencode($tpltags).'" target="_blank" title="点击查看模板标签说明">&lt;!--{'.$tpltags.'}--&gt;</a><br />';
                 }
               }
               ?>
@@ -103,7 +105,7 @@ $(function(){
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="6"><div class="pagination pagination-right" style="float:right;"><?php echo iPHP::$pagenav ; ?></div>
+              <td colspan="7"><div class="pagination pagination-right" style="float:right;"><?php echo iPHP::$pagenav ; ?></div>
                 <div class="input-prepend input-append mt20"> <span class="add-on">全选
                   <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo APP_BOXID;?>" />
                   </span>

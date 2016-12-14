@@ -7,7 +7,6 @@
  * @site http://www.idreamsoft.com
  * @licence http://www.idreamsoft.com/license.php
  * @version 6.0.0
- * @$Id: iPatch.class.php 1686 2013-06-22 09:35:59Z coolmoo $
  */
 /**
  * 自动更新类

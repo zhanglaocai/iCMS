@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
@@ -26,13 +26,13 @@ class category {
         $data = array();
         $rs   = iDB::all("SELECT `cid`,`rootid` FROM `#iCMS@__category` where {$sql} {$this->appid_sql}",OBJECT);
         if($rs){
-            if($is_multi){
-                $_count = count($rs);
-                for ($i=0; $i < $_count; $i++) {
+            $_count = count($rs);
+            for ($i=0; $i < $_count; $i++) {
+                if($is_multi){
                     $data[$rs[$i]->rootid][$rs[$i]->cid]= $rs[$i]->cid;
+                }else{
+                    $data[]= $rs[$i]->cid;
                 }
-            }else{
-                $data = $rs[$i]->cid;
             }
         }
         if(empty($data)){

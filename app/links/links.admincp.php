@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: link.admincp.php 634 2013-04-03 06:02:53Z coolmoo $
 */
 class linksAdmincp{
     function __construct() {

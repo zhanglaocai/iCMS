@@ -4,7 +4,6 @@
  * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: article.app.php 2408 2014-04-30 18:58:23Z coolmoo $
  */
 class articleApp {
 	public $taoke   = false;
@@ -77,7 +76,7 @@ class articleApp {
 				return false;
 			} else {
 				$this->API_hits($id);
-				iPHP::gotourl($article['url']);
+				iPHP::redirect($article['url']);
 			}
 		}
 		if (iCMS_ARTICLE_DATA === "TEXT") {

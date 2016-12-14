@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: pushcategory.app.php 2374 2014-03-17 11:46:13Z coolmoo $
 */
 defined('iPHP') OR exit('What are you doing?');
 

@@ -1,10 +1,9 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: comment.app.php 2406 2014-04-28 02:24:46Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 
@@ -22,7 +21,7 @@ class commentApp {
 
 		iPHP::app('apps.class', 'static');
 		$url = APPS::get_url($appid, $iid);
-		iPHP::gotourl($url);
+		iPHP::redirect($url);
 	}
 	public function API_list() {
 		$_GET['_display'] = $_GET['display'];

@@ -7,13 +7,12 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: account.app.php 634 2013-04-03 06:02:53Z coolmoo $
 */
 class userAdmincp{
     function __construct() {
         $this->appid    = iCMS_APP_USER;
         $this->uid      = (int)$_GET['id'];
-        $this->groupApp = admincp::app('groups',0);
+        $this->groupApp = admincp::app('group',0);
     }
     function do_update(){
         $data = admincp::fields($_GET['iDT']);
@@ -35,7 +34,7 @@ class userAdmincp{
             iPHP::app('user.class','static');
             user::set_cookie($user['username'],$user['password'],$user);
             $url = iPHP::router(array('uid:home',$this->uid));
-            iPHP::gotourl($url);
+            iPHP::redirect($url);
         }
     }
     function do_iCMS(){

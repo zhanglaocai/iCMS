@@ -1,10 +1,9 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: user.app.php 2353 2014-02-13 04:04:49Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 
@@ -42,7 +41,7 @@ class userApp {
 		$this->me = user::status(); //判断是否登陆
 		if (empty($this->me) && empty($this->user)) {
 			iPHP::set_cookie('forward', '', -31536000);
-			iPHP::gotourl($this->login_uri);
+			iPHP::redirect($this->login_uri);
 		}
 
 		if ($this->me) {
@@ -1190,7 +1189,7 @@ class userApp {
 				)
 				);
 				$api->cleancookie();
-				iPHP::gotourl($this->forward);
+				iPHP::redirect($this->forward);
 			} else {
 				if (isset($_GET['bind'])) {
 					$user = array();

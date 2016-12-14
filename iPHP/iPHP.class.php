@@ -8,7 +8,6 @@
  * @licence http://www.iiiphp.com/license
  * @version 1.0.1
  * @package common
- * @$Id: iPHP.php 2330 2014-01-03 05:19:07Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 
@@ -223,7 +222,7 @@ class iPHP {
             // header("X-STRIPOS: ".(stripos(iPHP_REQUEST_URL, iPHP_HOST) === false));
             // iPHP::http_status(301);
             // exit($redirect_url);
-            // iPHP::gotourl($redirect_url);
+            // iPHP::redirect($redirect_url);
         }
 	}
 	private static function device_check($deviceArray = null, $flag = false) {
@@ -649,7 +648,7 @@ class iPHP {
 		iPHP_DEBUG && self::throwException($msg, $code);
 		self::http_status(404, $code);
 		if (defined('iPHP_URL_404')) {
-			iPHP_URL_404 && self::gotourl(iPHP_URL_404 . '?url=' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+			iPHP_URL_404 && self::redirect(iPHP_URL_404 . '?url=' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 		}
 		exit();
 	}
@@ -752,6 +751,9 @@ class iPHP {
 	public static function where($vars, $field, $not = false, $noand = false, $table = '') {
 		if (is_bool($vars) || empty($vars)) {
 			return '';
+		}
+		if (!is_array($vars) && strpos($vars,',') !== false){
+			$vars = explode(',', $vars);
 		}
 
 		if (is_array($vars)) {
@@ -1049,7 +1051,7 @@ class iPHP {
 		}
 		return $total;
 	}
-	public static function gotourl($URL = '') {
+	public static function redirect($URL = '') {
 		$URL OR $URL = __REF__;
 		if (headers_sent()) {
 			echo '<meta http-equiv=\'refresh\' content=\'0;url=' . $URL . '\'><script type="text/javascript">window.location.replace(\'' . $URL . '\');</script>';

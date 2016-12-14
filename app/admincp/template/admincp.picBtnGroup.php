@@ -1,9 +1,8 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: home.php 2393 2014-04-09 13:14:23Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 $unid = uniqid();

@@ -1,9 +1,8 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: category.manage.php 2381 2014-03-21 04:03:07Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 iPHP::set_cookie(admincp::$APP_NAME.'_tabs',admincp::$APP_DO);

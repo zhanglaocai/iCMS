@@ -2,10 +2,9 @@
 
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: tag.app.php 141 2013-03-13 14:01:43Z coolmoo $
  */
 class tagApp {
     public $methods = array('iCMS');

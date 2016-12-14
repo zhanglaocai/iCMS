@@ -3,7 +3,6 @@
  * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: login.php 2379 2014-03-19 02:37:47Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 ?>

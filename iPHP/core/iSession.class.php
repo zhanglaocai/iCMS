@@ -8,7 +8,6 @@
 * @licence http://www.iiiphp.com/license
 * @version 1.0.1
 * @package iSession
-* @$Id: iSession.class.php 2290 2013-11-21 03:49:19Z coolmoo $
 * CREATE TABLE `sessions` (
 *   `session_id` varchar(255) NOT NULL DEFAULT '',
 *   `expires` int(10) unsigned NOT NULL DEFAULT '0',

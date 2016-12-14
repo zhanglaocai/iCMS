@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: iMenu.class.php 2334 2014-01-04 12:18:19Z coolmoo $
 */
 class iMenu {
     public $menu_array = array();

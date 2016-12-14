@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: iMember.class.php 2279 2013-11-17 17:19:12Z coolmoo $
 */
 class iMember{
     public static $userid       = 0;

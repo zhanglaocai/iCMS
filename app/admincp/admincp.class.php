@@ -8,7 +8,6 @@
  * @site http://www.idreamsoft.com
  * @licence http://www.idreamsoft.com/license.php
  * @version 6.0.0
- * @$Id: admincp.class.php 2361 2014-02-22 01:52:39Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 

@@ -1,9 +1,8 @@
 <?php /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: article.manage.php 2405 2014-04-17 06:59:42Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();

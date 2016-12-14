@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: iPages.class.php 1608 2013-06-13 06:45:35Z coolmoo $
 */
 //$GLOBALS['iPage']['url']="/index_";
 //$GLOBALS['iPage']['html']['enable']=true;

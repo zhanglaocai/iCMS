@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: msg.class.php 2349 2013-02-25 04:10:05Z coolmoo $
 */
 class msg{
 	//type: 0 系统 1 用户对话 2 @ 3留言

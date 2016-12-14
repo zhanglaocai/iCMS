@@ -8,7 +8,6 @@
 * @licence http://www.iiiphp.com/license
 * @version 1.0.1
 * @package iPic
-* @$Id: iPic.class.php 2290 2013-11-21 03:49:19Z coolmoo $
 */
 class iPic {
     protected static $config    = null;

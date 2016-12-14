@@ -1,10 +1,9 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: index.app.php 2406 2014-04-28 02:24:46Z coolmoo $
  */
 class indexApp {
 	public $methods	= array('iCMS','index');

@@ -4,7 +4,6 @@
  * @copyright 2007-2016, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: category.app.php 2412 2014-05-04 09:52:07Z coolmoo $
  */
 define('CACHE_CATEGORY_ID',        'iCMS/category/');
 define('CACHE_CATEGORY_DIR2CID',   'iCMS/category/dir2cid');
@@ -41,7 +40,7 @@ class categoryApp{
         $iurl = $category['iurl'];
         if($tpl){
             if(iPHP::$iTPL_MODE=="html" && (strstr($category['rule']['index'],'{PHP}')||$category['outurl']||!$category['mode']) ) return false;
-            $category['outurl'] && iPHP::gotourl($category['outurl']);
+            $category['outurl'] && iPHP::redirect($category['outurl']);
             $category['mode']=='1' && iCMS::gotohtml($iurl['path'],$iurl['href']);
         }
 

@@ -1,10 +1,9 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: public.app.php 1392 2013-05-20 12:28:08Z coolmoo $
  */
 class publicApp {
 	public $methods = array('weixin', 'sitemapindex', 'sitemap', 'seccode', 'agreement', 'crontab', 'time', 'qrcode');

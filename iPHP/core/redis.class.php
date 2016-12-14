@@ -8,7 +8,6 @@
 * @licence http://www.iiiphp.com/license
 * @version 1.0.1
 * @package Redis
-* @$Id: redis.class.php 2134 2013-10-14 05:25:17Z coolmoo $
 */
 
 class Redis_client{

@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: html.app.php 2404 2013-03-02 07:32:33Z coolmoo $
 */
 class htmlAdmincp{
     function __construct() {
@@ -260,7 +259,7 @@ class htmlAdmincp{
 		    $urlA["query"]		= http_build_query($query);
 		    $url	= $urlA["path"].'?'.$urlA["query"];
 		    return $url;
-			//iPHP::gotourl($url);
+			//iPHP::redirect($url);
     	}
     }
     function get_category($appid){

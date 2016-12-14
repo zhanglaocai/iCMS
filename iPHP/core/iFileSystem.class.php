@@ -9,7 +9,6 @@
  * @licence http://www.iiiphp.com/license
  * @version 1.0.1
  * @package FileSystem
- * @$Id: iFileSystem.class.php 2412 2014-05-04 09:52:07Z coolmoo $
  *
  * CREATE TABLE `iPHP_filedata` (
  *   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

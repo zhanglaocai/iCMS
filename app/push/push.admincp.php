@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: push.app.php 2393 2014-04-09 13:14:23Z coolmoo $
 */
 class pushAdmincp{
     public $callback = array();

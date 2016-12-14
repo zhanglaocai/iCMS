@@ -1,10 +1,9 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: article.tpl.php 2408 2014-04-30 18:58:23Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 
@@ -99,9 +98,8 @@ function article_list($vars) {
         case "comment":  $order_sql = " ORDER BY `comments` $by"; break;
         case "pubdate":  $order_sql = " ORDER BY `pubdate` $by"; break;
         case "disorder": $order_sql = " ORDER BY `ordernum` $by"; break;
-        // case "rand":     $order_sql = " ORDER BY rand() $by"; break;
         case "weight":   $order_sql = " ORDER BY `weight`,`ordernum` ASC"; break;
-	default:$order_sql = " ORDER BY `id` $by";
+		default:$order_sql = " ORDER BY `id` $by";
 	}
 	isset($vars['startdate']) && $where_sql .= " AND `pubdate`>='" . strtotime($vars['startdate']) . "'";
 	isset($vars['enddate']) && $where_sql .= " AND `pubdate`<='" . strtotime($vars['enddate']) . "'";

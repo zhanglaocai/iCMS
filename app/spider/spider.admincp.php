@@ -8,7 +8,6 @@
  * @site http://www.idreamsoft.com
  * @licence http://www.idreamsoft.com/license.php
  * @version 6.0.0
- * @$Id: spider.app.php 156 2013-03-22 13:40:07Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 

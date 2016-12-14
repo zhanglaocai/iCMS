@@ -7,13 +7,12 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: account.app.php 634 2013-04-03 06:02:53Z coolmoo $
 */
 // class accountApp extends admincp{
 class accountApp{
     function __construct() {
         $this->uid      = (int)$_GET['id'];
-        $this->groupApp = admincp::app('groups',1);
+        $this->groupApp = admincp::app('group',1);
     }
 
     function do_job(){

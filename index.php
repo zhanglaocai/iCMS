@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: index.php 2330 2014-01-03 05:19:07Z coolmoo $
 */
 require dirname(__file__).'/iCMS.php';
 iCMS::run();

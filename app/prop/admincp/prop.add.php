@@ -1,9 +1,8 @@
 <?php /**
 * @package iCMS
-* @copyright 2007-2010, iDreamSoft
+* @copyright 2007-2017, iDreamSoft
 * @license http://www.idreamsoft.com iDreamSoft
 * @author coolmoo <idreamsoft@qq.com>
-* @$Id: prop.add.php 2379 2014-03-19 02:37:47Z coolmoo $
 */
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();

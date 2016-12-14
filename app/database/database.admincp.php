@@ -7,7 +7,6 @@
  * @site http://www.idreamsoft.com
  * @licence http://www.idreamsoft.com/license.php
  * @version 6.0.0
- * @$Id: database.app.php 2324 2013-12-11 14:11:58Z coolmoo $
  */
 class databaseAdmincp {
 	function __construct() {

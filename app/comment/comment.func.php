@@ -1,10 +1,9 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: comment.tpl.php 2408 2014-04-30 18:58:23Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 
@@ -70,8 +69,8 @@ function comment_list($vars){
 	if ($vars['display'] && empty($vars['loop'])) {
 		$_vars = iPHP::app_vars(true);
 		$vars  = array_merge($vars,$_vars);
-		$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"iid"属性或"iid"值为空.');
-		$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少"appid"属性或"appid"值为空.');
+		$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"iid"或"iid"值为空.');
+		$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"appid"或"appid"值为空.');
 		return comment_list_display($vars);
 	}
 
@@ -130,7 +129,7 @@ function comment_list($vars){
 			//$where_sql.=" AND `id` >= (SELECT `id` FROM `#iCMS@__comment` WHERE {$where_sql} {$order_sql} LIMIT {$offset},1)";
 			//$limit  = "LIMIT {$maxperpage}";
 		// }
-		iPHP::assign("comment_total",$total);
+		iPHP::assign("comment_list_total",$total);
 	}
 	if($vars['cache']){
 		$cache_name = iPHP_DEVICE.'/comment/'.$md5."/".(int)$offset;
@@ -189,8 +188,8 @@ function comment_form($vars){
 	// 	iPHP::warning('此页面禁止调用 iCMS&#x3a;comment&#x3a;form 标签！');
 	// }
 	if(iCMS::$config['comment']['plugin']['changyan']['enable']|| $vars['display']==="changyan"){
-		iCMS::$config['comment']['plugin']['changyan']['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少"appid"属性或"appid"值为空.');
-		iCMS::$config['comment']['plugin']['changyan']['appkey'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少"appkey"属性或"appkey"值为空.');
+		iCMS::$config['comment']['plugin']['changyan']['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appid"或"appid"值为空.');
+		iCMS::$config['comment']['plugin']['changyan']['appkey'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appkey"或"appkey"值为空.');
 
 		if(iPHP::$mobile){
 			echo iPHP::view('iCMS://comment/changyan.mobile.htm');
@@ -205,10 +204,10 @@ function comment_form($vars){
 		unset($vars['ref'],$_vars);
 	}
 
-	$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少"iid"属性或"iid"值为空.');
-	$vars['cid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少"cid"属性或"cid"值为空.');
-	$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少"appid"属性或"appid"值为空.');
-	$vars['title'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少"title"属性或"title"值为空.');
+	$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"iid"或"iid"值为空.');
+	$vars['cid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"cid"或"cid"值为空.');
+	$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"appid"或"appid"值为空.');
+	$vars['title'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"title"或"title"值为空.');
 	switch ($vars['display']) {
 		case 'iframe':
 			$tpl        = 'form.iframe';

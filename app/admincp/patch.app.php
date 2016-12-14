@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: patch.app.php 1665 2013-06-21 05:57:53Z coolmoo $
 */
 defined('iPHP') OR exit('What are you doing?');
 

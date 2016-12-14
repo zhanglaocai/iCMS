@@ -7,7 +7,6 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
-* @$Id: filter.app.php 2372 2014-03-16 07:24:56Z coolmoo $
 */
 class filterApp{
     private $setting;

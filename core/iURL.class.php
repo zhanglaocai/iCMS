@@ -8,7 +8,6 @@
 * @licence http://www.iiiphp.com/license
 * @version 1.0.1
 * @package iURL
-* @$Id: iURL.class.php 2408 2014-04-30 18:58:23Z coolmoo $
 */
 define('PAGE_SIGN', '{P}');
 

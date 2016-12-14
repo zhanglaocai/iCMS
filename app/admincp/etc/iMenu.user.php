@@ -21,11 +21,11 @@
         "-": "-"
     }, {
         "caption": "角色管理",
-        "href": "groups",
+        "href": "group",
         "icon": "list-alt"
     }, {
         "caption": "添加角色",
-        "href": "groups&do=add",
+        "href": "group&do=add",
         "icon": "group"
     }]
 }]

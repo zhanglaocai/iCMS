@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2015, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
@@ -257,7 +257,7 @@ class user {
 				if(self::$format=='json'){
 					return iPHP::code(1,0,$url,'json');
 				}
-				iPHP::gotourl($url);
+				iPHP::redirect($url);
 			}
 			return $user;
 		}else{
@@ -265,7 +265,7 @@ class user {
 				if(self::$format=='json'){
 					return iPHP::code(0,0,$url,'json');
 				}
-				iPHP::gotourl($url);
+				iPHP::redirect($url);
 			}
 			return false;
 		}

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package iCMS
- * @copyright 2007-2010, iDreamSoft
+ * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author c00lt3a <idreamsoft@qq.com>
  */
@@ -84,8 +84,8 @@ class APPS {
         self::$array = $array;
         // var_dump(self::$array);
     }
-    public static function config($pattern='app.json',$dir='*'){
-        $array = self::scan('config/'.$pattern,$dir,true);
+    public static function config($pattern='iApp.json',$dir='*'){
+        $array = self::scan('etc/'.$pattern,$dir,true);
         $data  = array();
         foreach ($array as $key => $path) {
             if(stripos($path, $pattern) !== false){
@@ -99,6 +99,13 @@ class APPS {
             }
         }
         return $data;
+    }
+    public static function installed($app,$r=false){
+        $path  = iPHP_APP_DIR.'/'.$app.'/etc/iApp.install.lock';
+        if($r){
+            return $path;
+        }
+        return file_exists($path);
     }
     public static function setting($t='setting',$appdir='*',$pattern='*.setting'){
 
@@ -155,18 +162,18 @@ class APPS {
 				$table['on']   = $tb_array[1][1];
         	}
         	$a['table'] = $table;
-			$app_id_array[$a['id']]     = $a;
-			$app_name_array[$a['name']] = $a;
+			$appid_array[$a['id']]     = $a;
+			$app_array[$a['app']] = $a;
 
 			iCache::delete('iCMS/app/'.$a['id']);
 			iCache::set('iCMS/app/'.$a['id'],$a,0);
 
-			iCache::delete('iCMS/app/'.$a['name']);
-			iCache::set('iCMS/app/'.$a['name'],$a,0);
+			iCache::delete('iCMS/app/'.$a['app']);
+			iCache::set('iCMS/app/'.$a['app'],$a,0);
 
         }
-        iCache::set('iCMS/app/cache_id',  $app_id_array,0);
-        iCache::set('iCMS/app/cache_name',$app_name_array,0);
+        iCache::set('iCMS/app/idarray',  $appid_array,0);
+        iCache::set('iCMS/app/array',$app_array,0);
 	}
 	public static function get_app($appid=1){
 		$rs	= iCache::get('iCMS/app/'.$appid);
