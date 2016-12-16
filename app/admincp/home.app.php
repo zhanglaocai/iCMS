@@ -51,7 +51,7 @@ class homeApp{
         $kc  = iDB::value("SELECT count(*) FROM `#iCMS@__keywords`");
         $pc  = iDB::value("SELECT count(*) FROM `#iCMS@__push`");
         $uc  = iDB::value("SELECT count(*) FROM `#iCMS@__user`");
-        $fdc = iDB::value("SELECT count(*) FROM `#iCMS@__filedata`");
+        $fdc = iDB::value("SELECT count(*) FROM `#iCMS@__file_data`");
         $lc  = iDB::value("SELECT count(*) FROM `#iCMS@__links`");
 
     	include admincp::view("home");

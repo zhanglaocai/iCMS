@@ -114,12 +114,7 @@ class article {
     public static function select_filedata_indexid($indexid='',$fields='filename`,`path`,`ext'){
         return iDB::all("SELECT `$fields` FROM `#iCMS@__filedata` WHERE `indexid`='$indexid'");
     }
-    public static function filedata_value($var='',$field='filename',$var_field='indexid'){
-        return iDB::value("SELECT `$var_field` FROM `#iCMS@__filedata` WHERE `$field` ='$var'");
-    }
-    public static function filedata_update_indexid($indexid='',$filename=''){
-        return iDB::query("UPDATE `#iCMS@__filedata` SET `indexid` = '$indexid' WHERE `filename` ='$filename'");
-    }
+
     public static function del_comment($iid){
         iDB::query("DELETE FROM `#iCMS@__comment` WHERE iid='$iid' and appid='".iCMS_APP_ARTICLE."'");
     }

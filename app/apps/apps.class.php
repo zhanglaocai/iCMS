@@ -27,7 +27,7 @@ class APPS {
         $filename = "{$app}.{$package}.php";
         $app_path = iPHP_APP_DIR."/$app/".$filename;
         if(file_exists($app_path)){
-            return array($app,$filename,$sapp);
+            return array($app,$filename,ucfirst($sapp));
         }else{
             return false;
         }
@@ -149,7 +149,7 @@ class APPS {
 		return self;
 	}
 	public static function cache(){
-        $rs = iDB::all("SELECT * FROM `#iCMS@__app`");
+        $rs = iDB::all("SELECT * FROM `#iCMS@__apps`");
 
         foreach((array)$rs AS $a) {
         	$tb_array = json_decode($a['table']);

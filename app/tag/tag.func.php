@@ -15,10 +15,10 @@ function tag_list($vars){
         $where_sql.= iPHP::where($vars['tcid'],'tcid');
     }
     if(isset($vars['tcids']) && !isset($vars['tcid'])){
-        iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-        map::init('category',iCMS_APP_TAG);
-        //$where_sql.= map::exists($vars['tcid'],'`#iCMS@__tags`.id'); //map 表大的用exists
-        $map_where+=map::where($vars['tcid']);
+        iCMS::core('Map');
+        iMap::init('category',iCMS_APP_TAG);
+        //$where_sql.= iMap::exists($vars['tcid'],'`#iCMS@__tags`.id'); //map 表大的用exists
+        $map_where+=iMap::where($vars['tcid']);
     }
     if(isset($vars['tcid!'])){
         $where_sql.= iPHP::where($vars['tcid!'],'tcid','not');
@@ -28,10 +28,10 @@ function tag_list($vars){
         $where_sql.= iPHP::where($vars['pid'],'pid');
     }
     if(isset($vars['pids']) && !isset($vars['pid'])){
-        iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-        map::init('prop',iCMS_APP_TAG);
-        //$where_sql.= map::exists($vars['pids'],'`#iCMS@__tags`.id'); //map 表大的用exists
-        $map_where+= map::where($vars['pids']);
+        iCMS::core('Map');
+        iMap::init('prop',iCMS_APP_TAG);
+        //$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__tags`.id'); //map 表大的用exists
+        $map_where+= iMap::where($vars['pids']);
     }
     if(isset($vars['pid!'])){
         $where_sql.= iPHP::where($vars['pid!'],'pid','not');
@@ -47,9 +47,9 @@ function tag_list($vars){
         $vars['sub'] && $cids+=iPHP::app("category")->get_cids($vars['cids'],true);
 
         if($cids){
-            iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-            map::init('category',iCMS_APP_TAG);
-            $map_where+=map::where($cids);
+            iCMS::core('Map');
+            iMap::init('category',iCMS_APP_TAG);
+            $map_where+=iMap::where($cids);
         }
     }
     if(isset($vars['cid!'])){

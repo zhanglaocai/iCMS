@@ -168,6 +168,7 @@ class category {
                 $domaincid[$C['domain']] = $C['cid'];
             }
             $rootid[$C['rootid']][$C['cid']] = $C['cid'];
+            $parent[$C['cid']] = $C['rootid'];
         }
 
         $domain = $this->domain_array($domain_array);
@@ -177,8 +178,9 @@ class category {
         iCache::set('iCMS/category/dir2cid',$dir2cid,0);
         iCache::set('iCMS/category/hidden', $hidden,0);
         iCache::set('iCMS/category/domain',$domain,0);
+        iCache::set('iCMS/category/parent',$parent,0);
 
-        unset($rootid,$dir2cid,$hidden,$domain,$domain_array,$domaincid,$rs,$C);
+        unset($rootid,$parent,$dir2cid,$hidden,$domain,$domain_array,$domaincid,$rs,$C);
         gc_collect_cycles();
         return $_count;
     }

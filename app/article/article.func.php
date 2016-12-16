@@ -45,9 +45,9 @@ function article_list($vars) {
 		$vars['sub'] && $cids += iPHP::app("category")->get_cids($vars['cids'], true);
 
 		if ($cids) {
-			iPHP::import(iPHP_APP_CORE . '/iMAP.class.php');
-			map::init('category', iCMS_APP_ARTICLE);
-			$map_where += map::where($cids);
+			iCMS::core('Map');
+			iMap::init('category', iCMS_APP_ARTICLE);
+			$map_where += iMap::where($cids);
 		}
 	}
 	if (isset($vars['pid']) && !isset($vars['pids'])) {
@@ -55,15 +55,15 @@ function article_list($vars) {
 	}
 
 	if (isset($vars['pids']) && !isset($vars['pid'])) {
-		iPHP::import(iPHP_APP_CORE . '/iMAP.class.php');
-		map::init('prop', iCMS_APP_ARTICLE);
-		$map_where += map::where($vars['pids']);
+		iCMS::core('Map');
+		iMap::init('prop', iCMS_APP_ARTICLE);
+		$map_where += iMap::where($vars['pids']);
 	}
 
 	if (isset($vars['tids'])) {
-		iPHP::import(iPHP_APP_CORE . '/iMAP.class.php');
-		map::init('tags', iCMS_APP_ARTICLE);
-		$map_where += map::where($vars['tids']);
+		iCMS::core('Map');
+		iMap::init('tags', iCMS_APP_ARTICLE);
+		$map_where += iMap::where($vars['tids']);
 	}
 	if (isset($vars['keywords'])) {
 //最好使用 iCMS:article:search
@@ -164,13 +164,13 @@ function article_list($vars) {
 		$cache_name = iPHP_DEVICE . '/article/' . $hash;
 		$resource = iCache::get($cache_name);
 	}
-	// $func = '__article_array';
+	// $func = 'article_array';
 	// if($vars['func']=="user_home"){ //暂时只有一个选项
 	//     $func = '__article_user_home_array';
 	// }
 	if (empty($resource)) {
 		$resource = iDB::all("SELECT `#iCMS@__article`.* FROM `#iCMS@__article` {$where_sql} {$order_sql} {$limit}");
-		$resource = __article_array($vars, $resource);
+		$resource = article_array($vars, $resource);
 		$vars['cache'] && iCache::set($cache_name, $resource, $cache_time);
 	}
 	//print_r($resource);
@@ -264,7 +264,7 @@ function article_search($vars) {
 		$offset = $multi->offset;
 	}
 	$resource = iDB::all("SELECT * FROM `#iCMS@__article` WHERE {$where_sql} {$order_sql} LIMIT {$maxperpage}");
-	$resource = __article_array($vars, $resource);
+	$resource = article_array($vars, $resource);
 	return $resource;
 }
 function article_data($vars) {
@@ -322,27 +322,39 @@ function article_next($vars) {
 	}
 	return $array;
 }
-function __article_array($vars, $variable) {
+function article_array($vars, $variable) {
 	$resource = array();
 	if ($variable) {
 		$articleApp = iPHP::app("article");
 		$vars['category_lite'] = true;
-        if($vars['data']){
+        if($vars['data']||$vars['pics']){
             $aidArray = iPHP::values($variable,'id','array',null);
             $aidArray && $article_data = (array) $articleApp->data($aidArray);
+            unset($aidArray);
         }
         if($vars['tags']){
             $tagArray = iPHP::values($variable,'tags','array',null,'id');
-            $tagArray && $tags_data = (array) $articleApp->tagArray($tagArray);
+            if($tagArray){
+				$tagApp    = iPHP::app("tag.app");
+				$tags_data = (array)$tagApp->multi_tag($tagArray);
+            }
+            unset($tagArray);
         }
 		foreach ($variable as $key => $value) {
 			$value = $articleApp->value($value, false, $vars);
 			if ($value === false) {
 				continue;
 			}
-            if($vars['data'] && $article_data){
+            if(($vars['data']||$vars['pics']) && $article_data){
                 $value['data']  = (array)$article_data[$value['id']];
+                if($vars['pics']){
+					$value['pics'] = $articleApp->body_pics($value['data']['body']);
+					if(!$value['data']){
+						unset($value['data']);
+					}
+                }
             }
+
             if($vars['tags'] && $tags_data){
                 $value+= (array)$tags_data[$value['id']];
             }
@@ -353,8 +365,6 @@ function __article_array($vars, $variable) {
 			}
 			if ($vars['archive'] == "date") {
 				$_date = archive_date($value['postime']);
-				//var_dump($_date);
-				//$_date = get_date($value['postime'],'Ymd');
 				unset($resource[$key]);
 				$resource[$_date][$key] = $value;
 			} else {

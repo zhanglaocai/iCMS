@@ -57,9 +57,9 @@ class userAdmincp{
             if($_GET['pid']==0){
                 $sql.= " AND `pid`=''";
             }else{
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('prop',$this->appid);
-                $map_where = map::where($pid);
+                iCMS::core('Map');
+                iMap::init('prop',$this->appid);
+                $map_where = iMap::where($pid);
             }
         }
 
@@ -106,7 +106,7 @@ class userAdmincp{
         $user['lastlogintime'] = iPHP::str2time($user['lastlogintime']);
         $user['pid']           = $pid;
 
-        iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
+        iCMS::core('Map');
 
        if(empty($uid)) {
             $password OR iPHP::alert('密码不能为空');
@@ -114,16 +114,16 @@ class userAdmincp{
             iDB::value("SELECT `uid` FROM `#iCMS@__user` where `username` ='$username' LIMIT 1") && iPHP::alert('该账号已经存在');
             iDB::value("SELECT `uid` FROM `#iCMS@__user` where `nickname` ='$nickname' LIMIT 1") && iPHP::alert('该昵称已经存在');
             $uid = iDB::insert('user',$user);
-            map::init('prop',iCMS_APP_USER);
-            $pid && map::add($pid,$uid);
+            iMap::init('prop',iCMS_APP_USER);
+            $pid && iMap::add($pid,$uid);
             $msg = "账号添加完成!";
         }else {
             iDB::value("SELECT `uid` FROM `#iCMS@__user` where `username` ='$username' AND `uid` !='$uid' LIMIT 1") && iPHP::alert('该账号已经存在');
             iDB::value("SELECT `uid` FROM `#iCMS@__user` where `nickname` ='$nickname' AND `uid` !='$uid' LIMIT 1") && iPHP::alert('该昵称已经存在');
             $password && $user['password'] = md5($password);
             iDB::update('user', $user, array('uid'=>$uid));
-            map::init('prop',iCMS_APP_USER);
-            map::diff($pid,$_pid,$uid);
+            iMap::init('prop',iCMS_APP_USER);
+            iMap::diff($pid,$_pid,$uid);
             if(iDB::value("SELECT `uid` FROM `#iCMS@__user_data` where `uid`='$uid' LIMIT 1")){
                 iDB::update('user_data', $userdata, array('uid'=>$uid));
             }else{
@@ -141,14 +141,14 @@ class userAdmincp{
     	$batch	= $_POST['batch'];
     	switch($batch){
             case 'prop':
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('prop',iCMS_APP_USER);
+                iCMS::core('Map');
+                iMap::init('prop',iCMS_APP_USER);
 
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {
                     $_pid = iDB::value("SELECT `pid` FROM `#iCMS@__user` where `uid`='$id' LIMIT 1");
                     iDB::update('user',compact('pid'),array('uid'=>$id));
-                    map::diff($pid,$_pid,$id);
+                    iMap::diff($pid,$_pid,$id);
                 }
                 iPHP::success('用户属性设置完成!','js:1');
 

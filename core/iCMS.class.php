@@ -150,7 +150,15 @@ class iCMS extends iPHP{
 
         @is_file($fp) && iPHP::redirect($url);
     }
-
+    public static function iFile_init(){
+        self::core('File');
+        iFile::init(iFS::$config['table'],array('file_data','file_map'));
+        iFS::$CALLABLE = array(
+            'insert' => array('iFile','insert'),
+            'update' => array('iFile','update'),
+            'get'    => array('iFile','get')
+        );
+    }
     //过滤
     public static function filter(&$content){
         $filter  = iCache::get('iCMS/word.filter');//filter过滤
@@ -183,42 +191,4 @@ class iCMS extends iPHP{
         }
     }
 
-    public static function str_replace_limit($search, $replace, $subject, $limit=-1) {
-        preg_match_all ("/<a[^>]*?>(.*?)<\/a>/si", $subject, $matches);//链接不替换
-        $linkArray	= array_unique($matches[0]);
-        $linkArray && $linkflip	= array_flip($linkArray);
-        foreach((array)$linkflip AS $linkHtml=>$linkkey){
-            $linkA[$linkkey]='###iCMS_LINK_'.rand(1,1000).'_'.$linkkey.'###';
-        }
-        $subject = str_replace($linkArray,$linkA,$subject);
-
-        preg_match_all ("/<[\/\!]*?[^<>]*?>/si", $subject, $matches);
-        $htmArray	= (array)array_unique($matches[0]);
-        $htmArray && $htmflip    = array_flip($htmArray);
-        foreach((array)$htmflip AS $kHtml=>$vkey){
-            $htmA[$vkey]="###iCMS_HTML_".rand(1,1000).'_'.$vkey.'###';
-        }
-        $subject = str_replace($htmArray,$htmA,$subject);
-
-        // constructing mask(s)...
-        if (is_array($search)) {
-            foreach ($search as $k=>$v) {
-                $search[$k] = '`' . preg_quote($search[$k],'`') . '`i';
-            }
-        }else {
-            $search = '`' . preg_quote($search,'`') . '`';
-        }
-        // replacement
-        $replace && $replaceflip	= array_flip($replace);
-        foreach((array)$replaceflip AS $rk=>$replacekey){
-            $replaceA[$replacekey]="###iCMS_REPLACE_".rand(1,1000).'_'.$replacekey.'###';
-        }
-        // replacement
-        $subject = preg_replace($search, $replaceA, $subject, $limit);
-        $subject = str_replace($replaceA,$replace,$subject);
-//        $subject = preg_replace($search, $replace, $subject, $limit);
-        $subject = str_replace($htmA,$htmArray,$subject);
-        $subject = str_replace($linkA,$linkArray,$subject);
-        return $subject;
-    }
 }

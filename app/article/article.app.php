@@ -156,7 +156,6 @@ class articleApp {
 		$this->taoke = false;
 		if ($art_data) {
 			$pkey = intval($page - 1);
-			$pageurl = $article['iurl']->pageurl;
 			if ($article['chapter']) {
 				$chapterArray = $art_data;
 				$count = count($chapterArray);
@@ -164,21 +163,8 @@ class articleApp {
 				$art_data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $article['id'] . "' AND id='" . (int) $adid . "' LIMIT 1;", ARRAY_A);
 			}
 
-			$art_data['body'] = $this->ubb($art_data['body']);
 
-            preg_match_all($this->pregimg,$art_data['body'],$pic_array);
-			$p_array = array_unique($pic_array[1]);
-			if ($p_array) {
-				foreach ($p_array as $key => $_pic) {
-					$article['pics'][$key] = trim($_pic);
-				}
-			}
-
-			if (substr($art_data['body'], 0, 19) == '#--iCMS.Markdown--#') {
-				// $art_data['body']    = iPHP::Markdown($art_data['body']);
-				$art_data['body'] = substr($art_data['body'], 19);
-				$article['markdown'] = ture;
-			}
+			$article['pics'] = $this->body_pics($art_data['body'],$pic_array);
 
 			if ($article['chapter']) {
 				$article['body'] = $art_data['body'];
@@ -186,108 +172,33 @@ class articleApp {
 				$body = explode('#--iCMS.PageBreak--#', $art_data['body']);
 				$count = count($body);
 				$article['body'] = $body[$pkey];
+				unset($body);
 			}
 
-			$total = $count + intval($this->config['pageno_incr']);
-			$article['body'] = $this->keywords($article['body']);
-            $article['body']     = $this->addBodyAD($article['body']);
-			$article['body'] = $this->taoke($article['body']);
-			$article['taoke'] = $this->taoke;
+			$article['body']     = iPHP::app("keywords.app")->replace($article['body']);
+			$article['body']     = $this->body_ad($article['body']);
+			$article['body']     = $this->taoke($article['body']);
+			$article['taoke']    = $this->taoke;
 			$article['subtitle'] = $art_data['subtitle'];
-			unset($body, $art_data);
-			$pageArray = array();
-
-			if ($total > 1) {
-				iPHP::core("Pages");
-				$_GLOBALS_iPage = $GLOBALS['iPage'];
-				$category['mode'] && iPHP::set_page_url($article['iurl']);
-				$pageconf = array(
-					'page_name' => 'p',
-					'url' => $pageurl,
-					'total' => $total,
-					'perpage' => 1,
-					'nowindex' => (int) $_GET['p'],
-					'lang' => iPHP::lang(iPHP_APP . ':page'),
-				);
-				if ($article['chapter']) {
-					foreach ((array) $chapterArray as $key => $value) {
-						$pageconf['titles'][$key + 1] = $value['subtitle'];
-					}
-				}
-				$iPages = new iPages($pageconf);
-				unset($GLOBALS['iPage']);
-				$GLOBALS['iPage'] = $_GLOBALS_iPage;
-				unset($_GLOBALS_iPage);
-
-				$pageArray['list'] = $iPages->list_page();
-				$pageArray['index'] = $iPages->first_page('array');
-				$pageArray['prev'] = $iPages->prev_page('array');
-				$pageArray['next'] = $iPages->next_page('array');
-				$pageArray['endof'] = $iPages->last_page('array');
-				$pagenav = $iPages->show(0);
-				$pagetext = $iPages->show(10);
-			}
-			$article['page'] = array(
-				'pn' => $page,
-				'total' => $total, //总页数
-				'count' => $count, //实际页数
-				'current' => $page,
-				'nav' => $pagenav,
-				'pageurl' => $pageurl,
-				'text' => $pagetext,
-				'PAGES' => $iPages,
-				'args' => iS::escapeStr($_GET['pageargs']),
-				'first' => ($page == "1" ? true : false),
-				'last' => ($page == $count ? true : false), //实际最后一页
-                'end'     => ($page==$total?true:false)
-			) + $pageArray;
-			$next_url = $pageArray['next']['url'];
-			unset($pagenav, $pagetext, $iPages, $pageArray);
-
-			if ($pic_array[0]) {
-				$img_array = array_unique($pic_array[0]);
-				foreach ($img_array as $key => $img) {
-					$img = str_replace('<img', '<img title="' . $article['title'] . '" alt="' . $article['title'] . '"', $img);
-					if ($this->config['pic_center']) {
-                        $img_replace[$key] = '<p class="article_pic">'.$img.'</p>';
-					} else {
-						$img_replace[$key] = $img;
-					}
-                    if($this->config['pic_next'] && $total>1){
-                        $clicknext = '<a href="'.$next_url.'"><b>'.iPHP::lang('iCMS:article:clicknext').' ('.$page.'/'.$total.')</b></a>';
-						$clickimg = '<a href="' . $next_url . '" title="' . $article['title'] . '" class="img">' . $img . '</a>';
-						if ($this->config['pic_center']) {
-                            $img_replace[$key] = '<p class="click2next">'.$clicknext.'</p>';
-                            $img_replace[$key].= '<p class="article_pic">'.$clickimg.'</p>';
-						} else {
-							$img_replace[$key] = '<p>' . $clicknext . '</p>';
-							$img_replace[$key] .= '<p>' . $clickimg . '</p>';
-						}
-					}
-				}
-				$article['body'] = str_replace($img_array, $img_replace, $article['body']);
-			}
-
+			unset($art_data);
+			$total = $count + intval($this->config['pageno_incr']);
+			$article['page'] = $this->page($article,$page,$total,$count,$category['mode']);
+			is_array($article['page']['next'])&& $next_url = $article['page']['next']['url'];
+			$pic_array[0] && $article['body'] = $this->body_pics_page($pic_array,$article,$page,$total,$next_url);
 		}
 
 		if ($vars['tag']) {
+			$article['tags_fname'] = $category['name'];
 			if ($article['tags']) {
-				$tA=$this->tagArray(array($article['id']=>$article['tags']));
-				$article+=(array)$tA[$article['id']];
+				$tagApp    = iPHP::app("tag.app");
+				$multi_tag =$tagApp->multi_tag(array($article['id']=>$article['tags']));
+				$article+=(array)$multi_tag[$article['id']];
 			}
-			// $article['tags_fname'] = $category['name'];
-			// if ($article['tags']) {
-			// 	$tagApp = iPHP::app("tag");
-			// 	$tagArray = $tagApp->get_array($article['tags']);
-			// 	$article['tag_array'] = array();
-			// 	foreach ((array) $tagArray AS $tk => $tag) {
-			// 		$article['tag_array'][$tk] = $tag;
-			// 		$article['tags_link'] .= $tag['link'];
-			// 		$tag_name_array[] = $tag['name'];
-			// 	}
-			// 	$tag_name_array && $article['tags_fname'] = $tag_name_array[0];
-			// 	unset($tagApp, $tagArray, $tag_name_array);
-			// }
+			if(is_array($article['tags_array'])){
+				$tags_fname            = array_slice ($article['tags_array'],0,1);
+				$article['tags_fname'] = $tags_fname[0]['name'];
+			}
+			unset($tagApp, $multi_tag, $tags_fname);
 		}
 
 		if ($vars['meta']) {
@@ -304,15 +215,8 @@ class articleApp {
 				$article['user'] = user::info($article['userid'], $article['author']);
 			}
 		}
-
-		if (strstr($article['source'], '||')) {
-			list($s_name, $s_url) = explode('||', $article['source']);
-			$article['source'] = '<a href="' . $s_url . '" target="_blank">' . $s_name . '</a>';
-		}
-		if (strstr($article['author'], '||')) {
-			list($a_name, $a_url) = explode('||', $article['author']);
-			$article['author'] = '<a href="' . $a_url . '" target="_blank">' . $a_name . '</a>';
-		}
+		$article['source'] = $this->text2link($article['source']);
+		$article['author'] = $this->text2link($article['author']);
 
 		$article['hits'] = array(
 			'script' => iCMS_API . '?app=article&do=hits&cid=' . $article['cid'] . '&id=' . $article['id'],
@@ -332,55 +236,19 @@ class articleApp {
 		}
 		unset($article['picdata']);
 
-		$article['pic'] = get_pic($article['pic'], $picdata['b'], get_twh($vars['btw'], $vars['bth']));
+		$article['pic']  = get_pic($article['pic'], $picdata['b'], get_twh($vars['btw'], $vars['bth']));
 		$article['mpic'] = get_pic($article['mpic'], $picdata['m'], get_twh($vars['mtw'], $vars['mth']));
 		$article['spic'] = get_pic($article['spic'], $picdata['s'], get_twh($vars['stw'], $vars['sth']));
 		$article['param'] = array(
 			"appid" => $article['appid'],
-			"iid" => $article['id'],
-			"cid" => $article['cid'],
-			"suid" => $article['userid'],
+			"iid"   => $article['id'],
+			"cid"   => $article['cid'],
+			"suid"  => $article['userid'],
 			"title" => $article['title'],
-			"url" => $article['url'],
+			"url"   => $article['url'],
 		);
 		return $article;
 	}
-	public function tag($array,$aid=null){
-		$tArray = array();
-		foreach ((array) $array AS $_aid => $tag) {
-			if(isset($tag['id'])){
-				$aid===null && $aid = $_aid;
-				$tArray[$aid]['tags_array'][$tag['id']] = $tag;
-				$tArray[$aid]['tags_link'].= $tag['link'];
-			}else{
-				$tArray+=(array)$this->tag($tag,$_aid);
-			}
-		}
-		return $tArray;
-	}
-	public function tagArray($tags=0){
-		if(empty($tags)) return array();
-
-		if(!is_array($tags) && strpos($tags, ',') !== false){
-			$tags = explode(',', $tags);
-		}
-		$multi = array();
-		foreach ($tags as $aid => $value) {
-			if($value){
-				$a = explode(',', $value);
-				foreach ($a as $ak => $av) {
-					$tMap[$av] = $aid;
-					$tArray[]  = $av;
-				}
-			}
-		}
-		$tagApp = iPHP::app("tag");
-		$tagArray = $tagApp->multi($tArray);
-		$tagArray = $tagApp->map($tagArray,$tMap);
-		$tagArray = $this->tag($tagArray);
-		return $tagArray;
-	}
-
 	public function data($aids=0){
 		if(empty($aids)) return array();
 
@@ -403,33 +271,65 @@ class articleApp {
         }
 	   	return $data;
 	}
-
-	public function ubb($content) {
-		if (strpos($content, '[img]') !== false) {
-			$content = stripslashes($content);
-			preg_match_all("/\[img\][\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png|webp))\[\/img\]/is", $content, $img_array);
-			if ($img_array[1]) {
-				foreach ($img_array[1] as $key => $src) {
-					$imgs[$key] = '<p><img src="' . $src . '" /></p>';
+	public function page($article,$page,$total,$count,$mode=null){
+		$pageArray = array();
+		$pageurl = $article['iurl']->pageurl;
+		if ($total > 1) {
+			iPHP::core("Pages");
+			$_GLOBALS_iPage = $GLOBALS['iPage'];
+			$mode && iPHP::set_page_url($article['iurl']);
+			$pageconf = array(
+				'page_name' => 'p',
+				'url' => $pageurl,
+				'total' => $total,
+				'perpage' => 1,
+				'nowindex' => (int) $_GET['p'],
+				'lang' => iPHP::lang(iPHP_APP . ':page'),
+			);
+			if ($article['chapter']) {
+				foreach ((array) $chapterArray as $key => $value) {
+					$pageconf['titles'][$key + 1] = $value['subtitle'];
 				}
-				$content = str_replace($img_array[0], $imgs, $content);
 			}
-		}
-		return $content;
-	}
-	//内链
-	public function keywords($content) {
-		if (iCMS::$config['other']['keyword_limit'] == 0) {
-			return $content;
-		}
+			$iPages = new iPages($pageconf);
+			unset($GLOBALS['iPage']);
+			$GLOBALS['iPage'] = $_GLOBALS_iPage;
+			unset($_GLOBALS_iPage);
 
-        $search  = iCache::get('iCMS/keywords.search');
-        $replace = iCache::get('iCMS/keywords.replace');
-        if($search && $replace){
-            return iCMS::str_replace_limit($search, $replace,stripslashes($content),iCMS::$config['other']['keyword_limit']);
-        }
-        return $content;
+			$pageArray['list']  = $iPages->list_page();
+			$pageArray['index'] = $iPages->first_page('array');
+			$pageArray['prev']  = $iPages->prev_page('array');
+			$pageArray['next']  = $iPages->next_page('array');
+			$pageArray['endof'] = $iPages->last_page('array');
+			$pagenav = $iPages->show(0);
+			$pagetext = $iPages->show(10);
+		}
+		$article_page = array(
+			'pn'      => $page,
+			'total'   => $total, //总页数
+			'count'   => $count, //实际页数
+			'current' => $page,
+			'nav'     => $pagenav,
+			'pageurl' => $pageurl,
+			'text'    => $pagetext,
+			'PAGES'   => $iPages,
+			'args'    => iS::escapeStr($_GET['pageargs']),
+			'first'   => ($page == "1" ? true : false),
+			'last'    => ($page == $count ? true : false), //实际最后一页
+			'end'     => ($page == $total ? true : false)
+		) + $pageArray;
+		unset($pagenav, $pagetext, $iPages, $pageArray);
+		return $article_page;
 	}
+	public function text2link($text=null){
+		if (strpos($text, '||') !== false) {
+			list($title, $url) = explode('||', $text);
+			return '<a href="' . $url . '" target="_blank">' . $title . '</a>';
+		}else{
+			return $text;
+		}
+	}
+
 	public function taoke($content) {
 		preg_match_all('/<[^>]+>((http|https):\/\/(item|detail)\.(taobao|tmall)\.com\/.+)<\/[^>]+>/isU', $content, $taoke_array);
 		if ($taoke_array[1]) {
@@ -439,27 +339,59 @@ class articleApp {
 				$tk_parse = parse_url($tk_url);
 				parse_str($tk_parse['query'], $tk_item_array);
 				$itemid = $tk_item_array['id'];
-				$tk_data[$tkid] = $this->tmpl($itemid, $tk_url);
+				$tk_data[$tkid] = $this->taoke_tpl($itemid, $tk_url);
 			}
 			$content = str_replace($tk_array, $tk_data, $content);
 			$this->taoke = true;
 		}
 		return $content;
 	}
-	public function tmpl($itemid, $url, $title = null) {
+	public function taoke_tpl($itemid, $url, $title = null) {
 		iPHP::assign('taoke', array(
 			'itemid' => $itemid,
 			'title' => $title,
 			'url' => $url,
 		));
-		return iPHP::fetch('iCMS://taoke.tmpl.htm');
+		return iPHP::fetch('iCMS://taoke.tpl.htm');
 	}
 	public function pnTitle($pn, $chapterArray, $chapter) {
 		$title = $pn;
 		$chapter && $title = $chapterArray[$pn - 1]['subtitle'];
 		return $title;
 	}
-    public function addBodyAD($content){
+	public function body_pics($body,&$pic_array=array()){
+        preg_match_all($this->pregimg,$body,$pic_array);
+		$array = array_unique($pic_array[1]);
+		$pics =  array();
+		foreach ((array)$array as $key => $_pic) {
+				$pics[$key] = trim($_pic);
+		}
+		return $pics;
+	}
+	public function body_pics_page($pic_array,$article,$page,$total,$next_url){
+		$img_array = array_unique($pic_array[0]);
+		foreach ($img_array as $key => $img) {
+			$img = str_replace('<img', '<img title="' . $article['title'] . '" alt="' . $article['title'] . '"', $img);
+			if ($this->config['pic_center']) {
+                $img_replace[$key] = '<p class="article_pic">'.$img.'</p>';
+			} else {
+				$img_replace[$key] = $img;
+			}
+            if($this->config['pic_next'] && $total>1){
+                $clicknext = '<a href="'.$next_url.'"><b>'.iPHP::lang('iCMS:article:clicknext').' ('.$page.'/'.$total.')</b></a>';
+				$clickimg = '<a href="' . $next_url . '" title="' . $article['title'] . '" class="img">' . $img . '</a>';
+				if ($this->config['pic_center']) {
+                    $img_replace[$key] = '<p class="click2next">'.$clicknext.'</p>';
+                    $img_replace[$key].= '<p class="article_pic">'.$clickimg.'</p>';
+				} else {
+					$img_replace[$key] = '<p>' . $clicknext . '</p>';
+					$img_replace[$key] .= '<p>' . $clickimg . '</p>';
+				}
+			}
+		}
+		return str_replace($img_array, $img_replace, $article['body']);
+	}
+    public function body_ad($content){
         $pieces    = 1000;
         $html      = str_replace('</p>', "</p>\n", $content);
         $htmlArray = explode("\n", $html);

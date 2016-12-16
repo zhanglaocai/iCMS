@@ -10,42 +10,20 @@
  * @version 1.0.1
  * @package FileSystem
  *
- * CREATE TABLE `iPHP_filedata` (
- *   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
- *   `indexid` int(10) unsigned NOT NULL DEFAULT '0',
- *   `userid` int(10) unsigned NOT NULL DEFAULT '0',
- *   `filename` varchar(255) NOT NULL DEFAULT '',
- *   `ofilename` varchar(255) NOT NULL DEFAULT '',
- *   `path` varchar(255) NOT NULL DEFAULT '',
- *   `intro` varchar(255) NOT NULL DEFAULT '',
- *   `ext` varchar(10) NOT NULL DEFAULT '',
- *   `size` int(10) unsigned NOT NULL DEFAULT '0',
- *   `time` int(10) unsigned NOT NULL DEFAULT '0',
- *   `type` tinyint(1) NOT NULL DEFAULT '0',
- *   PRIMARY KEY (`id`),
- *   KEY `ext` (`ext`),
- *   KEY `path` (`path`),
- *   KEY `ofilename` (`ofilename`),
- *   KEY `indexid` (`indexid`),
- *   KEY `fn_userid` (`filename`,`userid`)
- * ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8
  */
 class iFS {
-
-	public static $TABLE = null;
 	public static $forceExt = false;
 	public static $redirect = false;
 	public static $checkFileData = true;
 	public static $validext = true;
 	public static $config = null;
-	public static $userid = 0;
-	public static $callback = false;
-	public static $ERROR = null;
 	public static $FileData = null;
 	public static $watermark = true;
 	public static $watermark_config = null;
 	public static $PROXY_URL = null;
-
+	public static $CALLABLE = null;
+	public static $ERROR = null;
+	public static $ERROR_TYPE = false;
 	public static $CURL_COUNT = 3;
 	public static $CURL_HTTP_CODE = null;
 	public static $CURL_CONTENT_TYPE = null;
@@ -57,13 +35,9 @@ class iFS {
 	public static $CURLOPT_CONNECTTIMEOUT = 3; //连接超时时间
 	public static $CURLOPT_USERAGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36';
 
-	public static function init($config, $watermark_config, $table = '') {
+	public static function init($config, $watermark_config) {
 		self::$config = $config;
 		self::$watermark_config = $watermark_config;
-		$_table_name = $config['table'];
-		if (empty($_table_name)) {
-			self::$TABLE = $table ? $table : 'filedata'; //文件记录表
-		}
 	}
 
 	public static function config($config) {
@@ -628,13 +602,13 @@ class iFS {
 		}
 	}
 
-	public static function IO($FileName = '', $udir = '', $FileExt = 'jpg') {
-		list($RootPath, $FileDir) = self::mk_udir($udir); // 文件保存目录方式
-		$filedata = file_get_contents('php://input');
+	public static function IO($FileName = '', $udir = '', $FileExt = 'jpg',$type='3',$filedata=null) {
+		$filedata===null && $filedata = file_get_contents('php://input');
 		if (empty($filedata)) {
 			return false;
 		}
 
+		list($RootPath, $FileDir) = self::mk_udir($udir); // 文件保存目录方式
 		$file_md5 = md5($filedata);
 		$FileName OR $FileName = $file_md5;
 		$FileSize = strlen($filedata);
@@ -649,13 +623,13 @@ class iFS {
 		self::watermark($FileExt, $FileRootPath);
 		self::cloud_write($FileRootPath);
 
-		$fid = self::insFileData(array(
+		$fid = self::insert_filedata(array(
 			'filename' => $FileName,
 			'ofilename' => '',
 			'path' => $FileDir,
 			'ext' => $FileExt,
 			'size' => $FileSize,
-		), 3);
+		), $type);
 		return array(
 			'code' => 1,
 			'fid' => $fid,
@@ -672,44 +646,10 @@ class iFS {
 		);
 	}
 	public static function base64ToFile($base64Data, $udir = '', $FileExt = 'png') {
-		list($RootPath, $FileDir) = self::mk_udir($udir); // 文件保存目录方式
+		if (empty($base64Data)) {return false;}
+
 		$filedata = base64_decode($base64Data);
-		if (empty($filedata)) {return false;}
-		$file_md5 = md5($filedata);
-		$FileName = $file_md5;
-		$FileSize = strlen($filedata);
-		$FileExt = self::valid_ext($FileName . "." . $FileExt); //判断文件类型
-		if ($FileExt === false) {
-			return false;
-		}
-
-		$FilePath = $FileDir . $FileName . "." . $FileExt;
-		$FileRootPath = $RootPath . $FileName . "." . $FileExt;
-		self::write($FileRootPath, $filedata);
-		self::watermark($FileExt, $FileRootPath);
-		self::cloud_write($FileRootPath);
-
-		$fid = self::insFileData(array(
-			'filename' => $file_md5,
-			'ofilename' => '',
-			'path' => $FileDir,
-			'ext' => $FileExt,
-			'size' => $FileSize,
-		), 2);
-		return array(
-			'code' => 1,
-			'fid' => $fid,
-			'md5' => $file_md5,
-			'size' => $FileSize,
-			'oname' => '',
-			'name' => $FileName,
-			'fname' => $FileName . "." . $FileExt,
-			'dir' => $FileDir,
-			'ext' => $FileExt,
-			'RootPath' => $FileRootPath,
-			'path' => $FilePath,
-			'dirRootPath' => $RootPath,
-		);
+		return self::IO(null, $udir,$FileExt,'2',$filedata);
 	}
 
 	public static function upload($field, $udir = '', $FileName = '', $ext = '') {
@@ -748,7 +688,7 @@ class iFS {
 				$FileSize = self::$FileData->size;
 			} else {
 				$file_md5 = md5_file($tmp_file);
-				$frs = self::getFileData('filename', $file_md5);
+				$frs = self::get_filedata('filename', $file_md5);
 				if ($frs) {
 					return self::_array(1, $frs, $RootPath);
 				}
@@ -763,13 +703,13 @@ class iFS {
 			self::watermark($FileExt, $FileRootPath);
 			self::cloud_write($FileRootPath);
 			if ($fid) {
-				self::upFileData(array(
+				self::update_filedata(array(
 					'ofilename' => $oFileName,
 					'ext' => $FileExt,
 					'size' => $FileSize,
 				), $fid);
 			} else {
-				$fid = self::insFileData(array(
+				$fid = self::insert_filedata(array(
 					'filename' => $file_md5,
 					'ofilename' => $oFileName,
 					'path' => $FileDir,
@@ -865,55 +805,24 @@ class iFS {
 		}
 		return $fp;
 	}
-
-//--------upload---end-------------------------------
-	//
-	public static function insFileData($data, $type = 0) {
-		if (!self::$checkFileData) {
-			return;
-		}
-
-		$userid = self::$userid === false ? 0 : self::$userid;
-		$data['userid'] = $userid;
-		$data['time'] = time();
-		$data['type'] = $type;
-		iDB::insert(self::$TABLE, $data);
-		return iDB::$insert_id;
-	}
-	public static function upFileData($data, $fid = 0) {
-		if (empty($fid)) {
-			return;
-		}
-
-		$userid = self::$userid === false ? 0 : self::$userid;
-		$data['userid'] = $userid;
-		$data['time'] = time();
-		iDB::update(self::$TABLE, $data, array('id' => $fid));
-	}
-	public static function getFileData($f, $v) {
-		if (!self::$checkFileData) {
-			return;
-		}
-
-		$sql = self::$userid === false ? '' : " AND `userid`='" . self::$userid . "'";
-		$rs = iDB::row("SELECT * FROM " . iPHP_DB_PREFIX . self::$TABLE . " WHERE `$f`='$v' {$sql} LIMIT 1");
-		if ($rs) {
-			$rs->filepath = $rs->path . $rs->filename . '.' . $rs->ext;
-			if ($f == 'ofilename') {
-				$filepath = self::fp($rs->filepath, '+iPATH');
-				if (is_file($filepath)) {
-					return $rs;
-				} else {
-					return false;
-				}
+	public static function filename($path) {
+		$path = trim($path);
+		if(self::checkHttp($path)){
+			$uri  = parse_url(iCMS_FS_URL);
+			if (stripos($path,$uri['host']) !== false){
+				$path = self::fp($path,'-http');
+			}else{
+				return false;
 			}
 		}
-		return $rs;
+		$name = basename($path);
+		$name = substr($name,0, 32);
+		return $name;
 	}
-
+//--------upload---end-------------------------------
 	public static function http($http, $ret = '', $times = 0) {
 		list($RootPath, $FileDir) = self::mk_udir($udir); // 文件保存目录方式
-		$frs = self::getFileData('ofilename', $http);
+		$frs = self::get_filedata('ofilename', $http);
 
 		if ($frs) {
 			if ($ret == 'array') {
@@ -929,7 +838,7 @@ class iFS {
 		$fdata = self::remote($http);
 		if ($fdata) {
 			$file_md5 = md5($fdata);
-			$frs = self::getFileData('filename', $file_md5);
+			$frs = self::get_filedata('filename', $file_md5);
 			if ($frs) {
 				$FilePath = $frs->filepath;
 				$FileRootPath = iFS::fp($FilePath, "+iPATH");
@@ -951,7 +860,7 @@ class iFS {
 				self::cloud_write($FileRootPath);
 				$FileSize = @filesize($FileRootPath);
 				empty($FileSize) && $FileSize = 0;
-				$fid = self::insFileData(array(
+				$fid = self::insert_filedata(array(
 					'filename' => $file_md5,
 					'ofilename' => $http,
 					'path' => $FileDir,
@@ -986,7 +895,32 @@ class iFS {
 			// }
 		}
 	}
-
+//------callable-----
+	public static function insert_filedata($data, $type = 0,$status=1) {
+		if (!self::$checkFileData) {
+			return;
+		}
+		if (self::$CALLABLE['insert'] && is_callable(self::$CALLABLE['insert'])) {
+			return call_user_func_array(self::$CALLABLE['insert'], array($data, $type,$status));
+		}
+	}
+	public static function update_filedata($data, $fid = 0) {
+		if (empty($fid)) {
+			return;
+		}
+		if (self::$CALLABLE['update'] && is_callable(self::$CALLABLE['update'])) {
+			return call_user_func_array(self::$CALLABLE['update'], array($data, $fid));
+		}
+	}
+	public static function get_filedata($f, $v,$s='*') {
+		if (!self::$checkFileData) {
+			return;
+		}
+		if (self::$CALLABLE['get'] && is_callable(self::$CALLABLE['get'])) {
+			return call_user_func_array(self::$CALLABLE['get'], array($f,$v,$s));
+		}
+	}
+//-------------
 	public static function _error($e, $break = false) {
 		$stateMap = array(
 			"UPLOAD_MAX" => "文件大小超出 upload_max_filesize 限制",
@@ -1005,9 +939,9 @@ class iFS {
 			"DIR_Error" => "您访问的目录有问题",
 		);
 		$msg = $stateMap[$e['state']];
-		if (self::$callback) {
+		if (self::$ERROR_TYPE) {
 			$e['state'] = $msg;
-			if (self::$callback === 'json') {
+			if (self::$ERROR_TYPE === 'json') {
 				return json_encode($e);
 			}
 			return $e;

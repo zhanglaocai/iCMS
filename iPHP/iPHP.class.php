@@ -34,64 +34,6 @@ class iPHP {
 	public static $mobile     = false;
 	public static $time_start = false;
 
-	public static function run($app = NULL, $do = NULL, $args = NULL, $prefix = "do_") {
-		//empty($app) && $app   = $_GET['app']; //单一入口
-		if (empty($app)) {
-			$fi = iFS::name(__SELF__);
-			$app = $fi['name'];
-		}
-
-		if (!in_array($app, (array)self::$apps) && iPHP_DEBUG) {
-			iPHP::throw404('运行出错！找不到应用程序: <b>' . $app . '</b>', '0001');
-		}
-		self::$app_path = iPHP_APP_DIR . '/' . $app;
-		self::$app_file = self::$app_path . '/' . $app . '.app.php';
-		is_file(self::$app_file) OR iPHP::throw404('运行出错！找不到文件: <b>' . $app . '.app.php</b>', '0002');
-		if ($do === NULL) {
-			$do = iPHP_APP;
-			$_GET['do'] && $do = iS::escapeStr($_GET['do']);
-		}
-		if ($_POST['action']) {
-			$do = iS::escapeStr($_POST['action']);
-			$prefix = 'ACTION_';
-		}
-
-		self::$app_name = $app;
-		self::$app_do = $do;
-		self::$app_method = $prefix . $do;
-		self::$app_tpl = iPHP_APP_DIR . '/' . $app . '/template';
-		self::$app_vars = array(
-			"MOBILE" => iPHP::$mobile,
-			'COOKIE_PRE' => iPHP_COOKIE_PRE,
-			'REFER' => __REF__,
-			'CONFIG' => self::$config,
-			"APP" => array(
-				'NAME' => self::$app_name,
-				'DO' => self::$app_do,
-				'METHOD' => self::$app_method,
-			),
-		);
-		iPHP::$iTPL->_iTPL_VARS['SAPI'] .= self::$app_name;
-		iPHP::$iTPL->_iTPL_VARS += self::$app_vars;
-		self::$app = iPHP::app($app);
-		if (self::$app_do && self::$app->methods) {
-			in_array(self::$app_do, self::$app->methods) OR iPHP::throw404('运行出错！ <b>' . self::$app_name . '</b> 类中找不到方法定义: <b>' . self::$app_method . '</b>', '0003');
-			$method = self::$app_method;
-			$args === null && $args = self::$app_args;
-			if ($args) {
-				if ($args === 'object') {
-					return self::$app;
-				}
-				return call_user_func_array(array(self::$app, $method), (array) $args);
-			} else {
-				method_exists(self::$app, self::$app_method) OR iPHP::throw404('运行出错！ <b>' . self::$app_name . '</b> 类中 <b>' . self::$app_method . '</b> 方法不存在', '0004');
-				return self::$app->$method();
-			}
-		} else {
-			iPHP::throw404('运行出错！ <b>' . self::$app_name . '</b> 类中 <b>' . self::$app_method . '</b> 方法不存在', '0005');
-		}
-	}
-
 	public static function config() {
 		$site = iPHP_MULTI_SITE ? $_SERVER['HTTP_HOST'] : iPHP_APP;
 		if (iPHP_MULTI_DOMAIN) {
@@ -138,7 +80,7 @@ class iPHP {
 		function_exists('date_default_timezone_set') && @date_default_timezone_set($timezone);
 
 		self::multiple_device($config);
-		iFS::init($config['FS'], $config['watermark'], 'filedata');
+		iFS::init($config['FS'], $config['watermark']);
 		iCache::init($config['cache']);
 		iPHP::template_start();
 		self::$apps = $config['apps'];
@@ -250,6 +192,63 @@ class iPHP {
 	private static function device_agent($user_agent) {
         $user_agent = str_replace(',','|',preg_quote($user_agent,'/'));
         return ($user_agent && preg_match('@'.$user_agent.'@i',$_SERVER["HTTP_USER_AGENT"]));
+	}
+	public static function run($app = NULL, $do = NULL, $args = NULL, $prefix = "do_") {
+		//empty($app) && $app   = $_GET['app']; //单一入口
+		if (empty($app)) {
+			$fi = iFS::name(__SELF__);
+			$app = $fi['name'];
+		}
+
+		if (!in_array($app, (array)self::$apps) && iPHP_DEBUG) {
+			iPHP::throw404('运行出错！找不到应用程序: <b>' . $app . '</b>', '0001');
+		}
+		self::$app_path = iPHP_APP_DIR . '/' . $app;
+		self::$app_file = self::$app_path . '/' . $app . '.app.php';
+		is_file(self::$app_file) OR iPHP::throw404('运行出错！找不到文件: <b>' . $app . '.app.php</b>', '0002');
+		if ($do === NULL) {
+			$do = iPHP_APP;
+			$_GET['do'] && $do = iS::escapeStr($_GET['do']);
+		}
+		if ($_POST['action']) {
+			$do = iS::escapeStr($_POST['action']);
+			$prefix = 'ACTION_';
+		}
+
+		self::$app_name = $app;
+		self::$app_do = $do;
+		self::$app_method = $prefix . $do;
+		self::$app_tpl = iPHP_APP_DIR . '/' . $app . '/template';
+		self::$app_vars = array(
+			"MOBILE" => iPHP::$mobile,
+			'COOKIE_PRE' => iPHP_COOKIE_PRE,
+			'REFER' => __REF__,
+			'CONFIG' => self::$config,
+			"APP" => array(
+				'NAME' => self::$app_name,
+				'DO' => self::$app_do,
+				'METHOD' => self::$app_method,
+			),
+		);
+		iPHP::$iTPL->_iTPL_VARS['SAPI'] .= self::$app_name;
+		iPHP::$iTPL->_iTPL_VARS += self::$app_vars;
+		self::$app = iPHP::app($app);
+		if (self::$app_do && self::$app->methods) {
+			in_array(self::$app_do, self::$app->methods) OR iPHP::throw404('运行出错！ <b>' . self::$app_name . '</b> 类中找不到方法定义: <b>' . self::$app_method . '</b>', '0003');
+			$method = self::$app_method;
+			$args === null && $args = self::$app_args;
+			if ($args) {
+				if ($args === 'object') {
+					return self::$app;
+				}
+				return call_user_func_array(array(self::$app, $method), (array) $args);
+			} else {
+				method_exists(self::$app, self::$app_method) OR iPHP::throw404('运行出错！ <b>' . self::$app_name . '</b> 类中 <b>' . self::$app_method . '</b> 方法不存在', '0004');
+				return self::$app->$method();
+			}
+		} else {
+			iPHP::throw404('运行出错！ <b>' . self::$app_name . '</b> 类中 <b>' . self::$app_method . '</b> 方法不存在', '0005');
+		}
 	}
 	public static function template_start() {
 		self::import(iPHP_CORE . '/iTemplate.class.php');

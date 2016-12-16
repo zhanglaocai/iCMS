@@ -11,7 +11,7 @@
 defined('iPHP') OR exit('What are you doing?');
 
 iPHP::app('category.admincp','include');
-class pushcategoryAdmincp extends categoryAdmincp {
+class pushCategoryAdmincp extends categoryAdmincp {
     function __construct() {
         parent::__construct(iCMS_APP_PUSH,'category');
         $this->category_name   = "版块";

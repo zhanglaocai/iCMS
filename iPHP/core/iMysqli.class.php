@@ -174,9 +174,9 @@ class iDB {
      * @param array $data should not already be SQL-escaped
      * @return mixed results of self::query()
      */
-    public static function insert($table, $data) {
+    public static function insert($table, $data,$IGNORE=false) {
         $fields = array_keys($data);
-        self::query("INSERT INTO ".iPHP_DB_PREFIX_TAG."{$table} (`" . implode('`,`',$fields) . "`) VALUES ('".implode("','",$data)."')");
+        self::query("INSERT ".($IGNORE?'IGNORE':'')." INTO ".iPHP_DB_PREFIX_TAG."{$table} (`" . implode('`,`',$fields) . "`) VALUES ('".implode("','",$data)."')");
         return self::$insert_id;
     }
     public static function insert_multi($table,$fields,$data) {

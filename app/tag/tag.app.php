@@ -129,6 +129,40 @@ class tagApp {
         }
         return $tagArray;
     }
+    public function multi_tag($tags=0){
+        if(empty($tags)) return array();
+
+        if(!is_array($tags) && strpos($tags, ',') !== false){
+            $tags = explode(',', $tags);
+        }
+        $multi = array();
+        foreach ($tags as $aid => $value) {
+            if($value){
+                $a = explode(',', $value);
+                foreach ($a as $ak => $av) {
+                    $tMap[$av] = $aid;
+                    $tArray[]  = $av;
+                }
+            }
+        }
+        $tagArray = $this->multi($tArray);
+        $tagArray = $this->map($tagArray,$tMap);
+        $tagArray = $this->app_tag($tagArray);
+        return $tagArray;
+    }
+    public function app_tag($array,$aid=null){
+        $tArray = array();
+        foreach ((array) $array AS $_aid => $tag) {
+            if(isset($tag['id'])){
+                $aid===null && $aid = $_aid;
+                $tArray[$aid]['tags_array'][$tag['id']] = $tag;
+                $tArray[$aid]['tags_link'].= $tag['link'];
+            }else{
+                $tArray+=(array)$this->app_tag($tag,$_aid);
+            }
+        }
+        return $tArray;
+    }
     public function map($tagArray,$tMap){
         $array = array();
         $map   = $tMap;

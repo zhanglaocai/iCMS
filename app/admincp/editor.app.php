@@ -10,7 +10,7 @@
 */
 class editorApp{
     function __construct() {
-		iFS::$callback   = 'json';
+		iFS::$ERROR_TYPE   = 'json';
     }
     function do_config(){
     	$config_json ='
@@ -202,13 +202,13 @@ class editorApp{
     }
     function do_uploadscrawl(){
 		if ($_GET[ "action" ] == "tmpImg") { // 背景上传
-            iFS::$callback  = false;
+            iFS::$ERROR_TYPE  = false;
             $F = iFS::upload('upfile','scrawl/tmp');
             $F===false && exit();
 			$F['path'] && $url	= iFS::fp($F['path'],'+http');
 			echo "<script>parent.ue_callback('" .$url. "','SUCCESS')</script>";
 		} else {
-            iFS::$callback  = true;
+            iFS::$ERROR_TYPE  = true;
             $F = iFS::base64ToFile($_POST['upfile'],'scrawl/'.get_date(0,'Y/md'));
             $F===false && exit(iFS::$ERROR);
 			$F['path'] && $url	= iFS::fp($F['path'],'+http');

@@ -96,10 +96,10 @@ class articleAdmincp{
     	$data = admincp::fields($_GET['iDT']);
         if($data){
             if(isset($data['pid'])){
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('prop',$this->appid);
+                iCMS::core('Map');
+                iMap::init('prop',$this->appid);
                 $_pid = article::value('pid',$this->id);
-                map::diff($data['pid'],$_pid,$this->id);
+                iMap::diff($data['pid'],$_pid,$this->id);
             }
             article::update($data,array('id'=>$this->id));
         }
@@ -129,15 +129,15 @@ class articleAdmincp{
             break;
     		case 'move':
 		        $_POST['cid'] OR iPHP::alert("请选择目标栏目!");
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('category',$this->appid);
+                iCMS::core('Map');
+                iMap::init('category',$this->appid);
                 $cid = (int)$_POST['cid'];
                 admincp::CP($cid,'ca','alert');
 		        foreach((array)$_POST['id'] AS $id) {
                     $_cid = article::value('cid',$id);
                     article::update(compact('cid'),compact('id'));
 		            if($_cid!=$cid) {
-                        map::diff($cid,$_cid,$id);
+                        iMap::diff($cid,$_cid,$id);
                         $this->categoryApp->update_count_one($_cid,'-');
                         $this->categoryApp->update_count_one($cid);
 		            }
@@ -146,24 +146,24 @@ class articleAdmincp{
             break;
             case 'scid':
                 //$_POST['scid'] OR iPHP::alert("请选择目标栏目!");
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('category',$this->appid);
+                iCMS::core('Map');
+                iMap::init('category',$this->appid);
                 $scid = implode(',', (array)$_POST['scid']);
                 foreach((array)$_POST['id'] AS $id) {
                     $_scid = article::value('scid',$id);
                     article::update(compact('scid'),compact('id'));
-                    map::diff($scid,$_scid,$id);
+                    iMap::diff($scid,$_scid,$id);
                 }
                 iPHP::success('文章副栏目设置完成!','js:1');
             break;
             case 'prop':
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('prop',$this->appid);
+                iCMS::core('Map');
+                iMap::init('prop',$this->appid);
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {
                     $_pid = article::value('pid',$id);
                     article::update(compact('pid'),compact('id'));
-                    map::diff($pid,$_pid,$id);
+                    iMap::diff($pid,$_pid,$id);
                 }
                 iPHP::success('文章属性设置完成!','js:1');
     		break;
@@ -201,7 +201,7 @@ class articleAdmincp{
 		        foreach((array)$_POST['id'] AS $id) {
 		            $body	= article::body($id);
                     $picurl = $this->remotepic($body,'autopic',$id);
-                    $this->pic($picurl,$id);
+                    $this->set_pic($picurl,$id);
 		        }
 		        iPHP::success('成功提取缩略图!','js:1');
     		break;
@@ -282,7 +282,6 @@ class articleAdmincp{
             $array  = array_unique($match[1]);
             $uri    = parse_url(iCMS_FS_URL);
             $fArray = array();
-            $fpArray= array();
             foreach ($array as $key => $value) {
                 $value = trim($value);
                 // echo $value.PHP_EOL;
@@ -365,9 +364,9 @@ class articleAdmincp{
             if(empty($_GET['pid'])){
                 $sql.= " AND `pid`=''";
             }else{
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('prop',$this->appid);
-                $map_where+=map::where($pid);
+                iCMS::core('Map');
+                iMap::init('prop',$this->appid);
+                $map_where+=iMap::where($pid);
             }
         }
 
@@ -388,9 +387,9 @@ class articleAdmincp{
                 array_push ($cids,$cid);
             }
             if($_GET['scid'] && $cid){
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('category',$this->appid);
-                $map_where+= map::where($cids);
+                iCMS::core('Map');
+                iMap::init('category',$this->appid);
+                $map_where+= iMap::where($cids);
             }else{
                 $sql.= iPHP::where($cids,'cid');
             }
@@ -568,7 +567,7 @@ class articleAdmincp{
 
         $editor OR	$editor	= empty(iMember::$data->nickname)?iMember::$data->username:iMember::$data->nickname;
 
-        iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
+        iCMS::core('Map');
         $picdata = '';
         $ucid    = 0;
 
@@ -593,12 +592,12 @@ class articleAdmincp{
                 //article::update(compact('tags'),array('id'=>$aid));
             }
 
-            map::init('prop',$this->appid);
-            $pid && map::add($pid,$aid);
+            iMap::init('prop',$this->appid);
+            $pid && iMap::add($pid,$aid);
 
-            map::init('category',$this->appid);
-            map::add($cid,$aid);
-            $scid && map::add($scid,$aid);
+            iMap::init('category',$this->appid);
+            iMap::add($cid,$aid);
+            $scid && iMap::add($scid,$aid);
 
             $tagArray && tag::map_iid($tagArray,$aid);
 
@@ -650,12 +649,12 @@ class articleAdmincp{
 
             admincp::callback($aid,$this,'primary');
 
-            map::init('prop',$this->appid);
-            map::diff($pid,$_pid,$aid);
+            iMap::init('prop',$this->appid);
+            iMap::diff($pid,$_pid,$aid);
 
-            map::init('category',$this->appid);
-            map::diff($cid,$_cid,$aid);
-            map::diff($scid,$_scid,$aid);
+            iMap::init('category',$this->appid);
+            iMap::diff($cid,$_cid,$aid);
+            iMap::diff($scid,$_scid,$aid);
 
             $url OR $this->article_data($body,$aid,$haspic);
 
@@ -670,7 +669,7 @@ class articleAdmincp{
                 );
             }
 
-            iPHP::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$SELFURL);
+            // iPHP::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$SELFURL);
         }
     }
     function do_del(){
@@ -788,11 +787,11 @@ class articleAdmincp{
 
         if(isset($_POST['autopic']) && empty($haspic)){
             if($picurl = $this->remotepic($body,'autopic',$aid)){
-                $this->pic($picurl,$aid);
+                $this->set_pic($picurl,$aid);
                 $haspic = true;
             }
         }
-        $this->pic_indexid($body,$aid);
+        $this->body_pic_indexid($body,$aid);
     }
     function autodesc($body){
         if($this->config['autodesc'] && $this->config['descLen']) {
@@ -826,7 +825,7 @@ class articleAdmincp{
             return $description;
         }
     }
-    function pic($picurl,$aid){
+    function set_pic($picurl,$aid){
         $uri = parse_url(iCMS_FS_URL);
         if (stripos($picurl,$uri['host']) !== false){
             $picdata = (array)article::value('picdata',$aid);
@@ -837,9 +836,10 @@ class articleAdmincp{
             $picdata = addslashes(serialize($picdata));
             $haspic  = 1;
             article::update(compact('haspic','pic','picdata'),array('id'=>$aid));
+            iFS::set_filemap($this->appid,$aid,$pic,'path');
         }
     }
-    function remotepic($content,$remote = false,$aid=0) {
+    function remotepic($content,$remote = false) {
         if (!$remote) return $content;
 
         iFS::$forceExt = "jpg";
@@ -848,7 +848,6 @@ class articleAdmincp{
         $array  = array_unique($match[2]);
         $uri    = parse_url(iCMS_FS_URL);
         $fArray = array();
-        $fpArray= array();
         foreach ($array as $key => $value) {
             $value = trim($value);
             if (stripos($value,$uri['host']) === false){
@@ -857,12 +856,6 @@ class articleAdmincp{
                 list($owidth, $oheight, $otype) = @getimagesize($rootfilpath);
 
                 if($filepath && !iFS::checkHttp($filepath) && $otype){
-                    if($aid){
-                        $filename = basename($filepath);
-                        $filename = substr($filename,0, 32);
-                        $faid     = article::filedata_value($filename);
-                        empty($faid) && article::filedata_update_indexid($aid,$filename);
-                    }
                     $value = iFS::fp($filepath,'+http');
                 }else{
                     if($this->DELETE_ERROR_PIC){
@@ -896,29 +889,18 @@ class articleAdmincp{
         }
         return addslashes($content);
     }
-    function pic_indexid($content,$aid) {
+    function body_pic_indexid($content,$indexid) {
         if(empty($content)){
             return;
         }
         $content = stripslashes($content);
         preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
         $array  = array_unique($match[1]);
-        $uri    = parse_url(iCMS_FS_URL);
-        $fArray = array();
-        $fpArray= array();
         foreach ($array as $key => $value) {
-            $value = trim($value);
-            if (stripos($value,$uri['host']) !== false){
-                $filepath = iFS::fp($value,'-http');
-                if($filepath){
-                    $filename = basename($filepath);
-                    $filename = substr($filename,0, 32);
-                    $faid     = article::filedata_value($filename);
-                    empty($faid) && article::filedata_update_indexid($aid,$filename);
-                }
-            }
+            iFS::set_filemap($this->appid,$indexid,$value,'path');
         }
     }
+
     function picdata($pic='',$mpic='',$spic=''){
         $picdata = array();
         if($pic){

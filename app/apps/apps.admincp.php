@@ -22,7 +22,7 @@ class appsAdmincp{
     function get_app($id=null){
       $id === null && $id = $this->id;
       if($id){
-        $rs = iDB::row("SELECT * FROM `#iCMS@__app` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
+        $rs = iDB::row("SELECT * FROM `#iCMS@__apps` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
         $rs['table'] && $rs['table'] = json_decode($rs['table'],true);
         return $rs;
       }
@@ -36,7 +36,7 @@ class appsAdmincp{
     }
     function do_add(){
         if($this->id) {
-            $rs = iDB::row("SELECT * FROM `#iCMS@__app` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
+            $rs = iDB::row("SELECT * FROM `#iCMS@__apps` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
             $rs['field'] && $rs['field'] = json_decode($rs['field'],true);
         }
         $BASE_FIELDS = $this->BASE_FIELDS();
@@ -76,14 +76,14 @@ class appsAdmincp{
         $array  = compact ($fields);
 
         if(empty($id)) {
-            iDB::value("SELECT `id` FROM `#iCMS@__app` where `app` ='$app'") && iPHP::alert('该应用已经存在!');
+            iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iPHP::alert('该应用已经存在!');
             $this->CREATE_TABLE($array['name'],$fieldata);
             iDB::insert('app',$array);
             $this->cache();
             $msg = "应用创建完成!";
         }else {
-            iDB::value("SELECT `id` FROM `#iCMS@__app` where `app` ='$app' AND `id` !='$id'") && iPHP::alert('该应用已经存在!');
-            $_field = iDB::value("SELECT `data` FROM `#iCMS@__app` where `id` ='$id'");
+            iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app' AND `id` !='$id'") && iPHP::alert('该应用已经存在!');
+            $_field = iDB::value("SELECT `data` FROM `#iCMS@__apps` where `id` ='$id'");
             if($_field){
               $_field_array = json_decode($_field);
               $diff = array_diff_values($field_array,$_field_array);
@@ -111,9 +111,9 @@ class appsAdmincp{
      //  }
      //  $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
      //  $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-     //  $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__app` {$sql}","G");
+     //  $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__apps` {$sql}","G");
      //  iPHP::pagenav($total,$maxperpage,"个应用");
-     //  $rs     = iDB::all("SELECT * FROM `#iCMS@__app` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+     //  $rs     = iDB::all("SELECT * FROM `#iCMS@__apps` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
      //  $_count = count($rs);
      //  APPS::scan('config/app.json');
       $rs = APPS::config('iApp.json');
@@ -123,11 +123,11 @@ class appsAdmincp{
     function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
   		$id OR iPHP::alert('请选择要删除的应用!');
-      $rs   = iDB::row("SELECT `name` FROM `#iCMS@__app` WHERE `id`='$id' LIMIT 1;");
+      $rs   = iDB::row("SELECT `name` FROM `#iCMS@__apps` WHERE `id`='$id' LIMIT 1;");
       $name = $rs->name;
       iDB::query("DROP TABLE `#iCMS@__{$name}`; ");
 
-  		iDB::query("DELETE FROM `#iCMS@__app` WHERE `id` = '$id'");
+  		iDB::query("DELETE FROM `#iCMS@__apps` WHERE `id` = '$id'");
   		$this->cache();
   		$dialog && iPHP::success('应用已经删除','js:parent.$("#tr'.$id.'").remove();');
     }

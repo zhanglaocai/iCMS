@@ -24,8 +24,8 @@ class userApp {
 		$this->forward OR iPHP::get_cookie('forward');
 		$this->forward OR $this->forward = iCMS_URL;
 		$this->login_uri = user::login_uri();
-		// iFS::config($GLOBALS['iCONFIG']['user_fs_conf'])
-		iFS::$userid = user::$userid;
+		iCMS::iFile_init();
+		iFile::$userid = user::$userid;
 		iPHP::assign('forward', $this->forward);
 	}
 	private function user($userdata = false) {
@@ -242,7 +242,7 @@ class userApp {
 		$category = iCache::get('iCMS/category/' . $cid);
 		$status = $category['isexamine'] ? 3 : 1;
 
-		iPHP::import(iPHP_APP_CORE . '/iMAP.class.php');
+		iCMS::core('Map');
 		iPHP::app('article.class');
 		$fields = article::fields($aid);
 		$data_fields = article::data_fields($aid);
@@ -255,8 +255,8 @@ class userApp {
 			$article_data = compact($data_fields);
 			article::data_insert($article_data);
 
-			map::init('category', iCMS_APP_ARTICLE);
-			map::add($cid, $aid);
+			iMap::init('category', iCMS_APP_ARTICLE);
+			iMap::add($cid, $aid);
 			iDB::query("
                 UPDATE `#iCMS@__user_category`
                 SET `count` = count+1
@@ -274,8 +274,8 @@ class userApp {
 				array('id' => $aid, 'userid' => user::$userid))) {
 				article::data_update(compact($data_fields), array('aid' => $aid));
 			}
-			map::init('category', iCMS_APP_ARTICLE);
-			map::diff($cid, $_cid, $aid);
+			iMap::init('category', iCMS_APP_ARTICLE);
+			iMap::diff($cid, $_cid, $aid);
 			if ($ucid != $_ucid) {
 				iDB::query("
                     UPDATE `#iCMS@__user_category`

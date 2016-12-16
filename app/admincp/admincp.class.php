@@ -11,26 +11,6 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-define('iCMS_SUPERADMIN_UID', '1');
-define('__ADMINCP__', __SELF__ . '?app');
-define('ACP_PATH', iPHP_APP_DIR . '/admincp');
-define('ACP_HOST', (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://" . $_SERVER['HTTP_HOST']);
-
-iDB::$debug = true;
-iDB::$show_errors = true;
-iDB::$show_explain = false;
-
-iPHP::$dialog['title'] = 'iCMS';
-
-iCMS::core('Menu');
-iCMS::core('Member');
-
-iMember::$LOGIN_PAGE = ACP_PATH.'/template/admincp.login.php';
-iMember::$AUTH       = 'ADMIN_AUTH';
-iMember::$AJAX       = iPHP::PG('ajax');
-
-$_GET['do'] == 'seccode' && admincp::get_seccode();
-
 class admincp {
 	public static $apps = NULL;
 	public static $menu = NULL;
@@ -50,7 +30,8 @@ class admincp {
 		self::$menu = new iMenu(); //初始化菜单
 		self::MP('ADMINCP', 'page'); //检查是否有后台权限
 		self::MP('__MID__', 'page'); //检查菜单ID
-		iFS::$userid = iMember::$userid;
+		iCMS::iFile_init();
+		iFile::$userid = iMember::$userid;
 	}
 
 	public static function get_seccode() {
@@ -275,4 +256,8 @@ class admincp {
 		$memory = memory_get_usage();
 		return "使用内存:".iFS::sizeUnit($memory)." 执行时间:".iPHP::timer_stop()."s";
 	}
+}
+
+if($_GET['do'] == 'seccode'){
+	admincp::get_seccode();
 }

@@ -159,8 +159,8 @@ class categoryAdmincp extends category{
         $rule     = addslashes(json_encode($rule));
         $template = addslashes(json_encode($template));
 
-        iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-        map::init('prop',iCMS_APP_CATEGORY);
+        iCMS::core('Map');
+        iMap::init('prop',iCMS_APP_CATEGORY);
 
         $fields = array(
             'rootid','pid','appid','ordernum','name','subname','password',
@@ -195,7 +195,7 @@ class categoryAdmincp extends category{
                 $data['comments'] = '0';
                 $cid = iDB::insert('category',$data);
                 iDB::update('category', array('ordernum'=>$cid), array('cid'=>$cid));
-                $pid && map::add($pid,$cid);
+                $pid && iMap::add($pid,$cid);
 	            $this->cache(false,$this->appid);
 	            $this->cahce_one($cid);
             }
@@ -209,7 +209,7 @@ class categoryAdmincp extends category{
 
             $data['dir'] = $dir;
             iDB::update('category', $data, array('cid'=>$cid));
-            map::diff($pid,$_pid,$cid);
+            iMap::diff($pid,$_pid,$cid);
             $this->cahce_one($cid);
             $msg = $this->category_name."编辑完成!";
         }
@@ -438,7 +438,7 @@ class categoryAdmincp extends category{
         if($_count>1000){
             // $this->do_cacheall($_count);
         }else{
-            $this->cache_all(0,$_count);
+            // $this->cache_all(0,$_count);
         }
         $dialog && iPHP::success('更新完成');
    }

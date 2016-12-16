@@ -5,7 +5,7 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
-class map {
+class iMap {
 	public static $table = 'prop';
 	public static $field = 'node';
 	public static $appid = '1';

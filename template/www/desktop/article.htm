@@ -154,11 +154,13 @@
                     <div class="clearfix"></div>
                     <div class="article-prevnext mt10">
                         <p class="prev"><b>上一篇:</b>
+                            <!--{iCMS:article:prev cid="$article.cid" id="$article.id"}-->
                             <a href="<!--{$article.prev.url}-->" class="prev" target="_self">
                                 <!--{$article.prev.title}-->
                             </a>
                         </p>
                         <p class="next">
+                            <!--{iCMS:article:next cid="$article.cid" id="$article.id"}-->
                             <a href="<!--{$article.next.url}-->" class="next" target="_self">
                                 <!--{$article.next.title}-->
                             </a><b>:下一篇</b></p>

@@ -50,10 +50,10 @@ function user_list($vars=null){
         $where_sql.= iPHP::where($vars['pid'],'pid');
     }
     if(isset($vars['pids']) && !isset($vars['pid'])){
-        iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-        map::init('prop',iCMS_APP_USER);
-        //$where_sql.= map::exists($vars['pid'],'`#iCMS@__user`.uid'); //map 表大的用exists
-        $map_where = map::where($vars['pids']);
+        iCMS::core('Map');
+        iMap::init('prop',iCMS_APP_USER);
+        //$where_sql.= iMap::exists($vars['pid'],'`#iCMS@__user`.uid'); //map 表大的用exists
+        $map_where = iMap::where($vars['pids']);
     }
 
 	$by=$vars['by']=="ASC"?"ASC":"DESC";

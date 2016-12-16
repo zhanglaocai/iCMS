@@ -36,18 +36,18 @@ function category_list($vars){
 			$cids = iPHP::app("category")->get_cids($vars['cid'],false);
 			$where_sql.= iPHP::where($cids,'cid');
 		break;
-		// case "self":
-		// 	$parent = iCache::get('iCMS/category/parent',$vars['cid']);
-		// 	$where_sql.=" AND `rootid`='$parent'";
-		// break;
+		case "self":
+			$parent = iCache::get('iCMS/category/parent',$vars['cid']);
+			$where_sql.=" AND `rootid`='$parent'";
+		break;
 	}
 	if(isset($vars['pids'])){
-		iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-		map::init('prop',iCMS_APP_CATEGORY);
-		$where_sql.= map::exists($vars['pids'],'`#iCMS@__category`.cid'); //主表小 map表大
-//		$map_where=map::where($vars['pids']); //主表大 map表大
-//		$map_ids    = map::ids($vars['pid']);
-//		$map_sql    = map::sql($vars['pid']); //map 表小的用 in
+		iCMS::core('Map');
+		iMap::init('prop',iCMS_APP_CATEGORY);
+		$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__category`.cid'); //主表小 map表大
+//		$map_where=iMap::where($vars['pids']); //主表大 map表大
+//		$map_ids    = iMap::ids($vars['pid']);
+//		$map_sql    = iMap::sql($vars['pid']); //map 表小的用 in
 //		$where_sql.=" AND `pid` = '{$vars['pid']}'";
 		//if(empty($map_ids)) return $resource;
 		//$where_sql.=" AND `cid` IN ($map_ids)";

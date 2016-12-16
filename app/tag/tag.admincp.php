@@ -69,9 +69,9 @@ class tagAdmincp{
             if($_GET['pid']==0){
                 $sql.= " AND `pid`=''";
             }else{
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('prop',$this->appid);
-                $map_where = map::where($pid);
+                iCMS::core('Map');
+                iMap::init('prop',$this->appid);
+                $map_where = iMap::where($pid);
             }
         }
         if($map_where){
@@ -119,7 +119,7 @@ class tagAdmincp{
                 }
             }
             if($contents){
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
+                iCMS::core('Map');
                 $fields   = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'ordernum', 'pubdate', 'status');
                 $cid      = implode(',', (array)$_POST['cid']);
                 $tcid     = implode(',', (array)$_POST['tcid']);
@@ -146,12 +146,12 @@ class tagAdmincp{
                     $data    = compact ($fields);
                     $id = iDB::insert('tags',$data);
 
-                    map::init('prop',$this->appid);
-                    $pid && map::add($pid,$id);
+                    iMap::init('prop',$this->appid);
+                    $pid && iMap::add($pid,$id);
 
-                    map::init('category',$this->appid);
-                    $cid  && map::add($cid,$id);
-                    $tcid && map::add($tcid,$id);
+                    iMap::init('category',$this->appid);
+                    $cid  && iMap::add($cid,$id);
+                    $tcid && iMap::add($tcid,$id);
                     $msg['success']++;
                 }
             }
@@ -244,7 +244,7 @@ class tagAdmincp{
         iFS::checkHttp($mpic)&& $mpic = iFS::http($mpic);
         iFS::checkHttp($spic)&& $spic = iFS::http($spic);
 
-		iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
+		iCMS::core('Map');
 
         $fields = array('uid','rootid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic','bpic','mpic','spic', 'url', 'related', 'count', 'weight', 'tpl', 'ordernum', 'pubdate', 'status');
         $data   = compact ($fields);
@@ -256,12 +256,12 @@ class tagAdmincp{
             $id = iDB::insert('tags',$data);
 			tag::cache($id,'id');
 
-            map::init('prop',$this->appid);
-            $pid && map::add($pid,$id);
+            iMap::init('prop',$this->appid);
+            $pid && iMap::add($pid,$id);
 
-            map::init('category',$this->appid);
-            map::add($cid,$id);
-            $tcid && map::add($tcid,$id);
+            iMap::init('category',$this->appid);
+            iMap::add($cid,$id);
+            $tcid && iMap::add($tcid,$id);
 
             $msg ='标签添加完成';
 		}else{
@@ -284,12 +284,12 @@ class tagAdmincp{
             iDB::update('tags', $data, array('id'=>$id));
 			tag::cache($id,'id');
 
-            map::init('prop',$this->appid);
-            map::diff($pid,$_pid,$id);
+            iMap::init('prop',$this->appid);
+            iMap::diff($pid,$_pid,$id);
 
-            map::init('category',$this->appid);
-            map::diff($cid,$_cid,$id);
-            map::diff($tcid,$_tcid,$id);
+            iMap::init('category',$this->appid);
+            iMap::diff($cid,$_cid,$id);
+            iMap::diff($tcid,$_tcid,$id);
             $msg = '标签更新完成';
 		}
         admincp::callback($id,$this);
@@ -356,14 +356,14 @@ class tagAdmincp{
     		break;
     		case 'move':
 		        $_POST['cid'] OR iPHP::alert("请选择目标栏目!");
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('category',$this->appid);
+                iCMS::core('Map');
+                iMap::init('category',$this->appid);
 		        $cid = (int)$_POST['cid'];
 		        foreach($idArray AS $id) {
                     $_cid = iDB::value("SELECT `cid` FROM `#iCMS@__tags` where `id` ='$id'");
                     iDB::update("tags",compact('cid'),compact('id'));
 		            if($_cid!=$cid) {
-                        map::diff($cid,$_cid,$id);
+                        iMap::diff($cid,$_cid,$id);
                         $this->categoryApp->update_count_one($_cid,'-');
                         $this->categoryApp->update_count_one($cid);
 		            }
@@ -372,14 +372,14 @@ class tagAdmincp{
     		break;
     		case 'mvtcid':
 		        $_POST['tcid'] OR iPHP::alert("请选择目标分类!");
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('category',$this->appid);
+                iCMS::core('Map');
+                iMap::init('category',$this->appid);
 		        $tcid = (int)$_POST['tcid'];
 		        foreach($idArray AS $id) {
                     $_tcid = iDB::value("SELECT `tcid` FROM `#iCMS@__tags` where `id` ='$id'");
                     iDB::update("tags",compact('tcid'),compact('id'));
 		            if($_tcid!=$tcid) {
-                        map::diff($tcid,$_tcid,$id);
+                        iMap::diff($tcid,$_tcid,$id);
                         $this->categoryApp->update_count_one($_tcid,'-');
                         $this->categoryApp->update_count_one($tcid);
 		            }
@@ -387,13 +387,13 @@ class tagAdmincp{
 		        iPHP::success('成功移动到目标分类!','js:1');
     		break;
     		case 'prop':
-                iPHP::import(iPHP_APP_CORE .'/iMAP.class.php');
-                map::init('prop',$this->appid);
+                iCMS::core('Map');
+                iMap::init('prop',$this->appid);
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {
                     $_pid = iDB::value("SELECT pid FROM `#iCMS@__tags` WHERE `id`='$id'");;
                     iDB::update("tags",compact('pid'),compact('id'));
-                    map::diff($pid,$_pid,$id);
+                    iMap::diff($pid,$_pid,$id);
                 }
                 iPHP::success('属性设置完成!','js:1');
     		break;

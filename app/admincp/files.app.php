@@ -21,7 +21,7 @@ class filesApp{
     }
 	function do_add(){
         admincp::MP('FILE.UPLOAD','page');
-		$this->id && $rs = iFS::getFileData('id',$this->id);
+		$this->id && $rs = iFS::get_filedata('id',$this->id);
 		include admincp::view("files.add");
 	}
 	function do_multi(){
@@ -57,9 +57,9 @@ class filesApp{
 
         $orderby	= $_GET['orderby']?iS::escapeStr($_GET['orderby']):"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
-		$total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__filedata` {$sql}","G");
+		$total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__file_data` {$sql}","G");
         iPHP::pagenav($total,$maxperpage,"个文件");
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__filedata` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__file_data` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
         $_count = count($rs);
     	include admincp::view("files.manage");
     }
@@ -68,7 +68,7 @@ class filesApp{
         $name      = iS::escapeStr($_GET['name']);
         $ext       = iS::escapeStr($_GET['ext']);
         iFS::check_ext($ext,0) OR iPHP::json(array('state'=>'ERROR','msg'=>'不允许的文件类型'));
-        iFS::$callback = true;
+        iFS::$ERROR_TYPE = true;
         $_GET['watermark'] OR iFS::$watermark = false;
         $F = iFS::IO($name,$udir,$ext);
         $F ===false && iPHP::json(iFS::$ERROR);
@@ -86,12 +86,12 @@ class filesApp{
         admincp::MP('FILE.UPLOAD','alert');
 //iFS::$checkFileData = true;
     	$_POST['watermark'] OR iFS::$watermark = false;
-        iFS::$callback = true;
+        iFS::$ERROR_TYPE = true;
     	if($this->id){
-            iFS::$FileData = iFS::getFileData('id',$this->id);
+            iFS::$FileData = iFS::get_filedata('id',$this->id);
             $F = iFS::upload('upfile');
             if($F && $F['size']!=iFS::$FileData->size){
-                iDB::query("update `#iCMS@__filedata` SET `size`='".$F['size']."' WHERE `id` = '$this->id'");
+                iDB::query("update `#iCMS@__file_data` SET `size`='".$F['size']."' WHERE `id` = '$this->id'");
             }
     	}else{
             $udir = ltrim($_POST['udir'],'/');
@@ -114,7 +114,7 @@ class filesApp{
     }
     function do_download(){
         iFS::$userid   = false;
-        $rs            = iFS::getFileData('id',$this->id);
+        $rs            = iFS::get_filedata('id',$this->id);
         iFS::$redirect = true;
         $FileRootPath  = iFS::fp($rs->filepath,"+iPATH");
         iFS::check_ext($rs->filepath,true) OR iPHP::alert('文件类型不合法!');
@@ -129,7 +129,7 @@ class filesApp{
 
     		$_FileSize	= strlen($fileresults);
     		if($_FileSize!=$rs->size){
-	    		iDB::query("update `#iCMS@__filedata` SET `size`='$_FileSize' WHERE `id` = '$this->id'");
+	    		iDB::query("update `#iCMS@__file_data` SET `size`='$_FileSize' WHERE `id` = '$this->id'");
     		}
     		iPHP::success("{$rs->ofilename} <br />重新下载到<br /> {$rs->filepath} <br />完成",'js:1',3);
     	}else{
@@ -158,11 +158,11 @@ class filesApp{
         $id OR iPHP::alert("请选择要删除的文件");
         $indexid = (int)$_GET['indexid'];
         $sql     = isset($_GET['indexid'])?"AND `indexid`='$indexid'":"";
-        $rs      = iDB::row("SELECT * FROM `#iCMS@__filedata` WHERE `id` = '$id' {$sql} LIMIT 1;");
+        $rs      = iDB::row("SELECT * FROM `#iCMS@__file_data` WHERE `id` = '$id' {$sql} LIMIT 1;");
     	if($rs){
             $rs->filepath = rtrim($rs->path,'/').'/'.$rs->filename.'.'.$rs->ext;
             $FileRootPath = iFS::fp($rs->filepath,"+iPATH");
-            iDB::query("DELETE FROM `#iCMS@__filedata` WHERE `id` = '$id' {$sql};");
+            iDB::query("DELETE FROM `#iCMS@__file_data` WHERE `id` = '$id' {$sql};");
 	    	if(iFS::del($FileRootPath)){
                 $msg = 'success:#:check:#:文件删除完成!';
 	    		$_GET['ajax'] && iPHP::json(array('code'=>1,'msg'=>$msg));
@@ -223,7 +223,7 @@ class filesApp{
             $file_path = $fsInfo->dirname;
             $file_ext  = $fsInfo->extension;
             $file_id   = 0;
-            $rs        = iFS::getFileData('filename',$file_name);
+            $rs        = iFS::get_filedata('filename',$file_name);
             if($rs){
                 $file_path = $rs->path;
                 $file_id   = $rs->id;
@@ -235,7 +235,7 @@ class filesApp{
             $file_ext = 'jpg';
         }
         if($_GET['indexid']){
-            $rs = iDB::all("SELECT * FROM `#iCMS@__filedata` where `indexid`='{$_GET['indexid']}' order by `id` ASC LIMIT 100");
+            $rs = iDB::all("SELECT * FROM `#iCMS@__file_data` where `indexid`='{$_GET['indexid']}' order by `id` ASC LIMIT 100");
             foreach ((array)$rs as $key => $value) {
                 $filepath = $value['path'] . $value['filename'] . '.' . $value['ext'];
                 $src[] = iFS::fp($filepath,'+http')."?".time();
