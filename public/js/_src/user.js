@@ -49,8 +49,7 @@ define("user", function(require) {
             return iCMS.CONFIG.UHOME.replace('{uid}',uid);
         },
         LOGIN: function() {
-            alert('asd');
-            return false;
+            window.location.href = API.url('user', "&do=login");
         },
         LOGOUT: function($param, SUCCESS, FAIL) {
             var me = this;
@@ -60,14 +59,8 @@ define("user", function(require) {
         },
         FOLLOW: function(a,SUCCESS,FAIL) {
             var me = this;
-            // var auth = this.AUTH();
-            // if (!auth) {
-            //   return utils.__callback(FAIL,me);
-            // }
-            var auth = this.AUTH();
-            if (!auth) {
-              return this.LOGIN();
-            }
+            if (!this.CHECK.LOGIN()) return;
+
             var data = $(a).attr('i').replace('follow:','').split(":");
             var $param = {'uid':data[0],'follow':data[1],'action':'follow'}
             $.post(API.url('user'), $param, function(ret) {
@@ -91,10 +84,7 @@ define("user", function(require) {
         },
         PM:function(a){
             var me = this;
-            var auth = this.AUTH();
-            if (!auth) {
-              return this.LOGIN();
-            }
+            if (!this.CHECK.LOGIN()) return;
 
             var $this  = $(a),
                 box    = document.getElementById("iCMS-PM-DIALOG"),
@@ -140,10 +130,7 @@ define("user", function(require) {
         },
         REPORT:function(a) {
             var me = this;
-            var auth = this.AUTH();
-            if (!auth) {
-              return this.LOGIN();
-            }
+            if (!this.CHECK.LOGIN()) return;
 
             var $this = $(a),
             _title    = $this.attr('title')||'为什么举报这个评论?',

@@ -16,7 +16,22 @@ class category {
         $this->appid = $appid;
         $this->appid !== '-1' && $this->appid_sql=" AND `appid`='$this->appid'";
     }
+    public function init($appid=null,$rootid=null) {
+        $sql         = "WHERE 1=1";
+        $rootid===null OR $sql.=" AND `rootid`='$rootid'";
 
+        $this->rs = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} {$this->appid_sql} ORDER BY `ordernum` ASC");
+
+        foreach((array)$this->rs AS $C) {
+            $C['iurl']  = iURL::get('category',$C);
+            $this->category[$C['cid']]             = $C;
+            $this->_array[$C['rootid']][$C['cid']] = $C;
+        }
+        foreach ((array)$this->_array as $rootid => $_array) {
+            uasort($_array, "order_num");
+            $this->_array[$rootid] = $_array;
+        }
+    }
     public function rootid($rootids) {
         if(empty($rootids)) return array();
 
@@ -89,7 +104,7 @@ class category {
         }
         return $category;
     }
-    public function _array($rootid) {
+    public function cid_array($rootid) {
         $variable = iDB::all("SELECT `cid` FROM `#iCMS@__category` where `rootid`='$rootid' {$this->appid_sql} ORDER BY `ordernum`  ASC",ARRAY_A);
         $category = array();
         foreach ((array)$variable as $key => $value) {
@@ -97,26 +112,9 @@ class category {
         }
         return $category;
     }
-    public function init($appid=null,$rootid=null) {
-        $sql         = "WHERE 1=1";
-        $rootid===null OR $sql.=" AND `rootid`='$rootid'";
-
-        $this->rs = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} {$this->appid_sql} ORDER BY `ordernum` ASC");
-
-        foreach((array)$this->rs AS $C) {
-            $C['iurl']  = iURL::get('category',$C);
-            $this->category[$C['cid']]             = $C;
-            $this->_array[$C['rootid']][$C['cid']] = $C;
-            $this->rootid[$C['rootid']][$C['cid']] = $C['cid'];
-        }
-        foreach ((array)$this->_array as $rootid => $_array) {
-            uasort($_array, "order_num");
-            $this->_array[$rootid] = $_array;
-        }
-    }
     public function domain($cid="0",$akey='dir') {
         $ii       = new stdClass();
-        $C        = $this->category[$cid];
+        $C        = (array)$this->get($cid,array('field'=>'`rootid`,`dir`,`domain`'));
         $rootid   = $C['rootid'];
         $ii->sdir = $C[$akey];
         if($rootid && empty($C['domain'])) {
@@ -143,7 +141,16 @@ class category {
         }
         return $domain;
     }
-    public function domain_setting($domain){
+    public function domain_setting($domain=null){
+        if(empty($domain)){
+            $rs  = iDB::all("
+                SELECT `cid`,`domain`
+                FROM `#iCMS@__category`
+                WHERE `domain`!='' and `status`='1'");
+            foreach((array)$rs AS $C) {
+                $domain[$C['domain']] = $C['cid'];
+            }
+        }
         $setting = iPHP::app('admincp.setting.app');
         $setting->set(array('domain'=>$domain),'category',0,false);
         $setting->cache();
@@ -164,15 +171,13 @@ class category {
             $C['status'] OR $hidden[] = $C['cid'];
 
             if($C['domain']){
-                $domain_array[]          = $C['cid'];
-                $domaincid[$C['domain']] = $C['cid'];
+                $domain_array[] = $C['cid'];
             }
             $rootid[$C['rootid']][$C['cid']] = $C['cid'];
             $parent[$C['cid']] = $C['rootid'];
         }
 
         $domain = $this->domain_array($domain_array);
-        $this->domain_setting($domaincid);
 
         iCache::set('iCMS/category/rootid',$rootid,0);
         iCache::set('iCMS/category/dir2cid',$dir2cid,0);

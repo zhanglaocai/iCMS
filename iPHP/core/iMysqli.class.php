@@ -116,9 +116,10 @@ class iDB {
             // If there is an error then take note of it..
             return self::print_error();
         }
-        self::$num_queries++;
-
-        self::$debug && self::backtrace($query);
+        if(strpos($query,'EXPLAIN')===false){
+            self::$num_queries++;
+            self::$debug && self::backtrace($query);
+        }
 
 	   if($QT=='get') return $result;
         $QH = strtoupper(substr($query,0,strpos($query, ' ')));

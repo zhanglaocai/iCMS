@@ -6,19 +6,20 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();
-function  cmp( $a ,  $b ){
-if ( $a['appid'] ==  $b['appid'] ) {
-return  0 ;
-}
-return ( $a['appid']  <  $b['appid'] ) ? - 1  :  1 ;
+function cmp( $a ,  $b ){
+  if ( $a['appid'] ==  $b['appid'] ) {
+    return  0 ;
+  }
+  return ( $a['appid']  <  $b['appid'] ) ? - 1  :  1 ;
 }
 ?>
 <style>
 .app_list_desc{font-size: 14px;color: #666;}
+.nopadding .tab-content{padding: 0px;}
 </style>
 <script type="text/javascript">
 $(function(){
-$("#<?php echo APP_FORMID;?>").batch();
+  $("#<?php echo APP_FORMID;?>").batch();
 });
 </script>
 <div class="iCMS-container">
@@ -48,79 +49,87 @@ $("#<?php echo APP_FORMID;?>").batch();
     <div class="widget-title"> <span class="icon">
       <input type="checkbox" class="checkAll" data-target="#<?php echo APP_BOXID;?>" />
     </span>
-    <h5>应用列表</h5>
+    <ul class="nav nav-tabs" id="category-tab">
+      <li class="active"><a href="#apps-system" data-toggle="tab"><i class="fa fa-cubes"></i> 系统应用</a></li>
+      <li><a href="#apps-user" data-toggle="tab"><i class="fa fa-cubes"></i> 其它应用</a></li>
+    </ul>
   </div>
   <div class="widget-content nopadding">
     <form action="<?php echo APP_FURI; ?>&do=batch" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
-      <table class="table table-bordered table-condensed table-hover">
-        <thead>
-          <tr>
-            <th style="width:60px;">ID</th>
-            <th>名称</th>
-            <th>标识</th>
-            <th>简介</th>
-            <th class="span2">数据表</th>
-            <th class="span3">模板标签</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-          usort ( $rs ,  "cmp" );
-          foreach ($rs as $key => $data) {
-          $installed = APPS::installed($data['app']);
-          ?>
-          <tr id="tr<?php echo $data['appid'] ; ?>">
-            <td><?php echo $data['appid'] ; ?></td>
-            <td><?php echo $data['title'] ; ?></td>
-            <td><?php echo $data['app'] ; ?></td>
-            <td><p class="app_list_desc"><?php echo $data['description'] ; ?></p></td>
-            <td><?php echo implode('<br />', $data['table']); ?></td>
-            <td>
+      <div class="tab-content">
+        <div id="apps-system" class="tab-pane active">
+          <table class="table table-bordered table-condensed table-hover">
+            <thead>
+              <tr>
+                <th style="width:60px;">ID</th>
+                <th>名称</th>
+                <th>标识</th>
+                <th>简介</th>
+                <th class="span2">数据表</th>
+                <th class="span3">模板标签</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
               <?php
-              if($data['template']){
-              foreach ($data['template'] as $key => $tpltags) {
-              echo '<a href="http://www.idreamsoft.com/cms/doc_search?q='.urlencode($tpltags).'" target="_blank" title="点击查看模板标签说明">&lt;!--{'.$tpltags.'}--&gt;</a><br />';
-              }
-              }
+              usort ( $rs ,  "cmp" );
+              foreach ($rs as $key => $data) {
+              $installed = APPS::installed($data['app']);
               ?>
-              <td>
-                <?php if($installed){ ?>
-                <?php if($data['status']){?>
-                <a href="<?php echo APP_URI; ?>&do=update&iDT=status:0&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
-                <a href="<?php echo __ADMINCP__; ?>=menu&appname=<?php echo $data['app'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 菜单</a>
-                <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> <?php echo $data['title'] ; ?>管理</a>
-                <?php }else{?>
-                <a href="<?php echo APP_URI; ?>&do=update&iDT=status:1&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary"><i class="fa fa-open"></i> 启用</a>
-                <?php }?>
-                <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['appid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['appid'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
-                <?php }else{?>
-                <a href="<?php echo APP_FURI; ?>&do=install&id=<?php echo $data['appid'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-primary" title='安装' /><i class="fa fa-add"></i> 安装应用</a>
-                <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $data['appid'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='删除' /><i class="fa fa-add"></i> 删除应用</a>
-                <?php }?>
-              </td>
-            </tr>
-            <?php }  ?>
-          </tbody>
-          <tr>
-            <td colspan="7">
-              <div class="pagination pagination-right" style="float:right;"><?php echo iPHP::$pagenav ; ?></div>
-              <div class="input-prepend input-append mt20">
-                <span class="add-on">全选
-                  <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo APP_BOXID;?>" />
-                </span>
-                <div class="btn-group dropup" id="iCMS-batch">
-                  <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-wrench"></i> 批 量 操 作 </a>
-                  <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                    <li><a data-toggle="batch" data-action="dels"><i class="fa fa-trash-o"></i> 删除</a></li>
-                  </ul>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </table>
+              <tr id="tr<?php echo $data['appid'] ; ?>">
+                <td><?php echo $data['appid'] ; ?></td>
+                <td><?php echo $data['title'] ; ?></td>
+                <td><?php echo $data['app'] ; ?></td>
+                <td><p class="app_list_desc"><?php echo $data['description'] ; ?></p></td>
+                <td><?php echo implode('<br />', $data['table']); ?></td>
+                <td>
+                  <?php
+                  if($data['template']){
+                  foreach ($data['template'] as $key => $tpltags) {
+                  echo '<a href="http://www.idreamsoft.com/cms/doc_search?q='.urlencode($tpltags).'" target="_blank" title="点击查看模板标签说明">&lt;!--{'.$tpltags.'}--&gt;</a><br />';
+                  }
+                  }
+                  ?>
+                  <td>
+                    <?php if($installed){ ?>
+                    <?php if($data['status']){?>
+                    <a href="<?php echo APP_URI; ?>&do=update&iDT=status:0&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
+                    <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> <?php echo $data['title'] ; ?>管理</a>
+                    <?php }else{?>
+                    <a href="<?php echo APP_URI; ?>&do=update&iDT=status:1&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary"><i class="fa fa-open"></i> 启用</a>
+                    <?php }?>
+                    <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['appid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
+                    <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['appid'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
+                    <?php }else{?>
+                    <a href="<?php echo APP_FURI; ?>&do=install&id=<?php echo $data['appid'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-primary" title='安装' /><i class="fa fa-add"></i> 安装应用</a>
+                    <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $data['appid'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='删除' /><i class="fa fa-add"></i> 删除应用</a>
+                    <?php }?>
+                  </td>
+                </tr>
+                <?php }  ?>
+              </tbody>
+              <tr>
+                <td colspan="7">
+                  <div class="pagination pagination-right" style="float:right;"><?php echo iPHP::$pagenav ; ?></div>
+                  <div class="input-prepend input-append mt20">
+                    <span class="add-on">全选
+                      <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo APP_BOXID;?>" />
+                    </span>
+                    <div class="btn-group dropup" id="iCMS-batch">
+                      <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-wrench"></i> 批 量 操 作 </a>
+                      <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a data-toggle="batch" data-action="dels"><i class="fa fa-trash-o"></i> 删除</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="apps-user" class="tab-pane">
+          </div>
+        </div>
       </form>
     </div>
   </div>

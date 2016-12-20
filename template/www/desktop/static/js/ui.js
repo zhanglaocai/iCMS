@@ -1,9 +1,12 @@
 $(function() {
+    //图片延迟加载
     $("img.lazy").lazyload();
+    //图片切换
     $(".carousel-box").slider({
         left_btn: '#carousel-left',
         right_btn: '#carousel-right',
     });
+    //标签页
     $(".tabs-wrap").tabs({
         action: 'mouseover'
     });
@@ -12,20 +15,25 @@ $(function() {
         action: 'mouseover'
     });
 
-    $(".search-btn").click(function(event) {
+    var doc = $(document);
+    //搜索
+    doc.on('click', ".search-btn", function(event) {
         var q = $('[name="q"]',"#search-form").val();
         if(q==""){
             iCMS.UI.alert("请输入关键词");
             return false;
         }
     });
-    var doc = $(document);
+    //验证码
     doc.on('click', ".seccode-img,.seccode-text", function(event) {
         event.preventDefault();
         iCMS.UI.seccode();
     });
     //user模块
     iCMS.run('user', function($USER) {
+        //定义登陆事件
+        // $USER.LOGIN = function () {}
+        //
         //用户状态
         $USER.STATUS({},
             //登陆后事件
@@ -39,12 +47,13 @@ $(function() {
                 console.log(f)
             }
         );
-        //退出登陆
-        $(".logout").click(function(event) {
+        //点击退出登陆
+        doc.on('click', "[i='logout']", function(event) {
             event.preventDefault();
             $USER.LOGOUT({
                 'forward': window.top.location.href
             },
+            //退出成功事件
             function(s) {
                 window.top.location.reload();
             });

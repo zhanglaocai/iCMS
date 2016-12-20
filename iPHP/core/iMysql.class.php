@@ -123,7 +123,11 @@ class iDB{
             // If there is an error then take note of it..
             return self::print_error();
         }
-        self::$num_queries++;
+
+        if(strpos($query,'EXPLAIN')===false){
+            self::$num_queries++;
+            self::$debug && self::backtrace($query);
+        }
 
         self::$debug && self::timer_start();
 

@@ -421,7 +421,7 @@ class iPHP {
 		$cookiedomain = '';
 		$cookiepath = iPHP_COOKIE_PATH;
 
-		$value = urlencode($value);
+		$value = rawurlencode($value);
 		$life = ($life ? $life : iPHP_COOKIE_TIME);
 		$name = iPHP_COOKIE_PRE . '_' . $name;
 
@@ -447,11 +447,11 @@ class iPHP {
 
 		if (strpos(iPHP_SESSION, 'COOKIE') !== false) {
 			$cvalue = $_COOKIE[$name];
-			$cvalue = urldecode($cvalue);
+			$cvalue = rawurldecode($cvalue);
 		}
 		if (strpos(iPHP_SESSION, 'SESSION') !== false) {
 			$svalue = $_SESSION[$name];
-			$svalue = urldecode($svalue);
+			$svalue = rawurldecode($svalue);
 		}
 		if (iPHP_SESSION == 'SESSION+COOKIE') {
 			if ($cvalue == $svalue) {

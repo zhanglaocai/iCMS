@@ -416,7 +416,7 @@ class categoryAdmincp extends category{
         admincp::CP($cid,'d','alert');
         $msg    = '请选择要删除的'.$this->category_name.'!';
 
-        if(empty($this->_array[$cid])) {
+        if(!$this->rootid_check($cid)) {
             $this->del_content($cid);
             iDB::query("DELETE FROM `#iCMS@__category` WHERE `cid` = '$cid'");
             iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `node` = '$cid' AND `appid` = '".$this->appid."';");
@@ -566,7 +566,7 @@ class categoryAdmincp extends category{
     }
     function tree($cid = 0,$expanded=false,$ret=false){
         $html = array();
-        $cidArray = (array)$this->_array($cid);
+        $cidArray = (array)$this->cid_array($cid);
         $CARRAY= (array)$this->get($cidArray,array('categoryAdmincp','tree_unset'));
         foreach($cidArray AS $root=>$_cid) {
             // if(!admincp::CP($C['cid'])){
@@ -577,7 +577,7 @@ class categoryAdmincp extends category{
             // }else{
                 $C = (array)$CARRAY[$_cid];
                 $a = array('id'=>$C['cid'],'data'=>$C);
-                if($this->_array($C['cid'])){
+                if($this->cid_array($C['cid'])){
                     if($expanded){
                         $a['hasChildren'] = false;
                         $a['expanded']    = true;
@@ -604,7 +604,7 @@ class categoryAdmincp extends category{
     }
 
     function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false) {
-        $cidArray  = (array)$this->_array($cid);
+        $cidArray  = (array)$this->cid_array($cid);
         $CARRAY    = (array)$this->get($cidArray,array('categoryAdmincp','tree_unset'));
         $ROOTARRAY = (array)$this->rootid($cidArray);
 

@@ -62,8 +62,8 @@ defined('iPHP') OR exit('What are you doing?');
                 <input type="checkbox" data-type="switch" name="config[debug][db]" id="debug_db" <?php echo $config['debug']['db']?'checked':''; ?>/>
               </div>
             </div>
-            <span class="help-inline">开启后将显示所有数据库错误信息</span>
-            <div class="hide">
+            <span class="help-inline">开启后将显示所有数据库错误信息. <a onclick="javscript:$('.debug_trace_d,.debug_explain_d').toggle();">更多</a></span>
+            <div class="hide debug_trace_d">
               <div class="clearfloat mb10"></div>
               <div class="input-prepend"> <span class="add-on">SQL跟踪</span>
                 <div class="switch">
@@ -72,7 +72,7 @@ defined('iPHP') OR exit('What are you doing?');
               </div>
               <span class="help-inline">开启后将显示所有SQL执行情况</span>
             </div>
-            <div class="hide">
+            <div class="hide debug_explain_d">
               <div class="clearfloat mb10"></div>
               <div class="input-prepend"> <span class="add-on">SQL解释</span>
                 <div class="switch">
