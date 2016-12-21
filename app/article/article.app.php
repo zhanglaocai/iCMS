@@ -252,7 +252,7 @@ class articleApp {
 	public function data($aids=0){
 		if(empty($aids)) return array();
 
-		list($is_multi,$aids)  = iPHP::multi_ids($aids);
+		list($aids,$is_multi)  = iPHP::multi_ids($aids);
 		$sql  = iPHP::where($aids,'aid',false,true);
 		$data = array();
 		$rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}",OBJECT);

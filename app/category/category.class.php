@@ -20,7 +20,7 @@ class category {
     public function rootid($rootids=null) {
         if($rootids===null) return array();
 
-        list($is_multi,$rootids)  = iPHP::multi_ids($rootids);
+        list($rootids,$is_multi)  = iPHP::multi_ids($rootids);
 
         $sql  = iPHP::where($rootids,'rootid',false,true);
         $sql OR $sql = '1 = 1';
@@ -53,7 +53,7 @@ class category {
             $field = $callback['field'];
         }
 
-        list($is_multi,$cids)  = iPHP::multi_ids($cids);
+        list($cids,$is_multi)  = iPHP::multi_ids($cids);
         $sql  = iPHP::where($cids,'cid',false,true);
         $sql OR $sql = '1 = 1';
         $data = array();

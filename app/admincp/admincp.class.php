@@ -85,7 +85,8 @@ class admincp {
 		is_file(self::$APP_FILE) OR iPHP::throwException('运行出错！找不到文件: <b>' . self::$APP_FILE . '</b>', 1002);
 
 		define('APP_URI', __ADMINCP__ . '=' . $app);
-		define('APP_FURI', APP_URI . '&frame=iPHP');
+		// define('APP_FURI', APP_URI . '&frame=iPHP');
+		define('APP_FURI', APP_URI );
 		define('APP_DOURI', APP_URI . ($do != 'iCMS' ? '&do=' . $do : ''));
 		define('APP_BOXID', self::$APP_NAME . '-box');
 		define('APP_FORMID', 'iCMS-' . APP_BOXID);

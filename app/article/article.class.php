@@ -108,13 +108,6 @@ class article {
         iDB::query("DELETE FROM `#iCMS@__article_data` WHERE `aid`='$id'");
     }
 
-    public static function del_filedata($var='',$field='indexid'){
-        iDB::query("DELETE FROM `#iCMS@__filedata` WHERE `$field` = '{$var}'");
-    }
-    public static function select_filedata_indexid($indexid='',$fields='filename`,`path`,`ext'){
-        return iDB::all("SELECT `$fields` FROM `#iCMS@__filedata` WHERE `indexid`='$indexid'");
-    }
-
     public static function del_comment($iid){
         iDB::query("DELETE FROM `#iCMS@__comment` WHERE iid='$iid' and appid='".iCMS_APP_ARTICLE."'");
     }

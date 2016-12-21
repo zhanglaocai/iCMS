@@ -157,7 +157,7 @@ class spiderAdmincp {
         $rs      = iDB::all("SELECT indexid FROM `#iCMS@__spider_url` where `pid` = '$this->pid'");
         $_count  = count($rs);
         for ($i=0; $i <$_count ; $i++) {
-            $article->delArticle($rs[$i]['indexid']);
+            $article->del($rs[$i]['indexid']);
         }
         iDB::query("DELETE FROM `#iCMS@__spider_url` where `pid` = '$this->pid';");
         iPHP::success('所有采集数据删除完成');

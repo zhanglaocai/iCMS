@@ -8,6 +8,10 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
+        $fids  = iFile::index_fileid('46288');
+        $pieces = iFile::delete_file($fids);
+        iFile::delete_fdb($fids,'46288');
+
 class filesApp{
     function __construct() {
 	    $this->from		= iS::escapeStr($_GET['from']);
@@ -61,6 +65,7 @@ class filesApp{
         iPHP::pagenav($total,$maxperpage,"个文件");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__file_data` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
         $_count = count($rs);
+        $widget = array('search'=>1,'id'=>1,'uid'=>1,'index'=>1);
     	include admincp::view("files.manage");
     }
     function do_IO(){
@@ -113,12 +118,12 @@ class filesApp{
 		}
     }
     function do_download(){
-        iFS::$userid   = false;
+        iFile::$userid   = false;
         $rs            = iFS::get_filedata('id',$this->id);
         iFS::$redirect = true;
         $FileRootPath  = iFS::fp($rs->filepath,"+iPATH");
         iFS::check_ext($rs->filepath,true) OR iPHP::alert('文件类型不合法!');
-        iFS::$userid = iMember::$userid;
+        iFile::$userid = iMember::$userid;
         $fileresults   = iFS::remote($rs->ofilename);
     	if($fileresults){
     		iFS::mkdir(dirname($FileRootPath));

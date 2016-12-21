@@ -18,6 +18,24 @@ $(function() {
     var doc = $(document);
     //iCMS.modal();
 
+    $("[target='iPHP_FRAME']").each(function() {
+        if(this.href && this.href.indexOf('.php')!="-1"){
+            if(this.href.indexOf('?')!="-1"){
+                this.href = this.href+'&frame=iPHP';
+            }else{
+                this.href = this.href+'?frame=iPHP';
+            }
+        }
+        if(this.action && this.action.indexOf('.php')!="-1"){
+            if(this.action.indexOf('?')!="-1"){
+                this.action = this.action+'&frame=iPHP';
+            }else{
+                this.action = this.action+'?frame=iPHP';
+            }
+        }
+    });
+
+
     $(':checkbox[data-type!=switch],:radio[data-type!=switch]').uniform();
     $(".chosen-select").chosen({
         allow_single_deselect:true,

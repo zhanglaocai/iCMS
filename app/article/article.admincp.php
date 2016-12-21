@@ -56,7 +56,7 @@ class articleAdmincp{
                     }
                 }else{
                     $adRs['body'] = htmlspecialchars($adRs['body']);
-                    if(substr($adRs['body'], 0,19)=='#--iCMS.Markdown--#'){
+                    if($rs['markdown']){
                         $this->config['editor'] = true;
                         $adRs['body'] = substr($adRs['body'], 19);
                     }
@@ -210,7 +210,7 @@ class articleAdmincp{
     			ob_implicit_flush();
     			$_count	= count($_POST['id']);
 				foreach((array)$_POST['id'] AS $i=>$id) {
-			     	$msg= $this->delArticle($id);
+			     	$msg= $this->del($id);
 			        $msg.= $this->del_msg('文章删除完成!');
 					$updateMsg	= $i?true:false;
 					$timeout	= ($i++)==$_count?'3':false;
@@ -287,11 +287,15 @@ class articleAdmincp{
                 // echo $value.PHP_EOL;
                 if (stripos($value,$uri['host']) !== false){
                     $filepath = iFS::fp($value,'-http');
+                    $rpath    = iFS::fp($value,'http2iPATH');
                    if($filepath){
                         $pf   = pathinfo($filepath);
                         $rs[] = array(
+                            'id'       => 'path@'.$filepath,
                             'path'     => rtrim($pf['dirname'],'/').'/',
                             'filename' => $pf['filename'],
+                            'size'     => @filesize($rpath),
+                            'time'     => @filectime($rpath),
                             'ext'      => $pf['extension']
                         );
                     }
@@ -517,7 +521,6 @@ class articleAdmincp{
         $postype   = $_POST['postype']?$_POST['postype']:0;
         isset($_POST['inbox']) && $status = "0";
         $userid OR $userid = iMember::$userid;
-        iFS::$userid = $userid;
         $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
 
         if($this->callback['code']){
@@ -669,11 +672,11 @@ class articleAdmincp{
                 );
             }
 
-            // iPHP::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$SELFURL);
+            iPHP::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$SELFURL);
         }
     }
     function do_del(){
-        $msg = $this->delArticle($this->id);
+        $msg = $this->del($this->id);
         $msg.= $this->del_msg('文章删除完成!');
         $msg.= $this->del_msg('10秒后返回文章列表!');
         iPHP::$dialog['lock'] = true;
@@ -695,30 +698,28 @@ class articleAdmincp{
         $msg.= $this->del_msg($pic.'数据删除');
         return $msg;
     }
-    function delArticle($id,$uid='0',$postype='1') {
+    function del($id,$uid='0',$postype='1') {
         $id = (int)$id;
         $id OR iPHP::alert("请选择要删除的文章");
         $uid && $sql="and `userid`='$uid' and `postype`='$postype'";
         $art = article::row($id,'cid,pic,tags',$sql);
         admincp::CP($art['cid'],'cd','alert');
-        $frs = article::select_filedata_indexid($id);
-        for($i=0;$i<count($frs);$i++) {
-            if($frs[$i]){
-                $path = $frs[$i]['path'].'/'.$frs[$i]['filename'].'.'.$frs[$i]['ext'];
-                iFS::del(iFS::fp($path,'+iPATH'));
-                $msg.= $this->del_msg($path.' 文件删除');
-            }
-        }
+
+        $fids   = iFile::index_fileid($id,$this->appid);
+        $pieces = iFile::delete_file($fids);
+        iFile::delete_fdb($fids,$id,$this->appid);
+        $msg.= $this->del_msg(implode('<br />', $pieces).' 文件删除');
+        $msg.= $this->del_msg('相关文件数据删除');
+
         if($art['tags']){
             iPHP::app('tag.class','static');
             tag::$remove = false;
             $msg.= tag::del($art['tags'],'name',$aid);
         }
+
         iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."';");
         iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."' ;");
 
-        article::del_filedata($id,'indexid');
-        $msg.= $this->del_msg('相关文件数据删除');
         article::del_comment($id);
         $msg.= $this->del_msg('评论数据删除');
         article::del($id);
@@ -836,7 +837,7 @@ class articleAdmincp{
             $picdata = addslashes(serialize($picdata));
             $haspic  = 1;
             article::update(compact('haspic','pic','picdata'),array('id'=>$aid));
-            iFS::set_filemap($this->appid,$aid,$pic,'path');
+            iFile::set_map($this->appid,$aid,$pic,'path');
         }
     }
     function remotepic($content,$remote = false) {
@@ -897,7 +898,7 @@ class articleAdmincp{
         preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
         $array  = array_unique($match[1]);
         foreach ($array as $key => $value) {
-            iFS::set_filemap($this->appid,$indexid,$value,'path');
+            iFile::set_map($this->appid,$indexid,$value,'path');
         }
     }
 
@@ -932,7 +933,7 @@ class articleAdmincp{
             // var_dump($filpath);
             list($owidth, $oheight, $otype) = @getimagesize($filpath);
             if(empty($otype)){
-                var_dump($filpath,$otype);
+                // var_dump($filpath,$otype);
                 if($aid){
                     iDB::update('article',array('status'=>'0'),array('id'=>$aid));
                     echo $aid." status:2\n";

@@ -736,7 +736,7 @@ class iPHP {
 		}
 		return false;
 	}
-	public static function multi_ids($ids) {
+	public static function multi_ids($ids,$only=false) {
         $is_multi = false;
         if(is_array($ids)){
             $is_multi = true;
@@ -745,7 +745,10 @@ class iPHP {
             $ids = explode(',', $ids);
             $is_multi = true;
         }
-        return array($is_multi,$ids);
+        if($only){
+        	return $ids;
+        }
+        return array($ids,$is_multi);
 	}
 	public static function where($vars, $field, $not = false, $noand = false, $table = '') {
 		if (is_bool($vars) || empty($vars)) {
