@@ -8,10 +8,6 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-        $fids  = iFile::index_fileid('46288');
-        $pieces = iFile::delete_file($fids);
-        iFile::delete_fdb($fids,'46288');
-
 class filesApp{
     function __construct() {
 	    $this->from		= iS::escapeStr($_GET['from']);

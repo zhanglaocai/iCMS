@@ -713,8 +713,9 @@ class articleAdmincp{
 
         if($art['tags']){
             iPHP::app('tag.class','static');
+            //只删除关联数据 不删除标签
             tag::$remove = false;
-            $msg.= tag::del($art['tags'],'name',$aid);
+            $msg.= tag::del($art['tags'],'name',$id);
         }
 
         iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."';");

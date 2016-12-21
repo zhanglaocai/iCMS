@@ -81,7 +81,7 @@ class weixinAdmincp{
         $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__weixin_event` {$sql}","G");
         iPHP::pagenav($total,$maxperpage,"个事件");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__weixin_event` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
-        var_dump(iDB::$last_query);
+        // var_dump(iDB::$last_query);
         $_count = count($rs);
         include admincp::view("weixin.event");
     }

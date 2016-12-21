@@ -17,6 +17,7 @@ class tag {
 	    return iDB::all("SELECT * FROM `#iCMS@__tags` {$sql} order by id DESC {$limitSQL}");
 	}
 	public static function cache($value=0,$field='id'){
+        return;
 		$rs     = self::data($value,$field);
 		$_count = count($rs);
 	    for($i=0;$i<$_count;$i++) {

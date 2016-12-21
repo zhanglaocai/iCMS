@@ -147,11 +147,11 @@ $(function(){
             <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=tpl" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">标签权重</span>
-              <input type="text" name="weight" class="span1" id="weight" value="<?php echo $rs['weight']?$rs['weight']:time() ; ?>"/>
+              <input type="text" name="weight" class="span3" id="weight" value="<?php echo $rs['weight']?$rs['weight']:time() ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">标签排序</span>
-              <input id="ordernum" class="span1" value="<?php echo $rs['ordernum']?$rs['ordernum']:time() ; ?>" name="ordernum" type="text"/>
+              <input id="ordernum" class="span3" value="<?php echo $rs['ordernum']?$rs['ordernum']:time() ; ?>" name="ordernum" type="text"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">标签状态</span>
