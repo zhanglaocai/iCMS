@@ -60,6 +60,7 @@ admincp::head();
 var upordurl="<?php echo $this->category_uri; ?>&do=updateorder";
 $(function(){
     $("#tree").treeview({
+      tpl:'tree_li',
       url:'<?php echo $this->category_uri; ?>&do=ajaxtree&expanded=<?php echo admincp::$APP_DO=='all'?'1':'0';?>',
       collapsed: false,
       sortable: true,

@@ -505,43 +505,7 @@ class categoryAdmincp extends category{
         }
         return $sql;
     }
-    function power_tree($cid=0){
-        $li   = '';
-        foreach((array)$this->_array[$cid] AS $root=>$C) {
-            $li.= '<li>';
-            $li.= $this->power_holder($C);
-            if($this->_array[$C['cid']]){
-                $li.= '<ul>';
-                $li.= $this->power_tree($C['cid']);
-                $li.= '</ul>';
-            }
-            $li.= '</li>';
-        }
-        return $li;
-    }
-    function power_holder($C) {
-        $app_array = array(
-            iCMS_APP_ARTICLE =>'<i class="fa fa-file-text"></i>',
-            iCMS_APP_TAG     =>'<i class="fa fa-tags"></i>',
-            iCMS_APP_PUSH    =>'<i class="fa fa-thumb-tack"></i>',
-        );
-        $div = '
-        <div class="input-prepend input-append li2">
-            <span class="add-on">'.$app_array[$C['appid']].'</span>
-            <span class="add-on">'.$C['name'].'</span>
-            <span class="add-on"><input type="checkbox" name="cpower[]" value="'.$C['cid'].'"> 查询</span>
-            <span class="add-on tip" title="添加子'.$this->category_name.'的权限"><input type="checkbox" name="cpower[]" value="'.$C['cid'].':a" /> 添加</span>
-            <span class="add-on"><input type="checkbox" name="cpower[]" value="'.$C['cid'].':e" /> 编辑</span>
-            <span class="add-on"><input type="checkbox" name="cpower[]" value="'.$C['cid'].':d" /> 删除</span>
-        </div>';
-        $C['appid']==='1' && $div.= ' <div class="input-prepend input-append li2"><span class="add-on">内容权限</span>
-            <span class="add-on"><input type="checkbox" class="checkbox" name="cpower[]" value="'.$C['cid'].':cs" /> 查询</span>
-            <span class="add-on"><input type="checkbox" name="cpower[]" value="'.$C['cid'].':ca" /> 添加</span>
-            <span class="add-on"><input type="checkbox" name="cpower[]" value="'.$C['cid'].':ce" /> 编辑</span>
-            <span class="add-on"><input type="checkbox" name="cpower[]" value="'.$C['cid'].':cd" /> 删除</span>
-        </div>';
-        return $div;
-    }
+
     public static function tree_unset($C){
         unset($C->rule,
             $C->template,
@@ -569,25 +533,18 @@ class categoryAdmincp extends category{
         $cidArray = (array)$this->cid_array($cid);
         $CARRAY= (array)$this->get($cidArray,array('categoryAdmincp','tree_unset'));
         foreach($cidArray AS $root=>$_cid) {
-            // if(!admincp::CP($C['cid'])){
-            //     if($this->_array[$C['cid']]){
-            //         $a    = $this->tree($C['cid'],true,true);
-            //         $html = array_merge($html,$a);
-            //     }
-            // }else{
-                $C = (array)$CARRAY[$_cid];
-                $a = array('id'=>$C['cid'],'data'=>$C);
-                if($this->cid_array($C['cid'])){
-                    if($expanded){
-                        $a['hasChildren'] = false;
-                        $a['expanded']    = true;
-                        $a['children']    = $this->tree($C['cid'],$expanded,$ret);
-                    }else{
-                        $a['hasChildren'] = true;
-                    }
+            $C = (array)$CARRAY[$_cid];
+            $a = array('id'=>$C['cid'],'data'=>$C);
+            if($this->cid_array($C['cid'])){
+                if($expanded){
+                    $a['hasChildren'] = false;
+                    $a['expanded']    = true;
+                    $a['children']    = $this->tree($C['cid'],$expanded,$ret);
+                }else{
+                    $a['hasChildren'] = true;
                 }
-                $a && $html[] = $a;
-            // }
+            }
+            $a && $html[] = $a;
         }
         if($ret||($expanded && $cid)){
             return $html;

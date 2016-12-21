@@ -16,28 +16,14 @@ class category {
         $this->appid = $appid;
         $this->appid !== '-1' && $this->appid_sql=" AND `appid`='$this->appid'";
     }
-    public function init($appid=null,$rootid=null) {
-        $sql         = "WHERE 1=1";
-        $rootid===null OR $sql.=" AND `rootid`='$rootid'";
 
-        $this->rs = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} {$this->appid_sql} ORDER BY `ordernum` ASC");
-
-        foreach((array)$this->rs AS $C) {
-            $C['iurl']  = iURL::get('category',$C);
-            $this->category[$C['cid']]             = $C;
-            $this->_array[$C['rootid']][$C['cid']] = $C;
-        }
-        foreach ((array)$this->_array as $rootid => $_array) {
-            uasort($_array, "order_num");
-            $this->_array[$rootid] = $_array;
-        }
-    }
-    public function rootid($rootids) {
-        if(empty($rootids)) return array();
+    public function rootid($rootids=null) {
+        if($rootids===null) return array();
 
         list($is_multi,$rootids)  = iPHP::multi_ids($rootids);
 
         $sql  = iPHP::where($rootids,'rootid',false,true);
+        $sql OR $sql = '1 = 1';
         $data = array();
         $rs   = iDB::all("SELECT `cid`,`rootid` FROM `#iCMS@__category` where {$sql} {$this->appid_sql}",OBJECT);
         if($rs){
@@ -69,6 +55,7 @@ class category {
 
         list($is_multi,$cids)  = iPHP::multi_ids($cids);
         $sql  = iPHP::where($cids,'cid',false,true);
+        $sql OR $sql = '1 = 1';
         $data = array();
         $rs   = iDB::all("SELECT {$field} FROM `#iCMS@__category` where {$sql} {$this->appid_sql}",OBJECT);
         if($rs){

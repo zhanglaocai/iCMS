@@ -1,31 +1,46 @@
 <?php /**
- * @package iCMS
- * @copyright 2007-2017, iDreamSoft
- * @license http://www.idreamsoft.com iDreamSoft
- * @author coolmoo <idreamsoft@qq.com>
- */
+* @package iCMS
+* @copyright 2007-2017, iDreamSoft
+* @license http://www.idreamsoft.com iDreamSoft
+* @author coolmoo <idreamsoft@qq.com>
+*/
 defined('iPHP') OR exit('What are you doing?');
 ?>
 <link rel="stylesheet" href="./app/admincp/ui/jquery/treeview-0.1.0.css" type="text/css" />
+<script type="text/javascript" src="./app/admincp/ui/template-3.0.js"></script>
 <script type="text/javascript" src="./app/admincp/ui/jquery/treeview-0.1.0.js"></script>
 <script type="text/javascript" src="./app/admincp/ui/jquery/treeview-0.1.0.async.js"></script>
+<script id="cpower_item" type="text/html">
+<div class="input-prepend input-append">
+    <span class="add-on">APPID:{{appid}}</span>
+    <span class="add-on">{{name}}</span>
+    <span class="add-on"><input type="checkbox" name="cpower[]" value="{{cid}}:s"> 查询</span>
+    <span class="add-on"><input type="checkbox" name="cpower[]" value="{{cid}}:a" /> 添加子级</span>
+    <span class="add-on"><input type="checkbox" name="cpower[]" value="{{cid}}:e" /> 编辑</span>
+    <span class="add-on"><input type="checkbox" name="cpower[]" value="{{cid}}:d" /> 删除</span>
+</div>
+<div class="input-prepend input-append">
+    <span class="add-on">内容权限</span>
+    <span class="add-on"><input type="checkbox" name="cpower[]" value="{{cid}}:cs" /> 查询</span>
+    <span class="add-on"><input type="checkbox" name="cpower[]" value="{{cid}}:ca" /> 添加</span>
+    <span class="add-on"><input type="checkbox" name="cpower[]" value="{{cid}}:ce" /> 编辑</span>
+    <span class="add-on"><input type="checkbox" name="cpower[]" value="{{cid}}:cd" /> 删除</span>
+</div>
+</script>
 <script type="text/javascript">
 $(function(){
-    get_tree('power');
-    get_tree('cpower');
-
-    var power  = <?php echo $rs->power?$rs->power:'{}'?>,
-        cpower = <?php echo $rs->cpower?$rs->cpower:'{}'?>;
-
-    set_select(power,'<?php echo admincp::$APP_NAME; ?>-power');
-    set_select(cpower,'<?php echo admincp::$APP_NAME; ?>-cpower');
-
+  var power  = <?php echo $rs->power?$rs->power:'{}'?>,
+  cpower = <?php echo $rs->cpower?$rs->cpower:'{}'?>;
+  get_tree('power');
+  get_tree('cpower','<?php echo __ADMINCP__;?>=category&do=ajaxtree&expanded=0','cpower_item');
+  set_select(power,'<?php echo admincp::$APP_NAME; ?>-power');
+  set_select(cpower,'<?php echo admincp::$APP_NAME; ?>-cpower');
 });
-function get_tree(e){
+function get_tree(e,url,tpl){
   return $("#"+e+"_tree").treeview({
-      //url:'<?php echo APP_URI; ?>&do='+e+'_tree',
-      collapsed: true,
-      sortable: false,
+      tpl:tpl,
+      url:url,
+      collapsed: false,
       animated: "medium",
       control:"#"+e+"_treecontrol"
   });
@@ -34,7 +49,9 @@ function set_select(vars,el){
     if(!vars) return;
     $.each(vars, function(i,val){
       $('input[value="'+val+'"]',$("#"+el))
-      .prop("checked", true).closest('.checker > span').addClass('checked');
+        .prop("checked", true)
+        .closest('.checker > span')
+        .addClass('checked');
     });
 }
 </script>
@@ -42,9 +59,12 @@ function set_select(vars,el){
 .separator .checker{margin-top: -20px !important;}
 </style>
 <div id="<?php echo admincp::$APP_NAME; ?>-power" class="tab-pane hide">
-  <div class="input-prepend input-append"><span class="add-on">全选</span><span class="add-on">
-    <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo admincp::$APP_NAME; ?>-power"/>
-    </span><button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
+  <div class="input-prepend input-append">
+    <span class="add-on">全选</span>
+    <span class="add-on">
+      <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo admincp::$APP_NAME; ?>-power"/>
+    </span>
+    <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
   </div>
   <div class="clearfloat mb10"></div>
   <div class="input-prepend input-append">
@@ -74,15 +94,22 @@ function set_select(vars,el){
   <div class="clearfloat"></div>
   <span class="label label-important">注:工具中的上传文件/文件管理为操作链接权限,是否有文件(上传/管理)权限以文件权限的设置为主</span>
   <div class="clearfloat mb10 solid"></div>
-  <div id="power_treecontrol"> <a style="display:none;"></a> <a style="display:none;"></a> <a class="btn btn-mini btn-info" href="javascript:;">展开/收缩</a></div>
+  <div id="power_treecontrol">
+    <a style="display:none;"></a>
+    <a style="display:none;"></a>
+    <a class="btn btn-info" href="javascript:;">展开/收缩</a>
+  </div>
   <ul id="power_tree">
-  <?php echo admincp::app('menu')->power_tree();?>
+
   </ul>
 </div>
 <div id="<?php echo admincp::$APP_NAME; ?>-cpower" class="tab-pane hide">
-  <div class="input-prepend input-append"><span class="add-on">全选</span><span class="add-on">
-    <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo admincp::$APP_NAME; ?>-cpower"/>
-    </span><button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
+  <div class="input-prepend input-append">
+    <span class="add-on">全选</span>
+    <span class="add-on">
+      <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo admincp::$APP_NAME; ?>-cpower"/>
+    </span>
+    <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
   </div>
   <div class="clearfloat mb10"></div>
   <div class="input-prepend input-append">
@@ -92,10 +119,12 @@ function set_select(vars,el){
     <span class="add-on"><input type="checkbox" name="cpower[]" value="0:a" /></span>
   </div>
   <div class="clearfloat mb10"></div>
-  <span class="label label-important">注:只有文章类型的栏目才有内容权限</span>
-  <div id="cpower_treecontrol"> <a style="display:none;"></a> <a style="display:none;"></a> <a class="btn btn-mini btn-info" href="javascript:;">展开/收缩</a></div>
+  <div id="cpower_treecontrol">
+    <a style="display:none;"></a>
+    <a style="display:none;"></a>
+    <a class="btn btn-info" href="javascript:;">展开/收缩</a>
+  </div>
   <ul id="cpower_tree">
-    <?php echo iPHP::app('category.admincp','all')->power_tree();?>
+
   </ul>
 </div>
-

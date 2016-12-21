@@ -18,7 +18,12 @@
 		$.getJSON(settings.url, {root: root}, function(response) {
 			$("#tree-loading").remove();
 			function createNode(parent) {
-				var html = template('tree_li', this.data);
+				if(settings.tpl){
+					var html = template(settings.tpl, this.data);
+				}else{
+					var html = this.data;
+				}
+
 				var current = $("<li/>")
 				.attr("id", this.id)
 				.html(html)
@@ -28,6 +33,8 @@
 				}).mouseout(function() {
 					$(this).css("background-color", "#FFFFFF");
 				});
+				$(':checkbox,:radio',current).uniform();
+
 				if (this.expanded) {
 					current.addClass("open");
 				}
@@ -46,18 +53,7 @@
 				add: child
 			});
 
-			function update_ordernum (ui) {
-				var ul = ui.item.parent();
-				var ordernum = new Array();
-				$(".ordernum > input", ul).each(function(i) {
-					$(this).val(i);
-					var cid = $(this).attr("cid");
-					ordernum.push(cid);
-				});
-				$.post(upordurl, {
-					ordernum: ordernum
-				});
-			}
+
 			if (settings.sortable) {
 				$(container).sortable({
 					delay: 300,
@@ -72,6 +68,18 @@
 						$(ui.item).css({
 							'opacity': 1
 						});
+						var update_ordernum = function (ui) {
+							var ul = ui.item.parent();
+							var ordernum = new Array();
+							$(".ordernum > input", ul).each(function(i) {
+								$(this).val(i);
+								var cid = $(this).attr("cid");
+								ordernum.push(cid);
+							});
+							$.post(upordurl, {
+								ordernum: ordernum
+							});
+						}
 						update_ordernum (ui);
 					}
 				}).disableSelection();
