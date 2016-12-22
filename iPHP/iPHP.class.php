@@ -52,12 +52,13 @@ class iPHP {
 		$config = require iPHP_APP_CONFIG;
 		//config.php 中开启后 此处设置无效
 		defined('iPHP_DEBUG') OR define('iPHP_DEBUG', $config['debug']['php']); //程序调试模式
+		defined('iPHP_DEBUG_TRACE') OR define('iPHP_DEBUG_TRACE', $config['debug']['php_trace']); //程序调试模式
 		defined('iPHP_DB_DEBUG') OR define('iPHP_DB_DEBUG', $config['debug']['db']); //数据调试
-		defined('iPHP_DB_TRACE') OR define('iPHP_DB_TRACE', $config['debug']['trace']); //SQL跟踪
-		defined('iPHP_DB_EXPLAIN') OR define('iPHP_DB_EXPLAIN', $config['debug']['explain']); //SQL解释
+		defined('iPHP_DB_TRACE') OR define('iPHP_DB_TRACE', $config['debug']['db_trace']); //SQL跟踪
+		defined('iPHP_DB_EXPLAIN') OR define('iPHP_DB_EXPLAIN', $config['debug']['db_explain']); //SQL解释
 
 		defined('iPHP_TPL_DEBUG') OR define('iPHP_TPL_DEBUG', $config['debug']['tpl']); //模板调试
-		defined('iPHP_TPL_DEBUGGING') OR define('iPHP_TPL_DEBUGGING', $config['debug']['debugging']); //模板数据调试
+		defined('iPHP_TPL_DEBUGGING') OR define('iPHP_TPL_DEBUGGING', $config['debug']['tpl_trace']); //模板数据调试
 
 		defined('iPHP_TIME_CORRECT') OR define('iPHP_TIME_CORRECT', $config['time']['cvtime']);
 		defined('iPHP_ROUTER_REWRITE') OR define('iPHP_ROUTER_REWRITE', $config['router']['rewrite']);
@@ -314,7 +315,7 @@ class iPHP {
 		}
 	}
 	public static function debug_info($tpl) {
-		if (iPHP_DEBUG) {
+		if (iPHP_DEBUG && iPHP_DEBUG_TRACE) {
 			echo '<div class="well">';
 			echo '<h3 class="label label-default">调试信息</h3>';
 			echo '<span class="label label-success">模板:'.$tpl.' 内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL累计执行:'.iDB::$num_queries.'次</span>';

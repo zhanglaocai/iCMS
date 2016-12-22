@@ -54,7 +54,7 @@
         "-": "-"
     }, {
         "caption": "文章评论管理",
-        "href": "comment&do=article",
+        "href": "comment&appname=article&appid={appid}",
         "icon": "comments"
     }]
 }]

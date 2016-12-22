@@ -80,10 +80,10 @@ class commentApp {
 
 		iPHP::app('user.class', 'static');
 		user::get_cookie() OR iPHP::code(0, 'iCMS:!login', 0, 'json');
-		$seccode = iS::escapeStr($_POST['seccode']);
 
 		if ($this->config['seccode']) {
 			iPHP::core("Seccode");
+			$seccode = iS::escapeStr($_POST['seccode']);
 			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 

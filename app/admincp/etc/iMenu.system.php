@@ -45,10 +45,6 @@
                 "caption": "用户设置",
                 "href": "setting&tab=user",
                 "icon": "cog"
-            },  {
-                "caption": "评论设置",
-                "href": "setting&tab=comment",
-                "icon": "cog"
             }, {
                 "caption": "其它设置",
                 "href": "setting&tab=other",

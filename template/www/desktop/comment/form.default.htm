@@ -51,13 +51,16 @@
         $('.cmt-add').click(function(event) {
             event.preventDefault();
             var param = <!--{$comment_vars.param|json_encode}-->;
-            iCOMMENT.addnew(this, param, function(ret) {
-                if (ret.code) {
+            iCOMMENT.addnew($form,param,
+                function(ret) {
                     $(".empty",".commentApp-list-wrap").remove();
                     var $list = $(".commentApp-list-wrap");
                     iCOMMENT.list($list, param.iid, ret.forward,'append');
+                },
+                function (ret) {
+                    iCMS.UI.alert(ret.msg);
                 }
-            })
+            )
         });
     })
 </script>

@@ -15,8 +15,8 @@ class iSeccode {
         'size'   => 24,//字体大小
         'width'  => 80,//图片宽度
         'height' => 30,//图片高度
-        'line'   => 4, //干扰线数量
-        'pixel'  => 90 //干扰点数量
+        'line'   => 2, //干扰线数量
+        'pixel'  => 60 //干扰点数量
     );
     public static $setcookie = array();
 

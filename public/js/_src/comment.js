@@ -126,35 +126,37 @@ define("comment", function(require) {
                 utils.callback(ret, SUCCESS, FAIL, me);
             }, 'json');
         },
-        addnew:function (a,param,SUCCESS, FAIL) {
+        addnew:function ($form,param,SUCCESS, FAIL) {
             if (!USER.CHECK.LOGIN()) return;
             var me = this;
-            var form = $(a).parent().parent(),
-                textarea = $('.commentApp-textarea', form),
-                data = textarea.data('param'),
-                cmt_param = $.extend(param, data);
+            var textarea = $('.commentApp-textarea', $form);
 
             if($COMMENT.seccode=="1"){
-                var seccode = $('.commentApp-seccode', form)
-                cmt_param.seccode = seccode.val();
+                var seccode = $('[name="seccode"]', $form);
+                param.seccode = seccode.val();
+                if (!param.seccode) {
+                    seccode.focus();
+                    return false;
+                }
             }
-
-            cmt_param.action  = 'add';
-            cmt_param.content = textarea.val();
-
-            if (!cmt_param.content) {
+            param.content = textarea.val();
+            if (!param.content) {
                 textarea.focus();
                 return false;
             }
-
-            $.post(API.url('comment'), cmt_param, function(ret) {
-                if($COMMENT.seccode=="1"){
-                    UI.seccode();
-                    seccode.val('');
-                }
-                if(ret.code){
+            var refresh = function (ret) {
+                if(ret.forward!='seccode'){
                     textarea.val('');
                 }
+                if($COMMENT.seccode=="1"){
+                    seccode.val('');
+                    UI.seccode();
+                }
+            }
+
+            param.action  = 'add';
+            $.post(API.url('comment'), param, function(ret) {
+                refresh(ret);
                 utils.callback(ret, SUCCESS, FAIL, me);
             }, 'json');
         },
@@ -254,8 +256,9 @@ define("comment", function(require) {
             //提交评论
             .on('click', '[i="addnew"]', function(event) {
                 event.preventDefault();
-                var that = $(this);
-                $COMMENT.addnew(this,param,
+                var that = $(this),_form = that.parent().parent();
+
+                $COMMENT.addnew(_form,param,
                     function(ret){
                         var count = parseInt($('[i="comment_num"]', $this).text());
                         $('[i="comment_num"]', $this).text(count + 1);
@@ -267,6 +270,9 @@ define("comment", function(require) {
                             var type = null;
                         }
                         $COMMENT.list(itemp,iid,ret.forward,type);
+                    },
+                    function (ret) {
+                        UI.alert(ret.msg);
                     }
                 )
             })

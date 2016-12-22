@@ -11,8 +11,9 @@
 iPHP::app('user.class','static');
 iPHP::app('apps.class','static');
 class commentAdmincp{
-    function __construct() {
+    function __construct($appid=null) {
         $this->appid = iCMS_APP_COMMENT;
+        $appid && $this->appid = $appid;
         $this->id    = (int)$_GET['id'];
     }
     function do_config(){
