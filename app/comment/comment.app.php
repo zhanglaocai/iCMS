@@ -67,7 +67,7 @@ class commentApp {
 		iPHP::assign('vars',$vars);
 		iPHP::view('iCMS://comment/api.json.htm');
 	}
-	function pm($a) {
+	public function pm($a) {
 		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');
 		$data = compact($fields);
 		msg::send($data, 1);
@@ -101,7 +101,7 @@ class commentApp {
 		$iid OR iPHP::code(0, 'iCMS:article:empty_id', 0, 'json');
 		$content OR iPHP::code(0, 'iCMS:comment:empty', 0, 'json');
 
-		$fwd = iCMS::filter($content);
+		$fwd = iPHP::app("admincp.filter.app")->run($content);
 		$fwd && iPHP::code(0, 'iCMS:comment:filter', 0, 'json');
 
 		$appid OR $appid = iCMS_APP_ARTICLE;

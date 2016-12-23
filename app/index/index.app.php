@@ -9,7 +9,7 @@ class indexApp {
 	public $methods	= array('iCMS','index');
     public function __construct() {}
     public function do_iCMS($a = null) {
-        if(iPHP::$iTPL_MODE!="html"){
+        if(iPHP::$iVIEW!="html"){
             $domain = $this->domain();
             if($domain) return;
         }
@@ -26,11 +26,11 @@ class indexApp {
         if(iCMS::$config['template']['index_mode'] && iPHP_DEVICE=="desktop"){
             iCMS::gotohtml($iurl->path,$iurl->href);
         }
-        if(iPHP::$iTPL_MODE=="html" || iCMS::$config['template']['index_rewrite']){
+        if(iPHP::$iVIEW=="html" || iCMS::$config['template']['index_rewrite']){
             iPHP::set_page_url($iurl);
         }
         $html = iPHP::view($index_tpl);
-        if(iPHP::$iTPL_MODE=="html") return array($html,$iurl);
+        if(iPHP::$iVIEW=="html") return array($html,$iurl);
     }
     public function domain(){
         $domain = iCMS::$config['category']['domain'];

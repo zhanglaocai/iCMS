@@ -9,20 +9,20 @@
 * @version 6.0.0
 */
 class htmlAdmincp{
-    function __construct() {
-		iPHP::$iTPL_MODE = "html";
+    public function __construct() {
+		iPHP::$iVIEW = "html";
 		$this->page      = $GLOBALS['page'];
 		$this->PG        = $_POST?$_POST:$_GET;
 		$this->CP        = iCMS::$config['router']['speed'];
 		$this->alltime   = $_GET['alltime']?$_GET['alltime']:0;
     }
-    function do_all(){
+    public function do_all(){
     	include admincp::view("html.all");
     }
-    function do_index(){
+    public function do_index(){
     	include admincp::view("html.index");
     }
-    function do_createIndex(){
+    public function do_createIndex(){
 		$indexTPL  = iCMS::$config['template']['index']	= $this->PG['indexTPL'];
 		$indexName = iCMS::$config['template']['index_name'] = $this->PG['indexName'];
     	$indexName OR $indexName ="index".iCMS::$config['router']['html_ext'];
@@ -32,7 +32,7 @@ class htmlAdmincp{
 		$setting->update('template');
     	$this->CreateIndex($indexTPL,$indexName);
     }
-    function CreateIndex($indexTPL,$indexName,$p=1,$loop=1){
+    public function CreateIndex($indexTPL,$indexName,$p=1,$loop=1){
 
 		$_GET['loop']	&& $loop=0;
 		$GLOBALS['page']	= $p+$this->page;
@@ -77,11 +77,11 @@ class htmlAdmincp{
 		$updateMsg = $this->page?true:false;
 		iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
-    function do_category(){
+    public function do_category(){
         $this->categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
     	include admincp::view("html.category");
     }
-    function do_createCategory($cid=0,$p=1,$loop=1){
+    public function do_createCategory($cid=0,$p=1,$loop=1){
 		$category	= $this->PG['cid'];
 		$rootid		= $this->PG['rootid'];
 		$k			= (int)$this->PG['k'];
@@ -161,11 +161,11 @@ class htmlAdmincp{
 		}
 		iPHP::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
     }
-    function do_article(){
+    public function do_article(){
         $this->categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
     	include admincp::view("html.article");
     }
-    function do_createArticle($aid=null){
+    public function do_createArticle($aid=null){
 		$category = $this->PG['cid'];
 		$startime = $this->PG['startime'];
 		$endtime  = $this->PG['endtime'];
@@ -227,7 +227,7 @@ class htmlAdmincp{
 		$updateMsg	= $this->page?true:false;
 		iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
-    function Article($id){
+    public function Article($id){
 		$app   = iCMS::run('article','article','object');
 		$htm   = $app->article($id);
 		$htm OR iPHP::alert("文章所属栏目URL规则设置问题! 此栏目下的文章不能生成静态,请修改栏目的访问模式和URL规则");
@@ -247,7 +247,7 @@ class htmlAdmincp{
 		unset($app,$htm);
 		return $title;
     }
-    function loopurl($total,$_query){
+    public function loopurl($total,$_query){
     	if ($total>0 && $GLOBALS['page']<$total){
     		//$p++;
 			$url  = $_SERVER["REQUEST_URI"];
@@ -262,7 +262,7 @@ class htmlAdmincp{
 			//iPHP::redirect($url);
     	}
     }
-    function get_category($appid){
+    public function get_category($appid){
 		$rs	= iCache::get('iCMS/category.'.$appid.'/cache');
 		$category = array();
 		foreach((array)$rs AS $_cid=>$C){

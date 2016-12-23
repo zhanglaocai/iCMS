@@ -41,7 +41,7 @@ class categoryAdmincp extends category{
     protected $_view_add    = 'category.add';
     protected $_view_manage = 'category.manage';
 
-    function __construct($appid = null,$dir=null) {
+    public function __construct($appid = null,$dir=null) {
         $this->cid       = (int)$_GET['cid'];
         $this->appid     = '-1';
         $appid          && $this->appid = $appid;
@@ -50,7 +50,7 @@ class categoryAdmincp extends category{
         $this->_view_tpl_dir = $dir;
     }
 
-    function do_add(){
+    public function do_add(){
         if($this->cid) {
             admincp::CP($this->cid,'e','page');
             $rs		= iDB::row("SELECT * FROM `#iCMS@__category` WHERE `cid`='$this->cid' LIMIT 1;",ARRAY_A);
@@ -86,7 +86,7 @@ class categoryAdmincp extends category{
         }
         include admincp::view($this->_view_add,$this->_view_tpl_dir);
     }
-    function do_save(){
+    public function do_save(){
         $appid        = $this->appid;
         $cid          = (int)$_POST['cid'];
         $rootid       = (int)$_POST['rootid'];
@@ -226,7 +226,7 @@ class categoryAdmincp extends category{
         iPHP::success($msg,'url:'.$this->category_uri);
     }
 
-    function do_update(){
+    public function do_update(){
     	foreach((array)$_POST['name'] as $cid=>$name){
     		$name	= iS::escapeStr($name);
 			iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name',`sortnum` = '".(int)$_POST['sortnum'][$cid]."' WHERE `cid` ='".(int)$cid."' LIMIT 1");
@@ -234,7 +234,7 @@ class categoryAdmincp extends category{
     	}
     	iPHP::success('更新完成');
     }
-    function do_batch(){
+    public function do_batch(){
         $_POST['id'] OR iPHP::alert("请选择要操作的".$this->category_name);
         $id_array = (array)$_POST['id'];
         $ids      = implode(',',$id_array);
@@ -347,22 +347,22 @@ class categoryAdmincp extends category{
         $this->cache(true,$this->appid);
         iPHP::success('操作成功!','js:1');
     }
-    function do_updateorder(){
+    public function do_updateorder(){
     	foreach((array)$_POST['sortnum'] as $sortnum=>$cid){
             iDB::query("UPDATE `#iCMS@__category` SET `sortnum` = '".intval($sortnum)."' WHERE `cid` ='".intval($cid)."' LIMIT 1");
 	    	$this->cahce_one($cid);
     	}
     }
-    function do_iCMS(){
+    public function do_iCMS(){
         $tabs = iPHP::get_cookie(admincp::$APP_NAME.'_tabs');
         $tabs=="list"?$this->do_list():$this->do_tree();
     }
-    function do_tree() {
+    public function do_tree() {
         admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
         admincp::$APP_DO = 'tree';
         include admincp::view($this->_view_manage,$this->_view_tpl_dir);
     }
-    function do_list(){
+    public function do_list(){
         admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
         admincp::$APP_DO = 'list';
         $sql  = " where `appid`='{$this->appid}'";
@@ -389,7 +389,7 @@ class categoryAdmincp extends category{
         $_count = count($rs);
         include admincp::view($this->_view_manage,$this->_view_tpl_dir);
     }
-    function do_copy(){
+    public function do_copy(){
         iDB::query("
             INSERT INTO `#iCMS@__category` (
                 `name`,`dir`,
@@ -411,7 +411,7 @@ class categoryAdmincp extends category{
         iPHP::success('克隆完成,编辑此'.$this->category_name, 'url:' . APP_URI . '&do=add&cid=' . $cid);
 
     }
-    function do_del($cid = null,$dialog=true){
+    public function do_del($cid = null,$dialog=true){
         $cid===null && $cid=(int)$_GET['cid'];
         admincp::CP($cid,'d','alert');
         $msg    = '请选择要删除的'.$this->category_name.'!';
@@ -429,11 +429,11 @@ class categoryAdmincp extends category{
         $this->do_cache(false);
         $dialog && iPHP::success($msg,'js:parent.$("#'.$cid.'").remove();');
     }
-    function do_ajaxtree(){
+    public function do_ajaxtree(){
 		$expanded=$_GET['expanded']?true:false;
 	 	echo $this->tree((int)$_GET["root"],$expanded);
     }
-    function do_cache($dialog=true){
+    public function do_cache($dialog=true){
         $_count = $this->cache(true,$this->appid);
         if($_count>1000){
             // $this->do_cacheall($_count);
@@ -442,7 +442,7 @@ class categoryAdmincp extends category{
         }
         $dialog && iPHP::success('更新完成');
    }
-    function do_cacheall($total){
+    public function do_cacheall($total){
         $page    = (int)$_GET['page'];
         $alltime = (int)$_GET['alltime'];
 
@@ -485,7 +485,7 @@ class categoryAdmincp extends category{
         $updateMsg  = $page?true:false;
         iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
-    function loopurl($total,$_query){
+    public function loopurl($total,$_query){
         if ($total>0 && $_GET['page']<$total){
             $url  = $_SERVER["REQUEST_URI"];
             $urlA = parse_url($url);
@@ -497,7 +497,7 @@ class categoryAdmincp extends category{
             return $url;
         }
     }
-    function search_sql($cid,$field='cid'){
+    public function search_sql($cid,$field='cid'){
         if($cid){
             $cids  = (array)$cid;
             $_GET['sub'] && $cids+=iPHP::app("category")->get_ids($cid,true);
@@ -528,7 +528,7 @@ class categoryAdmincp extends category{
         );
         return $C;
     }
-    function tree($cid = 0,$expanded=false,$ret=false){
+    public function tree($cid = 0,$expanded=false,$ret=false){
         $html = array();
         $cidArray = (array)$this->cid_array($cid);
         $CARRAY= (array)$this->get($cidArray,array('categoryAdmincp','tree_unset'));
@@ -554,13 +554,13 @@ class categoryAdmincp extends category{
         return $html?json_encode($html):'[]';
     }
 
-    function check_dir($dir,$appid,$url,$cid=0){
+    public function check_dir($dir,$appid,$url,$cid=0){
         $sql ="SELECT `dir` FROM `#iCMS@__category` where `dir` ='$dir' AND `appid`='$appid'";
         $cid && $sql.=" AND `cid` !='$cid'";
         iDB::value($sql) && empty($url) && iPHP::alert('该'.$this->category_name.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
     }
 
-    function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false) {
+    public function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false) {
         $cidArray  = (array)$this->cid_array($cid);
         $CARRAY    = (array)$this->get($cidArray,array('categoryAdmincp','tree_unset'));
         $ROOTARRAY = (array)$this->rootid($cidArray);
@@ -580,22 +580,22 @@ class categoryAdmincp extends category{
     }
 
     //接口
-    function del_content($cid){
+    public function del_content($cid){
 
     }
-    function merge($tocid,$cid){
+    public function merge($tocid,$cid){
         iDB::query("UPDATE `#iCMS@__".$this->_app_table."` SET `".$this->_app_cid."` ='$tocid' WHERE `".$this->_app_cid."` ='$cid'");
         iDB::query("UPDATE `#iCMS@__tags` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
         //iDB::query("UPDATE `#iCMS@__push` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
         iDB::query("UPDATE `#iCMS@__prop` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
     }
-    function re_app_count(){
+    public function re_app_count(){
         $rs = iDB::all("SELECT `cid` FROM `#iCMS@__category` where `appid`='$this->appid'");
         foreach ((array)$rs as $key => $value) {
             $this->update_app_count($value['cid']);
         }
     }
-    function update_app_count($cid){
+    public function update_app_count($cid){
         $cc = iDB::value("SELECT count(*) FROM `#iCMS@__".$this->_app_table."` where `".$this->_app_cid."`='$cid'");
         iDB::query("UPDATE `#iCMS@__category` SET `count` ='$cc' WHERE `cid` ='$cid'");
     }
@@ -605,7 +605,7 @@ class categoryAdmincp extends category{
         iDB::query("UPDATE `#iCMS@__category` SET `count` = count".$math."1 WHERE `cid` ='$cid' {$sql}");
     }
 
-    function batchbtn(){
+    public function batchbtn(){
         return '<li><a data-toggle="batch" data-action="mode"><i class="fa fa-cogs"></i> 访问模式</a></li>
                 <li class="divider"></li>
                 <li><a data-toggle="batch" data-action="categoryRule"><i class="fa fa-link"></i> '.$this->category_name.'规则</a></li>

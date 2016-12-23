@@ -9,13 +9,13 @@
 * @version 6.0.0
 */
 class homeApp{
-    function __construct() {}
-    function do_logout(){
+    public function __construct() {}
+    public function do_logout(){
     	iMember::logout();
         admincp::destroy_seccode();
     	iPHP::success('注销成功!','url:'.__SELF__);
     }
-    function do_iCMS(){
+    public function do_iCMS(){
         //数据统计
         $rs=iDB::all("SHOW FULL TABLES FROM `".iPHP_DB_NAME."` WHERE table_type = 'BASE TABLE';");
         foreach($rs as $k=>$val) {
@@ -56,7 +56,7 @@ class homeApp{
 
     	include admincp::view("home");
     }
-    function okORno($o) {
+    public function okORno($o) {
         return $o?'<font color="green"><i class="fa fa-check"></i></font>':'<font color="red"><i class="fa fa-times"></i></font>';
     }
 }

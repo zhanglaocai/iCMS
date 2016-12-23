@@ -9,7 +9,7 @@
 * @version 6.0.0
 */
 class JOB{
-    function __construct() {
+    public function __construct() {
 		list($year,$mon,$day,$daynum,$wknum)=explode("-",date("Y-m-d-t-w"));
 
 		$this->today['start']     = mktime(0, 0 , 0,$mon,$day,$year);
@@ -35,7 +35,7 @@ class JOB{
 		$this->pmonth['end']   = mktime(23,59,59,$pm,$this->pmonth['t'],$py);
     }
 
-    function count_post($userid){
+    public function count_post($userid){
 		$rs		= iDB::all("SELECT `postime`,`status` FROM #iCMS@__article where `userid`='".$userid."'");
 		$this->total          = count($rs);
 		$this->today['count'] = $this->yesterday['count']=$this->month['count']=$this->pmonth['count']=0;
@@ -56,12 +56,12 @@ class JOB{
 			}
 		}
     }
-	function count_time_post($t,$s,$e,&$c){
+	public function count_time_post($t,$s,$e,&$c){
 		if($t>=$s && $t<=$e){
 			$c++;
 		}
 	}
-	function month($timestamp=null){
+	public function month($timestamp=null){
 		$timestamp OR $timestamp=time();
 		list($nowy,$nowm,$nowd,$noww) = explode('-',get_date($timestamp,'Y-m-d-w'));
 		$info 				= array();
@@ -78,7 +78,7 @@ class JOB{
 		$info['cur_date']   = get_date(0,'Y n.j D');
 		return $info;
 	}
-	function calendar($m,$y) {
+	public function calendar($m,$y) {
 	    $today		= get_date(0,'j');
 	    $weekday	= get_date(mktime(0,0,0,$m,1,$y),'w');
 	    $totalday	= days_in_month($y,$m);

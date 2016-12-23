@@ -13,7 +13,7 @@ class groupApp{
 	public $array = NULL;
 	public $type  = NULL;
 
-    function __construct($type=null) {
+    public function __construct($type=null) {
     	$this->gid	= (int)$_GET['gid'];
     	if($type!==null){
     		$this->type = $type;
@@ -27,11 +27,11 @@ class groupApp{
 		}
     }
 
-    function do_add(){
+    public function do_add(){
         $this->gid && $rs = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='$this->gid' LIMIT 1;");
         include admincp::view("group.add");
     }
-	function select($type=null,$currentid=NULL){
+	public function select($type=null,$currentid=NULL){
 		$type===null && $type = $this->type;
 		if($this->group[$type])foreach($this->group[$type] AS $G){
 			$selected=($currentid==$G['gid'])?" selected='selected'":'';
@@ -39,19 +39,19 @@ class groupApp{
 		}
 		return $option;
 	}
-    function do_iCMS(){
+    public function do_iCMS(){
     	$rs		= iDB::all("SELECT * FROM `#iCMS@__group` ORDER BY `type` , `gid` ASC");
 		$_count	= count($rs);
     	include admincp::view("group.manage");
     }
-    function do_del($gid = null,$dialog=true){
+    public function do_del($gid = null,$dialog=true){
     	$gid===null && $gid=$this->gid;
 		$gid OR iPHP::alert('请选择要删除的用户组');
 		$gid=="1" && iPHP::alert('不能删除超级管理员组');
 		iDB::query("DELETE FROM `#iCMS@__group` WHERE `gid` = '$gid'");
 		$dialog && iPHP::success('用户组删除完成','js:parent.$("#tr'.$gid.'").remove();');
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
     	$idArray OR iPHP::alert("请选择要删除的用户组");
         $ids     = implode(',',$idArray);
@@ -67,7 +67,7 @@ class groupApp{
     		break;
 		}
 	}
-	function do_save(){
+	public function do_save(){
 		$gid    = intval($_POST['gid']);
 		$type   = intval($_POST['type']);
 		$name   = iS::escapeStr($_POST['name']);

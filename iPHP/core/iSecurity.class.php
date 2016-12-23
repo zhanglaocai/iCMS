@@ -12,7 +12,7 @@ class iS {
 	 * @param $param
 	 * @return int
 	 */
-	function int($param) {
+	public static function int($param) {
 		return intval($param);
 	}
 	/**
@@ -20,7 +20,7 @@ class iS {
 	 * @param $param
 	 * @return string
 	 */
-	function str($param) {
+	public static function str($param) {
 		return trim($param);
 	}
 	/**
@@ -28,7 +28,7 @@ class iS {
 	 * @param $param
 	 * @return boolean
 	 */
-	function isObj($param) {
+	public static function isObj($param) {
 		return is_object($param) ? true : false;
 	}
 	/**
@@ -36,7 +36,7 @@ class iS {
 	 * @param $params
 	 * @return boolean
 	 */
-	function isArray($params) {
+	public static function isArray($params) {
 		return (!is_array($params) || !count($params)) ? false : true;
 	}
 	/**
@@ -45,7 +45,7 @@ class iS {
 	 * @param $params
 	 * @return boolean
 	 */
-	function inArray($param, $params) {
+	public static function inArray($param, $params) {
 		return (!in_array((string)$param, (array)$params)) ? false : true;
 	}
 	/**
@@ -53,7 +53,7 @@ class iS {
 	 * @param $param
 	 * @return boolean
 	 */
-	function isBool($param) {
+	public static function isBool($param) {
 		return is_bool($param) ? true : false;
 	}
 	/**
@@ -61,7 +61,7 @@ class iS {
 	 * @param $param
 	 * @return boolean
 	 */
-	function isNum($param) {
+	public static function isNum($param) {
 		return is_numeric($param) ? true : false;
 	}
 
@@ -70,7 +70,7 @@ class iS {
 	 * @param $param
 	 * @return string
 	 */
-	function htmlEscape($param) {
+	public static function htmlEscape($param) {
 		return trim(htmlspecialchars($param, ENT_QUOTES));
 	}
 	/**
@@ -78,7 +78,7 @@ class iS {
 	 * @param $param
 	 * @return string
 	 */
-	function stripTags($param) {
+	public static function stripTags($param) {
 		return trim(strip_tags($param));
 	}
 	/**
@@ -155,7 +155,7 @@ class iS {
 	 * @param $ifCheck
 	 * @return boolean
 	 */
-	function _escapePath($fileName, $ifCheck = true) {
+	public static function _escapePath($fileName, $ifCheck = true) {
 		$tmpname = strtolower($fileName);
 		$tmparray = array('://',"\0");
 		$ifCheck && $tmparray[] = '..';

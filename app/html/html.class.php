@@ -9,9 +9,9 @@
 * @version 6.0.0
 */
 class html{
-    function __construct() {}
+    public function __construct() {}
 
-    function do_createIndex(){
+    public function do_createIndex(){
 		$indexTPL  = iCMS::$config['template']['index']	= $this->PG['indexTPL'];
 		$indexName = iCMS::$config['template']['index_name'] = $this->PG['indexName'];
     	$indexName OR $indexName ="index".iCMS::$config['router']['html_ext'];
@@ -21,7 +21,7 @@ class html{
 		$setting->update('template');
     	$this->CreateIndex($indexTPL,$indexName);
     }
-    function CreateIndex($indexTPL,$indexName,$p=1,$loop=1){
+    public function CreateIndex($indexTPL,$indexName,$p=1,$loop=1){
 
 		$_GET['loop']	&& $loop=0;
 		$GLOBALS['page']	= $p+$this->page;
@@ -67,7 +67,7 @@ class html{
 		iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
 
-    function do_createCategory($cid=0,$p=1,$loop=1){
+    public function do_createCategory($cid=0,$p=1,$loop=1){
 		$category	= $this->PG['cid'];
 		$rootid		= $this->PG['rootid'];
 		$k			= (int)$this->PG['k'];
@@ -148,7 +148,7 @@ class html{
 		iPHP::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
     }
 
-    function do_createArticle($aid=null){
+    public function do_createArticle($aid=null){
 		$category = $this->PG['cid'];
 		$startime = $this->PG['startime'];
 		$endtime  = $this->PG['endtime'];
@@ -210,7 +210,7 @@ class html{
 		$updateMsg	= $this->page?true:false;
 		iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
-    function Article($id){
+    public function Article($id){
 		$app   = iCMS::run('article','article','object');
 		$htm   = $app->article($id);
 		$htm OR iPHP::alert("文章所属栏目URL规则设置问题! 此栏目下的文章不能生成静态,请修改栏目的访问模式和URL规则");
@@ -230,7 +230,7 @@ class html{
 		unset($app,$htm);
 		return $title;
     }
-    function loopurl($total,$_query){
+    public function loopurl($total,$_query){
     	if ($total>0 && $GLOBALS['page']<$total){
     		//$p++;
 			$url  = $_SERVER["REQUEST_URI"];
@@ -245,7 +245,7 @@ class html{
 			//iPHP::redirect($url);
     	}
     }
-    function get_category($appid){
+    public function get_category($appid){
 		$rs	= iCache::get('iCMS/category.'.$appid.'/cache');
 		$category = array();
 		foreach((array)$rs AS $_cid=>$C){

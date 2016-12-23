@@ -17,7 +17,7 @@ class articleAdmincp{
     public $chapter  = false;
     public $config   = null;
 
-    function __construct() {
+    public function __construct() {
         $this->appid       = iCMS_APP_ARTICLE;
         $this->id          = (int)$_GET['id'];
         $this->dataid      = (int)$_GET['dataid'];
@@ -29,19 +29,19 @@ class articleAdmincp{
         define('TAG_APPID',$this->appid);
 
     }
-    function category($cid){
+    public function category($cid){
         return $this->categoryApp->get($cid);
     }
-    function do_config(){
+    public function do_config(){
         $setting = admincp::app('setting');
         $setting->app($this->appid);
     }
-    function do_save_config(){
+    public function do_save_config(){
         $setting = admincp::app('setting');
         $setting->save($this->appid);
     }
 
-    function do_add(){
+    public function do_add(){
         $_GET['cid'] && admincp::CP($_GET['cid'],'ca','page');//添加权限
         $rs      = array();
         if($this->id){
@@ -92,7 +92,7 @@ class articleAdmincp{
             include admincp::view("article.add");
         }
     }
-    function do_update(){
+    public function do_update(){
     	$data = admincp::fields($_GET['iDT']);
         if($data){
             if(isset($data['pid'])){
@@ -105,12 +105,12 @@ class articleAdmincp{
         }
     	iPHP::success('操作成功!','js:1');
     }
-    function do_updateorder(){
+    public function do_updateorder(){
         foreach((array)$_POST['sortnum'] as $sortnum=>$id){
             article::update(compact('sortnum'),compact('id'));
         }
     }
-    function do_batch(){
+    public function do_batch(){
     	$_POST['id'] OR iPHP::alert("请选择要操作的文章");
     	$ids	= implode(',',(array)$_POST['id']);
     	$batch	= $_POST['batch'];
@@ -226,7 +226,7 @@ class articleAdmincp{
         $data && article::batch($data,$ids);
 		iPHP::success('操作成功!','js:1');
     }
-    function do_baiduping($id = null,$dialog=true){
+    public function do_baiduping($id = null,$dialog=true){
         $id===null && $id=$this->id;
         $id OR iPHP::alert('请选择要推送的文章!');
         $rs   = article::row($id);
@@ -240,15 +240,15 @@ class articleAdmincp{
             iPHP::alert('推送失败！['.$res->message.']','js:1');
         }
     }
-    function do_getjson(){
+    public function do_getjson(){
         $id = (int)$_GET['id'];
         $rs = article::row($id);
         iPHP::json($rs);
     }
-    function do_getmeta(){
+    public function do_getmeta(){
         $cid = $_GET['cid'];
     }
-	function do_updatetitle(){
+	public function do_updatetitle(){
         $id          = (int)$_POST['id'];
         $cid         = (int)$_POST['cid'];
         $pid         = (int)$_POST['pid'];
@@ -274,7 +274,7 @@ class articleAdmincp{
         article::update($data ,compact('id'));
 		exit('1');
 	}
-    function do_findpic(){
+    public function do_findpic(){
         $content = article::body($this->id);
         if($content){
             $content = stripslashes($content);
@@ -306,34 +306,34 @@ class articleAdmincp{
         }
         include admincp::view("files.manage","admincp");
     }
-    function do_preview(){
+    public function do_preview(){
 		echo article::body($this->id);
     }
-    function do_iCMS(){
+    public function do_iCMS(){
     	admincp::$APP_DO="manage";
     	$this->do_manage();
     }
-    function do_inbox(){
+    public function do_inbox(){
     	$this->do_manage("inbox");
     }
-    function do_trash(){
+    public function do_trash(){
         $this->_postype = 'all';
     	$this->do_manage("trash");
     }
-    function do_user(){
+    public function do_user(){
         $this->_postype = 0;
         $this->do_manage();
     }
-    function do_examine(){
+    public function do_examine(){
         $this->_postype = 0;
         $this->do_manage("examine");
     }
-    function do_off(){
+    public function do_off(){
         $this->_postype = 0;
         $this->do_manage("off");
     }
 
-    function do_manage($stype='normal') {
+    public function do_manage($stype='normal') {
         $cid = (int)$_GET['cid'];
         $pid = $_GET['pid'];
         //$stype OR $stype = admincp::$app_do;
@@ -465,7 +465,7 @@ class articleAdmincp{
         $propArray = admincp::prop_get("pid",null,'array');
         include admincp::view("article.manage");
     }
-    function do_save(){
+    public function do_save(){
         $aid         = (int)$_POST['aid'];
         $cid         = (int)$_POST['cid'];
         admincp::CP($cid,($aid?'ce':'ca'),'alert');
@@ -524,7 +524,7 @@ class articleAdmincp{
         $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
 
         if($this->callback['code']){
-            $fwd = iCMS::filter($title);
+            $fwd = iPHP::app("admincp.filter.app")->run($title);
             if($fwd){
                 echo '标题中包含【'.$fwd.'】被系统屏蔽的字符，请重新填写。';
                 return false;
@@ -532,11 +532,11 @@ class articleAdmincp{
         }
 
         if($this->config['filter']) {
-            $fwd = iCMS::filter($title);
+            $fwd = iPHP::app("admincp.filter.app")->run($title);
             $fwd && iPHP::alert('标题中包含被系统屏蔽的字符，请重新填写。');
-            $fwd = iCMS::filter($description);
+            $fwd = iPHP::app("admincp.filter.app")->run($description);
             $fwd && iPHP::alert('简介中包含被系统屏蔽的字符，请重新填写。');
-            // $fwd = iCMS::filter($body);
+            // $fwd = iPHP::app("admincp.filter.app")->run($body);
             // $fwd && iPHP::alert('内容中包含被系统屏蔽的字符，请重新填写。');
         }
 
@@ -675,17 +675,17 @@ class articleAdmincp{
             iPHP::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$SELFURL);
         }
     }
-    function do_del(){
+    public function do_del(){
         $msg = $this->del($this->id);
         $msg.= $this->del_msg('文章删除完成!');
         $msg.= $this->del_msg('10秒后返回文章列表!');
         iPHP::$dialog['lock'] = true;
         iPHP::dialog($msg,'js:1');
     }
-    function del_msg($str){
+    public function del_msg($str){
         return iPHP::msg('success:#:check:#:'.$str.'<hr />',true);
     }
-    function del_pic($pic){
+    public function del_pic($pic){
         //$thumbfilepath    = gethumb($pic,'','',false,true,true);
         iFS::del(iFS::fp($pic,'+iPATH'));
         $msg    = $this->del_msg($pic.'删除');
@@ -698,7 +698,7 @@ class articleAdmincp{
         $msg.= $this->del_msg($pic.'数据删除');
         return $msg;
     }
-    function del($id,$uid='0',$postype='1') {
+    public function del($id,$uid='0',$postype='1') {
         $id = (int)$id;
         $id OR iPHP::alert("请选择要删除的文章");
         $uid && $sql="and `userid`='$uid' and `postype`='$postype'";
@@ -731,10 +731,10 @@ class articleAdmincp{
         $msg.= $this->del_msg('删除完成');
         return $msg;
     }
-    function chapter_count($aid){
+    public function chapter_count($aid){
         article::chapter_count($aid);
     }
-    function article_data($bodyArray,$aid=0,$haspic=0){
+    public function article_data($bodyArray,$aid=0,$haspic=0){
         if(isset($_POST['ischapter']) || is_array($_POST['adid'])){
             $adidArray    = $_POST['adid'];
             $chaptertitle = $_POST['chaptertitle'];
@@ -753,7 +753,7 @@ class articleAdmincp{
         }
         admincp::callback($aid,$this,'data');
     }
-    function body($body,$subtitle,$aid=0,$id=0,&$haspic=0){
+    public function body($body,$subtitle,$aid=0,$id=0,&$haspic=0){
 
         $body = preg_replace(array('/<script.+?<\/script>/is','/<form.+?<\/form>/is'),'',$body);
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
@@ -795,7 +795,7 @@ class articleAdmincp{
         }
         $this->body_pic_indexid($body,$aid);
     }
-    function autodesc($body){
+    public function autodesc($body){
         if($this->config['autodesc'] && $this->config['descLen']) {
             is_array($body) && $bodyText   = implode("\n",$body);
             $bodyText   = str_replace('#--iCMS.PageBreak--#',"\n",$bodyText);
@@ -827,7 +827,7 @@ class articleAdmincp{
             return $description;
         }
     }
-    function set_pic($picurl,$aid){
+    public function set_pic($picurl,$aid){
         $uri = parse_url(iCMS_FS_URL);
         if (stripos($picurl,$uri['host']) !== false){
             $picdata = (array)article::value('picdata',$aid);
@@ -841,7 +841,7 @@ class articleAdmincp{
             iFile::set_map($this->appid,$aid,$pic,'path');
         }
     }
-    function remotepic($content,$remote = false) {
+    public function remotepic($content,$remote = false) {
         if (!$remote) return $content;
 
         iFS::$forceExt = "jpg";
@@ -891,7 +891,7 @@ class articleAdmincp{
         }
         return addslashes($content);
     }
-    function body_pic_indexid($content,$indexid) {
+    public function body_pic_indexid($content,$indexid) {
         if(empty($content)){
             return;
         }
@@ -903,7 +903,7 @@ class articleAdmincp{
         }
     }
 
-    function picdata($pic='',$mpic='',$spic=''){
+    public function picdata($pic='',$mpic='',$spic=''){
         $picdata = array();
         if($pic){
             list($width, $height, $type, $attr) = @getimagesize(iFS::fp($pic,'+iPATH'));
@@ -919,7 +919,7 @@ class articleAdmincp{
         }
         return $picdata?addslashes(serialize($picdata)):'';
     }
-    function check_pic($body,$aid=0){
+    public function check_pic($body,$aid=0){
         // global $status;
         // if($status!='1'){
         //     return;

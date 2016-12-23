@@ -72,7 +72,7 @@ class tagApp {
                 return iPHP::view($tpl, 'tag');
             }
             $html = iPHP::view($tag_tpl,'tag');
-            if(iPHP::$iTPL_MODE=="html") return array($html,$tag);
+            if(iPHP::$iVIEW=="html") return array($html,$tag);
         }else{
             return $tag;
         }

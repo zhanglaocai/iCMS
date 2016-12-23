@@ -223,11 +223,11 @@ class userApp {
 		empty($cid) && iPHP::alert('请选择所属栏目！');
 		empty($body) && iPHP::alert('文章内容不能为空！');
 
-		$fwd = iCMS::filter($title);
+		$fwd = iPHP::app("admincp.filter.app")->run($title);
 		$fwd && iPHP::alert('user:publish:filter_title');
-		$fwd = iCMS::filter($description);
+		$fwd = iPHP::app("admincp.filter.app")->run($description);
 		$fwd && iPHP::alert('user:publish:filter_desc');
-		$fwd = iCMS::filter($body);
+		$fwd = iPHP::app("admincp.filter.app")->run($body);
 		$fwd && iPHP::alert('user:publish:filter_body');
 
 		$articleApp = iPHP::app("article.admincp");
@@ -818,7 +818,7 @@ class userApp {
 		$uid = user::$userid;
 		$name = iS::escapeStr($_POST['name']);
 		empty($name) && iPHP::code(0, 'user:category:empty', 'add_category', 'json');
-		$fwd = iCMS::filter($name);
+		$fwd = iPHP::app("admincp.filter.app")->run($name);
 		$fwd && iPHP::code(0, 'user:category:filter', 'add_category', 'json');
 		$max = iDB::value("
             SELECT COUNT(cid)
@@ -1167,9 +1167,9 @@ class userApp {
 		if ($platform) {
 			iPHP::app('user.open/' . $class_name . '.class', 'static');
 			$api = new $class_name;
-			$api->appid = iCMS::$config['open'][$class_name]['appid'];
-			$api->appkey = iCMS::$config['open'][$class_name]['appkey'];
-			$redirect_uri = rtrim(iCMS::$config['open'][$class_name]['redirect'], '/');
+			$api->appid = iCMS::$config['user']['open'][$class_name]['appid'];
+			$api->appkey = iCMS::$config['user']['open'][$class_name]['appkey'];
+			$redirect_uri = rtrim(iCMS::$config['user']['open'][$class_name]['redirect'], '/');
 			$api->url = user::login_uri($redirect_uri) . 'sign=' . $sign;
 
 			if (isset($_GET['bind']) && $_GET['bind'] == $sign) {

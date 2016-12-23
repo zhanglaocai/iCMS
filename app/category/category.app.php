@@ -38,7 +38,7 @@ class categoryApp{
         if($category['status']==0) return false;
         $iurl = $category['iurl'];
         if($tpl){
-            if(iPHP::$iTPL_MODE=="html" && (strstr($category['rule']['index'],'{PHP}')||$category['outurl']||!$category['mode']) ) return false;
+            if(iPHP::$iVIEW=="html" && (strstr($category['rule']['index'],'{PHP}')||$category['outurl']||!$category['mode']) ) return false;
             $category['outurl'] && iPHP::redirect($category['outurl']);
             $category['mode']=='1' && iCMS::gotohtml($iurl['path'],$iurl['href']);
         }
@@ -75,7 +75,7 @@ class categoryApp{
             }
             $GLOBALS['page']>1 && $tpl='list';
             $html = iPHP::view($category['template'][$tpl],'category.'.$tpl);
-            if(iPHP::$iTPL_MODE=="html") return array($html,$category);
+            if(iPHP::$iVIEW=="html") return array($html,$category);
         }else{
         	return $category;
         }

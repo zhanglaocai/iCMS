@@ -9,17 +9,25 @@
 * @version 6.0.0
 */
 class userAdmincp{
-    function __construct() {
+    public function __construct() {
         $this->appid    = iCMS_APP_USER;
         $this->uid      = (int)$_GET['id'];
         $this->groupApp = admincp::app('group',0);
     }
-    function do_update(){
+    public function do_config(){
+        $setting = admincp::app('setting');
+        $setting->app($this->appid);
+    }
+    public function do_save_config(){
+        $setting = admincp::app('setting');
+        $setting->save($this->appid);
+    }
+    public function do_update(){
         $data = admincp::fields($_GET['iDT']);
         $data && iDB::update('user',$data,array('uid'=>$this->uid));
         iPHP::success('操作成功!','js:1');
     }
-    function do_add(){
+    public function do_add(){
         if($this->uid) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__user` WHERE `uid`='$this->uid' LIMIT 1;");
             if($rs){
@@ -28,7 +36,7 @@ class userAdmincp{
         }
         include admincp::view("user.add");
     }
-    function do_login(){
+    public function do_login(){
         if($this->uid) {
             $user = iDB::row("SELECT * FROM `#iCMS@__user` WHERE `uid`='$this->uid' LIMIT 1;",ARRAY_A);
             iPHP::app('user.class','static');
@@ -37,7 +45,7 @@ class userAdmincp{
             iPHP::redirect($url);
         }
     }
-    function do_iCMS(){
+    public function do_iCMS(){
         //iPHP::app('user.class','static');
         $sql = "WHERE 1=1";
         $pid = $_GET['pid'];
@@ -87,7 +95,7 @@ class userAdmincp{
         $propArray = admincp::prop_get("pid",null,'array');
         include admincp::view("user.manage");
     }
-    function do_save(){
+    public function do_save(){
         $uid      = (int)$_POST['uid'];
         $pid      = implode(',', (array)$_POST['pid']);
         $_pid     = iS::escapeStr($_POST['_pid']);
@@ -134,7 +142,7 @@ class userAdmincp{
         }
         iPHP::success($msg,'url:'.APP_URI);
     }
-    function do_batch(){
+    public function do_batch(){
     	$idA	= (array)$_POST['id'];
     	$idA OR iPHP::alert("请选择要操作的用户");
     	$ids	= implode(',',(array)$_POST['id']);
@@ -163,7 +171,7 @@ class userAdmincp{
     		break;
 		}
 	}
-    function do_del($uid = null,$dialog=true){
+    public function do_del($uid = null,$dialog=true){
     	$uid===null && $uid=$this->uid;
 		$uid OR iPHP::alert('请选择要删除的用户');
 		iDB::query("DELETE FROM `#iCMS@__user` WHERE `uid` = '$uid'");

@@ -9,11 +9,11 @@
 * @version 6.0.0
 */
 class searchAdmincp{
-    function __construct() {
+    public function __construct() {
     	$this->id	= (int)$_GET['id'];
     }
 
-    function do_iCMS(){
+    public function do_iCMS(){
         if($_GET['keywords']) {
 			$sql =" WHERE `search` like '%{$_GET['keywords']}%'";
         }
@@ -26,13 +26,13 @@ class searchAdmincp{
         $_count = count($rs);
     	include admincp::view("search.manage");
     }
-    function do_del($id = null,$dialog=true){
+    public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
 		$id OR iPHP::alert('请选择要删除的记录!');
 		iDB::query("DELETE FROM `#iCMS@__search_log` WHERE `id` = '$id'");
 		$dialog && iPHP::success('记录已经删除','js:parent.$("#tr'.$id.'").remove();');
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iPHP::alert("请选择要操作的记录");
         $ids     = implode(',',$idArray);

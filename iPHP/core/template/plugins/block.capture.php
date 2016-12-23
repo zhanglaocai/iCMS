@@ -18,7 +18,7 @@ function tpl_block_capture($params, $content, &$tpl)
 		$buffer = "'default'";
 	}
 
-	$tpl->_iTPL_VARS['capture'][$buffer] = $content;
+	$tpl->_iVARS['capture'][$buffer] = $content;
 	if (isset($assign)){
 		$tpl->assign($assign, $content);
 	}

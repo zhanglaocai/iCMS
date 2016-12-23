@@ -9,13 +9,13 @@
  * @version 6.0.0
  */
 class databaseAdmincp {
-	function __construct() {
+	public function __construct() {
 		$this->bakdir = $_GET['dir'];
 	}
 //    function do_iCMS(){
 	//    	$this->do_backup();
 	//    }
-	function do_recover() {
+	public function do_recover() {
 		$res = iFS::folder('cache/backup', array('sql'));
 		$dirRs = $res['DirArray'];
 		$fileRs = $res['FileArray'];
@@ -24,10 +24,10 @@ class databaseAdmincp {
 		$URI = $res['URI'];
 		include admincp::view("database.recover");
 	}
-	function do_repair() {
+	public function do_repair() {
 		$this->do_backup();
 	}
-	function do_backup() {
+	public function do_backup() {
 		$rs = iDB::all("SHOW TABLE STATUS FROM `" . iPHP_DB_NAME . "` WHERE ENGINE IS NOT NULL;");
 		//print_r($rs);
 		$_count = count($rs);
@@ -40,10 +40,10 @@ class databaseAdmincp {
 		//		}
 		include admincp::view("database.backup");
 	}
-	function do_replace() {
+	public function do_replace() {
 		include admincp::view("database.replace");
 	}
-	function do_batch() {
+	public function do_batch() {
 		$tableA = (array) $_POST['table'];
 		$tableA OR iPHP::alert("请选择要操作的表");
 		$tables = implode(',', $tableA);
@@ -60,7 +60,7 @@ class databaseAdmincp {
 			break;
 		}
 	}
-	function do_savebackup() {
+	public function do_savebackup() {
 		iDB::query("SET SQL_QUOTE_SHOW_CREATE = 0");
 
 		$tableA = $_POST['table'];
@@ -116,7 +116,7 @@ class databaseAdmincp {
 		}
 		iPHP::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
 	}
-	function bakuptable($tabledb) {
+	public function bakuptable($tabledb) {
 		foreach ($tabledb as $table) {
 			$creattable .= "DROP TABLE IF EXISTS $table;\n";
 			$CreatTable = iDB::row("SHOW CREATE TABLE $table", ARRAY_A);
@@ -126,7 +126,7 @@ class databaseAdmincp {
 		}
 		return $creattable;
 	}
-	function bakupdata($tabledb, $start = 0) {
+	public function bakupdata($tabledb, $start = 0) {
 		//global $iCMS,$sizelimit,$tableid,$startfrom,$stop,$rows;
 		$this->tableid = $this->tableid ? $this->tableid - 1 : 0;
 		$this->stop = 0;
@@ -198,7 +198,7 @@ class databaseAdmincp {
 		}
 		return $bakupdata;
 	}
-	function repair($tables) {
+	public function repair($tables) {
 		$tableA = (array) $_POST['table'];
 		$rs = iDB::all("REPAIR TABLE $tables");
 		$_count = count($rs);
@@ -207,7 +207,7 @@ class databaseAdmincp {
 		}
 		iPHP::success($msg . "修复表完成");
 	}
-	function optimize($tables) {
+	public function optimize($tables) {
 		$tableA = (array) $_POST['table'];
 		$rs = iDB::all("OPTIMIZE TABLE $tables");
 		$_count = count($rs);
@@ -216,14 +216,14 @@ class databaseAdmincp {
 		}
 		iPHP::success($msg . "优化表完成");
 	}
-	function do_del() {
+	public function do_del() {
 		$this->bakdir OR iPHP::alert('请选择要删除的备份卷');
 		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
 		if (iFS::rmdir($backupdir)) {
 			iPHP::success('备份文件已删除!', 'js:parent.$("#' . md5($this->bakdir) . '").remove();');
 		}
 	}
-	function do_download() {
+	public function do_download() {
 		$this->bakdir OR iPHP::alert('请选择要下载的备份卷');
 		iPHP::import(iPHP_LIB . '/pclzip.class.php'); //加载zip操作类
 		$zipname = $this->bakdir . ".zip"; //压缩包的名称
@@ -244,7 +244,7 @@ class databaseAdmincp {
 		flush();
 		ob_flush();
 	}
-	function do_renew() {
+	public function do_renew() {
 		iPHP::alert('请使用 iCMS Tools 恢复');
 		$this->bakdir OR iPHP::alert('请选择要恢复的备份卷');
 		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
@@ -276,7 +276,7 @@ class databaseAdmincp {
 		$updateMsg = ($i == 1 ? false : true);
 		iPHP::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
 	}
-	function bakindata($num) {
+	public function bakindata($num) {
 		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
 		$fileList = glob($backupdir . '/iCMS_*_' . $num . '.sql');
 		$fileArray = file($fileList[0]);
@@ -307,7 +307,7 @@ class databaseAdmincp {
 			}
 		}
 	}
-	function do_query() {
+	public function do_query() {
 		$field = $_POST["field"];
 		$pattern = $_POST["pattern"];
 		$replacement = $_POST["replacement"];

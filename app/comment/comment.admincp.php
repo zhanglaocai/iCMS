@@ -11,20 +11,20 @@
 iPHP::app('user.class','static');
 iPHP::app('apps.class','static');
 class commentAdmincp{
-    function __construct($appid=null) {
+    public function __construct($appid=null) {
         $this->appid = iCMS_APP_COMMENT;
         $appid && $this->appid = $appid;
         $this->id    = (int)$_GET['id'];
     }
-    function do_config(){
+    public function do_config(){
         $setting = admincp::app('setting');
         $setting->app($this->appid);
     }
-    function do_save_config(){
+    public function do_save_config(){
         $setting = admincp::app('setting');
         $setting->save($this->appid);
     }
-    function do_iCMS($appid=0){
+    public function do_iCMS($appid=0){
         $this->categoryApp = iPHP::app('category.admincp',$appid);
         $this->category    = $this->categoryApp->category;
 
@@ -61,10 +61,10 @@ class commentAdmincp{
     // function do_article(){
     // 	$this->do_iCMS(iCMS_APP_ARTICLE);
     // }
-    function do_manage($appid=0){
+    public function do_manage($appid=0){
     	$this->do_iCMS($appid);
     }
-    function do_get_reply(){
+    public function do_get_reply(){
     	$this->id OR exit("请选择要操作的评论");
         $comment = iDB::row("SELECT * FROM `#iCMS@__comment` WHERE `id`='$this->id' LIMIT 1");
         empty($comment) && exit('<div class="claerfix mb10"></div>评论已被删除');
@@ -74,7 +74,7 @@ class commentAdmincp{
         echo '<span class="label label-info"><i class="fa fa-thumbs-o-up"></i> '.$comment->up.'</span>';
 
     }
-    function do_del($id = null,$dialog=true){
+    public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
     	$id OR iPHP::alert('请选择要删除的评论!');
     	$comment = iDB::row("SELECT * FROM `#iCMS@__comment` WHERE `id`='$id' LIMIT 1");
@@ -87,7 +87,7 @@ class commentAdmincp{
 
         $dialog && iPHP::success('评论删除完成','js:parent.$("#id-'.$id.'").remove();');
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iPHP::alert("请选择要操作的评论");
         $ids     = implode(',',$idArray);
@@ -103,7 +103,7 @@ class commentAdmincp{
     		break;
 		}
 	}
-    function do_update(){
+    public function do_update(){
         if($this->id){
             $data = admincp::fields($_GET['iDT']);
             $data && iDB::update("comment",$data,array('id'=>$this->id));

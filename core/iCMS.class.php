@@ -16,6 +16,7 @@ class iCMS extends iPHP{
 
 	public static function init(){
         self::$config = iPHP::config();
+        iCMS::core("URL");
         iURL::init(self::$config);
 
         define('iCMS_DIR',       self::$config['router']['DIR']);
@@ -33,7 +34,7 @@ class iCMS extends iPHP{
      * @param string $do 动作名称
      */
     public static function run($app = NULL,$do = NULL,$args = NULL,$prefix="do_") {
-        iPHP::$iTPL->_iTPL_VARS = array(
+        iPHP::$iTPL->_iVARS = array(
             'VERSION' => iCMS_VER,
             'API'     => iCMS_API,
             'SAPI'    => iCMS_API_URL,
@@ -146,7 +147,7 @@ class iCMS extends iPHP{
 
     //------------------------------------
     public static function gotohtml($fp,$url='') {
-        if(iPHP::$iTPL_MODE=='html'||empty($url)||stristr($url, '.php?')||iPHP_DEVICE!='desktop') return;
+        if(iPHP::$iVIEW=='html'||empty($url)||stristr($url, '.php?')||iPHP_DEVICE!='desktop') return;
 
         @is_file($fp) && iPHP::redirect($url);
     }
@@ -159,36 +160,4 @@ class iCMS extends iPHP{
             'get'    => array('iFile','get')
         );
     }
-    //过滤
-    public static function filter(&$content){
-        $filter  = iCache::get('iCMS/word.filter');//filter过滤
-        $disable = iCache::get('iCMS/word.disable');//disable禁止
-
-        //禁止关键词
-        $subject = $content;
-        $pattern = '/(~|`|!|@|\#|\$|%|\^|&|\*|\(|\)|\-|=|_|\+|\{|\}|\[|\]|;|:|"|\'|<|>|\?|\/|,|\.|\s|\n|。|，|、|；|：|？|！|…|-|·|ˉ|ˇ|¨|‘|“|”|々|～|‖|∶|＂|＇|｀|｜|〃|〔|〕|〈|〉|《|》|「|」|『|』|．|〖|〗|【|】|（|）|［|］|｛|｝|°|′|″|＄|￡|￥|‰|％|℃|¤|￠|○|§|№|☆|★|○|●|◎|◇|◆|□|■|△|▲|※|→|←|↑|↓|〓|＃|＆|＠|＾|＿|＼|№|)*/i';
-        $subject = preg_replace($pattern, '', $subject);
-        foreach ((array)$disable AS $val) {
-            $val = trim($val);
-            if(strpos($val,'::')!==false){
-                list($tag,$start,$end) = explode('::',$val);
-                if($tag=='NUM'){
-                    $subject = cnum($subject);
-                    if (preg_match('/\d{'.$start.','.$end.'}/i', $subject)) {
-                        return $val;
-                    }
-                }
-            }else{
-                if ($val && preg_match("/".preg_quote($val, '/')."/i", $subject)) {
-                    return $val;
-                }
-            }
-        }
-        //过滤关键词
-        foreach ((array)$filter AS $k =>$val) {
-            empty($val[1]) && $val[1]='***';
-            $val[0] && $content = preg_replace("/".preg_quote($val[0], '/')."/i",$val[1],$content);
-        }
-    }
-
 }

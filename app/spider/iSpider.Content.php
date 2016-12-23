@@ -264,7 +264,7 @@ class spiderContent extends spider{
         }
 
         if ($data['filter']) {
-            $fwd = iCMS::filter($content);
+            $fwd = iPHP::app("admincp.filter.app")->run($content);
             if($fwd){
                 $filterMsg = '['.$name.']包含被系统屏蔽的字符!';
                 if(spider::$dataTest){

@@ -13,17 +13,17 @@ class iMenu {
     public $href_array = array();
     public $url = null;
 
-	function __construct() {
+	public function __construct() {
         $this->get_cache();
         // $this->menu_array(true);
 	}
-    function menu_data($path){
+    public function menu_data($path){
         $json  = file_get_contents($path);
         $json  = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
         return json_decode($json,ture);
     }
 
-    function menu_array($cache=false){
+    public function menu_array($cache=false){
         $variable = array();
         foreach (glob(iPHP_APP_DIR."/*/etc/iMenu.*.php",GLOB_NOSORT) as $index=> $filename) {
             $array = $this->menu_data($filename);
@@ -43,10 +43,10 @@ class iMenu {
             }
         }
     }
-    function cache(){
+    public function cache(){
         $this->menu_array(true);
     }
-    function get_cache(){
+    public function get_cache(){
          $cache = iCache::sysCache();
          $this->menu_array  = $cache->get('iCMS/iMenu/menu_array');
          $this->href_array  = $cache->get('iCMS/iMenu/href_array');
@@ -54,7 +54,7 @@ class iMenu {
             $this->cache();
          }
     }
-    function menu_href_array($variable,&$out,$id=null){
+    public function menu_href_array($variable,&$out,$id=null){
         // $array = array();
         foreach ($variable as $key => $value) {
             $_id = $id?$id:$value['id'];
@@ -71,7 +71,7 @@ class iMenu {
         }
         // return $array;
     }
-    function menu_item_sort(&$variable){
+    public function menu_item_sort(&$variable){
         uasort ($variable,array($this,'array_sort'));
     	foreach ($variable as $key => $value) {
     		if($value['children']){
@@ -79,14 +79,14 @@ class iMenu {
     		}
     	}
     }
-    function array_sort($a,$b){
+    public function array_sort($a,$b){
         if ( $a['sort']  ==  $b['sort'] ) {
             return  0 ;
         }
         return ( $a['sort']  <  $b['sort'] ) ? - 1  :  1 ;
         // return @strnatcmp($a['sort'],$b['sort']);
     }
-    function menu_item_unique (&$items){
+    public function menu_item_unique (&$items){
         if(is_array($items)){
             foreach ($items as $key => $value) {
                 if(in_array($key, array('id','name','icon','caption','sort'))){
@@ -98,7 +98,7 @@ class iMenu {
             }
         }
     }
-    function menu_id($variable,$index=0){
+    public function menu_id($variable,$index=0){
         if(empty($variable)) return;
         if(is_array($variable)){
             $i=0;
@@ -122,7 +122,7 @@ class iMenu {
         }
     }
 
-    function href($a){
+    public function href($a){
         $a['href'] && $href = __ADMINCP__.'='.$a['href'];
         $a['target']=='iPHP_FRAME' && $href.='&frame=iPHP';
         $a['href']=='__SELF__' && $href = __SELF__;
@@ -130,7 +130,7 @@ class iMenu {
         strstr($a['href'], 'http://') && $href = $a['href'];
         return $href;
     }
-	function a($a){
+	public function a($a){
 		if(empty($a)||$a['-']) return;
 
         $a['title'] OR $a['title'] = $a['caption'];
@@ -141,7 +141,7 @@ class iMenu {
 		$link.='>';
 		return $link.$icon.' '.$a['caption'].'</a>';
 	}
-    function search_href(){
+    public function search_href(){
         $path =  str_replace(__ADMINCP__.'=', '', $this->url);
         foreach ($this->href_array as $key => $value) {
             if($path==$key){
@@ -149,7 +149,7 @@ class iMenu {
             }
         }
     }
-    function app_memu($app){
+    public function app_memu($app){
         $path  = iPHP_APP_DIR."/{$app}/etc/iMenu.main.php";
         $array = $this->menu_data($path);
         $array = $this->menu_id($array);
@@ -162,7 +162,7 @@ class iMenu {
         return $nav;
 
     }
-	function sidebar(){
+	public function sidebar(){
         $key= $this->search_href();
         $menu_array = $this->menu_array[$key]['children'];
         foreach((array)$menu_array AS $array) {
@@ -170,21 +170,21 @@ class iMenu {
         }
         return $nav;
 	}
-	function nav(){
+	public function nav(){
         foreach((array)$this->menu_array AS $array) {
             $nav.= $this->li('nav',$array,0);
         }
 		return $nav;
 	}
 
-    function children_count($variable){
+    public function children_count($variable){
         $count = 0;
         foreach ((array)$variable as $key => $value) {
             $value['-'] OR $count++;
         }
         return $count;
     }
-	function li($mType,$a,$level = 0){
+	public function li($mType,$a,$level = 0){
 		// if(!admincp::MP($id)) return false;
 
         $a = (array)$a;
@@ -249,7 +249,7 @@ class iMenu {
 		return $li;
 	}
 
-    function check_power($p){
+    public function check_power($p){
     	return is_array($p)?array_intersect((string)$p,$this->power):in_array((string)$p,$this->power);
     }
 }

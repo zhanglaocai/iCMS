@@ -9,10 +9,19 @@
 * @version 6.0.0
 */
 class keywordsAdmincp{
-    function __construct() {
+    public function __construct() {
+        $this->appid = iCMS_APP_KEYWORDS;
     	$this->id	= (int)$_GET['id'];
     }
-    function do_add(){
+    public function do_config(){
+        $setting = admincp::app('setting');
+        $setting->app($this->appid);
+    }
+    public function do_save_config(){
+        $setting = admincp::app('setting');
+        $setting->save($this->appid);
+    }
+    public function do_add(){
         if($this->id) {
             $rs			= iDB::row("SELECT * FROM `#iCMS@__keywords` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
         }else{
@@ -21,7 +30,7 @@ class keywordsAdmincp{
         }
         include admincp::view("keywords.add");
     }
-    function do_save(){
+    public function do_save(){
 		$id		= (int)$_POST['id'];
 		$keyword= iS::escapeStr($_POST['keyword']);
 		$url	= iS::escapeStr($_POST['url']);
@@ -46,7 +55,7 @@ class keywordsAdmincp{
         iPHP::success($msg,'url:'.APP_URI);
     }
 
-    function do_iCMS(){
+    public function do_iCMS(){
         if($_GET['keywords']) {
 			$sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";
         }
@@ -58,14 +67,14 @@ class keywordsAdmincp{
         $_count = count($rs);
     	include admincp::view("keywords.manage");
     }
-    function do_del($id = null,$dialog=true){
+    public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
 		$id OR iPHP::alert('请选择要删除的关键词!');
 		iDB::query("DELETE FROM `#iCMS@__keywords` WHERE `id` = '$id'");
 		$this->cache();
 		$dialog && iPHP::success('关键词已经删除','js:parent.$("#tr'.$id.'").remove();');
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iPHP::alert("请选择要操作的关键词");
         $ids     = implode(',',$idArray);
@@ -81,7 +90,7 @@ class keywordsAdmincp{
     		break;
 		}
 	}
-    function cache(){
+    public function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__keywords` ORDER BY CHAR_LENGTH(`keyword`) DESC");
         // iCache::delete('iCMS/keywords');
         if($rs){

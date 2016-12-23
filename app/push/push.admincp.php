@@ -10,12 +10,12 @@
 */
 class pushAdmincp{
     public $callback = array();
-    function __construct() {
+    public function __construct() {
         $this->appid       = iCMS_APP_PUSH;
         $this->id          = (int)$_GET['id'];
         $this->categoryApp = iPHP::app('category.admincp',$this->appid);
     }
-    function do_add(){
+    public function do_add(){
         $id = (int)$_GET['id'];
         $rs = array();
         $_GET['title'] 	&& $rs['title']	= $_GET['title'];
@@ -43,11 +43,11 @@ class pushAdmincp{
     	include admincp::view("push.add");
     }
 
-    function do_iCMS(){
+    public function do_iCMS(){
     	admincp::$APP_METHOD="domanage";
     	$this->do_manage();
     }
-    function do_manage($doType=null) {
+    public function do_manage($doType=null) {
         $cid        = (int)$_GET['cid'];
         $sql        = " where ";
         switch($doType){ //status:[0:草稿][1:正常][2:回收][3:审核][4:不合格]
@@ -100,7 +100,7 @@ class pushAdmincp{
         $_count = count($rs);
         include admincp::view("push.manage");
     }
-    function do_save(){
+    public function do_save(){
         $id       = (int)$_POST['id'];
         $cid      = (int)$_POST['cid'];
         $_cid     = (int)$_POST['_cid'];
@@ -161,7 +161,7 @@ class pushAdmincp{
         }
         iPHP::success($msg,'url:'.APP_URI);
     }
-    function __callback($id){
+    public function __callback($id){
         if ($this->callback['primary']) {
             $PCB = $this->callback['primary'];
             $handler = $PCB[0];
@@ -179,7 +179,7 @@ class pushAdmincp{
             }
         }
     }
-	function getpic($path){
+	public function getpic($path){
 		$uri 	= parse_url(iCMS_FS_URL);
         $pic	= iS::escapeStr($path);
 
@@ -190,13 +190,13 @@ class pushAdmincp{
 		}
 		return $pic;
 	}
-    function do_del($id = null,$dialog=true){
+    public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
 		$id OR iPHP::alert('请选择要删除的推送');
 		iDB::query("DELETE FROM `#iCMS@__push` WHERE `id` = '$id'");
 		$dialog && iPHP::success('推送删除完成','js:parent.$("#tr'.$id.'").remove();');
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iPHP::alert("请选择要删除的推送");
         $ids     = implode(',',$idArray);

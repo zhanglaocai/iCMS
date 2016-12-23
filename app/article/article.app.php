@@ -72,7 +72,7 @@ class articleApp {
 		$article = iDB::row("SELECT * FROM `#iCMS@__article` WHERE id='" . (int) $id . "' AND `status` ='1' LIMIT 1;", ARRAY_A);
 		$article OR iPHP::throw404('运行出错！找不到文章: <b>ID:' . $id . '</b>', 10001);
 		if ($article['url']) {
-			if (iPHP::$iTPL_MODE == "html") {
+			if (iPHP::$iVIEW == "html") {
 				return false;
 			} else {
 				$this->API_hits($id);
@@ -112,7 +112,7 @@ class articleApp {
 			unset($article['category']);
 			iPHP::assign('article', $article);
 			$html = iPHP::view($article_tpl, 'article');
-			if (iPHP::$iTPL_MODE == "html") {
+			if (iPHP::$iVIEW == "html") {
 				return array($html, $article);
 			}
 
@@ -140,7 +140,7 @@ class articleApp {
 			return false;
 		}
 
-		if (iPHP::$iTPL_MODE == "html" && $tpl && (strstr($category['contentRule'], '{PHP}') || $category['outurl'] || $category['mode'] == "0")) {
+		if (iPHP::$iVIEW == "html" && $tpl && (strstr($category['contentRule'], '{PHP}') || $category['outurl'] || $category['mode'] == "0")) {
 			return false;
 		}
 
@@ -175,7 +175,7 @@ class articleApp {
 				unset($body);
 			}
 
-			$article['body']     = iPHP::app("keywords.app")->replace($article['body']);
+			$article['body']     = iPHP::app("keywords.app")->run($article['body']);
 			$article['body']     = $this->body_ad($article['body']);
 			$article['body']     = $this->taoke($article['body']);
 			$article['taoke']    = $this->taoke;

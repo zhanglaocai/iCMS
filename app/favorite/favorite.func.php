@@ -9,7 +9,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 iPHP::app('user.class','static');
 
-function favorite_list($vars=null){
+public function favorite_list($vars=null){
 	$maxperpage = isset($vars['row'])?(int)$vars['row']:"10";
 	$where_sql  = "WHERE 1=1 ";
 	isset($vars['userid'])&& $where_sql .= " AND `uid`='".(int)$vars['userid']."' ";

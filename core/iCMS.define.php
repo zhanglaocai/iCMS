@@ -19,4 +19,6 @@ define('iCMS_APP_MESSAGE',	7); //私信
 define('iCMS_APP_FAVORITE',	8); //收藏
 define('iCMS_APP_USER',		9); //用户
 define('iCMS_APP_WEIXIN',	10); //微信
-define('iCMS_APP_DOWNLOAD',	11); //下载
+define('iCMS_APP_DOWNLOAD', 11); //下载
+define('iCMS_APP_KEYWORDS', 12); //内链
+define('iCMS_APP_FILTER',   13); //过滤

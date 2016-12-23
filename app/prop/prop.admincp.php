@@ -9,11 +9,11 @@
 * @version 6.0.0
 */
 class propAdmincp{
-    function __construct() {
+    public function __construct() {
         $this->pid         = (int)$_GET['pid'];
         $this->categoryApp = iPHP::app('category.admincp','all');
     }
-    function do_add(){
+    public function do_add(){
         $this->pid && $rs = iDB::row("SELECT * FROM `#iCMS@__prop` WHERE `pid`='$this->pid' LIMIT 1;",ARRAY_A);
         if($_GET['act']=="copy"){
             $this->pid = 0;
@@ -25,7 +25,7 @@ class propAdmincp{
         }
         include admincp::view("prop.add");
     }
-    function do_save(){
+    public function do_save(){
         $pid      = (int)$_POST['pid'];
         $cid      = (int)$_POST['cid'];
         $sortnum = (int)$_POST['sortnum'];
@@ -55,21 +55,21 @@ class propAdmincp{
 		$this->cache();
         iPHP::success($msg,'url:'.APP_URI);
     }
-    function do_update(){
+    public function do_update(){
     	foreach((array)$_POST['pid'] as $tk=>$pid){
             iDB::query("update `#iCMS@__prop` set `type` = '".$_POST['type'][$tk]."', `name` = '".$_POST['name'][$tk]."', `value` = '".$_POST['value'][$tk]."' where `pid` = '$pid';");
     	}
     	$this->cache();
     	iPHP::alert('更新完成');
     }
-    function do_del($id = null,$dialog=true){
+    public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->pid;
     	$id OR iPHP::alert('请选择要删除的属性!');
 		iDB::query("DELETE FROM `#iCMS@__prop` WHERE `pid` = '$id';");
     	$this->cache();
     	$dialog && iPHP::success("已经删除!",'url:'.APP_URI);
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iPHP::alert("请选择要操作的属性");
         $ids     = implode(',',$idArray);
@@ -90,7 +90,7 @@ class propAdmincp{
 		}
 	}
 
-    function do_iCMS(){
+    public function do_iCMS(){
         $sql			= " where 1=1";
 //        $cid			= (int)$_GET['cid'];
 //
@@ -116,11 +116,11 @@ class propAdmincp{
         $_count = count($rs);
     	include admincp::view("prop.manage");
     }
-    function do_cache(){
+    public function do_cache(){
         $this->cache();
         iPHP::success('缓存更新完成!','js:1');
     }
-    function cache(){
+    public function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__prop`");
     	foreach((array)$rs AS $row) {
             $type_field_id[$row['type'].'/'.$row['field']][$row['pid']] =
@@ -135,7 +135,7 @@ class propAdmincp{
     		iCache::set('iCMS/prop/'.$k,$a,0);
     	}
     }
-    function btn_group($field, $type = null,$target = null){
+    public function btn_group($field, $type = null,$target = null){
         $type OR $type = admincp::$APP_NAME;
         $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
         $target OR $target = $field;
@@ -148,7 +148,7 @@ class propAdmincp{
         echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&type='.$type.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
         echo '</ul></div>';
     }
-    function get_prop($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {
+    public function get_prop($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {
         $type OR $type = admincp::$APP_NAME;
         $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
         is_array($valArray) OR $valArray  = explode(',', $valArray);
@@ -172,7 +172,7 @@ class propAdmincp{
         // $opt.='</select>';
         return implode('', $opt);
     }
-    function flag($pids,$data,$url=null) {
+    public function flag($pids,$data,$url=null) {
         $pidArray = explode(',',$pids);
         foreach ((array)$pidArray as $key => $pid) {
             $name = $data[$pid];

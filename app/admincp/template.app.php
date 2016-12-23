@@ -9,9 +9,9 @@
 * @version 6.0.0
 */
 class templateApp{
-    function __construct() {
+    public function __construct() {
     }
-    function do_iCMS(){
+    public function do_iCMS(){
         $res       = iFS::folder('template',array('htm','css','js','png','jpg','gif'));
         $dirRs     = $res['DirArray'];
         $fileRs    = $res['FileArray'];

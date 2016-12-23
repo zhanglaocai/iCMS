@@ -23,7 +23,7 @@ class searchApp {
         $q  = iS::escapeStr($q);
 
         //empty($q) && iPHP::throw404('应用程序运行出错.亲!搜点什么吧!!', 60001);
-        $fwd = iCMS::filter($q);
+        $fwd = iPHP::app("admincp.filter.app")->run($q);
         $fwd && iPHP::throw404('非法搜索词!', 60002);
 
         $search['title']   = stripslashes($q);

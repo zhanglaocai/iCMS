@@ -10,10 +10,10 @@
 */
 
 class menuApp{
-    function __construct() {
+    public function __construct() {
     	// admincp::$menu->get_array();
     }
-    function do_add(){
+    public function do_add(){
     	$id	= $_GET['id'];
         if($id) {
             $rs		= iDB::row("SELECT * FROM `#iCMS@__menu` WHERE `id`='$id' LIMIT 1;",ARRAY_A);
@@ -23,28 +23,28 @@ class menuApp{
         }
         include admincp::view("menu.add");
     }
-    function do_addseparator(){
+    public function do_addseparator(){
     	$rootid	= $_GET['rootid'];
     	$class	= $rootid?'divider':'divider-vertical';
     	iDB::query("INSERT INTO `#iCMS@__menu` (`rootid`,`app`,`class`) VALUES($rootid,'separator','$class');");
     	admincp::$menu->cache();
     	iPHP::success('添加完成');
     }
-    function do_updateorder(){
+    public function do_updateorder(){
     	foreach((array)$_POST['sortnum'] as $sortnum=>$id){
             iDB::query("UPDATE `#iCMS@__menu` SET `sortnum` = '".intval($sortnum)."' WHERE `id` ='".intval($id)."' LIMIT 1");
     	}
 		admincp::$menu->cache();
     }
-    function do_iCMS(){
+    public function do_iCMS(){
     	admincp::$APP_METHOD="domanage";
     	$_GET['tab'] OR $_GET['tab']="tree";
     	$this->do_manage();
     }
-    function do_manage($doType=null) {
+    public function do_manage($doType=null) {
         include admincp::view("menu.manage");
     }
-    function power_tree($id=0){
+    public function power_tree($id=0){
         $li   = '';
         foreach((array)admincp::$menu->root_array[$id] AS $root=>$M) {
             $li.= '<li>';
@@ -58,7 +58,7 @@ class menuApp{
         }
         return $li;
     }
-    function power_holder($M) {
+    public function power_holder($M) {
         $name ='<span class="add-on">'.$M['caption'].'</span>';
         if($M['app']=='separator'){
             $name ='<span class="add-on tip" title="分隔符权限,仅为UI美观">───分隔符───</span>';
@@ -69,12 +69,12 @@ class menuApp{
         </div>';
     }
 
-    function do_ajaxtree(){
+    public function do_ajaxtree(){
 		$expanded = $_GET['expanded']?true:false;
 	 	echo $this->tree($expanded);
     }
 
-    function tree($expanded=false,$func='li'){
+    public function tree($expanded=false,$func='li'){
     	$id=='source' && $id=0;
         foreach((array)admincp::$menu->menu_array AS $root=>$M) {
         	$a			= array();
@@ -94,7 +94,7 @@ class menuApp{
         if($expanded && $id!='source'){ return $tr; }
         return $tr?json_encode($tr):'[]';
     }
-    function li($M) {
+    public function li($M) {
     	if($M['-']){
     		return '<span class="operation"><a href="'.APP_FURI.'&do=del&id='.$M['id'].'" class="btn btn-danger btn-small" onClick="return confirm(\'确定要删除此菜单?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a></span><div class="separator"><span class="sortnum" style="display:none;"><input type="text" data-id="'.$M['id'].'" name="sortnum['.$M['id'].']" value="'.$M['sortnum'].'"/></span> </div>';
     	}
@@ -110,14 +110,14 @@ class menuApp{
         <a href="'.APP_FURI.'&do=del&id='.$M['id'].'" class="btn btn-danger btn-small" onClick="return confirm(\'确定要删除此菜单?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a></span></div>';
         return $tr;
     }
-    function do_copy() {
+    public function do_copy() {
         $id = $_GET['id'];
         $field = '`rootid`, `sortnum`, `app`, `name`, `title`, `href`, `icon`, `class`, `a_class`, `target`, `caret`, `data-toggle`, `data-meta`, `data-target`';
         iDB::query("insert into `#iCMS@__menu` ({$field}) select {$field} from `#iCMS@__menu` where id = '$id'");
         $nid = iDB::$insert_id;
         iPHP::success('复制完成,编辑此菜单', 'url:' . APP_URI . '&do=add&id=' . $nid);
     }
-    function do_save(){
+    public function do_save(){
         $id          = $_POST['id'];
         $rootid      = $_POST['rootid'];
         $app         = $_POST['app'];
@@ -158,7 +158,7 @@ class menuApp{
 		admincp::$menu->cache();
 		iPHP::success($msg,'url:' . APP_URI . '&do=manage');
     }
-    function do_del(){
+    public function do_del(){
         $id		= (int)$_GET['id'];
         if(empty(admincp::$menu->root_array[$id])) {
             iDB::query("DELETE FROM `#iCMS@__menu` WHERE `id` = '$id'");
@@ -169,7 +169,7 @@ class menuApp{
         }
 		iPHP::dialog($msg,'js:parent.$("#'.$id.'").remove();');
     }
-    function select($currentid="0",$id="0",$level = 1) {
+    public function select($currentid="0",$id="0",$level = 1) {
         foreach((array)admincp::$menu->root_array[$id] AS $root=>$M) {
 			$t=$level=='1'?"":"├ ";
 			$selected=($currentid==$M['id'])?"selected":"";

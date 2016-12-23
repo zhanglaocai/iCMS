@@ -50,7 +50,6 @@ function modal_tplfile(el,a){
         <li><a href="#setting-file" data-toggle="tab">附件</a></li>
         <li><a href="#setting-thumb" data-toggle="tab">缩略图</a></li>
         <li><a href="#setting-watermark" data-toggle="tab">水印</a></li>
-        <li><a href="#setting-user" data-toggle="tab">用户</a></li>
         <li><a href="#setting-time" data-toggle="tab">时间</a></li>
         <li><a href="#setting-other" data-toggle="tab">其它</a></li>
         <li><a href="#setting-patch" data-toggle="tab">更新</a></li>

@@ -9,11 +9,11 @@
 * @version 6.0.0
 */
 class markerAdmincp{
-    function __construct() {
+    public function __construct() {
         $this->categoryApp = iPHP::app('category.admincp','all');
         $this->id         = (int)$_GET['id'];
     }
-    function do_add(){
+    public function do_add(){
         $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__marker` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
         if($_GET['act']=="copy"){
             $this->id   = 0;
@@ -25,7 +25,7 @@ class markerAdmincp{
         }
         include admincp::view("marker.add");
     }
-    function do_save(){
+    public function do_save(){
         $id     = (int)$_POST['id'];
         $cid    = (int)$_POST['cid'];
         $pid    = (int)$_POST['pid'];
@@ -53,7 +53,7 @@ class markerAdmincp{
 		$this->cache($id);
         iPHP::success($msg,'url:'.APP_URI);
     }
-    function do_update(){
+    public function do_update(){
         if($this->id){
             $data = admincp::fields($_GET['iDT']);
             $data && iDB::update("marker",$data,array('id'=>$this->id));
@@ -61,14 +61,14 @@ class markerAdmincp{
             iPHP::success('操作成功!','js:1');
         }
     }
-    function do_del($id = null,$dialog=true){
+    public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
     	$id OR iPHP::alert('请选择要删除的标记!');
 		iDB::query("DELETE FROM `#iCMS@__marker` WHERE `id` = '$id';");
     	$this->cache($id);
     	$dialog && iPHP::success("已经删除!",'url:'.APP_URI);
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iPHP::alert("请选择要操作的标记");
         $ids     = implode(',',$idArray);
@@ -91,7 +91,7 @@ class markerAdmincp{
 		}
 	}
 
-    function do_iCMS(){
+    public function do_iCMS(){
         $sql			= " where 1=1";
         $_GET['pid'] && $sql.=" AND `pid`='".$_GET['pid']."'";
         $_GET['pid'] && $uri.='&pid='.$_GET['pid'];
@@ -106,11 +106,11 @@ class markerAdmincp{
         $_count = count($rs);
     	include admincp::view("marker.manage");
     }
-    function do_cache(){
+    public function do_cache(){
         $this->cache($this->id);
         iPHP::success('缓存更新完成!','js:1');
     }
-    function cache($id=null){
+    public function cache($id=null){
         $id && $sql = " AND `id`='$id'";
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__marker` WHERE `status`='1' {$sql} ");
     	foreach((array)$rs AS $row) {

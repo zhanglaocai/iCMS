@@ -9,38 +9,71 @@
 * @version 6.0.0
 */
 class filterApp{
-    private $setting;
-    function __construct() {
-        $this->setting = admincp::app('setting');
+    public function __construct() {
+        $this->appid = iCMS_APP_FILTER;
     }
-    function do_iCMS(){
-        $filter  = $this->setting->get(0,'word.filter');
-        $disable = $this->setting->get(0,'word.disable');
-        foreach((array)$filter AS $k=>$val) {
-            $filterArray[$k]=implode("=",(array)$val);
-        }
-    	include admincp::view("filter");
+    public function do_iCMS(){
+        $this->do_config();
     }
-    function do_save(){
-        $filter  = explode("\n",$_POST['filter']);
-        $disable = explode("\n",$_POST['disable']);
-        $disable = array_unique($disable);
+    public function do_config(){
+        $setting = admincp::app('setting');
+        $setting->app('999999');
+    }
+    public function do_save_config(){
+        $filter  = explode("\n",$_POST['config']['filter']);
+        $disable = explode("\n",$_POST['config']['disable']);
+        $_POST['config']['filter']  = array_unique($filter);
+        $_POST['config']['disable'] = array_unique($disable);
 
-        foreach($filter AS $k=> $val) {
-            $filterArray[$k] = explode("=",$val);
-        }
-        $this->setting->set($filterArray,'word.filter',0,true);
-        $this->setting->set($disable,'word.disable',0,true);
-        $this->cache();
-        iPHP::success('更新完成');
+        $setting = admincp::app('setting');
+        $setting->save('999999',null,array($this,'cache'));
     }
-    function cache(){
-        $filter  = $this->setting->get(0,'word.filter');
-        $disable = $this->setting->get(0,'word.disable');
-        foreach((array)$filter AS $k=>$val) {
-            $filterArray[$k]=implode("=",(array)$val);
+    public function cache($config=null){
+        if($config===null){
+            $setting = admincp::app('setting');
+            $config  = $setting->app('999999',null,true);
         }
-    	iCache::set('iCMS/word.filter',$filterArray,0);
-    	iCache::set('iCMS/word.disable',$disable,0);
+    	iCache::set('iCMS/filter.array',$config['filter'],0);
+    	iCache::set('iCMS/filter.disable',$config['disable'],0);
+    }
+    //过滤
+    public function run(&$content){
+        $disable = iCache::get('iCMS/filter.disable');  //disable禁止
+        //禁止关键词
+        $subject = $content;
+        $pattern = '/(~|`|!|@|\#|\$|%|\^|&|\*|\(|\)|\-|=|_|\+|\{|\}|\[|\]|;|:|"|\'|<|>|\?|\/|,|\.|\s|\n|。|，|、|；|：|？|！|…|-|·|ˉ|ˇ|¨|‘|“|”|々|～|‖|∶|＂|＇|｀|｜|〃|〔|〕|〈|〉|《|》|「|」|『|』|．|〖|〗|【|】|（|）|［|］|｛|｝|°|′|″|＄|￡|￥|‰|％|℃|¤|￠|○|§|№|☆|★|○|●|◎|◇|◆|□|■|△|▲|※|→|←|↑|↓|〓|＃|＆|＠|＾|＿|＼|№|)*/i';
+        $subject = preg_replace($pattern, '', $subject);
+        foreach ((array)$disable AS $val) {
+            $val = trim($val);
+            if(strpos($val,'::')!==false){
+                list($tag,$start,$end) = explode('::',$val);
+                if($tag=='NUM'){
+                    $subject = cnum($subject);
+                    if (preg_match('/\d{'.$start.','.$end.'}/i', $subject)) {
+                        return $val;
+                    }
+                }
+            }else{
+                if ($val && preg_match("/".preg_quote($val, '/')."/i", $subject)) {
+                    return $val;
+                }
+            }
+        }
+
+        $filter  = iCache::get('iCMS/filter.array');    //filter过滤
+        if($filter){
+            //过滤关键词
+            foreach ((array)$filter AS $k =>$val) {
+                $val = trim($val);
+                if($val){
+                    $exp = explode("=", $val);
+                    empty($exp[1]) && $exp[1] = '***';
+                    $search[$k]  = '/'.preg_quote($exp[0], '/').'/i';
+                    $replace[$k] = $exp[1];
+                }
+
+            }
+            $search && $content = preg_replace($search,$replace,$content);
+        }
     }
 }

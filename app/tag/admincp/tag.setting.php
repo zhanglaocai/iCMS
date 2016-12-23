@@ -5,7 +5,7 @@
 * @author coolmoo <idreamsoft@qq.com>
 */
 defined('iPHP') OR exit('What are you doing?');
-settingApp::head("标签默认配置");
+settingApp::head("标签系统设置");
 ?>
 <div class="input-prepend">
   <span class="add-on">标签URL</span>

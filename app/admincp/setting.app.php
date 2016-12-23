@@ -9,8 +9,8 @@
 * @version 6.0.0
 */
 class settingApp{
-    function __construct() {}
-    function do_iCMS(){
+    public function __construct() {}
+    public function do_iCMS(){
     	$config	= $this->get();
     	$config['site']['indexName'] OR $config['site']['indexName'] = 'index';
         $redis    = extension_loaded('redis');
@@ -18,7 +18,7 @@ class settingApp{
         admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
     	include admincp::view("setting");
     }
-    function apps(){
+    public function apps(){
         iPHP::app('apps.class','static');
         APPS::scan();
         $apps  = array();
@@ -31,7 +31,7 @@ class settingApp{
      * [do_save 保存配置]
      * @return [type] [description]
      */
-    function do_save(){
+    public function do_save(){
         $config = iS::escapeStr($_POST['config']);
 
         iFS::allow_files($config['FS']['allow_ext']) OR iPHP::alert("附件设置 > 允许上传类型设置不合法!");
@@ -61,7 +61,7 @@ class settingApp{
      * [cache 更新配置]
      * @return [type] [description]
      */
-    function cache(){
+    public function cache(){
         $config         = $this->get();
         $config['apps'] = $this->apps();
         $this->write($config);
@@ -77,9 +77,12 @@ class settingApp{
      * @param  integer $appid [应用ID]
      * @param  [sting] $name   [应用名]
      */
-    function app($appid=0,$name=null){
+    public function app($appid=0,$name=null,$ret=false){
         $name===null && $name = admincp::$APP_NAME;
         $config = $this->get($appid,$name);
+        if($ret){
+            return $config;
+        }
         include admincp::view($name.".setting");
     }
     /**
@@ -87,11 +90,14 @@ class settingApp{
      * @param  integer $appid [应用ID]
      * @param  [sting] $app   [应用名]
      */
-    function save($appid=0,$name=null){
+    public function save($appid=0,$name=null,$handler=null){
         $name===null   && $name = admincp::$APP_NAME;
         empty($appid) && iPHP::alert("配置程序出错缺少APPID!");
         $config = iS::escapeStr($_POST['config']);
         $this->set($config,$name,$appid,false);
+        if (is_callable($handler)) {
+            call_user_func_array($handler, array($config));
+        }
         $this->cache();
         iPHP::success('配置更新完成','js:1');
     }
@@ -101,10 +107,10 @@ class settingApp{
      * @param  [type]  $name   [description]
      * @return [type]       [description]
      */
-    function get($appid = NULL, $name = NULL) {
+    public function get($appid = NULL, $name = NULL) {
         if ($name === NULL) {
-            $sql = $appid === NULL?'':"WHERE `appid`='$appid'";
-            $rs  = iDB::all("SELECT * FROM `#iCMS@__config` $sql");
+            $sql = $appid === NULL?'':" AND `appid`='$appid'";
+            $rs  = iDB::all("SELECT * FROM `#iCMS@__config` WHERE appid< '999999' $sql");
             foreach ($rs AS $c) {
                 $value = $c['value'];
                 strpos($c['value'], 'a:')===false OR $value = unserialize($c['value']);
@@ -124,7 +130,7 @@ class settingApp{
      * @param [type]  $appid   [description]
      * @param boolean $cache [description]
      */
-    function set($value, $name, $appid, $cache = false) {
+    public function set($value, $name, $appid, $cache = false) {
         $cache && iCache::set('iCMS/config/' . $name, $value, 0);
         is_array($value) && $value = addslashes(serialize($value));
         $check  = iDB::value("SELECT `name` FROM `#iCMS@__config` WHERE `appid` ='$appid' AND `name` ='$name'");
@@ -141,7 +147,7 @@ class settingApp{
      * @param  [type] $config [description]
      * @return [type]         [description]
      */
-    function write($config=null){
+    public function write($config=null){
         $config===null && $config = $this->get();
         $output = "<?php\ndefined('iPHP') OR exit('Access Denied');\nreturn ";
         $output.= var_export($config,true);
@@ -153,11 +159,11 @@ class settingApp{
      * @param  [type] $k [description]
      * @return [type]    [description]
      */
-    function update($k){
+    public function update($k){
         $this->set(iCMS::$config[$k],$k,0);
         $this->write();
     }
-    function view(){
+    public function view(){
         include admincp::view('setting',null,true);
     }
 }

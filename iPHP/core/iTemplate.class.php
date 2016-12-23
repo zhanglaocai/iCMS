@@ -40,7 +40,7 @@ class iTemplate {
 	public $_null                     = null;
 	public $_sections                 = array();
 	public $_foreach                  = array();
-	public $_iTPL_VARS                =	array();
+	public $_iVARS                =	array();
 
 	function __construct() {
 		$this->def_template_dir = $this->template_dir;
@@ -273,7 +273,7 @@ class iTemplate {
 			$iTC->_file                     = &$this->_file;
 			$iTC->php_extract_vars          = &$this->php_extract_vars;
 			$iTC->reserved_template_varname = &$this->reserved_template_varname;
-			$iTC->_iTPL_VARS                = &$this->_iTPL_VARS;
+			$iTC->_iVARS                = &$this->_iVARS;
 			$iTC->default_modifiers         = &$this->default_modifiers;
 			$output                         = $iTC->_compile_file($template_file);
 			$output = $this->template_callback('output',array($output,$file));
@@ -405,7 +405,7 @@ class iTemplate_Compiler extends iTemplate {
 	public $_mod_regexp               =	null;
 	public $_var_regexp               =	null;
 	public $_obj_params_regexp        = null;
-	public $_iTPL_VARS                =	array();
+	public $_iVARS                =	array();
 
 	function __construct(){
 		// matches double quoted strings:
@@ -1018,11 +1018,11 @@ class iTemplate_Compiler extends iTemplate {
 		preg_match_all('!(?:^\w+)|(?:' . $this->_var_bracket_regexp . ')|\.\$?\w+|\S+!', $variable, $_match);
 		$variable = $_match[0];
 		$var_name = array_shift($variable);
-
 		if ($var_name == $this->reserved_template_varname){
 			if ($variable[0][0] == '[' || $variable[0][0] == '.'){
 				$find = array("[", "]", ".");
 				switch(strtoupper(str_replace($find, "", $variable[0]))){
+					case 'SERVER':		$_result = "\$_SERVER";break;
 					case 'SELF':		$_result = "\$_SERVER['PHP_SELF']";break;
 					case 'REQUEST_URI':	$_result = "\$_SERVER['REQUEST_URI']";break;
 					case 'SERVER_NAME':	$_result = "\$_SERVER['SERVER_NAME']";break;
@@ -1034,7 +1034,6 @@ class iTemplate_Compiler extends iTemplate {
 					case 'LDELIM':		$_result = "\$this->left_delimiter";break;
 					case 'RDELIM':		$_result = "\$this->right_delimiter";break;
 					case 'TPLVERSION':	$_result = "\$this->_version";break;
-					case 'VERSION':		$_result = "'iPHP '.iPHP_VER";break;
 					case 'TEMPLATE':	$_result = "\$this->_file";break;
 					case 'CONST':
 						$constant = str_replace($find, "", $_match[0][2]);
@@ -1043,12 +1042,13 @@ class iTemplate_Compiler extends iTemplate {
 						break;
 					default:
 						$_var_name = str_replace($find, "", $variable[0]);
-						$_result = "\$this->_iTPL_VARS['$_var_name']";
+						$_result = "\$this->_iVARS['$_var_name']";
 						break;
 				}
 				array_shift($variable);
 			}else{
-				$this->trigger_error('$' . $var_name.implode('', $variable) . ' is an invalid $templatelite reference', E_USER_ERROR, __FILE__, __LINE__);
+				// $_result = "\$this->_iVARS";
+				$this->trigger_error('$' . $var_name.implode('', $variable) . ' is an invalid $'.$this->reserved_template_varname.' reference', E_USER_ERROR, __FILE__, __LINE__);
 			}
 		}else{
 			$_result = "\$this->_vars['$var_name']";

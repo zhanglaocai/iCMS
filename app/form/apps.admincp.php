@@ -13,12 +13,12 @@ defined('iPHP') OR exit('What are you doing?');
 iPHP::app('apps.class','include');
 
 class appsAdmincp{
-    function __construct() {
+    public function __construct() {
     	$this->id = (int)$_GET['id'];
       $this->cache();
 
     }
-    function do_add(){
+    public function do_add(){
         if($this->id) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__app` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
             $rs['field'] && $rs['field'] = json_decode($rs['field'],true);
@@ -27,7 +27,7 @@ class appsAdmincp{
         include admincp::view("apps.add");
     }
 
-    function do_save(){
+    public function do_save(){
 
         $id          = (int)$_POST['id'];
         $title       = iS::escapeStr($_POST['title']);
@@ -85,7 +85,7 @@ class appsAdmincp{
         iPHP::success($msg,'url:'.APP_URI);
     }
 
-    function do_iCMS(){
+    public function do_iCMS(){
       if($_GET['keywords']) {
 		   $sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";
       }
@@ -97,7 +97,7 @@ class appsAdmincp{
       $_count = count($rs);
     	include admincp::view("apps.manage");
     }
-    function do_del($id = null,$dialog=true){
+    public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
   		$id OR iPHP::alert('请选择要删除的应用!');
       $rs   = iDB::row("SELECT `name` FROM `#iCMS@__app` WHERE `id`='$id' LIMIT 1;");
@@ -108,7 +108,7 @@ class appsAdmincp{
   		$this->cache();
   		$dialog && iPHP::success('应用已经删除','js:parent.$("#tr'.$id.'").remove();');
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iPHP::alert("请选择要操作的应用");
         $ids     = implode(',',$idArray);
@@ -124,10 +124,10 @@ class appsAdmincp{
     		break;
 		}
 	}
-    function cache(){
+    public function cache(){
     	APPS::cache();
     }
-    function field_html($fid='{fid}',$fname='{fname}',$param='{param}'){
+    public function field_html($fid='{fid}',$fname='{fname}',$param='{param}'){
       return '<div class="row-fluid" id="'.$fid.'">'.
               '<div class="input-prepend input-append">'.
               '<span class="add-on"><i class="fa fa-text-width"></i></span>'.
@@ -139,7 +139,7 @@ class appsAdmincp{
               '<span class="help-inline"></span>'.
               '<div class="clearfloat mb10"></div></div>';
     }
-    function MAKE_SQL($vars=null){
+    public function MAKE_SQL($vars=null){
       $type    = $vars['type'];  //字段类型
       $label   = $vars['label']; //字段名称
       $fname    = $vars['fname'];  //字 段 名
@@ -212,13 +212,13 @@ class appsAdmincp{
       return "`$fname` $data_type$data_len NOT NULL DEFAULT '$default' COMMENT '$label'";
       // return "ADD COLUMN `$name` $data_type$data_len DEFAULT '$default' NOT NULL  COMMENT '$label'";
     }
-    function BASE_FIELDS(){
+    public function BASE_FIELDS(){
       $sql = $this->CREATE_TABLE('test',null,true);
       preg_match_all("@`(.+)`\s(.+)\sDEFAULT\s'(.*?)'\sCOMMENT\s'(.+)',@", $sql, $matches);
       return $matches;
       //print_r($matches);
     }
-    function CREATE_TABLE($name,$fields=null,$sql=false){
+    public function CREATE_TABLE($name,$fields=null,$sql=false){
       $CREATE_SQL = "CREATE TABLE `#iCMS@__{$name}` (";
       $CREATE_SQL.= "
         `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,

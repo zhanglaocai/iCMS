@@ -30,7 +30,7 @@ class iPHP {
 	public static $break      = true;
 	public static $dialog     = array();
 	public static $iTPL       = NULL;
-	public static $iTPL_MODE  = null;
+	public static $iVIEW      = null;
 	public static $mobile     = false;
 	public static $time_start = false;
 
@@ -224,15 +224,15 @@ class iPHP {
 			"MOBILE" => iPHP::$mobile,
 			'COOKIE_PRE' => iPHP_COOKIE_PRE,
 			'REFER' => __REF__,
-			'CONFIG' => self::$config,
 			"APP" => array(
 				'NAME' => self::$app_name,
 				'DO' => self::$app_do,
 				'METHOD' => self::$app_method,
 			),
+			'CONFIG' => self::$config,
 		);
-		iPHP::$iTPL->_iTPL_VARS['SAPI'] .= self::$app_name;
-		iPHP::$iTPL->_iTPL_VARS += self::$app_vars;
+		iPHP::$iTPL->_iVARS['SAPI'] .= self::$app_name;
+		iPHP::$iTPL->_iVARS += self::$app_vars;
 		self::$app = iPHP::app($app);
 		if (self::$app_do && self::$app->methods) {
 			in_array(self::$app_do, self::$app->methods) OR iPHP::throw404('运行出错！ <b>' . self::$app_name . '</b> 类中找不到方法定义: <b>' . self::$app_method . '</b>', '0003');
@@ -307,7 +307,7 @@ class iPHP {
 	}
 	public static function view($tpl, $p = 'index') {
 		$tpl OR self::throw404('运行出错！请设置模板文件', '001', 'TPL');
-		if (self::$iTPL_MODE == 'html') {
+		if (self::$iVIEW == 'html') {
 			return self::$iTPL->fetch($tpl);
 		} else {
 			self::$iTPL->display($tpl);
@@ -998,7 +998,7 @@ class iPHP {
 		if ($iPages->totalpage > 1) {
 			$pagenav = $conf['pagenav'] ? strtoupper($conf['pagenav']) : 'NAV';
 			$pnstyle = $conf['pnstyle'] ? $conf['pnstyle'] : 0;
-			iPHP::$iTPL->_iTPL_VARS['PAGE'] = array(
+			iPHP::$iTPL->_iVARS['PAGE'] = array(
 				$pagenav => $iPages->show($pnstyle),
 				'COUNT' => $conf['total'],
 				'TOTAL' => $iPages->totalpage,
@@ -1007,7 +1007,7 @@ class iPHP {
 				'PREV' => $iPages->prev_page(),
 				'NEXT' => $iPages->next_page(),
 			);
-			iPHP::$iTPL->_iTPL_VARS['PAGES'] = $iPages;
+			iPHP::$iTPL->_iVARS['PAGES'] = $iPages;
 		}
 		return $iPages;
 	}

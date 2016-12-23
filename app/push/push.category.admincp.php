@@ -12,7 +12,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 iPHP::app('category.admincp','include');
 class pushCategoryAdmincp extends categoryAdmincp {
-    function __construct() {
+    public function __construct() {
         parent::__construct(iCMS_APP_PUSH,'category');
         $this->category_name   = "版块";
         $this->_app            = 'push';
@@ -43,7 +43,7 @@ class pushCategoryAdmincp extends categoryAdmincp {
        //      ),
        //  );
     }
-    function do_add(){
+    public function do_add(){
         $this->_view_tpl_dir = $this->_app;
         parent::do_add();
     }

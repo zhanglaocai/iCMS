@@ -13,29 +13,29 @@ defined('iPHP') OR exit('What are you doing?');
 iPHP::app('tag.class','static');
 class tagAdmincp{
     public $callback = array();
-    function __construct() {
+    public function __construct() {
         $this->appid       = iCMS_APP_TAG;
         $this->id          = (int)$_GET['id'];
         $this->categoryApp = iPHP::app('category.admincp');
         $this->tagcategory = iPHP::app('category.admincp',$this->appid);
     }
-    function do_config(){
+    public function do_config(){
         $setting = admincp::app('setting');
         $setting->app($this->appid);
     }
-    function do_save_config(){
+    public function do_save_config(){
         $setting = admincp::app('setting');
         $_POST['config']['url'] = trim($_POST['config']['url'],'/');
         $_POST['config']['dir'] = rtrim($_POST['config']['dir'],'/').'/';
         $setting->save($this->appid);
     }
 
-    function do_add(){
+    public function do_add(){
         $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
         $rs['metadata'] && $rs['metadata']=json_decode($rs['metadata']);
         include admincp::view('tag.add');
     }
-    function do_update(){
+    public function do_update(){
         if($this->id){
             $data = admincp::fields($_GET['iDT']);
             $data && iDB::update("tags",$data,array('id'=>$this->id));
@@ -43,11 +43,11 @@ class tagAdmincp{
             iPHP::success('操作成功!','js:1');
         }
     }
-    function do_iCMS(){
+    public function do_iCMS(){
     	admincp::$APP_METHOD="domanage";
     	$this->do_manage();
     }
-    function do_manage(){
+    public function do_manage(){
         $sql  = " where 1=1";
         $cid    = (int)$_GET['cid'];
         $tcid   = (int)$_GET['tcid'];
@@ -99,7 +99,7 @@ class tagAdmincp{
         $propArray = admincp::prop_get("pid",null,'array');
     	include admincp::view("tag.manage");
     }
-    function do_import(){
+    public function do_import(){
         $_POST['cid'] OR iPHP::alert('请选择标签所属栏目！');
         iFS::$checkFileData           = false;
         iFS::$config['allow_ext']     = 'txt';
@@ -159,7 +159,7 @@ class tagAdmincp{
             iPHP::success('标签导入完成<br />空标签:'.(int)$msg['empty'].'个<br />已经存在标签:'.(int)$msg['has'].'个<br />成功导入标签:'.(int)$msg['success'].'个');
         }
     }
-    function do_save(){
+    public function do_save(){
         $id          = (int)$_POST['id'];
         $uid         = (int)$_POST['uid'];
         $rootid      = (int)$_POST['rootid'];
@@ -301,7 +301,7 @@ class tagAdmincp{
         }
         iPHP::success($msg,"url:".APP_URI);
     }
-    function __callback($id){
+    public function __callback($id){
         if ($this->callback['primary']) {
             $PCB = $this->callback['primary'];
             $handler = $PCB[0];
@@ -319,7 +319,7 @@ class tagAdmincp{
             }
         }
     }
-    function check_spider_data(&$data,$old,$key,$value){
+    public function check_spider_data(&$data,$old,$key,$value){
         if($old[$key]){
             if($value){
                 $data[$key] = $value;
@@ -328,11 +328,11 @@ class tagAdmincp{
             }
         }
     }
-    function do_cache(){
+    public function do_cache(){
     	tag::cache($this->id,'id');
     	iPHP::success("标签缓存更新成功");
     }
-    function do_del($id = null,$dialog=true){
+    public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
         iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."';");
         iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."' ;");
@@ -340,7 +340,7 @@ class tagAdmincp{
     	tag::del($id,'id');
     	$dialog && iPHP::success("标签删除成功",'js:parent.$("#tr'.$id.'").remove();');
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iPHP::alert("请选择要操作的标签");
         $ids     = implode(',',$idArray);

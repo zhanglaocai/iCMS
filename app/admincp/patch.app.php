@@ -14,11 +14,11 @@ iPHP::import(iPHP_APP_CORE .'/iPatch.class.php');
 
 class patchApp{
 
-	function __construct() {
+	public function __construct() {
 		$this->msg		= "";
 		$this->patch	= iPatch::init(isset($_GET['force'])?true:false);
 	}
-    function do_check(){
+    public function do_check(){
 		if(empty($this->patch)){
 			if($_GET['ajax']){
 				iPHP::json(array('code'=>0));
@@ -53,14 +53,14 @@ class patchApp{
     		iPHP::dialog('success:#:check:#:'.$json['msg'],0,30,$moreBtn);
 		}
     }
-    function do_install(){
+    public function do_install(){
 		$this->msg.= iPatch::update();//更新文件
 		if(iPatch::$next){
 			$this->msg.= iPatch::run();//数据库升级
 		}
 		include admincp::view("patch");
     }
-    function do_update(){
+    public function do_update(){
 		$this->msg	= iPatch::download();//下载文件包
 		include admincp::view("patch");
     }

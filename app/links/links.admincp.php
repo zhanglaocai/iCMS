@@ -9,10 +9,10 @@
 * @version 6.0.0
 */
 class linksAdmincp{
-    function __construct() {
+    public function __construct() {
     	$this->id	= (int)$_GET['id'];
     }
-    function do_add(){
+    public function do_add(){
         if($this->id) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__links` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
         }else{
@@ -21,7 +21,7 @@ class linksAdmincp{
         }
         include admincp::view("links.add");
     }
-    function do_save(){
+    public function do_save(){
 		$id			= (int)$_POST['id'];
 		$cid		= (int)$_POST['cid'];
 		$name		= iS::escapeStr($_POST['name']);
@@ -46,7 +46,7 @@ class linksAdmincp{
         iPHP::success($msg,'url:'.APP_URI);
     }
 
-    function do_iCMS(){
+    public function do_iCMS(){
         if($_GET['keywords']) {
 			$sql=" WHERE CONCAT(name,url) REGEXP '{$_GET['keywords']}'";
         }
@@ -62,13 +62,13 @@ class linksAdmincp{
         $_count = count($rs);
     	include admincp::view("links.manage");
     }
-    function do_del($id = null,$dialog=true){
+    public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
 		$id OR iPHP::alert('请选择要删除的网站!');
 		iDB::query("DELETE FROM `#iCMS@__links` WHERE `id` = '$id'");
 		$dialog && iPHP::success('网站已经删除','js:parent.$("#tr'.$id.'").remove();');
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iPHP::alert("请选择要操作的网站");
         $ids     = implode(',',$idArray);

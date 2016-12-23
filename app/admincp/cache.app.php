@@ -10,10 +10,10 @@
 */
 class cacheApp{
     public $acp = array('admincp.setting.app','prop.admincp','filter.admincp','keywords.admincp');
-    function __construct() {
+    public function __construct() {
         $this->do_app();
     }
-    function do_all(){
+    public function do_all(){
         foreach ($this->acp as $key => $acp) {
             $acp = iPHP::app($acp);
             $acp->cache();
@@ -26,44 +26,44 @@ class cacheApp{
         $this->do_tpl(false);
         iPHP::success('全部缓存更新完成');
     }
-    function do_iCMS($dialog=true){
+    public function do_iCMS($dialog=true){
 		if (in_array($_GET['acp'], $this->acp)) {
 	    	$acp = iPHP::app($_GET['acp']);
 	    	$acp->cache();
 	    	$dialog && iPHP::success('更新完成');
 		}
     }
-    function do_menu($dialog=true){
+    public function do_menu($dialog=true){
     	admincp::$menu->cache();
     	$dialog && iPHP::success('更新完成','js:1');
     }
-    function do_allcategory($dialog=true){
+    public function do_allcategory($dialog=true){
     	$category = iPHP::app('category.class');
     	$category->cache(true);
     	$dialog && iPHP::success('更新完成');
     }
-    function do_category($dialog=true){
+    public function do_category($dialog=true){
         $categoryApp = iPHP::app('category.admincp');
         $categoryApp->do_cache($dialog);
     }
-    function do_pushcategory($dialog=true){
+    public function do_pushcategory($dialog=true){
         $categoryApp = iPHP::app('push.category.admincp');
         $categoryApp->do_cache($dialog);
     }
-    function do_tagcategory($dialog=true){
+    public function do_tagcategory($dialog=true){
         $categoryApp = iPHP::app('tag.category.admincp');
         $categoryApp->do_cache($dialog);
     }
-    function do_tpl($dialog=true){
+    public function do_tpl($dialog=true){
     	iPHP::clear_compiled_tpl();
     	$dialog && iPHP::success('清理完成');
     }
-    function do_article_count($dialog=true){
+    public function do_article_count($dialog=true){
         $app = iPHP::app('article.category.admincp');
     	$app->re_app_count();
     	$dialog && iPHP::success('更新完成');
     }
-    function do_app($dialog=true){
+    public function do_app($dialog=true){
         iPHP::app('apps.class','static');
         APPS::cache();
     }

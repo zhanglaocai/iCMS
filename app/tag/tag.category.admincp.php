@@ -12,7 +12,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 iPHP::app('category.admincp','include');
 class tagCategoryAdmincp extends categoryAdmincp {
-    function __construct() {
+    public function __construct() {
         parent::__construct(iCMS_APP_TAG,'category');
         $this->category_name     = "分类";
         $this->_app              = 'tags';

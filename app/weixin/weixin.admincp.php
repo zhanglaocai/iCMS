@@ -11,27 +11,27 @@ defined('iPHP') OR exit('What are you doing?');
 
 iPHP::app('weixin.class','static');
 class weixinAdmincp{
-    function __construct() {
+    public function __construct() {
         $this->appid  = iCMS_APP_WEIXIN;
         $this->config = iCMS::$config[admincp::$APP_NAME];
 
         $this->config['component']==="1" && weixin::$component = true;
         weixin::$config = $this->config;
     }
-    function do_config(){
+    public function do_config(){
         $setting = admincp::app('setting');
         $setting->app($this->appid);
     }
-    function do_save_config(){
+    public function do_save_config(){
         $setting = admincp::app('setting');
         $_POST['config'] = array_merge((array)$this->config,(array)$_POST['config']);
         $setting->save($this->appid);
     }
-    function do_save_menu(){
+    public function do_save_menu(){
         $this->config['menu'] = $_POST['wx_button'];
         $this->do_save_config();
     }
-    function do_rsync_menu(){
+    public function do_rsync_menu(){
         weixin::init();
         // $a = weixin::mediaList('image');
         // print_r($a);
@@ -43,10 +43,10 @@ class weixinAdmincp{
             iPHP::alert('同步出错 <br />errcode:"'.$response->errcode.'" errmsg:"'.$response->errmsg.'"');
         }
     }
-    function do_menu(){
+    public function do_menu(){
         include admincp::view("weixin.menu");
     }
-    function do_component_login(){
+    public function do_component_login(){
         $token = iS::escapeStr($_GET['token']);
         if($token!=$this->config['token']){
             iPHP::alert("Token(令牌)出错！请先保存Token(令牌)配置！",'js:window.iCMS_MODAL.destroy();');
@@ -56,7 +56,7 @@ class weixinAdmincp{
         '&url='.urlencode(iCMS::$config['router']['public_url']);
         iPHP::redirect($url);
     }
-    function do_event(){
+    public function do_event(){
         $sql = " where ";
         switch($doType){ //status:[0:草稿][1:正常][2:回收]
             case 'inbox'://草稿
@@ -85,7 +85,7 @@ class weixinAdmincp{
         $_count = count($rs);
         include admincp::view("weixin.event");
     }
-    function do_event_add(){
+    public function do_event_add(){
         $id = (int)$_GET['id'];
         if($id) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__weixin_event` WHERE `id`='$id' LIMIT 1;",ARRAY_A);
@@ -96,7 +96,7 @@ class weixinAdmincp{
         include admincp::view("weixin.event.add");
     }
 
-    function do_event_save(){
+    public function do_event_save(){
         $id       = (int)$_POST['id'];
         $pid      = $_POST['pid'];
         $eventype = $_POST['eventype'];
@@ -129,7 +129,7 @@ class weixinAdmincp{
             iPHP::success('更新完成','url:'.APP_URI.'&do=event');
         }
     }
-    function menu_get_type($type,$out='value'){
+    public function menu_get_type($type,$out='value'){
       $type_map = array(
         'click'              =>'key',
         'view'               =>'url',
@@ -158,7 +158,7 @@ class weixinAdmincp{
         return $option;
       }
     }
-    function menu_button_li($key='~KEY~',$i='~i~',$a=array()){
+    public function menu_button_li($key='~KEY~',$i='~i~',$a=array()){
       $keyname = $this->menu_get_type($a['type']);
       $html = '<li>'.
         '<div class="input-prepend input-append">'.
@@ -177,9 +177,9 @@ class weixinAdmincp{
       '</li>';
       return $html;
     }
-    function do_save(){
+    public function do_save(){
         iPHP::success('更新完成');
     }
-    function cache(){
+    public function cache(){
     }
 }

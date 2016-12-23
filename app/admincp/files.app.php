@@ -9,7 +9,7 @@
 * @version 6.0.0
 */
 class filesApp{
-    function __construct() {
+    public function __construct() {
 	    $this->from		= iS::escapeStr($_GET['from']);
 	    $this->callback	= iS::escapeStr($_GET['callback']);
 		$this->click	= iS::escapeStr($_GET['click']);
@@ -19,12 +19,12 @@ class filesApp{
 	    $this->callback OR $this->callback	= 'icms';
         $this->upload_max_filesize = get_cfg_var("upload_max_filesize");
     }
-	function do_add(){
+	public function do_add(){
         admincp::MP('FILE.UPLOAD','page');
 		$this->id && $rs = iFS::get_filedata('id',$this->id);
 		include admincp::view("files.add");
 	}
-	function do_multi(){
+	public function do_multi(){
         admincp::MP('FILE.UPLOAD','page');
 		$file_upload_limit	= $_GET['UN']?$_GET['UN']:100;
 		$file_queue_limit	= $_GET['QN']?$_GET['QN']:10;
@@ -33,7 +33,7 @@ class filesApp{
         stristr($this->upload_max_filesize,'m') && $file_size_limit    = $file_size_limit*1024;
 		include admincp::view("files.multi");
 	}
-	function do_iCMS(){
+	public function do_iCMS(){
         admincp::MP('FILE.MANAGE','page');
     	$sql='WHERE 1=1 ';
         if($_GET['keywords']) {
@@ -64,7 +64,7 @@ class filesApp{
         $widget = array('search'=>1,'id'=>1,'uid'=>1,'index'=>1);
     	include admincp::view("files.manage");
     }
-    function do_IO(){
+    public function do_IO(){
         $udir      = iS::escapeStr($_GET['udir']);
         $name      = iS::escapeStr($_GET['name']);
         $ext       = iS::escapeStr($_GET['ext']);
@@ -83,7 +83,7 @@ class filesApp{
             "state"    => ($F['code']?'SUCCESS':$F['state'])
         ));
     }
-    function do_upload(){
+    public function do_upload(){
         admincp::MP('FILE.UPLOAD','alert');
 //iFS::$checkFileData = true;
     	$_POST['watermark'] OR iFS::$watermark = false;
@@ -113,7 +113,7 @@ class filesApp{
 			iPHP::js_callback($array);
 		}
     }
-    function do_download(){
+    public function do_download(){
         iFile::$userid   = false;
         $rs            = iFS::get_filedata('id',$this->id);
         iFS::$redirect = true;
@@ -137,7 +137,7 @@ class filesApp{
     		iPHP::alert("下载远程文件失败!",'js:1',3);
     	}
     }
-    function do_batch(){
+    public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iPHP::alert("请选择要删除的文件");
         $ids     = implode(',',$idArray);
@@ -153,7 +153,7 @@ class filesApp{
     		break;
 		}
 	}
-    function do_del($id = null){
+    public function do_del($id = null){
         admincp::MP('FILE.DELETE','alert');
         $id ===null && $id = $this->id;
         $id OR iPHP::alert("请选择要删除的文件");
@@ -177,7 +177,7 @@ class filesApp{
     	$_GET['ajax'] && iPHP::json(array('code'=>0,'msg'=>$msg));
     	iPHP::alert($msg);
     }
-    function do_mkdir(){
+    public function do_mkdir(){
         admincp::MP('FILE.MKDIR') OR iPHP::json(array('code'=>0,'msg'=>'您没有相关权限!'));
     	$name	= $_POST['name'];
         strstr($name,'.')!==false	&& iPHP::json(array('code'=>0,'msg'=>'您输入的目录名称有问题!'));
@@ -192,7 +192,7 @@ class filesApp{
     	}
 		iPHP::json(array('code'=>0,'msg'=>'创建失败,请检查目录权限!!'));
     }
-    function explorer($dir=NULL,$type=NULL){
+    public function explorer($dir=NULL,$type=NULL){
         admincp::MP('FILE.BROWSE','page');
         $res    = iFS::folder($dir,$type);
         $dirRs  = $res['DirArray'];
@@ -203,16 +203,16 @@ class filesApp{
         $navbar = false;
     	include admincp::view("files.explorer");
     }
-    function do_seltpl(){
+    public function do_seltpl(){
     	$this->explorer('template');
     }
-    function do_browse(){
+    public function do_browse(){
     	$this->explorer(iCMS::$config['FS']['dir']);
     }
-    function do_picture(){
+    public function do_picture(){
     	$this->explorer(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
     }
-    function do_editpic(){
+    public function do_editpic(){
         admincp::MP('FILE.EDIT','page');
         $pic       = iS::escapeStr($_GET['pic']);
         //$pic OR iPHP::alert("请选择图片!");
@@ -252,11 +252,11 @@ class filesApp{
         stristr($this->upload_max_filesize,'m') && $max_size = $max_size*1024*1024;
         include admincp::view("files.editpic");
     }
-    function do_preview(){
+    public function do_preview(){
         $_GET['pic'] && $src = iFS::fp($_GET['pic'],'+http');
         include admincp::view("files.preview");
     }
-    function do_deldir(){
+    public function do_deldir(){
         admincp::MP('FILE.DELETE','alert');
         $_GET['path'] OR iPHP::alert("请选择要删除的目录");
         strpos($_GET['path'], '..') !== false && iPHP::alert("目录路径中带有..");
@@ -273,7 +273,7 @@ class filesApp{
         }
         iPHP::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
     }
-    function do_delfile(){
+    public function do_delfile(){
         admincp::MP('FILE.DELETE','alert');
         $_GET['path'] OR iPHP::alert("请选择要删除的文件");
         strpos($_GET['path'], '..') !== false && iPHP::alert("文件路径中带有..");
@@ -289,7 +289,7 @@ class filesApp{
         }
         iPHP::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
     }
-    function modal_btn($title='',$click='file',$target='template_index',$callback='',$do='seltpl',$from='modal'){
+    public function modal_btn($title='',$click='file',$target='template_index',$callback='',$do='seltpl',$from='modal'){
         $href = __ADMINCP__."=files&do={$do}&from={$from}&click={$click}&target={$target}&callback={$callback}";
         $_title=$title.'文件';
         $click=='dir' && $_title=$title.'目录';

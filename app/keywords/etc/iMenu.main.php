@@ -7,6 +7,12 @@
         "caption": "内链",
         "icon": "paperclip",
         "children": [{
+            "caption": "内链设置",
+            "href": "keywords&do=config",
+            "icon": "cog"
+        }, {
+            "-": "-"
+        }, {
             "caption": "内链管理",
             "href": "keywords",
             "icon": "paperclip"

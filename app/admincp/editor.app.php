@@ -9,10 +9,10 @@
 * @version 6.0.0
 */
 class editorApp{
-    function __construct() {
+    public function __construct() {
 		iFS::$ERROR_TYPE   = 'json';
     }
-    function do_config(){
+    public function do_config(){
     	$config_json ='
 /* 前后端通信相关的配置,注释只允许使用多行方式 */
 {
@@ -110,17 +110,17 @@ class editorApp{
             echo $result;
         }
     }
-    function do_imageManager(){
+    public function do_imageManager(){
 		$res = iFS::folder(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
 		$res['public_url'] = iCMS_PUBLIC_URL;
 		iPHP::json($res);
     }
-    function do_fileManager(){
+    public function do_fileManager(){
         $res = iFS::folder(iCMS::$config['FS']['dir']);
         $res['public_url'] = iCMS_PUBLIC_URL;
         iPHP::json($res);
     }
-    function do_catchimage(){
+    public function do_catchimage(){
     	$url_array = (array)$_POST['source'];
 		/* 抓取远程图片 */
         $list = array();
@@ -153,7 +153,7 @@ class editorApp{
 			'list'  => $list
 		));
     }
-    function do_uploadimage(){
+    public function do_uploadimage(){
         $F = iFS::upload('upfile');
         $F===false && exit(iFS::$ERROR);
     	$F['path'] && $url = iFS::fp($F['path'],'+http');
@@ -165,7 +165,7 @@ class editorApp{
 			'state'    => 'SUCCESS'
 		));
     }
-    function do_md_uploadimage(){
+    public function do_md_uploadimage(){
         $F = iFS::upload('editormd-image-file');
         $F===false && iPHP::json(array(
             'message'  => iFS::$ERROR,
@@ -178,7 +178,7 @@ class editorApp{
             'success'  => 1
         ));
     }
-    function do_uploadfile(){
+    public function do_uploadfile(){
         $F = iFS::upload('upfile');
         $F===false && exit(iFS::$ERROR);
 		$F['path'] && $url	= iFS::fp($F['path'],'+http');
@@ -189,7 +189,7 @@ class editorApp{
 			"state"    =>'SUCCESS'
 		));
     }
-    function do_uploadvideo(){
+    public function do_uploadvideo(){
         $F = iFS::upload('upfile');
         $F===false && exit(iFS::$ERROR);
         $F['path'] && $url  = iFS::fp($F['path'],'+http');
@@ -200,7 +200,7 @@ class editorApp{
             "state"    =>'SUCCESS'
         ));
     }
-    function do_uploadscrawl(){
+    public function do_uploadscrawl(){
 		if ($_GET[ "action" ] == "tmpImg") { // 背景上传
             iFS::$ERROR_TYPE  = false;
             $F = iFS::upload('upfile','scrawl/tmp');

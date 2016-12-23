@@ -10,12 +10,12 @@
 */
 // class accountApp extends admincp{
 class accountApp{
-    function __construct() {
+    public function __construct() {
         $this->uid      = (int)$_GET['id'];
         $this->groupApp = admincp::app('group',1);
     }
 
-    function do_job(){
+    public function do_job(){
 		require_once iPHP_APP_CORE.'/iJob.class.php';
 		$job	= new JOB;
         $this->uid OR $this->uid = iMember::$userid;
@@ -25,11 +25,11 @@ class accountApp{
         $rs     = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `uid`='$this->uid' LIMIT 1;");
 		include admincp::view("account.job");
     }
-    function do_edit(){
+    public function do_edit(){
         $this->uid = iMember::$userid;
         $this->do_add();
     }
-    function do_add(){
+    public function do_add(){
         if($this->uid) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `uid`='$this->uid' LIMIT 1;");
             $rs->info && $rs->info = unserialize($rs->info);
@@ -37,7 +37,7 @@ class accountApp{
         }
         include admincp::view("account.add");
     }
-    function do_iCMS(){
+    public function do_iCMS(){
     	if($_GET['job']){
     		require_once iPHP_APP_CORE.'/iJob.class.php';
     		$job	=new JOB;
@@ -53,7 +53,7 @@ class accountApp{
         $_count		= count($rs);
     	include admincp::view("account.manage");
     }
-    function do_save(){
+    public function do_save(){
         $uid      = (int)$_POST['uid'];
         $gender   = (int)$_POST['gender'];
         $type     = $_POST['type'];
@@ -102,7 +102,7 @@ class accountApp{
         }
         iPHP::success($msg,'url:'.APP_URI);
     }
-    function do_batch(){
+    public function do_batch(){
     	$idA	= (array)$_POST['id'];
     	$idA OR iPHP::alert("请选择要操作的用户");
     	$ids	= implode(',',(array)$_POST['id']);
@@ -118,7 +118,7 @@ class accountApp{
     		break;
 		}
 	}
-    function do_del($uid = null,$dialog=true){
+    public function do_del($uid = null,$dialog=true){
     	$uid===null && $uid=$this->uid;
 		$uid OR iPHP::alert('请选择要删除的用户');
 		$uid=="1" && iPHP::alert('不能删除超级管理员');
