@@ -136,7 +136,7 @@ function tag_list($vars){
 	return $resource;
 }
 
-public function tag_array($vars,$resource=null){
+function tag_array($vars,$resource=null){
 	$tagApp = iPHP::app("tag");
     if($resource===null){
         if(isset($vars['name'])){

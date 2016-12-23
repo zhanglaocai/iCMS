@@ -36,7 +36,7 @@ function user_data($vars=null){
     return $user;
 }
 
-public function user_list($vars=null){
+function user_list($vars=null){
 	$maxperpage = isset($vars['row'])?(int)$vars['row']:"100";
 	$cache_time	= isset($vars['time'])?(int)$vars['time']:"-1";
 
@@ -123,7 +123,7 @@ public function user_list($vars=null){
 	return $resource;
 }
 
-public function user_category($vars=null){
+function user_category($vars=null){
 	$row       = isset($vars['row'])?(int)$vars['row']:"10";
 	$where_sql = "WHERE `uid`='".(int)$vars['userid']."' ";
 	$where_sql.= " AND `appid`='".(int)$vars['appid']."'";

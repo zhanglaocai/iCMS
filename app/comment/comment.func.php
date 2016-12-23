@@ -7,12 +7,12 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-public function comment_user_info($uid=0,$username=null,$facesize=null){
+function comment_user_info($uid=0,$username=null,$facesize=null){
 	iPHP::app('user.class','static');
 	return user::info($uid,$username,$facesize);
 }
 
-public function comment_array($vars){
+function comment_array($vars){
 	$where_sql = " `status`='1'";
 	$is_multi = false;
 	if(isset($vars['id'])){

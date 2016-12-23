@@ -28,7 +28,7 @@ function public_crontab(){
 	echo '<img src="'.iCMS_API.'?app=public&do=crontab&'.$_SERVER['REQUEST_TIME'].'" id="iCMS_public_crontab"/>';
 }
 
-public function public_qrcode($vars=null){
+function public_qrcode($vars=null){
 	$data  = $vars['data'];
 	$query = array('app'=>'public','do'=>'qrcode','url'=>$data);
 	isset($vars['cache']) && $query['cache'] = true;
