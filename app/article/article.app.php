@@ -49,14 +49,14 @@ class articleApp {
 	}
 	private function vote($type) {
 		// iPHP::app('user.class','static');
-		// user::get_cookie() OR iPHP::code(0,'iCMS:!login',0,'json');
+		// user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
 
 		$aid = (int) $_POST['iid'];
-		$aid OR iPHP::code(0, 'iCMS:article:empty_id', 0, 'json');
+		$aid OR iUI::code(0, 'iCMS:article:empty_id', 0, 'json');
 
 		$ackey = 'article_' . $type . '_' . $aid;
 		$vote = iPHP::get_cookie($ackey);
-		$vote && iPHP::code(0, 'iCMS:article:!' . $type, 0, 'json');
+		$vote && iUI::code(0, 'iCMS:article:!' . $type, 0, 'json');
 
 		if ($type == 'good') {
 			$sql = '`good`=good+1';
@@ -65,7 +65,7 @@ class articleApp {
 		}
 		iDB::query("UPDATE `#iCMS@__article` SET {$sql} WHERE `id` ='{$aid}' limit 1");
 		iPHP::set_cookie($ackey, time(), 86400);
-		iPHP::code(1, 'iCMS:article:' . $type, 0, 'json');
+		iUI::code(1, 'iCMS:article:' . $type, 0, 'json');
 
 	}
 	public function article($id, $page = 1, $tpl = true) {
@@ -284,7 +284,7 @@ class articleApp {
 				'total' => $total,
 				'perpage' => 1,
 				'nowindex' => (int) $_GET['p'],
-				'lang' => iPHP::lang(iPHP_APP . ':page'),
+				'lang' => iUI::lang(iPHP_APP . ':page'),
 			);
 			if ($article['chapter']) {
 				foreach ((array) $chapterArray as $key => $value) {
@@ -378,7 +378,7 @@ class articleApp {
 				$img_replace[$key] = $img;
 			}
             if($this->config['pic_next'] && $total>1){
-                $clicknext = '<a href="'.$next_url.'"><b>'.iPHP::lang('iCMS:article:clicknext').' ('.$page.'/'.$total.')</b></a>';
+                $clicknext = '<a href="'.$next_url.'"><b>'.iUI::lang('iCMS:article:clicknext').' ('.$page.'/'.$total.')</b></a>';
 				$clickimg = '<a href="' . $next_url . '" title="' . $article['title'] . '" class="img">' . $img . '</a>';
 				if ($this->config['pic_center']) {
                     $img_replace[$key] = '<p class="click2next">'.$clicknext.'</p>';

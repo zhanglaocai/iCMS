@@ -103,7 +103,7 @@ class articleAdmincp{
             }
             article::update($data,array('id'=>$this->id));
         }
-    	iPHP::success('操作成功!','js:1');
+    	iUI::success('操作成功!','js:1');
     }
     public function do_updateorder(){
         foreach((array)$_POST['sortnum'] as $sortnum=>$id){
@@ -111,7 +111,7 @@ class articleAdmincp{
         }
     }
     public function do_batch(){
-    	$_POST['id'] OR iPHP::alert("请选择要操作的文章");
+    	$_POST['id'] OR iUI::alert("请选择要操作的文章");
     	$ids	= implode(',',(array)$_POST['id']);
     	$batch	= $_POST['batch'];
     	switch($batch){
@@ -119,16 +119,16 @@ class articleAdmincp{
 		        foreach((array)$_POST['sortnum'] AS $id=>$sortnum) {
                     article::update(compact('sortnum'),compact('id'));
 		        }
-		        iPHP::success('排序已更新!','js:1');
+		        iUI::success('排序已更新!','js:1');
     		break;
             case 'baiduping':
                 foreach((array)$_POST['id'] AS $id) {
                     $this->do_baiduping($id,false);
                 }
-                iPHP::success('推送完成!','js:1');
+                iUI::success('推送完成!','js:1');
             break;
     		case 'move':
-		        $_POST['cid'] OR iPHP::alert("请选择目标栏目!");
+		        $_POST['cid'] OR iUI::alert("请选择目标栏目!");
                 iCMS::core('Map');
                 iMap::init('category',$this->appid);
                 $cid = (int)$_POST['cid'];
@@ -142,10 +142,10 @@ class articleAdmincp{
                         $this->categoryApp->update_count_one($cid);
 		            }
 		        }
-		        iPHP::success('成功移动到目标栏目!','js:1');
+		        iUI::success('成功移动到目标栏目!','js:1');
             break;
             case 'scid':
-                //$_POST['scid'] OR iPHP::alert("请选择目标栏目!");
+                //$_POST['scid'] OR iUI::alert("请选择目标栏目!");
                 iCMS::core('Map');
                 iMap::init('category',$this->appid);
                 $scid = implode(',', (array)$_POST['scid']);
@@ -154,7 +154,7 @@ class articleAdmincp{
                     article::update(compact('scid'),compact('id'));
                     iMap::diff($scid,$_scid,$id);
                 }
-                iPHP::success('文章副栏目设置完成!','js:1');
+                iUI::success('文章副栏目设置完成!','js:1');
             break;
             case 'prop':
                 iCMS::core('Map');
@@ -165,7 +165,7 @@ class articleAdmincp{
                     article::update(compact('pid'),compact('id'));
                     iMap::diff($pid,$_pid,$id);
                 }
-                iPHP::success('文章属性设置完成!','js:1');
+                iUI::success('文章属性设置完成!','js:1');
     		break;
     		case 'weight':
                 $data = array('weight'=>$_POST['mweight']);
@@ -179,7 +179,7 @@ class articleAdmincp{
                         $keywords = $keywords?$keywords.','.iSecurity::escapeStr($_POST['mkeyword']):iSecurity::escapeStr($_POST['mkeyword']);
                         article::update(compact('keywords'),compact('id'));
 		        	}
-		        	iPHP::success('文章关键字更改完成!','js:1');
+		        	iUI::success('文章关键字更改完成!','js:1');
     			}
     		break;
     		case 'tag':
@@ -195,7 +195,7 @@ class articleAdmincp{
                     $tags = addslashes($tags);
                     article::update(compact('tags'),compact('id'));
 		    	}
-		    	iPHP::success('文章标签更改完成!','js:1');
+		    	iUI::success('文章标签更改完成!','js:1');
     		break;
     		case 'thumb':
 		        foreach((array)$_POST['id'] AS $id) {
@@ -203,7 +203,7 @@ class articleAdmincp{
                     $picurl = $this->remotepic($body,'autopic',$id);
                     $this->set_pic($picurl,$id);
 		        }
-		        iPHP::success('成功提取缩略图!','js:1');
+		        iUI::success('成功提取缩略图!','js:1');
     		break;
     		case 'dels':
     			iPHP::$break	= false;
@@ -214,36 +214,36 @@ class articleAdmincp{
 			        $msg.= $this->del_msg('文章删除完成!');
 					$updateMsg	= $i?true:false;
 					$timeout	= ($i++)==$_count?'3':false;
-					iPHP::dialog($msg,'js:parent.$("#id'.$id.'").remove();',$timeout,0,$updateMsg);
+					iUI::dialog($msg,'js:parent.$("#id'.$id.'").remove();',$timeout,0,$updateMsg);
 		        	ob_end_flush();
 	   			}
 	   			iPHP::$break	= true;
-				iPHP::success('文章全部删除完成!','js:1',3,0,true);
+				iUI::success('文章全部删除完成!','js:1',3,0,true);
     		break;
     		default:
 				$data = admincp::fields($batch);
     	}
         $data && article::batch($data,$ids);
-		iPHP::success('操作成功!','js:1');
+		iUI::success('操作成功!','js:1');
     }
     public function do_baiduping($id = null,$dialog=true){
         $id===null && $id=$this->id;
-        $id OR iPHP::alert('请选择要推送的文章!');
+        $id OR iUI::alert('请选择要推送的文章!');
         $rs   = article::row($id);
         $C    = $this->category($rs['cid']);
         $iurl = iURL::get('article',array($rs,$C));
         $url  = $iurl->href;
         $res  = baidu_ping($url);
         if($res===true){
-            $dialog && iPHP::success('推送完成','js:1');
+            $dialog && iUI::success('推送完成','js:1');
         }else{
-            iPHP::alert('推送失败！['.$res->message.']','js:1');
+            iUI::alert('推送失败！['.$res->message.']','js:1');
         }
     }
     public function do_getjson(){
         $id = (int)$_GET['id'];
         $rs = article::row($id);
-        iPHP::json($rs);
+        iUI::json($rs);
     }
     public function do_getmeta(){
         $cid = $_GET['cid'];
@@ -439,11 +439,11 @@ class articleAdmincp{
         }
 
         $total = iPHP::total(false,article::count_sql($sql),"G");
-        iPHP::pagenav($total,$maxperpage,"篇文章");
+        iUI::pagenav($total,$maxperpage,"篇文章");
 
-        $limit = 'LIMIT '.iPHP::$offset.','.$maxperpage;
+        $limit = 'LIMIT '.iUI::$offset.','.$maxperpage;
 
-        if($map_sql||iPHP::$offset){
+        if($map_sql||iUI::$offset){
             // if($map_sql){
                 $ids_array = iDB::all("
                     SELECT `id` FROM `#iCMS@__article` {$sql}
@@ -513,9 +513,9 @@ class articleAdmincp{
         $creative    = (int)$_POST['creative'];
         $markdown    = (int)$_POST['markdown'];
 
-        empty($title)&& iPHP::alert('标题不能为空！');
-        empty($cid)  && iPHP::alert('请选择所属栏目');
-        empty($body) && empty($url) && iPHP::alert('文章内容不能为空！');
+        empty($title)&& iUI::alert('标题不能为空！');
+        empty($cid)  && iUI::alert('请选择所属栏目');
+        empty($body) && empty($url) && iUI::alert('文章内容不能为空！');
 
         $pubdate   = iPHP::str2time($_POST['pubdate']);
         $postype   = $_POST['postype']?$_POST['postype']:0;
@@ -533,21 +533,21 @@ class articleAdmincp{
 
         if($this->config['filter']) {
             $fwd = iPHP::app("admincp.filter.app")->run($title);
-            $fwd && iPHP::alert('标题中包含被系统屏蔽的字符，请重新填写。');
+            $fwd && iUI::alert('标题中包含被系统屏蔽的字符，请重新填写。');
             $fwd = iPHP::app("admincp.filter.app")->run($description);
-            $fwd && iPHP::alert('简介中包含被系统屏蔽的字符，请重新填写。');
+            $fwd && iUI::alert('简介中包含被系统屏蔽的字符，请重新填写。');
             // $fwd = iPHP::app("admincp.filter.app")->run($body);
-            // $fwd && iPHP::alert('内容中包含被系统屏蔽的字符，请重新填写。');
+            // $fwd && iUI::alert('内容中包含被系统屏蔽的字符，请重新填写。');
         }
 
         if(empty($aid) && $this->config['repeatitle']) {
-            article::check_title($title) && iPHP::alert('该标题的文章已经存在!请检查是否重复');
+            article::check_title($title) && iUI::alert('该标题的文章已经存在!请检查是否重复');
         }
         $category = $this->category($cid);
         if(strstr($category->rule->article,'{LINK}')!==false){
             empty($clink) && $clink = strtolower(pinyin($title));
             if(empty($aid) && $clink) {
-                article::check_clink($clink) && iPHP::alert('该文章自定义链接已经存在!请检查是否重复');
+                article::check_clink($clink) && iUI::alert('该文章自定义链接已经存在!请检查是否重复');
             }
         }
 
@@ -638,8 +638,8 @@ class articleAdmincp{
                     array("text" =>"返回文章列表","url"=>$SELFURL),
                     array("text" =>"查看网站首页","url"=>iCMS_URL,"target"=>'_blank')
             );
-            iPHP::$dialog['lock']	= true;
-            iPHP::dialog('success:#:check:#:文章添加完成!<br />10秒后返回文章列表','url:'.$SELFURL,10,$moreBtn);
+            iUI::$dialog['lock']	= true;
+            iUI::dialog('success:#:check:#:文章添加完成!<br />10秒后返回文章列表','url:'.$SELFURL,10,$moreBtn);
         }else{
             isset($_POST['ischapter']) OR $chapter = 0;
 			if($tags){
@@ -672,18 +672,18 @@ class articleAdmincp{
                 );
             }
 
-            iPHP::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$SELFURL);
+            iUI::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$SELFURL);
         }
     }
     public function do_del(){
         $msg = $this->del($this->id);
         $msg.= $this->del_msg('文章删除完成!');
         $msg.= $this->del_msg('10秒后返回文章列表!');
-        iPHP::$dialog['lock'] = true;
-        iPHP::dialog($msg,'js:1');
+        iUI::$dialog['lock'] = true;
+        iUI::dialog($msg,'js:1');
     }
     public function del_msg($str){
-        return iPHP::msg('success:#:check:#:'.$str.'<hr />',true);
+        return iUI::msg('success:#:check:#:'.$str.'<hr />',true);
     }
     public function del_pic($pic){
         //$thumbfilepath    = gethumb($pic,'','',false,true,true);
@@ -700,7 +700,7 @@ class articleAdmincp{
     }
     public function del($id,$uid='0',$postype='1') {
         $id = (int)$id;
-        $id OR iPHP::alert("请选择要删除的文章");
+        $id OR iUI::alert("请选择要删除的文章");
         $uid && $sql="and `userid`='$uid' and `postype`='$postype'";
         $art = article::row($id,'cid,pic,tags',$sql);
         admincp::CP($art['cid'],'cd','alert');

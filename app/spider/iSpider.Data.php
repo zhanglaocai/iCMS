@@ -63,7 +63,7 @@ class spiderData extends spider{
                 echo spider::errorlog("{$msg}\n",$url,array('pid'=>$pid,'sid'=>$sid,'rid'=>$rid));
                 return false;
             }else{
-                iPHP::alert($msg);
+                iUI::alert($msg);
             }
         }
 

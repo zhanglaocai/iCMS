@@ -103,7 +103,7 @@ class spiderUrls extends spider{
                 echo "采集列表为空!请填写!\n";
                 return false;
             }
-            iPHP::alert('采集列表为空!请填写!', 'js:parent.window.iCMS_MODAL.destroy();');
+            iUI::alert('采集列表为空!请填写!', 'js:parent.window.iCMS_MODAL.destroy();');
         }
 
 //      if(spider::$ruleTest){

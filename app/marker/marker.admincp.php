@@ -35,8 +35,8 @@ class markerAdmincp{
         $data   = $_POST['data'];
         $status = (int)$_POST['status'];
 
-        $name OR iPHP::alert('标记名称不能为空!');
-        // $key OR iPHP::alert('标记key值不能为空!');
+        $name OR iUI::alert('标记名称不能为空!');
+        // $key OR iUI::alert('标记key值不能为空!');
         $key OR $key = pinyin($name);
 
         $fields = array('cid','pid','name','key','data','status');
@@ -46,31 +46,31 @@ class markerAdmincp{
             iDB::update('marker', $data, array('id'=>$id));
 			$msg="标记更新完成!";
 		}else{
-	        iDB::value("SELECT `id` FROM `#iCMS@__marker` where `key` ='$key'") && iPHP::alert('该标记已经存在!请另选一个');
+	        iDB::value("SELECT `id` FROM `#iCMS@__marker` where `key` ='$key'") && iUI::alert('该标记已经存在!请另选一个');
             $id = iDB::insert('marker',$data);
 	        $msg="新标记添加完成!";
 		}
 		$this->cache($id);
-        iPHP::success($msg,'url:'.APP_URI);
+        iUI::success($msg,'url:'.APP_URI);
     }
     public function do_update(){
         if($this->id){
             $data = admincp::fields($_GET['iDT']);
             $data && iDB::update("marker",$data,array('id'=>$this->id));
             $this->cache($this->id);
-            iPHP::success('操作成功!','js:1');
+            iUI::success('操作成功!','js:1');
         }
     }
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
-    	$id OR iPHP::alert('请选择要删除的标记!');
+    	$id OR iUI::alert('请选择要删除的标记!');
 		iDB::query("DELETE FROM `#iCMS@__marker` WHERE `id` = '$id';");
     	$this->cache($id);
-    	$dialog && iPHP::success("已经删除!",'url:'.APP_URI);
+    	$dialog && iUI::success("已经删除!",'url:'.APP_URI);
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iPHP::alert("请选择要操作的标记");
+        $idArray OR iUI::alert("请选择要操作的标记");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
@@ -80,13 +80,13 @@ class markerAdmincp{
 	    			$this->do_del($id,false);
 	    		}
 	    		iPHP::$break	= true;
-				iPHP::success('标记全部删除完成!','js:1');
+				iUI::success('标记全部删除完成!','js:1');
     		break;
     		case 'refresh':
                 foreach($idArray AS $id){
     			 $this->cache($id);
                 }
-    			iPHP::success('标记缓存全部更新完成!','js:1');
+    			iUI::success('标记缓存全部更新完成!','js:1');
     		break;
 		}
 	}
@@ -101,14 +101,14 @@ class markerAdmincp{
 
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
         $total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__marker` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"个标记");
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__marker` {$sql} order by id DESC LIMIT ".iPHP::$offset." , {$maxperpage}");
+        iUI::pagenav($total,$maxperpage,"个标记");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__marker` {$sql} order by id DESC LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
     	include admincp::view("marker.manage");
     }
     public function do_cache(){
         $this->cache($this->id);
-        iPHP::success('缓存更新完成!','js:1');
+        iUI::success('缓存更新完成!','js:1');
     }
     public function cache($id=null){
         $id && $sql = " AND `id`='$id'";

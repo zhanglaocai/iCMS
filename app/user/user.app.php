@@ -178,7 +178,7 @@ class userApp {
 			$this->ACTION_add_category();
 		}
 
-		iPHP::success('user:category:update', 'js:1');
+		iUI::success('user:category:update', 'js:1');
 	}
 	private function __ACTION_manage_publish() {
 		$aid = (int) $_POST['id'];
@@ -199,7 +199,7 @@ class userApp {
 		if (iCMS::$config['user']['post']['seccode']) {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iPHP::core("Seccode");
-			iSeccode::check($seccode, true) OR iPHP::alert('iCMS:seccode:error');
+			iSeccode::check($seccode, true) OR iUI::alert('iCMS:seccode:error');
 		}
 
 		if (iCMS::$config['user']['post']['interval']) {
@@ -210,7 +210,7 @@ class userApp {
             ");
 
 			if ($_SERVER['REQUEST_TIME'] - $last_postime < iCMS::$config['user']['post']['interval']) {
-				iPHP::alert('user:publish:interval');
+				iUI::alert('user:publish:interval');
 			}
 		}
 
@@ -219,16 +219,16 @@ class userApp {
 			$_POST['body'] = trim($_POST['body']);
 		}
 		$body = iPHP::vendor('CleanHtml', array($_POST['body']));
-		empty($title) && iPHP::alert('标题不能为空！');
-		empty($cid) && iPHP::alert('请选择所属栏目！');
-		empty($body) && iPHP::alert('文章内容不能为空！');
+		empty($title) && iUI::alert('标题不能为空！');
+		empty($cid) && iUI::alert('请选择所属栏目！');
+		empty($body) && iUI::alert('文章内容不能为空！');
 
 		$fwd = iPHP::app("admincp.filter.app")->run($title);
-		$fwd && iPHP::alert('user:publish:filter_title');
+		$fwd && iUI::alert('user:publish:filter_title');
 		$fwd = iPHP::app("admincp.filter.app")->run($description);
-		$fwd && iPHP::alert('user:publish:filter_desc');
+		$fwd && iUI::alert('user:publish:filter_desc');
 		$fwd = iPHP::app("admincp.filter.app")->run($body);
-		$fwd && iPHP::alert('user:publish:filter_body');
+		$fwd && iUI::alert('user:publish:filter_body');
 
 		$articleApp = iPHP::app("article.admincp");
 
@@ -299,14 +299,14 @@ class userApp {
 			);
 		}
 		$url = iPHP::router('user:article');
-		iPHP::success($lang[$status], 'url:' . $url);
+		iUI::success($lang[$status], 'url:' . $url);
 	}
 	private function __ACTION_manage_article() {
 		$actArray = array('delete', 'renew', 'trash');
 		$act = iSecurity::escapeStr($_POST['act']);
 		if (in_array($act, $actArray)) {
 			$id = (int) $_POST['id'];
-			$id OR iPHP::code(0, 'iCMS:error', 0, 'json');
+			$id OR iUI::code(0, 'iCMS:error', 0, 'json');
 			$act == "delete" && $sql = "`status` ='2',`postype`='3'";
 			$act == "renew" && $sql = "`status` ='1'";
 			$act == "trash" && $sql = "`status` ='2'";
@@ -317,14 +317,14 @@ class userApp {
                 AND `id`='$id'
                 LIMIT 1;
             ");
-			iPHP::code(1, 0, 0, 'json');
+			iUI::code(1, 0, 0, 'json');
 		}
 	}
 	private function __ACTION_manage_comment() {
 		$act = iSecurity::escapeStr($_POST['act']);
 		if ($act == "del") {
 			$id = (int) $_POST['id'];
-			$id OR iPHP::code(0, 'iCMS:error', 0, 'json');
+			$id OR iUI::code(0, 'iCMS:error', 0, 'json');
 
 			$comment = iDB::row("
                 SELECT `appid`,`iid`
@@ -352,14 +352,14 @@ class userApp {
                 AND `id`='$id' LIMIT 1
             ");
 			user::update_count(user::$userid, 1, 'comments', '-');
-			iPHP::code(1, 0, 0, 'json');
+			iUI::code(1, 0, 0, 'json');
 		}
 	}
 	private function __ACTION_manage_message() {
 		$act = iSecurity::escapeStr($_POST['act']);
 		if ($act == "del") {
 			$id = (int) $_POST['id'];
-			$id OR iPHP::code(0, 'iCMS:error', 0, 'json');
+			$id OR iUI::code(0, 'iCMS:error', 0, 'json');
 
 			$user = (int) $_POST['user'];
 			if ($user) {
@@ -377,7 +377,7 @@ class userApp {
                     AND `id`='$id';
                 ");
 			}
-			iPHP::code(1, 0, 0, 'json');
+			iUI::code(1, 0, 0, 'json');
 		}
 	}
 	private function __ACTION_manage_favorite() {
@@ -385,7 +385,7 @@ class userApp {
 		$act = iSecurity::escapeStr($_POST['act']);
 		if (in_array($act, $actArray)) {
 			$id = (int) $_POST['id'];
-			$id OR iPHP::code(0, 'iCMS:error', 0, 'json');
+			$id OR iUI::code(0, 'iCMS:error', 0, 'json');
 			iDB::query("
                 DELETE
                 FROM `#iCMS@__favorite_data`
@@ -393,7 +393,7 @@ class userApp {
                 AND `id`='$id'
                 LIMIT 1;
             ");
-			iPHP::code(1, 0, 0, 'json');
+			iUI::code(1, 0, 0, 'json');
 		}
 	}
 	public function API_profile() {
@@ -442,16 +442,16 @@ class userApp {
 		$meta          = iSecurity::escapeStr($_POST['meta']);
 		$setting       = $_POST['setting'];
 
-		($personstyle == iPHP::lang('user:profile:personstyle')) && $personstyle = "";
-		($slogan == iPHP::lang('user:profile:slogan')) && $slogan = "";
+		($personstyle == iUI::lang('user:profile:personstyle')) && $personstyle = "";
+		($slogan == iUI::lang('user:profile:slogan')) && $slogan = "";
 		$meta && $meta = addslashes(json_encode($meta));
 
 		// if($nickname!=user::$nickname){
 		//     $has_nick = iDB::value("SELECT uid FROM `#iCMS@__user` where `nickname`='{$nickname}' AND `uid` <> '".user::$userid."'");
-		//     $has_nick && iPHP::alert('user:profile:nickname');
+		//     $has_nick && iUI::alert('user:profile:nickname');
 		//     $userdata = user::data(user::$userid);
 		//     if($userdata->unickEdit>1){
-		//         iPHP::alert('user:profile:unickEdit');
+		//         iUI::alert('user:profile:unickEdit');
 		//     }
 		//     if($nickname){
 		//         iDB::update('user',array('nickname'=>$nickname),array('uid'=>user::$userid));
@@ -490,7 +490,7 @@ class userApp {
 			$fdata     = compact($fields);
 			iDB::insert('user_data', $fdata);
 		}
-		iPHP::success('user:profile:success');
+		iUI::success('user:profile:success');
 	}
 	private function __ACTION_profile_custom() {
 		iFS::$watermark = false;
@@ -503,12 +503,12 @@ class userApp {
 		$F = iFS::upload('upfile', $dir, $filename, 'jpg');
 		if (empty($F)) {
 			if ($_POST['format'] == 'json') {
-				iPHP::code(0, 'user:iCMS:error', 0, 'json');
+				iUI::code(0, 'user:iCMS:error', 0, 'json');
 			} else {
-				iPHP::js_callback(array("code" => 0));
+				iUI::js_callback(array("code" => 0));
 			}
 		}
-		$F OR iPHP::code(0, 'user:iCMS:error', 0, 'json');
+		$F OR iUI::code(0, 'user:iCMS:error', 0, 'json');
 		// $F['code'] && iDB::update(
 		// 	'user_data',
 		// 	array('coverpic' => $F["path"]),
@@ -516,7 +516,7 @@ class userApp {
 		// );
 		$url = iFS::fp($F['path'], '+http');
 		if ($_POST['format'] == 'json') {
-			iPHP::code(1, 'user:profile:custom', $url, 'json');
+			iUI::code(1, 'user:profile:custom', $url, 'json');
 		}
 		$array = array(
 			"code" => $F["code"],
@@ -528,7 +528,7 @@ class userApp {
 			"original" => $F["oname"],
 			"state" => ($F['code'] ? 'SUCCESS' : $F['state']),
 		);
-		iPHP::js_callback($array);
+		iUI::js_callback($array);
 	}
 	private function __ACTION_profile_avatar() {
 		iFS::$watermark = false;
@@ -537,14 +537,14 @@ class userApp {
 		$F = iFS::upload('upfile', $dir, user::$userid, 'jpg');
 		if (empty($F)) {
 			if ($_POST['format'] == 'json') {
-				iPHP::code(0, 'user:iCMS:error', 0, 'json');
+				iUI::code(0, 'user:iCMS:error', 0, 'json');
 			} else {
-				iPHP::js_callback(array("code" => 0));
+				iUI::js_callback(array("code" => 0));
 			}
 		}
 		$url = iFS::fp($F['path'], '+http');
 		if ($_POST['format'] == 'json') {
-			iPHP::code(1, 'user:profile:avatar', $url, 'json');
+			iUI::code(1, 'user:profile:avatar', $url, 'json');
 		}
 		$array = array(
 			"code" => $F["code"],
@@ -556,37 +556,37 @@ class userApp {
 			"original" => $F["oname"],
 			"state" => ($F['code'] ? 'SUCCESS' : $F['state']),
 		);
-		iPHP::js_callback($array);
+		iUI::js_callback($array);
 	}
 
 	private function __ACTION_profile_setpassword() {
 
 		iPHP::core("Seccode");
-		iSeccode::check($_POST['seccode'], true) OR iPHP::alert('iCMS:seccode:error');
+		iSeccode::check($_POST['seccode'], true) OR iUI::alert('iCMS:seccode:error');
 
 		$oldPwd = md5($_POST['oldPwd']);
 		$newPwd1 = md5($_POST['newPwd1']);
 		$newPwd2 = md5($_POST['newPwd2']);
 
-		$newPwd1 != $newPwd2 && iPHP::alert("user:password:unequal");
+		$newPwd1 != $newPwd2 && iUI::alert("user:password:unequal");
 
 		$password = iDB::value("
             SELECT `password`
             FROM `#iCMS@__user`
             WHERE `uid`='" . user::$userid . "' LIMIT 1;
         ");
-		$oldPwd != $password && iPHP::alert("user:password:original");
+		$oldPwd != $password && iUI::alert("user:password:original");
 		iDB::query("
             UPDATE `#iCMS@__user`
             SET `password` = '$newPwd1'
             WHERE `uid` = '" . user::$userid . "';
         ");
-		iPHP::alert("user:password:modified", 'js:parent.location.reload();');
+		iUI::alert("user:password:modified", 'js:parent.location.reload();');
 	}
 	public function ACTION_findpwd() {
 		$seccode = iSecurity::escapeStr($_POST['seccode']);
 		iPHP::core("Seccode");
-		iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+		iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 
 		$uid = (int) $_POST['uid'];
 		$auth = iSecurity::escapeStr($_POST['auth']);
@@ -597,30 +597,30 @@ class userApp {
 			$authcode = authcode($authcode);
 
 			if (empty($authcode)) {
-				iPHP::code(0, 'user:findpwd:error', 'uname', 'json');
+				iUI::code(0, 'user:findpwd:error', 'uname', 'json');
 			}
 			list($uid, $username, $password, $timeline) = explode(USER_AUTHASH, $authcode);
 			$now = time();
 			if ($now - $timeline > 86400) {
-				iPHP::code(0, 'user:findpwd:error', 'time', 'json');
+				iUI::code(0, 'user:findpwd:error', 'time', 'json');
 			}
 			$user = user::get($uid, false);
 			if ($username != $user->username || $password != $user->password) {
-				iPHP::code(0, 'user:findpwd:error', 'user', 'json');
+				iUI::code(0, 'user:findpwd:error', 'user', 'json');
 			}
 			$rstpassword = md5(trim($_POST['rstpassword']));
 			if ($rstpassword == $user->password) {
-				iPHP::code(0, 'user:findpwd:same', 'password', 'json');
+				iUI::code(0, 'user:findpwd:same', 'password', 'json');
 			}
 			iDB::update("user", array('password' => $rstpassword), array('uid' => $uid));
-			iPHP::code(1, 'user:findpwd:success', 0, 'json');
+			iUI::code(1, 'user:findpwd:success', 0, 'json');
 		} else {
 			$uname = iSecurity::escapeStr($_POST['uname']);
-			$uname OR iPHP::code(0, 'user:findpwd:username:empty', 'uname', 'json');
+			$uname OR iUI::code(0, 'user:findpwd:username:empty', 'uname', 'json');
 			$uid = user::check($uname, 'username');
-			$uid OR iPHP::code(0, 'user:findpwd:username:noexist', 'uname', 'json');
+			$uid OR iUI::code(0, 'user:findpwd:username:noexist', 'uname', 'json');
 			$user = user::get($uid, false);
-			$user OR iPHP::code(0, 'user:findpwd:username:noexist', 'uname', 'json');
+			$user OR iUI::code(0, 'user:findpwd:username:noexist', 'uname', 'json');
 
 			$authcode = authcode($uid .
 				USER_AUTHASH . $user->username .
@@ -655,14 +655,14 @@ class userApp {
 			//var_dump(iCMS::$config);
 			$result = iPHP::vendor('SendMail', array($config));
 			if ($result === true) {
-				iPHP::code(1, 'user:findpwd:send:success', 'mail', 'json');
+				iUI::code(1, 'user:findpwd:send:success', 'mail', 'json');
 			} else {
-				iPHP::code(0, 'user:findpwd:send:failure', 'mail', 'json');
+				iUI::code(0, 'user:findpwd:send:failure', 'mail', 'json');
 			}
 		}
 	}
 	public function ACTION_login() {
-		iCMS::$config['user']['login']['enable'] OR iPHP::code(0, 'user:login:forbidden', 'uname', 'json');
+		iCMS::$config['user']['login']['enable'] OR iUI::code(0, 'user:login:forbidden', 'uname', 'json');
 
 		$uname = iSecurity::escapeStr($_POST['uname']);
 		$pass = md5(trim($_POST['pass']));
@@ -674,7 +674,7 @@ class userApp {
 		if (iCMS::$config['user']['login']['seccode']) {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iPHP::core("Seccode");
-			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 		$remember && user::$cookietime = 14 * 86400;
 		$user = user::login($uname, $pass, (strpos($uname, '@') === false ? 'nk' : 'un'));
@@ -686,7 +686,7 @@ class userApp {
                     VALUES ('" . user::$userid . "', '$openid', '$platform');
                 ");
 			}
-			iPHP::code(1, 0, $this->forward, 'json');
+			iUI::code(1, 0, $this->forward, 'json');
 		} else {
 			if (iCMS::$config['user']['login']['interval']) {
 				$cache_name = "iCMS/error/login." . md5($uname);
@@ -695,7 +695,7 @@ class userApp {
 					if ($login_error[1] >= 5) {
 						$_field = (strpos($uname, '@') === false ? 'nickname' : 'username');
 						iDB::update('user', array('status' => '3'), array($_field => $uname));
-						iPHP::code(0, 'user:login:interval', 'uname', 'json');
+						iUI::code(0, 'user:login:interval', 'uname', 'json');
 					} else {
 						$login_error[1]++;
 					}
@@ -706,12 +706,12 @@ class userApp {
 			}
 			// $lang = 'user:login:error';
 			// $user && $lang.='_status_'.$user;
-			iPHP::code(0, 'user:login:error', 'uname', 'json');
+			iUI::code(0, 'user:login:error', 'uname', 'json');
 		}
 	}
 
 	public function ACTION_register() {
-		iCMS::$config['user']['register']['enable'] OR exit(iPHP::lang('user:register:forbidden'));
+		iCMS::$config['user']['register']['enable'] OR exit(iUI::lang('user:register:forbidden'));
 
 		$regip = iSecurity::escapeStr(iPHP::get_ip());
 		$regdate = time();
@@ -724,7 +724,7 @@ class userApp {
                 ORDER BY uid DESC LIMIT 1;");
 
 			if ($ip_regdate - $regdate > iCMS::$config['user']['register']['interval']) {
-				iPHP::code(0, 'user:register:interval', 'username', 'json');
+				iUI::code(0, 'user:register:interval', 'username', 'json');
 			}
 		}
 
@@ -744,22 +744,22 @@ class userApp {
 
 		$agreement = $_POST['agreement'];
 
-		$username OR iPHP::code(0, 'user:register:username:empty', 'username', 'json');
-		preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/i", $username) OR iPHP::code(0, 'user:register:username:error', 'username', 'json');
-		user::check($username, 'username') && iPHP::code(0, 'user:register:username:exist', 'username', 'json');
+		$username OR iUI::code(0, 'user:register:username:empty', 'username', 'json');
+		preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/i", $username) OR iUI::code(0, 'user:register:username:error', 'username', 'json');
+		user::check($username, 'username') && iUI::code(0, 'user:register:username:exist', 'username', 'json');
 
-		$nickname OR iPHP::code(0, 'user:register:nickname:empty', 'nickname', 'json');
-		(cstrlen($nickname) > 20 || cstrlen($nickname) < 4) && iPHP::code(0, 'user:register:nickname:error', 'nickname', 'json');
-		user::check($nickname, 'nickname') && iPHP::code(0, 'user:register:nickname:exist', 'nickname', 'json');
+		$nickname OR iUI::code(0, 'user:register:nickname:empty', 'nickname', 'json');
+		(cstrlen($nickname) > 20 || cstrlen($nickname) < 4) && iUI::code(0, 'user:register:nickname:error', 'nickname', 'json');
+		user::check($nickname, 'nickname') && iUI::code(0, 'user:register:nickname:exist', 'nickname', 'json');
 
-		trim($_POST['password']) OR iPHP::code(0, 'user:password:empty', 'password', 'json');
-		trim($_POST['rstpassword']) OR iPHP::code(0, 'user:password:rst_empty', 'rstpassword', 'json');
-		$password == $rstpassword OR iPHP::code(0, 'user:password:unequal', 'password', 'json');
+		trim($_POST['password']) OR iUI::code(0, 'user:password:empty', 'password', 'json');
+		trim($_POST['rstpassword']) OR iUI::code(0, 'user:password:rst_empty', 'rstpassword', 'json');
+		$password == $rstpassword OR iUI::code(0, 'user:password:unequal', 'password', 'json');
 
 		if (iCMS::$config['user']['register']['seccode']) {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iPHP::core("Seccode");
-			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 		$_setting = array();
 		$_setting['inbox']['receive'] = 'follow';
@@ -812,31 +812,31 @@ class userApp {
 
 		//user::set_cache($uid);
 		iPHP::set_cookie('forward', '', -31536000);
-		iPHP::json(array('code' => 1, 'forward' => $this->forward));
+		iUI::json(array('code' => 1, 'forward' => $this->forward));
 	}
 	public function ACTION_add_category() {
 		$uid = user::$userid;
 		$name = iSecurity::escapeStr($_POST['name']);
-		empty($name) && iPHP::code(0, 'user:category:empty', 'add_category', 'json');
+		empty($name) && iUI::code(0, 'user:category:empty', 'add_category', 'json');
 		$fwd = iPHP::app("admincp.filter.app")->run($name);
-		$fwd && iPHP::code(0, 'user:category:filter', 'add_category', 'json');
+		$fwd && iUI::code(0, 'user:category:filter', 'add_category', 'json');
 		$max = iDB::value("
             SELECT COUNT(cid)
             FROM `#iCMS@__user_category`
             WHERE `uid`='$uid'
             AND `appid`='" . iCMS_APP_ARTICLE . "' LIMIT 1;"
 		);
-		$max >= 10 && iPHP::code(0, 'user:category:max', 'add_category', 'json');
+		$max >= 10 && iUI::code(0, 'user:category:max', 'add_category', 'json');
 		$count = 0;
 		$appid = iCMS_APP_ARTICLE;
 		$fields = array('uid', 'name', 'description', 'count', 'mode', 'appid');
 		$data = compact($fields);
 		$cid = iDB::insert('user_category', $data);
-		$cid && iPHP::code(1, 'user:category:success', $cid, 'json');
-		iPHP::code(0, 'user:category:failure', 0, 'json');
+		$cid && iUI::code(1, 'user:category:success', $cid, 'json');
+		iUI::code(0, 'user:category:failure', 0, 'json');
 	}
 	public function ACTION_report() {
-		$this->auth OR iPHP::code(0, 'iCMS:!login', 0, 'json');
+		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 
 		$iid = (int) $_POST['iid'];
 		$uid = (int) $_POST['userid'];
@@ -844,9 +844,9 @@ class userApp {
 		$reason = (int) $_POST['reason'];
 		$content = iSecurity::escapeStr($_POST['content']);
 
-		$iid OR iPHP::code(0, 'iCMS:error', 0, 'json');
-		$uid OR iPHP::code(0, 'iCMS:error', 0, 'json');
-		$reason OR $content OR iPHP::code(0, 'iCMS:report:empty', 0, 'json');
+		$iid OR iUI::code(0, 'iCMS:error', 0, 'json');
+		$uid OR iUI::code(0, 'iCMS:error', 0, 'json');
+		$reason OR $content OR iUI::code(0, 'iCMS:report:empty', 0, 'json');
 
 		$addtime = time();
 		$ip = iPHP::get_ip();
@@ -856,16 +856,16 @@ class userApp {
 		$fields = array('appid', 'userid', 'iid', 'uid', 'reason', 'content', 'ip', 'addtime', 'status');
 		$data = compact($fields);
 		$id = iDB::insert('user_report', $data);
-		iPHP::code(1, 'iCMS:report:success', $id, 'json');
+		iUI::code(1, 'iCMS:report:success', $id, 'json');
 	}
 	public function ACTION_pm() {
-		$this->auth OR iPHP::code(0, 'iCMS:!login', 0, 'json');
+		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 
 		$receiv_uid = (int) $_POST['uid'];
 		$content = iSecurity::escapeStr($_POST['content']);
 
-		$receiv_uid OR iPHP::code(0, 'iCMS:error', 0, 'json');
-		$content OR iPHP::code(0, 'iCMS:pm:empty', 0, 'json');
+		$receiv_uid OR iUI::code(0, 'iCMS:error', 0, 'json');
+		$content OR iUI::code(0, 'iCMS:pm:empty', 0, 'json');
 
 		$receiv_name = iSecurity::escapeStr($_POST['name']);
 
@@ -882,7 +882,7 @@ class userApp {
 			}
 			if($muserid!=user::$userid){
 				$check = user::follow($receiv_uid, $send_uid);
-				$check OR iPHP::code(0, 'iCMS:pm:nofollow', 0, 'json');
+				$check OR iUI::code(0, 'iCMS:pm:nofollow', 0, 'json');
 			}
 
 		}
@@ -890,25 +890,25 @@ class userApp {
 		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');
 		$data = compact($fields);
 		msg::send($data, 1);
-		iPHP::code(1, 'iCMS:pm:success', $id, 'json');
+		iUI::code(1, 'iCMS:pm:success', $id, 'json');
 	}
 	public function ACTION_follow() {
-		$this->auth OR iPHP::code(0, 'iCMS:!login', 0, 'json');
+		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 
 		$uid = (int) user::$userid;
 		$name = user::$nickname;
 		$fuid = (int) $_POST['uid'];
 		$follow = (bool) $_POST['follow'];
 
-		$uid OR iPHP::code(0, 'iCMS:error', 0, 'json');
-		$fuid OR iPHP::code(0, 'iCMS:error', 0, 'json');
+		$uid OR iUI::code(0, 'iCMS:error', 0, 'json');
+		$fuid OR iUI::code(0, 'iCMS:error', 0, 'json');
 
 		if ($follow) {
 			//1 关注
-			$uid == $fuid && iPHP::code(0, 'user:follow:self', 0, 'json');
+			$uid == $fuid && iUI::code(0, 'user:follow:self', 0, 'json');
 			$check = user::follow($uid, $fuid);
 			if ($check) {
-				iPHP::code(1, 'user:follow:success', 0, 'json');
+				iUI::code(1, 'user:follow:success', 0, 'json');
 			} else {
 				$fname  = user::value($fuid,'uid','nickname');
 				$fields = array('uid', 'name', 'fuid', 'fname');
@@ -916,7 +916,7 @@ class userApp {
 				iDB::insert('user_follow', $data);
 				user::update_count($uid, 1, 'follow');
 				user::update_count($fuid, 1, 'fans');
-				iPHP::code(1, 'user:follow:success', 0, 'json');
+				iUI::code(1, 'user:follow:success', 0, 'json');
 			}
 		} else {
 			iDB::query("
@@ -927,11 +927,11 @@ class userApp {
             ");
 			user::update_count($uid, 1, 'follow', '-');
 			user::update_count($fuid, 1, 'fans', '-');
-			iPHP::code(1, 0, 0, 'json');
+			iUI::code(1, 0, 0, 'json');
 		}
 	}
 	public function ACTION_favorite() {
-		$this->auth OR iPHP::code(0, 'iCMS:!login', 0, 'json');
+		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 
 		$uid = user::$userid;
 		$appid = (int) $_POST['appid'];
@@ -941,13 +941,13 @@ class userApp {
 		$title = iSecurity::escapeStr($_POST['title']);
 		$addtime = time();
 
-		$url OR iPHP::code(0, 'iCMS:favorite:url', 0, 'json');
+		$url OR iUI::code(0, 'iCMS:favorite:url', 0, 'json');
 
 		if (iDB::value("
             SELECT `id`FROM `#iCMS@__user_favorite`
             where `uid`='" . user::$userid . "'
             AND `url`='$url' LIMIT 1;")) {
-			iPHP::code(0, 'iCMS:favorite:failure', 0, 'json');
+			iUI::code(0, 'iCMS:favorite:failure', 0, 'json');
 		}
 
 		$fields = array('uid', 'appid', 'cid', 'url', 'title', 'addtime');
@@ -960,7 +960,7 @@ class userApp {
             WHERE `id` ='{$aid}'
             limit 1
         ");
-		iPHP::code(1, 'iCMS:favorite:success', 0, 'json');
+		iUI::code(1, 'iCMS:favorite:success', 0, 'json');
 	}
 
 	public function API_hits($uid = null) {
@@ -973,35 +973,35 @@ class userApp {
 	public function API_check() {
 		$name = iSecurity::escapeStr($_GET['name']);
 		$value = iSecurity::escapeStr($_GET['value']);
-		$a = iPHP::code(1, '', $name);
+		$a = iUI::code(1, '', $name);
 		switch ($name) {
 		case 'username':
 			if (!preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/i", $value)) {
-				$a = iPHP::code(0, 'user:register:username:error', 'username');
+				$a = iUI::code(0, 'user:register:username:error', 'username');
 			} else {
 				if (user::check($value, 'username')) {
-					$a = iPHP::code(0, 'user:register:username:exist', 'username');
+					$a = iUI::code(0, 'user:register:username:exist', 'username');
 				}
 			}
 			break;
 		case 'nickname':
 			if (preg_match("/\d/", $value[0]) || cstrlen($value) > 20 || cstrlen($value) < 4) {
-				$a = iPHP::code(0, 'user:register:nickname:error', 'nickname');
+				$a = iUI::code(0, 'user:register:nickname:error', 'nickname');
 			} else {
 				if (user::check($value, 'nickname')) {
-					$a = iPHP::code(0, 'user:register:nickname:exist', 'nickname');
+					$a = iUI::code(0, 'user:register:nickname:exist', 'nickname');
 				}
 			}
 			break;
 		case 'password':
-			strlen($value) < 6 && $a = iPHP::code(0, 'user:password:error', 'password');
+			strlen($value) < 6 && $a = iUI::code(0, 'user:password:error', 'password');
 			break;
 		case 'seccode':
 			iPHP::core("Seccode");
-			iSeccode::check($value) OR $a = iPHP::code(0, 'iCMS:seccode:error', 'seccode');
+			iSeccode::check($value) OR $a = iUI::code(0, 'iCMS:seccode:error', 'seccode');
 			break;
 		}
-		iPHP::json($a);
+		iUI::json($a);
 	}
 
 	public function API_register() {
@@ -1023,15 +1023,15 @@ class userApp {
 				'avatar' => $user->avatar,
 				'nickname' => $user->nickname,
 			);
-			iPHP::json($array);
+			iUI::json($array);
 		} else {
 			user::logout();
-			iPHP::code(0, 0, $this->forward, 'json');
+			iUI::code(0, 0, $this->forward, 'json');
 		}
 	}
 	public function API_logout() {
 		user::logout();
-		iPHP::code(1, 0, $this->forward, 'json');
+		iUI::code(1, 0, $this->forward, 'json');
 	}
 	public function API_findpwd() {
 		$auth = iSecurity::escapeStr($_GET['auth']);
@@ -1071,30 +1071,30 @@ class userApp {
 		}
 	}
 	public function API_config() {
-		$this->auth OR iPHP::code(0, 'iCMS:!login', 0, 'json');
+		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 		$editorApp = iPHP::app("admincp.editor.app");
 		$editorApp->do_config();
 	}
 	public function API_catchimage() {
-		$this->auth OR iPHP::code(0, 'iCMS:!login', 0, 'json');
+		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 		$editorApp = iPHP::app("admincp.editor.app");
 		$editorApp->do_catchimage();
 	}
 	public function API_uploadimage() {
-		$this->auth OR iPHP::code(0, 'iCMS:!login', 0, 'json');
+		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 		$editorApp = iPHP::app("admincp.editor.app");
 		$editorApp->do_uploadimage();
 	}
 	public function API_uploadvideo() {
-		$this->auth OR iPHP::code(0, 'iCMS:!login', 0, 'json');
+		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 		$editorApp = iPHP::app("admincp.editor.app");
 		$editorApp->do_uploadvideo();
 	} //手机上传
 	public function API_mobileUp() {
-		$this->auth OR iPHP::code(0, 'iCMS:!login', 0, 'json');
+		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 		$F = iFS::upload('upfile');
 		$F['path'] && $url = iFS::fp($F['path'], '+http');
-		iPHP::js_callback(array(
+		iUI::js_callback(array(
 			'url' => $url,
 			'code' => $F['code'],
 		));

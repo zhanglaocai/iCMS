@@ -21,9 +21,9 @@ class patchApp{
     public function do_check(){
 		if(empty($this->patch)){
 			if($_GET['ajax']){
-				iPHP::json(array('code'=>0));
+				iUI::json(array('code'=>0));
 			}else{
-				iPHP::success("您使用的 iCMS 版本,目前是最新版本<hr />当前版本：iCMS ".iCMS_VER." [".iCMS_RELEASE."]",0,"5");
+				iUI::success("您使用的 iCMS 版本,目前是最新版本<hr />当前版本：iCMS ".iCMS_VER." [".iCMS_RELEASE."]",0,"5");
 			}
 		}else{
 	    	switch(iCMS::$config['system']['patch']){
@@ -44,13 +44,13 @@ class patchApp{
 	    		break;
 	    	}
 	    	if($_GET['ajax']){
-	    		iPHP::json($json,true);
+	    		iUI::json($json,true);
 	    	}
 		    $moreBtn=array(
 		            array("text"=>"马上更新","url"=>$json['url']),
 		            array("text"=>"以后在说","js" =>'return true'),
 		    );
-    		iPHP::dialog('success:#:check:#:'.$json['msg'],0,30,$moreBtn);
+    		iUI::dialog('success:#:check:#:'.$json['msg'],0,30,$moreBtn);
 		}
     }
     public function do_install(){

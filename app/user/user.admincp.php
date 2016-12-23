@@ -25,7 +25,7 @@ class userAdmincp{
     public function do_update(){
         $data = admincp::fields($_GET['iDT']);
         $data && iDB::update('user',$data,array('uid'=>$this->uid));
-        iPHP::success('操作成功!','js:1');
+        iUI::success('操作成功!','js:1');
     }
     public function do_add(){
         if($this->uid) {
@@ -78,9 +78,9 @@ class userAdmincp{
         $orderby    = $_GET['orderby']?$_GET['orderby']:"uid DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
         $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__user` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"个用户");
-        $limit  = 'LIMIT '.iPHP::$offset.','.$maxperpage;
-        if($map_sql||iPHP::$offset){
+        iUI::pagenav($total,$maxperpage,"个用户");
+        $limit  = 'LIMIT '.iUI::$offset.','.$maxperpage;
+        if($map_sql||iUI::$offset){
             $ids_array = iDB::all("
                 SELECT `uid` FROM `#iCMS@__user` {$sql}
                 ORDER BY {$orderby} {$limit}
@@ -106,9 +106,9 @@ class userAdmincp{
         $password = $user['password'];
         unset($user['password']);
 
-        $username OR iPHP::alert('账号不能为空');
-        preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/i",$username) OR iPHP::alert('该账号格式不对');
-        $nickname OR iPHP::alert('昵称不能为空');
+        $username OR iUI::alert('账号不能为空');
+        preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/i",$username) OR iUI::alert('该账号格式不对');
+        $nickname OR iUI::alert('昵称不能为空');
 
         $user['regdate']       = iPHP::str2time($user['regdate']);
         $user['lastlogintime'] = iPHP::str2time($user['lastlogintime']);
@@ -117,17 +117,17 @@ class userAdmincp{
         iCMS::core('Map');
 
        if(empty($uid)) {
-            $password OR iPHP::alert('密码不能为空');
+            $password OR iUI::alert('密码不能为空');
             $user['password'] = md5($password);
-            iDB::value("SELECT `uid` FROM `#iCMS@__user` where `username` ='$username' LIMIT 1") && iPHP::alert('该账号已经存在');
-            iDB::value("SELECT `uid` FROM `#iCMS@__user` where `nickname` ='$nickname' LIMIT 1") && iPHP::alert('该昵称已经存在');
+            iDB::value("SELECT `uid` FROM `#iCMS@__user` where `username` ='$username' LIMIT 1") && iUI::alert('该账号已经存在');
+            iDB::value("SELECT `uid` FROM `#iCMS@__user` where `nickname` ='$nickname' LIMIT 1") && iUI::alert('该昵称已经存在');
             $uid = iDB::insert('user',$user);
             iMap::init('prop',iCMS_APP_USER);
             $pid && iMap::add($pid,$uid);
             $msg = "账号添加完成!";
         }else {
-            iDB::value("SELECT `uid` FROM `#iCMS@__user` where `username` ='$username' AND `uid` !='$uid' LIMIT 1") && iPHP::alert('该账号已经存在');
-            iDB::value("SELECT `uid` FROM `#iCMS@__user` where `nickname` ='$nickname' AND `uid` !='$uid' LIMIT 1") && iPHP::alert('该昵称已经存在');
+            iDB::value("SELECT `uid` FROM `#iCMS@__user` where `username` ='$username' AND `uid` !='$uid' LIMIT 1") && iUI::alert('该账号已经存在');
+            iDB::value("SELECT `uid` FROM `#iCMS@__user` where `nickname` ='$nickname' AND `uid` !='$uid' LIMIT 1") && iUI::alert('该昵称已经存在');
             $password && $user['password'] = md5($password);
             iDB::update('user', $user, array('uid'=>$uid));
             iMap::init('prop',iCMS_APP_USER);
@@ -140,11 +140,11 @@ class userAdmincp{
             }
             $msg = "账号修改完成!";
         }
-        iPHP::success($msg,'url:'.APP_URI);
+        iUI::success($msg,'url:'.APP_URI);
     }
     public function do_batch(){
     	$idA	= (array)$_POST['id'];
-    	$idA OR iPHP::alert("请选择要操作的用户");
+    	$idA OR iUI::alert("请选择要操作的用户");
     	$ids	= implode(',',(array)$_POST['id']);
     	$batch	= $_POST['batch'];
     	switch($batch){
@@ -158,7 +158,7 @@ class userAdmincp{
                     iDB::update('user',compact('pid'),array('uid'=>$id));
                     iMap::diff($pid,$_pid,$id);
                 }
-                iPHP::success('用户属性设置完成!','js:1');
+                iUI::success('用户属性设置完成!','js:1');
 
             break;
     		case 'dels':
@@ -167,16 +167,16 @@ class userAdmincp{
 	    			$this->do_del($id,false);
 	    		}
                 iPHP::$break = true;
-				iPHP::success('用户全部删除完成!','js:1');
+				iUI::success('用户全部删除完成!','js:1');
     		break;
 		}
 	}
     public function do_del($uid = null,$dialog=true){
     	$uid===null && $uid=$this->uid;
-		$uid OR iPHP::alert('请选择要删除的用户');
+		$uid OR iUI::alert('请选择要删除的用户');
 		iDB::query("DELETE FROM `#iCMS@__user` WHERE `uid` = '$uid'");
         iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$uid' AND `appid` = '".iCMS_APP_USER."' ;");
 
-		$dialog && iPHP::success('用户删除完成','js:parent.$("#tr'.$uid.'").remove();');
+		$dialog && iUI::success('用户删除完成','js:parent.$("#tr'.$uid.'").remove();');
     }
 }

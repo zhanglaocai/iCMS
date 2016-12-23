@@ -56,14 +56,14 @@ class iMember{
             $crs = self::check($a,$p);
             iDB::query("UPDATE `#iCMS@__members` SET `lastip`='".$ip."',`lastlogintime`='".time()."',`logintimes`=logintimes+1 WHERE `uid`='".self::$userid."'");
             iPHP::set_cookie(self::$AUTH,authcode($a.$sep.$p,'ENCODE'));
-        	self::$AJAX && iPHP::json(array('code'=>1));
+        	self::$AJAX && iUI::json(array('code'=>1));
             return $crs;
         }
     }
 
 	//登陆页
 	public static function LoginPage(){
-		self::$AJAX && iPHP::json(array('code'=>0));
+		self::$AJAX && iUI::json(array('code'=>0));
         iPHP::set_cookie(self::$AUTH,'',-31536000);
 		include self::$LOGIN_PAGE;
 		exit;

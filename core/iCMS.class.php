@@ -81,7 +81,7 @@ class iCMS extends iPHP{
             "mobile" => self::$config['template']['mobile']['domain'],
         );
         iPHP::assign('site',$site);
-        iPHP::$dialog['title']  = self::$config['site']['name'];
+        iUI::$dialog['title']  = self::$config['site']['name'];
     }
     //------------------------------------
     public static function get_rand_ids($table,$where=null,$limit='10',$primary='id'){

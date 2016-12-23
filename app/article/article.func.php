@@ -126,7 +126,7 @@ function article_list($vars) {
 		$total = iPHP::total('sql.md5', "SELECT count(*) FROM `#iCMS@__article` {$where_sql}", $total_type);
 		$pagenav = isset($vars['pagenav']) ? $vars['pagenav'] : "pagenav";
 		$pnstyle = isset($vars['pnstyle']) ? $vars['pnstyle'] : 0;
-		$multi = iPHP::page(array('total_type' => $total_type, 'total' => $total, 'perpage' => $maxperpage, 'unit' => iPHP::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
+		$multi = iPHP::page(array('total_type' => $total_type, 'total' => $total, 'perpage' => $maxperpage, 'unit' => iUI::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit = "LIMIT {$offset},{$maxperpage}";
 		iPHP::assign("article_list_total", $total);
@@ -260,7 +260,7 @@ function article_search($vars) {
 		iPHP::assign("article_search_total", $total);
 		$pagenav = isset($vars['pagenav']) ? $vars['pagenav'] : "pagenav";
 		$pnstyle = isset($vars['pnstyle']) ? $vars['pnstyle'] : 0;
-		$multi = iPHP::page(array('total' => $total, 'perpage' => $maxperpage, 'unit' => iPHP::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
+		$multi = iPHP::page(array('total' => $total, 'perpage' => $maxperpage, 'unit' => iUI::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
 		$offset = $multi->offset;
 	}
 	$resource = iDB::all("SELECT * FROM `#iCMS@__article` WHERE {$where_sql} {$order_sql} LIMIT {$maxperpage}");
@@ -268,7 +268,7 @@ function article_search($vars) {
 	return $resource;
 }
 function article_data($vars) {
-	$vars['aid'] OR iPHP::warning('iCMS&#x3a;article&#x3a;data 标签出错! 缺少"aid"属性或"aid"值为空.');
+	$vars['aid'] OR iUI::warning('iCMS&#x3a;article&#x3a;data 标签出错! 缺少"aid"属性或"aid"值为空.');
 	$data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $vars['aid'] . "' LIMIT 1;", ARRAY_A);
 	if ($data['body']) {
 		$articleApp = iPHP::app("article");

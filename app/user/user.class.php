@@ -255,7 +255,7 @@ class user {
 		if($status){
 			if($url && $st=="login"){
 				if(self::$format=='json'){
-					return iPHP::code(1,0,$url,'json');
+					return iUI::code(1,0,$url,'json');
 				}
 				iPHP::redirect($url);
 			}
@@ -263,7 +263,7 @@ class user {
 		}else{
 			if($url && $st=="nologin"){
 				if(self::$format=='json'){
-					return iPHP::code(0,0,$url,'json');
+					return iUI::code(0,0,$url,'json');
 				}
 				iPHP::redirect($url);
 			}

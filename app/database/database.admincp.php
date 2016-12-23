@@ -45,7 +45,7 @@ class databaseAdmincp {
 	}
 	public function do_batch() {
 		$tableA = (array) $_POST['table'];
-		$tableA OR iPHP::alert("请选择要操作的表");
+		$tableA OR iUI::alert("请选择要操作的表");
 		$tables = implode(',', $tableA);
 		$batch = $_POST['batch'];
 		switch ($batch) {
@@ -73,14 +73,14 @@ class databaseAdmincp {
 		$this->start = (int) $_GET['start'];
 		$this->rows = $_GET['rows'];
 
-		!$tableA && !$tablesel && iPHP::alert('没有选择操作对象');
+		!$tableA && !$tablesel && iUI::alert('没有选择操作对象');
 		!$tableA && $tableA = explode("|", $tablesel);
 		!$step && $this->sizelimit /= 2;
 
 		$bakupdata = $this->bakupdata($tableA, $this->start);
 		$bakTag = "# iCMS Backup SQL File\n# Version:iCMS " . iCMS_VER . "\n# Time: " . get_date(0, "Y-m-d H:i:s") . "\n# iCMS: http://www.iDreamSoft.com\n# --------------------------------------------------------\n\n\n";
 		if (!$step) {
-			!$tableA && iPHP::alert('没有选择操作对象');
+			!$tableA && iUI::alert('没有选择操作对象');
 			$tablesel = implode("|", $tableA);
 			$step = 1;
 			$random = random(10);
@@ -114,7 +114,7 @@ class databaseAdmincp {
 			);
 			$dtime = 5;
 		}
-		iPHP::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
+		iUI::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
 	}
 	public function bakuptable($tabledb) {
 		foreach ($tabledb as $table) {
@@ -205,7 +205,7 @@ class databaseAdmincp {
 		for ($i = 0; $i < $_count; $i++) {
 			$msg .= '表：' . substr(strrchr($rs[$i]['Table'], '.'), 1) . ' 操作：' . $rs[$i]['Op'] . ' 状态：' . $rs[$i]['Msg_text'] . '<hr />';
 		}
-		iPHP::success($msg . "修复表完成");
+		iUI::success($msg . "修复表完成");
 	}
 	public function optimize($tables) {
 		$tableA = (array) $_POST['table'];
@@ -214,17 +214,17 @@ class databaseAdmincp {
 		for ($i = 0; $i < $_count; $i++) {
 			$msg .= '表：' . substr(strrchr($rs[$i]['Table'], '.'), 1) . ' 操作：' . $rs[$i]['Op'] . ' 状态：' . $rs[$i]['Msg_text'] . '<hr />';
 		}
-		iPHP::success($msg . "优化表完成");
+		iUI::success($msg . "优化表完成");
 	}
 	public function do_del() {
-		$this->bakdir OR iPHP::alert('请选择要删除的备份卷');
+		$this->bakdir OR iUI::alert('请选择要删除的备份卷');
 		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
 		if (iFS::rmdir($backupdir)) {
-			iPHP::success('备份文件已删除!', 'js:parent.$("#' . md5($this->bakdir) . '").remove();');
+			iUI::success('备份文件已删除!', 'js:parent.$("#' . md5($this->bakdir) . '").remove();');
 		}
 	}
 	public function do_download() {
-		$this->bakdir OR iPHP::alert('请选择要下载的备份卷');
+		$this->bakdir OR iUI::alert('请选择要下载的备份卷');
 		iPHP::import(iPHP_LIB . '/pclzip.class.php'); //加载zip操作类
 		$zipname = $this->bakdir . ".zip"; //压缩包的名称
 		$zipFile = iPHP_APP_CACHE . '/backup/' . $zipname; //压缩包所在路径
@@ -245,8 +245,8 @@ class databaseAdmincp {
 		ob_flush();
 	}
 	public function do_renew() {
-		iPHP::alert('请使用 iCMS Tools 恢复');
-		$this->bakdir OR iPHP::alert('请选择要恢复的备份卷');
+		iUI::alert('请使用 iCMS Tools 恢复');
+		$this->bakdir OR iUI::alert('请选择要恢复的备份卷');
 		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
 		$step = (int) $_GET['step'];
 		$count = (int) $_GET['count'];
@@ -274,7 +274,7 @@ class databaseAdmincp {
 			$dtime = 5;
 		}
 		$updateMsg = ($i == 1 ? false : true);
-		iPHP::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
+		iUI::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
 	}
 	public function bakindata($num) {
 		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
@@ -312,7 +312,7 @@ class databaseAdmincp {
 		$pattern = $_POST["pattern"];
 		$replacement = $_POST["replacement"];
 		$where = $_POST["where"];
-		$pattern OR iPHP::alert("查找项不能为空~!");
+		$pattern OR iUI::alert("查找项不能为空~!");
 		if ($field == "body") {
 			$rows_affected = iDB::query("UPDATE `#iCMS@__article_data` SET `body` = REPLACE(`body`, '$pattern', '$replacement') {$where}");
 		} else {
@@ -324,7 +324,7 @@ class databaseAdmincp {
 				$rows_affected = iDB::query("UPDATE `#iCMS@__article` SET `$field` = REPLACE(`$field`, '$pattern', '$replacement'){$where}");
 			}
 		}
-		iPHP::success($rows_affected . "条记录被替换<hr />操作完成!!");
+		iUI::success($rows_affected . "条记录被替换<hr />操作完成!!");
 
 	}
 }

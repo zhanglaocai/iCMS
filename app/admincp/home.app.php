@@ -13,7 +13,7 @@ class homeApp{
     public function do_logout(){
     	iMember::logout();
         admincp::destroy_seccode();
-    	iPHP::success('注销成功!','url:'.__SELF__);
+    	iUI::success('注销成功!','url:'.__SELF__);
     }
     public function do_iCMS(){
         //数据统计

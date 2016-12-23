@@ -91,7 +91,7 @@ function tag_list($vars){
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
 		$total	= iPHP::total('sql.md5',"SELECT count(*) FROM `#iCMS@__tags` {$where_sql} ");
-		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iPHP::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
+		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
         iPHP::assign("tags_list_total",$total);
@@ -147,7 +147,7 @@ function tag_array($vars,$resource=null){
         if($array){
             return $tagApp->tag($array[0],$array[1],false);
         }else{
-            iPHP::warning('iCMS&#x3a;tag&#x3a;array 标签出错! 缺少参数"id"或"name".');
+            iUI::warning('iCMS&#x3a;tag&#x3a;array 标签出错! 缺少参数"id"或"name".');
         }
     }
     if($resource)foreach ($resource as $key => $value) {

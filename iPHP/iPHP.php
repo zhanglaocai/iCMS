@@ -66,7 +66,8 @@ iPHP_DB_TYPE  =='sqlite' && $iDB_CLASS = 'SQLite';
 
 iPHP::core($iDB_CLASS,'DB');   //加载数据库操作类
 iPHP::core("FileSystem",'FS');	//加载文件操作类
-iPHP::core('Cache');			//加载缓存操作类
+iPHP::core('Cache');            //加载缓存操作类
+iPHP::core('UI');               //加载UI操作类
 
 // if(iPHP_SESSION!=='COOKIE'){
 //     iPHP::loadClass('Session'); //加载Session操作类

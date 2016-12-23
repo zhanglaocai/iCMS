@@ -19,7 +19,7 @@ define('ACP_HOST', (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://" . $_S
 iDB::$debug        = true;
 iDB::$show_errors  = true;
 iDB::$show_explain = false;
-iPHP::$dialog['title'] = 'iCMS';
+iUI::$dialog['title'] = 'iCMS';
 
 iCMS::core('Menu');
 iCMS::core('Member');

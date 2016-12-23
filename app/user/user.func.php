@@ -13,7 +13,7 @@ function user_data($vars=null){
         return user::get_cookie();
     }
 
-	$vars['uid']   OR iPHP::warning('iCMS&#x3a;user&#x3a;data 标签出错! 缺少"uid"属性或"uid"值为空.');
+	$vars['uid']   OR iUI::warning('iCMS&#x3a;user&#x3a;data 标签出错! 缺少"uid"属性或"uid"值为空.');
 	$uid = $vars['uid'];
 	if($uid=='me'){
 		$uid  = 0;
@@ -77,7 +77,7 @@ function user_list($vars=null){
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
 		$total	= iPHP::total('sql.md5',"SELECT count(*) FROM `#iCMS@__user` {$where_sql} ");
-		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iPHP::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
+		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
         iPHP::assign("user_list_total",$total);
@@ -156,7 +156,7 @@ function user_follow($vars=null){
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
 		$total	= iPHP::total('sql.md5',"SELECT count(*) FROM `#iCMS@__user_follow` {$where_sql} {$limit}");
-		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iPHP::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
+		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
         iPHP::assign("user_follow_total",$total);
@@ -223,7 +223,7 @@ function user_inbox($vars=null){
 	$offset	= 0;
 	$total	= iPHP::total($md5,"SELECT {$p_fields} FROM `#iCMS@__message` {$where_sql} {$group_sql}",'nocache');
 	iPHP::assign("msgs_total",$total);
-    $multi	= iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iPHP::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
+    $multi	= iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
     $offset	= $multi->offset;
 	$resource = iDB::all("SELECT {$s_fields} FROM `#iCMS@__message` {$where_sql} {$group_sql} ORDER BY `id` DESC LIMIT {$offset},{$maxperpage}");
 	$msg_type_map = array(

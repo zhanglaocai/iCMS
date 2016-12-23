@@ -34,10 +34,10 @@ class propAdmincp{
         $type     = iSecurity::escapeStr($_POST['type']);
         $val      = iSecurity::escapeStr($_POST['val']);
 
-		($field=='pid'&& !is_numeric($val)) && iPHP::alert('pid字段的值只能用数字');
-        $field OR iPHP::alert('属性字段不能为空!');
-        $name OR iPHP::alert('属性名称不能为空!');
-        $type OR iPHP::alert('类型不能为空!');
+		($field=='pid'&& !is_numeric($val)) && iUI::alert('pid字段的值只能用数字');
+        $field OR iUI::alert('属性字段不能为空!');
+        $name OR iUI::alert('属性名称不能为空!');
+        $type OR iUI::alert('类型不能为空!');
 
 		$field=='pid' && $val=(int)$val;
 
@@ -48,30 +48,30 @@ class propAdmincp{
             iDB::update('prop', $data, array('pid'=>$pid));
 			$msg="属性更新完成!";
 		}else{
-	        iDB::value("SELECT `pid` FROM `#iCMS@__prop` where `type` ='$type' AND `val` ='$val' AND `field` ='$field' AND `cid` ='$cid'") && iPHP::alert('该类型属性值已经存在!请另选一个');
+	        iDB::value("SELECT `pid` FROM `#iCMS@__prop` where `type` ='$type' AND `val` ='$val' AND `field` ='$field' AND `cid` ='$cid'") && iUI::alert('该类型属性值已经存在!请另选一个');
             iDB::insert('prop',$data);
 	        $msg="新属性添加完成!";
 		}
 		$this->cache();
-        iPHP::success($msg,'url:'.APP_URI);
+        iUI::success($msg,'url:'.APP_URI);
     }
     public function do_update(){
     	foreach((array)$_POST['pid'] as $tk=>$pid){
             iDB::query("update `#iCMS@__prop` set `type` = '".$_POST['type'][$tk]."', `name` = '".$_POST['name'][$tk]."', `value` = '".$_POST['value'][$tk]."' where `pid` = '$pid';");
     	}
     	$this->cache();
-    	iPHP::alert('更新完成');
+    	iUI::alert('更新完成');
     }
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->pid;
-    	$id OR iPHP::alert('请选择要删除的属性!');
+    	$id OR iUI::alert('请选择要删除的属性!');
 		iDB::query("DELETE FROM `#iCMS@__prop` WHERE `pid` = '$id';");
     	$this->cache();
-    	$dialog && iPHP::success("已经删除!",'url:'.APP_URI);
+    	$dialog && iUI::success("已经删除!",'url:'.APP_URI);
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iPHP::alert("请选择要操作的属性");
+        $idArray OR iUI::alert("请选择要操作的属性");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
@@ -81,11 +81,11 @@ class propAdmincp{
 	    			$this->do_del($id,false);
 	    		}
 	    		iPHP::$break	= true;
-				iPHP::success('属性全部删除完成!','js:1');
+				iUI::success('属性全部删除完成!','js:1');
     		break;
     		case 'refresh':
     			$this->cache();
-    			iPHP::success('属性缓存全部更新完成!','js:1');
+    			iUI::success('属性缓存全部更新完成!','js:1');
     		break;
 		}
 	}
@@ -111,14 +111,14 @@ class propAdmincp{
 
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
         $total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__prop` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"个属性");
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__prop` {$sql} order by pid DESC LIMIT ".iPHP::$offset." , {$maxperpage}");
+        iUI::pagenav($total,$maxperpage,"个属性");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__prop` {$sql} order by pid DESC LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
     	include admincp::view("prop.manage");
     }
     public function do_cache(){
         $this->cache();
-        iPHP::success('缓存更新完成!','js:1');
+        iUI::success('缓存更新完成!','js:1');
     }
     public function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__prop`");

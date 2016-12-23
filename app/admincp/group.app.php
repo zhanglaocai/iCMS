@@ -46,14 +46,14 @@ class groupApp{
     }
     public function do_del($gid = null,$dialog=true){
     	$gid===null && $gid=$this->gid;
-		$gid OR iPHP::alert('请选择要删除的用户组');
-		$gid=="1" && iPHP::alert('不能删除超级管理员组');
+		$gid OR iUI::alert('请选择要删除的用户组');
+		$gid=="1" && iUI::alert('不能删除超级管理员组');
 		iDB::query("DELETE FROM `#iCMS@__group` WHERE `gid` = '$gid'");
-		$dialog && iPHP::success('用户组删除完成','js:parent.$("#tr'.$gid.'").remove();');
+		$dialog && iUI::success('用户组删除完成','js:parent.$("#tr'.$gid.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-    	$idArray OR iPHP::alert("请选择要删除的用户组");
+    	$idArray OR iUI::alert("请选择要删除的用户组");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
@@ -63,7 +63,7 @@ class groupApp{
 	    			$this->do_del($id,false);
 	    		}
 	    		iPHP::$break	= true;
-				iPHP::success('全部删除完成!','js:1');
+				iUI::success('全部删除完成!','js:1');
     		break;
 		}
 	}
@@ -73,7 +73,7 @@ class groupApp{
 		$name   = iSecurity::escapeStr($_POST['name']);
 		$power  = $_POST['power']?json_encode($_POST['power']):'';
 		$cpower = $_POST['cpower']?json_encode($_POST['cpower']):'';
-		$name OR iPHP::alert('角色名不能为空');
+		$name OR iUI::alert('角色名不能为空');
 		$fields = array('name', 'sortnum', 'power', 'cpower', 'type');
 		$data   = compact ($fields);
 		if($gid){
@@ -83,6 +83,6 @@ class groupApp{
 			iDB::insert('group',$data);
 			$msg = "角色添加完成!";
 		}
-		iPHP::success($msg,'url:'.APP_URI);
+		iUI::success($msg,'url:'.APP_URI);
 	}
 }

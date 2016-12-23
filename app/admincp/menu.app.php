@@ -28,7 +28,7 @@ class menuApp{
     	$class	= $rootid?'divider':'divider-vertical';
     	iDB::query("INSERT INTO `#iCMS@__menu` (`rootid`,`app`,`class`) VALUES($rootid,'separator','$class');");
     	admincp::$menu->cache();
-    	iPHP::success('添加完成');
+    	iUI::success('添加完成');
     }
     public function do_updateorder(){
     	foreach((array)$_POST['sortnum'] as $sortnum=>$id){
@@ -115,7 +115,7 @@ class menuApp{
         $field = '`rootid`, `sortnum`, `app`, `name`, `title`, `href`, `icon`, `class`, `a_class`, `target`, `caret`, `data-toggle`, `data-meta`, `data-target`';
         iDB::query("insert into `#iCMS@__menu` ({$field}) select {$field} from `#iCMS@__menu` where id = '$id'");
         $nid = iDB::$insert_id;
-        iPHP::success('复制完成,编辑此菜单', 'url:' . APP_URI . '&do=add&id=' . $nid);
+        iUI::success('复制完成,编辑此菜单', 'url:' . APP_URI . '&do=add&id=' . $nid);
     }
     public function do_save(){
         $id          = $_POST['id'];
@@ -156,7 +156,7 @@ class menuApp{
 			$msg = "添加完成!";
     	}
 		admincp::$menu->cache();
-		iPHP::success($msg,'url:' . APP_URI . '&do=manage');
+		iUI::success($msg,'url:' . APP_URI . '&do=manage');
     }
     public function do_del(){
         $id		= (int)$_GET['id'];
@@ -167,7 +167,7 @@ class menuApp{
         }else {
         	$msg	= '请先删除本菜单下的子菜单!';
         }
-		iPHP::dialog($msg,'js:parent.$("#'.$id.'").remove();');
+		iUI::dialog($msg,'js:parent.$("#'.$id.'").remove();');
     }
     public function select($currentid="0",$id="0",$level = 1) {
         foreach((array)admincp::$menu->root_array[$id] AS $root=>$M) {

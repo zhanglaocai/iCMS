@@ -29,7 +29,7 @@ class filesApp{
 		$file_upload_limit	= $_GET['UN']?$_GET['UN']:100;
 		$file_queue_limit	= $_GET['QN']?$_GET['QN']:10;
 		$file_size_limit	= (int)$this->upload_max_filesize;
-        $file_size_limit OR iPHP::alert("检测到系统环境脚本上传文件大小限制为{$this->upload_max_filesize},请联系管理员");
+        $file_size_limit OR iUI::alert("检测到系统环境脚本上传文件大小限制为{$this->upload_max_filesize},请联系管理员");
         stristr($this->upload_max_filesize,'m') && $file_size_limit    = $file_size_limit*1024;
 		include admincp::view("files.multi");
 	}
@@ -58,8 +58,8 @@ class filesApp{
         $orderby	= $_GET['orderby']?iSecurity::escapeStr($_GET['orderby']):"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
 		$total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__file_data` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"个文件");
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__file_data` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+        iUI::pagenav($total,$maxperpage,"个文件");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__file_data` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
         $widget = array('search'=>1,'id'=>1,'uid'=>1,'index'=>1);
     	include admincp::view("files.manage");
@@ -68,12 +68,12 @@ class filesApp{
         $udir      = iSecurity::escapeStr($_GET['udir']);
         $name      = iSecurity::escapeStr($_GET['name']);
         $ext       = iSecurity::escapeStr($_GET['ext']);
-        iFS::check_ext($ext,0) OR iPHP::json(array('state'=>'ERROR','msg'=>'不允许的文件类型'));
+        iFS::check_ext($ext,0) OR iUI::json(array('state'=>'ERROR','msg'=>'不允许的文件类型'));
         iFS::$ERROR_TYPE = true;
         $_GET['watermark'] OR iFS::$watermark = false;
         $F = iFS::IO($name,$udir,$ext);
-        $F ===false && iPHP::json(iFS::$ERROR);
-        iPHP::json(array(
+        $F ===false && iUI::json(iFS::$ERROR);
+        iUI::json(array(
             "value"    => $F["path"],
             "url"      => iFS::fp($F['path'],'+http'),
             "fid"      => $F["fid"],
@@ -108,9 +108,9 @@ class filesApp{
             "state"    => ($F['code']?'SUCCESS':$F['state'])
         );
 		if($this->format=='json'){
-	    	iPHP::json($array);
+	    	iUI::json($array);
 		}else{
-			iPHP::js_callback($array);
+			iUI::js_callback($array);
 		}
     }
     public function do_download(){
@@ -118,7 +118,7 @@ class filesApp{
         $rs            = iFS::get_filedata('id',$this->id);
         iFS::$redirect = true;
         $FileRootPath  = iFS::fp($rs->filepath,"+iPATH");
-        iFS::check_ext($rs->filepath,true) OR iPHP::alert('文件类型不合法!');
+        iFS::check_ext($rs->filepath,true) OR iUI::alert('文件类型不合法!');
         iFile::$userid = iMember::$userid;
         $fileresults   = iFS::remote($rs->ofilename);
     	if($fileresults){
@@ -132,14 +132,14 @@ class filesApp{
     		if($_FileSize!=$rs->size){
 	    		iDB::query("update `#iCMS@__file_data` SET `size`='$_FileSize' WHERE `id` = '$this->id'");
     		}
-    		iPHP::success("{$rs->ofilename} <br />重新下载到<br /> {$rs->filepath} <br />完成",'js:1',3);
+    		iUI::success("{$rs->ofilename} <br />重新下载到<br /> {$rs->filepath} <br />完成",'js:1',3);
     	}else{
-    		iPHP::alert("下载远程文件失败!",'js:1',3);
+    		iUI::alert("下载远程文件失败!",'js:1',3);
     	}
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iPHP::alert("请选择要删除的文件");
+        $idArray OR iUI::alert("请选择要删除的文件");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
@@ -149,14 +149,14 @@ class filesApp{
 	    			$this->do_del($id);
 	    		}
 	    		iPHP::$break	= true;
-				iPHP::success('文件全部删除完成!','js:1');
+				iUI::success('文件全部删除完成!','js:1');
     		break;
 		}
 	}
     public function do_del($id = null){
         admincp::MP('FILE.DELETE','alert');
         $id ===null && $id = $this->id;
-        $id OR iPHP::alert("请选择要删除的文件");
+        $id OR iUI::alert("请选择要删除的文件");
         $indexid = (int)$_GET['indexid'];
         $sql     = isset($_GET['indexid'])?"AND `indexid`='$indexid'":"";
         $rs      = iDB::row("SELECT * FROM `#iCMS@__file_data` WHERE `id` = '$id' {$sql} LIMIT 1;");
@@ -166,31 +166,31 @@ class filesApp{
             iDB::query("DELETE FROM `#iCMS@__file_data` WHERE `id` = '$id' {$sql};");
 	    	if(iFS::del($FileRootPath)){
                 $msg = 'success:#:check:#:文件删除完成!';
-	    		$_GET['ajax'] && iPHP::json(array('code'=>1,'msg'=>$msg));
+	    		$_GET['ajax'] && iUI::json(array('code'=>1,'msg'=>$msg));
 	    	}else{
 	    		$msg	= 'warning:#:warning:#:找不到相关文件,文件删除失败!<hr/>文件相关数据已清除';
-	    		$_GET['ajax'] && iPHP::json(array('code'=>0,'msg'=>$msg));
+	    		$_GET['ajax'] && iUI::json(array('code'=>0,'msg'=>$msg));
 	    	}
-			iPHP::dialog($msg,'js:parent.$("#tr'.$id.'").remove();');
+			iUI::dialog($msg,'js:parent.$("#tr'.$id.'").remove();');
     	}
     	$msg	= '文件删除失败!';
-    	$_GET['ajax'] && iPHP::json(array('code'=>0,'msg'=>$msg));
-    	iPHP::alert($msg);
+    	$_GET['ajax'] && iUI::json(array('code'=>0,'msg'=>$msg));
+    	iUI::alert($msg);
     }
     public function do_mkdir(){
-        admincp::MP('FILE.MKDIR') OR iPHP::json(array('code'=>0,'msg'=>'您没有相关权限!'));
+        admincp::MP('FILE.MKDIR') OR iUI::json(array('code'=>0,'msg'=>'您没有相关权限!'));
     	$name	= $_POST['name'];
-        strstr($name,'.')!==false	&& iPHP::json(array('code'=>0,'msg'=>'您输入的目录名称有问题!'));
-        strstr($name,'..')!==false	&& iPHP::json(array('code'=>0,'msg'=>'您输入的目录名称有问题!'));
+        strstr($name,'.')!==false	&& iUI::json(array('code'=>0,'msg'=>'您输入的目录名称有问题!'));
+        strstr($name,'..')!==false	&& iUI::json(array('code'=>0,'msg'=>'您输入的目录名称有问题!'));
     	$pwd	= trim($_POST['pwd'],'/');
     	$dir	= iFS::path_join(iPATH,iCMS::$config['FS']['dir']);
     	$dir	= iFS::path_join($dir,$pwd);
     	$dir	= iFS::path_join($dir,$name);
-    	file_exists($dir) && iPHP::json(array('code'=>0,'msg'=>'您输入的目录名称已存在,请重新输入!'));
+    	file_exists($dir) && iUI::json(array('code'=>0,'msg'=>'您输入的目录名称已存在,请重新输入!'));
     	if(iFS::mkdir($dir)){
-    		iPHP::json(array('code'=>1,'msg'=>'创建成功!'));
+    		iUI::json(array('code'=>1,'msg'=>'创建成功!'));
     	}
-		iPHP::json(array('code'=>0,'msg'=>'创建失败,请检查目录权限!!'));
+		iUI::json(array('code'=>0,'msg'=>'创建失败,请检查目录权限!!'));
     }
     public function explorer($dir=NULL,$type=NULL){
         admincp::MP('FILE.BROWSE','page');
@@ -215,7 +215,7 @@ class filesApp{
     public function do_editpic(){
         admincp::MP('FILE.EDIT','page');
         $pic       = iSecurity::escapeStr($_GET['pic']);
-        //$pic OR iPHP::alert("请选择图片!");
+        //$pic OR iUI::alert("请选择图片!");
         if($pic){
             $src       = iFS::fp($pic,'+http')."?".time();
             $srcPath   = iFS::fp($pic,'+iPATH');
@@ -258,36 +258,36 @@ class filesApp{
     }
     public function do_deldir(){
         admincp::MP('FILE.DELETE','alert');
-        $_GET['path'] OR iPHP::alert("请选择要删除的目录");
-        strpos($_GET['path'], '..') !== false && iPHP::alert("目录路径中带有..");
+        $_GET['path'] OR iUI::alert("请选择要删除的目录");
+        strpos($_GET['path'], '..') !== false && iUI::alert("目录路径中带有..");
 
         $hash         = md5($_GET['path']);
         $dirRootPath = iFS::fp($_GET['path'],'+iPATH');
 
         if(iFS::rmdir($dirRootPath)){
             $msg    = 'success:#:check:#:目录删除完成!';
-            $_GET['ajax'] && iPHP::json(array('code'=>1,'msg'=>$msg));
+            $_GET['ajax'] && iUI::json(array('code'=>1,'msg'=>$msg));
         }else{
             $msg    = 'warning:#:warning:#:找不到相关目录,目录删除失败!';
-            $_GET['ajax'] && iPHP::json(array('code'=>0,'msg'=>$msg));
+            $_GET['ajax'] && iUI::json(array('code'=>0,'msg'=>$msg));
         }
-        iPHP::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
+        iUI::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
     }
     public function do_delfile(){
         admincp::MP('FILE.DELETE','alert');
-        $_GET['path'] OR iPHP::alert("请选择要删除的文件");
-        strpos($_GET['path'], '..') !== false && iPHP::alert("文件路径中带有..");
+        $_GET['path'] OR iUI::alert("请选择要删除的文件");
+        strpos($_GET['path'], '..') !== false && iUI::alert("文件路径中带有..");
 
         $hash         = md5($_GET['path']);
         $FileRootPath = iFS::fp($_GET['path'],'+iPATH');
         if(iFS::del($FileRootPath)){
             $msg    = 'success:#:check:#:文件删除完成!';
-            $_GET['ajax'] && iPHP::json(array('code'=>1,'msg'=>$msg));
+            $_GET['ajax'] && iUI::json(array('code'=>1,'msg'=>$msg));
         }else{
             $msg    = 'warning:#:warning:#:找不到相关文件,文件删除失败!';
-            $_GET['ajax'] && iPHP::json(array('code'=>0,'msg'=>$msg));
+            $_GET['ajax'] && iUI::json(array('code'=>0,'msg'=>$msg));
         }
-        iPHP::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
+        iUI::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
     }
     public function modal_btn($title='',$click='file',$target='template_index',$callback='',$do='seltpl',$from='modal'){
         $href = __ADMINCP__."=files&do={$do}&from={$from}&click={$click}&target={$target}&callback={$callback}";

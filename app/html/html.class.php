@@ -15,7 +15,7 @@ class html{
 		$indexTPL  = iCMS::$config['template']['index']	= $this->PG['indexTPL'];
 		$indexName = iCMS::$config['template']['index_name'] = $this->PG['indexName'];
     	$indexName OR $indexName ="index".iCMS::$config['router']['html_ext'];
-    	iFS::check_ext('.'.iCMS::$config['router']['html_ext']) OR iPHP::alert('文件类型不合法!');
+    	iFS::check_ext('.'.iCMS::$config['router']['html_ext']) OR iUI::alert('文件类型不合法!');
     	//iCMS::$config['template']['index_mode'] = 1;
 		$setting = admincp::app('setting');
 		$setting->update('template');
@@ -31,7 +31,7 @@ class html{
 		$htm	= iCMS::run('index','iCMS',array(array($indexTPL,$indexName)));
 		$fpath	= iPHP::p2num($htm[1]->pagepath);
 		$total	= $GLOBALS['iPage']['total'];
-		iFS::check_ext($fpath) OR iPHP::alert("文件类型不合法,禁止生成!<hr />请更改系统设置->网站URL->文件后缀");
+		iFS::check_ext($fpath) OR iUI::alert("文件类型不合法,禁止生成!<hr />请更改系统设置->网站URL->文件后缀");
 		iFS::mkdir($htm[1]->dir);
 		iFS::write($fpath,$htm[0]);
 		$_total = $total?$total:"1";
@@ -64,7 +64,7 @@ class html{
 	        $msg.="<hr />已全部生成完成<hr />总共用时<span class='label label-info'>".$query["alltime"]."</span>秒";
         }
 		$updateMsg = $this->page?true:false;
-		iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
+		iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
 
     public function do_createCategory($cid=0,$p=1,$loop=1){
@@ -75,7 +75,7 @@ class html{
 			$category = iCache::get('iCMS/create.category');
 		}
 		if(empty($category)){
-			iPHP::alert('请选择需要生成静态的栏目!');
+			iUI::alert('请选择需要生成静态的栏目!');
 		}
 		$category[0]=='all' && $category = $this->get_category(iCMS_APP_ARTICLE);
 
@@ -88,10 +88,10 @@ class html{
 		$cid = $category[$k];
 
 		$htm = iCMS::run('category','category',$cid,null);
-		$htm OR iPHP::alert("栏目[cid:$cid] URL规则设置问题! 此栏目不能生成静态");
+		$htm OR iUI::alert("栏目[cid:$cid] URL规则设置问题! 此栏目不能生成静态");
 		$fpath = iPHP::p2num($htm[1]['iurl']['pagepath']);
 		$total = $GLOBALS['iPage']['total'];
-		iFS::check_ext($fpath) OR iPHP::alert("文件类型不合法,禁止生成!<hr />请更改栏目->URL规则设置->栏目规则");
+		iFS::check_ext($fpath) OR iUI::alert("文件类型不合法,禁止生成!<hr />请更改栏目->URL规则设置->栏目规则");
 		iFS::mkdir($htm[1]['iurl']['dir']);
 		iFS::write($fpath,$htm[0]);
 		$_total = $total?$total:"1";
@@ -145,7 +145,7 @@ class html{
         if($k==0){
 			$updateMsg = $this->page?true:false;
 		}
-		iPHP::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
+		iUI::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
     }
 
     public function do_createArticle($aid=null){
@@ -161,7 +161,7 @@ class html{
     	$aid===null && $aid = $this->PG['aid'];
 		if($aid){
 			$title	= self::Article($aid);
-			iPHP::success($title.'<hr />生成静态完成!');
+			iUI::success($title.'<hr />生成静态完成!');
 		}
 
 		$category[0]=='all' && $category = $this->get_category(iCMS_APP_ARTICLE);
@@ -208,16 +208,16 @@ class html{
 	        $msg.="<hr />已全部生成完成<hr />总共用时<span class='label label-info'>".$query["alltime"]."</span>秒";
         }
 		$updateMsg	= $this->page?true:false;
-		iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
+		iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
     public function Article($id){
 		$app   = iCMS::run('article','article','object');
 		$htm   = $app->article($id);
-		$htm OR iPHP::alert("文章所属栏目URL规则设置问题! 此栏目下的文章不能生成静态,请修改栏目的访问模式和URL规则");
+		$htm OR iUI::alert("文章所属栏目URL规则设置问题! 此栏目下的文章不能生成静态,请修改栏目的访问模式和URL规则");
 		$total = $htm[1]['page']['total'];
 		$title = $htm[1]['title'];
 
-		iFS::check_ext($htm[1]['iurl']->path) OR iPHP::alert("文件类型不合法,禁止生成!<hr />请更改栏目->URL规则设置->内容规则");
+		iFS::check_ext($htm[1]['iurl']->path) OR iUI::alert("文件类型不合法,禁止生成!<hr />请更改栏目->URL规则设置->内容规则");
 		iFS::mkdir($htm[1]['iurl']->dir);
 		iFS::write($htm[1]['iurl']->path,$htm[0]);
 		if($total>=2){

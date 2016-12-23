@@ -266,7 +266,7 @@ class category {
         krsort($C['navArray']);
         if($C['navArray']){
             foreach ($C['navArray'] as $key => $value) {
-                $C['nav'].="<li><a href='{$value['url']}'>{$value['name']}</a><span class=\"divider\">".iPHP::lang('iCMS:navTag')."</span></li>";
+                $C['nav'].="<li><a href='{$value['url']}'>{$value['name']}</a><span class=\"divider\">".iUI::lang('iCMS:navTag')."</span></li>";
             }
         }
         return $C;

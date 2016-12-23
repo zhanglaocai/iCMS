@@ -34,35 +34,35 @@ if($_POST['action']=='install'){
     $admin_password = trim($_POST['ADMIN_PASSWORD']);
 	$lock_file      = iPATH.'cache/install.lock';
 
-	file_exists($lock_file) && iPHP::alert('请先删除 cache/install.lock 这个文件。','js:top.callback();');
+	file_exists($lock_file) && iUI::alert('请先删除 cache/install.lock 这个文件。','js:top.callback();');
 
-	iPHP_DB_HOST OR iPHP::alert("请填写数据库服务器地址",'js:top.callback("#DB_HOST");');
-	iPHP_DB_USER OR iPHP::alert("请填写数据库用户名",'js:top.callback("#DB_USER");');
-	iPHP_DB_PASSWORD OR iPHP::alert("请填写数据库密码",'js:top.callback("#DB_PASSWORD");');
-	iPHP_DB_NAME OR iPHP::alert("请填写数据库名",'js:top.callback("#DB_NAME");');
-	strstr(iPHP_DB_PREFIX, '.') && iPHP::alert("您指定的数据表前缀包含点字符，请返回修改",'js:top.callback("#DB_PREFIX");');
-	//preg_match('/([a-zA-z\_]+)/is', $db_prefix) OR iPHP::alert("您指定的数据表前缀包含非法字符，请返回修改",'js:top.callback("#DB_PREFIX");');
+	iPHP_DB_HOST OR iUI::alert("请填写数据库服务器地址",'js:top.callback("#DB_HOST");');
+	iPHP_DB_USER OR iUI::alert("请填写数据库用户名",'js:top.callback("#DB_USER");');
+	iPHP_DB_PASSWORD OR iUI::alert("请填写数据库密码",'js:top.callback("#DB_PASSWORD");');
+	iPHP_DB_NAME OR iUI::alert("请填写数据库名",'js:top.callback("#DB_NAME");');
+	strstr(iPHP_DB_PREFIX, '.') && iUI::alert("您指定的数据表前缀包含点字符，请返回修改",'js:top.callback("#DB_PREFIX");');
+	//preg_match('/([a-zA-z\_]+)/is', $db_prefix) OR iUI::alert("您指定的数据表前缀包含非法字符，请返回修改",'js:top.callback("#DB_PREFIX");');
 
-	$admin_name OR iPHP::alert("请填写超级管理员账号",'js:top.callback("#ADMIN_NAME");');
-	$admin_password OR iPHP::alert("请填写超级管理员密码",'js:top.callback("#ADMIN_PASSWORD");');
-	strlen($admin_password)<6 && iPHP::alert("请填写超级管理员密码",'js:top.callback("#ADMIN_PASSWORD");');
+	$admin_name OR iUI::alert("请填写超级管理员账号",'js:top.callback("#ADMIN_NAME");');
+	$admin_password OR iUI::alert("请填写超级管理员密码",'js:top.callback("#ADMIN_PASSWORD");');
+	strlen($admin_password)<6 && iUI::alert("请填写超级管理员密码",'js:top.callback("#ADMIN_PASSWORD");');
 
     $mysql_link = iDB::connect('link');
 	// $mysql_link = @mysql_connect($db_host,$db_user,$db_password);
-	$mysql_link OR iPHP::alert("数据库连接出错",'js:top.callback();');
+	$mysql_link OR iUI::alert("数据库连接出错",'js:top.callback();');
     //(MYSQL ERROR:".iDB::$last_error.")
 	// mysql_query("SET NAMES '".iPHP_DB_CHARSET."'");
-	// @mysql_select_db($db_name,$mysql_link) OR iPHP::alert("数据库{$db_name}不存在",'js:top.callback("#DB_NAME");');
+	// @mysql_select_db($db_name,$mysql_link) OR iUI::alert("数据库{$db_name}不存在",'js:top.callback("#DB_NAME");');
     if(isset($_POST['CREATE_DATABASE'])){
         iDB::connect('!select_db');
         iDB::query("CREATE DATABASE `".iPHP_DB_NAME."`CHARACTER SET utf8 COLLATE utf8_general_ci",'get')
         OR
-        iPHP::alert('数据库创建失败,请确认数据库是否已存在或该用户是否有权限创建数据库','js:top.callback();');
+        iUI::alert('数据库创建失败,请确认数据库是否已存在或该用户是否有权限创建数据库','js:top.callback();');
     }else{
         iDB::connect();
     }
     iDB::pre_set();
-    iDB::select_db(true) OR iPHP::alert("不能链接到数据库".iPHP_DB_NAME,'js:top.callback("#DB_NAME");');
+    iDB::select_db(true) OR iUI::alert("不能链接到数据库".iPHP_DB_NAME,'js:top.callback("#DB_NAME");');
 
 	$config  = iPATH.'config.php';
 	$content = iFS::read($config,false);
@@ -83,7 +83,7 @@ if($_POST['action']=='install'){
 //开始安装 数据库
 
 	$sql_file = dirname(strtr(__FILE__,'\\','/')).'/iCMS.V6.sql';
-	is_readable($sql_file) OR iPHP::alert('数据库文件不存在或者读取失败','js:top.callback();');
+	is_readable($sql_file) OR iUI::alert('数据库文件不存在或者读取失败','js:top.callback();');
 	//require_once ($config);
 
 	$sql = iFS::read($sql_file);
@@ -134,7 +134,7 @@ if($_POST['action']=='install'){
 //写入数据库配置<hr />开始安装数据库<hr />数据库安装完成<hr />设置超级管理员<hr />更新网站缓存<hr />
 	iFS::write($lock_file,'iCMS.'.time(),false);
 	iFS::rmdir(iPATH.'install');
-	iPHP::success("安装完成",'js:top.install.step4();');
+	iUI::success("安装完成",'js:top.install.step4();');
 }
 function run_query($sql) {
 	$sql      = str_replace("\r", "\n", $sql);

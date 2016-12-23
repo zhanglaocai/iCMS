@@ -38,9 +38,9 @@ class weixinAdmincp{
         // exit;
         $response = weixin::setMenu();
         if(empty($response->errcode)){
-            iPHP::success('同步成功');
+            iUI::success('同步成功');
         }else{
-            iPHP::alert('同步出错 <br />errcode:"'.$response->errcode.'" errmsg:"'.$response->errmsg.'"');
+            iUI::alert('同步出错 <br />errcode:"'.$response->errcode.'" errmsg:"'.$response->errmsg.'"');
         }
     }
     public function do_menu(){
@@ -49,7 +49,7 @@ class weixinAdmincp{
     public function do_component_login(){
         $token = iSecurity::escapeStr($_GET['token']);
         if($token!=$this->config['token']){
-            iPHP::alert("Token(令牌)出错！请先保存Token(令牌)配置！",'js:window.iCMS_MODAL.destroy();');
+            iUI::alert("Token(令牌)出错！请先保存Token(令牌)配置！",'js:window.iCMS_MODAL.destroy();');
         }
         $url = iCMS_WEIXIN_COMPONENT.'/iCMS/login?'.
         'token='.$token.
@@ -79,8 +79,8 @@ class weixinAdmincp{
         $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
         $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__weixin_event` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"个事件");
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__weixin_event` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+        iUI::pagenav($total,$maxperpage,"个事件");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__weixin_event` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         // var_dump(iDB::$last_query);
         $_count = count($rs);
         include admincp::view("weixin.event");
@@ -107,26 +107,26 @@ class weixinAdmincp{
         $msg      = $_POST['msg'];
         $msg      = $_POST['status'];
 
-        $eventype OR iPHP::alert("请选择事件类型");
-        $name OR iPHP::alert("请填写事件名称");
-        $eventkey OR iPHP::alert("请填写事件KEY值");
+        $eventype OR iUI::alert("请选择事件类型");
+        $name OR iUI::alert("请填写事件名称");
+        $eventkey OR iUI::alert("请填写事件KEY值");
         if($eventype=="keyword"){
-            $operator OR iPHP::alert("请选择关键词匹配模式");
+            $operator OR iUI::alert("请选择关键词匹配模式");
         }
-        $msgtype OR iPHP::alert("请选择回复消息的类型");
-        $msg OR iPHP::alert("请填写回复内容");
+        $msgtype OR iUI::alert("请选择回复消息的类型");
+        $msg OR iUI::alert("请填写回复内容");
         if($msgtype!='text'){
             $msg = json_encode($msg);
         }
         $fields = array('pid', 'name', 'eventype', 'eventkey', 'msgtype', 'operator', 'msg', 'addtime', 'status');
         $data   = compact ($fields);
         if(empty($id)) {
-            iDB::value("SELECT `id` FROM `#iCMS@__weixin_event` where `eventkey` ='$eventkey'") && iPHP::alert('该事件已经存在!');
+            iDB::value("SELECT `id` FROM `#iCMS@__weixin_event` where `eventkey` ='$eventkey'") && iUI::alert('该事件已经存在!');
             iDB::insert('weixin_event',$data);
-            iPHP::success('添加完成','url:'.APP_URI.'&do=event');
+            iUI::success('添加完成','url:'.APP_URI.'&do=event');
         }else{
             iDB::update('weixin_event', $data, array('id'=>$id));
-            iPHP::success('更新完成','url:'.APP_URI.'&do=event');
+            iUI::success('更新完成','url:'.APP_URI.'&do=event');
         }
     }
     public function menu_get_type($type,$out='value'){
@@ -178,7 +178,7 @@ class weixinAdmincp{
       return $html;
     }
     public function do_save(){
-        iPHP::success('更新完成');
+        iUI::success('更新完成');
     }
     public function cache(){
     }

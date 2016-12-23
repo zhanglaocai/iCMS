@@ -426,7 +426,7 @@ body.articleApp{}
 .iCMS_UI_DIALOG .ui-dialog-table{height:100%;width:100%;vertical-align:middle;}
 
 /*.iCMS_UI_DIALOG .ui-dialog-content {height: auto !important; color: #222; padding: 10px; max-width: 760px; max-height: 500px; min-width: 240px; min-height: 120px; overflow-y: scroll; }*/
-.iCMS_UI_DIALOG .ui-dialog-content{height:auto;color:#222;padding:20px;display:block;max-width:760px;min-width:240px;    /*border: 1px solid #888;*/text-align:center;}
+.iCMS_UI_DIALOG .ui-dialog-content{height:auto;color:#222;padding:20px;display:block;max-width:760px;min-width:300px;    /*border: 1px solid #888;*/text-align:center;}
 .iCMS_UI_DIALOG .ui-dialog-content .buttons{text-align:right;background:#fff}
 .iCMS_UI_DIALOG .ui-dialog-content .buttons a.cancel{color:#259;margin-right:15px;cursor:pointer;}
 .iCMS_UI_DIALOG .ui-dialog-content .buttons a.cancel:hover{text-decoration:underline;}

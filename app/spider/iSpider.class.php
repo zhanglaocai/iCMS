@@ -99,7 +99,7 @@ class spider{
 
             $checker = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` where $sql AND `publish` in(1,2)");
             if($checker){
-                $work===NULL && iPHP::alert($msg, 'js:parent.$("#' . $hash . '").remove();');
+                $work===NULL && iUI::alert($msg, 'js:parent.$("#' . $hash . '").remove();');
                 if($work=='shell'){
                     echo $msg."\n";
                     return false;
@@ -269,9 +269,9 @@ class spider{
         }
         if ($callback['code'] == $success_code) {
             if (spider::$sid) {
-                $work===NULL && iPHP::success("发布成功!",'js:1');
+                $work===NULL && iUI::success("发布成功!",'js:1');
             } else {
-                $work===NULL && iPHP::success("发布成功!", 'js:parent.$("#' . $hash . '").remove();');
+                $work===NULL && iUI::success("发布成功!", 'js:parent.$("#' . $hash . '").remove();');
             }
         }
         if($work=="shell"||$work=="WEB@AUTO"){

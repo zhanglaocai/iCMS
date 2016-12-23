@@ -69,8 +69,8 @@ function comment_list($vars){
 	if ($vars['display'] && empty($vars['loop'])) {
 		$_vars = iPHP::app_vars(true);
 		$vars  = array_merge($vars,$_vars);
-		$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"iid"或"iid"值为空.');
-		$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"appid"或"appid"值为空.');
+		$vars['iid']   OR iUI::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"iid"或"iid"值为空.');
+		$vars['appid'] OR iUI::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"appid"或"appid"值为空.');
 		return comment_list_display($vars);
 	}
 
@@ -110,7 +110,7 @@ function comment_list($vars){
 		$pgconf = array(
 			'total'     => $total,
 			'perpage'   => $maxperpage,
-			'unit'      => iPHP::lang('iCMS:page:comment'),
+			'unit'      => iUI::lang('iCMS:page:comment'),
 			'ajax'      => $vars['page_ajax']?'comment_page_ajax':FALSE,
 			'nowindex'  => $GLOBALS['page'],
 		);
@@ -185,11 +185,11 @@ function comment_list($vars){
 }
 function comment_form($vars){
 	// if(!iCMS::$hooks['enable_comment']){
-	// 	iPHP::warning('此页面禁止调用 iCMS&#x3a;comment&#x3a;form 标签！');
+	// 	iUI::warning('此页面禁止调用 iCMS&#x3a;comment&#x3a;form 标签！');
 	// }
 	if(iCMS::$config['comment']['plugin']['changyan']['enable']|| $vars['display']==="changyan"){
-		iCMS::$config['comment']['plugin']['changyan']['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appid"或"appid"值为空.');
-		iCMS::$config['comment']['plugin']['changyan']['appkey'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appkey"或"appkey"值为空.');
+		iCMS::$config['comment']['plugin']['changyan']['appid'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appid"或"appid"值为空.');
+		iCMS::$config['comment']['plugin']['changyan']['appkey'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appkey"或"appkey"值为空.');
 
 		if(iPHP::$mobile){
 			echo iPHP::view('iCMS://comment/changyan.mobile.htm');
@@ -204,10 +204,10 @@ function comment_form($vars){
 		unset($vars['ref'],$_vars);
 	}
 
-	$vars['iid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"iid"或"iid"值为空.');
-	$vars['cid']   OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"cid"或"cid"值为空.');
-	$vars['appid'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"appid"或"appid"值为空.');
-	$vars['title'] OR iPHP::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"title"或"title"值为空.');
+	$vars['iid']   OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"iid"或"iid"值为空.');
+	$vars['cid']   OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"cid"或"cid"值为空.');
+	$vars['appid'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"appid"或"appid"值为空.');
+	$vars['title'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 缺少参数"title"或"title"值为空.');
 	switch ($vars['display']) {
 		case 'iframe':
 			$tpl        = 'form.iframe';

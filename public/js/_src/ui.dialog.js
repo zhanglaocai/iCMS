@@ -17,7 +17,7 @@ define("ui.dialog", function(require) {
                 label: 'success',
                 icon: 'check',
                 api: false,
-                width:360,height:120
+                width:'auto',height:120
             },
             timeOutID = null,
             opts = $.extend(defaults, iCMS.CONFIG.DIALOG, options);

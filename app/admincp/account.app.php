@@ -48,8 +48,8 @@ class accountApp{
         $orderby    = $_GET['orderby']?$_GET['orderby']:"uid DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
         $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__members` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"个用户");
-        $rs         = iDB::all("SELECT * FROM `#iCMS@__members` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+        iUI::pagenav($total,$maxperpage,"个用户");
+        $rs         = iDB::all("SELECT * FROM `#iCMS@__members` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count		= count($rs);
     	include admincp::view("account.manage");
     }
@@ -74,18 +74,18 @@ class accountApp{
         $info              = addslashes(serialize($info));
         $_POST['pwd'] && $password = md5($_POST['pwd']);
 
-        $username OR iPHP::alert('账号不能为空');
+        $username OR iUI::alert('账号不能为空');
 
         if(admincp::is_superadmin()){
             $gid = (int)$_POST['gid'];
         }else{
-            isset($_POST['gid']) && iPHP::alert('您没有权限更改角色');
+            isset($_POST['gid']) && iUI::alert('您没有权限更改角色');
         }
 
         $fields = array('gid','gender','username','nickname','realname','power', 'cpower','info');
         $data   = compact ($fields);
         if(empty($uid)) {
-            iDB::value("SELECT `uid` FROM `#iCMS@__members` where `username` ='$username' LIMIT 1") && iPHP::alert('该账号已经存在');
+            iDB::value("SELECT `uid` FROM `#iCMS@__members` where `username` ='$username' LIMIT 1") && iUI::alert('该账号已经存在');
             $_data = compact(array('password','regtime', 'lastip', 'lastlogintime', 'logintimes', 'post', 'type', 'status'));
             $_data['regtime']       = time();
             $_data['lastip']        = iPHP::get_ip();
@@ -95,16 +95,16 @@ class accountApp{
             iDB::insert('members',$data);
             $msg="账号添加完成!";
         }else {
-            iDB::value("SELECT `uid` FROM `#iCMS@__members` where `username` ='$username' AND `uid` !='$uid' LIMIT 1") && iPHP::alert('该账号已经存在');
+            iDB::value("SELECT `uid` FROM `#iCMS@__members` where `username` ='$username' AND `uid` !='$uid' LIMIT 1") && iUI::alert('该账号已经存在');
             iDB::update('members', $data, array('uid'=>$uid));
             $password && iDB::query("UPDATE `#iCMS@__members` SET `password`='$password' WHERE `uid` ='".$uid."'");
             $msg="账号修改完成!";
         }
-        iPHP::success($msg,'url:'.APP_URI);
+        iUI::success($msg,'url:'.APP_URI);
     }
     public function do_batch(){
     	$idA	= (array)$_POST['id'];
-    	$idA OR iPHP::alert("请选择要操作的用户");
+    	$idA OR iUI::alert("请选择要操作的用户");
     	$ids	= implode(',',(array)$_POST['id']);
     	$batch	= $_POST['batch'];
     	switch($batch){
@@ -114,15 +114,15 @@ class accountApp{
 	    			$this->do_del($id,false);
 	    		}
                 iPHP::$break = true;
-				iPHP::success('用户全部删除完成!','js:1');
+				iUI::success('用户全部删除完成!','js:1');
     		break;
 		}
 	}
     public function do_del($uid = null,$dialog=true){
     	$uid===null && $uid=$this->uid;
-		$uid OR iPHP::alert('请选择要删除的用户');
-		$uid=="1" && iPHP::alert('不能删除超级管理员');
+		$uid OR iUI::alert('请选择要删除的用户');
+		$uid=="1" && iUI::alert('不能删除超级管理员');
 		iDB::query("DELETE FROM `#iCMS@__members` WHERE `uid` = '$uid'");
-		$dialog && iPHP::success('用户删除完成','js:parent.$("#tr'.$uid.'").remove();');
+		$dialog && iUI::success('用户删除完成','js:parent.$("#tr'.$uid.'").remove();');
     }
 }

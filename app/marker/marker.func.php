@@ -7,7 +7,7 @@
  */
 function marker_html($vars){
     $where_sql  = "WHERE `status`='1'";
-    $vars['key'] OR iPHP::warning('iCMS&#x3a;marker&#x3a;html 标签出错! 缺少"key"属性或"key"值为空.');
+    $vars['key'] OR iUI::warning('iCMS&#x3a;marker&#x3a;html 标签出错! 缺少"key"属性或"key"值为空.');
     if(isset($vars['cid']) && $vars['cid']!=''){
         $where_sql.= " AND `cid`='{$vars['cid']}'";
     }

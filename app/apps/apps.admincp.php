@@ -29,10 +29,10 @@ class appsAdmincp{
     }
     public function do_install(){
       $app = iSecurity::escapeStr($_GET['appname']);
-      strstr($app,'..')!==false  && iPHP::alert('您的应用有问题!');
+      strstr($app,'..')!==false  && iUI::alert('您的应用有问题!');
       $path = APPS::installed($app,'path');
       iFS::write($path,'1');
-      iPHP::success('安装完成!','url:'.APP_URI);
+      iUI::success('安装完成!','url:'.APP_URI);
     }
     public function do_add(){
         if($this->id) {
@@ -50,7 +50,7 @@ class appsAdmincp{
         $description = iSecurity::escapeStr($_POST['app_description']);
         $fieldata    = $_POST['data'];
 
-        $name OR iPHP::alert('应用名称不能为空!');
+        $name OR iUI::alert('应用名称不能为空!');
         empty($app) && $app = pinyin($name);
         $table_array = array(array($app,'id'));
         $table       = json_encode($table_array);
@@ -63,9 +63,9 @@ class appsAdmincp{
             if(isset($output['UI:BR'])){
               $field_array['UI:BR'] = true;
             }else{
-              $output['label'] OR iPHP::alert('发现自定义字段中空字段名称!');
+              $output['label'] OR iUI::alert('发现自定义字段中空字段名称!');
               $fname = $output['name'];
-              $fname OR iPHP::alert('发现自定义字段中有空字段名!');
+              $fname OR iUI::alert('发现自定义字段中有空字段名!');
               $field_array[$fname] = $value;
             }
           }
@@ -76,13 +76,13 @@ class appsAdmincp{
         $array  = compact ($fields);
 
         if(empty($id)) {
-            iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iPHP::alert('该应用已经存在!');
+            iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iUI::alert('该应用已经存在!');
             $this->CREATE_TABLE($array['name'],$fieldata);
             iDB::insert('app',$array);
             $this->cache();
             $msg = "应用创建完成!";
         }else {
-            iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app' AND `id` !='$id'") && iPHP::alert('该应用已经存在!');
+            iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app' AND `id` !='$id'") && iUI::alert('该应用已经存在!');
             $_field = iDB::value("SELECT `data` FROM `#iCMS@__apps` where `id` ='$id'");
             if($_field){
               $_field_array = json_decode($_field);
@@ -102,7 +102,7 @@ class appsAdmincp{
             $this->cache();
             $msg = "应用编辑完成!";
         }
-        iPHP::success($msg,'url:'.APP_URI);
+        iUI::success($msg,'url:'.APP_URI);
     }
 
     public function do_iCMS(){
@@ -112,8 +112,8 @@ class appsAdmincp{
      //  $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
      //  $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
      //  $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__apps` {$sql}","G");
-     //  iPHP::pagenav($total,$maxperpage,"个应用");
-     //  $rs     = iDB::all("SELECT * FROM `#iCMS@__apps` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+     //  iUI::pagenav($total,$maxperpage,"个应用");
+     //  $rs     = iDB::all("SELECT * FROM `#iCMS@__apps` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
      //  $_count = count($rs);
      //  APPS::scan('config/app.json');
       $rs = APPS::config('iApp.json');
@@ -122,18 +122,18 @@ class appsAdmincp{
     }
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
-  		$id OR iPHP::alert('请选择要删除的应用!');
+  		$id OR iUI::alert('请选择要删除的应用!');
       $rs   = iDB::row("SELECT `name` FROM `#iCMS@__apps` WHERE `id`='$id' LIMIT 1;");
       $name = $rs->name;
       iDB::query("DROP TABLE `#iCMS@__{$name}`; ");
 
   		iDB::query("DELETE FROM `#iCMS@__apps` WHERE `id` = '$id'");
   		$this->cache();
-  		$dialog && iPHP::success('应用已经删除','js:parent.$("#tr'.$id.'").remove();');
+  		$dialog && iUI::success('应用已经删除','js:parent.$("#tr'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iPHP::alert("请选择要操作的应用");
+        $idArray OR iUI::alert("请选择要操作的应用");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
       	switch($batch){
@@ -143,13 +143,13 @@ class appsAdmincp{
   	    			$this->do_del($id,false);
   	    		}
   	    		iPHP::$break	= true;
-  				iPHP::success('应用全部删除完成!','js:1');
+  				iUI::success('应用全部删除完成!','js:1');
       		break;
   		  }
 	  }
     public function do_cache(){
       $this->cache();
-      iPHP::success('更新完成');
+      iUI::success('更新完成');
     }
     public function cache(){
     	APPS::cache();

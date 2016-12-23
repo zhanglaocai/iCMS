@@ -8,5 +8,5 @@
 function iCMS_lang($vars){
 	if(empty($vars['key']))return;
 
-	echo iPHP::lang($vars['key']);
+	echo iUI::lang($vars['key']);
 }

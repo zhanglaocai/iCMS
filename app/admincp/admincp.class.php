@@ -47,7 +47,7 @@ class admincp {
 		if ($_POST['username'] && $_POST['password']) {
 			iPHP::core("Seccode");
 			$seccode = iSecurity::escapeStr($_POST['admincp_seccode']);
-			iSeccode::check($seccode, true, 'admincp_seccode') OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+			iSeccode::check($seccode, true, 'admincp_seccode') OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 	}
 
@@ -192,7 +192,7 @@ class admincp {
 	}
 	public static function permission_msg($p = '', $ret = '') {
 		if ($ret == 'alert') {
-			iPHP::alert('您没有相关权限!');
+			iUI::alert('您没有相关权限!');
 			exit;
 		} elseif ($ret == 'page') {
 			include self::view("admincp.permission",'admincp');

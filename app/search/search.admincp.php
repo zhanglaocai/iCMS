@@ -21,20 +21,20 @@ class searchAdmincp{
         $orderby    = $_GET['orderby']?$_GET['orderby']:"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
         $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__search_log` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"条记录");
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__search_log` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+        iUI::pagenav($total,$maxperpage,"条记录");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__search_log` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
     	include admincp::view("search.manage");
     }
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
-		$id OR iPHP::alert('请选择要删除的记录!');
+		$id OR iUI::alert('请选择要删除的记录!');
 		iDB::query("DELETE FROM `#iCMS@__search_log` WHERE `id` = '$id'");
-		$dialog && iPHP::success('记录已经删除','js:parent.$("#tr'.$id.'").remove();');
+		$dialog && iUI::success('记录已经删除','js:parent.$("#tr'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iPHP::alert("请选择要操作的记录");
+        $idArray OR iUI::alert("请选择要操作的记录");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
@@ -44,7 +44,7 @@ class searchAdmincp{
 	    			$this->do_del($id,false);
 	    		}
 	    		iPHP::$break	= true;
-				iPHP::success('记录全部删除完成!','js:1');
+				iUI::success('记录全部删除完成!','js:1');
     		break;
 		}
 	}

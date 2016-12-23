@@ -30,20 +30,20 @@ class linksAdmincp{
 		$desc		= iSecurity::escapeStr($_POST['desc']);
 		$sortnum	= (int)$_POST['sortnum'];
 
-        $name 	OR iPHP::alert('网站不能为空!');
-        $url 	OR iPHP::alert('链接不能为空!');
+        $name 	OR iUI::alert('网站不能为空!');
+        $url 	OR iUI::alert('链接不能为空!');
         $fields = array('cid', 'name', 'logo', 'url', 'desc', 'sortnum');
         $data   = compact ($fields);
         if(empty($id)) {
-            iDB::value("SELECT `id` FROM `#iCMS@__links` where `name` ='$name'") && iPHP::alert('该网站已经存在!');
+            iDB::value("SELECT `id` FROM `#iCMS@__links` where `name` ='$name'") && iUI::alert('该网站已经存在!');
             iDB::insert('links',$data);
             $msg="网站添加完成!";
         }else {
-            iDB::value("SELECT `id` FROM `#iCMS@__links` where `name` ='$name' AND `id` !='$id'") && iPHP::alert('该网站已经存在!');
+            iDB::value("SELECT `id` FROM `#iCMS@__links` where `name` ='$name' AND `id` !='$id'") && iUI::alert('该网站已经存在!');
             iDB::update('links', $data, array('id'=>$id));
             $msg="网站编辑完成!";
         }
-        iPHP::success($msg,'url:'.APP_URI);
+        iUI::success($msg,'url:'.APP_URI);
     }
 
     public function do_iCMS(){
@@ -57,20 +57,20 @@ class linksAdmincp{
         $orderby	=$_GET['orderby']?$_GET['orderby']:"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
 		$total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__links` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"个网站");
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__links` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+        iUI::pagenav($total,$maxperpage,"个网站");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__links` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
     	include admincp::view("links.manage");
     }
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
-		$id OR iPHP::alert('请选择要删除的网站!');
+		$id OR iUI::alert('请选择要删除的网站!');
 		iDB::query("DELETE FROM `#iCMS@__links` WHERE `id` = '$id'");
-		$dialog && iPHP::success('网站已经删除','js:parent.$("#tr'.$id.'").remove();');
+		$dialog && iUI::success('网站已经删除','js:parent.$("#tr'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iPHP::alert("请选择要操作的网站");
+        $idArray OR iUI::alert("请选择要操作的网站");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
@@ -80,7 +80,7 @@ class linksAdmincp{
 	    			$this->do_del($id,false);
 	    		}
 	    		iPHP::$break	= true;
-				iPHP::success('网站全部删除完成!','js:1');
+				iUI::success('网站全部删除完成!','js:1');
     		break;
 		}
 	}

@@ -40,7 +40,7 @@ class tagAdmincp{
             $data = admincp::fields($_GET['iDT']);
             $data && iDB::update("tags",$data,array('id'=>$this->id));
             tag::cache($this->id,'id');
-            iPHP::success('操作成功!','js:1');
+            iUI::success('操作成功!','js:1');
         }
     }
     public function do_iCMS(){
@@ -82,9 +82,9 @@ class tagAdmincp{
         $orderby	= $_GET['orderby']?$_GET['orderby']:"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
         $total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__tags` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"个标签");
-        $limit  = 'LIMIT '.iPHP::$offset.','.$maxperpage;
-        if($map_sql||iPHP::$offset){
+        iUI::pagenav($total,$maxperpage,"个标签");
+        $limit  = 'LIMIT '.iUI::$offset.','.$maxperpage;
+        if($map_sql||iUI::$offset){
             $ids_array = iDB::all("
                 SELECT `id` FROM `#iCMS@__tags` {$sql}
                 ORDER BY {$orderby} {$limit}
@@ -100,7 +100,7 @@ class tagAdmincp{
     	include admincp::view("tag.manage");
     }
     public function do_import(){
-        $_POST['cid'] OR iPHP::alert('请选择标签所属栏目！');
+        $_POST['cid'] OR iUI::alert('请选择标签所属栏目！');
         iFS::$checkFileData           = false;
         iFS::$config['allow_ext']     = 'txt';
         iFS::$config['yun']['enable'] = false;
@@ -115,7 +115,7 @@ class tagAdmincp{
                 } elseif (function_exists('iconv')) {
                     $contents = iconv($encode,'UTF-8', $contents);
                 }else{
-                    iPHP::alert('请把文件编码转换成UTF-8！');
+                    iUI::alert('请把文件编码转换成UTF-8！');
                 }
             }
             if($contents){
@@ -156,7 +156,7 @@ class tagAdmincp{
                 }
             }
             @unlink($path);
-            iPHP::success('标签导入完成<br />空标签:'.(int)$msg['empty'].'个<br />已经存在标签:'.(int)$msg['has'].'个<br />成功导入标签:'.(int)$msg['success'].'个');
+            iUI::success('标签导入完成<br />空标签:'.(int)$msg['empty'].'个<br />已经存在标签:'.(int)$msg['has'].'个<br />成功导入标签:'.(int)$msg['success'].'个');
         }
     }
     public function do_save(){
@@ -197,14 +197,14 @@ class tagAdmincp{
                 return false;
             }
         }
-        $name OR iPHP::alert('标签名称不能为空！');
-        $cid OR iPHP::alert('请选择标签所属栏目！');
+        $name OR iUI::alert('标签名称不能为空！');
+        $cid OR iUI::alert('请选择标签所属栏目！');
 
         if($metadata){
             if($metadata['key']){
                 $md = array();
                 foreach($metadata['key'] AS $_mk=>$_mval){
-                    !preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iPHP::alert($this->name_text.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
+                    !preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iUI::alert($this->name_text.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
                     $md[$_mval] = $metadata['value'][$_mk];
                 }
             }else{
@@ -219,7 +219,7 @@ class tagAdmincp{
                 if(isset($_POST['spider_update'])){
                     $id = $hasNameId;
                 }else{
-                    iPHP::alert('该标签已经存在!请检查是否重复');
+                    iUI::alert('该标签已经存在!请检查是否重复');
                 }
             }
 		}
@@ -231,7 +231,7 @@ class tagAdmincp{
                     echo '该自定义链接已经存在!请检查是否重复';
                     return false;
                 }else{
-                    iPHP::alert('该自定义链接已经存在!请检查是否重复');
+                    iUI::alert('该自定义链接已经存在!请检查是否重复');
                 }
             }
 		}
@@ -299,7 +299,7 @@ class tagAdmincp{
                 'indexid' => $id
             );
         }
-        iPHP::success($msg,"url:".APP_URI);
+        iUI::success($msg,"url:".APP_URI);
     }
     public function __callback($id){
         if ($this->callback['primary']) {
@@ -330,7 +330,7 @@ class tagAdmincp{
     }
     public function do_cache(){
     	tag::cache($this->id,'id');
-    	iPHP::success("标签缓存更新成功");
+    	iUI::success("标签缓存更新成功");
     }
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
@@ -338,11 +338,11 @@ class tagAdmincp{
         iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."' ;");
 
     	tag::del($id,'id');
-    	$dialog && iPHP::success("标签删除成功",'js:parent.$("#tr'.$id.'").remove();');
+    	$dialog && iUI::success("标签删除成功",'js:parent.$("#tr'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iPHP::alert("请选择要操作的标签");
+        $idArray OR iUI::alert("请选择要操作的标签");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
@@ -352,10 +352,10 @@ class tagAdmincp{
 	    			$this->do_del($id,false);
 	    		}
 	    		iPHP::$break	= true;
-				iPHP::success('标签全部删除完成!','js:1');
+				iUI::success('标签全部删除完成!','js:1');
     		break;
     		case 'move':
-		        $_POST['cid'] OR iPHP::alert("请选择目标栏目!");
+		        $_POST['cid'] OR iUI::alert("请选择目标栏目!");
                 iCMS::core('Map');
                 iMap::init('category',$this->appid);
 		        $cid = (int)$_POST['cid'];
@@ -368,10 +368,10 @@ class tagAdmincp{
                         $this->categoryApp->update_count_one($cid);
 		            }
 		        }
-		        iPHP::success('成功移动到目标栏目!','js:1');
+		        iUI::success('成功移动到目标栏目!','js:1');
     		break;
     		case 'mvtcid':
-		        $_POST['tcid'] OR iPHP::alert("请选择目标分类!");
+		        $_POST['tcid'] OR iUI::alert("请选择目标分类!");
                 iCMS::core('Map');
                 iMap::init('category',$this->appid);
 		        $tcid = (int)$_POST['tcid'];
@@ -384,7 +384,7 @@ class tagAdmincp{
                         $this->categoryApp->update_count_one($tcid);
 		            }
 		        }
-		        iPHP::success('成功移动到目标分类!','js:1');
+		        iUI::success('成功移动到目标分类!','js:1');
     		break;
     		case 'prop':
                 iCMS::core('Map');
@@ -395,7 +395,7 @@ class tagAdmincp{
                     iDB::update("tags",compact('pid'),compact('id'));
                     iMap::diff($pid,$_pid,$id);
                 }
-                iPHP::success('属性设置完成!','js:1');
+                iUI::success('属性设置完成!','js:1');
     		break;
     		case 'weight':
 		        $weight	=(int)$_POST['mweight'];
@@ -414,7 +414,7 @@ class tagAdmincp{
                         $sql      ="`keywords` = '".($keywords?$keywords.','.iSecurity::escapeStr($_POST['mkeyword']):iSecurity::escapeStr($_POST['mkeyword']))."'";
 				        iDB::query("UPDATE `#iCMS@__tags` SET {$sql} WHERE `id`='$id'");
 		        	}
-		        	iPHP::success('关键字更改完成!','js:1');
+		        	iUI::success('关键字更改完成!','js:1');
     			}
     		break;
     		case 'tag':
@@ -426,7 +426,7 @@ class tagAdmincp{
 		        		$sql		="`related` = '".($keywords?$keywords.','.iSecurity::escapeStr($_POST['mtag']):iSecurity::escapeStr($_POST['mtag']))."'";
 				        iDB::query("UPDATE `#iCMS@__tags` SET {$sql} WHERE `id`='$id'");
 		        	}
-		        	iPHP::success('相关标签更改完成!','js:1');
+		        	iUI::success('相关标签更改完成!','js:1');
     			}
     		break;
     		default:
@@ -435,13 +435,13 @@ class tagAdmincp{
                     foreach($idArray AS $id) {
                         $data && iDB::update("tags",$data,array('id'=>$id));
                     }
-                    iPHP::success('操作成功!','js:1');
+                    iUI::success('操作成功!','js:1');
                 }else{
-                    iPHP::alert('请选择要操作项!','js:1');
+                    iUI::alert('请选择要操作项!','js:1');
                 }
 
 		}
         $sql && iDB::query("UPDATE `#iCMS@__tags` SET {$sql} WHERE `id` IN ($ids)");
-		iPHP::success('操作成功!','js:1');
+		iUI::success('操作成功!','js:1');
 	}
 }

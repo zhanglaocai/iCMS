@@ -53,8 +53,8 @@ class commentAdmincp{
 
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
         $total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__comment` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"条评论");
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__comment` {$sql} order by id DESC LIMIT ".iPHP::$offset." , {$maxperpage}");
+        iUI::pagenav($total,$maxperpage,"条评论");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__comment` {$sql} order by id DESC LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
     	include admincp::view("comment.manage");
     }
@@ -76,7 +76,7 @@ class commentAdmincp{
     }
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
-    	$id OR iPHP::alert('请选择要删除的评论!');
+    	$id OR iUI::alert('请选择要删除的评论!');
     	$comment = iDB::row("SELECT * FROM `#iCMS@__comment` WHERE `id`='$id' LIMIT 1");
 
         $table = APPS::get_table($comment->appid);
@@ -85,11 +85,11 @@ class commentAdmincp{
         iDB::query("UPDATE `#iCMS@__user` SET comments = comments-1 WHERE `comments`>0 AND `uid`='{$comment->userid}' LIMIT 1;");
 		iDB::query("DELETE FROM `#iCMS@__comment` WHERE `id` = '$id';");
 
-        $dialog && iPHP::success('评论删除完成','js:parent.$("#id-'.$id.'").remove();');
+        $dialog && iUI::success('评论删除完成','js:parent.$("#id-'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iPHP::alert("请选择要操作的评论");
+        $idArray OR iUI::alert("请选择要操作的评论");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
@@ -99,7 +99,7 @@ class commentAdmincp{
 	    			$this->do_del($id,false);
 	    		}
 	    		iPHP::$break	= true;
-				iPHP::success('评论全部删除完成!','js:1');
+				iUI::success('评论全部删除完成!','js:1');
     		break;
 		}
 	}
@@ -107,7 +107,7 @@ class commentAdmincp{
         if($this->id){
             $data = admincp::fields($_GET['iDT']);
             $data && iDB::update("comment",$data,array('id'=>$this->id));
-            iPHP::success('操作成功!','js:1');
+            iUI::success('操作成功!','js:1');
         }
     }
 }

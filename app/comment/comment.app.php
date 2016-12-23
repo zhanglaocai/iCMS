@@ -40,16 +40,16 @@ class commentApp {
 
 	public function API_like() {
 		// iPHP::app('user.class','static');
-		// user::get_cookie() OR iPHP::code(0,'iCMS:!login',0,'json');
+		// user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
 
-		$this->id OR iPHP::code(0, 'iCMS:article:empty_id', 0, 'json');
+		$this->id OR iUI::code(0, 'iCMS:article:empty_id', 0, 'json');
 		$lckey = 'like_comment_' . $this->id;
 		$like = iPHP::get_cookie($lckey);
-		$like && iPHP::code(0, 'iCMS:comment:!like', 0, 'json');
+		$like && iUI::code(0, 'iCMS:comment:!like', 0, 'json');
 		//$ip = iPHP::get_ip();
 		iDB::query("UPDATE `#iCMS@__comment` SET `up`=up+1 WHERE `id`='$this->id'");
 		iPHP::set_cookie($lckey, $_SERVER['REQUEST_TIME'], 86400);
-		iPHP::code(1, 'iCMS:comment:like', 0, 'json');
+		iUI::code(1, 'iCMS:comment:like', 0, 'json');
 	}
 	public function API_json() {
 		$vars = array(
@@ -63,7 +63,7 @@ class commentApp {
 		$vars['page'] = true;
 		// iPHP::app('comment.func', 'static');
 		// $array = comment_list($vars);
-		// iPHP::json($array);
+		// iUI::json($array);
 		iPHP::assign('vars',$vars);
 		iPHP::view('iCMS://comment/api.json.htm');
 	}
@@ -75,16 +75,16 @@ class commentApp {
 	}
 	public function ACTION_add() {
 		if (!$this->config['enable']) {
-			iPHP::code(0, 'iCMS:comment:close', 0, 'json');
+			iUI::code(0, 'iCMS:comment:close', 0, 'json');
 		}
 
 		iPHP::app('user.class', 'static');
-		user::get_cookie() OR iPHP::code(0, 'iCMS:!login', 0, 'json');
+		user::get_cookie() OR iUI::code(0, 'iCMS:!login', 0, 'json');
 
 		if ($this->config['seccode']) {
 			iPHP::core("Seccode");
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
-			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 
 		iPHP::app('user.msg.class', 'static');
@@ -98,11 +98,11 @@ class commentApp {
 		$reply_name = iSecurity::escapeStr($_POST['name']);
 		$title = iSecurity::escapeStr($_POST['title']);
 		$content = iSecurity::escapeStr($_POST['content']);
-		$iid OR iPHP::code(0, 'iCMS:article:empty_id', 0, 'json');
-		$content OR iPHP::code(0, 'iCMS:comment:empty', 0, 'json');
+		$iid OR iUI::code(0, 'iCMS:article:empty_id', 0, 'json');
+		$content OR iUI::code(0, 'iCMS:comment:empty', 0, 'json');
 
 		$fwd = iPHP::app("admincp.filter.app")->run($content);
-		$fwd && iPHP::code(0, 'iCMS:comment:filter', 0, 'json');
+		$fwd && iUI::code(0, 'iCMS:comment:filter', 0, 'json');
 
 		$appid OR $appid = iCMS_APP_ARTICLE;
 		$addtime = $_SERVER['REQUEST_TIME'];
@@ -121,9 +121,9 @@ class commentApp {
 		iDB::query("UPDATE `#iCMS@__article` SET comments=comments+1 WHERE `id` ='{$iid}' limit 1");
 		user::update_count($userid, 1, 'comments');
 		if ($this->config['examine']) {
-			iPHP::code(0, 'iCMS:comment:examine', $id, 'json');
+			iUI::code(0, 'iCMS:comment:examine', $id, 'json');
 		}
-		iPHP::code(1, 'iCMS:comment:success', $id, 'json');
+		iUI::code(1, 'iCMS:comment:success', $id, 'json');
 
 	}
 

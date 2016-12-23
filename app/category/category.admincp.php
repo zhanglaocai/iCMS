@@ -122,19 +122,19 @@ class categoryAdmincp extends category{
         // if($_rootid_hash){
         //     $_rootid = authcode($_rootid_hash);
         //     if($rootid!=$_rootid){
-        //         iPHP::alert('非法数据提交!');
+        //         iUI::alert('非法数据提交!');
         //     }else{
         //         admincp::CP($_rootid,'a','alert');
         //         exit;
         //     }
         // }
-        ($cid && $cid==$rootid) && iPHP::alert('不能以自身做为上级'.$this->category_name);
-        empty($name) && iPHP::alert($this->category_name.'名称不能为空!');
+        ($cid && $cid==$rootid) && iUI::alert('不能以自身做为上级'.$this->category_name);
+        empty($name) && iUI::alert($this->category_name.'名称不能为空!');
 		if($metadata){
 	        $md	= array();
             if(is_array($metadata['key'])){
     			foreach($metadata['key'] AS $_mk=>$_mval){
-    				!preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iPHP::alert($this->category_name.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
+    				!preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iUI::alert($this->category_name.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
     				$md[$_mval] = $metadata['value'][$_mk];
     			}
             }else if(is_array($metadata)){
@@ -152,7 +152,7 @@ class categoryAdmincp extends category{
                         $cr_check = false;
                     }
                 }
-                $cr_check && iPHP::alert('伪静态模式'.$CR[0].'规则必需要有'.$CR[2].'其中之一');
+                $cr_check && iUI::alert('伪静态模式'.$CR[0].'规则必需要有'.$CR[2].'其中之一');
             }
         }
 
@@ -223,7 +223,7 @@ class categoryAdmincp extends category{
             );
         }
 
-        iPHP::success($msg,'url:'.$this->category_uri);
+        iUI::success($msg,'url:'.$this->category_uri);
     }
 
     public function do_update(){
@@ -232,10 +232,10 @@ class categoryAdmincp extends category{
 			iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name',`sortnum` = '".(int)$_POST['sortnum'][$cid]."' WHERE `cid` ='".(int)$cid."' LIMIT 1");
 	    	$this->cahce_one($cid);
     	}
-    	iPHP::success('更新完成');
+    	iUI::success('更新完成');
     }
     public function do_batch(){
-        $_POST['id'] OR iPHP::alert("请选择要操作的".$this->category_name);
+        $_POST['id'] OR iUI::alert("请选择要操作的".$this->category_name);
         $id_array = (array)$_POST['id'];
         $ids      = implode(',',$id_array);
         $batch    = $_POST['batch'];
@@ -248,7 +248,7 @@ class categoryAdmincp extends category{
                     iDB::query("UPDATE `#iCMS@__category` SET `rootid` ='$tocid' WHERE `cid` ='$cid'");
                 }
                 $this->cache(true,$this->appid);
-                iPHP::success('更新完成!','js:1');
+                iUI::success('更新完成!','js:1');
             break;
             case 'merge':
                 $tocid = (int)$_POST['tocid'];
@@ -260,7 +260,7 @@ class categoryAdmincp extends category{
                 }
                 $this->update_app_count($tocid);
                 $this->cache(true,$this->appid);
-                iPHP::success('更新完成!','js:1');
+                iUI::success('更新完成!','js:1');
             break;
             case 'dir':
                 $mdir = iSecurity::escapeStr($_POST['mdir']);
@@ -276,7 +276,7 @@ class categoryAdmincp extends category{
                 foreach($id_array as $k=>$cid){
                     $sql && iDB::query("UPDATE `#iCMS@__category` SET {$sql} WHERE `cid` ='".(int)$cid."' LIMIT 1");
                 }
-                iPHP::success('目录更改完成!','js:1');
+                iUI::success('目录更改完成!','js:1');
             break;
             case 'mkdir':
                 foreach($id_array as $k=>$cid){
@@ -284,7 +284,7 @@ class categoryAdmincp extends category{
                     $dir  = pinyin($name);
                     iDB::query("UPDATE `#iCMS@__category` SET `dir` = '$dir' WHERE `cid` ='".(int)$cid."' LIMIT 1");
                 }
-                iPHP::success('更新完成!','js:1');
+                iUI::success('更新完成!','js:1');
             break;
             case 'name':
                 foreach($id_array as $k=>$cid){
@@ -292,7 +292,7 @@ class categoryAdmincp extends category{
                     iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name' WHERE `cid` ='".(int)$cid."' LIMIT 1");
                     $this->cahce_one($cid);
                 }
-                iPHP::success('更新完成!','js:1');
+                iUI::success('更新完成!','js:1');
             break;
             case 'status':
                 $val = (int)$_POST['status'];
@@ -330,7 +330,7 @@ class categoryAdmincp extends category{
                 foreach($id_array as $k=>$cid){
                     $this->update_app_count($cid);
                 }
-                iPHP::success('操作成功!','js:1');
+                iUI::success('操作成功!','js:1');
             break;
             case 'dels':
                 iPHP::$break    = false;
@@ -340,12 +340,12 @@ class categoryAdmincp extends category{
                     $this->cahce_one($cid);
                 }
                 iPHP::$break    = true;
-                iPHP::success('全部删除完成!','js:1');
+                iUI::success('全部删除完成!','js:1');
             break;
        }
         $sql && iDB::query("UPDATE `#iCMS@__category` SET {$sql} WHERE `cid` IN ($ids)");
         $this->cache(true,$this->appid);
-        iPHP::success('操作成功!','js:1');
+        iUI::success('操作成功!','js:1');
     }
     public function do_updateorder(){
     	foreach((array)$_POST['sortnum'] as $sortnum=>$cid){
@@ -384,8 +384,8 @@ class categoryAdmincp extends category{
         $orderby    = $_GET['orderby']?$_GET['orderby']:"cid DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
         $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__category` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage);
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+        iUI::pagenav($total,$maxperpage);
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
         include admincp::view($this->_view_manage,$this->_view_tpl_dir);
     }
@@ -408,7 +408,7 @@ class categoryAdmincp extends category{
             FROM `#iCMS@__category`
             WHERE cid = '$this->cid'");
         $cid = iDB::$insert_id;
-        iPHP::success('克隆完成,编辑此'.$this->category_name, 'url:' . APP_URI . '&do=add&cid=' . $cid);
+        iUI::success('克隆完成,编辑此'.$this->category_name, 'url:' . APP_URI . '&do=add&cid=' . $cid);
 
     }
     public function do_del($cid = null,$dialog=true){
@@ -427,7 +427,7 @@ class categoryAdmincp extends category{
             $msg = '请先删除本'.$this->category_name.'下的子'.$this->category_name.'!';
         }
         $this->do_cache(false);
-        $dialog && iPHP::success($msg,'js:parent.$("#'.$cid.'").remove();');
+        $dialog && iUI::success($msg,'js:parent.$("#'.$cid.'").remove();');
     }
     public function do_ajaxtree(){
 		$expanded=$_GET['expanded']?true:false;
@@ -440,7 +440,7 @@ class categoryAdmincp extends category{
         }else{
             // $this->cache_all(0,$_count);
         }
-        $dialog && iPHP::success('更新完成');
+        $dialog && iUI::success('更新完成');
    }
     public function do_cacheall($total){
         $page    = (int)$_GET['page'];
@@ -483,7 +483,7 @@ class categoryAdmincp extends category{
             $msg.="<hr />已全部生成完成<hr />总共用时<span class='label label-info'>".$query["alltime"]."</span>秒";
         }
         $updateMsg  = $page?true:false;
-        iPHP::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
+        iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
     public function loopurl($total,$_query){
         if ($total>0 && $_GET['page']<$total){
@@ -557,7 +557,7 @@ class categoryAdmincp extends category{
     public function check_dir($dir,$appid,$url,$cid=0){
         $sql ="SELECT `dir` FROM `#iCMS@__category` where `dir` ='$dir' AND `appid`='$appid'";
         $cid && $sql.=" AND `cid` !='$cid'";
-        iDB::value($sql) && empty($url) && iPHP::alert('该'.$this->category_name.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
+        iDB::value($sql) && empty($url) && iUI::alert('该'.$this->category_name.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
     }
 
     public function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false) {

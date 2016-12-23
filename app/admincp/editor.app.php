@@ -113,12 +113,12 @@ class editorApp{
     public function do_imageManager(){
 		$res = iFS::folder(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
 		$res['public_url'] = iCMS_PUBLIC_URL;
-		iPHP::json($res);
+		iUI::json($res);
     }
     public function do_fileManager(){
         $res = iFS::folder(iCMS::$config['FS']['dir']);
         $res['public_url'] = iCMS_PUBLIC_URL;
-        iPHP::json($res);
+        iUI::json($res);
     }
     public function do_catchimage(){
     	$url_array = (array)$_POST['source'];
@@ -147,7 +147,7 @@ class editorApp{
 		    array_push($list,$a);
 		}
 		/* 返回抓取数据 */
-		iPHP::json(array(
+		iUI::json(array(
 			'code'  => count($list) ? '1':'0',
 			'state' => count($list) ? 'SUCCESS':'ERROR',
 			'list'  => $list
@@ -157,7 +157,7 @@ class editorApp{
         $F = iFS::upload('upfile');
         $F===false && exit(iFS::$ERROR);
     	$F['path'] && $url = iFS::fp($F['path'],'+http');
-		iPHP::json(array(
+		iUI::json(array(
 			'title'    => iSecurity::escapeStr($_POST['pictitle']),
 			'original' => $F['oname'],
 			'url'      => $url,
@@ -167,12 +167,12 @@ class editorApp{
     }
     public function do_md_uploadimage(){
         $F = iFS::upload('editormd-image-file');
-        $F===false && iPHP::json(array(
+        $F===false && iUI::json(array(
             'message'  => iFS::$ERROR,
             'success'  => '0'
         ));
         $F['path'] && $url = iFS::fp($F['path'],'+http');
-        iPHP::json(array(
+        iUI::json(array(
             'url'      => $url,
             // 'message'  => '上传成功',
             'success'  => 1
@@ -182,7 +182,7 @@ class editorApp{
         $F = iFS::upload('upfile');
         $F===false && exit(iFS::$ERROR);
 		$F['path'] && $url	= iFS::fp($F['path'],'+http');
-    	iPHP::json(array(
+    	iUI::json(array(
 			"url"      =>$url,
 			"fileType" =>$F["ext"],
 			"original" =>$F["oname"],
@@ -193,7 +193,7 @@ class editorApp{
         $F = iFS::upload('upfile');
         $F===false && exit(iFS::$ERROR);
         $F['path'] && $url  = iFS::fp($F['path'],'+http');
-        iPHP::json(array(
+        iUI::json(array(
             "url"      =>$url,
             "fileType" =>$F["ext"],
             "original" =>$F["oname"],
@@ -214,7 +214,7 @@ class editorApp{
 			$F['path'] && $url	= iFS::fp($F['path'],'+http');
 			$tmp 	= iFS::get_dir()."scrawl/tmp/";
 			iFS::rmdir($tmp);
-	    	iPHP::json(array(
+	    	iUI::json(array(
 				"url"   =>$url,
 				"state" =>'SUCCESS'
 			));

@@ -65,7 +65,7 @@ function category_list($vars){
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
 		$total	= iPHP::total('sql.md5',"SELECT count(*) FROM `#iCMS@__category` {$where_sql} ");
-		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iPHP::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
+		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
 		iPHP::assign("category_list_total",$total);

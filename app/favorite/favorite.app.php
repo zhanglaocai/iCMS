@@ -14,15 +14,15 @@ class favoriteApp {
     }
     private function __login(){
         iPHP::app('user.class','static');
-        user::get_cookie() OR iPHP::code(0,'iCMS:!login',0,'json');
+        user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
     }
     public function API_list(){
         iPHP::app('user.class','static');
-        user::get_cookie() OR iPHP::code(0,'iCMS:!login',0,'json');
+        user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
 
         iPHP::app('favorite.func');
         $array = favorite_list(array('userid'=>user::$userid));
-        iPHP::json($array);
+        iUI::json($array);
     }
     /**
      * [ACTION_delete 删除收藏]
@@ -41,7 +41,7 @@ class favoriteApp {
         $url     = iSecurity::escapeStr($_POST['url']);
 
         if(!$fid||!$url){
-            iPHP::code(0,'iCMS:error',0,'json');
+            iUI::code(0,'iCMS:error',0,'json');
         }
         iDB::query("
             DELETE
@@ -55,7 +55,7 @@ class favoriteApp {
             SET `count` = count-1
             WHERE `id` = '$fid' AND `count`>0;
         ");
-        iPHP::code(1,0,0,'json');
+        iUI::code(1,0,0,'json');
     }
     /**
      * [ACTION_add 添加到收藏夹]
@@ -75,7 +75,7 @@ class favoriteApp {
         $addtime = time();
 
         $id  = iDB::value("SELECT `id` FROM `#iCMS@__favorite_data` WHERE `uid`='$uid' AND `fid`='$fid' AND `url`='$url' LIMIT 1");
-        $id && iPHP::code(0,'iCMS:favorite:failure',0,'json');
+        $id && iUI::code(0,'iCMS:favorite:failure',0,'json');
 
         $fields = array('uid', 'appid', 'fid', 'iid', 'url', 'title', 'addtime');
         $data   = compact ($fields);
@@ -86,9 +86,9 @@ class favoriteApp {
                 SET `count` = count+1
                 WHERE `id` = '$fid';
             ");
-            iPHP::code(1,'iCMS:favorite:success',$fdid,'json');
+            iUI::code(1,'iCMS:favorite:success',$fdid,'json');
         }
-        iPHP::code(0,'iCMS:favorite:error',0,'json');
+        iUI::code(0,'iCMS:favorite:error',0,'json');
     }
     /**
      * [ACTION_create 创建新收藏夹]
@@ -102,24 +102,24 @@ class favoriteApp {
         $description = iSecurity::escapeStr($_POST['description']);
         $mode        = (int)$_POST['mode'];
 
-        empty($title) && iPHP::code(0,'iCMS:favorite:create_empty',0,'json');
+        empty($title) && iUI::code(0,'iCMS:favorite:create_empty',0,'json');
         $fwd  = iPHP::app("admincp.filter.app")->run($title);
-        $fwd && iPHP::code(0,'iCMS:favorite:create_filter',0,'json');
+        $fwd && iUI::code(0,'iCMS:favorite:create_filter',0,'json');
 
         if($description){
             $fwd  = iPHP::app("admincp.filter.app")->run($description);
-            $fwd && iPHP::code(0,'iCMS:favorite:create_filter',0,'json');
+            $fwd && iUI::code(0,'iCMS:favorite:create_filter',0,'json');
         }
 
         $max  = iDB::value("SELECT COUNT(id) FROM `#iCMS@__favorite` WHERE `uid`='$uid'");
-        $max >=10 && iPHP::code(0,'iCMS:favorite:create_max',0,'json');
+        $max >=10 && iUI::code(0,'iCMS:favorite:create_max',0,'json');
         $count  = 0;
         $follow = 0;
         $fields = array('uid', 'nickname', 'title', 'description', 'follow', 'count', 'mode');
         $data   = compact ($fields);
         $cid    = iDB::insert('favorite',$data);
-        $cid && iPHP::code(1,'iCMS:favorite:create_success',$cid,'json');
-        iPHP::code(0,'iCMS:favorite:create_failure',0,'json');
+        $cid && iUI::code(1,'iCMS:favorite:create_success',$cid,'json');
+        iUI::code(0,'iCMS:favorite:create_failure',0,'json');
     }
 
 }

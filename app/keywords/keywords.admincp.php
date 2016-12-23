@@ -36,23 +36,23 @@ class keywordsAdmincp{
 		$url	= iSecurity::escapeStr($_POST['url']);
 		$times	= (int)$_POST['times'];
 
-        $keyword OR iPHP::alert('关键词不能为空!');
-        $url 	OR iPHP::alert('链接不能为空!');
+        $keyword OR iUI::alert('关键词不能为空!');
+        $url 	OR iUI::alert('链接不能为空!');
         $fields = array('keyword', 'url', 'times');
         $data   = compact ($fields);
 
         if(empty($id)) {
-            iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='$keyword'") && iPHP::alert('该关键词已经存在!');
+            iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='$keyword'") && iUI::alert('该关键词已经存在!');
             iDB::insert('keywords',$data);
             $this->cache();
             $msg="关键词添加完成!";
         }else {
-            iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='$keyword' AND `id` !='$id'") && iPHP::alert('该关键词已经存在!');
+            iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='$keyword' AND `id` !='$id'") && iUI::alert('该关键词已经存在!');
             iDB::update('keywords', $data, array('id'=>$id));
             $this->cache();
             $msg="关键词编辑完成!";
         }
-        iPHP::success($msg,'url:'.APP_URI);
+        iUI::success($msg,'url:'.APP_URI);
     }
 
     public function do_iCMS(){
@@ -62,21 +62,21 @@ class keywordsAdmincp{
         $orderby	=$_GET['orderby']?$_GET['orderby']:"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
 		$total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__keywords` {$sql}","G");
-        iPHP::pagenav($total,$maxperpage,"个关键词");
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__keywords` {$sql} order by {$orderby} LIMIT ".iPHP::$offset." , {$maxperpage}");
+        iUI::pagenav($total,$maxperpage,"个关键词");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__keywords` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
     	include admincp::view("keywords.manage");
     }
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
-		$id OR iPHP::alert('请选择要删除的关键词!');
+		$id OR iUI::alert('请选择要删除的关键词!');
 		iDB::query("DELETE FROM `#iCMS@__keywords` WHERE `id` = '$id'");
 		$this->cache();
-		$dialog && iPHP::success('关键词已经删除','js:parent.$("#tr'.$id.'").remove();');
+		$dialog && iUI::success('关键词已经删除','js:parent.$("#tr'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iPHP::alert("请选择要操作的关键词");
+        $idArray OR iUI::alert("请选择要操作的关键词");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
@@ -86,7 +86,7 @@ class keywordsAdmincp{
 	    			$this->do_del($id,false);
 	    		}
 	    		iPHP::$break	= true;
-				iPHP::success('关键词全部删除完成!','js:1');
+				iUI::success('关键词全部删除完成!','js:1');
     		break;
 		}
 	}
