@@ -5,6 +5,7 @@
     "title": "数据库管理",
     "description": "后台简易数据库管理",
     "table": [],
+    "admincp":"database&do=backup",
     "template": [],
     "menu": ["main", "sidebar"],
     "status": "1"

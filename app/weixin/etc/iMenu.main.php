@@ -1,7 +1,7 @@
 <?php defined('iPHP') OR exit('What are you doing?');?>
 [{
     "id": "weixin",
-    "order": "3",
+    "sort": "3",
     "caption": "微信",
     "icon": "weixin",
     "children": [{

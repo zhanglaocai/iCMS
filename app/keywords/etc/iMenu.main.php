@@ -3,7 +3,7 @@
     "id": "assist",
     "children": [{
         "id": "keywords",
-        "order": "-9995",
+        "sort": "-9995",
         "caption": "内链",
         "icon": "paperclip",
         "children": [{

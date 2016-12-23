@@ -5,6 +5,7 @@
     "title": "首页系统",
     "description": "首页程序",
     "table": [],
+    "admincp":"null",
     "template": [],
     "menu": ["main", "sidebar"],
     "status": "1"

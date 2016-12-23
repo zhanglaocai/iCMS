@@ -5,6 +5,7 @@
     "title": "采集系统",
     "description": "采集系统",
     "table": ["spider_post","spider_project","spider_rule","spider_url"],
+    "admincp":"spider&do=project",
     "template": [],
     "menu": ["main", "sidebar"],
     "status": "1"

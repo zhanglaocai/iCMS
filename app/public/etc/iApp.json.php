@@ -6,6 +6,7 @@
     "description": "公共通用标签",
     "table": [],
     "template": ["iCMS:public:ui","iCMS:public:js","iCMS:public:common","iCMS:public:seccode","iCMS:public:crontab","iCMS:public:qrcode"],
+    "admincp": "null",
     "menu": ["main", "sidebar"],
     "status": "1"
 }

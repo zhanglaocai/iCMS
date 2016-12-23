@@ -1,7 +1,7 @@
 <?php defined('iPHP') OR exit('What are you doing?');?>
 [{
     "id": "system",
-    "order": "9999999",
+    "sort": "9999999",
     "caption": "系统",
     "icon": "cog",
     "children": [{

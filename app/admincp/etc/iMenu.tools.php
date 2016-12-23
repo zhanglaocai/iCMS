@@ -1,32 +1,32 @@
 <?php defined('iPHP') OR exit('What are you doing?');?>
 [{
     "id": "tools",
-    "order": "9999998",
+    "sort": "9999998",
     "caption": "工具",
     "icon": "gavel",
     "children": [{
         "caption": "文件管理",
-        "order": "-999",
+        "sort": "-999",
         "href": "files",
         "icon": "folder"
     }, {
         "caption": "上传文件",
-        "order": "-998",
+        "sort": "-998",
         "href": "files&do=multi&from=modal",
         "icon": "upload",
         "data-toggle": "modal",
         "data-meta": "{\"width\":\"85%\",\"height\":\"640px\"}"
     }, {
         "-": "-",
-        "order": "-997"
+        "sort": "-997"
     }, {
         "caption": "模板管理",
-        "order": "-996",
+        "sort": "-996",
         "href": "template",
         "icon": "desktop"
     }, {
         "-": "-",
-        "order": "-995"
+        "sort": "-995"
     }, {
         "-": "-"
     }, {

@@ -4,7 +4,7 @@
     "app": "keywords",
     "title": "内链系统",
     "description": "内链系统",
-    "table": ['keywords'],
+    "table": ["keywords"],
     "template": [],
     "menu": ["main", "sidebar"],
     "status": "1"

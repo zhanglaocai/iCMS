@@ -191,24 +191,26 @@ $lock_file = iPATH.'cache/install.lock';
 				<div class="row-fluid">
 					<div class="span4">
 						<img class="marketing-img" src="./img/Development.png">
-						<h2>人人为我，我为人人。</h2>
-						<p>由<a href="http://t.qq.com/idreamsoft">@艾梦软件</a> 历时两年多开发，并在实际项目中高效运行。iCMS 使用了
-						<a href="http://www.idreamsoft.com/iPHP/">iPHP</a>、
-						<a href="http://github.com/twbs/bootstrap">Bootstrap</a>、
-						<a href="http://jquery.com">jQuery</a>、
-						<a href="https://github.com/aui/artDialog">artDialog</a>等开源软件，
-						并托管在 <a href="http://github.com">GitHub</a> 上，方便大家使用这一套程序构建更好的web应用。
+						<h2>开源免费</h2>
+						<p>由艾梦软件历时多年开发，并在实际项目中高效运行。iCMS 项目使用了
+						<a href="http://www.idreamsoft.com/iPHP/" target="_blank">iPHP</a>、
+						<a href="http://github.com/twbs/bootstrap" target="_blank">Bootstrap</a>、
+						<a href="https://weui.io" target="_blank">WeUI</a>、
+						<a href="http://jquery.com" target="_blank">jQuery</a>、
+						<a href="http://ueditor.baidu.com" target="_blank">UEditor</a>、
+						<a href="https://github.com/aui/artDialog" target="_blank">artDialog</a>等开源软件，
+						并托管在 <a href="http://github.com/idreamsoft/iCMS" target="_blank">GitHub</a>、<a target="_blank" href="http://git.oschina.net/php/icms">GIT@OSC</a> 上，方便大家使用这一套程序构建更好的web应用。
 						</p>
 					</div>
 					<div class="span4">
 						<img class="marketing-img" src="./img/responsive-design.png">
 						<h2>一套程序、多种设备。</h2>
-						<p>你的网站能在 <a href="http://www.idreamsoft.com" target="_blank">iCMS</a> 的帮助下通过同一套内容管理系统快速、有效适配手机、平板、PC 设备，这一切都是归于 iCMS 多终端适配功能。</p>
+						<p>你的网站能在 <a href="http://www.idreamsoft.com" target="_blank">iCMS</a> 的帮助下通过同一套内容管理系统快速、有效适配手机、微信、微信小程序、平板、PC等设备，这一切都是归于 iCMS 多终端适配功能。</p>
 					</div>
 					<div class="span4">
 						<img class="marketing-img" src="./img/Enterprise-Features.jpg">
 						<h2>功能齐全。</h2>
-						<p><a href="http://www.idreamsoft.com" target="_blank">iCMS</a> 提供了网站运营所需的基本功能。也提供了功能强大标签(TAG)系统、内容多属性多栏目归属、自定义内链、高负载、整合第三方登陆</p>
+						<p><a href="http://www.idreamsoft.com" target="_blank">iCMS</a> 提供了网站运营所需的基本功能。也提供了功能强大标签(TAG)系统、自定义应用、自定义表、内容多属性多栏目归属、自定义内链、高负载、整合第三方登陆</p>
 					</div>
 				</div>
 			</div>
@@ -338,13 +340,13 @@ $lock_file = iPATH.'cache/install.lock';
 				$uncorrect  = '<span class="chk" style="color:red;">× 文件不存在请上传此文件</span>';
 				$check_list = array(
 					array('config.php','系统配置文件'),
-					array('conf','网站配置目录'),
-					array('conf/iCMS','网站配置目录'),
 					array('cache','缓存目录'),
+					array('cache/conf','网站配置目录'),
+					array('cache/conf/iCMS','网站配置目录'),
 					array('cache/iCMS','系统缓存目录'),
-					array('cache/template','模板编译目录'),
+					array('cache/template','模板缓存目录'),
 					array('res','资源上传目录'),
-					array('html','静态生成目录'),
+					// array('html','静态生成目录'),
 				);
 				if($fp=@fopen(iPATH.'iCMS.txt',"wb")) {
 					$state = $correct;

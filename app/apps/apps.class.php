@@ -89,10 +89,17 @@ class APPS {
         $data  = array();
         foreach ($array as $key => $path) {
             if(stripos($path, $pattern) !== false){
-                $path  = iPHP_APP_DIR.'/'.$path;
-                $json  = file_get_contents($path);
+                $rpath  = iPHP_APP_DIR.'/'.$path;
+                $json  = file_get_contents($rpath);
                 $json  = substr($json, 56);
                 $jdata = json_decode($json,true);
+                $error = json_last_error();
+                if($error!==JSON_ERROR_NONE){
+                    $data[$path] = array(
+                        'title'        => $path,
+                        'description' => json_last_error_msg()
+                    );
+                }
                 if($jdata && is_array($jdata)){
                     $data[$jdata['app']] = $jdata;
                 }

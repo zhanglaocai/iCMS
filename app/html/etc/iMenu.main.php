@@ -3,7 +3,7 @@
     "id": "tools",
     "children": [{
         "id": "html",
-        "order":"-992",
+        "sort":"-992",
         "caption": "生成静态",
         "icon": "file",
         "children": [{
@@ -34,6 +34,6 @@
             "icon": "cog"
         }]
     }, {
-        "-": "-","order":"-991"
+        "-": "-","sort":"-991"
     }]
 }]

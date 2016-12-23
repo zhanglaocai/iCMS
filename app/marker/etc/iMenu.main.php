@@ -3,7 +3,7 @@
     "id": "assist",
     "children": [{
         "id": "marker",
-        "order": "-9997",
+        "sort": "-9997",
         "caption": "标记",
         "icon": "bookmark",
         "children": [{

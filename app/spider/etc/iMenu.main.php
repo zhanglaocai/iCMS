@@ -3,7 +3,7 @@
     "id": "tools",
     "children": [{
         "id": "spider",
-        "order":"-994",
+        "sort":"-994",
         "caption": "采集管理",
         "href": "spider",
         "icon": "magnet",
@@ -47,6 +47,6 @@
             "icon": "edit"
         }]
     }, {
-        "-": "-","order":"-993"
+        "-": "-","sort":"-993"
     }]
 }]

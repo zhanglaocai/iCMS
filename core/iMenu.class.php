@@ -32,7 +32,7 @@ class iMenu {
         if($variable){
             $variable = call_user_func_array('array_merge_recursive',$variable);
             array_walk($variable,array($this,'menu_item_unique'));
-            $this->menu_item_order($variable);
+            $this->menu_item_sort($variable);
             $this->menu_href_array($variable,$this->href_array);
             $this->menu_array = $variable;
             unset($variable);
@@ -71,25 +71,25 @@ class iMenu {
         }
         // return $array;
     }
-    function menu_item_order(&$variable){
-        uasort ($variable,array($this,'array_order'));
+    function menu_item_sort(&$variable){
+        uasort ($variable,array($this,'array_sort'));
     	foreach ($variable as $key => $value) {
     		if($value['children']){
-	    		$this->menu_item_order($variable[$key]['children']);
+	    		$this->menu_item_sort($variable[$key]['children']);
     		}
     	}
     }
-    function array_order($a,$b){
-        if ( $a['order']  ==  $b['order'] ) {
+    function array_sort($a,$b){
+        if ( $a['sort']  ==  $b['sort'] ) {
             return  0 ;
         }
-        return ( $a['order']  <  $b['order'] ) ? - 1  :  1 ;
-        // return @strnatcmp($a['order'],$b['order']);
+        return ( $a['sort']  <  $b['sort'] ) ? - 1  :  1 ;
+        // return @strnatcmp($a['sort'],$b['sort']);
     }
     function menu_item_unique (&$items){
         if(is_array($items)){
             foreach ($items as $key => $value) {
-                if(in_array($key, array('id','name','icon','caption','order'))){
+                if(in_array($key, array('id','name','icon','caption','sort'))){
                     is_array($value) &&$items[$key] = $value[0];
                 }
                 if(is_array($items['children'])){
@@ -105,7 +105,7 @@ class iMenu {
             foreach ($variable as $key => $value) {
                 $value = (array)$value;
 
-                isset($value['order']) OR $value['order'] = $index*100+$i;
+                isset($value['sort']) OR $value['sort'] = $index*100+$i;
                 if($value['children']){
                     $value['children'] = $this->menu_id($value['children'],$i);
                 }
@@ -189,7 +189,7 @@ class iMenu {
 
         $a = (array)$a;
 		if($a['-']){
-			return '<li data-order="'.$a['order'].'" class="'.(($level||$mType=='sidebar')?'divider':'divider-vertical').'"></li>';
+			return '<li data-sort="'.$a['sort'].'" class="'.(($level||$mType=='sidebar')?'divider':'divider-vertical').'"></li>';
 		}
 
         $href = $this->href($a);
@@ -212,7 +212,7 @@ class iMenu {
 		}
 
 
-		$li = '<li class="'.$a['class'].'" title="'.$a['title'].'" menu-level="'.$level.'" menu-id="'.$a['id'].'" menu-order="'.$a['order'].'">';
+		$li = '<li class="'.$a['class'].'" title="'.$a['title'].'" menu-level="'.$level.'" menu-id="'.$a['id'].'" menu-sort="'.$a['sort'].'">';
 
 		$link = '<a href="'.$href.'"';
 		$a['title']  && $link.= ' title="'.$a['title'].'"';

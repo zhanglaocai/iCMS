@@ -61,7 +61,7 @@ $(function(){
           <table class="table table-bordered table-condensed table-hover">
             <thead>
               <tr>
-                <th style="width:60px;">ID</th>
+                <th style="width:60px;">APPID</th>
                 <th>名称</th>
                 <th>标识</th>
                 <th>简介</th>
@@ -72,29 +72,39 @@ $(function(){
             </thead>
             <tbody>
               <?php
-              usort ( $rs ,  "cmp" );
-              foreach ($rs as $key => $data) {
-              $installed = APPS::installed($data['app']);
+                usort ( $rs ,  "cmp" );
+                foreach ($rs as $key => $data) {
+                  $installed = APPS::installed($data['app']);
+                  $admincp = __ADMINCP__.'='.$data['app'];
+                  if($data['admincp']){
+                    $admincp = __ADMINCP__.'='.$data['admincp'];
+                    if($data['admincp']=='__SELF__'){
+                      $admincp = __SELF__;
+                    }
+                    if($data['admincp']=='null'){
+                      $admincp = null;
+                    }
+                  }
               ?>
               <tr id="tr<?php echo $data['appid'] ; ?>">
                 <td><?php echo $data['appid'] ; ?></td>
                 <td><?php echo $data['title'] ; ?></td>
                 <td><?php echo $data['app'] ; ?></td>
                 <td><p class="app_list_desc"><?php echo $data['description'] ; ?></p></td>
-                <td><?php echo implode('<br />', $data['table']); ?></td>
+                <td><?php echo implode('<br />', (array)$data['table']); ?></td>
                 <td>
                   <?php
-                  if($data['template']){
-                  foreach ($data['template'] as $key => $tpltags) {
-                  echo '<a href="http://www.idreamsoft.com/cms/doc_search?q='.urlencode($tpltags).'" target="_blank" title="点击查看模板标签说明">&lt;!--{'.$tpltags.'}--&gt;</a><br />';
-                  }
+                  if($data['template'])foreach ($data['template'] as $key => $tpltags) {
+                    echo '<a href="http://www.idreamsoft.com/cms/doc_search?q='.urlencode($tpltags).'" target="_blank" title="点击查看模板标签说明">&lt;!--{'.$tpltags.'}--&gt;</a><br />';
                   }
                   ?>
                   <td>
                     <?php if($installed){ ?>
                     <?php if($data['status']){?>
                     <a href="<?php echo APP_URI; ?>&do=update&iDT=status:0&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
-                    <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> <?php echo $data['title'] ; ?>管理</a>
+                    <?php if($admincp){ ?>
+                    <a href="<?php echo $admincp; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> <?php echo $data['title'] ; ?></a>
+                    <?php }?>
                     <?php }else{?>
                     <a href="<?php echo APP_URI; ?>&do=update&iDT=status:1&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary"><i class="fa fa-open"></i> 启用</a>
                     <?php }?>
