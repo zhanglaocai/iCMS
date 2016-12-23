@@ -618,7 +618,7 @@ class iPHP {
 		iPHP_DEBUG && self::throwException($msg, $code);
 		self::http_status(404, $code);
 		if (defined('iPHP_URL_404')) {
-			iPHP_URL_404 && self::redirect(iPHP_URL_404 . '?url=' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+			iPHP_URL_404 && self::redirect(iPHP_URL_404 . '?url=' . urlencode($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
 		}
 		exit();
 	}

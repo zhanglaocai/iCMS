@@ -368,9 +368,7 @@ function array_diff_values($N, $O){
  	$diff['-'] = array_diff($O, $N);
     return $diff;
 }
-function _int($n) {
-    return 0-$n;
-}
+
 function get_dir_name($path=null){
 	if (!empty($path)) {
 		if (strpos($path,'\\')!==false) {
