@@ -20,11 +20,11 @@ class msg{
 		// $friend = (int)$a['friend'];
 
 		$send_uid    = (int)$a['send_uid'];
-		$send_name   = iS::escapeStr($a['send_name']);
+		$send_name   = iSecurity::escapeStr($a['send_name']);
 		$receiv_uid  = (int)$a['receiv_uid'];
-		$receiv_name = iS::escapeStr($a['receiv_name']);
+		$receiv_name = iSecurity::escapeStr($a['receiv_name']);
 
-		$content  = iS::escapeStr($a['content']);
+		$content  = iSecurity::escapeStr($a['content']);
 		$sendtime = time();
 		if($send_uid && $send_uid==$receiv_uid && !$a['self']){
 			return;

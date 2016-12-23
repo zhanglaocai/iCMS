@@ -70,7 +70,7 @@ class groupApp{
 	public function do_save(){
 		$gid    = intval($_POST['gid']);
 		$type   = intval($_POST['type']);
-		$name   = iS::escapeStr($_POST['name']);
+		$name   = iSecurity::escapeStr($_POST['name']);
 		$power  = $_POST['power']?json_encode($_POST['power']):'';
 		$cpower = $_POST['cpower']?json_encode($_POST['cpower']):'';
 		$name OR iPHP::alert('角色名不能为空');

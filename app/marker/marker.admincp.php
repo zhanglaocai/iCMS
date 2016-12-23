@@ -30,8 +30,8 @@ class markerAdmincp{
         $cid    = (int)$_POST['cid'];
         $pid    = (int)$_POST['pid'];
 
-        $name   = iS::escapeStr($_POST['name']);
-        $key    = iS::escapeStr($_POST['key']);
+        $name   = iSecurity::escapeStr($_POST['name']);
+        $key    = iSecurity::escapeStr($_POST['key']);
         $data   = $_POST['data'];
         $status = (int)$_POST['status'];
 

@@ -26,7 +26,7 @@ class spiderContent extends spider{
         }
         $name = $data['name'];
         if (spider::$dataTest) {
-            print_r('<b>['.$name.']规则:</b>'.iS::escapeStr($data['rule']));
+            print_r('<b>['.$name.']规则:</b>'.iSecurity::escapeStr($data['rule']));
             echo "<hr />";
         }
         /**
@@ -157,7 +157,7 @@ class spiderContent extends spider{
                 if (spider::$dataTest) {
                     echo "<b>内容页网址:</b>".$rule['__url__'] . "<br />";
                     echo "<b>分页:</b>".$rule['page_url'] . "<br />";
-                    echo iS::escapeStr($page_url_rule);
+                    echo iSecurity::escapeStr($page_url_rule);
                     echo "<hr />";
                 }
                 if(spider::$dataTest){

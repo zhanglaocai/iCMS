@@ -28,7 +28,7 @@ class appsAdmincp{
       }
     }
     public function do_install(){
-      $app = iS::escapeStr($_GET['appname']);
+      $app = iSecurity::escapeStr($_GET['appname']);
       strstr($app,'..')!==false  && iPHP::alert('您的应用有问题!');
       $path = APPS::installed($app,'path');
       iFS::write($path,'1');
@@ -45,9 +45,9 @@ class appsAdmincp{
 
     public function do_save(){
         $id          = (int)$_POST['app_id'];
-        $name        = iS::escapeStr($_POST['app_name']);
-        $app         = iS::escapeStr($_POST['app_app']);
-        $description = iS::escapeStr($_POST['app_description']);
+        $name        = iSecurity::escapeStr($_POST['app_name']);
+        $app         = iSecurity::escapeStr($_POST['app_app']);
+        $description = iSecurity::escapeStr($_POST['app_description']);
         $fieldata    = $_POST['data'];
 
         $name OR iPHP::alert('应用名称不能为空!');

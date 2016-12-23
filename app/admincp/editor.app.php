@@ -139,9 +139,9 @@ class editorApp{
                     "state"    => 'SUCCESS',
                     "url"      => $url,
                     "size"     => $F["size"],
-                    "title"    => iS::escapeStr($info["title"]),
-                    "original" => iS::escapeStr($F["oname"]),
-                    "source"   => iS::escapeStr($imgurl)
+                    "title"    => iSecurity::escapeStr($info["title"]),
+                    "original" => iSecurity::escapeStr($F["oname"]),
+                    "source"   => iSecurity::escapeStr($imgurl)
                 );
             };
 		    array_push($list,$a);
@@ -158,7 +158,7 @@ class editorApp{
         $F===false && exit(iFS::$ERROR);
     	$F['path'] && $url = iFS::fp($F['path'],'+http');
 		iPHP::json(array(
-			'title'    => iS::escapeStr($_POST['pictitle']),
+			'title'    => iSecurity::escapeStr($_POST['pictitle']),
 			'original' => $F['oname'],
 			'url'      => $url,
 			'code'     => $F['code'],

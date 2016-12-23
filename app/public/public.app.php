@@ -51,12 +51,12 @@ class publicApp {
 	}
 	public function API_seccode() {
 		iPHP::core("Seccode");
-		$_GET['pre'] && $pre = iS::escapeStr($_GET['pre']);
+		$_GET['pre'] && $pre = iSecurity::escapeStr($_GET['pre']);
 		iSeccode::run($pre);
 	}
 
 	public function API_qrcode() {
-		$url = iS::escapeStr($_GET['url']);
+		$url = iSecurity::escapeStr($_GET['url']);
 		iPHP::vendor('QRcode', $url);
 	}
 }

@@ -10,11 +10,11 @@
 */
 class filesApp{
     public function __construct() {
-	    $this->from		= iS::escapeStr($_GET['from']);
-	    $this->callback	= iS::escapeStr($_GET['callback']);
-		$this->click	= iS::escapeStr($_GET['click']);
-        $this->target   = iS::escapeStr($_GET['target']);
-        $this->format   = iS::escapeStr($_GET['format']);
+	    $this->from		= iSecurity::escapeStr($_GET['from']);
+	    $this->callback	= iSecurity::escapeStr($_GET['callback']);
+		$this->click	= iSecurity::escapeStr($_GET['click']);
+        $this->target   = iSecurity::escapeStr($_GET['target']);
+        $this->format   = iSecurity::escapeStr($_GET['format']);
     	$this->id		= (int)$_GET['id'];
 	    $this->callback OR $this->callback	= 'icms';
         $this->upload_max_filesize = get_cfg_var("upload_max_filesize");
@@ -55,7 +55,7 @@ class filesApp{
 
         isset($_GET['userid']) 	&& $uri.='&userid='.(int)$_GET['userid'];
 
-        $orderby	= $_GET['orderby']?iS::escapeStr($_GET['orderby']):"id DESC";
+        $orderby	= $_GET['orderby']?iSecurity::escapeStr($_GET['orderby']):"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
 		$total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__file_data` {$sql}","G");
         iPHP::pagenav($total,$maxperpage,"个文件");
@@ -65,9 +65,9 @@ class filesApp{
     	include admincp::view("files.manage");
     }
     public function do_IO(){
-        $udir      = iS::escapeStr($_GET['udir']);
-        $name      = iS::escapeStr($_GET['name']);
-        $ext       = iS::escapeStr($_GET['ext']);
+        $udir      = iSecurity::escapeStr($_GET['udir']);
+        $name      = iSecurity::escapeStr($_GET['name']);
+        $ext       = iSecurity::escapeStr($_GET['ext']);
         iFS::check_ext($ext,0) OR iPHP::json(array('state'=>'ERROR','msg'=>'不允许的文件类型'));
         iFS::$ERROR_TYPE = true;
         $_GET['watermark'] OR iFS::$watermark = false;
@@ -214,7 +214,7 @@ class filesApp{
     }
     public function do_editpic(){
         admincp::MP('FILE.EDIT','page');
-        $pic       = iS::escapeStr($_GET['pic']);
+        $pic       = iSecurity::escapeStr($_GET['pic']);
         //$pic OR iPHP::alert("请选择图片!");
         if($pic){
             $src       = iFS::fp($pic,'+http')."?".time();

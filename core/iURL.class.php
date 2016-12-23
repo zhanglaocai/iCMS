@@ -57,8 +57,8 @@ class iURL {
             case 'D':		$e = get_date($a['pubdate'],'j');break;
             case 'DD':		$e = get_date($a['pubdate'],'d');break;
 
-            case 'NAME':    $e = urlencode(iS::escapeStr($a['name']));break;
-            case 'TITLE':   $e = urlencode(iS::escapeStr($a['title']));break;
+            case 'NAME':    $e = urlencode(iSecurity::escapeStr($a['name']));break;
+            case 'TITLE':   $e = urlencode(iSecurity::escapeStr($a['title']));break;
             case 'ZH_CN':	$e = ($a['name']?$a['name']:$a['title']);break;
             case 'TKEY':    $e = $a['tkey'];break;
             case 'LINK':    $e = $a['clink'];break;

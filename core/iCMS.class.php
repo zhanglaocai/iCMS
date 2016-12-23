@@ -55,7 +55,7 @@ class iCMS extends iPHP{
     }
 
     public static function API($app = NULL,$do = NULL) {
-        $app OR $app = iS::escapeStr($_GET['app']);
+        $app OR $app = iSecurity::escapeStr($_GET['app']);
         return self::run($app,null,null,'API_');
     }
 

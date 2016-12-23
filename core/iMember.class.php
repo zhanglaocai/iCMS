@@ -43,8 +43,8 @@ class iMember{
 //        self::$LOGIN_COUNT = (int)authcode(get_cookie('iCMS_LOGIN_COUNT'),'DECODE');
 //        if(self::$LOGIN_COUNT>iCMS_LOGIN_COUNT) exit();
 
-        $a   = iS::escapeStr($_POST['username']);
-        $p   = iS::escapeStr($_POST['password']);
+        $a   = iSecurity::escapeStr($_POST['username']);
+        $p   = iSecurity::escapeStr($_POST['password']);
         $ip  = iPHP::get_ip();
         $sep = iPHP_AUTH_IP?'#=iCMS['.$ip.']=#':'#=iCMS=#';
         if(empty($a) && empty($p)) {

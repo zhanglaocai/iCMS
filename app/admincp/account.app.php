@@ -57,20 +57,20 @@ class accountApp{
         $uid      = (int)$_POST['uid'];
         $gender   = (int)$_POST['gender'];
         $type     = $_POST['type'];
-        $username = iS::escapeStr($_POST['uname']);
-        $nickname = iS::escapeStr($_POST['nickname']);
-        $realname = iS::escapeStr($_POST['realname']);
+        $username = iSecurity::escapeStr($_POST['uname']);
+        $nickname = iSecurity::escapeStr($_POST['nickname']);
+        $realname = iSecurity::escapeStr($_POST['realname']);
         $power    = $_POST['power']?json_encode($_POST['power']):'';
         $cpower   = $_POST['cpower']?json_encode($_POST['cpower']):'';
         $gid      = 0;
         $info     = array();
-        $info['icq']       = iS::escapeStr($_POST['icq']);
-        $info['home']      = iS::escapeStr($_POST['home']);
+        $info['icq']       = iSecurity::escapeStr($_POST['icq']);
+        $info['home']      = iSecurity::escapeStr($_POST['home']);
         $info['year']      = intval($_POST['year']);
         $info['month']     = intval($_POST['month']);
         $info['day']       = intval($_POST['day']);
-        $info['from']      = iS::escapeStr($_POST['from']);
-        $info['signature'] = iS::escapeStr($_POST['signature']);
+        $info['from']      = iSecurity::escapeStr($_POST['from']);
+        $info['signature'] = iSecurity::escapeStr($_POST['signature']);
         $info              = addslashes(serialize($info));
         $_POST['pwd'] && $password = md5($_POST['pwd']);
 

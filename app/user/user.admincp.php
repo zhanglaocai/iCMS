@@ -98,7 +98,7 @@ class userAdmincp{
     public function do_save(){
         $uid      = (int)$_POST['uid'];
         $pid      = implode(',', (array)$_POST['pid']);
-        $_pid     = iS::escapeStr($_POST['_pid']);
+        $_pid     = iSecurity::escapeStr($_POST['_pid']);
         $user     = $_POST['user'];
         $userdata = $_POST['userdata'];
         $username = $user['username'];

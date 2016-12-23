@@ -20,7 +20,7 @@ class searchApp {
                 $q  = mb_convert_encoding($q,'UTF-8//IGNORE',$encode);
             }
         }
-        $q  = iS::escapeStr($q);
+        $q  = iSecurity::escapeStr($q);
 
         //empty($q) && iPHP::throw404('应用程序运行出错.亲!搜点什么吧!!', 60001);
         $fwd = iPHP::app("admincp.filter.app")->run($q);

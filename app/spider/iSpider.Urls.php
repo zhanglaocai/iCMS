@@ -108,8 +108,8 @@ class spiderUrls extends spider{
 
 //      if(spider::$ruleTest){
 //          echo "<pre>";
-//          print_r(iS::escapeStr($project));
-//          print_r(iS::escapeStr($rule));
+//          print_r(iSecurity::escapeStr($project));
+//          print_r(iSecurity::escapeStr($rule));
 //          echo "</pre>";
 //          echo "<hr />";
 //      }
@@ -173,8 +173,8 @@ class spiderUrls extends spider{
                 unset($html);
 
                 if (spider::$ruleTest) {
-                    echo iS::escapeStr($rule['list_area_rule']);
-    //              echo iS::escapeStr($list_area);
+                    echo iSecurity::escapeStr($rule['list_area_rule']);
+    //              echo iSecurity::escapeStr($list_area);
                     echo "<hr />";
                 }
                 if ($rule['list_area_format']) {
@@ -195,13 +195,13 @@ class spiderUrls extends spider{
             }
 
             if (spider::$ruleTest) {
-                echo '<b>列表区域规则:</b>'.iS::escapeStr($rule['list_area_rule']);
+                echo '<b>列表区域规则:</b>'.iSecurity::escapeStr($rule['list_area_rule']);
                 echo "<hr />";
-                echo '<b>列表区域抓取结果:</b>'.iS::escapeStr($list_area);
+                echo '<b>列表区域抓取结果:</b>'.iSecurity::escapeStr($list_area);
                 echo "<hr />";
-                echo '<b>列表链接规则:</b>'.iS::escapeStr($rule['list_url_rule']);
+                echo '<b>列表链接规则:</b>'.iSecurity::escapeStr($rule['list_url_rule']);
                 echo "<hr />";
-                echo '<b>网址合成规则:</b>'.iS::escapeStr($rule['list_url']);
+                echo '<b>网址合成规则:</b>'.iSecurity::escapeStr($rule['list_url']);
                 echo "<hr />";
             }
             if($prule_list_url){

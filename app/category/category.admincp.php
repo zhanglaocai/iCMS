@@ -97,24 +97,24 @@ class categoryAdmincp extends category{
         $sortnum     = (int)$_POST['sortnum'];
         $mode         = (int)$_POST['mode'];
         $pid          = implode(',', (array)$_POST['pid']);
-        $_pid         = iS::escapeStr($_POST['_pid']);
-        $_rootid_hash = iS::escapeStr($_POST['_rootid_hash']);
-        $name         = iS::escapeStr($_POST['name']);
-        $subname      = iS::escapeStr($_POST['subname']);
-        $domain       = iS::escapeStr($_POST['domain']);
-        $htmlext      = iS::escapeStr($_POST['htmlext']);
-        $url          = iS::escapeStr($_POST['url']);
-        $password     = iS::escapeStr($_POST['password']);
-        $pic          = iS::escapeStr($_POST['pic']);
-        $mpic         = iS::escapeStr($_POST['mpic']);
-        $spic         = iS::escapeStr($_POST['spic']);
-        $dir          = iS::escapeStr($_POST['dir']);
-        $title        = iS::escapeStr($_POST['title']);
-        $keywords     = iS::escapeStr($_POST['keywords']);
-        $description  = iS::escapeStr($_POST['description']);
-        $rule         = iS::escapeStr($_POST['rule']);
-        $template     = iS::escapeStr($_POST['template']);
-        $metadata     = iS::escapeStr($_POST['metadata']);
+        $_pid         = iSecurity::escapeStr($_POST['_pid']);
+        $_rootid_hash = iSecurity::escapeStr($_POST['_rootid_hash']);
+        $name         = iSecurity::escapeStr($_POST['name']);
+        $subname      = iSecurity::escapeStr($_POST['subname']);
+        $domain       = iSecurity::escapeStr($_POST['domain']);
+        $htmlext      = iSecurity::escapeStr($_POST['htmlext']);
+        $url          = iSecurity::escapeStr($_POST['url']);
+        $password     = iSecurity::escapeStr($_POST['password']);
+        $pic          = iSecurity::escapeStr($_POST['pic']);
+        $mpic         = iSecurity::escapeStr($_POST['mpic']);
+        $spic         = iSecurity::escapeStr($_POST['spic']);
+        $dir          = iSecurity::escapeStr($_POST['dir']);
+        $title        = iSecurity::escapeStr($_POST['title']);
+        $keywords     = iSecurity::escapeStr($_POST['keywords']);
+        $description  = iSecurity::escapeStr($_POST['description']);
+        $rule         = iSecurity::escapeStr($_POST['rule']);
+        $template     = iSecurity::escapeStr($_POST['template']);
+        $metadata     = iSecurity::escapeStr($_POST['metadata']);
         $body         = $_POST['body'];
         $hasbody      = (int)$_POST['hasbody'];
         $hasbody OR $hasbody = $body?1:0;
@@ -228,7 +228,7 @@ class categoryAdmincp extends category{
 
     public function do_update(){
     	foreach((array)$_POST['name'] as $cid=>$name){
-    		$name	= iS::escapeStr($name);
+    		$name	= iSecurity::escapeStr($name);
 			iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name',`sortnum` = '".(int)$_POST['sortnum'][$cid]."' WHERE `cid` ='".(int)$cid."' LIMIT 1");
 	    	$this->cahce_one($cid);
     	}
@@ -263,7 +263,7 @@ class categoryAdmincp extends category{
                 iPHP::success('更新完成!','js:1');
             break;
             case 'dir':
-                $mdir = iS::escapeStr($_POST['mdir']);
+                $mdir = iSecurity::escapeStr($_POST['mdir']);
                 if($_POST['pattern']=='replace') {
                     $sql = "`dir` = '$dir'";
                 }
@@ -280,7 +280,7 @@ class categoryAdmincp extends category{
             break;
             case 'mkdir':
                 foreach($id_array as $k=>$cid){
-                    $name = iS::escapeStr($_POST['name'][$cid]);
+                    $name = iSecurity::escapeStr($_POST['name'][$cid]);
                     $dir  = pinyin($name);
                     iDB::query("UPDATE `#iCMS@__category` SET `dir` = '$dir' WHERE `cid` ='".(int)$cid."' LIMIT 1");
                 }
@@ -288,7 +288,7 @@ class categoryAdmincp extends category{
             break;
             case 'name':
                 foreach($id_array as $k=>$cid){
-                    $name   = iS::escapeStr($_POST['name'][$cid]);
+                    $name   = iSecurity::escapeStr($_POST['name'][$cid]);
                     iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name' WHERE `cid` ='".(int)$cid."' LIMIT 1");
                     $this->cahce_one($cid);
                 }
@@ -303,27 +303,27 @@ class categoryAdmincp extends category{
                 $sql ="`mode` = '$val'";
             break;
             case 'categoryRule':
-                $val = iS::escapeStr($_POST['categoryRule']);;
+                $val = iSecurity::escapeStr($_POST['categoryRule']);;
                 $sql ="`categoryRule` = '$val'";
             break;
             case 'contentRule':
-                $val = iS::escapeStr($_POST['contentRule']);;
+                $val = iSecurity::escapeStr($_POST['contentRule']);;
                 $sql ="`contentRule` = '$val'";
             break;
             case 'urlRule':
-                $val = iS::escapeStr($_POST['urlRule']);;
+                $val = iSecurity::escapeStr($_POST['urlRule']);;
                 $sql ="`urlRule` = '$val'";
             break;
             case 'indexTPL':
-                $val = iS::escapeStr($_POST['indexTPL']);;
+                $val = iSecurity::escapeStr($_POST['indexTPL']);;
                 $sql ="`indexTPL` = '$val'";
             break;
             case 'listTPL':
-                $val = iS::escapeStr($_POST['listTPL']);;
+                $val = iSecurity::escapeStr($_POST['listTPL']);;
                 $sql ="`listTPL` = '$val'";
             break;
             case 'contentTPL':
-                $val = iS::escapeStr($_POST['contentTPL']);;
+                $val = iSecurity::escapeStr($_POST['contentTPL']);;
                 $sql ="`contentTPL` = '$val'";
             break;
             case 'recount':

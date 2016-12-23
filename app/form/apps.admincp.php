@@ -30,9 +30,9 @@ class appsAdmincp{
     public function do_save(){
 
         $id          = (int)$_POST['id'];
-        $title       = iS::escapeStr($_POST['title']);
-        $name        = iS::escapeStr($_POST['name']);
-        $description = iS::escapeStr($_POST['description']);
+        $title       = iSecurity::escapeStr($_POST['title']);
+        $name        = iSecurity::escapeStr($_POST['name']);
+        $description = iSecurity::escapeStr($_POST['description']);
         $field       = $_POST['fields'];
 
         $title OR iPHP::alert('应用名称不能为空!');

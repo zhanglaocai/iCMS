@@ -32,7 +32,7 @@ class settingApp{
      * @return [type] [description]
      */
     public function do_save(){
-        $config = iS::escapeStr($_POST['config']);
+        $config = iSecurity::escapeStr($_POST['config']);
 
         iFS::allow_files($config['FS']['allow_ext']) OR iPHP::alert("附件设置 > 允许上传类型设置不合法!");
         iFS::allow_files(trim($config['router']['html_ext'],'.')) OR iPHP::alert('URL设置 > 文件后缀设置不合法!');
@@ -93,7 +93,7 @@ class settingApp{
     public function save($appid=0,$name=null,$handler=null){
         $name===null   && $name = admincp::$APP_NAME;
         empty($appid) && iPHP::alert("配置程序出错缺少APPID!");
-        $config = iS::escapeStr($_POST['config']);
+        $config = iSecurity::escapeStr($_POST['config']);
         $this->set($config,$name,$appid,false);
         if (is_callable($handler)) {
             call_user_func_array($handler, array($config));

@@ -18,7 +18,7 @@ class categoryApp{
     }
     public function do_iCMS($tpl = 'index') {
         $cid = (int)$_GET['cid'];
-        $dir = iS::escapeStr($_GET['dir']);
+        $dir = iSecurity::escapeStr($_GET['dir']);
 		if(empty($cid) && $dir){
 			$cid = iCache::get(CACHE_CATEGORY_DIR2CID,$dir);
             $cid OR iPHP::throw404('运行出错！找不到该栏目<b>dir:'.$dir.'</b> 请更新栏目缓存或者确认栏目是否存在', 20002);
@@ -63,7 +63,7 @@ class categoryApp{
 
             iPHP::assign('category',$category);
             if(isset($_GET['tpl'])){
-                $tpl = iS::escapeStr($_GET['tpl']);
+                $tpl = iSecurity::escapeStr($_GET['tpl']);
                 if(strpos($tpl, '..') !== false){
                     exit('what the fuck!!');
                 }else{

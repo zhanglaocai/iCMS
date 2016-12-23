@@ -172,11 +172,11 @@ class articleAdmincp{
     		break;
     		case 'keyword':
     			if($_POST['pattern']=='replace') {
-                    $data = array('keywords'=>iS::escapeStr($_POST['mkeyword']));
+                    $data = array('keywords'=>iSecurity::escapeStr($_POST['mkeyword']));
     			}elseif($_POST['pattern']=='addto') {
 		        	foreach($_POST['id'] AS $id){
                         $keywords = article::value('keywords',$id);
-                        $keywords = $keywords?$keywords.','.iS::escapeStr($_POST['mkeyword']):iS::escapeStr($_POST['mkeyword']);
+                        $keywords = $keywords?$keywords.','.iSecurity::escapeStr($_POST['mkeyword']):iSecurity::escapeStr($_POST['mkeyword']);
                         article::update(compact('keywords'),compact('id'));
 		        	}
 		        	iPHP::success('文章关键字更改完成!','js:1');
@@ -186,7 +186,7 @@ class articleAdmincp{
     			iPHP::app('tag.class','static');
 		     	foreach($_POST['id'] AS $id){
                     $art  = article::row($id,'tags,cid');
-                    $mtag = iS::escapeStr($_POST['mtag']);
+                    $mtag = iSecurity::escapeStr($_POST['mtag']);
 			        if($_POST['pattern']=='replace') {
 			        }elseif($_POST['pattern']=='addto') {
 			        	$art['tags'] && $mtag = $art['tags'].','.$mtag;
@@ -252,10 +252,10 @@ class articleAdmincp{
         $id          = (int)$_POST['id'];
         $cid         = (int)$_POST['cid'];
         $pid         = (int)$_POST['pid'];
-        $source      = iS::escapeStr($_POST['source']);
-        $title       = iS::escapeStr($_POST['title']);
-        $tags        = iS::escapeStr($_POST['tags']);
-        $description = iS::escapeStr($_POST['description']);
+        $source      = iSecurity::escapeStr($_POST['source']);
+        $title       = iSecurity::escapeStr($_POST['title']);
+        $tags        = iSecurity::escapeStr($_POST['tags']);
+        $description = iSecurity::escapeStr($_POST['description']);
 
 		$art = article::row($id,'tags,cid');
 		if($tags){
@@ -489,25 +489,25 @@ class articleAdmincp{
         $good        = (int)$_POST['good'];
         $bad         = (int)$_POST['bad'];
 
-        $_cid        = iS::escapeStr($_POST['_cid']);
-        $_pid        = iS::escapeStr($_POST['_pid']);
-        $_scid       = iS::escapeStr($_POST['_scid']);
-        $_tags       = iS::escapeStr($_POST['_tags']);
-        $title       = iS::escapeStr($_POST['title']);
-        $stitle      = iS::escapeStr($_POST['stitle']);
-        $pic         = iS::escapeStr($_POST['pic']);
-        $mpic        = iS::escapeStr($_POST['mpic']);
-        $spic        = iS::escapeStr($_POST['spic']);
-        $source      = iS::escapeStr($_POST['source']);
-        $author      = iS::escapeStr($_POST['author']);
-        $editor      = iS::escapeStr($_POST['editor']);
-        $description = iS::escapeStr($_POST['description']);
-        $keywords    = iS::escapeStr($_POST['keywords']);
-        $tags        = str_replace('，', ',',iS::escapeStr($_POST['tags']));
-        $clink       = iS::escapeStr($_POST['clink']);
-        $url         = iS::escapeStr($_POST['url']);
-        $tpl         = iS::escapeStr($_POST['tpl']);
-        $metadata    = iS::escapeStr($_POST['metadata']);
+        $_cid        = iSecurity::escapeStr($_POST['_cid']);
+        $_pid        = iSecurity::escapeStr($_POST['_pid']);
+        $_scid       = iSecurity::escapeStr($_POST['_scid']);
+        $_tags       = iSecurity::escapeStr($_POST['_tags']);
+        $title       = iSecurity::escapeStr($_POST['title']);
+        $stitle      = iSecurity::escapeStr($_POST['stitle']);
+        $pic         = iSecurity::escapeStr($_POST['pic']);
+        $mpic        = iSecurity::escapeStr($_POST['mpic']);
+        $spic        = iSecurity::escapeStr($_POST['spic']);
+        $source      = iSecurity::escapeStr($_POST['source']);
+        $author      = iSecurity::escapeStr($_POST['author']);
+        $editor      = iSecurity::escapeStr($_POST['editor']);
+        $description = iSecurity::escapeStr($_POST['description']);
+        $keywords    = iSecurity::escapeStr($_POST['keywords']);
+        $tags        = str_replace('，', ',',iSecurity::escapeStr($_POST['tags']));
+        $clink       = iSecurity::escapeStr($_POST['clink']);
+        $url         = iSecurity::escapeStr($_POST['url']);
+        $tpl         = iSecurity::escapeStr($_POST['tpl']);
+        $metadata    = iSecurity::escapeStr($_POST['metadata']);
         $metadata    = $metadata?addslashes(serialize($metadata)):'';
         $body        = (array)$_POST['body'];
         $creative    = (int)$_POST['creative'];
@@ -741,13 +741,13 @@ class articleAdmincp{
             $chapter      = count($bodyArray);
             foreach ($bodyArray as $key => $body) {
                 $adid     = (int)$adidArray[$key];
-                $subtitle = iS::escapeStr($chaptertitle[$key]);
+                $subtitle = iSecurity::escapeStr($chaptertitle[$key]);
                 $this->body($body,$subtitle,$aid,$adid,$haspic);
             }
             article::update(compact('chapter'),array('id'=>$aid));
         }else{
             $adid     = (int)$_POST['adid'];
-            $subtitle = iS::escapeStr($_POST['subtitle']);
+            $subtitle = iSecurity::escapeStr($_POST['subtitle']);
             $body     = implode('#--iCMS.PageBreak--#',$bodyArray);
             $this->body($body,$subtitle,$aid,$adid,$haspic);
         }

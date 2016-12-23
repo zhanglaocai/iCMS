@@ -1,12 +1,11 @@
 <?php
-defined('iPHP') OR exit('Access Denied');
 /**
  * Basic Security Filter Service
  * @author liuhui@2010-6-30 zzZero.L@2010-9-15
  * @status building
  * @from phpwind
  */
-class iS {
+class iSecurity {
 	/**
 	 * 整型数过滤
 	 * @param $param
@@ -98,7 +97,7 @@ class iS {
 				$GLOBALS[$key] = $_POST[$key];
 			}
 			if (isset($GLOBALS[$key]) && !empty($cvtype) || $cvtype == 2) {
-				$GLOBALS[$key] = iS::escapeChar($GLOBALS[$key], $cvtype == 2, $istrim);
+				$GLOBALS[$key] = iSecurity::escapeChar($GLOBALS[$key], $cvtype == 2, $istrim);
 			}
 		}
 	}
@@ -125,11 +124,11 @@ class iS {
 		}
 
 		if (!get_magic_quotes_gpc()) {
-			iS::slashes($_POST);
-			iS::slashes($_GET);
-			iS::slashes($_COOKIE);
+			iSecurity::slashes($_POST);
+			iSecurity::slashes($_GET);
+			iSecurity::slashes($_COOKIE);
 		}
-		iS::getServer(array('HTTP_REFERER','HTTP_HOST','HTTP_X_FORWARDED_FOR','HTTP_USER_AGENT',
+		iSecurity::getServer(array('HTTP_REFERER','HTTP_HOST','HTTP_X_FORWARDED_FOR','HTTP_USER_AGENT',
 							'HTTP_CLIENT_IP','HTTP_SCHEME','HTTPS','PHP_SELF','SERVER_PORT',
 							'REQUEST_URI','REQUEST_METHOD','REMOTE_ADDR','SCRIPT_NAME',
 							'SERVER_SOFTWARE','REQUEST_TIME',
@@ -144,7 +143,7 @@ class iS {
 	 * @return string
 	 */
 	public static function escapePath($fileName, $ifCheck = true) {
-		if (!iS::_escapePath($fileName, $ifCheck)) {
+		if (!iSecurity::_escapePath($fileName, $ifCheck)) {
 			exit('Access Denied');
 		}
 		return $fileName;
@@ -183,12 +182,12 @@ class iS {
 	public static function escapeChar($mixed, $isint = false, $istrim = false) {
 		if (is_array($mixed)) {
 			foreach ($mixed as $key => $value) {
-				$mixed[$key] = iS::escapeChar($value, $isint, $istrim);
+				$mixed[$key] = iSecurity::escapeChar($value, $isint, $istrim);
 			}
 		} elseif ($isint) {
 			$mixed = (int) $mixed;
 		} elseif (!is_numeric($mixed) && ($istrim ? $mixed = trim($mixed) : $mixed) && $mixed) {
-			$mixed = iS::escapeStr($mixed);
+			$mixed = iSecurity::escapeStr($mixed);
 		}
 		return $mixed;
 	}
@@ -200,7 +199,7 @@ class iS {
 	public static function escapeStr($string) {
 	    if(is_array($string)) {
 	        foreach($string as $key => $val) {
-	            $string[$key] = iS::escapeStr($val);
+	            $string[$key] = iSecurity::escapeStr($val);
 	        }
 	    } else {
 			$string = str_replace(array('%00','\\0'), '', $string); //modified@2010-7-5
@@ -217,7 +216,7 @@ class iS {
 	public static function checkVar(&$var) {
 		if (is_array($var)) {
 			foreach ($var as $key => $value) {
-				iS::checkVar($var[$key]);
+				iSecurity::checkVar($var[$key]);
 			}
 		} elseif (str_replace(array('<iframe','<meta','<script'), '', $var) != $var) {
 			die('XXS');
@@ -234,7 +233,7 @@ class iS {
 		if (is_array($array)) {
 			foreach ($array as $key => $value) {
 				if (is_array($value)) {
-					iS::slashes($array[$key]);
+					iSecurity::slashes($array[$key]);
 				} else {
 					$array[$key] = addslashes($value);
 				}

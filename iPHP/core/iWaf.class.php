@@ -6,7 +6,7 @@
 */
 defined('iPHP_WAF_POST') OR define('iPHP_WAF_POST',true);// 检测POST
 
-class waf {
+class iWAF {
 	public static $URL_ARRAY = array(
 		'xss'=>"\\=\\+\\/v(?:8|9|\\+|\\/)|\\%0acontent\\-(?:id|location|type|transfer\\-encoding)",
 	);

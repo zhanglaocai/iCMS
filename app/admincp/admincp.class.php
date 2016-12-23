@@ -46,7 +46,7 @@ class admincp {
 
 		if ($_POST['username'] && $_POST['password']) {
 			iPHP::core("Seccode");
-			$seccode = iS::escapeStr($_POST['admincp_seccode']);
+			$seccode = iSecurity::escapeStr($_POST['admincp_seccode']);
 			iSeccode::check($seccode, true, 'admincp_seccode') OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 	}

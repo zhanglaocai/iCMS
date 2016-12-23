@@ -24,10 +24,10 @@ class linksAdmincp{
     public function do_save(){
 		$id			= (int)$_POST['id'];
 		$cid		= (int)$_POST['cid'];
-		$name		= iS::escapeStr($_POST['name']);
-		$logo		= iS::escapeStr($_POST['logo']);
-		$url		= iS::escapeStr($_POST['url']);
-		$desc		= iS::escapeStr($_POST['desc']);
+		$name		= iSecurity::escapeStr($_POST['name']);
+		$logo		= iSecurity::escapeStr($_POST['logo']);
+		$url		= iSecurity::escapeStr($_POST['url']);
+		$desc		= iSecurity::escapeStr($_POST['desc']);
 		$sortnum	= (int)$_POST['sortnum'];
 
         $name 	OR iPHP::alert('网站不能为空!');

@@ -74,8 +74,8 @@ class spider{
         $project = spider::project($pid);
         $hash    = md5($url);
         if(($project['checker'] && empty($_GET['indexid'])) || $work=="DATA@RULE"){
-            $title = iS::escapeStr($title);
-            $url   = iS::escapeStr($url);
+            $title = iSecurity::escapeStr($title);
+            $url   = iSecurity::escapeStr($url);
             $project_checker = $project['checker'];
             $work=="DATA@RULE" && $project_checker = '1';
             switch ($project_checker) {
@@ -197,8 +197,8 @@ class spider{
             $_POST['aid']  = $aid;
             $_POST['adid'] = iDB::value("SELECT `id` FROM `#iCMS@__article_data` WHERE aid='$aid'");
         }
-        $title = iS::escapeStr($_POST['title']);
-        $url   = iS::escapeStr($_POST['reurl']);
+        $title = iSecurity::escapeStr($_POST['title']);
+        $url   = iSecurity::escapeStr($_POST['reurl']);
         $hash  = md5($url);
         if(empty(spider::$sid)){
             $spider_url = iDB::row("SELECT `id`,`publish`,`indexid` FROM `#iCMS@__spider_url` where `url`='$url'",ARRAY_A);
@@ -235,7 +235,7 @@ class spider{
             }
         }
 
-        iS::slashes($_POST);
+        iSecurity::slashes($_POST);
         $fun = $postArgs->fun;
         $success_code = "1001";
         if(iFS::checkHttp($fun)){

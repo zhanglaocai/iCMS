@@ -18,7 +18,7 @@ class articleApp {
 		return $this->article((int) $_GET['id'], isset($_GET['p']) ? (int) $_GET['p'] : 1);
 	}
 	public function do_clink($a = null) {
-		$clink = iS::escapeStr($_GET['clink']);
+		$clink = iSecurity::escapeStr($_GET['clink']);
 		$id = iDB::value("SELECT `id` FROM `#iCMS@__article` WHERE `clink`='" . $clink . "' AND `status` ='1';");
 		return $this->article((int) $id, isset($_GET['p']) ? (int) $_GET['p'] : 1);
 	}
@@ -313,7 +313,7 @@ class articleApp {
 			'pageurl' => $pageurl,
 			'text'    => $pagetext,
 			'PAGES'   => $iPages,
-			'args'    => iS::escapeStr($_GET['pageargs']),
+			'args'    => iSecurity::escapeStr($_GET['pageargs']),
 			'first'   => ($page == "1" ? true : false),
 			'last'    => ($page == $count ? true : false), //实际最后一页
 			'end'     => ($page == $total ? true : false)

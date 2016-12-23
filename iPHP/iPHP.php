@@ -49,12 +49,12 @@ set_error_handler('iPHP_ERROR_HANDLER');
 
 iPHP::timer_start();
 //waf
-iPHP::core("Waf");
-waf::filter();
+iPHP::core("WAF");
+iWAF::filter();
 //security
-iPHP::core("Security",'S');
-iS::filter();
-iS::GP('page','GP',2);
+iPHP::core("Security");
+iSecurity::filter();
+iSecurity::GP('page','GP',2);
 
 define('__SELF__',	$_SERVER['PHP_SELF']);
 define('__REF__', 	$_SERVER['HTTP_REFERER']);

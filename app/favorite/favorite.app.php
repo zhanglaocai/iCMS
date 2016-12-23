@@ -37,8 +37,8 @@ class favoriteApp {
         $suid    = (int)$_POST['suid'];
         $id      = (int)$_POST['id'];
         $fid     = (int)$_POST['fid'];
-        $title   = iS::escapeStr($_POST['title']);
-        $url     = iS::escapeStr($_POST['url']);
+        $title   = iSecurity::escapeStr($_POST['title']);
+        $url     = iSecurity::escapeStr($_POST['url']);
 
         if(!$fid||!$url){
             iPHP::code(0,'iCMS:error',0,'json');
@@ -70,8 +70,8 @@ class favoriteApp {
         $suid    = (int)$_POST['suid'];
         $id      = (int)$_POST['id'];
         $fid     = (int)$_POST['fid'];
-        $title   = iS::escapeStr($_POST['title']);
-        $url     = iS::escapeStr($_POST['url']);
+        $title   = iSecurity::escapeStr($_POST['title']);
+        $url     = iSecurity::escapeStr($_POST['url']);
         $addtime = time();
 
         $id  = iDB::value("SELECT `id` FROM `#iCMS@__favorite_data` WHERE `uid`='$uid' AND `fid`='$fid' AND `url`='$url' LIMIT 1");
@@ -98,8 +98,8 @@ class favoriteApp {
 
         $uid         = user::$userid;
         $nickname    = user::$nickname;
-        $title       = iS::escapeStr($_POST['title']);
-        $description = iS::escapeStr($_POST['description']);
+        $title       = iSecurity::escapeStr($_POST['title']);
+        $description = iSecurity::escapeStr($_POST['description']);
         $mode        = (int)$_POST['mode'];
 
         empty($title) && iPHP::code(0,'iCMS:favorite:create_empty',0,'json');

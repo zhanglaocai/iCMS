@@ -32,8 +32,8 @@ class keywordsAdmincp{
     }
     public function do_save(){
 		$id		= (int)$_POST['id'];
-		$keyword= iS::escapeStr($_POST['keyword']);
-		$url	= iS::escapeStr($_POST['url']);
+		$keyword= iSecurity::escapeStr($_POST['keyword']);
+		$url	= iSecurity::escapeStr($_POST['url']);
 		$times	= (int)$_POST['times'];
 
         $keyword OR iPHP::alert('关键词不能为空!');

@@ -166,22 +166,22 @@ class tagAdmincp{
         $cid         = implode(',', (array)$_POST['cid']);
         $tcid        = implode(',', (array)$_POST['tcid']);
         $pid         = implode(',', (array)$_POST['pid']);
-        $_cid        = iS::escapeStr($_POST['_cid']);
-        $_tcid       = iS::escapeStr($_POST['_tcid']);
-        $_pid        = iS::escapeStr($_POST['_pid']);
-        $name        = iS::escapeStr($_POST['name']);
-        $subtitle    = iS::escapeStr($_POST['subtitle']);
-        $tkey        = iS::escapeStr($_POST['tkey']);
-        $seotitle    = iS::escapeStr($_POST['seotitle']);
-        $keywords    = iS::escapeStr($_POST['keywords']);
-        $pic         = iS::escapeStr($_POST['pic']);
-        $bpic        = iS::escapeStr($_POST['bpic']);
-        $mpic        = iS::escapeStr($_POST['mpic']);
-        $spic        = iS::escapeStr($_POST['spic']);
-        $description = iS::escapeStr($_POST['description']);
-        $url         = iS::escapeStr($_POST['url']);
-        $related     = iS::escapeStr($_POST['related']);
-        $tpl         = iS::escapeStr($_POST['tpl']);
+        $_cid        = iSecurity::escapeStr($_POST['_cid']);
+        $_tcid       = iSecurity::escapeStr($_POST['_tcid']);
+        $_pid        = iSecurity::escapeStr($_POST['_pid']);
+        $name        = iSecurity::escapeStr($_POST['name']);
+        $subtitle    = iSecurity::escapeStr($_POST['subtitle']);
+        $tkey        = iSecurity::escapeStr($_POST['tkey']);
+        $seotitle    = iSecurity::escapeStr($_POST['seotitle']);
+        $keywords    = iSecurity::escapeStr($_POST['keywords']);
+        $pic         = iSecurity::escapeStr($_POST['pic']);
+        $bpic        = iSecurity::escapeStr($_POST['bpic']);
+        $mpic        = iSecurity::escapeStr($_POST['mpic']);
+        $spic        = iSecurity::escapeStr($_POST['spic']);
+        $description = iSecurity::escapeStr($_POST['description']);
+        $url         = iSecurity::escapeStr($_POST['url']);
+        $related     = iSecurity::escapeStr($_POST['related']);
+        $tpl         = iSecurity::escapeStr($_POST['tpl']);
         $weight      = (int)$_POST['weight'];
         $sortnum    = (int)$_POST['sortnum'];
         $status      = (int)$_POST['status'];
@@ -402,16 +402,16 @@ class tagAdmincp{
 		        $sql	="`weight` = '$weight'";
     		break;
             case 'tpl':
-                $tpl = iS::escapeStr($_POST['mtpl']);
+                $tpl = iSecurity::escapeStr($_POST['mtpl']);
                 $sql = "`tpl` = '$tpl'";
             break;
     		case 'keyword':
     			if($_POST['pattern']=='replace') {
-    				$sql	="`keywords` = '".iS::escapeStr($_POST['mkeyword'])."'";
+    				$sql	="`keywords` = '".iSecurity::escapeStr($_POST['mkeyword'])."'";
     			}elseif($_POST['pattern']=='addto') {
 		        	foreach($idArray AS $id){
                         $keywords = iDB::value("SELECT keywords FROM `#iCMS@__tags` WHERE `id`='$id'");
-                        $sql      ="`keywords` = '".($keywords?$keywords.','.iS::escapeStr($_POST['mkeyword']):iS::escapeStr($_POST['mkeyword']))."'";
+                        $sql      ="`keywords` = '".($keywords?$keywords.','.iSecurity::escapeStr($_POST['mkeyword']):iSecurity::escapeStr($_POST['mkeyword']))."'";
 				        iDB::query("UPDATE `#iCMS@__tags` SET {$sql} WHERE `id`='$id'");
 		        	}
 		        	iPHP::success('关键字更改完成!','js:1');
@@ -419,11 +419,11 @@ class tagAdmincp{
     		break;
     		case 'tag':
     			if($_POST['pattern']=='replace') {
-    				$sql	="`related` = '".iS::escapeStr($_POST['mtag'])."'";
+    				$sql	="`related` = '".iSecurity::escapeStr($_POST['mtag'])."'";
     			}elseif($_POST['pattern']=='addto') {
 		        	foreach($idArray AS $id){
 		        		$keywords	= iDB::value("SELECT related FROM `#iCMS@__tags` WHERE `id`='$id'");
-		        		$sql		="`related` = '".($keywords?$keywords.','.iS::escapeStr($_POST['mtag']):iS::escapeStr($_POST['mtag']))."'";
+		        		$sql		="`related` = '".($keywords?$keywords.','.iSecurity::escapeStr($_POST['mtag']):iSecurity::escapeStr($_POST['mtag']))."'";
 				        iDB::query("UPDATE `#iCMS@__tags` SET {$sql} WHERE `id`='$id'");
 		        	}
 		        	iPHP::success('相关标签更改完成!','js:1');

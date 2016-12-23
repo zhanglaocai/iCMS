@@ -23,11 +23,11 @@ class tagApp {
                     $name  = mb_convert_encoding($name,'UTF-8//IGNORE',$encode);
                 }
             }
-            $val   = iS::escapeStr($name);
+            $val   = iSecurity::escapeStr($name);
             $field = 'name';
         } elseif ($_GET['tkey']) {
             $field = 'tkey';
-            $val   = iS::escapeStr($_GET['tkey']);
+            $val   = iSecurity::escapeStr($_GET['tkey']);
         } elseif ($_GET['id']) {
             $field = 'id';
             $val   = (int)$_GET['id'];

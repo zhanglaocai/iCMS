@@ -209,10 +209,10 @@ class iPHP {
 		is_file(self::$app_file) OR iPHP::throw404('运行出错！找不到文件: <b>' . $app . '.app.php</b>', '0002');
 		if ($do === NULL) {
 			$do = iPHP_APP;
-			$_GET['do'] && $do = iS::escapeStr($_GET['do']);
+			$_GET['do'] && $do = iSecurity::escapeStr($_GET['do']);
 		}
 		if ($_POST['action']) {
-			$do = iS::escapeStr($_POST['action']);
+			$do = iSecurity::escapeStr($_POST['action']);
 			$prefix = 'ACTION_';
 		}
 

@@ -35,7 +35,7 @@ class indexApp {
     public function domain(){
         $domain = iCMS::$config['category']['domain'];
         if($domain){
-            $host = iS::escapeStr($_GET['host']);
+            $host = iSecurity::escapeStr($_GET['host']);
             empty($host) && $host = $_SERVER['HTTP_HOST'];
             $cid  = (int)$domain[$host];
             if($cid){

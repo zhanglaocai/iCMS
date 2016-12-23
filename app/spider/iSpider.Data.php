@@ -49,8 +49,8 @@ class spiderData extends spider{
 
         if (spider::$dataTest) {
             echo "<b>抓取规则信息</b><pre>";
-            print_r(iS::escapeStr($ruleA));
-            print_r(iS::escapeStr($project));
+            print_r(iSecurity::escapeStr($ruleA));
+            print_r(iSecurity::escapeStr($project));
             echo "</pre><hr />";
         }
 
@@ -211,7 +211,7 @@ class spiderData extends spider{
 
         if (spider::$dataTest) {
             echo "<pre style='width:99%;word-wrap: break-word;white-space: pre-wrap;'>";
-            print_r(iS::escapeStr($responses));
+            print_r(iSecurity::escapeStr($responses));
             echo '<hr />';
             echo '使用内存:'.iFS::sizeUnit(memory_get_usage()).' 执行时间:'.iPHP::timer_stop().'s';
             echo "</pre>";

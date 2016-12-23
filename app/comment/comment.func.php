@@ -115,7 +115,7 @@ function comment_list($vars){
 			'nowindex'  => $GLOBALS['page'],
 		);
 		if($vars['display'] == 'iframe' || $vars['page_ajax']){
-			iS::gp('pn','GP',2);
+			iSecurity::gp('pn','GP',2);
 			$pgconf['page_name'] = 'pn';
 			$pgconf['nowindex']  = $GLOBALS['pn'];
 		}

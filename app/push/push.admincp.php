@@ -106,28 +106,28 @@ class pushAdmincp{
         $_cid     = (int)$_POST['_cid'];
         $userid   = (int)$_POST['userid'];
         $pid      = (int)$_POST['pid'];
-        $editor   = iS::escapeStr($_POST['editor']);
+        $editor   = iSecurity::escapeStr($_POST['editor']);
         $sortnum = (int)$_POST['sortnum'];
         $addtime  = iPHP::str2time($_POST['addtime']);
 
 
 
-        $title		= iS::escapeStr($_POST['title']);
+        $title		= iSecurity::escapeStr($_POST['title']);
         $pic		= $this->getpic($_POST['pic']);
-        $description= iS::escapeStr($_POST['description']);
-        $url		= iS::escapeStr($_POST['url']);
+        $description= iSecurity::escapeStr($_POST['description']);
+        $url		= iSecurity::escapeStr($_POST['url']);
 
-        $title2		= iS::escapeStr($_POST['title2']);
+        $title2		= iSecurity::escapeStr($_POST['title2']);
         $pic2		= $this->getpic($_POST['pic2']);
-        $description2= iS::escapeStr($_POST['description2']);
-        $url2		= iS::escapeStr($_POST['url2']);
+        $description2= iSecurity::escapeStr($_POST['description2']);
+        $url2		= iSecurity::escapeStr($_POST['url2']);
 
-        $title3		= iS::escapeStr($_POST['title3']);
+        $title3		= iSecurity::escapeStr($_POST['title3']);
         $pic3		= $this->getpic($_POST['pic3']);
-        $description3= iS::escapeStr($_POST['description3']);
-        $url3		= iS::escapeStr($_POST['url3']);
+        $description3= iSecurity::escapeStr($_POST['description3']);
+        $url3		= iSecurity::escapeStr($_POST['url3']);
 
-        $metadata	= iS::escapeStr($_POST['metadata']);
+        $metadata	= iSecurity::escapeStr($_POST['metadata']);
         $metadata	= $metadata?addslashes(serialize($metadata)):'';
 
 		empty($userid) && $userid=iMember::$userid;
@@ -181,7 +181,7 @@ class pushAdmincp{
     }
 	public function getpic($path){
 		$uri 	= parse_url(iCMS_FS_URL);
-        $pic	= iS::escapeStr($path);
+        $pic	= iSecurity::escapeStr($path);
 
 	    if(stripos($pic,$uri['host'])===false){
             stripos($pic, 'http://')===false OR $pic = iFS::http($pic);

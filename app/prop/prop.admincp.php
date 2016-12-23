@@ -20,8 +20,8 @@ class propAdmincp{
             $rs['val'] = '';
         }
         if(empty($rs)){
-            $_GET['type'] && $rs['type']  = iS::escapeStr($_GET['type']);
-            $_GET['field']&& $rs['field'] = iS::escapeStr($_GET['field']);
+            $_GET['type'] && $rs['type']  = iSecurity::escapeStr($_GET['type']);
+            $_GET['field']&& $rs['field'] = iSecurity::escapeStr($_GET['field']);
         }
         include admincp::view("prop.add");
     }
@@ -29,10 +29,10 @@ class propAdmincp{
         $pid      = (int)$_POST['pid'];
         $cid      = (int)$_POST['cid'];
         $sortnum = (int)$_POST['sortnum'];
-        $field    = iS::escapeStr($_POST['field']);
-        $name     = iS::escapeStr($_POST['name']);
-        $type     = iS::escapeStr($_POST['type']);
-        $val      = iS::escapeStr($_POST['val']);
+        $field    = iSecurity::escapeStr($_POST['field']);
+        $name     = iSecurity::escapeStr($_POST['name']);
+        $type     = iSecurity::escapeStr($_POST['type']);
+        $val      = iSecurity::escapeStr($_POST['val']);
 
 		($field=='pid'&& !is_numeric($val)) && iPHP::alert('pid字段的值只能用数字');
         $field OR iPHP::alert('属性字段不能为空!');

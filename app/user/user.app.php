@@ -20,7 +20,7 @@ class userApp {
 		$this->auth = user::get_cookie();
 		$this->uid = (int) $_GET['uid'];
 		$this->ajax = (bool) $_GET['ajax'];
-		$this->forward = iS::escapeStr($_GET['forward']);
+		$this->forward = iSecurity::escapeStr($_GET['forward']);
 		$this->forward OR iPHP::get_cookie('forward');
 		$this->forward OR $this->forward = iCMS_URL;
 		$this->login_uri = user::login_uri();
@@ -83,7 +83,7 @@ class userApp {
 	}
 	public function API_manage() {
 		$pgArray = array('publish', 'category', 'article', 'comment', 'inbox', 'favorite', 'share', 'follow', 'fans');
-		$pg = iS::escapeStr($_GET['pg']);
+		$pg = iSecurity::escapeStr($_GET['pg']);
 		$pg OR $pg = 'article';
 		if (in_array($pg, $pgArray)) {
 			if ($_GET['pg'] == 'comment') {
@@ -136,7 +136,7 @@ class userApp {
 		$this->me = user::status($this->login_uri, "nologin");
 
 		$pgArray = array('publish', 'category', 'article', 'comment', 'message', 'favorite', 'share', 'follow', 'fans');
-		$pg = iS::escapeStr($_POST['pg']);
+		$pg = iSecurity::escapeStr($_POST['pg']);
 		$funname = '__ACTION_manage_' . $pg;
 		//print_r($funname);
 		$methods = get_class_methods(__CLASS__);
@@ -149,7 +149,7 @@ class userApp {
 		$name_array = (array) $_POST['name'];
 		$cid_array = (array) $_POST['_cid'];
 		foreach ($name_array as $cid => $name) {
-			$name = iS::escapeStr($name);
+			$name = iSecurity::escapeStr($name);
 			iDB::update("user_category", array('name' => $name),
 				array(
 					'cid' => $cid,
@@ -187,17 +187,17 @@ class userApp {
 		$ucid = (int) $_POST['ucid'];
 		$_ucid = (int) $_POST['_ucid'];
 		$mobile = (int) $_POST['mobile'];
-		$title = iS::escapeStr($_POST['title']);
-		$source = iS::escapeStr($_POST['source']);
-		$keywords = iS::escapeStr($_POST['keywords']);
-		$description = iS::escapeStr($_POST['description']);
+		$title = iSecurity::escapeStr($_POST['title']);
+		$source = iSecurity::escapeStr($_POST['source']);
+		$keywords = iSecurity::escapeStr($_POST['keywords']);
+		$description = iSecurity::escapeStr($_POST['description']);
 		$creative = (int) $_POST['creative'];
 		$userid = user::$userid;
 		$author = user::$nickname;
 		$editor = user::$nickname;
 
 		if (iCMS::$config['user']['post']['seccode']) {
-			$seccode = iS::escapeStr($_POST['seccode']);
+			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iPHP::core("Seccode");
 			iSeccode::check($seccode, true) OR iPHP::alert('iCMS:seccode:error');
 		}
@@ -303,7 +303,7 @@ class userApp {
 	}
 	private function __ACTION_manage_article() {
 		$actArray = array('delete', 'renew', 'trash');
-		$act = iS::escapeStr($_POST['act']);
+		$act = iSecurity::escapeStr($_POST['act']);
 		if (in_array($act, $actArray)) {
 			$id = (int) $_POST['id'];
 			$id OR iPHP::code(0, 'iCMS:error', 0, 'json');
@@ -321,7 +321,7 @@ class userApp {
 		}
 	}
 	private function __ACTION_manage_comment() {
-		$act = iS::escapeStr($_POST['act']);
+		$act = iSecurity::escapeStr($_POST['act']);
 		if ($act == "del") {
 			$id = (int) $_POST['id'];
 			$id OR iPHP::code(0, 'iCMS:error', 0, 'json');
@@ -356,7 +356,7 @@ class userApp {
 		}
 	}
 	private function __ACTION_manage_message() {
-		$act = iS::escapeStr($_POST['act']);
+		$act = iSecurity::escapeStr($_POST['act']);
 		if ($act == "del") {
 			$id = (int) $_POST['id'];
 			$id OR iPHP::code(0, 'iCMS:error', 0, 'json');
@@ -382,7 +382,7 @@ class userApp {
 	}
 	private function __ACTION_manage_favorite() {
 		$actArray = array('delete');
-		$act = iS::escapeStr($_POST['act']);
+		$act = iSecurity::escapeStr($_POST['act']);
 		if (in_array($act, $actArray)) {
 			$id = (int) $_POST['id'];
 			$id OR iPHP::code(0, 'iCMS:error', 0, 'json');
@@ -398,7 +398,7 @@ class userApp {
 	}
 	public function API_profile() {
 		$pgArray = array('base', 'avatar', 'setpassword', 'bind', 'custom');
-		$pg = iS::escapeStr($_GET['pg']);
+		$pg = iSecurity::escapeStr($_GET['pg']);
 		$pg OR $pg = 'base';
 		if (in_array($pg, $pgArray)) {
 			$this->user();
@@ -420,7 +420,7 @@ class userApp {
 		$this->me = user::status($this->login_uri, "nologin");
 
 		$pgArray = array('base', 'avatar', 'setpassword', 'bind', 'custom');
-		$pg = iS::escapeStr($_POST['pg']);
+		$pg = iSecurity::escapeStr($_POST['pg']);
 		$funname = '__ACTION_profile_' . $pg;
 		$methods = get_class_methods(__CLASS__);
 		if (in_array($pg, $pgArray) && in_array($funname, $methods)) {
@@ -428,18 +428,18 @@ class userApp {
 		}
 	}
 	private function __ACTION_profile_base() {
-		$nickname      = iS::escapeStr($_POST['nickname']);
-		$gender        = iS::escapeStr($_POST['gender']);
-		$province      = iS::escapeStr($_POST['province']);
-		$city          = iS::escapeStr($_POST['city']);
-		$year          = iS::escapeStr($_POST['year']);
-		$month         = iS::escapeStr($_POST['month']);
-		$day           = iS::escapeStr($_POST['day']);
-		$constellation = iS::escapeStr($_POST['constellation']);
-		$profession    = iS::escapeStr($_POST['profession']);
-		$personstyle   = iS::escapeStr($_POST['personstyle']);
-		$slogan        = iS::escapeStr($_POST['slogan']);
-		$meta          = iS::escapeStr($_POST['meta']);
+		$nickname      = iSecurity::escapeStr($_POST['nickname']);
+		$gender        = iSecurity::escapeStr($_POST['gender']);
+		$province      = iSecurity::escapeStr($_POST['province']);
+		$city          = iSecurity::escapeStr($_POST['city']);
+		$year          = iSecurity::escapeStr($_POST['year']);
+		$month         = iSecurity::escapeStr($_POST['month']);
+		$day           = iSecurity::escapeStr($_POST['day']);
+		$constellation = iSecurity::escapeStr($_POST['constellation']);
+		$profession    = iSecurity::escapeStr($_POST['profession']);
+		$personstyle   = iSecurity::escapeStr($_POST['personstyle']);
+		$slogan        = iSecurity::escapeStr($_POST['slogan']);
+		$meta          = iSecurity::escapeStr($_POST['meta']);
 		$setting       = $_POST['setting'];
 
 		($personstyle == iPHP::lang('user:profile:personstyle')) && $personstyle = "";
@@ -584,12 +584,12 @@ class userApp {
 		iPHP::alert("user:password:modified", 'js:parent.location.reload();');
 	}
 	public function ACTION_findpwd() {
-		$seccode = iS::escapeStr($_POST['seccode']);
+		$seccode = iSecurity::escapeStr($_POST['seccode']);
 		iPHP::core("Seccode");
 		iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 
 		$uid = (int) $_POST['uid'];
-		$auth = iS::escapeStr($_POST['auth']);
+		$auth = iSecurity::escapeStr($_POST['auth']);
 		if ($auth && $uid) {
 			//print_r($_POST);
 			$authcode = rawurldecode($auth);
@@ -615,7 +615,7 @@ class userApp {
 			iDB::update("user", array('password' => $rstpassword), array('uid' => $uid));
 			iPHP::code(1, 'user:findpwd:success', 0, 'json');
 		} else {
-			$uname = iS::escapeStr($_POST['uname']);
+			$uname = iSecurity::escapeStr($_POST['uname']);
 			$uname OR iPHP::code(0, 'user:findpwd:username:empty', 'uname', 'json');
 			$uid = user::check($uname, 'username');
 			$uid OR iPHP::code(0, 'user:findpwd:username:noexist', 'uname', 'json');
@@ -664,15 +664,15 @@ class userApp {
 	public function ACTION_login() {
 		iCMS::$config['user']['login']['enable'] OR iPHP::code(0, 'user:login:forbidden', 'uname', 'json');
 
-		$uname = iS::escapeStr($_POST['uname']);
+		$uname = iSecurity::escapeStr($_POST['uname']);
 		$pass = md5(trim($_POST['pass']));
 		$remember = (bool) $_POST['remember'] ? ture : false;
 
-		$openid = iS::escapeStr($_POST['openid']);
-		$platform = iS::escapeStr($_POST['platform']);
+		$openid = iSecurity::escapeStr($_POST['openid']);
+		$platform = iSecurity::escapeStr($_POST['platform']);
 
 		if (iCMS::$config['user']['login']['seccode']) {
-			$seccode = iS::escapeStr($_POST['seccode']);
+			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iPHP::core("Seccode");
 			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
@@ -713,7 +713,7 @@ class userApp {
 	public function ACTION_register() {
 		iCMS::$config['user']['register']['enable'] OR exit(iPHP::lang('user:register:forbidden'));
 
-		$regip = iS::escapeStr(iPHP::get_ip());
+		$regip = iSecurity::escapeStr(iPHP::get_ip());
 		$regdate = time();
 
 		if (iCMS::$config['user']['register']['interval']) {
@@ -728,19 +728,19 @@ class userApp {
 			}
 		}
 
-		$username = iS::escapeStr($_POST['username']);
-		$nickname = iS::escapeStr($_POST['nickname']);
+		$username = iSecurity::escapeStr($_POST['username']);
+		$nickname = iSecurity::escapeStr($_POST['nickname']);
 		$gender = ($_POST['gender'] == 'girl' ? 0 : 1);
 		$password = md5(trim($_POST['password']));
 		$rstpassword = md5(trim($_POST['rstpassword']));
-		$refer = iS::escapeStr($_POST['refer']);
+		$refer = iSecurity::escapeStr($_POST['refer']);
 
-		$openid = iS::escapeStr($_POST['openid']);
-		$type = iS::escapeStr($_POST['platform']);
-		$avatar = iS::escapeStr($_POST['avatar']);
+		$openid = iSecurity::escapeStr($_POST['openid']);
+		$type = iSecurity::escapeStr($_POST['platform']);
+		$avatar = iSecurity::escapeStr($_POST['avatar']);
 
-		$province = iS::escapeStr($_POST['province']);
-		$city = iS::escapeStr($_POST['city']);
+		$province = iSecurity::escapeStr($_POST['province']);
+		$city = iSecurity::escapeStr($_POST['city']);
 
 		$agreement = $_POST['agreement'];
 
@@ -757,7 +757,7 @@ class userApp {
 		$password == $rstpassword OR iPHP::code(0, 'user:password:unequal', 'password', 'json');
 
 		if (iCMS::$config['user']['register']['seccode']) {
-			$seccode = iS::escapeStr($_POST['seccode']);
+			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iPHP::core("Seccode");
 			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
@@ -816,7 +816,7 @@ class userApp {
 	}
 	public function ACTION_add_category() {
 		$uid = user::$userid;
-		$name = iS::escapeStr($_POST['name']);
+		$name = iSecurity::escapeStr($_POST['name']);
 		empty($name) && iPHP::code(0, 'user:category:empty', 'add_category', 'json');
 		$fwd = iPHP::app("admincp.filter.app")->run($name);
 		$fwd && iPHP::code(0, 'user:category:filter', 'add_category', 'json');
@@ -842,7 +842,7 @@ class userApp {
 		$uid = (int) $_POST['userid'];
 		$appid = (int) $_POST['appid'];
 		$reason = (int) $_POST['reason'];
-		$content = iS::escapeStr($_POST['content']);
+		$content = iSecurity::escapeStr($_POST['content']);
 
 		$iid OR iPHP::code(0, 'iCMS:error', 0, 'json');
 		$uid OR iPHP::code(0, 'iCMS:error', 0, 'json');
@@ -862,12 +862,12 @@ class userApp {
 		$this->auth OR iPHP::code(0, 'iCMS:!login', 0, 'json');
 
 		$receiv_uid = (int) $_POST['uid'];
-		$content = iS::escapeStr($_POST['content']);
+		$content = iSecurity::escapeStr($_POST['content']);
 
 		$receiv_uid OR iPHP::code(0, 'iCMS:error', 0, 'json');
 		$content OR iPHP::code(0, 'iCMS:pm:empty', 0, 'json');
 
-		$receiv_name = iS::escapeStr($_POST['name']);
+		$receiv_name = iSecurity::escapeStr($_POST['name']);
 
 		$send_uid = user::$userid;
 		$send_name = user::$nickname;
@@ -875,7 +875,7 @@ class userApp {
 		$setting = (array)user::value($receiv_uid,'uid','setting');
 		if($setting['inbox']['receive']=='follow'){
 			if($mid){
-				$mid = iS::escapeStr($_POST['mid']);
+				$mid = iSecurity::escapeStr($_POST['mid']);
 				$mid = authcode($mid);
 				// $row = iDB::row("SELECT `send_uid`,`receiv_uid` FROM `#iCMS@__message` where `id`='$mid'");
 				$muserid = iDB::value("SELECT `userid` FROM `#iCMS@__message` where `id`='$mid'");
@@ -937,8 +937,8 @@ class userApp {
 		$appid = (int) $_POST['appid'];
 		$iid = (int) $_POST['iid'];
 		$cid = (int) $_POST['cid'];
-		$url = iS::escapeStr($_POST['url']);
-		$title = iS::escapeStr($_POST['title']);
+		$url = iSecurity::escapeStr($_POST['url']);
+		$title = iSecurity::escapeStr($_POST['title']);
 		$addtime = time();
 
 		$url OR iPHP::code(0, 'iCMS:favorite:url', 0, 'json');
@@ -971,8 +971,8 @@ class userApp {
 		}
 	}
 	public function API_check() {
-		$name = iS::escapeStr($_GET['name']);
-		$value = iS::escapeStr($_GET['value']);
+		$name = iSecurity::escapeStr($_GET['name']);
+		$value = iSecurity::escapeStr($_GET['value']);
 		$a = iPHP::code(1, '', $name);
 		switch ($name) {
 		case 'username':
@@ -1034,7 +1034,7 @@ class userApp {
 		iPHP::code(1, 0, $this->forward, 'json');
 	}
 	public function API_findpwd() {
-		$auth = iS::escapeStr($_GET['auth']);
+		$auth = iSecurity::escapeStr($_GET['auth']);
 		if ($auth) {
 			$authcode = rawurldecode($auth);
 			$authcode = base64_decode($authcode);

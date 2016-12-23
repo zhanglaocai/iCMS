@@ -47,7 +47,7 @@ class weixinAdmincp{
         include admincp::view("weixin.menu");
     }
     public function do_component_login(){
-        $token = iS::escapeStr($_GET['token']);
+        $token = iSecurity::escapeStr($_GET['token']);
         if($token!=$this->config['token']){
             iPHP::alert("Token(令牌)出错！请先保存Token(令牌)配置！",'js:window.iCMS_MODAL.destroy();');
         }

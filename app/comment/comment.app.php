@@ -17,7 +17,7 @@ class commentApp {
 	public function API_goto() {
 		$appid = (int) $_GET['appid'];
 		$iid = (int) $_GET['iid'];
-		$_GET = iS::escapeStr($_GET);
+		$_GET = iSecurity::escapeStr($_GET);
 
 		iPHP::app('apps.class', 'static');
 		$url = APPS::get_url($appid, $iid);
@@ -26,14 +26,14 @@ class commentApp {
 	public function API_list() {
 		$_GET['_display'] = $_GET['display'];
 		$_GET['display'] = 'default';
-		$_GET = iS::escapeStr($_GET);
+		$_GET = iSecurity::escapeStr($_GET);
 		iPHP::app('comment.func');
 		return comment_list($_GET);
 	}
 	public function API_form() {
 		$_GET['_display'] = $_GET['display'];
 		$_GET['display'] = 'default';
-		$_GET = iS::escapeStr($_GET);
+		$_GET = iSecurity::escapeStr($_GET);
 		iPHP::app('comment.func');
 		return comment_form($_GET);
 	}
@@ -58,8 +58,8 @@ class commentApp {
 			'iid' => (int) $_GET['iid'],
 			'date_format' => 'Y-m-d H:i',
 		);
-		$_GET['by'] && $vars['by'] = iS::escapeStr($_GET['by']);
-		$_GET['date_format'] && $vars['date_format'] = iS::escapeStr($_GET['date_format']);
+		$_GET['by'] && $vars['by'] = iSecurity::escapeStr($_GET['by']);
+		$_GET['date_format'] && $vars['date_format'] = iSecurity::escapeStr($_GET['date_format']);
 		$vars['page'] = true;
 		// iPHP::app('comment.func', 'static');
 		// $array = comment_list($vars);
@@ -83,7 +83,7 @@ class commentApp {
 
 		if ($this->config['seccode']) {
 			iPHP::core("Seccode");
-			$seccode = iS::escapeStr($_POST['seccode']);
+			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iSeccode::check($seccode, true) OR iPHP::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 
@@ -95,9 +95,9 @@ class commentApp {
 		$suid = (int) $_POST['suid'];
 		$reply_id = (int) $_POST['id'];
 		$reply_uid = (int) $_POST['userid'];
-		$reply_name = iS::escapeStr($_POST['name']);
-		$title = iS::escapeStr($_POST['title']);
-		$content = iS::escapeStr($_POST['content']);
+		$reply_name = iSecurity::escapeStr($_POST['name']);
+		$title = iSecurity::escapeStr($_POST['title']);
+		$content = iSecurity::escapeStr($_POST['content']);
 		$iid OR iPHP::code(0, 'iCMS:article:empty_id', 0, 'json');
 		$content OR iPHP::code(0, 'iCMS:comment:empty', 0, 'json');
 

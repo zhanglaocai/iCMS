@@ -128,7 +128,7 @@ class spiderAdmincp {
 
 	public function do_markurl() {
 		$hash = md5($this->url);
-		$title = iS::escapeStr($_GET['title']);
+		$title = iSecurity::escapeStr($_GET['title']);
 		iDB::insert('spider_url', array(
 			'cid' => $this->cid,
 			'rid' => $this->rid,
@@ -312,7 +312,7 @@ class spiderAdmincp {
 
 	public function do_saverule() {
 		$id = (int) $_POST['id'];
-		$name = iS::escapeStr($_POST['name']);
+		$name = iSecurity::escapeStr($_POST['name']);
 		$rule = $_POST['rule'];
 
 		empty($name) && iPHP::alert('规则名称不能为空！');
@@ -376,7 +376,7 @@ class spiderAdmincp {
 	public function do_savepost() {
 		$id = (int) $_POST['id'];
 		$name = trim($_POST['name']);
-		$app = iS::escapeStr($_POST['app']);
+		$app = iSecurity::escapeStr($_POST['app']);
 		$post = trim($_POST['post']);
 		$fun = trim($_POST['fun']);
 
@@ -460,17 +460,17 @@ class spiderAdmincp {
 
 	public function do_saveproject() {
 		$id = (int) $_POST['id'];
-		$name = iS::escapeStr($_POST['name']);
-		$urls = iS::escapeStr($_POST['urls']);
+		$name = iSecurity::escapeStr($_POST['name']);
+		$urls = iSecurity::escapeStr($_POST['urls']);
 		$list_url = $_POST['list_url'];
-		$cid = iS::escapeStr($_POST['cid']);
-		$rid = iS::escapeStr($_POST['rid']);
-		$poid = iS::escapeStr($_POST['poid']);
-		$poid = iS::escapeStr($_POST['poid']);
-		$checker = iS::escapeStr($_POST['checker']);
+		$cid = iSecurity::escapeStr($_POST['cid']);
+		$rid = iSecurity::escapeStr($_POST['rid']);
+		$poid = iSecurity::escapeStr($_POST['poid']);
+		$poid = iSecurity::escapeStr($_POST['poid']);
+		$checker = iSecurity::escapeStr($_POST['checker']);
 		$self = isset($_POST['self']) ? '1' : '0';
 		$sleep = (int) $_POST['sleep'];
-		$auto = iS::escapeStr($_POST['auto']);
+		$auto = iSecurity::escapeStr($_POST['auto']);
 		$psleep = (int) $_POST['psleep'];
 		$lastupdate = $_POST['lastupdate'] ? iPHP::str2time($_POST['lastupdate']) : '';
 		empty($name) && iPHP::alert('名称不能为空！');
