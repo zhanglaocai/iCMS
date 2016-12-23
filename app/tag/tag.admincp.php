@@ -120,7 +120,7 @@ class tagAdmincp{
             }
             if($contents){
                 iCMS::core('Map');
-                $fields   = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'ordernum', 'pubdate', 'status');
+                $fields   = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'status');
                 $cid      = implode(',', (array)$_POST['cid']);
                 $tcid     = implode(',', (array)$_POST['tcid']);
                 $pid      = implode(',', (array)$_POST['pid']);
@@ -183,7 +183,7 @@ class tagAdmincp{
         $related     = iS::escapeStr($_POST['related']);
         $tpl         = iS::escapeStr($_POST['tpl']);
         $weight      = (int)$_POST['weight'];
-        $ordernum    = (int)$_POST['ordernum'];
+        $sortnum    = (int)$_POST['sortnum'];
         $status      = (int)$_POST['status'];
         $haspic      = $pic?'1':'0';
         $pubdate     = time();
@@ -246,7 +246,7 @@ class tagAdmincp{
 
 		iCMS::core('Map');
 
-        $fields = array('uid','rootid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic','bpic','mpic','spic', 'url', 'related', 'count', 'weight', 'tpl', 'ordernum', 'pubdate', 'status');
+        $fields = array('uid','rootid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic','bpic','mpic','spic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'status');
         $data   = compact ($fields);
 
 		if(empty($id)){

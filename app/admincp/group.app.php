@@ -19,7 +19,7 @@ class groupApp{
     		$this->type = $type;
     		$sql=" and `type`='$type'";
     	}
-		$rs		= iDB::all("SELECT * FROM `#iCMS@__group` where 1=1{$sql} ORDER BY `ordernum` , `gid` ASC");
+		$rs		= iDB::all("SELECT * FROM `#iCMS@__group` where 1=1{$sql} ORDER BY `sortnum` , `gid` ASC");
 		$_count	= count($rs);
 		for ($i=0;$i<$_count;$i++){
 			$this->array[$rs[$i]['gid']]    = $rs[$i];
@@ -74,7 +74,7 @@ class groupApp{
 		$power  = $_POST['power']?json_encode($_POST['power']):'';
 		$cpower = $_POST['cpower']?json_encode($_POST['cpower']):'';
 		$name OR iPHP::alert('角色名不能为空');
-		$fields = array('name', 'ordernum', 'power', 'cpower', 'type');
+		$fields = array('name', 'sortnum', 'power', 'cpower', 'type');
 		$data   = compact ($fields);
 		if($gid){
             iDB::update('group', $data, array('gid'=>$gid));

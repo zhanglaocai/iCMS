@@ -28,7 +28,7 @@ class propAdmincp{
     function do_save(){
         $pid      = (int)$_POST['pid'];
         $cid      = (int)$_POST['cid'];
-        $ordernum = (int)$_POST['ordernum'];
+        $sortnum = (int)$_POST['sortnum'];
         $field    = iS::escapeStr($_POST['field']);
         $name     = iS::escapeStr($_POST['name']);
         $type     = iS::escapeStr($_POST['type']);
@@ -41,7 +41,7 @@ class propAdmincp{
 
 		$field=='pid' && $val=(int)$val;
 
-        $fields = array('rootid','cid','field','type','ordernum', 'name', 'val');
+        $fields = array('rootid','cid','field','type','sortnum', 'name', 'val');
         $data   = compact ($fields);
 
 		if($pid){

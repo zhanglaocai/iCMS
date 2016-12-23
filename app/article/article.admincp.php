@@ -106,8 +106,8 @@ class articleAdmincp{
     	iPHP::success('操作成功!','js:1');
     }
     function do_updateorder(){
-        foreach((array)$_POST['ordernum'] as $ordernum=>$id){
-            article::update(compact('ordernum'),compact('id'));
+        foreach((array)$_POST['sortnum'] as $sortnum=>$id){
+            article::update(compact('sortnum'),compact('id'));
         }
     }
     function do_batch(){
@@ -116,8 +116,8 @@ class articleAdmincp{
     	$batch	= $_POST['batch'];
     	switch($batch){
     		case 'order':
-		        foreach((array)$_POST['ordernum'] AS $id=>$ordernum) {
-                    article::update(compact('ordernum'),compact('id'));
+		        foreach((array)$_POST['sortnum'] AS $id=>$sortnum) {
+                    article::update(compact('sortnum'),compact('id'));
 		        }
 		        iPHP::success('排序已更新!','js:1');
     		break;
@@ -476,7 +476,7 @@ class articleAdmincp{
         $pid         = implode(',', (array)$_POST['pid']);
         $status      = (int)$_POST['status'];
         $chapter     = (int)$_POST['chapter'];
-        $ordernum    = (int)$_POST['ordernum'];
+        $sortnum    = (int)$_POST['sortnum'];
         $weight      = (int)$_POST['weight'];
 
         $hits        = (int)$_POST['hits'];

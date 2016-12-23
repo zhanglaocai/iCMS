@@ -71,7 +71,7 @@ $(function(){
             <tr id="tr<?php echo $rs[$i]['pid'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['pid'] ; ?>" /></td>
               <td><?php echo $rs[$i]['pid'] ; ?></td>
-              <td class="ordernum"><input type="text" name="ordernum[<?php echo $rs[$i]['pid'] ; ?>]" value="<?php echo $rs[$i]['ordernum'] ; ?>" tid="<?php echo $rs[$i]['pid'] ; ?>"/></td>
+              <td class="sortnum"><input type="text" name="sortnum[<?php echo $rs[$i]['pid'] ; ?>]" value="<?php echo $rs[$i]['sortnum'] ; ?>" tid="<?php echo $rs[$i]['pid'] ; ?>"/></td>
               <td><?php echo $rs[$i]['val'] ; ?></td>
               <td><?php echo $rs[$i]['name'] ; ?></td>
               <td><a href="<?php echo APP_DOURI; ?>&field=<?php echo $rs[$i]['field'] ; ?><?php echo $uri ; ?>"><?php echo $rs[$i]['field'] ; ?></a></td>

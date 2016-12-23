@@ -81,7 +81,7 @@ $(function(){
           <span class="help-inline">菜单模式:对话框 才填写相关配置</span>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">菜单排序</span>
-            <input id="ordernum" class="span1" value="<?php echo $rs['ordernum'] ; ?>" name="ordernum" type="text"/>
+            <input id="sortnum" class="span1" value="<?php echo $rs['sortnum'] ; ?>" name="sortnum" type="text"/>
           </div>
         </div>
         <div class="form-actions">

@@ -68,19 +68,19 @@
 						$(ui.item).css({
 							'opacity': 1
 						});
-						var update_ordernum = function (ui) {
+						var update_sortnum = function (ui) {
 							var ul = ui.item.parent();
-							var ordernum = new Array();
-							$(".ordernum > input", ul).each(function(i) {
+							var sortnum = new Array();
+							$(".sortnum > input", ul).each(function(i) {
 								$(this).val(i);
 								var cid = $(this).attr("cid");
-								ordernum.push(cid);
+								sortnum.push(cid);
 							});
 							$.post(upordurl, {
-								ordernum: ordernum
+								sortnum: sortnum
 							});
 						}
-						update_ordernum (ui);
+						update_sortnum (ui);
 					}
 				}).disableSelection();
 			}

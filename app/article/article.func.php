@@ -97,8 +97,8 @@ function article_list($vars) {
         case "month":    $order_sql = " ORDER BY `hits_month` $by"; break;
         case "comment":  $order_sql = " ORDER BY `comments` $by"; break;
         case "pubdate":  $order_sql = " ORDER BY `pubdate` $by"; break;
-        case "disorder": $order_sql = " ORDER BY `ordernum` $by"; break;
-        case "weight":   $order_sql = " ORDER BY `weight`,`ordernum` ASC"; break;
+        case "sort": $order_sql = " ORDER BY `sortnum` $by"; break;
+        case "weight":   $order_sql = " ORDER BY `weight` $by"; break;
 		default:$order_sql = " ORDER BY `id` $by";
 	}
 	isset($vars['startdate']) && $where_sql .= " AND `pubdate`>='" . strtotime($vars['startdate']) . "'";

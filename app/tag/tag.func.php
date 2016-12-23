@@ -79,7 +79,7 @@ function tag_list($vars){
 	switch ($vars['orderby']) {
 		case "hot":		$order_sql=" ORDER BY `count` $by";		break;
 		case "new":		$order_sql=" ORDER BY `id` $by";			break;
-		case "order":	$order_sql=" ORDER BY `ordernum` $by";	break;
+		case "sort":	$order_sql=" ORDER BY `sortnum` $by";	break;
 		default:		$order_sql=" ORDER BY `id` $by";
 	}
     if($map_where){

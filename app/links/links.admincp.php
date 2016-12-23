@@ -28,11 +28,11 @@ class linksAdmincp{
 		$logo		= iS::escapeStr($_POST['logo']);
 		$url		= iS::escapeStr($_POST['url']);
 		$desc		= iS::escapeStr($_POST['desc']);
-		$ordernum	= (int)$_POST['ordernum'];
+		$sortnum	= (int)$_POST['sortnum'];
 
         $name 	OR iPHP::alert('网站不能为空!');
         $url 	OR iPHP::alert('链接不能为空!');
-        $fields = array('cid', 'name', 'logo', 'url', 'desc', 'ordernum');
+        $fields = array('cid', 'name', 'logo', 'url', 'desc', 'sortnum');
         $data   = compact ($fields);
         if(empty($id)) {
             iDB::value("SELECT `id` FROM `#iCMS@__links` where `name` ='$name'") && iPHP::alert('该网站已经存在!');

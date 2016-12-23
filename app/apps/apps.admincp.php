@@ -252,7 +252,7 @@ class appsAdmincp{
         `cid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '栏目id',
         `ucid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户分类',
         `pid` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '属性',
-        `ordernum` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
+        `sortnum` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
         `title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题',
         `editor` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '编辑 用户名',
         `userid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',

@@ -16,8 +16,8 @@ admincp::head();
 <script type="text/javascript" src="./app/admincp/ui/jquery/treeview-0.1.0.async.js"></script>
 <script id="tree_li" type="text/html">
 <div class="row-fluid status{{cid}}">
-    <span class="ordernum">
-        <input type="text" cid="{{cid}}" name="ordernum[{{cid}}]" value="{{ordernum}}" style="width:32px;"/>
+    <span class="sortnum">
+        <input type="text" cid="{{cid}}" name="sortnum[{{cid}}]" value="{{sortnum}}" style="width:32px;"/>
     </span>
     <span class="name">
         <input {{if rootid=="0"}}style="font-weight:bold"{{/if}} type="text" name="name[{{cid}}]" value="{{name}}"/>

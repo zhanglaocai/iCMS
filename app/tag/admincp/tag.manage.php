@@ -170,7 +170,7 @@ $(function(){
           <tr id="tr<?php echo $rs[$i]['id'] ; ?>">
             <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id'] ; ?>" /></td>
             <td><?php echo $rs[$i]['id'] ; ?></td>
-            <td class="ordernum"><input type="text" name="ordernum[<?php echo $rs[$i]['id'] ; ?>]" value="<?php echo $rs[$i]['ordernum'] ; ?>" tid="<?php echo $rs[$i]['id'] ; ?>"/></td>
+            <td class="sortnum"><input type="text" name="sortnum[<?php echo $rs[$i]['id'] ; ?>]" value="<?php echo $rs[$i]['sortnum'] ; ?>" tid="<?php echo $rs[$i]['id'] ; ?>"/></td>
             <td><?php if($rs[$i]['haspic'])echo '<img src="./app/admincp/ui/img/image.gif" align="absmiddle">';?>
               <a href="<?php echo $rs[$i]['url'] ; ?>" class="noneline" target="_blank"><?php echo $rs[$i]['name'] ; ?></a>
           </div>

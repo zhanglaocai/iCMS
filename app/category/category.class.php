@@ -92,7 +92,7 @@ class category {
         return $category;
     }
     public function cid_array($rootid) {
-        $variable = iDB::all("SELECT `cid` FROM `#iCMS@__category` where `rootid`='$rootid' {$this->appid_sql} ORDER BY `ordernum`  ASC",ARRAY_A);
+        $variable = iDB::all("SELECT `cid` FROM `#iCMS@__category` where `rootid`='$rootid' {$this->appid_sql} ORDER BY `sortnum`  ASC",ARRAY_A);
         $category = array();
         foreach ((array)$variable as $key => $value) {
             $category[] = $value['cid'];

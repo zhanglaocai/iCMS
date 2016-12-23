@@ -56,7 +56,7 @@ $(function(){
           </div>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">版块排序</span>
-            <input id="ordernum" class="span1" value="<?php echo $rs['ordernum'] ; ?>" name="ordernum" type="text"/>
+            <input id="sortnum" class="span1" value="<?php echo $rs['sortnum'] ; ?>" name="sortnum" type="text"/>
           </div>
         </div>
         <div class="form-actions">

@@ -72,7 +72,7 @@ class categoryAdmincp extends category{
                 'isexamine' => '1',
                 'issend'    => '1',
                 'hasbody'   => '2',
-                'ordernum'  => '0',
+                'sortnum'  => '0',
                 'mode'      => '0',
                 'htmlext'   => iCMS::$config['router']['html_ext'],
                 'metadata'  => ''
@@ -94,7 +94,7 @@ class categoryAdmincp extends category{
         $isucshow     = (int)$_POST['isucshow'];
         $issend       = (int)$_POST['issend'];
         $isexamine    = (int)$_POST['isexamine'];
-        $ordernum     = (int)$_POST['ordernum'];
+        $sortnum     = (int)$_POST['sortnum'];
         $mode         = (int)$_POST['mode'];
         $pid          = implode(',', (array)$_POST['pid']);
         $_pid         = iS::escapeStr($_POST['_pid']);
@@ -163,7 +163,7 @@ class categoryAdmincp extends category{
         iMap::init('prop',iCMS_APP_CATEGORY);
 
         $fields = array(
-            'rootid','pid','appid','ordernum','name','subname','password',
+            'rootid','pid','appid','sortnum','name','subname','password',
             'title','keywords','description','dir',
             'mode','domain','url','pic','mpic','spic','htmlext',
             'rule','template','metadata',
@@ -194,7 +194,7 @@ class categoryAdmincp extends category{
                 $data['count']    = '0';
                 $data['comments'] = '0';
                 $cid = iDB::insert('category',$data);
-                iDB::update('category', array('ordernum'=>$cid), array('cid'=>$cid));
+                iDB::update('category', array('sortnum'=>$cid), array('cid'=>$cid));
                 $pid && iMap::add($pid,$cid);
 	            $this->cache(false,$this->appid);
 	            $this->cahce_one($cid);
@@ -229,7 +229,7 @@ class categoryAdmincp extends category{
     function do_update(){
     	foreach((array)$_POST['name'] as $cid=>$name){
     		$name	= iS::escapeStr($name);
-			iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name',`ordernum` = '".(int)$_POST['ordernum'][$cid]."' WHERE `cid` ='".(int)$cid."' LIMIT 1");
+			iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name',`sortnum` = '".(int)$_POST['sortnum'][$cid]."' WHERE `cid` ='".(int)$cid."' LIMIT 1");
 	    	$this->cahce_one($cid);
     	}
     	iPHP::success('更新完成');
@@ -348,8 +348,8 @@ class categoryAdmincp extends category{
         iPHP::success('操作成功!','js:1');
     }
     function do_updateorder(){
-    	foreach((array)$_POST['ordernum'] as $ordernum=>$cid){
-            iDB::query("UPDATE `#iCMS@__category` SET `ordernum` = '".intval($ordernum)."' WHERE `cid` ='".intval($cid)."' LIMIT 1");
+    	foreach((array)$_POST['sortnum'] as $sortnum=>$cid){
+            iDB::query("UPDATE `#iCMS@__category` SET `sortnum` = '".intval($sortnum)."' WHERE `cid` ='".intval($cid)."' LIMIT 1");
 	    	$this->cahce_one($cid);
     	}
     }
@@ -394,14 +394,14 @@ class categoryAdmincp extends category{
             INSERT INTO `#iCMS@__category` (
                 `name`,`dir`,
                `rootid`, `pid`, `appid`, `userid`, `creator`,
-               `subname`, `ordernum`, `password`, `title`, `keywords`, `description`,
+               `subname`, `sortnum`, `password`, `title`, `keywords`, `description`,
                `url`, `pic`, `mpic`, `spic`, `count`, `mode`, `domain`, `htmlext`,
                `rule`, `template`, `metadata`, `hasbody`, `comments`, `isexamine`, `issend`,
                `isucshow`, `status`, `pubdate`
             ) SELECT
                 CONCAT(`name`,'副本'),CONCAT(`dir`,'fuben'),
                 `rootid`, `pid`, `appid`, `userid`, `creator`,
-                `subname`, `ordernum`, `password`, `title`, `keywords`, `description`,
+                `subname`, `sortnum`, `password`, `title`, `keywords`, `description`,
                 `url`, `pic`, `mpic`, `spic`, `count`, `mode`, `domain`, `htmlext`,
                 `rule`, `template`, `metadata`, `hasbody`, `comments`, `isexamine`, `issend`,
                 `isucshow`, `status`, `pubdate`

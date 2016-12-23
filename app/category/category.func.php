@@ -58,7 +58,7 @@ function category_list($vars){
 	switch ($vars['orderby']) {
 		case "hot":		$order_sql=" ORDER BY `count` $by";		break;
 		case "new":		$order_sql=" ORDER BY `cid` $by";			break;
-		default:		$order_sql=" ORDER BY `ordernum` $by";
+		default:		$order_sql=" ORDER BY `sortnum` $by";
 	}
 
 	$offset	= 0;

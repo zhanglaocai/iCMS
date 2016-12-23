@@ -118,14 +118,14 @@ class tag {
 	        }
 	    }else {
 			$tkey   = pinyin($tag,iCMS::$config['other']['py_split']);
-			// $fields = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'ordernum', 'pubdate', 'status');
+			// $fields = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'status');
 			// $data   = compact ($fields);
 			// $data['pid'] = '0';
 			// iDB::insert('tags',$data);
 	        iDB::query("INSERT INTO `#iCMS@__tags`
 (`uid`, `cid`, `tcid`, `pid`, `tkey`, `name`,
     `seotitle`, `subtitle`, `keywords`, `description`, `haspic`, `pic`, `url`,
-    `related`, `count`, `weight`, `tpl`, `ordernum`,
+    `related`, `count`, `weight`, `tpl`, `sortnum`,
     `pubdate`,`postime`, `status`)
 VALUES ('$uid', '$cid', '$tcid', '0', '$tkey', '$tag',
     '', '', '', '', '', '', '', '', '1', '0', '', '0',

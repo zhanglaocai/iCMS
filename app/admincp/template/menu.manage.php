@@ -31,14 +31,14 @@ $(function(){
         stop: function(event, ui) {
             $(ui.item).css({'opacity': 1});
             var pt = ui.item.parent();
-            var ord = $(".ordernum > input",pt);
-            var ordernum = new Array();
+            var ord = $(".sortnum > input",pt);
+            var sortnum = new Array();
             ord.each(function(i) {
                 $(this).val(i);
             	var id = $(this).attr("data-id");
-            	ordernum.push(id);
+            	sortnum.push(id);
             });
-            $.post(upordurl,{ordernum: ordernum});
+            $.post(upordurl,{sortnum: sortnum});
         }
     }).disableSelection();
 });

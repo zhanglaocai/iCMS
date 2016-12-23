@@ -117,13 +117,13 @@ body{background-color:#EDEDED;color:#000;}
 h3.title{display:inline-block;height:35px;margin-bottom:5px;background-color:#DFDFDF;margin-top:5px;padding-left:10px;font-weight:bold;color:#696969;text-shadow:0 1px 0 #FFF;border-radius:4px 4px 0px 0px;width:350px;font-size:16px;}
 
 /* category */
-td.ordernum input{width:30px;text-align:center;padding:2px;margin-bottom:1px;}
+td.sortnum input{width:30px;text-align:center;padding:2px;margin-bottom:1px;}
 .status0{font-style:italic;background-color:#EDEDED;-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";filter:alpha(opacity=50);-moz-opacity:0.5;opacity:0.5;}
 .treeview{margin:0px;}
 .treeview li{clear:both;}
 .treeview li input{font-size:14px!important;margin-bottom:0px;}
 .treeview li ul{background-color:transparent;clear:both;margin:0px;margin-left:10px;}
-.treeview li .ordernum{width:36px;}
+.treeview li .sortnum{width:36px;}
 .treeview li .name{width:500px;margin-left:2px;}
 .treeview li .name .label{font-weight:normal!important;font-size:12px!important;}
 .treeview li .name a{color:#fff;}

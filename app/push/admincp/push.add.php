@@ -65,7 +65,7 @@ $(function(){
           </div>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">排序</span>
-            <input id="ordernum" class="span3" value="<?php echo $rs['ordernum']?$rs['ordernum']:time() ; ?>" name="ordernum" type="text"/>
+            <input id="sortnum" class="span3" value="<?php echo $rs['sortnum']?$rs['sortnum']:time() ; ?>" name="sortnum" type="text"/>
           </div>
           <fieldset>
             <legend>1</legend>

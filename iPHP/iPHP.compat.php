@@ -30,11 +30,11 @@ function days_in_month($year,$month) {
 function count_days($formdate,$todate){
     return round(abs(strtotime($formdate)-strtotime($todate))/3600/24);
 }
-function order_num($a, $b){
-    if ($a["ordernum"] == $b["ordernum"]) {
+function sortnum($a, $b){
+    if ($a["sortnum"] == $b["sortnum"]) {
         return 0;
     }
-    return ($a["ordernum"] < $b["ordernum"]) ? -1 : 1;
+    return ($a["sortnum"] < $b["sortnum"]) ? -1 : 1;
 }
 function buildurl($url=false,$qs='') {
 	$url	OR $url	= $_SERVER["REQUEST_URI"];

@@ -78,7 +78,7 @@ iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
           <span class="help-inline">pid:只能填写数字</span>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">排序</span>
-            <input type="text" name="ordernum" class="span2" id="ordernum" value="<?php echo $rs['ordernum'];?>"/>
+            <input type="text" name="sortnum" class="span2" id="sortnum" value="<?php echo $rs['sortnum'];?>"/>
           </div>
         </div>
         <div class="form-actions">

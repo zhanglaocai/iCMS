@@ -82,7 +82,7 @@ class categoryApp{
     }
     public function get_lite($category){
         $keyArray = array(
-            'ordernum','password','mode','domain',
+            'sortnum','password','mode','domain',
             'isexamine','issend','isucshow',
             'pubdate'
         );

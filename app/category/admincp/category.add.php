@@ -141,7 +141,7 @@ $(function(){
             <span class="help-inline"><span class="label label-important">外部链接设置后所有项目无效,此<?php echo $this->category_name;?>仅为一个链接.不设置请留空</span></span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>排序</span>
-              <input id="ordernum" class="span1" value="<?php echo $rs['ordernum'] ; ?>" name="ordernum" type="text"/>
+              <input id="sortnum" class="span1" value="<?php echo $rs['sortnum'] ; ?>" name="sortnum" type="text"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>状态</span>

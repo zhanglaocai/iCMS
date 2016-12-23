@@ -20,7 +20,7 @@ class article {
             'haspic','pic','mpic','spic', 'picdata',
             'related', 'metadata', 'pubdate', 'chapter', 'url','clink',
             'hits','hits_today','hits_yday','hits_week','hits_month','favorite','comments', 'good', 'bad',
-            'ordernum','weight', 'postype', 'creative','markdown','tpl','status');
+            'sortnum','weight', 'postype', 'creative','markdown','tpl','status');
 
         if(!$update){ //更新
             $_fields = array('mobile','postime');
