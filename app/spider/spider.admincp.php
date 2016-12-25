@@ -177,7 +177,7 @@ class spiderAdmincp {
 		$this->do_mpublish($a);
 	}
 	public function do_mpublish($pubArray = array()) {
-		iPHP::$break = false;
+		iUI::$break = false;
 		if ($_POST['pub']) {
 			foreach ((array) $_POST['pub'] as $i => $a) {
 				list($cid, $pid, $rid, $url, $title) = explode('|', $a);
@@ -185,7 +185,7 @@ class spiderAdmincp {
 			}
 		}
 		if (empty($pubArray)) {
-			iPHP::$break = true;
+			iUI::$break = true;
 			iUI::alert('暂无最新内容', 0, 30);
 		}
 		$_count = count($pubArray);
@@ -426,8 +426,8 @@ class spiderAdmincp {
 		if ($_GET['poid']) {
 			$sql .= " AND `poid` ='" . (int) $_GET['poid'] . "'";
 		}
-        $_GET['starttime'] && $sql.=" AND `lastupdate`>='".iPHP::str2time($_GET['starttime']." 00:00:00")."'";
-        $_GET['endtime']   && $sql.=" AND `lastupdate`<='".iPHP::str2time($_GET['endtime']." 23:59:59")."'";
+        $_GET['starttime'] && $sql.=" AND `lastupdate`>='".str2time($_GET['starttime']." 00:00:00")."'";
+        $_GET['endtime']   && $sql.=" AND `lastupdate`<='".str2time($_GET['endtime']." 23:59:59")."'";
 		$ruleArray = $this->rule_opt(0, 'array');
 		$postArray = $this->post_opt(0, 'array');
 		$orderby = $_GET['orderby'] ? $_GET['orderby'] : "id DESC";
@@ -472,7 +472,7 @@ class spiderAdmincp {
 		$sleep = (int) $_POST['sleep'];
 		$auto = iSecurity::escapeStr($_POST['auto']);
 		$psleep = (int) $_POST['psleep'];
-		$lastupdate = $_POST['lastupdate'] ? iPHP::str2time($_POST['lastupdate']) : '';
+		$lastupdate = $_POST['lastupdate'] ? str2time($_POST['lastupdate']) : '';
 		empty($name) && iUI::alert('名称不能为空！');
 		empty($cid) && iUI::alert('请选择绑定的栏目');
 		empty($rid) && iUI::alert('请选择采集规则');

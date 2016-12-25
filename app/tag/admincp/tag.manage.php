@@ -200,7 +200,7 @@ $(function(){
 
         <tfoot>
           <tr>
-            <td colspan="10"><div class="pagination pagination-right" style="float:right;"><?php echo iPHP::$pagenav ; ?></div>
+            <td colspan="10"><div class="pagination pagination-right" style="float:right;"><?php echo iUI::$pagenav ; ?></div>
               <div class="input-prepend input-append mt20"> <span class="add-on">全选
                 <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo APP_BOXID;?>" />
                 </span>

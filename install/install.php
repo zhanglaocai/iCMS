@@ -106,29 +106,29 @@ if($_POST['action']=='install'){
     foreach ($result as $key => $c) {
         $value = $c['value'];
         strstr($c['value'], 'a:') && $value = unserialize($c['value']);
-        $setting[$c['name']] = $value;
+        $config[$c['name']] = $value;
     }
 
 
-	$setting['router']['URL']        = $router_url;
-	$setting['router']['DIR']        = $router_dir;
-	$setting['router']['public_url'] = $router_url.'/public';
-	$setting['router']['user_url']   = $router_url.'/usercp';
-	$setting['router']['404']        = $router_url.'/public/404.htm';
-	$setting['router']['tag_url']    = $router_url;
+	$config['router']['URL']        = $router_url;
+	$config['router']['DIR']        = $router_dir;
+	$config['router']['public_url'] = $router_url.'/public';
+	$config['router']['user_url']   = $router_url.'/usercp';
+	$config['router']['404']        = $router_url.'/public/404.htm';
+	$config['router']['tag_url']    = $router_url;
 
-	$setting['FS']['url']            = $router_url.'/res/';
+	$config['FS']['url']            = $router_url.'/res/';
 
-	$setting['template']['mobile']['domain']     = $router_url;
-	$setting['template']['device'][0]['domain']  = $router_url;
+	$config['template']['mobile']['domain']     = $router_url;
+	$config['template']['device'][0]['domain']  = $router_url;
 
-	foreach($setting AS $n=>$v){
+	foreach($config AS $n=>$v){
         is_array($v) && $v = addslashes(serialize($v));
         iDB::query("UPDATE `#iCMS@__config` SET `value` = '$v' WHERE `appid` ='0' AND `name` ='$n'");
 	}
 
  	$output = "<?php\ndefined('iPHP') OR exit('Access Denied');\nreturn ";
-	$output.= var_export($setting,true);
+	$output.= var_export($config,true);
 	$output.= ';';
 	iFS::write(iPATH.'conf/iCMS/config.php',$output,false);
 //写入数据库配置<hr />开始安装数据库<hr />数据库安装完成<hr />设置超级管理员<hr />更新网站缓存<hr />

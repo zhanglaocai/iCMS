@@ -5,57 +5,49 @@
     "caption": "系统",
     "icon": "cog",
     "children": [{
-            "id": "setting",
+            "id": "config",
             "caption": "系统设置",
-            "href": "setting",
+            "href": "config",
             "icon": "cog",
             "children": [{
                 "caption": "网站设置",
-                "href": "setting&tab=base",
+                "href": "config&tab=base",
                 "icon": "cog"
             }, {
                 "caption": "模板设置",
-                "href": "setting&tab=tpl",
+                "href": "config&tab=tpl",
                 "icon": "cog"
             }, {
                 "caption": "URL设置",
-                "href": "setting&tab=url",
-                "icon": "cog"
-            }, {
-                "caption": "标签设置",
-                "href": "tag&do=config&f=setting",
+                "href": "config&tab=url",
                 "icon": "cog"
             }, {
                 "caption": "缓存设置",
-                "href": "setting&tab=cache",
+                "href": "config&tab=cache",
                 "icon": "cog"
             }, {
                 "caption": "附件设置",
-                "href": "setting&tab=file",
+                "href": "config&tab=file",
                 "icon": "cog"
             }, {
                 "caption": "缩略图设置",
-                "href": "setting&tab=thumb",
+                "href": "config&tab=thumb",
                 "icon": "cog"
             }, {
                 "caption": "水印设置",
-                "href": "setting&tab=watermark",
-                "icon": "cog"
-            }, {
-                "caption": "用户设置",
-                "href": "setting&tab=user",
+                "href": "config&tab=watermark",
                 "icon": "cog"
             }, {
                 "caption": "其它设置",
-                "href": "setting&tab=other",
+                "href": "config&tab=other",
                 "icon": "cog"
             }, {
                 "caption": "更新设置",
-                "href": "setting&tab=patch",
+                "href": "config&tab=patch",
                 "icon": "cog"
             }, {
                 "caption": "高级设置",
-                "href": "setting&tab=grade",
+                "href": "config&tab=grade",
                 "icon": "cog"
             }]
         }, {

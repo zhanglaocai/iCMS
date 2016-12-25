@@ -1,6 +1,6 @@
 <?php defined('iPHP') OR exit('What are you doing?');?>
 {
-    "appid": "16",
+    "appid": "100007",
     "app": "public",
     "title": "公共标签",
     "description": "公共通用标签",

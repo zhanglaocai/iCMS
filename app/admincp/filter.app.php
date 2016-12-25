@@ -16,8 +16,8 @@ class filterApp{
         $this->do_config();
     }
     public function do_config(){
-        $setting = admincp::app('setting');
-        $setting->app('999999');
+        $configApp = admincp::app('config');
+        $configApp->app('999999');
     }
     public function do_save_config(){
         $filter  = explode("\n",$_POST['config']['filter']);
@@ -25,13 +25,13 @@ class filterApp{
         $_POST['config']['filter']  = array_unique($filter);
         $_POST['config']['disable'] = array_unique($disable);
 
-        $setting = admincp::app('setting');
-        $setting->save('999999',null,array($this,'cache'));
+        $configApp = admincp::app('config');
+        $configApp->save('999999',null,array($this,'cache'));
     }
     public function cache($config=null){
         if($config===null){
-            $setting = admincp::app('setting');
-            $config  = $setting->app('999999',null,true);
+            $configApp = admincp::app('config');
+            $config  = $configApp->app('999999',null,true);
         }
     	iCache::set('iCMS/filter.array',$config['filter'],0);
     	iCache::set('iCMS/filter.disable',$config['disable'],0);

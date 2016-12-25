@@ -8,7 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-class settingApp{
+class configApp{
     public function __construct() {}
     public function do_iCMS(){
     	$config	= $this->get();
@@ -16,7 +16,7 @@ class settingApp{
         $redis    = extension_loaded('redis');
         $memcache = extension_loaded('memcached');
         admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
-    	include admincp::view("setting");
+    	include admincp::view("config");
     }
     public function apps(){
         iPHP::app('apps.class','static');
@@ -67,10 +67,10 @@ class settingApp{
         $this->write($config);
     }
     public static function head($title=null){
-        include admincp::view("setting.head","admincp");
+        include admincp::view("config.head","admincp");
     }
     public static function foot(){
-        include admincp::view("setting.foot","admincp");
+        include admincp::view("config.foot","admincp");
     }
     /**
      * [app 其它应用配置接口]
@@ -83,7 +83,7 @@ class settingApp{
         if($ret){
             return $config;
         }
-        include admincp::view($name.".setting");
+        include admincp::view($name.".config");
     }
     /**
      * [save 其它应用配置保存]
@@ -164,6 +164,6 @@ class settingApp{
         $this->write();
     }
     public function view(){
-        include admincp::view('setting',null,true);
+        include admincp::view('config',null,true);
     }
 }

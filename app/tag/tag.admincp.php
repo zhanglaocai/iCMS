@@ -20,14 +20,14 @@ class tagAdmincp{
         $this->tagcategory = iPHP::app('category.admincp',$this->appid);
     }
     public function do_config(){
-        $setting = admincp::app('setting');
-        $setting->app($this->appid);
+        $configApp = admincp::app('config');
+        $configApp->app($this->appid);
     }
     public function do_save_config(){
-        $setting = admincp::app('setting');
+        $configApp = admincp::app('config');
         $_POST['config']['url'] = trim($_POST['config']['url'],'/');
         $_POST['config']['dir'] = rtrim($_POST['config']['dir'],'/').'/';
-        $setting->save($this->appid);
+        $configApp->save($this->appid);
     }
 
     public function do_add(){
@@ -58,10 +58,10 @@ class tagAdmincp{
 
         $sql.= $this->categoryApp->search_sql($cid);
         $sql.= $this->tagcategory->search_sql($tcid,'tcid');
-        $_GET['starttime'] && $sql.=" AND `pubdate`>='".iPHP::str2time($_GET['starttime']." 00:00:00")."'";
-        $_GET['endtime']   && $sql.=" AND `pubdate`<='".iPHP::str2time($_GET['endtime']." 23:59:59")."'";
-        $_GET['post_starttime'] && $sql.=" AND `postime`>='".iPHP::str2time($_GET['post_starttime']." 00:00:00")."'";
-        $_GET['post_endtime']   && $sql.=" AND `postime`<='".iPHP::str2time($_GET['post_endtime']." 23:59:59")."'";
+        $_GET['starttime'] && $sql.=" AND `pubdate`>='".str2time($_GET['starttime']." 00:00:00")."'";
+        $_GET['endtime']   && $sql.=" AND `pubdate`<='".str2time($_GET['endtime']." 23:59:59")."'";
+        $_GET['post_starttime'] && $sql.=" AND `postime`>='".str2time($_GET['post_starttime']." 00:00:00")."'";
+        $_GET['post_endtime']   && $sql.=" AND `postime`<='".str2time($_GET['post_endtime']." 23:59:59")."'";
 
         isset($_GET['pic']) && $sql.=" AND `haspic` ='".($_GET['pic']?1:0)."'";
         if(isset($_GET['pid']) && $pid!='-1'){
@@ -347,11 +347,11 @@ class tagAdmincp{
         $batch   = $_POST['batch'];
     	switch($batch){
     		case 'dels':
-				iPHP::$break	= false;
+				iUI::$break	= false;
 	    		foreach($idArray AS $id){
 	    			$this->do_del($id,false);
 	    		}
-	    		iPHP::$break	= true;
+	    		iUI::$break	= true;
 				iUI::success('标签全部删除完成!','js:1');
     		break;
     		case 'move':

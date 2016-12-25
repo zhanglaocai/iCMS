@@ -19,18 +19,18 @@ $(function() {
     //iCMS.modal();
 
     $("[target='iPHP_FRAME']").each(function() {
-        if(this.href && this.href.indexOf('.php')!="-1"){
-            if(this.href.indexOf('?')!="-1"){
-                this.href = this.href+'&frame=iPHP';
+        if(this.href && this.href.indexOf('.php')!="-1" && this.href.indexOf('&frame=iPHP')=="-1"){
+            if(this.href.indexOf('?')=="-1"){
+                this.href += '?frame=iPHP';
             }else{
-                this.href = this.href+'?frame=iPHP';
+                this.href += '&frame=iPHP';
             }
         }
-        if(this.action && this.action.indexOf('.php')!="-1"){
-            if(this.action.indexOf('?')!="-1"){
-                this.action = this.action+'&frame=iPHP';
+        if(this.action && this.action.indexOf('.php')!="-1" && this.action.indexOf('&frame=iPHP')=="-1"){
+            if(this.action.indexOf('?')=="-1"){
+                this.action += '?frame=iPHP';
             }else{
-                this.action = this.action+'?frame=iPHP';
+                this.action += '&frame=iPHP';
             }
         }
     });

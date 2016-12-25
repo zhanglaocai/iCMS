@@ -8,8 +8,8 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-// class accountApp extends admincp{
-class accountApp{
+// class membersApp extends admincp{
+class membersApp{
     public function __construct() {
         $this->uid      = (int)$_GET['id'];
         $this->groupApp = admincp::app('group',1);
@@ -23,7 +23,7 @@ class accountApp{
         $month  = $job->month();
         $pmonth = $job->month($job->pmonth['start']);
         $rs     = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `uid`='$this->uid' LIMIT 1;");
-		include admincp::view("account.job");
+		include admincp::view("members.job");
     }
     public function do_edit(){
         $this->uid = iMember::$userid;
@@ -35,7 +35,7 @@ class accountApp{
             $rs->info && $rs->info = unserialize($rs->info);
             $rs->info = (array)$rs->info;
         }
-        include admincp::view("account.add");
+        include admincp::view("members.add");
     }
     public function do_iCMS(){
     	if($_GET['job']){
@@ -51,7 +51,7 @@ class accountApp{
         iUI::pagenav($total,$maxperpage,"个用户");
         $rs         = iDB::all("SELECT * FROM `#iCMS@__members` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count		= count($rs);
-    	include admincp::view("account.manage");
+    	include admincp::view("members.manage");
     }
     public function do_save(){
         $uid      = (int)$_POST['uid'];
@@ -109,11 +109,11 @@ class accountApp{
     	$batch	= $_POST['batch'];
     	switch($batch){
     		case 'dels':
-                iPHP::$break = false;
+                iUI::$break = false;
 	    		foreach($idA AS $id){
 	    			$this->do_del($id,false);
 	    		}
-                iPHP::$break = true;
+                iUI::$break = true;
 				iUI::success('用户全部删除完成!','js:1');
     		break;
 		}

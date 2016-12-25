@@ -12,7 +12,7 @@ admincp::head();
     <div class="widget-title"> <span class="icon"> <i class="fa fa-cog"></i> </span>
       <h5><?php echo $title;?></h5>
     </div>
-    <div class="widget-content nopadding iCMS-setting">
-      <form action="<?php echo APP_FURI; ?>&do=save_config" method="post" class="form-inline" id="iCMS-setting" target="iPHP_FRAME">
-        <div id="setting" class="tab-content">
-          <div id="setting-content" class="tab-pane active">
+    <div class="widget-content nopadding iCMS-config">
+      <form action="<?php echo APP_FURI; ?>&do=save_config" method="post" class="form-inline" id="iCMS-config" target="iPHP_FRAME">
+        <div id="config" class="tab-content">
+          <div id="config-content" class="tab-pane active">

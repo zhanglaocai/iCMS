@@ -5,7 +5,7 @@
 * @author coolmoo <idreamsoft@qq.com>
 */
 defined('iPHP') OR exit('What are you doing?');
-settingApp::head("用户系统设置");
+configApp::head("用户系统设置");
 ?>
 <div class="input-prepend">
     <span class="add-on">用户注册</span>
@@ -148,4 +148,4 @@ settingApp::head("用户系统设置");
     <input type="text" name="config[open][TB][redirect]" class="span3" id="TB_redirect" value="<?php echo $config['open']['TB']['redirect'] ; ?>"/>
 </div>
 <span class="help-inline">例:http://www.idreamsoft.com</span>
-<?php settingApp::foot();?>
+<?php configApp::foot();?>

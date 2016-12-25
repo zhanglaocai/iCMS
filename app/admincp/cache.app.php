@@ -9,7 +9,7 @@
 * @version 6.0.0
 */
 class cacheApp{
-    public $acp = array('admincp.setting.app','prop.admincp','filter.admincp','keywords.admincp');
+    public $acp = array('admincp.config.app','prop.admincp','filter.admincp','keywords.admincp');
     public function __construct() {
         $this->do_app();
     }

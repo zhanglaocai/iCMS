@@ -19,13 +19,13 @@ class weixinAdmincp{
         weixin::$config = $this->config;
     }
     public function do_config(){
-        $setting = admincp::app('setting');
-        $setting->app($this->appid);
+        $configApp = admincp::app('config');
+        $configApp->app($this->appid);
     }
     public function do_save_config(){
-        $setting = admincp::app('setting');
+        $configApp = admincp::app('config');
         $_POST['config'] = array_merge((array)$this->config,(array)$_POST['config']);
-        $setting->save($this->appid);
+        $configApp->save($this->appid);
     }
     public function do_save_menu(){
         $this->config['menu'] = $_POST['wx_button'];

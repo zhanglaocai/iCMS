@@ -28,8 +28,8 @@ class htmlAdmincp{
     	$indexName OR $indexName ="index".iCMS::$config['router']['html_ext'];
     	iFS::check_ext('.'.iCMS::$config['router']['html_ext']) OR iUI::alert('文件类型不合法!');
     	//iCMS::$config['template']['index_mode'] = 1;
-		$setting = admincp::app('setting');
-		$setting->update('template');
+		$configApp = admincp::app('config');
+		$configApp->update('template');
     	$this->CreateIndex($indexTPL,$indexName);
     }
     public function CreateIndex($indexTPL,$indexName,$p=1,$loop=1){

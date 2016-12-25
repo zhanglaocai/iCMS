@@ -128,7 +128,7 @@ class category {
         }
         return $domain;
     }
-    public function domain_setting($domain=null){
+    public function domain_config($domain=null){
         if(empty($domain)){
             $rs  = iDB::all("
                 SELECT `cid`,`domain`
@@ -138,10 +138,10 @@ class category {
                 $domain[$C['domain']] = $C['cid'];
             }
         }
-        $setting = iPHP::app('admincp.setting.app');
-        $setting->set(array('domain'=>$domain),'category',0,false);
-        $setting->cache();
-        unset($setting);
+        $configApp = iPHP::app('admincp.config.app');
+        $configApp->set(array('domain'=>$domain),'category',0,false);
+        $configApp->cache();
+        unset($configApp);
     }
 
     public function cache($one=false) {

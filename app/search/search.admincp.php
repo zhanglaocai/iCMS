@@ -39,11 +39,11 @@ class searchAdmincp{
         $batch   = $_POST['batch'];
     	switch($batch){
     		case 'dels':
-				iPHP::$break	= false;
+				iUI::$break	= false;
 	    		foreach($idArray AS $id){
 	    			$this->do_del($id,false);
 	    		}
-	    		iPHP::$break	= true;
+	    		iUI::$break	= true;
 				iUI::success('记录全部删除完成!','js:1');
     		break;
 		}

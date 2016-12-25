@@ -77,7 +77,7 @@ $(function(){
       <h5>微信自定义菜单管理</h5>
     </div>
     <div class="widget-content nopadding">
-      <form action="<?php echo APP_FURI; ?>&do=save_menu" method="post" class="form-inline" id="iCMS-setting" target="iPHP_FRAME">
+      <form action="<?php echo APP_FURI; ?>&do=save_menu" method="post" class="form-inline" id="iCMS-weixin-menu" target="iPHP_FRAME">
         <div id="wxmenu-add" class="tab-content">
           <div class="weixin-menu">
             <ul id="tree" class="treeview wx_button_tree">

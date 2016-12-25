@@ -144,11 +144,11 @@ class filesApp{
         $batch   = $_POST['batch'];
     	switch($batch){
     		case 'dels':
-				iPHP::$break	= false;
+				iUI::$break	= false;
 	    		foreach($idArray AS $id){
 	    			$this->do_del($id);
 	    		}
-	    		iPHP::$break	= true;
+	    		iUI::$break	= true;
 				iUI::success('文件全部删除完成!','js:1');
     		break;
 		}

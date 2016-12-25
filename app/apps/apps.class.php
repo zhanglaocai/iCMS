@@ -132,6 +132,25 @@ class APPS {
         }
         return $paths;
     }
+    public static function table_json($json){
+        $tb_array = json_decode($json);
+        foreach ($tb_array as $key => $value) {
+            $table[$key] = array(
+                iPHP_DB_PREFIX.$value[0],
+                $value[1],
+                $value[2],
+            );
+        }
+        var_dump($table,$tb_array);
+        // $table = array(
+        //     'name'    => $tb_array[0][0]?'#iCMS@__'.$tb_array[0][0]:'',
+        //     'primary' => $tb_array[0][1],
+        // );
+        // if($tb_array[1]){
+        //     $table['join'] = $tb_array[1][0]?'#iCMS@__'.$tb_array[1][0]:'';
+        //     $table['on']   = $tb_array[1][1];
+        // }
+    }
     public static function table($appId){
         $appMap = array(
             '1'  => 'article',   //文章

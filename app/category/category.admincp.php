@@ -333,13 +333,13 @@ class categoryAdmincp extends category{
                 iUI::success('操作成功!','js:1');
             break;
             case 'dels':
-                iPHP::$break    = false;
+                iUI::$break    = false;
                 foreach($id_array AS $cid){
                     admincp::CP($cid,'d','alert');
                     $this->do_del($cid,false);
                     $this->cahce_one($cid);
                 }
-                iPHP::$break    = true;
+                iUI::$break    = true;
                 iUI::success('全部删除完成!','js:1');
             break;
        }

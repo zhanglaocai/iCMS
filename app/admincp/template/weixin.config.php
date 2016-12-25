@@ -18,7 +18,7 @@ $(function () {
   });
 })
 </script>
-  <div id="setting-weixin" class="tab-pane hide">
+  <div id="config-weixin" class="tab-pane hide">
     <h3>微信公众平台</h3>
     <span class="help-inline">
       申请地址:https://mp.weixin.qq.com/

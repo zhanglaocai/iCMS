@@ -25,10 +25,6 @@ class iPHP {
 	public static $config     = array();
 	public static $hooks      = array();
 
-	public static $pagenav    = NULL;
-	public static $offset     = NULL;
-	public static $break      = true;
-	public static $dialog     = array();
 	public static $iTPL       = NULL;
 	public static $iVIEW      = null;
 	public static $mobile     = false;
@@ -390,6 +386,9 @@ class iPHP {
     public static function tpl_callback_output($html,$file=null){
         return $html;
     }
+	public static function is_ajax() {
+		return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"||$_SERVER["X-Requested-With"] == "XMLHttpRequest");
+	}
 	public static function PG($key) {
 		return isset($_POST[$key]) ? $_POST[$key] : $_GET[$key];
 	}
@@ -502,6 +501,10 @@ class iPHP {
 	}
 
 	public static function app($app = NULL, $args = NULL) {
+		if($app=='keywords.app'){
+			$obj = new empty_app();
+			return $obj;
+		}
 		$app_dir = $app_name = $app;
 		$file_type = 'app';
 		if (strpos($app, '.') !== false) {
@@ -566,18 +569,6 @@ class iPHP {
 			return false;
 		}
 	}
-
-	public static function throwException($msg, $code) {
-		trigger_error(iPHP_APP . ' ' . $msg . '(' . $code . ')', E_USER_ERROR);
-	}
-	public static function p2num($path, $page = false) {
-		$page === false && $page = $GLOBALS['page'];
-		if ($page < 2) {
-			return str_replace(array('_{P}', '&p={P}'), '', $path);
-		}
-		return str_replace('{P}', $page, $path);
-	}
-
 	public static function router($key, $var = null) {
 		if(isset($GLOBALS['ROUTER'])){
 			$routerArray = $GLOBALS['ROUTER'];
@@ -612,6 +603,10 @@ class iPHP {
 		}
 		$url = str_replace('iCMS_API', iCMS_API, $url);
 		return $url;
+	}
+
+	public static function throwException($msg, $code) {
+		trigger_error(iPHP_APP . ' ' . $msg . '(' . $code . ')', E_USER_ERROR);
 	}
 
 	public static function throw404($msg = "", $code = "") {
@@ -754,13 +749,7 @@ class iPHP {
 		$sql = ' AND ' . $sql;
 		return $sql;
 	}
-	public static function str2time($str = "0") {
-		$correct = 0;
-		$str OR $str = 'now';
-		$time = strtotime($str);
-		(int) iPHP_TIME_CORRECT && $correct = (int) iPHP_TIME_CORRECT * 60;
-		return $time + $correct;
-	}
+
 	/**
 	 * Starts the timer, for debugging purposes
 	 */
@@ -782,7 +771,13 @@ class iPHP {
 		$restart && self::$time_start = $time_end;
 		return round($time_total, 4);
 	}
-
+	public static function p2num($path, $page = false) {
+		$page === false && $page = $GLOBALS['page'];
+		if ($page < 2) {
+			return str_replace(array('_{P}', '&p={P}'), '', $path);
+		}
+		return str_replace('{P}', $page, $path);
+	}
     public static function set_page_url($iurl){
         if(isset($GLOBALS['iPage'])) return;
         $iurl = (array)$iurl;
@@ -886,7 +881,7 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline) {
 		exit;
 	}
 	if ($_POST) {
-        if($_POST['ajax']){
+        if(iPHP::is_ajax()){
             $array = array('code'=>'0','msg'=>$html);
             echo json_encode($array);
         }else{
@@ -904,4 +899,9 @@ function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline) {
     @header("Pragma: no-cache");
 	$html = str_replace("\n", '<br />', $html);
 	exit($html);
+}
+class empty_app {
+	public function run($value){
+		return $value;
+	}
 }

@@ -30,7 +30,7 @@
             "-": "-"
         }, {
             "caption": "静态设置",
-            "href": "setting&tab=url",
+            "href": "config&tab=url",
             "icon": "cog"
         }]
     }, {

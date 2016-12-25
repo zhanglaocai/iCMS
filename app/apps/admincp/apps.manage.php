@@ -6,12 +6,6 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();
-function cmp( $a ,  $b ){
-  if ( $a['appid'] ==  $b['appid'] ) {
-    return  0 ;
-  }
-  return ( $a['appid']  <  $b['appid'] ) ? - 1  :  1 ;
-}
 ?>
 <style>
 .app_list_desc{font-size: 14px;color: #666;}
@@ -65,54 +59,68 @@ $(function(){
                 <th>名称</th>
                 <th>标识</th>
                 <th>简介</th>
-                <th class="span2">数据表</th>
+                <th class="span3">数据表</th>
                 <th class="span3">模板标签</th>
                 <th>操作</th>
               </tr>
             </thead>
             <tbody>
               <?php
-                usort ( $rs ,  "cmp" );
                 foreach ($rs as $key => $data) {
+                  $table = json_decode($data['table']);
+                  $config = json_decode($data['config'],true);
+
                   $installed = APPS::installed($data['app']);
-                  $admincp = __ADMINCP__.'='.$data['app'];
-                  if($data['admincp']){
-                    $admincp = __ADMINCP__.'='.$data['admincp'];
-                    if($data['admincp']=='__SELF__'){
-                      $admincp = __SELF__;
-                    }
-                    if($data['admincp']=='null'){
-                      $admincp = null;
-                    }
-                  }
+                  // $admincp = __ADMINCP__.'='.$data['app'];
+                  // if($data['admincp']){
+                  //   $admincp = __ADMINCP__.'='.$data['admincp'];
+                  //   if($data['admincp']=='__SELF__'){
+                  //     $admincp = __SELF__;
+                  //   }
+                  //   if($data['admincp']=='null'){
+                  //     $admincp = null;
+                  //   }
+                  // }
               ?>
-              <tr id="tr<?php echo $data['appid'] ; ?>">
-                <td><?php echo $data['appid'] ; ?></td>
-                <td><?php echo $data['title'] ; ?></td>
+              <tr id="tr<?php echo $data['id'] ; ?>">
+                <td><?php echo $data['id'] ; ?></td>
+                <td><?php echo $data['name'] ; ?></td>
                 <td><?php echo $data['app'] ; ?></td>
-                <td><p class="app_list_desc"><?php echo $data['description'] ; ?></p></td>
-                <td><?php echo implode('<br />', (array)$data['table']); ?></td>
+                <td><p class="app_list_desc"><?php echo $config['info'] ; ?></p></td>
                 <td>
                   <?php
-                  if($data['template'])foreach ($data['template'] as $key => $tpltags) {
-                    echo '<a href="http://www.idreamsoft.com/cms/doc_search?q='.urlencode($tpltags).'" target="_blank" title="点击查看模板标签说明">&lt;!--{'.$tpltags.'}--&gt;</a><br />';
+                  if(is_array($table)) foreach ($table as $key => $value) {
+                    echo $value[2]."表[".$value[0].']<br />';
+                  }else{
+                    echo '<span class="label">无相关表</span>';
+                  }
+                  ?>
+                </td>
+                <td>
+                  <?php
+                  if($config['template']){
+                    foreach ((array)$config['template'] as $key => $tpltags) {
+                      echo '<a href="http://www.idreamsoft.com/iCMS/doc/'.str_replace(array(':','$'), array('_',''), $tpltags).'" target="_blank" title="点击查看模板标签说明">&lt;!--{'.$tpltags.'}--&gt;</a><br />';
+                    }
+                  }else{
+                    echo '<span class="label">无相关标签</span>';
                   }
                   ?>
                   <td>
+                    <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                     <?php if($installed){ ?>
                     <?php if($data['status']){?>
-                    <a href="<?php echo APP_URI; ?>&do=update&iDT=status:0&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
+                    <a href="<?php echo APP_URI; ?>&do=update&iDT=status:0&id=<?php echo $data['id'] ; ?>" class="btn btn-small btn-primary" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
                     <?php if($admincp){ ?>
                     <a href="<?php echo $admincp; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> <?php echo $data['title'] ; ?></a>
                     <?php }?>
                     <?php }else{?>
-                    <a href="<?php echo APP_URI; ?>&do=update&iDT=status:1&id=<?php echo $data['appid'] ; ?>" class="btn btn-small btn-primary"><i class="fa fa-open"></i> 启用</a>
+                    <a href="<?php echo APP_URI; ?>&do=update&iDT=status:1&id=<?php echo $data['id'] ; ?>" class="btn btn-small btn-primary"><i class="fa fa-open"></i> 启用</a>
                     <?php }?>
-                    <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['appid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                    <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['appid'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
+                    <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
                     <?php }else{?>
-                    <a href="<?php echo APP_FURI; ?>&do=install&id=<?php echo $data['appid'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-primary" title='安装' /><i class="fa fa-add"></i> 安装应用</a>
-                    <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $data['appid'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='删除' /><i class="fa fa-add"></i> 删除应用</a>
+                    <a href="<?php echo APP_FURI; ?>&do=install&id=<?php echo $data['id'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-primary" title='安装' /><i class="fa fa-add"></i> 安装应用</a>
+                    <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $data['id'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='删除' /><i class="fa fa-add"></i> 删除应用</a>
                     <?php }?>
                   </td>
                 </tr>
@@ -120,7 +128,7 @@ $(function(){
               </tbody>
               <tr>
                 <td colspan="7">
-                  <div class="pagination pagination-right" style="float:right;"><?php echo iPHP::$pagenav ; ?></div>
+                  <div class="pagination pagination-right" style="float:right;"><?php echo iUI::$pagenav ; ?></div>
                   <div class="input-prepend input-append mt20">
                     <span class="add-on">全选
                       <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo APP_BOXID;?>" />

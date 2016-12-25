@@ -25,8 +25,8 @@ defined('iPHP') OR exit('What are you doing?');
             <ul class="dropdown-menu">
               <li><a href="javascript:;"><?php echo iMember::$group->name;?></a></li>
               <li class="divider"></li>
-              <li><a href="<?php echo __ADMINCP__; ?>=account&do=job"><i class="fa fa-bar-chart-o"></i> 工作统计</a></li>
-              <li><a href="<?php echo __ADMINCP__; ?>=account&do=edit"><i class="fa fa-user"></i> 更改信息</a></li>
+              <li><a href="<?php echo __ADMINCP__; ?>=members&do=job"><i class="fa fa-bar-chart-o"></i> 工作统计</a></li>
+              <li><a href="<?php echo __ADMINCP__; ?>=members&do=edit"><i class="fa fa-user"></i> 更改信息</a></li>
               <li class="divider"></li>
               <!--li class="nav-header">导航头</li-->
               <li><a href="<?php echo __ADMINCP__; ?>=home&do=logout&frame=iPHP" target="iPHP_FRAME"><i class="fa fa-sign-out"></i> 注销</a></li>

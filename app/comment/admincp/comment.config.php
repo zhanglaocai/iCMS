@@ -5,7 +5,7 @@
 * @author coolmoo <idreamsoft@qq.com>
 */
 defined('iPHP') OR exit('What are you doing?');
-settingApp::head("评论系统配置");
+configApp::head("评论系统配置");
 ?>
 <div class="input-prepend">
     <span class="add-on">评论</span>
@@ -49,4 +49,4 @@ settingApp::head("评论系统配置");
     <span class="add-on">APP KEY</span>
     <input type="text" name="config[plugin][changyan][appkey]" class="span4" id="changyan_appkey" value="<?php echo $config['plugin']['changyan']['appkey'] ; ?>"/>
 </div>
-<?php settingApp::foot();?>
+<?php configApp::foot();?>

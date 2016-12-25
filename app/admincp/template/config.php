@@ -5,10 +5,64 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 defined('iPHP') OR exit('What are you doing?');
-
+admincp::head();
 ?>
+<script type="text/javascript">
 
-          <div id="setting-base" class="tab-pane active">
+$(function(){
+  $(document).on("click",".del_device",function(){
+      $(this).parent().parent().remove();
+  });
+  $(".add_template_device").click(function(){
+    var TD  = $("#template_device"),count = $('.device',TD).length;
+    var tdc = $(".template_device_clone").clone(true).removeClass("hide template_device_clone").addClass('device');
+    $('input',tdc).removeAttr("disabled").each(function(){
+      this.id   = this.id.replace("{key}",count);
+      this.name = this.name.replace("{key}",count);
+    });
+    var fmhref  = $('.files_modal',tdc).attr("href").replace("{key}",count);
+    $('.files_modal',tdc).attr("href",fmhref);
+    tdc.appendTo(TD);
+    return false;
+  });
+});
+function modal_tplfile(el,a){
+
+  if(!el) return;
+  if(!a.checked) return;
+
+  var e   = $('#'+el)||$('.'+el);
+  var def = $("#template_desktop_tpl").val();
+  var val = a.value.replace(def+'/', "{iTPL}/");
+  e.val(val);
+  return 'off';
+}
+</script>
+
+<div class="iCMS-container">
+  <div class="widget-box">
+    <div class="widget-title"> <span class="icon"> <i class="fa fa-cog"></i> </span>
+      <ul class="nav nav-tabs" id="config-tab">
+        <li class="active"><a href="#config-base" data-toggle="tab">基本信息</a></li>
+        <li><a href="#config-tpl" data-toggle="tab">模板</a></li>
+        <li><a href="#config-url" data-toggle="tab">URL</a></li>
+        <li><a href="#config-cache" data-toggle="tab">缓存</a></li>
+        <li><a href="#config-file" data-toggle="tab">附件</a></li>
+        <li><a href="#config-thumb" data-toggle="tab">缩略图</a></li>
+        <li><a href="#config-watermark" data-toggle="tab">水印</a></li>
+        <li><a href="#config-time" data-toggle="tab">时间</a></li>
+        <li><a href="#config-other" data-toggle="tab">其它</a></li>
+        <li><a href="#config-patch" data-toggle="tab">更新</a></li>
+        <li><a href="#config-grade" data-toggle="tab">高级</a></li>
+        <li><a href="#config-mail" data-toggle="tab">邮件</a></li>
+        <?php //APPS::config('tabs');?>
+      </ul>
+    </div>
+    <div class="widget-content nopadding iCMS-config">
+      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-config" target="iPHP_FRAME">
+        <div id="config" class="tab-content">
+
+          <div id="config-base" class="tab-pane active">
             <div class="input-prepend"> <span class="add-on">网站名称</span>
               <input type="text" name="config[site][name]" class="span6" id="name" value="<?php echo $config['site']['name'] ; ?>"/>
             </div>
@@ -91,7 +145,7 @@ defined('iPHP') OR exit('What are you doing?');
               <span class="help-inline">开启后将显示 SQL EXPLAIN 信息</span>
             </div>
           </div>
-          <div id="setting-tpl" class="tab-pane hide">
+          <div id="config-tpl" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">首页静态跳转</span>
               <div class="switch">
                 <input type="checkbox" data-type="switch" name="config[template][index_mode]" id="index_mode" <?php echo $config['template']['index_mode']?'checked':''; ?>/>
@@ -204,7 +258,7 @@ defined('iPHP') OR exit('What are you doing?');
               </tfoot>
             </table>
           </div>
-          <div id="setting-url" class="tab-pane hide">
+          <div id="config-url" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">CMS安装目录</span>
               <input type="text" name="config[router][DIR]" class="span4" id="router_dir" value="<?php echo $config['router']['DIR'] ; ?>"/>
             </div>
@@ -248,7 +302,7 @@ defined('iPHP') OR exit('What are you doing?');
             <a class="btn btn-small btn-success" href="http://www.idreamsoft.com/doc/iCMS/router_config.html" target="_blank"><i class="fa fa-question-circle"></i> 查看帮助</a>
             <span class="help-inline">此选项只对 conf 目录下 router.config.php 里的配置有效</span>
           </div>
-          <div id="setting-cache" class="tab-pane hide">
+          <div id="config-cache" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">缓存引擎</span>
               <select name="config[cache][engine]" id="cache_engine" class="chosen-select">
                 <option value="file">文件缓存 FileCache</option>
@@ -282,7 +336,7 @@ defined('iPHP') OR exit('What are you doing?');
               </div>
             </div>
           </div>
-          <div id="setting-file" class="tab-pane hide">
+          <div id="config-file" class="tab-pane hide">
             <!--
             <div class="input-prepend"> <span class="add-on">附件接口</span>
               <input type="text" name="config[FS][API]" class="span4" id="FS_API" value="<?php echo $config['FS']['API'] ; ?>"/>
@@ -389,7 +443,7 @@ defined('iPHP') OR exit('What are you doing?');
             <div class="clearfloat mb10"></div>
           </div>
 
-          <div id="setting-thumb" class="tab-pane hide">
+          <div id="config-thumb" class="tab-pane hide">
 <!--             <div class="input-prepend"> <span class="add-on">缩略图</span>
               <div class="switch">
                 <input type="checkbox" data-type="switch" name="config[thumb][enable]" id="thumb_enable" <?php echo $config['thumb']['enable']?'checked':''; ?>/>
@@ -403,7 +457,7 @@ defined('iPHP') OR exit('What are you doing?');
             <span class="help-inline"><a class="btn btn-small btn-success" href="http://www.idreamsoft.com/doc/iCMS/thumb.html" target="_blank"><i class="fa fa-question-circle"></i> 缩略图配置帮助</a>　每行一个尺寸；格式:300x300．没有在本列表中的缩略图尺寸，都将直接返回原图！防止空间被刷暴</span>
           </div>
 
-          <div id="setting-watermark" class="tab-pane hide">
+          <div id="config-watermark" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">水印</span>
               <div class="switch">
                 <input type="checkbox" data-type="switch" name="config[watermark][enable]" id="watermark_enable" <?php echo $config['watermark']['enable']?'checked':''; ?>/>
@@ -483,7 +537,7 @@ defined('iPHP') OR exit('What are you doing?');
             <span class="help-inline">开启时缩略图也会打上水印</span>
             -->
           </div>
-          <div id="setting-time" class="tab-pane hide">
+          <div id="config-time" class="tab-pane hide">
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">服务器时区</span>
               <select name="config[time][zone]" id="time_zone" class="span4 chosen-select">
@@ -544,7 +598,7 @@ defined('iPHP') OR exit('What are you doing?');
               </div>
             </div>
           </div>
-          <div id="setting-other" class="tab-pane hide">
+          <div id="config-other" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">拼音分割符</span>
               <input type="text" name="config[other][py_split]" class="span3" id="py_split" value="<?php echo $config['other']['py_split'] ; ?>"/>
             </div>
@@ -592,7 +646,7 @@ defined('iPHP') OR exit('What are you doing?');
             <span class="help-inline">广告位PID/推广单元PID,例:mm_xxxxxxxx_xxxxxxx_xxxxxxxx</span>
             -->
           </div>
-          <div id="setting-patch" class="tab-pane hide">
+          <div id="config-patch" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">系统更新</span>
               <select name="config[system][patch]" id="system_patch" class="span3 chosen-select">
                 <option value="1">自动下载,安装时询问(推荐)</option>
@@ -602,7 +656,7 @@ defined('iPHP') OR exit('What are you doing?');
             </div>
             <script>$(function(){iCMS.select('system_patch',"<?php echo (int)$config['system']['patch'] ; ?>");});</script>
           </div>
-          <div id="setting-grade" class="tab-pane hide">
+          <div id="config-grade" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">sphinx服务器</span>
               <input type="text" name="config[sphinx][host]" class="span3" id="sphinx_host" value="<?php echo $config['sphinx']['host'] ; ?>"/>
             </div>
@@ -618,14 +672,14 @@ defined('iPHP') OR exit('What are you doing?');
             <pre>
 source iCMS_article
 {
-	type		= mysql
-	sql_host	= localhost
-	sql_user	= root
-	sql_pass	= 123456
-	sql_db		= iCMS
-	sql_port	= 3306	# optional, default is 3306
-	sql_query_pre	=  SET NAMES utf8
-	sql_query_pre 	= REPLACE INTO icms_sph_counter SELECT 1, MAX(id) FROM icms_article
+  type    = mysql
+  sql_host  = localhost
+  sql_user  = root
+  sql_pass  = 123456
+  sql_db    = iCMS
+  sql_port  = 3306  # optional, default is 3306
+  sql_query_pre =  SET NAMES utf8
+  sql_query_pre   = REPLACE INTO icms_sph_counter SELECT 1, MAX(id) FROM icms_article
 
   sql_query = SELECT a.id, a.cid,a.userid, a.comments, a.pubdate,a.hits_today, a.hits_yday, a.hits_week, a.hits_month,a.hits, a.haspic, a.title, a.keywords, a.tags, a.status FROM icms_article a,icms_category c WHERE a.cid=c.cid AND a.status ='1' AND a.id<=( SELECT max_doc_id FROM icms_sph_counter WHERE counter_id=1 )
   sql_attr_uint   = cid
@@ -644,13 +698,13 @@ source iCMS_article
 }
 source iCMS_article_delta : iCMS_article
 {
-	sql_query_pre	=  SET NAMES utf8
+  sql_query_pre =  SET NAMES utf8
   sql_query = SELECT a.id, a.cid,a.userid, a.comments, a.pubdate,a.hits_today, a.hits_yday, a.hits_week, a.hits_month,a.hits, a.haspic, a.title, a.keywords, a.tags, a.status FROM icms_article a,icms_category c WHERE a.cid=c.cid AND a.status ='1' AND a.id>( SELECT max_doc_id FROM icms_sph_counter WHERE counter_id=1 )
 }
 index iCMS_article
 {
-	source			= iCMS_article
-	path			= /var/sphinx/iCMS_article
+  source      = iCMS_article
+  path      = /var/sphinx/iCMS_article
         docinfo                 = extern
         mlock                   = 0
         morphology              = none
@@ -664,13 +718,13 @@ index iCMS_article
 }
 index iCMS_article_delta : iCMS_article
 {
-	source	= iCMS_article_delta
-	path	= /var/sphinx/iCMS_article_delta
+  source  = iCMS_article_delta
+  path  = /var/sphinx/iCMS_article_delta
 }
 ##sphinx使用问题,请自行Google上百度一下
           </pre>
           </div>
-          <div id="setting-mail" class="tab-pane hide">
+          <div id="config-mail" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">SMTP 主机</span>
               <input type="text" name="config[mail][host]" class="span3" id="mail_host" value="<?php echo $config['mail']['host']; ?>"/>
             </div>
@@ -708,3 +762,13 @@ index iCMS_article_delta : iCMS_article
             <div class="clearfloat mt10"></div>
 
           </div>
+
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary btn-large" type="submit"><i class="fa fa-check"></i> 保 存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<?php admincp::foot();?>

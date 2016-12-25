@@ -70,7 +70,7 @@ class iSecurity {
 	 * @return string
 	 */
 	public static function htmlEscape($param) {
-		return trim(htmlspecialchars($param, ENT_QUOTES));
+		return trim(str_replace("\0", "&#0;", htmlspecialchars($param, ENT_QUOTES, 'utf-8')));
 	}
 	/**
 	 * 过滤标签
@@ -132,6 +132,7 @@ class iSecurity {
 							'HTTP_CLIENT_IP','HTTP_SCHEME','HTTPS','PHP_SELF','SERVER_PORT',
 							'REQUEST_URI','REQUEST_METHOD','REMOTE_ADDR','SCRIPT_NAME',
 							'SERVER_SOFTWARE','REQUEST_TIME',
+							'X-Requested-With','HTTP_X_REQUESTED_WITH',
 							'QUERY_STRING','argv','argc'));
 
 	}

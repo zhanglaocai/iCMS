@@ -5,7 +5,7 @@
 * @author coolmoo <idreamsoft@qq.com>
 */
 defined('iPHP') OR exit('What are you doing?');
-settingApp::head("标签系统设置");
+configApp::head("标签系统设置");
 ?>
 <div class="input-prepend">
   <span class="add-on">标签URL</span>
@@ -53,4 +53,4 @@ settingApp::head("标签系统设置");
   标签URL规则优化级
   标签指定URL > 标签分类 > 标签所属栏目 > 默认配置
 </div>
-<?php settingApp::foot();?>
+<?php configApp::foot();?>

@@ -33,12 +33,12 @@ class articleAdmincp{
         return $this->categoryApp->get($cid);
     }
     public function do_config(){
-        $setting = admincp::app('setting');
-        $setting->app($this->appid);
+        $configApp = admincp::app('config');
+        $configApp->app($this->appid);
     }
     public function do_save_config(){
-        $setting = admincp::app('setting');
-        $setting->save($this->appid);
+        $configApp = admincp::app('config');
+        $configApp->save($this->appid);
     }
 
     public function do_add(){
@@ -206,7 +206,7 @@ class articleAdmincp{
 		        iUI::success('成功提取缩略图!','js:1');
     		break;
     		case 'dels':
-    			iPHP::$break	= false;
+    			iUI::$break	= false;
     			ob_implicit_flush();
     			$_count	= count($_POST['id']);
 				foreach((array)$_POST['id'] AS $i=>$id) {
@@ -217,7 +217,7 @@ class articleAdmincp{
 					iUI::dialog($msg,'js:parent.$("#id'.$id.'").remove();',$timeout,0,$updateMsg);
 		        	ob_end_flush();
 	   			}
-	   			iPHP::$break	= true;
+	   			iUI::$break	= true;
 				iUI::success('文章全部删除完成!','js:1',3,0,true);
     		break;
     		default:
@@ -417,10 +417,10 @@ class articleAdmincp{
         }
         $_GET['title']     && $sql.=" AND `title` like '%{$_GET['title']}%'";
         $_GET['tag']       && $sql.=" AND `tags` REGEXP '[[:<:]]".preg_quote(rawurldecode($_GET['tag']),'/')."[[:>:]]'";
-        $_GET['starttime'] && $sql.=" AND `pubdate`>='".iPHP::str2time($_GET['starttime']." 00:00:00")."'";
-        $_GET['endtime']   && $sql.=" AND `pubdate`<='".iPHP::str2time($_GET['endtime']." 23:59:59")."'";
-        $_GET['post_starttime'] && $sql.=" AND `postime`>='".iPHP::str2time($_GET['post_starttime']." 00:00:00")."'";
-        $_GET['post_endtime']   && $sql.=" AND `postime`<='".iPHP::str2time($_GET['post_endtime']." 23:59:59")."'";
+        $_GET['starttime'] && $sql.=" AND `pubdate`>='".str2time($_GET['starttime']." 00:00:00")."'";
+        $_GET['endtime']   && $sql.=" AND `pubdate`<='".str2time($_GET['endtime']." 23:59:59")."'";
+        $_GET['post_starttime'] && $sql.=" AND `postime`>='".str2time($_GET['post_starttime']." 00:00:00")."'";
+        $_GET['post_endtime']   && $sql.=" AND `postime`<='".str2time($_GET['post_endtime']." 23:59:59")."'";
         isset($_GET['pic'])&& $sql.=" AND `haspic` ='".($_GET['pic']?1:0)."'";
 
         isset($_GET['userid']) && $uri_array['userid']  = (int)$_GET['userid'];
@@ -517,7 +517,7 @@ class articleAdmincp{
         empty($cid)  && iUI::alert('请选择所属栏目');
         empty($body) && empty($url) && iUI::alert('文章内容不能为空！');
 
-        $pubdate   = iPHP::str2time($_POST['pubdate']);
+        $pubdate   = str2time($_POST['pubdate']);
         $postype   = $_POST['postype']?$_POST['postype']:0;
         isset($_POST['inbox']) && $status = "0";
         $userid OR $userid = iMember::$userid;

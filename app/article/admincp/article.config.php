@@ -5,7 +5,7 @@
 * @author coolmoo <idreamsoft@qq.com>
 */
 defined('iPHP') OR exit('What are you doing?');
-settingApp::head("文章系统设置");
+configApp::head("文章系统设置");
 ?>
 <div class="input-prepend">
   <span class="add-on">文章图片居中</span>
@@ -120,4 +120,4 @@ settingApp::head("文章系统设置");
   </div>
 </div>
 <span class="help-inline">开启台 后台输入的文章都将经过关键字过滤</span>
-<?php settingApp::foot();?>
+<?php configApp::foot();?>

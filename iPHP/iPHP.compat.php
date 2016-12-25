@@ -72,6 +72,9 @@ function bitscale($a) {
 	}
 	return $a;
 }
+function number($val) {
+  return preg_replace('~[^0-9]+~', '', $val);
+}
 function num10K($num){
     if($num<10000){
         return $num;
@@ -99,7 +102,13 @@ function format_date($date,$isShowDate=true){
         return '';
     }
 }
-
+function str2time($str = "0") {
+    $correct = 0;
+    $str OR $str = 'now';
+    $time = strtotime($str);
+    (int) iPHP_TIME_CORRECT && $correct = (int) iPHP_TIME_CORRECT * 60;
+    return $time + $correct;
+}
 // 格式化时间
 function get_date($timestamp=0,$format='') {
 	$correct = 0;
@@ -235,7 +244,13 @@ function strip_empty_html($matches) {
         return $matches[0];
     }
 }
-
+/** Escape for HTML
+* @param string
+* @return string
+*/
+function h($string) {
+    return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES, 'utf-8'));
+}
 function sechtml($string) {
 	$search  = array("/\s+/","/<(\/?)(script|iframe|style|object|html|body|title|link|meta|\?|\%)([^>]*?)>/isU","/(<[^>]*)on[a-zA-Z]+\s*=([^>]*>)/isU");
 	$replace = array(" ","&lt;\\1\\2\\3&gt;","\\1\\2",);
@@ -360,8 +375,8 @@ function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
         return $keyc.str_replace('=', '', base64_encode($result));
     }
 }
-function strEX($haystack, $needle) {
-    return !(strpos($haystack, $needle) === FALSE);
+function str_exists($string, $find) {
+    return !(strpos($string, $find) === FALSE);
 }
 function array_diff_values($N, $O){
  	$diff['+'] = array_diff($N, $O);

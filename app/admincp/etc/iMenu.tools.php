@@ -42,7 +42,7 @@
             "-": "-"
         }, {
             "caption": "更新系统设置",
-            "href": "cache&acp=admincp.setting.app",
+            "href": "cache&acp=admincp.config.app",
             "icon": "refresh",
             "target": "iPHP_FRAME"
         }, {

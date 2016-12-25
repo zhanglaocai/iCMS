@@ -21,18 +21,18 @@ $(function(){
   <div class="widget-box">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-user"></i> </span>
       <h5 class="brs"><?php echo empty($this->uid)?'添加':'修改' ; ?>用户</h5>
-      <ul class="nav nav-tabs" id="account-tab">
-        <li class="active"><a href="#account-info" data-toggle="tab"><b>基本信息</b></a></li>
-        <li><a href="#account-power" data-toggle="tab"><b>后台权限</b></a></li>
-        <li><a href="#account-cpower" data-toggle="tab"><b>栏目权限</b></a></li>
+      <ul class="nav nav-tabs" id="members-tab">
+        <li class="active"><a href="#members-info" data-toggle="tab"><b>基本信息</b></a></li>
+        <li><a href="#members-power" data-toggle="tab"><b>后台权限</b></a></li>
+        <li><a href="#members-cpower" data-toggle="tab"><b>栏目权限</b></a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
-      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-account" target="iPHP_FRAME">
+      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-members" target="iPHP_FRAME">
         <input name="uid" type="hidden" value="<?php echo $this->uid; ?>" />
         <input name="type" type="hidden" value="<?php echo $this->type; ?>" />
-        <div id="account-add" class="tab-content">
-          <div id="account-info" class="tab-pane active">
+        <div id="members-add" class="tab-content">
+          <div id="members-info" class="tab-pane active">
             <?php if(admincp::is_superadmin()){ ?>
             <div class="input-prepend"> <span class="add-on">角色</span>
               <select name="gid" id="gid" class="chosen-select" data-placeholder="请选择用户组">

@@ -95,7 +95,7 @@ body{background-color:#EDEDED;color:#000;}
 .iCMS-container .form-actions{margin-top:10px;margin-bottom:0px;}
 .iCMS-well{padding:10px;}
 .iCMS-well form{margin:0px;}
-.iCMS-setting .add-on{width:80px;text-align:left;}
+.iCMS-config .add-on{min-width:90px;text-align:right;}
 .iCMS-article-add .add-on{width:50px;text-align:center;}
 .iCMS-editor{padding-right:5px;}
 .iCMS-editor-page{width:120px;}
@@ -205,7 +205,7 @@ td.sortnum input{width:30px;text-align:center;padding:2px;margin-bottom:1px;}
 #style-switcher i:hover{cursor:pointer;}
 #style-switcher span{font-weight:bold;color:#ffffff;display:inline-block;margin:-15px 20px 0 0;vertical-align:middle;}
 #style-switcher a{display:inline-block;width:20px;height:20px;margin-top:4px;border-style:solid;border-width:1px;border-color:transparent;}
-#setting-tpl .table td{padding:8px 0px;border-top:1px solid #BDBDBD;}
+#config-tpl .table td{padding:8px 0px;border-top:1px solid #BDBDBD;}
 
 /* Footer */
 #footer{text-align:center;color:#777777;}
@@ -432,6 +432,8 @@ div.dataTables_wrapper .ui-widget-header{border-right:medium none;border-top:1px
 .nopadding{padding:1px!important;}
 .nopadding .table{margin-bottom:0;}
 .nopadding .table-bordered{border:0;}
+.nopadding .bordered{border: 1px solid #ddd;!important;}
+
 .nopadding .table-bordered tr > td:first-child{border-left:0;}
 .nopadding .table-bordered thead:first-child tr:first-child>th:first-child{-webkit-border-top-left-radius:0px;border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-left:none;width:20px;}
 .line{background:url("img/line.png") repeat-x scroll 0 0 transparent;display:block;height:8px;}

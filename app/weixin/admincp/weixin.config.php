@@ -25,10 +25,10 @@ $(function () {
       <h5>配置微信接口</h5>
       <span class="label right">申请地址:https://mp.weixin.qq.com/</span>
     </div>
-    <div class="widget-content nopadding iCMS-setting">
-      <form action="<?php echo APP_FURI; ?>&do=save_config" method="post" class="form-inline" id="iCMS-setting" target="iPHP_FRAME">
-        <div id="setting" class="tab-content">
-          <div id="setting-content" class="tab-pane active">
+    <div class="widget-content nopadding iCMS-config">
+      <form action="<?php echo APP_FURI; ?>&do=save_config" method="post" class="form-inline" id="iCMS-config" target="iPHP_FRAME">
+        <div id="config" class="tab-content">
+          <div id="config-content" class="tab-pane active">
             <div class="input-prepend">
               <span class="add-on">
                 appID

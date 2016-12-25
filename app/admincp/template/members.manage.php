@@ -31,7 +31,7 @@ $(function(){
           <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
           <span class="add-on">条记录</span> </div>
         <div class="input-prepend input-append"> <span class="add-on">关键字</span>
-          <input type="text" name="account" class="span2" id="account" value="<?php echo $_GET['account'] ; ?>" />
+          <input type="text" name="members" class="span2" id="members" value="<?php echo $_GET['members'] ; ?>" />
           <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜 索</button>
         </div>
       </form>
@@ -114,7 +114,7 @@ $(function(){
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="10"><div class="pagination pagination-right" style="float:right;"><?php echo iPHP::$pagenav ; ?></div>
+              <td colspan="10"><div class="pagination pagination-right" style="float:right;"><?php echo iUI::$pagenav ; ?></div>
                 <div class="input-prepend input-append mt20"> <span class="add-on">全选
                   <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo APP_BOXID;?>" />
                   </span>
