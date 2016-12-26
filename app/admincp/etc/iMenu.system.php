@@ -67,6 +67,12 @@
             }, {
                 "-": "-"
             }, {
+                "caption": "应用市场",
+                "href": "apps&do=store",
+                "icon": "bank"
+            }, {
+                "-": "-"
+            }, {
                 "caption": "表单管理",
                 "href": "form",
                 "icon": "building"

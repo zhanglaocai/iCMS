@@ -139,16 +139,16 @@ class admincp {
 		return $path;
 	}
 
-	public static function fields($data = '') {
-		$fields = array();
+	public static function update_args($data = '') {
+		$array = array();
 		$dA = explode('_', $data);
 		foreach ((array) $dA as $d) {
 			list($f, $v) = explode(':', $d);
 			$v == 'now' && $v = time();
 			$v = (int) $v;
-			$fields[$f] = $v;
+			$array[$f] = $v;
 		}
-		return $fields;
+		return $array;
 	}
 	public static function MP($p, $ret = '') {
 		if (self::is_superadmin()) {

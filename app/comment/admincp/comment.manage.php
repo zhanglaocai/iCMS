@@ -92,7 +92,7 @@ function update_popover(html,a){
               <img width="50" height="50" alt="<?php echo $user['name'] ; ?>" src="<?php echo $user['avatar'] ; ?>">
               </a>
               <div class="claerfix mb10"></div>
-              <a href="<?php echo __ADMINCP__; ?>=user&do=update&id=<?php echo $value['userid'] ; ?>&iDT=status:2" class="btn btn-inverse btn-mini tip-bottom" title="加入黑名单,禁止用户登陆" target="iPHP_FRAME">黑名单</a>
+              <a href="<?php echo __ADMINCP__; ?>=user&do=update&id=<?php echo $value['userid'] ; ?>&_args=status:2" class="btn btn-inverse btn-mini tip-bottom" title="加入黑名单,禁止用户登陆" target="iPHP_FRAME">黑名单</a>
             </div>
             <div class="comments">
               <input type="checkbox" name="id[]" value="<?php echo $value['id'] ; ?>" />
@@ -121,7 +121,7 @@ function update_popover(html,a){
               <span class="label"><?php echo get_date($value['addtime'],'Y-m-d H:i:s');?></span>
               <span class="label label-info"><i class="fa fa-thumbs-o-up"></i> <?php echo $value['up'] ; ?></span>
               <?php if(!$value['status']){?>
-              <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=status:1" class="btn btn-success btn-mini" target="iPHP_FRAME">通过审核</a>
+              <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:1" class="btn btn-success btn-mini" target="iPHP_FRAME">通过审核</a>
               <?php } ?>
               <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $value['id'] ; ?>" class="btn btn-danger btn-mini" target="iPHP_FRAME" onclick="return confirm('确定要删除?');">删除</a>
             </div>

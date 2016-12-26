@@ -37,7 +37,7 @@ class tagAdmincp{
     }
     public function do_update(){
         if($this->id){
-            $data = admincp::fields($_GET['iDT']);
+            $data = admincp::update_args($_GET['_args']);
             $data && iDB::update("tags",$data,array('id'=>$this->id));
             tag::cache($this->id,'id');
             iUI::success('操作成功!','js:1');
@@ -431,7 +431,7 @@ class tagAdmincp{
     		break;
     		default:
                 if(strpos($batch, ':')){
-                    $data = admincp::fields($batch);
+                    $data = admincp::update_args($batch);
                     foreach($idArray AS $id) {
                         $data && iDB::update("tags",$data,array('id'=>$id));
                     }

@@ -244,11 +244,11 @@ $(function(){
                   <a href="<?php echo __ADMINCP__; ?>=files&indexid=<?php echo $value['id'] ; ?>&method=database" class="tip-bottom" title="查看文章图片库" target="_blank"><i class="fa fa-picture-o"></i></a>
                   <a href="<?php echo APP_URI; ?>&do=findpic&id=<?php echo $value['id'] ; ?>" class="tip-bottom" title="查找文章所有图片" target="_blank"><i class="fa fa-picture-o"></i></a>
                   <?php if($value['postype']=="0"){ ?>
-                  <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=status:1" class="tip-bottom" target="iPHP_FRAME" title="通过审核"><i class="fa fa-check-circle"></i></a>
+                  <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:1" class="tip-bottom" target="iPHP_FRAME" title="通过审核"><i class="fa fa-check-circle"></i></a>
                     <?php if($value['status']!="3"){ ?>
-                    <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=status:3" class="tip-bottom" target="iPHP_FRAME" title="等待审核"><i class="fa fa-minus-circle"></i></a>
+                    <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:3" class="tip-bottom" target="iPHP_FRAME" title="等待审核"><i class="fa fa-minus-circle"></i></a>
                     <?php } ?>
-                  <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=status:4" class="tip-bottom" target="iPHP_FRAME" title="拒绝通过"><i class="fa fa-times-circle"></i></a>
+                  <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:4" class="tip-bottom" target="iPHP_FRAME" title="拒绝通过"><i class="fa fa-times-circle"></i></a>
                   <?php } ?>
                   <?php if($value['status']!="2"){ ?>
                   <a href="<?php echo __ADMINCP__; ?>=comment&do=article&iid=<?php echo $value['id'] ; ?>" class="tip-bottom" title="<?php echo $value['comments'] ; ?>条评论" target="_blank"><i class="fa fa-comment"></i></a>
@@ -256,15 +256,15 @@ $(function(){
                   <!-- <a href="<?php echo __ADMINCP__; ?>=chapter&aid=<?php echo $value['id'] ; ?>" class="tip-bottom" title="章节管理" target="_blank"><i class="fa fa-sitemap"></i></a> -->
                   <?php if($value['status']=="1"){ ?>
                   <a href="<?php echo __ADMINCP__; ?>=push&do=add&title=<?php echo $value['title'] ; ?>&pic=<?php echo $value['pic'] ; ?>&url=<?php echo $value['url'] ; ?>" class="tip-bottom" title="推送此文章"><i class="fa fa-thumb-tack"></i></a>
-                  <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=status:0" class="tip-bottom" target="iPHP_FRAME" title="转为草稿"><i class="fa fa-inbox"></i></a>
-                  <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=pubdate:now" class="tip-bottom" target="iPHP_FRAME" title="更新文章时间"><i class="fa fa-clock-o"></i></a>
+                  <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:0" class="tip-bottom" target="iPHP_FRAME" title="转为草稿"><i class="fa fa-inbox"></i></a>
+                  <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=pubdate:now" class="tip-bottom" target="iPHP_FRAME" title="更新文章时间"><i class="fa fa-clock-o"></i></a>
                   <?php } ?>
                   <?php if($value['status']=="0"){ ?>
-                  <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=status:1" class="tip-bottom" target="iPHP_FRAME" title="发布文章"><i class="fa fa-share"></i></a>
-                  <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=status:1,pubdate:now" class="tip-bottom" target="iPHP_FRAME" title="更新文章时间,并发布"><i class="fa fa-clock-o"></i></a>
+                  <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:1" class="tip-bottom" target="iPHP_FRAME" title="发布文章"><i class="fa fa-share"></i></a>
+                  <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:1,pubdate:now" class="tip-bottom" target="iPHP_FRAME" title="更新文章时间,并发布"><i class="fa fa-clock-o"></i></a>
                   <?php } ?>
                   <?php if($value['status']=="2"){ ?>
-                  <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=status:1" target="iPHP_FRAME" class="tip-bottom" title="从回收站恢复"/><i class="fa fa-reply-all"></i></a>
+                  <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:1" target="iPHP_FRAME" class="tip-bottom" title="从回收站恢复"/><i class="fa fa-reply-all"></i></a>
                   <?php } ?>
                   <a href="<?php echo APP_URI; ?>&do=purge&id=<?php echo $value['id'] ; ?>&url=<?php echo $value['url'] ; ?>" class="tip-bottom" data-toggle="modal" title="清除nginx缓存"><i class="fa fa-recycle"></i></a>
                   <?php if ($C['mode'] && strstr($C['contentRule'],'{PHP}')===false && $value['status']=="1" && empty($ourl) && iMember::$data->gid==1){  ?>
@@ -318,7 +318,7 @@ $(function(){
                 <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $value['id'] ; ?>" class="btn btn-primary btn-mini">编辑</a>
                 <?php } ?>
                 <?php if(in_array($value['status'],array("1","0")) && admincp::CP($value['cid'],'cd')){ ?>
-                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $value['id'] ; ?>&iDT=status:2" target="iPHP_FRAME" class="del btn btn-danger btn-mini" title="移动此文章到回收站" />删除</a>
+                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:2" target="iPHP_FRAME" class="del btn btn-danger btn-mini" title="移动此文章到回收站" />删除</a>
                 <?php } ?>
                 <?php if($value['status']=="2"){ ?>
                 <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $value['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-danger btn-mini" onclick="return confirm('确定要删除?');"/>永久删除</a>

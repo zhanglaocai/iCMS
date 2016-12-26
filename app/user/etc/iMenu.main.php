@@ -1,11 +1,13 @@
 <?php defined('iPHP') OR exit('What are you doing?');?>
 [{
-    "id": "user",
+    "id": "members",
     "children": [{
         "caption": "会员设置",
         "href": "user&do=config",
         "icon": "cog"
     }, {
+        "-": "-"
+    },{
         "caption": "会员管理",
         "href": "user",
         "icon": "list-alt"

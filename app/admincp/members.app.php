@@ -16,7 +16,7 @@ class membersApp{
     }
 
     public function do_job(){
-		require_once iPHP_APP_CORE.'/iJob.class.php';
+        iCMS::core("Job");
 		$job	= new JOB;
         $this->uid OR $this->uid = iMember::$userid;
 		$job->count_post($this->uid);
@@ -39,7 +39,7 @@ class membersApp{
     }
     public function do_iCMS(){
     	if($_GET['job']){
-    		require_once iPHP_APP_CORE.'/iJob.class.php';
+    		iCMS::core("Job");
     		$job	=new JOB;
     	}
     	$sql	= "WHERE 1=1";

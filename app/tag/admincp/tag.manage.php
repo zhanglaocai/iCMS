@@ -186,12 +186,12 @@ $(function(){
           <td><?php echo get_date($rs[$i]['pubdate'],'Y-m-d H:i');?><br /><?php echo get_date($rs[$i]['postime'],'Y-m-d H:i');?></td>
           <td>
           	<?php if($rs[$i]['status']=="1"){ ?>
-            <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['id'] ; ?>&iDT=status:0" class="btn btn-small btn-danger tip" target="iPHP_FRAME" title="当前状态:启用,点击可禁用此标签"><i class="fa fa-power-off"></i> 禁用</a>
+            <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['id'] ; ?>&_args=status:0" class="btn btn-small btn-danger tip" target="iPHP_FRAME" title="当前状态:启用,点击可禁用此标签"><i class="fa fa-power-off"></i> 禁用</a>
             <a href="<?php echo __ADMINCP__; ?>=keywords&do=add&keyword=<?php echo $rs[$i]['name'] ; ?>&url=<?php echo $rs[$i]['url'] ; ?>" class="btn btn-small"><i class="fa fa-paperclip"></i> 内链</a>
             <!-- <a href="<?php echo APP_FURI; ?>&do=cache&id=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-refresh"></i> 更新缓存</a> -->
             <?php } ?>
             <?php if($rs[$i]['status']=="0"){ ?>
-            <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['id'] ; ?>&iDT=status:1" class="btn btn-small btn-success tip " target="iPHP_FRAME" title="当前状态:禁用,点击可启用此标签"><i class="fa fa-play-circle"></i> 启用</a>
+            <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['id'] ; ?>&_args=status:1" class="btn btn-small btn-success tip " target="iPHP_FRAME" title="当前状态:禁用,点击可启用此标签"><i class="fa fa-play-circle"></i> 启用</a>
             <?php } ?>
              <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a> <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $rs[$i]['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 永久删除</a></td>
         </tr>

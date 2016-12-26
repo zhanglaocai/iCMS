@@ -56,10 +56,7 @@ class articleAdmincp{
                     }
                 }else{
                     $adRs['body'] = htmlspecialchars($adRs['body']);
-                    if($rs['markdown']){
-                        $this->config['editor'] = true;
-                        $adRs['body'] = substr($adRs['body'], 19);
-                    }
+                    $this->config['editor'] = $rs['markdown']?true:false;
                     $adIdArray = array($adRs['id']);
                     $bodyArray = explode('#--iCMS.PageBreak--#',$adRs['body']);
                 }
@@ -68,8 +65,8 @@ class articleAdmincp{
 
         $bodyCount = count($bodyArray);
         $bodyCount OR $bodyCount = 1;
-        $cid                 = empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
-        $cata_option         = $this->categoryApp->select('ca',$cid);
+        $cid         = empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
+        $cata_option = $this->categoryApp->select('ca',$cid);
 
         //$metadata          = array_merge((array)$contentprop,(array)$rs['metadata']);
         $rs['pubdate']       = get_date($rs['pubdate'],'Y-m-d H:i:s');
@@ -93,7 +90,7 @@ class articleAdmincp{
         }
     }
     public function do_update(){
-    	$data = admincp::fields($_GET['iDT']);
+    	$data = admincp::update_args($_GET['_args']);
         if($data){
             if(isset($data['pid'])){
                 iCMS::core('Map');
@@ -221,7 +218,7 @@ class articleAdmincp{
 				iUI::success('文章全部删除完成!','js:1',3,0,true);
     		break;
     		default:
-				$data = admincp::fields($batch);
+				$data = admincp::update_args($batch);
     	}
         $data && article::batch($data,$ids);
 		iUI::success('操作成功!','js:1');

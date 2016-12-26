@@ -55,7 +55,7 @@ class markerAdmincp{
     }
     public function do_update(){
         if($this->id){
-            $data = admincp::fields($_GET['iDT']);
+            $data = admincp::update_args($_GET['_args']);
             $data && iDB::update("marker",$data,array('id'=>$this->id));
             $this->cache($this->id);
             iUI::success('操作成功!','js:1');

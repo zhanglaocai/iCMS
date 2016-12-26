@@ -10,7 +10,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::import(iPHP_APP_CORE .'/iPatch.class.php');
+iCMS::core("Patch");
 
 class patchApp{
 

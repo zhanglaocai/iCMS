@@ -74,10 +74,10 @@ $(function(){
               <td><?php echo $rs[$i]['key'] ; ?></td>
               <td>&lt;!--{iCMS:marker:html key="<?php echo $rs[$i]['key'] ; ?>"}--&gt;</td>
               <td><?php if($rs[$i]['status']=="1"){ ?>
-                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['id'] ; ?>&iDT=status:0" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-power-off"></i> 禁用</a>
+                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['id'] ; ?>&_args=status:0" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-power-off"></i> 禁用</a>
                 <?php } ?>
                 <?php if($rs[$i]['status']=="0"){ ?>
-                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['id'] ; ?>&iDT=status:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-play-circle"></i> 启用</a>
+                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['id'] ; ?>&_args=status:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-play-circle"></i> 启用</a>
                 <?php } ?>
                 <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $rs[$i]['id'] ; ?>&act=copy" class="btn btn-small"><i class="fa fa-copy "></i> 复制</a>
                 <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>

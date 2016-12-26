@@ -78,10 +78,10 @@ $(function(){
               <td><a href="<?php echo APP_DOURI; ?>&type=<?php echo $rs[$i]['type'] ; ?><?php echo $uri ; ?>"><?php echo $rs[$i]['type'] ; ?></a></td>
               <td><a href="<?php echo APP_DOURI; ?>&cid=<?php echo $rs[$i]['cid'] ; ?><?php echo $uri ; ?>"><?php echo $C['name'] ; ?></a></td>
               <td><?php if($rs[$i]['status']=="1"){ ?>
-                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['pid'] ; ?>&iDT=status:0" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-power-off"></i> 禁用</a>
+                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['pid'] ; ?>&_args=status:0" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-power-off"></i> 禁用</a>
                 <?php } ?>
                 <?php if($rs[$i]['status']=="0"){ ?>
-                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['pid'] ; ?>&iDT=status:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-play-circle"></i> 启用</a>
+                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['pid'] ; ?>&_args=status:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-play-circle"></i> 启用</a>
                 <?php } ?>
                 <a href="<?php echo APP_URI; ?>&do=add&pid=<?php echo $rs[$i]['pid'] ; ?>&act=copy" class="btn btn-small"><i class="fa fa-copy "></i> 复制</a> <a href="<?php echo APP_URI; ?>&do=add&pid=<?php echo $rs[$i]['pid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a> <a href="<?php echo APP_FURI; ?>&do=cache&id=<?php echo $rs[$i]['pid'] ; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-refresh"></i> 更新缓存</a> <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $rs[$i]['pid'] ; ?>" target="iPHP_FRAME" class="del btn btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a></td>
             </tr>

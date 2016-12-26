@@ -54,6 +54,11 @@ admincp::head();
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend" style="width:100%;">
+              <span class="add-on">应用路径</span>
+              <input type="text" name="config[path]" class="span6" id="config_path" value="<?php echo $rs['config']['path'] ; ?>"/>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend" style="width:100%;">
               <span class="add-on">模板标签</span>
               <textarea name="config[template]" id="config_template" class="span6" style="height: 150px;"><?php echo implode("\n", (array)$rs['config']['template'])  ; ?></textarea>
             </div>
@@ -72,13 +77,13 @@ admincp::head();
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">应用类型</span>
             <select name="type" id="type" class="chosen-select span3" data-placeholder="请选择应用类型...">
-              <option value="0">系统组件[type='0']</option>
-              <option value="1">应用[type='1']</option>
-              <option value="2">插件[type='2']</option>
+              <?php foreach ($this->type_array as $key => $type) {?>
+                <option value="<?php echo $key;?>"><?php echo $type;?>[type='<?php echo $key;?>']</option>
+              <?php }?>
               <?php echo admincp::prop_get("type") ; ?>
             </select>
           </div>
-          <script>iCMS.select('type',"<?php echo $rs['type']?$rs['type']:0 ; ?>");</script>
+          <script>$(function(){iCMS.select('type',"<?php echo $rs['type']?$rs['type']:0 ; ?>");})</script>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">应用状态</span>
           <div class="switch" data-on-label="启用" data-off-label="禁用">
@@ -108,6 +113,8 @@ admincp::head();
             <?php } ?>
           </tbody>
         </table>
+        <?php }else{ ?>
+          <input name="table" type="hidden" value="<?php echo $rs['table']; ?>" />
         <?php } ?>
         <div class="clearfloat mb10"></div>
       </div>

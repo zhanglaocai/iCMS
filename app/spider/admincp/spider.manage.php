@@ -98,13 +98,13 @@ $(function(){
                 <?php if($rs[$i]['indexid']){?>
                 <a href="<?php echo __ADMINCP__; ?>=article&do=add&id=<?php echo $rs[$i]['indexid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑内容</a>
                   <?php if(empty($rs[$i]['publish'])){?>
-                  <a href="<?php echo APP_FURI; ?>&do=update&sid=<?php echo $rs[$i]['id']; ?>&iDT=publish:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-flag"></i> 标识发布</a>
+                  <a href="<?php echo APP_FURI; ?>&do=update&sid=<?php echo $rs[$i]['id']; ?>&_args=publish:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-flag"></i> 标识发布</a>
                   <?php }else{?>
                   <a href="<?php echo APP_FURI; ?>&do=publish&sid=<?php echo $rs[$i]['id']; ?>&pid=<?php echo $rs[$i]['pid']; ?>&indexid=<?php echo $rs[$i]['indexid'] ; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-edit"></i> 重新发布</a>
                   <?php }?>
                 <?php }else{?>
                 <a href="<?php echo APP_FURI; ?>&do=publish&sid=<?php echo $rs[$i]['id']; ?>&pid=<?php echo $rs[$i]['pid']; ?>" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-edit"></i> 发布</a>
-                <a href="<?php echo APP_FURI; ?>&do=update&sid=<?php echo $rs[$i]['id']; ?>&iDT=publish:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-flag"></i> 标识发布</a>
+                <a href="<?php echo APP_FURI; ?>&do=update&sid=<?php echo $rs[$i]['id']; ?>&_args=publish:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-flag"></i> 标识发布</a>
                 <?php }?>
                 <a href="<?php echo APP_URI; ?>&do=testdata&rid=<?php echo $rs[$i]['rid']; ?>&url=<?php echo $rs[$i]['url']; ?>" class="btn btn-small" data-toggle="modal" title="测试内容规则"><i class="fa fa-keyboard-o"></i> 测试</a>
                 <a href="<?php echo APP_FURI; ?>&do=delspider&sid=<?php echo $rs[$i]['id']; ?>" target="iPHP_FRAME" class="del btn btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>

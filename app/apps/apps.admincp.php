@@ -16,8 +16,11 @@ iPHP::app('apps.mysql.class','static');
 class appsAdmincp{
     public function __construct() {
     	$this->id = (int)$_GET['id'];
-      // $this->cache();
-
+      $this->type_array = array(
+        '0' => '系统组件',
+        '1' => '应用',
+        '2' => '插件',
+      );
     }
 
     public function get_app($id=null){
@@ -27,6 +30,8 @@ class appsAdmincp{
         $rs['table'] && $rs['table'] = json_decode($rs['table'],true);
         return $rs;
       }
+    }
+    public function do_uninstall(){
     }
     public function do_install(){
       $app = iSecurity::escapeStr($_GET['appname']);
@@ -125,7 +130,13 @@ class appsAdmincp{
         }
         iUI::success($msg,'url:'.APP_URI);
     }
-
+    public function do_update(){
+        if($this->id){
+            $args = admincp::update_args($_GET['_args']);
+            $args && iDB::update("apps",$args,array('id'=>$this->id));
+            iUI::success('操作成功!','js:1');
+        }
+    }
     public function do_iCMS(){
       if($_GET['keywords']) {
 		   $sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";

@@ -23,7 +23,7 @@ class userAdmincp{
         $configApp->save($this->appid);
     }
     public function do_update(){
-        $data = admincp::fields($_GET['iDT']);
+        $data = admincp::update_args($_GET['_args']);
         $data && iDB::update('user',$data,array('uid'=>$this->uid));
         iUI::success('操作成功!','js:1');
     }

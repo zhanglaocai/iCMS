@@ -27,7 +27,7 @@ class spiderAdmincp {
 	}
 	public function do_update() {
 		if ($this->sid) {
-			$data = admincp::fields($_GET['iDT']);
+			$data = admincp::update_args($_GET['_args']);
 			$data && iDB::update("spider_url", $data, array('id' => $this->sid));
 		}
 		iUI::success('操作成功!', 'js:1');
@@ -65,7 +65,7 @@ class spiderAdmincp {
 				list($table, $_batch) = explode('#', $batch);
 				if (in_array($table, array('url', 'post', 'project', 'rul'))) {
 					if (strpos($_batch, ':') !== false) {
-						$data = admincp::fields($_batch);
+						$data = admincp::update_args($_batch);
 						foreach ($idArray AS $id) {
 							$data && iDB::update("spider_" . $table, $data, array('id' => $id));
 						}

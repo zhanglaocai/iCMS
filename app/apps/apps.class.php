@@ -84,7 +84,7 @@ class APPS {
         self::$array = $array;
         // var_dump(self::$array);
     }
-    public static function config($pattern='iApp.json',$dir='*'){
+    public static function config($pattern='iAPP.json',$dir='*'){
         $array = self::scan('etc/'.$pattern,$dir,true);
         $data  = array();
         foreach ($array as $key => $path) {
@@ -108,7 +108,7 @@ class APPS {
         return $data;
     }
     public static function installed($app,$r=false){
-        $path  = iPHP_APP_DIR.'/'.$app.'/etc/iApp.install.lock';
+        $path  = iPHP_APP_DIR.'/'.$app.'/etc/iAPP.install.lock';
         if($r){
             return $path;
         }
