@@ -8,7 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-class groupApp{
+class groupAdmincp{
 	public $group = NULL;
 	public $array = NULL;
 	public $type  = NULL;

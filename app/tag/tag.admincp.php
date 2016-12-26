@@ -20,11 +20,11 @@ class tagAdmincp{
         $this->tagcategory = iPHP::app('category.admincp',$this->appid);
     }
     public function do_config(){
-        $configApp = admincp::app('config');
+        $configApp = iPHP::app('config.admincp');
         $configApp->app($this->appid);
     }
     public function do_save_config(){
-        $configApp = admincp::app('config');
+        $configApp = iPHP::app('config.admincp');
         $_POST['config']['url'] = trim($_POST['config']['url'],'/');
         $_POST['config']['dir'] = rtrim($_POST['config']['dir'],'/').'/';
         $configApp->save($this->appid);
@@ -96,7 +96,7 @@ class tagAdmincp{
         }
         $rs     = iDB::all("SELECT * FROM `#iCMS@__tags` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
-        $propArray = admincp::prop_get("pid",null,'array');
+        $propArray = iPHP::app('prop.admincp')->get("pid",null,'array');
     	include admincp::view("tag.manage");
     }
     public function do_import(){

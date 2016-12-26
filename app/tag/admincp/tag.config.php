@@ -5,7 +5,7 @@
 * @author coolmoo <idreamsoft@qq.com>
 */
 defined('iPHP') OR exit('What are you doing?');
-configApp::head("标签系统设置");
+configAdmincp::head("标签系统设置");
 ?>
 <div class="input-prepend">
   <span class="add-on">标签URL</span>
@@ -46,11 +46,11 @@ configApp::head("标签系统设置");
 <div class="input-prepend input-append">
   <span class="add-on">标签模板</span>
   <input type="text" name="config[tpl]" class="span4" id="tpl" value="<?php echo $config['tpl'] ; ?>"/>
-<?php admincp::files_modal_btn('模板','file','tpl');?></div>
+<?php iPHP::app("files.admincp")->modal_btn('模板','file','tpl');?></div>
 <div class="mt20"></div>
 <div class="alert alert-block">
   此配置为标签的URL默认配置<br />
   标签URL规则优化级
   标签指定URL > 标签分类 > 标签所属栏目 > 默认配置
 </div>
-<?php configApp::foot();?>
+<?php configAdmincp::foot();?>

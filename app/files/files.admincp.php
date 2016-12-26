@@ -6,9 +6,8 @@
 * @author coolmoo <idreamsoft@qq.com>
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
-* @version 6.0.0
 */
-class filesApp{
+class filesAdmincp{
     public function __construct() {
 	    $this->from		= iSecurity::escapeStr($_GET['from']);
 	    $this->callback	= iSecurity::escapeStr($_GET['callback']);

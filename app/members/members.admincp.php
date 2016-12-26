@@ -9,10 +9,10 @@
 * @version 6.0.0
 */
 // class membersApp extends admincp{
-class membersApp{
+class membersAdmincp{
     public function __construct() {
         $this->uid      = (int)$_GET['id'];
-        $this->groupApp = admincp::app('group',1);
+        $this->groupApp = iPHP::app('group.admincp',1);
     }
 
     public function do_job(){

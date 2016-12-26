@@ -10,13 +10,13 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iCMS::core("Patch");
+iPHP::app("patch.class");
 
-class patchApp{
+class patchAdmincp{
 
 	public function __construct() {
 		$this->msg		= "";
-		$this->patch	= iPatch::init(isset($_GET['force'])?true:false);
+		$this->patch	= patch::init(isset($_GET['force'])?true:false);
 	}
     public function do_check(){
 		if(empty($this->patch)){
@@ -28,7 +28,7 @@ class patchApp{
 		}else{
 	    	switch(iCMS::$config['system']['patch']){
 	    		case "1"://自动下载,安装时询问
-					$this->msg = iPatch::download($this->patch[1]);
+					$this->msg = patch::download($this->patch[1]);
 					$json      = array(
 						'code' => "1",
 						'url'  => __ADMINCP__.'=patch&do=install',
@@ -54,14 +54,14 @@ class patchApp{
 		}
     }
     public function do_install(){
-		$this->msg.= iPatch::update();//更新文件
-		if(iPatch::$next){
-			$this->msg.= iPatch::run();//数据库升级
+		$this->msg.= patch::update();//更新文件
+		if(patch::$next){
+			$this->msg.= patch::run();//数据库升级
 		}
 		include admincp::view("patch");
     }
     public function do_update(){
-		$this->msg	= iPatch::download();//下载文件包
+		$this->msg	= patch::download();//下载文件包
 		include admincp::view("patch");
     }
 }

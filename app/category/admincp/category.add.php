@@ -89,7 +89,7 @@ $(function(){
             <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>属性</span>
               <select name="pid[]" id="pid" class="chosen-select span6" data-placeholder="请选择<?php echo $this->category_name;?>属性..." multiple="multiple">
                 <option value="0">普通<?php echo $this->category_name;?>[pid='0']</option>
-                <?php echo admincp::prop_get("pid") ; ?>
+                <?php echo iPHP::app('prop.admincp')->get("pid") ; ?>
               </select>
             </div>
             <div class="clearfloat mb10"></div>

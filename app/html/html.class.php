@@ -17,7 +17,7 @@ class html{
     	$indexName OR $indexName ="index".iCMS::$config['router']['html_ext'];
     	iFS::check_ext('.'.iCMS::$config['router']['html_ext']) OR iUI::alert('文件类型不合法!');
     	//iCMS::$config['template']['index_mode'] = 1;
-		$configApp = admincp::app('config');
+		$configApp = iPHP::app('config.admincp');
 		$configApp->update('template');
     	$this->CreateIndex($indexTPL,$indexName);
     }

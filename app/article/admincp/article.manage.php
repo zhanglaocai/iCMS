@@ -102,7 +102,7 @@ $(function(){
           <select name="pid" id="pid" class="span2 chosen-select">
             <option value="-1">所有文章</option>
             <option value="0">普通文章[pid='0']</option>
-            <?php echo admincp::prop_get("pid") ; ?>
+            <?php echo iPHP::app('prop.admincp')->get("pid") ; ?>
           </select>
         </div>
         <div class="input-prepend input-append"> <span class="add-on">栏目</span>
@@ -167,7 +167,7 @@ $(function(){
             <option value="2"> 回收站 [status='2']</option>
             <option value="3"> 待审核 [status='3']</option>
             <option value="4"> 未通过 [status='4']</option>
-            <?php echo admincp::prop_get("status") ; ?>
+            <?php echo iPHP::app('prop.admincp')->get("status") ; ?>
           </select>
         </div>
         <div class="input-prepend input-append"> <span class="add-on">每页</span>

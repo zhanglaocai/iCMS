@@ -103,11 +103,11 @@ class favoriteApp {
         $mode        = (int)$_POST['mode'];
 
         empty($title) && iUI::code(0,'iCMS:favorite:create_empty',0,'json');
-        $fwd  = iPHP::app("admincp.filter.app")->run($title);
+        $fwd  = iPHP::app('filter.admincp')->run($title);
         $fwd && iUI::code(0,'iCMS:favorite:create_filter',0,'json');
 
         if($description){
-            $fwd  = iPHP::app("admincp.filter.app")->run($description);
+            $fwd  = iPHP::app('filter.admincp')->run($description);
             $fwd && iUI::code(0,'iCMS:favorite:create_filter',0,'json');
         }
 

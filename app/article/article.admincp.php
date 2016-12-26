@@ -33,11 +33,11 @@ class articleAdmincp{
         return $this->categoryApp->get($cid);
     }
     public function do_config(){
-        $configApp = admincp::app('config');
+        $configApp = iPHP::app('config.admincp');
         $configApp->app($this->appid);
     }
     public function do_save_config(){
-        $configApp = admincp::app('config');
+        $configApp = iPHP::app('config.admincp');
         $configApp->save($this->appid);
     }
 
@@ -459,7 +459,7 @@ class articleAdmincp{
         }
         $rs = iDB::all("SELECT * FROM `#iCMS@__article` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
-        $propArray = admincp::prop_get("pid",null,'array');
+        $propArray = iPHP::app('prop.admincp')->get("pid",null,'array');
         include admincp::view("article.manage");
     }
     public function do_save(){
@@ -521,7 +521,7 @@ class articleAdmincp{
         $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
 
         if($this->callback['code']){
-            $fwd = iPHP::app("admincp.filter.app")->run($title);
+            $fwd = iPHP::app('filter.admincp')->run($title);
             if($fwd){
                 echo '标题中包含【'.$fwd.'】被系统屏蔽的字符，请重新填写。';
                 return false;
@@ -529,11 +529,11 @@ class articleAdmincp{
         }
 
         if($this->config['filter']) {
-            $fwd = iPHP::app("admincp.filter.app")->run($title);
+            $fwd = iPHP::app('filter.admincp')->run($title);
             $fwd && iUI::alert('标题中包含被系统屏蔽的字符，请重新填写。');
-            $fwd = iPHP::app("admincp.filter.app")->run($description);
+            $fwd = iPHP::app('filter.admincp')->run($description);
             $fwd && iUI::alert('简介中包含被系统屏蔽的字符，请重新填写。');
-            // $fwd = iPHP::app("admincp.filter.app")->run($body);
+            // $fwd = iPHP::app('filter.admincp')->run($body);
             // $fwd && iUI::alert('内容中包含被系统屏蔽的字符，请重新填写。');
         }
 

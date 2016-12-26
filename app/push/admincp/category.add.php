@@ -39,7 +39,7 @@ $(function(){
           <div class="input-prepend"> <span class="add-on">版块属性</span>
             <select name="pid" id="pid" class="chosen-select">
               <option value="0">普通版块[pid='0']</option>
-              <?php echo admincp::prop_get("pid",$rs['pid']) ; ?>
+              <?php echo iPHP::app('prop.admincp')->get("pid",$rs['pid']) ; ?>
             </select>
           </div>
           <div class="clearfloat mb10"></div>

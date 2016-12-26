@@ -12,14 +12,14 @@ class userAdmincp{
     public function __construct() {
         $this->appid    = iCMS_APP_USER;
         $this->uid      = (int)$_GET['id'];
-        $this->groupApp = admincp::app('group',0);
+        $this->groupApp = iPHP::app('group.admincp',0);
     }
     public function do_config(){
-        $configApp = admincp::app('config');
+        $configApp = iPHP::app('config.admincp');
         $configApp->app($this->appid);
     }
     public function do_save_config(){
-        $configApp = admincp::app('config');
+        $configApp = iPHP::app('config.admincp');
         $configApp->save($this->appid);
     }
     public function do_update(){
@@ -92,7 +92,7 @@ class userAdmincp{
         }
         $rs     = iDB::all("SELECT * FROM `#iCMS@__user` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
-        $propArray = admincp::prop_get("pid",null,'array');
+        $propArray = iPHP::app('prop.admincp')->get("pid",null,'array');
         include admincp::view("user.manage");
     }
     public function do_save(){

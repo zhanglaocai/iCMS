@@ -17,11 +17,11 @@ class commentAdmincp{
         $this->id    = (int)$_GET['id'];
     }
     public function do_config(){
-        $configApp = admincp::app('config');
+        $configApp = iPHP::app('config.admincp');
         $configApp->app($this->appid);
     }
     public function do_save_config(){
-        $configApp = admincp::app('config');
+        $configApp = iPHP::app('config.admincp');
         $configApp->save($this->appid);
     }
     public function do_iCMS($appid=0){

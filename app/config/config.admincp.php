@@ -8,7 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-class configApp{
+class configAdmincp{
     public function __construct() {}
     public function do_iCMS(){
     	$config	= $this->get();
@@ -67,10 +67,10 @@ class configApp{
         $this->write($config);
     }
     public static function head($title=null){
-        include admincp::view("config.head","admincp");
+        include admincp::view("config.head","config");
     }
     public static function foot(){
-        include admincp::view("config.foot","admincp");
+        include admincp::view("config.foot","config");
     }
     /**
      * [app 其它应用配置接口]

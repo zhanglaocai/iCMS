@@ -18,6 +18,55 @@ class APPS {
     //     $path = self::$etc."/install.lock.php";
     //     return self::get_file($app,$path);
     // }
+    public static function uninstall($appid){
+        $data = self::get($appid);
+
+        if($data){
+            $appname = $data['app'].'.app';
+            $app = iPHP::app($appname);
+            $app OR $app = iPHP::app($data['app'].'.admincp');
+            if(is_object($app)){
+                $app_methods = get_class_methods($app);
+                in_array('uninstall', $app_methods) OR iUI::alert('卸载出错！ ['.$data['name'].']应用没有设置反安装程序[uninstall],请直接手动删除！');
+            }
+            var_dump($app);
+
+            var_dump($appname);var_dump($app);
+        }
+    }
+    public static function get($ids=0){
+        if(empty($ids)) return array();
+
+        list($ids,$is_multi)  = iPHP::multi_ids($ids);
+
+        $sql  = iPHP::where($ids,'id',false,true);
+        $data = array();
+        $rs   = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);
+        if($rs){
+            if($is_multi){
+                $_count = count($rs);
+                for ($i=0; $i < $_count; $i++) {
+                    $data[$rs[$i]->id]= self::item($rs[$i]);
+                }
+            }else{
+                $data = self::item($rs[0]);
+            }
+        }
+        if(empty($data)){
+            return;
+        }
+        return $data;
+    }
+
+    public static function item($rs){
+        if($rs){
+            $rs = (array)$rs;
+            $rs['table'] && $rs['table']  = json_decode($rs['table'],true);
+            $rs['config']&& $rs['config'] = json_decode($rs['config'],true);
+            $rs['fields']&& $rs['fields'] = json_decode($rs['fields'],true);
+        }
+        return $rs;
+    }
 
     public static function check($app,$package='admincp'){
         if(stripos($app, '_')!== false){
@@ -31,8 +80,8 @@ class APPS {
         }else{
             return false;
         }
-        // return self::get_file($app,$filename,$sapp);
     }
+
     // public static function get_file($app,$filename,$sapp=null){
     //     $app_path = iPHP_APP_DIR."/$app/".$filename;
     //     if(file_exists($app_path)){

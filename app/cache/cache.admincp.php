@@ -6,10 +6,9 @@
 * @author coolmoo <idreamsoft@qq.com>
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
-* @version 6.0.0
 */
-class cacheApp{
-    public $acp = array('admincp.config.app','prop.admincp','filter.admincp','keywords.admincp');
+class cacheAdmincp{
+    public $acp = array('config.admincp','prop.admincp','filter.admincp','keywords.admincp');
     public function __construct() {
         $this->do_app();
     }

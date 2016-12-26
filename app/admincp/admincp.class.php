@@ -54,7 +54,7 @@ class admincp {
 	public static function run($args = NULL, $prefix = "do_") {
 		self::init();
 		$app = $_GET['app'];
-		$app OR $app = 'home';
+		$app OR $app = 'admincp';
 		$do OR $do = $_GET['do'] ? (string) $_GET['do'] : 'iCMS';
 		if ($_POST['action']) {
 			$do = $_POST['action'];
@@ -63,23 +63,28 @@ class admincp {
 
 		strpos($app, '..') === false OR exit('what the fuck');
 
-		self::$APP_NAME = $app;
-		self::$APP_DO = $do;
+		self::$APP_NAME   = $app;
+		self::$APP_DO     = $do;
 		self::$APP_METHOD = $prefix . $do;
-		self::$APP_PATH = ACP_PATH;
-		self::$APP_TPL = ACP_PATH . '/template';
-		self::$APP_FILE = ACP_PATH . '/' . $app . '.app.php';
-		self::$menu->url = __ADMINCP__.'='.$app.(($do&&$do!='iCMS')?'&do='.$do:'');
 
+		self::$APP_PATH   = ACP_PATH;
+		self::$APP_TPL    = ACP_PATH . '/template';
+		self::$APP_FILE   = ACP_PATH . '/' . $app . '.app.php';
+		self::$menu->url  = __ADMINCP__.'='.$app.(($do&&$do!='iCMS')?'&do='.$do:'');
 		$appName = self::$APP_NAME . 'App';
 
-		iCMS::app('apps.class', 'static');
-		$ownApp = APPS::check($app,"admincp");
-		if ($ownApp) {
-			self::$APP_PATH = iPHP_APP_DIR . '/' . $ownApp[0];
+		if(!is_file(self::$APP_FILE)){
+			$package = 'admincp';
+	        if(stripos($app, '_')!== false){
+	            list($app,$sapp) = explode('_', $app);
+	            $package = "{$sapp}.{$package}";
+	            $sapp = ucfirst($sapp);
+	        }
+	        $app_file = "{$app}.{$package}.php";
+			self::$APP_PATH = iPHP_APP_DIR . '/' . $app;
 			self::$APP_TPL  = self::$APP_PATH . '/admincp';
-			self::$APP_FILE = self::$APP_PATH . '/'.$ownApp[1];
-			$appName = $ownApp[0].$ownApp[2].'Admincp';
+			self::$APP_FILE = self::$APP_PATH . '/'.$app_file;
+			$appName = $app.$sapp.'Admincp';
 		}
 
 		is_file(self::$APP_FILE) OR iPHP::throwException('运行出错！找不到文件: <b>' . self::$APP_FILE . '</b>', 1002);
@@ -95,6 +100,7 @@ class admincp {
 		self::$app = new $appName();
 		$app_methods = get_class_methods($appName);
 		in_array(self::$APP_METHOD, $app_methods) OR iPHP::throwException('运行出错！ <b>' . self::$APP_NAME . '</b> 类中找不到方法定义: <b>' . self::$APP_METHOD . '</b>', 1003);
+
 		$method = self::$APP_METHOD;
 		$args === null && $args = self::$APP_ARGS;
 
@@ -106,19 +112,12 @@ class admincp {
 		} else {
 			return self::$app->$method();
 		}
+		// $handler = array(self::$app,$method);
+		// if (is_callable($handler)) {
+		// 	call_user_func_array($handler, (array)$args);
+		// }
 	}
 
-	public static function app($app = NULL, $arg = NULL) {
-		iPHP::import(ACP_PATH . '/' . $app . '.app.php');
-		if ($arg === 'import' || $arg === 'static') {
-			return;
-		}
-		$appName = $app . 'App';
-		if ($arg !== NULL) {
-			return new $appName($arg);
-		}
-		return new $appName();
-	}
 	// public static function set_app_tpl($app){
 	// 	self::$APP_TPL = iPHP_APP_DIR.'/'.$app.'/admincp';
 	// }
@@ -223,13 +222,6 @@ class admincp {
 		include self::view("admincp.picbtngroup",'admincp');
 	}
 
-	public static function prop_get($field, $val = NULL, /*$default=array(),*/ $out = 'option', $url = "", $type = "") {
-		return iPHP::app('prop.admincp')->get_prop($field, $val, $out, $url, $type);
-	}
-	public static function files_modal_btn($title = '', $click = 'file', $target = 'template_index', $callback = '', $do = 'seltpl', $from = 'modal') {
-		$filesApp = admincp::app('files');
-		$filesApp->modal_btn($title, $click, $target, $callback, $do, $from);
-	}
 	public static function callback($id, &$that, $type = null) {
 		if ($type === null || $type == 'primary') {
 			if ($that->callback['primary']) {

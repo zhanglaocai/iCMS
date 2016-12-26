@@ -8,13 +8,13 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-class homeApp{
+class admincpApp{
     public function __construct() {}
     public function do_logout(){
-    	iMember::logout();
-        admincp::destroy_seccode();
+   	    iMember::logout();
     	iUI::success('注销成功!','url:'.__SELF__);
     }
+
     public function do_iCMS(){
         //数据统计
         $rs=iDB::all("SHOW FULL TABLES FROM `".iPHP_DB_NAME."` WHERE table_type = 'BASE TABLE';");
@@ -54,7 +54,7 @@ class homeApp{
         $fdc = iDB::value("SELECT count(*) FROM `#iCMS@__file_data`");
         $lc  = iDB::value("SELECT count(*) FROM `#iCMS@__links`");
 
-    	include admincp::view("home");
+    	include admincp::view("index");
     }
     public function okORno($o) {
         return $o?'<font color="green"><i class="fa fa-check"></i></font>':'<font color="red"><i class="fa fa-times"></i></font>';

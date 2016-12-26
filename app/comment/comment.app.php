@@ -101,7 +101,7 @@ class commentApp {
 		$iid OR iUI::code(0, 'iCMS:article:empty_id', 0, 'json');
 		$content OR iUI::code(0, 'iCMS:comment:empty', 0, 'json');
 
-		$fwd = iPHP::app("admincp.filter.app")->run($content);
+		$fwd = iPHP::app('filter.admincp')->run($content);
 		$fwd && iUI::code(0, 'iCMS:comment:filter', 0, 'json');
 
 		$appid OR $appid = iCMS_APP_ARTICLE;

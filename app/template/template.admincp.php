@@ -8,7 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-class templateApp{
+class templateAdmincp{
     public function __construct() {
     }
     public function do_iCMS(){

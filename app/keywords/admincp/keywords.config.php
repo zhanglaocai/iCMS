@@ -5,11 +5,11 @@
 * @author coolmoo <idreamsoft@qq.com>
 */
 defined('iPHP') OR exit('What are you doing?');
-configApp::head("内链系统设置");
+configAdmincp::head("内链系统设置");
 ?>
 <div class="input-prepend">
     <span class="add-on">关键字替换</span>
     <input type="text" name="config[limit]" class="span3" id="keyword_limit" value="<?php echo $config['limit'] ; ?>"/>
 </div>
 <span class="help-inline">内链关键字替换次数 0为不替换，-1全部替换</span>
-<?php configApp::foot();?>
+<?php configAdmincp::foot();?>

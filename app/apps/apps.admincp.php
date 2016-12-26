@@ -32,6 +32,7 @@ class appsAdmincp{
       }
     }
     public function do_uninstall(){
+      APPS::uninstall($this->id);
     }
     public function do_install(){
       $app = iSecurity::escapeStr($_GET['appname']);
@@ -41,14 +42,7 @@ class appsAdmincp{
       iUI::success('安装完成!','url:'.APP_URI);
     }
     public function do_add(){
-        if($this->id) {
-            $rs = iDB::row("SELECT * FROM `#iCMS@__apps` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
-            $rs['table'] && $rs['table'] = json_decode($rs['table'],true);
-            $rs['config'] && $rs['config'] = json_decode($rs['config'],true);
-            $rs['fields'] && $rs['fields'] = json_decode($rs['fields'],true);
-        }
-
-        $BASE_FIELDS = $this->BASE_FIELDS();
+        $this->id && $rs = APPS::get($this->id);
         include admincp::view("apps.add");
     }
 

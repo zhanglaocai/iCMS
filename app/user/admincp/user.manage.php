@@ -55,7 +55,7 @@ $(function(){
           <select name="pid" id="pid" class="span2 chosen-select">
             <option value="-1">所有用户</option>
             <option value="0">普通用户[pid='0']</option>
-            <?php echo admincp::prop_get("pid") ; ?>
+            <?php echo iPHP::app('prop.admincp')->get("pid") ; ?>
           </select>
         </div>
         <div class="input-prepend"> <span class="add-on">排序</span>

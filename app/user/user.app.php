@@ -223,11 +223,11 @@ class userApp {
 		empty($cid) && iUI::alert('请选择所属栏目！');
 		empty($body) && iUI::alert('文章内容不能为空！');
 
-		$fwd = iPHP::app("admincp.filter.app")->run($title);
+		$fwd = iPHP::app('filter.admincp')->run($title);
 		$fwd && iUI::alert('user:publish:filter_title');
-		$fwd = iPHP::app("admincp.filter.app")->run($description);
+		$fwd = iPHP::app('filter.admincp')->run($description);
 		$fwd && iUI::alert('user:publish:filter_desc');
-		$fwd = iPHP::app("admincp.filter.app")->run($body);
+		$fwd = iPHP::app('filter.admincp')->run($body);
 		$fwd && iUI::alert('user:publish:filter_body');
 
 		$articleApp = iPHP::app("article.admincp");
@@ -818,7 +818,7 @@ class userApp {
 		$uid = user::$userid;
 		$name = iSecurity::escapeStr($_POST['name']);
 		empty($name) && iUI::code(0, 'user:category:empty', 'add_category', 'json');
-		$fwd = iPHP::app("admincp.filter.app")->run($name);
+		$fwd = iPHP::app('filter.admincp')->run($name);
 		$fwd && iUI::code(0, 'user:category:filter', 'add_category', 'json');
 		$max = iDB::value("
             SELECT COUNT(cid)

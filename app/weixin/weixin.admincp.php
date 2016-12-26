@@ -19,11 +19,11 @@ class weixinAdmincp{
         weixin::$config = $this->config;
     }
     public function do_config(){
-        $configApp = admincp::app('config');
+        $configApp = iPHP::app('config.admincp');
         $configApp->app($this->appid);
     }
     public function do_save_config(){
-        $configApp = admincp::app('config');
+        $configApp = iPHP::app('config.admincp');
         $_POST['config'] = array_merge((array)$this->config,(array)$_POST['config']);
         $configApp->save($this->appid);
     }

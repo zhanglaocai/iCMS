@@ -138,7 +138,7 @@ class category {
                 $domain[$C['domain']] = $C['cid'];
             }
         }
-        $configApp = iPHP::app('admincp.config.app');
+        $configApp = iPHP::app('config.admincp');
         $configApp->set(array('domain'=>$domain),'category',0,false);
         $configApp->cache();
         unset($configApp);

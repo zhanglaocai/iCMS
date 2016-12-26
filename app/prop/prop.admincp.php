@@ -148,7 +148,7 @@ class propAdmincp{
         echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&type='.$type.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
         echo '</ul></div>';
     }
-    public function get_prop($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {
+    public function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {
         $type OR $type = admincp::$APP_NAME;
         $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
         is_array($valArray) OR $valArray  = explode(',', $valArray);
