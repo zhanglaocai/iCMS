@@ -351,7 +351,7 @@ function modal_icms(el,a){
                 }
 
                 var a = $(this),b = this,
-                act   = a.attr('data-action');
+                act   = a.attr('data-action'),
                 _act  = act.replace(',','_').replace(':','_'),
                 dia   = a.attr('data-dialog'),
                 ab    = $('#'+_act+'Batch'),
