@@ -535,10 +535,10 @@ class iPHP {
 				break;
 			case 'table':
 				$obj_name = $app_name . 'Table';
-				$args = "static";
+				$args = "S";
 				break;
 			case 'func':
-				$args = "include";
+				$args = "I";
 				break;
 			default:$obj_name = $app_name . 'App';
 				break;
@@ -550,7 +550,7 @@ class iPHP {
 			return false;
 		}
 
-		if ($args === "include" || $args === "static") {
+		if ($args === "include" || $args === "static"|| $args === "S"|| $args === "I") {
 			return;
 		}
 

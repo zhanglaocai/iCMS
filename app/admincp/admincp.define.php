@@ -21,8 +21,8 @@ iDB::$show_errors  = true;
 iDB::$show_explain = false;
 iUI::$dialog['title'] = 'iCMS';
 
-iCMS::core('Menu');
-iCMS::core('Member');
+iPHP::app('menu.class','S');
+iPHP::app('members.class','S');
 
 iMember::$LOGIN_PAGE = ACP_PATH.'/template/admincp.login.php';
 iMember::$AUTH       = 'ADMIN_AUTH';

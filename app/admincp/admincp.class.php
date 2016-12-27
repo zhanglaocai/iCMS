@@ -74,17 +74,11 @@ class admincp {
 		$appName = self::$APP_NAME . 'App';
 
 		if(!is_file(self::$APP_FILE)){
-			$package = 'admincp';
-	        if(stripos($app, '_')!== false){
-	            list($app,$sapp) = explode('_', $app);
-	            $package = "{$sapp}.{$package}";
-	            $sapp = ucfirst($sapp);
-	        }
-	        $app_file = "{$app}.{$package}.php";
-			self::$APP_PATH = iPHP_APP_DIR . '/' . $app;
+			list($_app,$app_file,$sapp) = self::app($app);
+			self::$APP_PATH = iPHP_APP_DIR . '/' . $_app;
 			self::$APP_TPL  = self::$APP_PATH . '/admincp';
 			self::$APP_FILE = self::$APP_PATH . '/'.$app_file;
-			$appName = $app.$sapp.'Admincp';
+			$appName = $_app.$sapp.'Admincp';
 		}
 
 		is_file(self::$APP_FILE) OR iPHP::throwException('运行出错！找不到文件: <b>' . self::$APP_FILE . '</b>', 1002);
@@ -118,6 +112,19 @@ class admincp {
 		// }
 	}
 
+    public static function app($app,$package='admincp'){
+        if(stripos($app, '_')!== false){
+            list($app,$sapp) = explode('_', $app);
+            $package = "{$sapp}.{$package}";
+        }
+        $filename = "{$app}.{$package}.php";
+        $app_path = iPHP_APP_DIR."/$app/".$filename;
+        if(file_exists($app_path)){
+            return array($app,$filename,ucfirst($sapp));
+        }else{
+            return false;
+        }
+    }
 	// public static function set_app_tpl($app){
 	// 	self::$APP_TPL = iPHP_APP_DIR.'/'.$app.'/admincp';
 	// }

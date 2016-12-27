@@ -22,9 +22,9 @@ class APPS {
         $data = self::get($appid);
 
         if($data){
-            $appname = $data['app'].'.app';
+            $appname = $data['app'].'.admincp';
             $app = iPHP::app($appname);
-            $app OR $app = iPHP::app($data['app'].'.admincp');
+            $app OR $app = iPHP::app($data['app'].'.app');
             if(is_object($app)){
                 $app_methods = get_class_methods($app);
                 in_array('uninstall', $app_methods) OR iUI::alert('卸载出错！ ['.$data['name'].']应用没有设置反安装程序[uninstall],请直接手动删除！');
@@ -66,20 +66,6 @@ class APPS {
             $rs['fields']&& $rs['fields'] = json_decode($rs['fields'],true);
         }
         return $rs;
-    }
-
-    public static function check($app,$package='admincp'){
-        if(stripos($app, '_')!== false){
-            list($app,$sapp) = explode('_', $app);
-            $package = "{$sapp}.{$package}";
-        }
-        $filename = "{$app}.{$package}.php";
-        $app_path = iPHP_APP_DIR."/$app/".$filename;
-        if(file_exists($app_path)){
-            return array($app,$filename,ucfirst($sapp));
-        }else{
-            return false;
-        }
     }
 
     // public static function get_file($app,$filename,$sapp=null){

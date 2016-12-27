@@ -45,7 +45,7 @@ function_exists('date_default_timezone_set') && date_default_timezone_set(iPHP_T
 
 require iPHP_PATH.'/iPHP.class.php';
 
-set_error_handler('iPHP_ERROR_HANDLER');
+set_error_handler('iPHP_ERROR_HANDLER',E_ALL & ~E_NOTICE);
 
 iPHP::timer_start();
 //waf
