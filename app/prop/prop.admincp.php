@@ -183,7 +183,9 @@ class propAdmincp{
         }
     }
     public function del_app_data($appid=null){
-        iDB::query("DELETE FROM `#iCMS@__prop` WHERE `appid` = '".$appid."'");
-        iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `appid` = '".$appid."';");
+        if($appid){
+            iDB::query("DELETE FROM `#iCMS@__prop` WHERE `appid` = '".$appid."'");
+            iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `appid` = '".$appid."';");
+        }
     }
 }

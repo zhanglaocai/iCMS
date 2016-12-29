@@ -294,4 +294,5 @@ class filesAdmincp{
         $click=='dir' && $_title=$title.'目录';
         echo '<a href="'.$href.'" class="btn files_modal" data-toggle="modal" title="选择'.$_title.'"><i class="fa fa-search"></i> 选择</a>';
     }
+
 }

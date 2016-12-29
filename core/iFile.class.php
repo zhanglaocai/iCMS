@@ -87,6 +87,16 @@ class iFile {
         $msql = iPHP::where($ids,'fileid');
         $msql && iDB::query("DELETE FROM ".self::$_map_table." where indexid = '{$indexid}'  AND appid = '{$appid}' {$msql}");
     }
+    public static function del_app_data($appid=null){
+        if($appid){
+            iDB::query("
+                DELETE FROM ".self::$_data_table." where `id` IN(
+                    SELECT `fileid` FROM ".self::$_map_table." WHERE `appid` = '{$appid}'
+                )
+            ");
+            iDB::query("DELETE FROM ".self::$_map_table." where `appid` = '{$appid}'");
+        }
+    }
 
     public static function path($F,$root=false){
         $path = $F['path'].$F['filename'].'.'.$F['ext'];

@@ -216,17 +216,20 @@ class pushAdmincp{
     public function __uninstall($app){
         $appdir  = dirname(strtr(__FILE__,'\\','/'));
         $appname = strtolower(__CLASS__);
-        //删除表
-        APPS::drop_app_table($app['table']);
         //删除分类
         $this->categoryApp->del_app_data();
         //删除属性
         iPHP::app('prop.admincp')->del_app_data();
+        //删除文件
+        iCMS::core('File');
+        iFile::del_app_data($app['id']);
         //删除配置
         iPHP::app('config.admincp')->del($app['id'],$app['app']);
+
+        //删除表
+        APPS::drop_app_table($app['table']);
         // 删除APP
         iFS::rmdir($appdir);
-        var_dump($data);
-        exit;
+        iUI::success('应用删除完成!','js:1');
     }
 }
