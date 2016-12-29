@@ -216,19 +216,16 @@ class pushAdmincp{
     public function __uninstall($app){
         $appdir  = dirname(strtr(__FILE__,'\\','/'));
         $appname = strtolower(__CLASS__);
-
-        foreach ((array)$app['table'] as $key => $value) {
-            if($value[0]){
-                echo "DROP TABLE `icms62`.`#iCMS@__`".$value[0]."; ";
-            }
-        }
+        //删除表
+        APPS::drop_app_table($app['table']);
+        //删除分类
         $this->categoryApp->del_app_data();
+        //删除属性
         iPHP::app('prop.admincp')->del_app_data();
         //删除配置
-        $configApp = iPHP::app('config.admincp');
-        // $configApp->del($app['id'],$app['app']);
+        iPHP::app('config.admincp')->del($app['id'],$app['app']);
+        // 删除APP
         iFS::rmdir($appdir);
-
         var_dump($data);
         exit;
     }

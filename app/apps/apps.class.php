@@ -28,7 +28,7 @@ class APPS {
             if(is_object($app)){
                 $app_methods = get_class_methods($app);
                 in_array('__uninstall', $app_methods) OR iUI::alert('卸载出错！ ['.$data['name'].']应用没有设置反安装程序[uninstall],请直接手动删除！');
-                return $app->__uninstall($data);
+                return $app->__uninstall($data,self);
             }
         }
         return false;
@@ -65,6 +65,11 @@ class APPS {
             $rs['fields']&& $rs['fields'] = json_decode($rs['fields'],true);
         }
         return $rs;
+    }
+    public static function drop_app_table($table){
+        foreach ((array)$table as $key => $value) {
+            $value[0] && iDB::query("DROP TABLE IF EXISTS `#iCMS@__".$value[0]."`");
+        }
     }
     public static function get_array($vars){
         $sql = '1=1';
