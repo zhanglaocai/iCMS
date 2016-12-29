@@ -579,6 +579,12 @@ class categoryAdmincp extends category{
         return $option;
     }
 
+    public function del_app_data($appid=null){
+        $appid===null && $this->appid=(int)$appid;
+
+        iDB::query("DELETE FROM `#iCMS@__category` WHERE `appid` = '".$this->appid."'");
+        iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `appid` = '".$this->appid."';");
+    }
     //接口
     public function del_content($cid){
 

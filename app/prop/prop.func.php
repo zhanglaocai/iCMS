@@ -6,11 +6,11 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 function prop_array($vars){
-	$type	= $vars['type'];
+	$app	= $vars['sapp'];
 	$field	= $vars['field'];
 	$cid	= $vars['cid'];
-	$pkey	= $type.'.'.$field;
-	$cid &&	$pkey	= 'c'.$cid.'.'.$type.'.'.$field;
+	$pkey	= $app.'.'.$field;
+	$cid &&	$pkey	= 'c'.$cid.'.'.$app.'.'.$field;
 	$propArray 	= iCache::get("iCMS/prop/{$pkey}");
 	$propArray && sort($propArray);
 	$offset		= $vars['start']?$vars['start']:0;

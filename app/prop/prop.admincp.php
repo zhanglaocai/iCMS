@@ -20,7 +20,7 @@ class propAdmincp{
             $rs['val'] = '';
         }
         if(empty($rs)){
-            $_GET['type'] && $rs['type']  = iSecurity::escapeStr($_GET['type']);
+            $_GET['_app'] && $rs['app']  = iSecurity::escapeStr($_GET['_app']);
             $_GET['field']&& $rs['field'] = iSecurity::escapeStr($_GET['field']);
         }
         include admincp::view("prop.add");
@@ -31,24 +31,24 @@ class propAdmincp{
         $sortnum = (int)$_POST['sortnum'];
         $field    = iSecurity::escapeStr($_POST['field']);
         $name     = iSecurity::escapeStr($_POST['name']);
-        $type     = iSecurity::escapeStr($_POST['type']);
+        $app     = iSecurity::escapeStr($_POST['app']);
         $val      = iSecurity::escapeStr($_POST['val']);
 
 		($field=='pid'&& !is_numeric($val)) && iUI::alert('pid字段的值只能用数字');
         $field OR iUI::alert('属性字段不能为空!');
         $name OR iUI::alert('属性名称不能为空!');
-        $type OR iUI::alert('类型不能为空!');
+        $app OR iUI::alert('所属应用不能为空!');
 
 		$field=='pid' && $val=(int)$val;
 
-        $fields = array('rootid','cid','field','type','sortnum', 'name', 'val');
+        $fields = array('rootid','cid','field','app','sortnum', 'name', 'val');
         $data   = compact ($fields);
 
 		if($pid){
             iDB::update('prop', $data, array('pid'=>$pid));
 			$msg="属性更新完成!";
 		}else{
-	        iDB::value("SELECT `pid` FROM `#iCMS@__prop` where `type` ='$type' AND `val` ='$val' AND `field` ='$field' AND `cid` ='$cid'") && iUI::alert('该类型属性值已经存在!请另选一个');
+	        iDB::value("SELECT `pid` FROM `#iCMS@__prop` where `app` ='$app' AND `val` ='$val' AND `field` ='$field' AND `cid` ='$cid'") && iUI::alert('该类型属性值已经存在!请另选一个');
             iDB::insert('prop',$data);
 	        $msg="新属性添加完成!";
 		}
@@ -57,7 +57,7 @@ class propAdmincp{
     }
     public function do_update(){
     	foreach((array)$_POST['pid'] as $tk=>$pid){
-            iDB::query("update `#iCMS@__prop` set `type` = '".$_POST['type'][$tk]."', `name` = '".$_POST['name'][$tk]."', `value` = '".$_POST['value'][$tk]."' where `pid` = '$pid';");
+            iDB::query("update `#iCMS@__prop` set `app` = '".$_POST['app'][$tk]."', `name` = '".$_POST['name'][$tk]."', `value` = '".$_POST['value'][$tk]."' where `pid` = '$pid';");
     	}
     	$this->cache();
     	iUI::alert('更新完成');
@@ -103,8 +103,8 @@ class propAdmincp{
         $_GET['field']&& $sql.=" AND `field`='".$_GET['field']."'";
         $_GET['field']&& $uri.='&field='.$_GET['field'];
 
-        $_GET['type'] && $sql.=" AND `type`='".$_GET['type']."'";
-        $_GET['type'] && $uri.='&type='.$_GET['type'];
+        $_GET['_app'] && $sql.=" AND `app`='".$_GET['_app']."'";
+        $_GET['_app'] && $uri.='&app='.$_GET['_app'];
 
         $_GET['cid']  && $sql.=" AND `cid`='".$_GET['cid']."'";
         $_GET['cid']  && $uri.='&cid='.$_GET['cid'];
@@ -123,8 +123,8 @@ class propAdmincp{
     public function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__prop`");
     	foreach((array)$rs AS $row) {
-            $type_field_id[$row['type'].'/'.$row['field']][$row['pid']] =
-            $type_field_val[$row['type']][$row['field']][$row['val']]   = $row;
+            $type_field_id[$row['app'].'/'.$row['field']][$row['pid']] =
+            $type_field_val[$row['app']][$row['field']][$row['val']]   = $row;
     	}
         // prop/article/author
         foreach((array)$type_field_id AS $key=>$a){
@@ -135,9 +135,9 @@ class propAdmincp{
     		iCache::set('iCMS/prop/'.$k,$a,0);
     	}
     }
-    public function btn_group($field, $type = null,$target = null){
-        $type OR $type = admincp::$APP_NAME;
-        $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
+    public function btn_group($field, $app = null,$target = null){
+        $app OR $app = admincp::$APP_NAME;
+        $propArray = iCache::get("iCMS/prop/{$app}/{$field}");
         $target OR $target = $field;
         echo '<div class="btn-group">'.
         '<a class="btn dropdown-toggle iCMS-default" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>'.
@@ -145,12 +145,12 @@ class propAdmincp{
         foreach ((array)$propArray as $prop) {
             echo '<li><a href="javascript:;" data-toggle="insert" data-target="#' . $target . '" data-value="' . $prop['val'] . '">' . $prop['name'] . '</a></li>';
         }
-        echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&type='.$type.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
+        echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.$app.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
         echo '</ul></div>';
     }
-    public function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$type = "") {
-        $type OR $type = admincp::$APP_NAME;
-        $propArray = iCache::get("iCMS/prop/{$type}/{$field}");
+    public function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$app = "") {
+        $app OR $app = admincp::$APP_NAME;
+        $propArray = iCache::get("iCMS/prop/{$app}/{$field}");
         is_array($valArray) OR $valArray  = explode(',', $valArray);
         $opt = array();
         foreach ((array)$propArray AS $k => $P) {
@@ -181,5 +181,9 @@ class propAdmincp{
                 echo ($url?'<a href="'.str_replace('{PID}',$pid,$url).'">'.$flag.'</a>':$flag).'<br />';
             }
         }
+    }
+    public function del_app_data($appid=null){
+        iDB::query("DELETE FROM `#iCMS@__prop` WHERE `appid` = '".$appid."'");
+        iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `appid` = '".$appid."';");
     }
 }

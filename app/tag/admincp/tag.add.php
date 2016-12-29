@@ -14,11 +14,11 @@ $(function(){
 	iCMS.select('pid',"<?php echo $rs['pid']?$rs['pid']:0 ; ?>");
 	iCMS.select('status',"<?php echo $rs['status'] ; ?>");
 	$("#iCMS-tags").submit(function(){
-		if($("#cid option:selected").val()=="0"){
-			iCMS.alert("请选择所属栏目");
-			$("#cid").focus();
-			return false;
-		}
+		// if($("#cid option:selected").val()=="0"){
+		// 	iCMS.alert("请选择所属栏目");
+		// 	$("#cid").focus();
+		// 	return false;
+		// }
 		if($("#name").val()==''){
 			iCMS.alert("标签名称不能为空!");
 			$("#name").focus();
@@ -61,7 +61,7 @@ $(function(){
           <div id="tag-add-base" class="tab-pane active">
             <div class="input-prepend"> <span class="add-on">所属栏目</span>
               <select name="cid" id="cid" class="chosen-select span6" multiple="multiple" data-placeholder="请选择栏目(可多选)...">
-                <option value="0"> ==== 默认 ==== </option>
+                <option value="0"> ==== 默认栏目 ==== </option>
                 <?php echo $this->categoryApp->select('ca',$rs['cid'],0,1,true);?>
               </select>
             </div>

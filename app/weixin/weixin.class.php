@@ -129,7 +129,7 @@ class weixin {
             foreach ($response->item as $key => $value) {
                 $items[$key]['media_id']    = $value->media_id;
                 $items[$key]['update_time'] = $value->update_time;
-                $items[$key]['content']     = self::media_item($value->content->news_item);
+                // $items[$key]['content']     = self::media_item($value->content->news_item);
                 // foreach ($value->content->news_item as $key2 => $value2) {
                 //     $items[$key]['content'][$key2] = (array)$value2;
                 // }
@@ -139,7 +139,23 @@ class weixin {
         }
         return $response;
     }
-
+    public static function qrcode_create($info) {
+        $param =  array(
+            'expire_seconds' => 2592000,
+            'action_name'    => 'QR_LIMIT_STR_SCENE',
+            'action_info'    => array('scene'=>
+                array(
+                    'scene_id'       => '1',
+                    'scene_str'      => $info
+                )
+            )
+        );
+        $param    = json_encode($param);
+        $param    = urldecode($param);
+        $url      = self::url('qrcode/create');
+        $response = self::http($url,$param);
+        return $response;
+    }
 
 
     public static function http($url, $POSTFIELDS=null) {

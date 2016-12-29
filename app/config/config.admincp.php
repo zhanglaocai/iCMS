@@ -142,6 +142,11 @@ class configAdmincp{
             iDB::update('config', $data, array('appid'=>$appid,'name'=>$name));
         }
     }
+    public function del($name, $appid) {
+        if($name &&$appid){
+            iDB::query("DELETE FROM `#iCMS@__config` WHERE `appid` ='$appid' AND `name` ='$name'");
+        }
+    }
     /**
      * [write 配置写入文件]
      * @param  [type] $config [description]

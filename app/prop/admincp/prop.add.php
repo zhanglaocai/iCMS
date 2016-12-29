@@ -29,19 +29,35 @@ iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
           </div>
           <span class="help-inline">本属性所属的栏目</span>
           <div class="clearfloat mb10"></div>
-          <div class="input-prepend input-append"> <span class="add-on">属性类型</span>
-            <input type="text" name="type" class="span4" id="type" value="<?php echo $rs['type'];?>"/>
+          <div class="input-prepend input-append"> <span class="add-on">所属应用</span>
+            <input type="text" name="app" class="span4" id="app" value="<?php echo $rs['app'];?>"/>
+            <input type="hidden" name="appid" class="span4" id="appid" value="<?php echo $rs['appid'];?>"/>
             <div class="btn-group">
               <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>
               <ul class="dropdown-menu">
-                <li><a href="javascript:;" data-value='article' data-toggle="insert" data-target="#type">article:文章</a></li>
-                <li><a href="javascript:;" data-value='push' data-toggle="insert" data-target="#type">push:推送</a></li>
-                <li><a href="javascript:;" data-value='category' data-toggle="insert" data-target="#type">category:栏目</a></li>
-                <li><a href="javascript:;" data-value='tags' data-toggle="insert" data-target="#type">tags:标签</a></li>
-                <li><a href="javascript:;" data-value='user' data-toggle="insert" data-target="#type">user:用户</a></li>
+                <?php foreach (APPS::get_array("2") as $key => $value) {?>
+                  # code...
+                <? }?>
+                <li><a href="javascript:;" appid="2" app='article'>article:文章</a></li>
+                <li><a href="javascript:;" appid="0" app='push'>push:推送</a></li>
+                <li><a href="javascript:;" appid="0" app='category'>category:栏目</a></li>
+                <li><a href="javascript:;" appid="0" app='tags'>tags:标签</a></li>
+                <li><a href="javascript:;" appid="0" app='user'>user:用户</a></li>
               </ul>
             </div>
           </div>
+          <script>
+            $('li a[app]').click(function() {
+                var a = $(this),
+                appid = a.attr('appid'),
+                app = a.attr('app');
+                $("#app").val(app);
+                $("#appid").val(appid);
+                a.parent().parent().parent().removeClass("open");
+                //console.log();
+                return false;
+            });
+          </script>
           <span class="help-inline">article:文章 push:推送 category:栏目</span>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend input-append"> <span class="add-on">属性字段</span>

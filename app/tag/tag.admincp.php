@@ -198,7 +198,7 @@ class tagAdmincp{
             }
         }
         $name OR iUI::alert('标签名称不能为空！');
-        $cid OR iUI::alert('请选择标签所属栏目！');
+        // $cid OR iUI::alert('请选择标签所属栏目！');
 
         if($metadata){
             if($metadata['key']){

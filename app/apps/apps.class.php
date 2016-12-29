@@ -27,12 +27,11 @@ class APPS {
             $app OR $app = iPHP::app($data['app'].'.app');
             if(is_object($app)){
                 $app_methods = get_class_methods($app);
-                in_array('uninstall', $app_methods) OR iUI::alert('卸载出错！ ['.$data['name'].']应用没有设置反安装程序[uninstall],请直接手动删除！');
+                in_array('__uninstall', $app_methods) OR iUI::alert('卸载出错！ ['.$data['name'].']应用没有设置反安装程序[uninstall],请直接手动删除！');
+                return $app->__uninstall($data);
             }
-            var_dump($app);
-
-            var_dump($appname);var_dump($app);
         }
+        return false;
     }
     public static function get($ids=0){
         if(empty($ids)) return array();
@@ -67,7 +66,17 @@ class APPS {
         }
         return $rs;
     }
-
+    public static function get_array($vars){
+        $sql = '1=1';
+        $vars['type'] && $sql.=" `type`='".(int)$vars['type']."'";
+        $vars['status'] && $sql.=" `status`='".(int)$vars['status']."'";
+        $rs  = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);
+        $_count = count($rs);
+        for ($i=0; $i < $_count; $i++) {
+            $data[$rs[$i]->id]= self::item($rs[$i]);
+        }
+        return $data;
+    }
     // public static function get_file($app,$filename,$sapp=null){
     //     $app_path = iPHP_APP_DIR."/$app/".$filename;
     //     if(file_exists($app_path)){

@@ -56,7 +56,7 @@ $(function(){
               <th>值</th>
               <th>名称</th>
               <th>字段</th>
-              <th>类型</th>
+              <th>应用</th>
               <th>栏目</th>
               <th>操作</th>
             </tr>
@@ -75,7 +75,7 @@ $(function(){
               <td><?php echo $rs[$i]['val'] ; ?></td>
               <td><?php echo $rs[$i]['name'] ; ?></td>
               <td><a href="<?php echo APP_DOURI; ?>&field=<?php echo $rs[$i]['field'] ; ?><?php echo $uri ; ?>"><?php echo $rs[$i]['field'] ; ?></a></td>
-              <td><a href="<?php echo APP_DOURI; ?>&type=<?php echo $rs[$i]['type'] ; ?><?php echo $uri ; ?>"><?php echo $rs[$i]['type'] ; ?></a></td>
+              <td><a href="<?php echo APP_DOURI; ?>&_app=<?php echo $rs[$i]['app'] ; ?><?php echo $uri ; ?>"><?php echo $rs[$i]['app'] ; ?></a></td>
               <td><a href="<?php echo APP_DOURI; ?>&cid=<?php echo $rs[$i]['cid'] ; ?><?php echo $uri ; ?>"><?php echo $C['name'] ; ?></a></td>
               <td><?php if($rs[$i]['status']=="1"){ ?>
                 <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['pid'] ; ?>&_args=status:0" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-power-off"></i> 禁用</a>

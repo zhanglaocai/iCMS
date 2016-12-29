@@ -40,6 +40,7 @@ class pushAdmincp{
         empty($rs['userid']) && $rs['userid']=iMember::$userid;
         $strpos 	= strpos(__REF__,'?');
         $REFERER 	= $strpos===false?'':substr(__REF__,$strpos);
+        iPHP::app('apps.class','static');
     	include admincp::view("push.add");
     }
 
@@ -212,4 +213,23 @@ class pushAdmincp{
     		break;
 		}
 	}
+    public function __uninstall($app){
+        $appdir  = dirname(strtr(__FILE__,'\\','/'));
+        $appname = strtolower(__CLASS__);
+
+        foreach ((array)$app['table'] as $key => $value) {
+            if($value[0]){
+                echo "DROP TABLE `icms62`.`#iCMS@__`".$value[0]."; ";
+            }
+        }
+        $this->categoryApp->del_app_data();
+        iPHP::app('prop.admincp')->del_app_data();
+        //删除配置
+        $configApp = iPHP::app('config.admincp');
+        // $configApp->del($app['id'],$app['app']);
+        iFS::rmdir($appdir);
+
+        var_dump($data);
+        exit;
+    }
 }
