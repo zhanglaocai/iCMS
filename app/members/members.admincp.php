@@ -16,9 +16,8 @@ class membersAdmincp{
     }
 
     public function do_job(){
-        iCMS::core("Job");
 		$job	= new JOB;
-        $this->uid OR $this->uid = iMember::$userid;
+        $this->uid OR $this->uid = members::$userid;
 		$job->count_post($this->uid);
         $month  = $job->month();
         $pmonth = $job->month($job->pmonth['start']);
@@ -26,7 +25,7 @@ class membersAdmincp{
 		include admincp::view("members.job");
     }
     public function do_edit(){
-        $this->uid = iMember::$userid;
+        $this->uid = members::$userid;
         $this->do_add();
     }
     public function do_add(){
@@ -39,7 +38,6 @@ class membersAdmincp{
     }
     public function do_iCMS(){
     	if($_GET['job']){
-    		iCMS::core("Job");
     		$job	=new JOB;
     	}
     	$sql	= "WHERE 1=1";

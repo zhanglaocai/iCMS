@@ -25,13 +25,11 @@ class weixinAdmincp{
         var_dump($a);
 
         exit;
-        $configApp = iPHP::app('config.admincp');
-        $configApp->app($this->appid);
+        configAdmincp::app($this->appid);
     }
     public function do_save_config(){
-        $configApp = iPHP::app('config.admincp');
         $_POST['config'] = array_merge((array)$this->config,(array)$_POST['config']);
-        $configApp->save($this->appid);
+        configAdmincp::save($this->appid);
     }
     public function do_save_menu(){
         $this->config['menu'] = $_POST['wx_button'];

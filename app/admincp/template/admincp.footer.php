@@ -5,7 +5,7 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 defined('iPHP') OR exit('What are you doing?');
-//var_dump(iMember::$cpower);
+//var_dump(members::$cpower);
 $memory = memory_get_usage();
 ?>
   <div class="clearfloat"></div>

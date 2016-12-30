@@ -118,7 +118,7 @@ class filesAdmincp{
         iFS::$redirect = true;
         $FileRootPath  = iFS::fp($rs->filepath,"+iPATH");
         iFS::check_ext($rs->filepath,true) OR iUI::alert('文件类型不合法!');
-        iFile::$userid = iMember::$userid;
+        iFile::$userid = members::$userid;
         $fileresults   = iFS::remote($rs->ofilename);
     	if($fileresults){
     		iFS::mkdir(dirname($FileRootPath));

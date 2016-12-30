@@ -70,7 +70,7 @@ class articleApp {
 	}
 	public function article($id, $page = 1, $tpl = true) {
 		$article = iDB::row("SELECT * FROM `#iCMS@__article` WHERE id='" . (int) $id . "' AND `status` ='1' LIMIT 1;", ARRAY_A);
-		$article OR iPHP::throw404('运行出错！找不到文章: <b>ID:' . $id . '</b>', 10001);
+		$article OR iPHP::error_404('运行出错！找不到文章: <b>ID:' . $id . '</b>', 10001);
 		if ($article['url']) {
 			if (iPHP::$iVIEW == "html") {
 				return false;
@@ -128,7 +128,7 @@ class articleApp {
 		$category = $categoryApp->category($article['cid'], false);
 
 		if ($tpl) {
-			$category OR iPHP::throw404('运行出错！找不到该文章的栏目缓存<b>cid:' . $article['cid'] . '</b> 请更新栏目缓存或者确认栏目是否存在', 10002);
+			$category OR iPHP::error_404('运行出错！找不到该文章的栏目缓存<b>cid:' . $article['cid'] . '</b> 请更新栏目缓存或者确认栏目是否存在', 10002);
 		} else {
 			if (empty($category)) {
 				return false;
@@ -208,7 +208,6 @@ class articleApp {
 			}
 		}
 		if ($vars['user']) {
-			iPHP::app('user.class', 'static');
 			if ($article['postype']) {
 				$article['user'] = user::empty_info($article['userid'], '#' . $article['editor']);
 			} else {
@@ -275,7 +274,6 @@ class articleApp {
 		$pageArray = array();
 		$pageurl = $article['iurl']->pageurl;
 		if ($total > 1) {
-			iPHP::core("Pages");
 			$_GLOBALS_iPage = $GLOBALS['iPage'];
 			$mode && iPHP::set_page_url($article['iurl']);
 			$pageconf = array(

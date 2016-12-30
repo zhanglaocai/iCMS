@@ -13,7 +13,7 @@ class pushAdmincp{
     public function __construct() {
         $this->appid       = iCMS_APP_PUSH;
         $this->id          = (int)$_GET['id'];
-        $this->categoryApp = iPHP::app('category.admincp',$this->appid);
+        $this->categoryApp = new categoryAdmincp($this->appid);
     }
     public function do_add(){
         $id = (int)$_GET['id'];
@@ -31,13 +31,13 @@ class pushAdmincp{
         $_GET['url3'] 	&& $rs['url3']	= $_GET['url3'];
 
         $id && $rs	= iDB::row("SELECT * FROM `#iCMS@__push` WHERE `id`='$id' LIMIT 1;",ARRAY_A);
-        empty($rs['editor']) && $rs['editor']=empty(iMember::$data->nickname)?iMember::$data->username:iMember::$data->nickname;
-        empty($rs['userid']) && $rs['userid']=iMember::$userid;
+        empty($rs['editor']) && $rs['editor']=empty(members::$data->nickname)?members::$data->username:members::$data->nickname;
+        empty($rs['userid']) && $rs['userid']=members::$userid;
         $rs['addtime']	= $id?get_date(0,"Y-m-d H:i:s"):get_date($rs['addtime'],'Y-m-d H:i:s');
         $cid			= empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
         $cata_option	= $this->categoryApp->select('ca',$cid);
 
-        empty($rs['userid']) && $rs['userid']=iMember::$userid;
+        empty($rs['userid']) && $rs['userid']=members::$userid;
         $strpos 	= strpos(__REF__,'?');
         $REFERER 	= $strpos===false?'':substr(__REF__,$strpos);
         iPHP::app('apps.class','static');
@@ -54,8 +54,8 @@ class pushAdmincp{
         switch($doType){ //status:[0:草稿][1:正常][2:回收][3:审核][4:不合格]
         	case 'inbox'://草稿
         		$sql.="`status` ='0'";
-        		// if(iMember::$data->gid!=1){
-        		// 	$sql.=" AND `userid`='".iMember::$userid."'";
+        		// if(members::$data->gid!=1){
+        		// 	$sql.=" AND `userid`='".members::$userid."'";
         		// }
         		$position="草稿";
         	break;
@@ -131,7 +131,7 @@ class pushAdmincp{
         $metadata	= iSecurity::escapeStr($_POST['metadata']);
         $metadata	= $metadata?addslashes(serialize($metadata)):'';
 
-		empty($userid) && $userid=iMember::$userid;
+		empty($userid) && $userid=members::$userid;
         empty($title) && iUI::alert('1.标题必填');
         empty($cid) && iUI::alert('请选择所属栏目');
 
@@ -217,11 +217,10 @@ class pushAdmincp{
         $appdir  = dirname(strtr(__FILE__,'\\','/'));
         $appname = strtolower(__CLASS__);
         //删除分类
-        $this->categoryApp->del_app_data();
+        iPHP::app('category.admincp')->del_app_data($app['id']);
         //删除属性
-        iPHP::app('prop.admincp')->del_app_data();
+        iPHP::app('prop.admincp')->del_app_data($app['id']);
         //删除文件
-        iCMS::core('File');
         iFile::del_app_data($app['id']);
         //删除配置
         iPHP::app('config.admincp')->del($app['id'],$app['app']);

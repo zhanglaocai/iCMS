@@ -10,7 +10,7 @@
 */
 class markerAdmincp{
     public function __construct() {
-        $this->categoryApp = iPHP::app('category.admincp','all');
+        $this->categoryApp = new categoryAdmincp('all');
         $this->id         = (int)$_GET['id'];
     }
     public function do_add(){

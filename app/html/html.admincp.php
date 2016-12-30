@@ -28,8 +28,7 @@ class htmlAdmincp{
     	$indexName OR $indexName ="index".iCMS::$config['router']['html_ext'];
     	iFS::check_ext('.'.iCMS::$config['router']['html_ext']) OR iUI::alert('文件类型不合法!');
     	//iCMS::$config['template']['index_mode'] = 1;
-		$configApp = iPHP::app('config.admincp');
-		$configApp->update('template');
+		configAdmincp::update('template');
     	$this->CreateIndex($indexTPL,$indexName);
     }
     public function CreateIndex($indexTPL,$indexName,$p=1,$loop=1){
@@ -78,7 +77,7 @@ class htmlAdmincp{
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
     public function do_category(){
-        $this->categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
+        $this->categoryApp = new categoryAdmincp(iCMS_APP_ARTICLE);
     	include admincp::view("html.category");
     }
     public function do_createCategory($cid=0,$p=1,$loop=1){
@@ -162,7 +161,7 @@ class htmlAdmincp{
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
     }
     public function do_article(){
-        $this->categoryApp = iPHP::app('category.admincp',iCMS_APP_ARTICLE);
+        $this->categoryApp = new categoryAdmincp(iCMS_APP_ARTICLE);
     	include admincp::view("html.article");
     }
     public function do_createArticle($aid=null){

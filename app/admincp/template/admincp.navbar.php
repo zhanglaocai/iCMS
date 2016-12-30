@@ -21,9 +21,9 @@ defined('iPHP') OR exit('What are you doing?');
         <ul class="nav pull-right">
           <li><a href="<?php echo iCMS_URL;?>" target="_blank" title="网站首页"><i class="fa fa-home fa-lg"></i></a></li>
           <li class="divider-vertical"></li>
-          <li class="dropdown"> <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo iMember::$data->nickname;?>"><i class="fa fa-user"></i> <b class="caret"></b></a>
+          <li class="dropdown"> <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" title="<?php echo members::$data->nickname;?>"><i class="fa fa-user"></i> <b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><a href="javascript:;"><?php echo iMember::$group->name;?></a></li>
+              <li><a href="javascript:;"><?php echo members::$group->name;?></a></li>
               <li class="divider"></li>
               <li><a href="<?php echo __ADMINCP__; ?>=members&do=job"><i class="fa fa-bar-chart-o"></i> 工作统计</a></li>
               <li><a href="<?php echo __ADMINCP__; ?>=members&do=edit"><i class="fa fa-user"></i> 更改信息</a></li>

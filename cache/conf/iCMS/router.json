@@ -1,186 +1,186 @@
 {
     "user": [
         "/user",
-        "iCMS_API?app=user"
+        "__API__?app=user"
     ],
     "user:home": [
         "/user/home",
-        "iCMS_API?app=user&do=home"
+        "__API__?app=user&do=home"
     ],
     "user:publish": [
         "/user/publish",
-        "iCMS_API?app=user&do=manage&pg=publish"
+        "__API__?app=user&do=manage&pg=publish"
     ],
     "user:article": [
         "/user/article",
-        "iCMS_API?app=user&do=manage&pg=article"
+        "__API__?app=user&do=manage&pg=article"
     ],
     "user:category": [
         "/user/category",
-        "iCMS_API?app=user&do=manage&pg=category"
+        "__API__?app=user&do=manage&pg=category"
     ],
     "user:comment": [
         "/user/comment",
-        "iCMS_API?app=user&do=manage&pg=comment"
+        "__API__?app=user&do=manage&pg=comment"
     ],
     "user:inbox": [
         "/user/inbox",
-        "iCMS_API?app=user&do=manage&pg=inbox"
+        "__API__?app=user&do=manage&pg=inbox"
     ],
     "user:inbox:uid": [
         "/user/inbox/{uid}",
-        "iCMS_API?app=user&do=manage&pg=inbox&user={uid}"
+        "__API__?app=user&do=manage&pg=inbox&user={uid}"
     ],
     "user:manage": [
         "/user/manage",
-        "iCMS_API?app=user&do=manage"
+        "__API__?app=user&do=manage"
     ],
     "user:manage:favorite": [
         "/user/manage/favorite",
-        "iCMS_API?app=user&do=manage&pg=favorite"
+        "__API__?app=user&do=manage&pg=favorite"
     ],
     "user:manage:fans": [
         "/user/manage/fans",
-        "iCMS_API?app=user&do=manage&pg=fans"
+        "__API__?app=user&do=manage&pg=fans"
     ],
     "user:manage:follow": [
         "/user/manage/follow",
-        "iCMS_API?app=user&do=manage&pg=follow"
+        "__API__?app=user&do=manage&pg=follow"
     ],
     "user:profile": [
         "/user/profile",
-        "iCMS_API?app=user&do=profile"
+        "__API__?app=user&do=profile"
     ],
     "user:profile:base": [
         "/user/profile/base",
-        "iCMS_API?app=user&do=profile&pg=base"
+        "__API__?app=user&do=profile&pg=base"
     ],
     "user:profile:avatar": [
         "/user/profile/avatar",
-        "iCMS_API?app=user&do=profile&pg=avatar"
+        "__API__?app=user&do=profile&pg=avatar"
     ],
     "user:profile:setpassword": [
         "/user/profile/setpassword",
-        "iCMS_API?app=user&do=profile&pg=setpassword"
+        "__API__?app=user&do=profile&pg=setpassword"
     ],
     "user:profile:bind": [
         "/user/profile/bind",
-        "iCMS_API?app=user&do=profile&pg=bind"
+        "__API__?app=user&do=profile&pg=bind"
     ],
     "user:profile:custom": [
         "/user/profile/custom",
-        "iCMS_API?app=user&do=profile&pg=custom"
+        "__API__?app=user&do=profile&pg=custom"
     ],
     "api": [
         "/api",
-        "iCMS_API"
+        "__API__"
     ],
     "api:comment": [
         "/api/comment",
-        "iCMS_API?app=comment"
+        "__API__?app=comment"
     ],
     "api:favorite": [
         "/api/favorite",
-        "iCMS_API?app=favorite"
+        "__API__?app=favorite"
     ],
     "api:search": [
         "/api/search",
-        "iCMS_API?app=search"
+        "__API__?app=search"
     ],
 
     "api:public:seccode": [
         "/api/public/seccode",
-        "iCMS_API?app=public&do=seccode"
+        "__API__?app=public&do=seccode"
     ],
     "api:public:agreement": [
         "/api/public/agreement",
-        "iCMS_API?app=public&do=agreement"
+        "__API__?app=public&do=agreement"
     ],
 
     "api:user": [
         "/api/user",
-        "iCMS_API?app=user"
+        "__API__?app=user"
     ],
     "api:user:ucard": [
         "/api/user/ucard",
-        "iCMS_API?app=user&do=ucard"
+        "__API__?app=user&do=ucard"
     ],
     "api:user:register": [
         "/api/user/register",
-        "iCMS_API?app=user&do=register"
+        "__API__?app=user&do=register"
     ],
     "api:user:logout": [
         "/api/user/logout",
-        "iCMS_API?app=user&do=logout"
+        "__API__?app=user&do=logout"
     ],
     "api:user:login": [
         "/api/user/login",
-        "iCMS_API?app=user&do=login"
+        "__API__?app=user&do=login"
     ],
     "api:user:login:qq": [
         "/api/user/login/qq",
-        "iCMS_API?app=user&do=login&sign=qq"
+        "__API__?app=user&do=login&sign=qq"
     ],
     "api:user:login:wb": [
         "/api/user/login/wb",
-        "iCMS_API?app=user&do=login&sign=wb"
+        "__API__?app=user&do=login&sign=wb"
     ],
     "api:user:login:wx": [
         "/api/user/login/wx",
-        "iCMS_API?app=user&do=login&sign=wx"
+        "__API__?app=user&do=login&sign=wx"
     ],
     "api:user:findpwd": [
         "/api/user/findpwd",
-        "iCMS_API?app=user&do=findpwd"
+        "__API__?app=user&do=findpwd"
     ],
     "api:user:follow": [
         "/api/user/follow",
-        "iCMS_API?app=user&do=follow"
+        "__API__?app=user&do=follow"
     ],
     "api:user:check": [
         "/api/user/check",
-        "iCMS_API?app=user&do=check"
+        "__API__?app=user&do=check"
     ],
 
     "uid:home": [
         "/{uid}/",
-        "iCMS_API?app=user&do=home&uid={uid}"
+        "__API__?app=user&do=home&uid={uid}"
     ],
     "uid:comment": [
         "/{uid}/comment/",
-        "iCMS_API?app=user&do=comment&uid={uid}"
+        "__API__?app=user&do=comment&uid={uid}"
     ],
     "uid:share": [
         "/{uid}/share/",
-        "iCMS_API?app=user&do=share&uid={uid}"
+        "__API__?app=user&do=share&uid={uid}"
     ],
     "uid:favorite": [
         "/{uid}/favorite/",
-        "iCMS_API?app=user&do=favorite&uid={uid}"
+        "__API__?app=user&do=favorite&uid={uid}"
     ],
     "uid:fans": [
         "/{uid}/fans/",
-        "iCMS_API?app=user&do=fans&uid={uid}"
+        "__API__?app=user&do=fans&uid={uid}"
     ],
     "uid:follower": [
         "/{uid}/follower/",
-        "iCMS_API?app=user&do=follower&uid={uid}"
+        "__API__?app=user&do=follower&uid={uid}"
     ],
     "uid:cid": [
         "/{uid}/{cid}/",
-        "iCMS_API?app=user&do=home&uid={uid}&cid={cid}"
+        "__API__?app=user&do=home&uid={uid}&cid={cid}"
     ],
     "uid:favorite:id": [
         "/{uid}/favorite/{id}/",
-        "iCMS_API?app=user&do=favorite&uid={uid}&id={id}"
+        "__API__?app=user&do=favorite&uid={uid}&id={id}"
     ],
 
     "favorite:id": [
         "/favorite/{id}/",
-        "iCMS_API?app=favorite&id={id}"
+        "__API__?app=favorite&id={id}"
     ],
     "comment:id": [
         "/comment/{id}/",
-        "iCMS_API?app=comment&id={id}"
+        "__API__?app=comment&id={id}"
     ]
 }

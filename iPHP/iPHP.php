@@ -24,16 +24,13 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 define('iPHP_PATH',dirname(strtr(__FILE__,'\\','/')));
 
-require iPHP_PATH.'/iPHP.version.php';
-require iPHP_PATH.'/iPHP.define.php';
-require iPHP_PATH.'/iPHP.compat.php';
+require_once iPHP_PATH.'/iPHP.version.php';
+require_once iPHP_PATH.'/iPHP.define.php';
+require_once iPHP_PATH.'/iPHP.compat.php';
 
 header('Content-Type: text/html; charset='.iPHP_CHARSET);
 header('P3P: CP="CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"');
 
-if(PHP_VERSION < '5.3.0') {
-    set_magic_quotes_runtime(0);
-}
 if(function_exists('ini_get')) {
     $memorylimit = @ini_get('memory_limit');
     if($memorylimit && get_bytes($memorylimit) < 33554432 && function_exists('ini_set')) {
@@ -43,32 +40,17 @@ if(function_exists('ini_get')) {
 
 function_exists('date_default_timezone_set') && date_default_timezone_set(iPHP_TIME_ZONE);
 
-require iPHP_PATH.'/iPHP.class.php';
+require_once iPHP_PATH.'/iPHP.class.php';
 
-set_error_handler('iPHP_ERROR_HANDLER',E_ALL & ~E_NOTICE);
+set_error_handler(array('iPHP', 'error_handler'),E_ALL & ~E_NOTICE);
+spl_autoload_register(array('iPHP', 'loader'));
 
 iPHP::timer_start();
 //waf
-iPHP::core("WAF");
 iWAF::filter();
 //security
-iPHP::core("Security");
 iSecurity::filter();
 iSecurity::GP('page','GP',2);
 
 define('__SELF__',	$_SERVER['PHP_SELF']);
 define('__REF__', 	$_SERVER['HTTP_REFERER']);
-
-$iDB_CLASS = 'Mysql';
-(iPHP_DB_TYPE =='mysql'  && version_compare(PHP_VERSION,'5.5','>=')) && $iDB_CLASS='Mysqli';
-iPHP_DB_TYPE  =='pgsql'  && $iDB_CLASS = 'Pgsql';
-iPHP_DB_TYPE  =='sqlite' && $iDB_CLASS = 'SQLite';
-
-iPHP::core($iDB_CLASS,'DB');   //加载数据库操作类
-iPHP::core("FileSystem",'FS');	//加载文件操作类
-iPHP::core('Cache');            //加载缓存操作类
-iPHP::core('UI');               //加载UI操作类
-
-// if(iPHP_SESSION!=='COOKIE'){
-//     iPHP::loadClass('Session'); //加载Session操作类
-// }

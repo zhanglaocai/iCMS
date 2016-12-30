@@ -50,7 +50,6 @@ function user_list($vars=null){
         $where_sql.= iPHP::where($vars['pid'],'pid');
     }
     if(isset($vars['pids']) && !isset($vars['pid'])){
-        iCMS::core('Map');
         iMap::init('prop',iCMS_APP_USER);
         //$where_sql.= iMap::exists($vars['pid'],'`#iCMS@__user`.uid'); //map 表大的用exists
         $map_where = iMap::where($vars['pids']);

@@ -233,7 +233,7 @@ class databaseAdmincp {
 		$fileArray = glob($backupdir . '/iCMS_*.sql');
 		$filelist = implode(',', $fileArray);
 		$v_list = $zip->create($filelist, PCLZIP_OPT_REMOVE_PATH, iPHP_APP_CACHE . '/backup/'); //将文件进行压缩
-		$v_list == 0 && iPHP::throwException("压缩出错 : " . $zip->errorInfo(true)); //如果有误，提示错误信息。
+		$v_list == 0 && iPHP::error_throw("压缩出错 : " . $zip->errorInfo(true)); //如果有误，提示错误信息。
 		ob_end_clean();
 		header("Content-Type: application/force-download");
 		header("Content-Transfer-Encoding: binary");

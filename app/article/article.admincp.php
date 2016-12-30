@@ -10,7 +10,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('article.class');
+// iPHP::app('article.class','static');
 
 class articleAdmincp{
     public $callback = array();
@@ -19,9 +19,11 @@ class articleAdmincp{
 
     public function __construct() {
         $this->appid       = iCMS_APP_ARTICLE;
+        // $this->appid       = iPHP::appid('article');
+        // $this->appid       = iCMS::$appid['article'];
         $this->id          = (int)$_GET['id'];
         $this->dataid      = (int)$_GET['dataid'];
-        $this->categoryApp = iPHP::app('category.admincp',$this->appid);
+        $this->categoryApp = new categoryAdmincp($this->appid);
         $this->_postype    = '1';
         $this->_status     = '1';
         $this->config      = iCMS::$config['article'];
@@ -33,12 +35,10 @@ class articleAdmincp{
         return $this->categoryApp->get($cid);
     }
     public function do_config(){
-        $configApp = iPHP::app('config.admincp');
-        $configApp->app($this->appid);
+        configAdmincp::app($this->appid);
     }
     public function do_save_config(){
-        $configApp = iPHP::app('config.admincp');
-        $configApp->save($this->appid);
+        configAdmincp::save($this->appid);
     }
 
     public function do_add(){
@@ -75,8 +75,8 @@ class articleAdmincp{
         if(empty($this->id)){
             $rs['status']  = "1";
             $rs['postype'] = "1";
-            $rs['editor']  = empty(iMember::$data->nickname)?iMember::$data->username:iMember::$data->nickname;
-            $rs['userid']  = iMember::$userid;
+            $rs['editor']  = empty(members::$data->nickname)?members::$data->username:members::$data->nickname;
+            $rs['userid']  = members::$userid;
 		}
 
         $strpos   = strpos(__REF__,'?');
@@ -93,7 +93,6 @@ class articleAdmincp{
     	$data = admincp::update_args($_GET['_args']);
         if($data){
             if(isset($data['pid'])){
-                iCMS::core('Map');
                 iMap::init('prop',$this->appid);
                 $_pid = article::value('pid',$this->id);
                 iMap::diff($data['pid'],$_pid,$this->id);
@@ -126,7 +125,6 @@ class articleAdmincp{
             break;
     		case 'move':
 		        $_POST['cid'] OR iUI::alert("请选择目标栏目!");
-                iCMS::core('Map');
                 iMap::init('category',$this->appid);
                 $cid = (int)$_POST['cid'];
                 admincp::CP($cid,'ca','alert');
@@ -143,7 +141,6 @@ class articleAdmincp{
             break;
             case 'scid':
                 //$_POST['scid'] OR iUI::alert("请选择目标栏目!");
-                iCMS::core('Map');
                 iMap::init('category',$this->appid);
                 $scid = implode(',', (array)$_POST['scid']);
                 foreach((array)$_POST['id'] AS $id) {
@@ -154,7 +151,6 @@ class articleAdmincp{
                 iUI::success('文章副栏目设置完成!','js:1');
             break;
             case 'prop':
-                iCMS::core('Map');
                 iMap::init('prop',$this->appid);
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {
@@ -188,7 +184,7 @@ class articleAdmincp{
 			        }elseif($_POST['pattern']=='addto') {
 			        	$art['tags'] && $mtag = $art['tags'].','.$mtag;
 			        }
-			        $tags = tag::diff($mtag,$art['tags'],iMember::$userid,$id,$art['cid']);
+			        $tags = tag::diff($mtag,$art['tags'],members::$userid,$id,$art['cid']);
                     $tags = addslashes($tags);
                     article::update(compact('tags'),compact('id'));
 		    	}
@@ -257,7 +253,7 @@ class articleAdmincp{
 		$art = article::row($id,'tags,cid');
 		if($tags){
 			iPHP::app('tag.class','static');
-			$tags = tag::diff($tags,$art['tags'],iMember::$userid,$id,$art['cid']);
+			$tags = tag::diff($tags,$art['tags'],members::$userid,$id,$art['cid']);
 		    $tags = addslashes($tags);
         }
         $data = compact('cid','pid','title','tags','description');
@@ -357,7 +353,7 @@ class articleAdmincp{
         if(admincp::MP("ARTICLE.VIEW")){
             $_GET['userid'] && $sql.= iPHP::where($_GET['userid'],'userid');
         }else{
-            $sql.= iPHP::where(iMember::$userid,'userid');
+            $sql.= iPHP::where(members::$userid,'userid');
         }
 
         if(isset($_GET['pid']) && $pid!='-1'){
@@ -365,7 +361,6 @@ class articleAdmincp{
             if(empty($_GET['pid'])){
                 $sql.= " AND `pid`=''";
             }else{
-                iCMS::core('Map');
                 iMap::init('prop',$this->appid);
                 $map_where+=iMap::where($pid);
             }
@@ -388,7 +383,6 @@ class articleAdmincp{
                 array_push ($cids,$cid);
             }
             if($_GET['scid'] && $cid){
-                iCMS::core('Map');
                 iMap::init('category',$this->appid);
                 $map_where+= iMap::where($cids);
             }else{
@@ -517,7 +511,7 @@ class articleAdmincp{
         $pubdate   = str2time($_POST['pubdate']);
         $postype   = $_POST['postype']?$_POST['postype']:0;
         isset($_POST['inbox']) && $status = "0";
-        $userid OR $userid = iMember::$userid;
+        $userid OR $userid = members::$userid;
         $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
 
         if($this->callback['code']){
@@ -542,7 +536,9 @@ class articleAdmincp{
         }
         $category = $this->category($cid);
         if(strstr($category->rule->article,'{LINK}')!==false){
-            empty($clink) && $clink = strtolower(pinyin($title));
+            if(empty($clink)){
+                $clink = iPinyin::get($title);
+            }
             if(empty($aid) && $clink) {
                 article::check_clink($clink) && iUI::alert('该文章自定义链接已经存在!请检查是否重复');
             }
@@ -565,9 +561,8 @@ class articleAdmincp{
         	$SELFURL= __SELF__.'?app=article&do=manage';
         }
 
-        $editor OR	$editor	= empty(iMember::$data->nickname)?iMember::$data->username:iMember::$data->nickname;
+        $editor OR	$editor	= empty(members::$data->nickname)?members::$data->username:members::$data->nickname;
 
-        iCMS::core('Map');
         $picdata = '';
         $ucid    = 0;
 
@@ -641,7 +636,7 @@ class articleAdmincp{
             isset($_POST['ischapter']) OR $chapter = 0;
 			if($tags){
 				iPHP::app('tag.class','static');
-	            tag::diff($tags,$_tags,iMember::$userid,$aid,$cid);
+	            tag::diff($tags,$_tags,members::$userid,$aid,$cid);
             }
             $picdata = $this->picdata($pic,$mpic,$spic);
 

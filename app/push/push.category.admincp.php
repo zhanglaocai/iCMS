@@ -10,7 +10,6 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('category.admincp','include');
 class pushCategoryAdmincp extends categoryAdmincp {
     public function __construct() {
         parent::__construct(iCMS_APP_PUSH,'category');

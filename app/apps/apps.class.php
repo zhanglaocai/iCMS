@@ -6,7 +6,7 @@
  * @author c00lt3a <idreamsoft@qq.com>
  */
 
-class APPS {
+class apps {
     public static $table   = 'article';
     public static $primary = 'id';
     public static $appid   = '1';
@@ -32,6 +32,24 @@ class APPS {
             }
         }
         return false;
+    }
+    public function __uninstall($app){
+        $appdir  = dirname(strtr(__FILE__,'\\','/'));
+        $appname = strtolower(__CLASS__);
+        //删除分类
+        iPHP::app('category.admincp')->del_app_data($app['id']);
+        //删除属性
+        iPHP::app('prop.admincp')->del_app_data($app['id']);
+        //删除文件
+        iFile::del_app_data($app['id']);
+        //删除配置
+        iPHP::app('config.admincp')->del($app['id'],$app['app']);
+
+        //删除表
+        APPS::drop_app_table($app['table']);
+        // 删除APP
+        iFS::rmdir($appdir);
+        iUI::success('应用删除完成!','js:1');
     }
     public static function get($ids=0){
         if(empty($ids)) return array();
@@ -252,7 +270,7 @@ class APPS {
 	}
 	public static function get_app($appid=1){
 		$rs	= iCache::get('iCMS/app/'.$appid);
-       	$rs OR iPHP::throwException('app no exist', '0005');
+       	$rs OR iPHP::error_throw('app no exist', '0005');
        	return $rs;
 	}
 	public static function get_url($appid=1,$primary=''){

@@ -42,7 +42,6 @@ function category_list($vars){
 		break;
 	}
 	if(isset($vars['pids'])){
-		iCMS::core('Map');
 		iMap::init('prop',iCMS_APP_CATEGORY);
 		$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__category`.cid'); //主表小 map表大
 //		$map_where=iMap::where($vars['pids']); //主表大 map表大

@@ -328,7 +328,7 @@ class spiderTools extends spider{
         } elseif (function_exists('iconv')) {
             return iconv($encode,$out, $html);
         } else {
-            iPHP::throwException('charsetTrans failed, no function');
+            iPHP::error_throw('charsetTrans failed, no function');
         }
     }
 

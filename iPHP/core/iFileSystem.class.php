@@ -86,7 +86,6 @@ class iFS {
 		$check && self::check($fn);
 
         if(self::$config['cloud']['enable'] && $cloud){
-			iPHP::core('Cloud');
 			iCloud::init(self::$config['cloud']);
 			iCloud::delete($fn);
 		}
@@ -583,7 +582,6 @@ class iFS {
 			$allow_ext = array('jpg', 'jpeg', 'png');
 			self::$watermark_config['allow_ext'] && $allow_ext = explode(',', self::$watermark_config['allow_ext']);
 			if (in_array($ext, $allow_ext)) {
-				iPHP::core('Pic');
 				iPic::init(self::$watermark_config);
 				iPic::watermark($frp);
 			}
@@ -591,7 +589,6 @@ class iFS {
 	}
 	public static function cloud_write($frp) {
 		if (self::$config['cloud']['enable']) {
-			iPHP::core('Cloud');
 			iCloud::init(self::$config['cloud']);
 			iCloud::write($frp,
 				array(

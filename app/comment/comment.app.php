@@ -19,7 +19,6 @@ class commentApp {
 		$iid = (int) $_GET['iid'];
 		$_GET = iSecurity::escapeStr($_GET);
 
-		iPHP::app('apps.class', 'static');
 		$url = APPS::get_url($appid, $iid);
 		iPHP::redirect($url);
 	}
@@ -78,11 +77,9 @@ class commentApp {
 			iUI::code(0, 'iCMS:comment:close', 0, 'json');
 		}
 
-		iPHP::app('user.class', 'static');
 		user::get_cookie() OR iUI::code(0, 'iCMS:!login', 0, 'json');
 
 		if ($this->config['seccode']) {
-			iPHP::core("Seccode");
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}

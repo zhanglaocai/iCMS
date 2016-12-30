@@ -9,7 +9,6 @@
 * @version 1.0.1
 * @package iDB
 */
-
 define('OBJECT', 'OBJECT');
 define('ARRAY_A', 'ARRAY_A');
 define('ARRAY_N', 'ARRAY_N');

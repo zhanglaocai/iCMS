@@ -50,7 +50,6 @@ class publicApp {
 		}
 	}
 	public function API_seccode() {
-		iPHP::core("Seccode");
 		$_GET['pre'] && $pre = iSecurity::escapeStr($_GET['pre']);
 		iSeccode::run($pre);
 	}

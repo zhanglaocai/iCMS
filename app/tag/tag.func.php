@@ -15,7 +15,6 @@ function tag_list($vars){
         $where_sql.= iPHP::where($vars['tcid'],'tcid');
     }
     if(isset($vars['tcids']) && !isset($vars['tcid'])){
-        iCMS::core('Map');
         iMap::init('category',iCMS_APP_TAG);
         //$where_sql.= iMap::exists($vars['tcid'],'`#iCMS@__tags`.id'); //map 表大的用exists
         $map_where+=iMap::where($vars['tcid']);
@@ -28,7 +27,6 @@ function tag_list($vars){
         $where_sql.= iPHP::where($vars['pid'],'pid');
     }
     if(isset($vars['pids']) && !isset($vars['pid'])){
-        iCMS::core('Map');
         iMap::init('prop',iCMS_APP_TAG);
         //$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__tags`.id'); //map 表大的用exists
         $map_where+= iMap::where($vars['pids']);
@@ -47,7 +45,6 @@ function tag_list($vars){
         $vars['sub'] && $cids+=iPHP::app("category")->get_cids($vars['cids'],true);
 
         if($cids){
-            iCMS::core('Map');
             iMap::init('category',iCMS_APP_TAG);
             $map_where+=iMap::where($cids);
         }

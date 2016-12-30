@@ -14,12 +14,10 @@ class keywordsAdmincp{
     	$this->id	= (int)$_GET['id'];
     }
     public function do_config(){
-        $configApp = iPHP::app('config.admincp');
-        $configApp->app($this->appid);
+        configAdmincp::app($this->appid);
     }
     public function do_save_config(){
-        $configApp = iPHP::app('config.admincp');
-        $configApp->save($this->appid);
+        configAdmincp::save($this->appid);
     }
     public function do_add(){
         if($this->id) {

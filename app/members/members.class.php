@@ -7,7 +7,7 @@
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
 */
-class iMember{
+class members{
     public static $userid       = 0;
     public static $data         = array();
     public static $nickname     = NULL;

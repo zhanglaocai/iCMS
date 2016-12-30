@@ -18,13 +18,15 @@ class configAdmincp{
         admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
     	include admincp::view("config");
     }
-    public function apps(){
-        iPHP::app('apps.class','static');
-        APPS::scan();
+    public static function apps(){
+        apps::scan();
         $apps  = array();
-        foreach (APPS::$array as $key => $value) {
+        foreach (apps::$array as $key => $value) {
             $apps[] = $key;
         }
+        $apps[]='members';
+        $apps[]='menu';
+        $apps[]='apps';
         return $apps;
     }
     /**
@@ -61,10 +63,10 @@ class configAdmincp{
      * [cache 更新配置]
      * @return [type] [description]
      */
-    public function cache(){
-        $config         = $this->get();
-        $config['apps'] = $this->apps();
-        $this->write($config);
+    public static function cache(){
+        $config         = self::get();
+        $config['apps'] = self::apps();
+        self::write($config);
     }
     public static function head($title=null){
         include admincp::view("config.head","config");
@@ -77,9 +79,9 @@ class configAdmincp{
      * @param  integer $appid [应用ID]
      * @param  [sting] $name   [应用名]
      */
-    public function app($appid=0,$name=null,$ret=false){
+    public static  function app($appid=0,$name=null,$ret=false){
         $name===null && $name = admincp::$APP_NAME;
-        $config = $this->get($appid,$name);
+        $config = self::get($appid,$name);
         if($ret){
             return $config;
         }
@@ -90,15 +92,15 @@ class configAdmincp{
      * @param  integer $appid [应用ID]
      * @param  [sting] $app   [应用名]
      */
-    public function save($appid=0,$name=null,$handler=null){
+    public static function save($appid=0,$name=null,$handler=null){
         $name===null   && $name = admincp::$APP_NAME;
         empty($appid) && iUI::alert("配置程序出错缺少APPID!");
         $config = iSecurity::escapeStr($_POST['config']);
-        $this->set($config,$name,$appid,false);
+        self::set($config,$name,$appid,false);
         if (is_callable($handler)) {
             call_user_func_array($handler, array($config));
         }
-        $this->cache();
+        self::cache();
         iUI::success('配置更新完成','js:1');
     }
     /**
@@ -107,7 +109,7 @@ class configAdmincp{
      * @param  [type]  $name   [description]
      * @return [type]       [description]
      */
-    public function get($appid = NULL, $name = NULL) {
+    public static function get($appid = NULL, $name = NULL) {
         if ($name === NULL) {
             $sql = $appid === NULL?'':" AND `appid`='$appid'";
             $rs  = iDB::all("SELECT * FROM `#iCMS@__config` WHERE appid< '999999' $sql");
@@ -130,7 +132,7 @@ class configAdmincp{
      * @param [type]  $appid   [description]
      * @param boolean $cache [description]
      */
-    public function set($value, $name, $appid, $cache = false) {
+    public static function set($value, $name, $appid, $cache = false) {
         $cache && iCache::set('iCMS/config/' . $name, $value, 0);
         is_array($value) && $value = addslashes(serialize($value));
         $check  = iDB::value("SELECT `name` FROM `#iCMS@__config` WHERE `appid` ='$appid' AND `name` ='$name'");
@@ -142,7 +144,7 @@ class configAdmincp{
             iDB::update('config', $data, array('appid'=>$appid,'name'=>$name));
         }
     }
-    public function del($name, $appid) {
+    public static function del($name, $appid) {
         if($name &&$appid){
             iDB::query("DELETE FROM `#iCMS@__config` WHERE `appid` ='$appid' AND `name` ='$name'");
         }
@@ -152,8 +154,8 @@ class configAdmincp{
      * @param  [type] $config [description]
      * @return [type]         [description]
      */
-    public function write($config=null){
-        $config===null && $config = $this->get();
+    public static function write($config=null){
+        $config===null && $config = self::get();
         $output = "<?php\ndefined('iPHP') OR exit('Access Denied');\nreturn ";
         $output.= var_export($config,true);
         $output.= ';';
@@ -164,11 +166,11 @@ class configAdmincp{
      * @param  [type] $k [description]
      * @return [type]    [description]
      */
-    public function update($k){
-        $this->set(iCMS::$config[$k],$k,0);
-        $this->write();
+    public static function update($k){
+        self::set(iCMS::$config[$k],$k,0);
+        self::cache();
     }
-    public function view(){
+    public static function view(){
         include admincp::view('config',null,true);
     }
 }

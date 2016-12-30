@@ -83,7 +83,7 @@ class spiderAdmincp {
 		iUI::success('删除完成', 'js:1');
 	}
 	public function do_manage($doType = null) {
-		$categoryApp = iPHP::app('category.admincp', iCMS_APP_ARTICLE);
+		$categoryApp = new categoryAdmincp(iCMS_APP_ARTICLE);
 
 		$sql = " WHERE 1=1";
 		$_GET['keywords'] && $sql .= "  AND `title` REGEXP '{$_GET['keywords']}'";
@@ -409,7 +409,7 @@ class spiderAdmincp {
 	}
 
 	public function do_project() {
-		$categoryApp = iPHP::app('category.admincp', iCMS_APP_ARTICLE);
+		$categoryApp = new categoryAdmincp(iCMS_APP_ARTICLE);
 
 		$sql = "where 1=1";
 		if ($_GET['keywords']) {
@@ -448,7 +448,7 @@ class spiderAdmincp {
 		$this->pid && $rs = spider::project($this->pid);
 		$cid = empty($rs['cid']) ? $this->cid : $rs['cid'];
 
-		$categoryApp = iPHP::app('category.admincp', iCMS_APP_ARTICLE);
+		$categoryApp = new categoryAdmincp(iCMS_APP_ARTICLE);
 
 		$cata_option = $categoryApp->select(false, $cid);
 		$rule_option = $this->rule_opt($rs['rid']);

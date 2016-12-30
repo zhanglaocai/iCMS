@@ -42,7 +42,7 @@ class cacheAdmincp{
     	$dialog && iUI::success('更新完成');
     }
     public function do_category($dialog=true){
-        $categoryApp = iPHP::app('category.admincp');
+        $categoryApp = new categoryAdmincp();
         $categoryApp->do_cache($dialog);
     }
     public function do_pushcategory($dialog=true){
@@ -54,7 +54,7 @@ class cacheAdmincp{
         $categoryApp->do_cache($dialog);
     }
     public function do_tpl($dialog=true){
-    	iPHP::clear_compiled_tpl();
+    	iPHP::clear_tpl();
     	$dialog && iUI::success('清理完成');
     }
     public function do_article_count($dialog=true){

@@ -7,7 +7,6 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('user.class', 'static');
 iPHP::app('user.msg.class', 'static');
 class userApp {
 	public $methods = array('iCMS', 'home', 'favorite', 'article', 'publish', 'manage', 'profile', 'data', 'hits', 'check', 'follow', 'follower', 'fans', 'login', 'findpwd', 'logout', 'register', 'add_category', 'upload', 'mobileUp', 'config', 'uploadvideo', 'uploadimage', 'catchimage', 'report', 'fav_category', 'ucard', 'pm');
@@ -33,7 +32,7 @@ class userApp {
 		if ($this->uid) {
 			// &uid=
 			$this->user = user::get($this->uid);
-			empty($this->user) && iPHP::throw404(
+			empty($this->user) && iPHP::error_404(
 				'运行出错！找不到该用户',
 				"user:" . $this->uid
 			);
@@ -198,7 +197,6 @@ class userApp {
 
 		if (iCMS::$config['user']['post']['seccode']) {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
-			iPHP::core("Seccode");
 			iSeccode::check($seccode, true) OR iUI::alert('iCMS:seccode:error');
 		}
 
@@ -242,7 +240,6 @@ class userApp {
 		$category = iCache::get('iCMS/category/' . $cid);
 		$status = $category['isexamine'] ? 3 : 1;
 
-		iCMS::core('Map');
 		iPHP::app('article.class');
 		$fields = article::fields($aid);
 		$data_fields = article::data_fields($aid);
@@ -333,7 +330,6 @@ class userApp {
                 AND `id`='$id'
             ");
 
-			iPHP::app('apps.class', 'static');
 			$table = APPS::get_table($comment->appid);
 
 			if($table['name']&&$table['primary']){
@@ -560,8 +556,6 @@ class userApp {
 	}
 
 	private function __ACTION_profile_setpassword() {
-
-		iPHP::core("Seccode");
 		iSeccode::check($_POST['seccode'], true) OR iUI::alert('iCMS:seccode:error');
 
 		$oldPwd = md5($_POST['oldPwd']);
@@ -585,7 +579,6 @@ class userApp {
 	}
 	public function ACTION_findpwd() {
 		$seccode = iSecurity::escapeStr($_POST['seccode']);
-		iPHP::core("Seccode");
 		iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 
 		$uid = (int) $_POST['uid'];
@@ -673,7 +666,6 @@ class userApp {
 
 		if (iCMS::$config['user']['login']['seccode']) {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
-			iPHP::core("Seccode");
 			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 		$remember && user::$cookietime = 14 * 86400;
@@ -758,7 +750,6 @@ class userApp {
 
 		if (iCMS::$config['user']['register']['seccode']) {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
-			iPHP::core("Seccode");
 			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 		$_setting = array();
@@ -997,7 +988,6 @@ class userApp {
 			strlen($value) < 6 && $a = iUI::code(0, 'user:password:error', 'password');
 			break;
 		case 'seccode':
-			iPHP::core("Seccode");
 			iSeccode::check($value) OR $a = iUI::code(0, 'iCMS:seccode:error', 'seccode');
 			break;
 		}

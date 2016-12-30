@@ -11,7 +11,7 @@
 class propAdmincp{
     public function __construct() {
         $this->pid         = (int)$_GET['pid'];
-        $this->categoryApp = iPHP::app('category.admincp','all');
+        $this->categoryApp = new categoryAdmincp('all');
     }
     public function do_add(){
         $this->pid && $rs = iDB::row("SELECT * FROM `#iCMS@__prop` WHERE `pid`='$this->pid' LIMIT 1;",ARRAY_A);

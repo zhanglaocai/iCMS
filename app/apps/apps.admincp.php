@@ -13,6 +13,8 @@ defined('iPHP') OR exit('What are you doing?');
 iPHP::app('apps.class','static');
 iPHP::app('apps.mysql.class','static');
 
+$a=iPinyin::get('asd');
+
 class appsAdmincp{
     public function __construct() {
     	$this->id = (int)$_GET['id'];

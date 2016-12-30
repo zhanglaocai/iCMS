@@ -11,6 +11,21 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
+define('iCMS_SUPERADMIN_UID', '1');
+define('__ADMINCP__', __SELF__ . '?app');
+define('ACP_PATH', iPHP_APP_DIR . '/admincp');
+define('ACP_HOST', (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://" . $_SERVER['HTTP_HOST']);
+
+iDB::$debug        = true;
+iDB::$show_errors  = true;
+iDB::$show_explain = false;
+iUI::$dialog['title'] = 'iCMS';
+
+members::$LOGIN_PAGE = ACP_PATH.'/template/admincp.login.php';
+members::$AUTH       = 'ADMIN_AUTH';
+members::$AJAX       = iPHP::PG('ajax');
+
+
 class admincp {
 	public static $apps = NULL;
 	public static $menu = NULL;
@@ -26,18 +41,16 @@ class admincp {
 
 	public static function init() {
 		self::check_seccode(); //验证码验证
-		iMember::checkLogin(); //用户登陆验证
-		self::$menu = new iMenu(); //初始化菜单
+		members::checkLogin(); //用户登陆验证
+		self::$menu = new menu(); //初始化菜单
 		self::MP('ADMINCP', 'page'); //检查是否有后台权限
 		self::MP('__MID__', 'page'); //检查菜单ID
 		iCMS::iFile_init();
-		iFile::$userid = iMember::$userid;
+		iFile::$userid = members::$userid;
 	}
 
 	public static function get_seccode() {
-		iPHP::core("Seccode");
 		iSeccode::run('admincp');
-		exit;
 	}
 	public static function check_seccode() {
 		if ($_POST['admincp_seccode'] === iPHP_KEY) {
@@ -45,7 +58,6 @@ class admincp {
 		}
 
 		if ($_POST['username'] && $_POST['password']) {
-			iPHP::core("Seccode");
 			$seccode = iSecurity::escapeStr($_POST['admincp_seccode']);
 			iSeccode::check($seccode, true, 'admincp_seccode') OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
@@ -81,7 +93,7 @@ class admincp {
 			$appName = $_app.$sapp.'Admincp';
 		}
 
-		is_file(self::$APP_FILE) OR iPHP::throwException('运行出错！找不到文件: <b>' . self::$APP_FILE . '</b>', 1002);
+		is_file(self::$APP_FILE) OR iPHP::error_throw('运行出错！找不到文件: <b>' . self::$APP_FILE . '</b>', 1002);
 
 		define('APP_URI', __ADMINCP__ . '=' . $app);
 		// define('APP_FURI', APP_URI . '&frame=iPHP');
@@ -93,7 +105,7 @@ class admincp {
 		iPHP::import(self::$APP_FILE);
 		self::$app = new $appName();
 		$app_methods = get_class_methods($appName);
-		in_array(self::$APP_METHOD, $app_methods) OR iPHP::throwException('运行出错！ <b>' . self::$APP_NAME . '</b> 类中找不到方法定义: <b>' . self::$APP_METHOD . '</b>', 1003);
+		in_array(self::$APP_METHOD, $app_methods) OR iPHP::error_throw('运行出错！ <b>' . self::$APP_NAME . '</b> 类中找不到方法定义: <b>' . self::$APP_METHOD . '</b>', 1003);
 
 		$method = self::$APP_METHOD;
 		$args === null && $args = self::$APP_ARGS;
@@ -161,7 +173,7 @@ class admincp {
 			return true;
 		}
 
-		self::$menu->power = (array) iMember::$mpower;
+		self::$menu->power = (array) members::$mpower;
 		if ($p === '__MID__') {
 			$rt1 = $rt2 = $rt3 = true;
 			self::$menu->rootid && $rt1 = self::$menu->check_power(self::$menu->rootid);
@@ -182,7 +194,7 @@ class admincp {
 		}
 
 		if ($p === '__CID__') {
-			foreach ((array) iMember::$cpower as $key => $_cid) {
+			foreach ((array) members::$cpower as $key => $_cid) {
 				if (!strstr($value, ':')) {
 					self::CP($_cid, $act) && $cids[] = $_cid;
 				}
@@ -192,7 +204,7 @@ class admincp {
 
 		$act && $p = $p . ':' . $act;
 
-		$rt = iMember::check_power((string) $p, iMember::$cpower);
+		$rt = members::check_power((string) $p, members::$cpower);
 		$rt OR self::permission_msg($p, $ret);
 		return $rt;
 	}
@@ -206,7 +218,7 @@ class admincp {
 		}
 	}
 	public static function is_superadmin() {
-		return (iMember::$data->gid === iCMS_SUPERADMIN_UID);
+		return (members::$data->gid === iCMS_SUPERADMIN_UID);
 	}
 	public static function head($navbar = true) {
 		$body_class = '';

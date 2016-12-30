@@ -8,7 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-class iMenu {
+class menu {
     public $menu_array = array();
     public $href_array = array();
     public $url = null;

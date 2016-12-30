@@ -10,23 +10,18 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-class iCMS extends iPHP{
-    public static $iCache      = null;
-    public static $sphinx      = null;
+class iCMS {
+    public static $config = array();
 
 	public static function init(){
         self::$config = iPHP::config();
-        iCMS::core("URL");
-        iURL::init(self::$config);
-
         define('iCMS_DIR',       self::$config['router']['DIR']);
         define('iCMS_URL',       self::$config['router']['URL']);
         define('iCMS_PUBLIC_URL',self::$config['router']['public_url']);
         define('iCMS_FS_URL',    self::$config['FS']['url']);
-        define('iCMS_REWRITE',   iPHP_ROUTER_REWRITE);
         define('iCMS_API',       iCMS_PUBLIC_URL.'/api.php');
         define('iCMS_API_URL',   iCMS_API.'?app=');
-        self::assign_site();
+        iURL::init(self::$config);
 	}
     /**
      * 运行应用程序
@@ -34,6 +29,8 @@ class iCMS extends iPHP{
      * @param string $do 动作名称
      */
     public static function run($app = NULL,$do = NULL,$args = NULL,$prefix="do_") {
+        iDevice::init(self::$config);
+        iTemplate::init();
         iPHP::$iTPL->_iVARS = array(
             'VERSION' => iCMS_VER,
             'API'     => iCMS_API,
@@ -50,6 +47,8 @@ class iCMS extends iPHP{
                 'USER'     => iCMS_APP_USER,
             )
         );
+        self::send_access_control();
+        self::assign_site();
 
         return iPHP::run($app,$do,$args,$prefix);
     }
@@ -58,13 +57,17 @@ class iCMS extends iPHP{
         $app OR $app = iSecurity::escapeStr($_GET['app']);
         return self::run($app,null,null,'API_');
     }
-
+    public static function send_access_control() {
+        header("Access-Control-Allow-Origin: " . self::$config['router']['URL']);
+        header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
+    }
     public static function hooks($key,$array){
         self::$hooks[$key]  = $array;
     }
-    public static function core($fname, $cname = null,$msg = '',$core = null) {
-        return iPHP::core($fname,$cname,'',iPHP_APP_CORE);
+    public static function loader($name){
+        return iPHP::loader($name,iPHP_APP_CORE);
     }
+
     public static function assign_site(){
         $site          = self::$config['site'];
         $site['title'] = self::$config['site']['name'];
@@ -152,7 +155,6 @@ class iCMS extends iPHP{
         @is_file($fp) && iPHP::redirect($url);
     }
     public static function iFile_init(){
-        self::core('File');
         iFile::init(iFS::$config['table'],array('file_data','file_map'));
         iFS::$CALLABLE = array(
             'insert' => array('iFile','insert'),

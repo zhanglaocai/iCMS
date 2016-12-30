@@ -32,7 +32,7 @@ class iUI {
 
 		if (!@is_file($path)) {
 			if ($throw) {
-				iPHP::throwException($fname . ' not exist', 0015);
+				iPHP::error_throw($fname . ' not exist', 0015);
 			} else {
 				return $string;
 			}
@@ -221,7 +221,6 @@ class iUI {
 	}
 	//动态翻页函数
 	public static function pagenav($total, $displaypg = 20, $unit = "条记录", $url = '', $target = '') {
-		iPHP::core("Pages");
 		$pageconf = array(
 			'url' => $url,
 			'target' => $target,

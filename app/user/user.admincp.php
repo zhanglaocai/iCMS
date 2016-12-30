@@ -15,12 +15,10 @@ class userAdmincp{
         $this->groupApp = iPHP::app('group.admincp',0);
     }
     public function do_config(){
-        $configApp = iPHP::app('config.admincp');
-        $configApp->app($this->appid);
+        configAdmincp::app($this->appid);
     }
     public function do_save_config(){
-        $configApp = iPHP::app('config.admincp');
-        $configApp->save($this->appid);
+        configAdmincp::save($this->appid);
     }
     public function do_update(){
         $data = admincp::update_args($_GET['_args']);
@@ -65,7 +63,6 @@ class userAdmincp{
             if($_GET['pid']==0){
                 $sql.= " AND `pid`=''";
             }else{
-                iCMS::core('Map');
                 iMap::init('prop',$this->appid);
                 $map_where = iMap::where($pid);
             }
@@ -114,8 +111,6 @@ class userAdmincp{
         $user['lastlogintime'] = str2time($user['lastlogintime']);
         $user['pid']           = $pid;
 
-        iCMS::core('Map');
-
        if(empty($uid)) {
             $password OR iUI::alert('密码不能为空');
             $user['password'] = md5($password);
@@ -149,7 +144,6 @@ class userAdmincp{
     	$batch	= $_POST['batch'];
     	switch($batch){
             case 'prop':
-                iCMS::core('Map');
                 iMap::init('prop',iCMS_APP_USER);
 
                 $pid = implode(',', (array)$_POST['pid']);

@@ -9,7 +9,7 @@
 * @version 6.0.0
 */
 defined('iPHP') OR exit('What are you doing?');
-iPHP::app('category.class','include');
+
 class categoryAdmincp extends category{
     public $callback         = array();
     protected $category_uri  = APP_URI;
@@ -159,7 +159,6 @@ class categoryAdmincp extends category{
         $rule     = addslashes(json_encode($rule));
         $template = addslashes(json_encode($template));
 
-        iCMS::core('Map');
         iMap::init('prop',iCMS_APP_CATEGORY);
 
         $fields = array(
@@ -188,8 +187,8 @@ class categoryAdmincp extends category{
                 $mode=="2" && $this->check_dir($dir,$appid,$url);
                 $data['name']     = $_name;
                 $data['dir']      = $dir;
-                $data['userid']   = iMember::$userid;
-                $data['creator']  = iMember::$nickname;
+                $data['userid']   = members::$userid;
+                $data['creator']  = members::$nickname;
                 $data['pubdate']  = time();
                 $data['count']    = '0';
                 $data['comments'] = '0';

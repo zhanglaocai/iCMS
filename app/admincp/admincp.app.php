@@ -11,7 +11,7 @@
 class admincpApp{
     public function __construct() {}
     public function do_logout(){
-   	    iMember::logout();
+   	    members::logout();
     	iUI::success('注销成功!','url:'.__SELF__);
     }
 

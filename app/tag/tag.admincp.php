@@ -16,18 +16,16 @@ class tagAdmincp{
     public function __construct() {
         $this->appid       = iCMS_APP_TAG;
         $this->id          = (int)$_GET['id'];
-        $this->categoryApp = iPHP::app('category.admincp');
-        $this->tagcategory = iPHP::app('category.admincp',$this->appid);
+        $this->categoryApp = new categoryAdmincp();
+        $this->tagcategory = new categoryAdmincp($this->appid);
     }
     public function do_config(){
-        $configApp = iPHP::app('config.admincp');
-        $configApp->app($this->appid);
+        configAdmincp::app($this->appid);
     }
     public function do_save_config(){
-        $configApp = iPHP::app('config.admincp');
         $_POST['config']['url'] = trim($_POST['config']['url'],'/');
         $_POST['config']['dir'] = rtrim($_POST['config']['dir'],'/').'/';
-        $configApp->save($this->appid);
+        configAdmincp::save($this->appid);
     }
 
     public function do_add(){
@@ -69,7 +67,6 @@ class tagAdmincp{
             if($_GET['pid']==0){
                 $sql.= " AND `pid`=''";
             }else{
-                iCMS::core('Map');
                 iMap::init('prop',$this->appid);
                 $map_where = iMap::where($pid);
             }
@@ -119,7 +116,6 @@ class tagAdmincp{
                 }
             }
             if($contents){
-                iCMS::core('Map');
                 $fields   = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'status');
                 $cid      = implode(',', (array)$_POST['cid']);
                 $tcid     = implode(',', (array)$_POST['tcid']);
@@ -139,7 +135,7 @@ class tagAdmincp{
                         continue;
                     }
                     $tkey    = strtolower(pinyin($name));
-                    $uid     = iMember::$userid;
+                    $uid     = members::$userid;
                     $haspic  = '0';
                     $status  = '1';
                     $pubdate = time();
@@ -189,7 +185,7 @@ class tagAdmincp{
         $pubdate     = time();
         $metadata    = $_POST['metadata'];
 
-        $uid OR $uid= iMember::$userid;
+        $uid OR $uid= members::$userid;
 
         if($callback){
             if(empty($name)){
@@ -243,8 +239,6 @@ class tagAdmincp{
         iFS::checkHttp($bpic)&& $bpic = iFS::http($bpic);
         iFS::checkHttp($mpic)&& $mpic = iFS::http($mpic);
         iFS::checkHttp($spic)&& $spic = iFS::http($spic);
-
-		iCMS::core('Map');
 
         $fields = array('uid','rootid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic','bpic','mpic','spic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'status');
         $data   = compact ($fields);
@@ -356,7 +350,6 @@ class tagAdmincp{
     		break;
     		case 'move':
 		        $_POST['cid'] OR iUI::alert("请选择目标栏目!");
-                iCMS::core('Map');
                 iMap::init('category',$this->appid);
 		        $cid = (int)$_POST['cid'];
 		        foreach($idArray AS $id) {
@@ -372,7 +365,6 @@ class tagAdmincp{
     		break;
     		case 'mvtcid':
 		        $_POST['tcid'] OR iUI::alert("请选择目标分类!");
-                iCMS::core('Map');
                 iMap::init('category',$this->appid);
 		        $tcid = (int)$_POST['tcid'];
 		        foreach($idArray AS $id) {
@@ -387,7 +379,6 @@ class tagAdmincp{
 		        iUI::success('成功移动到目标分类!','js:1');
     		break;
     		case 'prop':
-                iCMS::core('Map');
                 iMap::init('prop',$this->appid);
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {

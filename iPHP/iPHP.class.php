@@ -30,7 +30,44 @@ class iPHP {
 	public static $mobile     = false;
 	public static $time_start = false;
 
+    /**
+     * Autoload function for HTML Purifier
+     * @param string $class Class to load
+     * @return bool
+     */
+	public static function loader($name,$core=null){
+		if(strpos($name,'App') !== false) {
+			var_dump($name);
+		}else if(strpos($name,'Admincp') !== false) {
+			$app  = rtrim($name,'Admincp');
+			$file = $app.'.admincp';
+			$path = iPHP_APP_DIR . '/' . $app . '/' . $file . '.php';
+		}else if (strncmp('i', $name, 1) === 0) {
+			$map = array(
+				'iFS'=>"iFileSystem",
+				'iDB'=>version_compare(PHP_VERSION,'5.5','>=')?'iMysqli':'iMysql'
+			);
+			$map[$name] && $name = $map[$name];
+			$core===null && $core = iPHP_CORE;
+			$path = $core.'/'.$name.'.class.php';
+		}else if(in_array ($name, iPHP::$apps)){
+			$file = $name.'.class';
+			$path = iPHP_APP_DIR . '/' . $name . '/' . $file . '.php';
+		}
+
+		if (@is_file($path)) {
+			$key = str_replace(iPATH, '/', $path);
+			$GLOBALS['iPHP_REQ'][$key] = true;
+			require $path;
+		} else {
+			$core == iPHP_CORE OR self::error_throw('CLASS <b>' . $name . '</b> NOT FOUND', 0020);
+		}
+	}
+
 	public static function config() {
+		//iPHP_APP::autoload
+		spl_autoload_register(array(iPHP_APP, 'loader'));
+
 		$site = iPHP_MULTI_SITE ? $_SERVER['HTTP_HOST'] : iPHP_APP;
 		if (iPHP_MULTI_DOMAIN) {
 			//只绑定主域
@@ -38,12 +75,12 @@ class iPHP {
 			$site = $matches[0];
 		}
 		iPHP_MULTI_SITE && define('iPHP_APP_SITE', $site);
-		strpos($site, '..') === false OR self::throwException('What are you doing','001');
+		strpos($site, '..') === false OR self::error_throw('What are you doing','001');
 
 		//config.php 中开启iPHP_APP_CONF后 此处设置无效,
 		define('iPHP_APP_CONF', iPHP_CONF_DIR . '/' . $site); //网站配置目录
 		define('iPHP_APP_CONFIG', iPHP_APP_CONF . '/config.php'); //网站配置文件
-		@is_file(iPHP_APP_CONFIG) OR self::throwException('运行出错.找不到"' . $site . '"网站的配置文件(config.php)!请先安装本程序或者确认('.iPHP_APP_CONFIG.')文件是否存在!', '002');
+		@is_file(iPHP_APP_CONFIG) OR self::error_throw('运行出错.找不到"' . $site . '"网站的配置文件(config.php)!请先安装本程序或者确认('.iPHP_APP_CONFIG.')文件是否存在!', '002');
 
 		$config = require iPHP_APP_CONFIG;
 		//config.php 中开启后 此处设置无效
@@ -62,6 +99,7 @@ class iPHP {
 
 		define('iPHP_ROUTER_USER', $config['router']['user_url']);
 		define('iPHP_URL_404', $config['router']['404']); //404定义
+
 		//config.php --END--
 
 		ini_set('display_errors', 'OFF');
@@ -76,120 +114,17 @@ class iPHP {
 		$timezone OR $timezone = 'Asia/Shanghai'; //设置中国时区
 		function_exists('date_default_timezone_set') && @date_default_timezone_set($timezone);
 
-		self::multiple_device($config);
 		iFS::init($config['FS'], $config['watermark']);
 		iCache::init($config['cache']);
-		iPHP::template_start();
+		// self::$apps = array("apps");
 		self::$apps = $config['apps'];
 
-		iPHP_DB_DEBUG  && iDB::$show_errors = true;
-		iPHP_DB_TRACE  && iDB::$debug = true;
-		iPHP_DB_EXPLAIN&& iDB::$show_explain = true;
-		iPHP_TPL_DEBUG && self::clear_compiled_tpl();
+		iPHP_DB_DEBUG   && iDB::$show_errors  = true;
+		iPHP_DB_TRACE   && iDB::$debug        = true;
+		iPHP_DB_EXPLAIN && iDB::$show_explain = true;
 		return $config;
 	}
 
-	/**
-	 * 多终端适配
-	 * @param  [type] &$config [系统配置]
-	 * @return [type]          [description]
-	 */
-	private static function multiple_device(&$config) {
-		$template = $config['template'];
-		if (iPHP::PG('device')) {
-			/**
-			 * 判断指定设备
-			 */
-			list($device_name, $def_tpl, $domain) = self::device_check($template['device'], 'device');
-		}
-		/**
-		 * 无指定设备 判断USER_AGENT
-		 *
-		 */
-		if (empty($def_tpl)) {
-			list($device_name, $def_tpl, $domain) = self::device_check($template['device'], 'ua');
-		}
-		/**
-		 * 无指定USER_AGENT  判断域名模板
-		 *
-		 */
-		if (empty($def_tpl)) {
-			list($device_name, $def_tpl, $domain) = self::device_check($template['device'], 'domain');
-		}
-
-		iPHP::$mobile = false;
-		if (empty($def_tpl)) {
-			//检查是否移动设备
-			if (self::device_agent($template['mobile']['agent'])) {
-				iPHP::$mobile = true;
-				$mobile_tpl = $template['mobile']['tpl'];
-				$device_name = 'mobile';
-				$def_tpl = $mobile_tpl;
-				$domain = $template['mobile']['domain'];
-			}
-		}
-
-		if (empty($def_tpl)) {
-			$device_name = 'desktop';
-			$def_tpl = $template['desktop']['tpl'];
-			$domain = false;
-		}
-
-        define('iPHP_REQUEST_SCHEME',($_SERVER['SERVER_PORT'] == 443)?'https':'http');
-        define('iPHP_REQUEST_HOST',iPHP_REQUEST_SCHEME.'://'.($_SERVER['HTTP_X_HTTP_HOST']?$_SERVER['HTTP_X_HTTP_HOST']:$_SERVER['HTTP_HOST']));
-        define('iPHP_REQUEST_URI',$_SERVER['REQUEST_URI']);
-        define('iPHP_REQUEST_URL',iPHP_REQUEST_HOST.iPHP_REQUEST_URI);
-		define('iPHP_ROUTER_URL', $config['router']['URL']);
-		$domain && $config['router'] = str_replace($config['router']['URL'], $domain, $config['router']);
-		define('iPHP_DEFAULT_TPL', $def_tpl);
-		define('iPHP_MOBILE_TPL', $mobile_tpl);
-		define('iPHP_DEVICE', $device_name);
-		define('iPHP_HOST', $config['router']['URL']);
-		header("Access-Control-Allow-Origin: " . iPHP_HOST);
-		header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
-        self::device_url_check();
-    }
-    private static function device_url_check(){
-        if(stripos(iPHP_REQUEST_URL, iPHP_HOST) === false){
-            $redirect_url = str_replace(iPHP_REQUEST_HOST,iPHP_HOST, iPHP_REQUEST_URL);
-            header("Expires:1 January, 1970 00:00:01 GMT");
-            header("Cache-Control: no-cache");
-            header("Pragma: no-cache");
-            // header("X-REDIRECT-REF: ".iPHP_REQUEST_URL);
-            // header("X-iPHP_HOST: ".iPHP_HOST);
-            // header("X-REDIRECT_URL: ".$redirect_url);
-            // header("X-STRIPOS: ".(stripos(iPHP_REQUEST_URL, iPHP_HOST) === false));
-            // iPHP::http_status(301);
-            // exit($redirect_url);
-            // iPHP::redirect($redirect_url);
-        }
-	}
-	private static function device_check($deviceArray = null, $flag = false) {
-		foreach ((array) $deviceArray as $key => $device) {
-			if ($device['tpl']) {
-				$check = false;
-				if ($flag == 'ua') {
-					$device['ua'] && $check = self::device_agent($device['ua']);
-				} elseif ($flag == 'device') {
-					$_device = iPHP::PG('device');
-					if ($device['ua'] == $_device || $device['name'] == $_device) {
-						$check = true;
-					}
-				} elseif ($flag == 'domain') {
-					if (stripos($device['domain'], $_SERVER['HTTP_HOST']) !== false && empty($device['ua'])) {
-						$check = true;
-					}
-				}
-				if ($check) {
-					return array($device['name'], $device['tpl'], $device['domain']);
-				}
-			}
-		}
-	}
-	private static function device_agent($user_agent) {
-        $user_agent = str_replace(',','|',preg_quote($user_agent,'/'));
-        return ($user_agent && preg_match('@'.$user_agent.'@i',$_SERVER["HTTP_USER_AGENT"]));
-	}
 	public static function run($app = NULL, $do = NULL, $args = NULL, $prefix = "do_") {
 		//empty($app) && $app   = $_GET['app']; //单一入口
 		if (empty($app)) {
@@ -198,11 +133,11 @@ class iPHP {
 		}
 
 		if (!in_array($app, (array)self::$apps) && iPHP_DEBUG) {
-			iPHP::throw404('运行出错！找不到应用程序: <b>' . $app . '</b>', '0001');
+			iPHP::error_404('运行出错！找不到应用程序: <b>' . $app . '</b>', '0001');
 		}
 		self::$app_path = iPHP_APP_DIR . '/' . $app;
 		self::$app_file = self::$app_path . '/' . $app . '.app.php';
-		is_file(self::$app_file) OR iPHP::throw404('运行出错！找不到文件: <b>' . $app . '.app.php</b>', '0002');
+		is_file(self::$app_file) OR iPHP::error_404('运行出错！找不到文件: <b>' . $app . '.app.php</b>', '0002');
 		if ($do === NULL) {
 			$do = iPHP_APP;
 			$_GET['do'] && $do = iSecurity::escapeStr($_GET['do']);
@@ -231,7 +166,7 @@ class iPHP {
 		iPHP::$iTPL->_iVARS += self::$app_vars;
 		self::$app = iPHP::app($app);
 		if (self::$app_do && self::$app->methods) {
-			in_array(self::$app_do, self::$app->methods) OR iPHP::throw404('运行出错！ <b>' . self::$app_name . '</b> 类中找不到方法定义: <b>' . self::$app_method . '</b>', '0003');
+			in_array(self::$app_do, self::$app->methods) OR iPHP::error_404('运行出错！ <b>' . self::$app_name . '</b> 类中找不到方法定义: <b>' . self::$app_method . '</b>', '0003');
 			$method = self::$app_method;
 			$args === null && $args = self::$app_args;
 			if ($args) {
@@ -240,41 +175,14 @@ class iPHP {
 				}
 				return call_user_func_array(array(self::$app, $method), (array) $args);
 			} else {
-				method_exists(self::$app, self::$app_method) OR iPHP::throw404('运行出错！ <b>' . self::$app_name . '</b> 类中 <b>' . self::$app_method . '</b> 方法不存在', '0004');
+				method_exists(self::$app, self::$app_method) OR iPHP::error_404('运行出错！ <b>' . self::$app_name . '</b> 类中 <b>' . self::$app_method . '</b> 方法不存在', '0004');
 				return self::$app->$method();
 			}
 		} else {
-			iPHP::throw404('运行出错！ <b>' . self::$app_name . '</b> 类中 <b>' . self::$app_method . '</b> 方法不存在', '0005');
+			iPHP::error_404('运行出错！ <b>' . self::$app_name . '</b> 类中 <b>' . self::$app_method . '</b> 方法不存在', '0005');
 		}
 	}
-	public static function template_start() {
-		self::import(iPHP_CORE . '/iTemplate.class.php');
-		self::$iTPL = new iTemplate();
-        self::$iTPL->template_callback = array(
-            "resource" => array("iPHP","tpl_callback_path"),
-            "output"   => array("iPHP","tpl_callback_output")
-        );
-		self::$iTPL->debugging    = iPHP_TPL_DEBUGGING;
-		self::$iTPL->template_dir = iPHP_TPL_DIR;
-		self::$iTPL->compile_dir  = iPHP_TPL_CACHE;
-		self::$iTPL->left_delimiter = '<!--{';
-		self::$iTPL->right_delimiter = '}-->';
-		self::$iTPL->register_modifier("date", "get_date");
-		self::$iTPL->register_modifier("cut", "csubstr");
-		self::$iTPL->register_modifier("htmlcut", "htmlcut");
-		self::$iTPL->register_modifier("cnlen", "cstrlen");
-		self::$iTPL->register_modifier("html2txt", "html2text");
-		self::$iTPL->register_modifier("key2num", "key2num");
-		//self::$iTPL->register_modifier("pinyin","GetPinyin");
-		self::$iTPL->register_modifier("unicode", "get_unicode");
-		//self::$iTPL->register_modifier("small","gethumb");
-		self::$iTPL->register_modifier("thumb", "small");
-		self::$iTPL->register_modifier("random", "random");
-		self::$iTPL->register_modifier("fields", "select_fields");
-		self::$iTPL->register_block("cache", array("iPHP", "tpl_block_cache"));
-		self::$iTPL->assign('GET', $_GET);
-		self::$iTPL->assign('POST', $_POST);
-	}
+
 	public static function app_vars($app_name = true, $out = false) {
 		$app_name === true && $app_name = self::$app_name;
 		$rs = iPHP::get_vars($app_name);
@@ -283,7 +191,7 @@ class iPHP {
 	public static function get_vars($key = null) {
 		return self::$iTPL->get_template_vars($key);
 	}
-	public static function clear_compiled_tpl($file = null) {
+	public static function clear_tpl($file = null) {
 		self::$iTPL->clear_compiled_tpl($file);
 	}
 	public static function assign($key, $value) {
@@ -302,7 +210,7 @@ class iPHP {
 		return self::$iTPL->fetch($tpl);
 	}
 	public static function view($tpl, $p = 'index') {
-		$tpl OR self::throw404('运行出错！请设置模板文件', '001', 'TPL');
+		$tpl OR self::error_404('运行出错！请设置模板文件', '001', 'TPL');
 		if (self::$iVIEW == 'html') {
 			return self::$iTPL->fetch($tpl);
 		} else {
@@ -325,67 +233,7 @@ class iPHP {
 			echo '</div>';
 		}
 	}
-	public static function tpl_block_cache($vars, $content, &$tpl) {
-		$vars['id'] OR iUI::warning('cache 标签出错! 缺少"id"属性或"id"值为空.');
-		$cache_time = isset($vars['time']) ? (int) $vars['time'] : -1;
-		$cache_name = iPHP_DEVICE . '/part/' . $vars['id'];
-		$cache = iCache::get($cache_name);
-		if (empty($cache)) {
-			if ($content === null) {
-				return null;
-			}
-			$cache = $content;
-			iCache::set($cache_name, $content, $cache_time);
-			unset($content);
-		}
-		if ($vars['assign']) {
-			$tpl->assign($vars['assign'], $cache);
-			return ture;
-		}
-		if ($content === null) {
-			return $cache;
-		}
-		// return $cache;
-	}
-	/**
-	 * 模板路径
-	 * @param  [type] $tpl [description]
-	 * @return [type]      [description]
-	 */
-	public static function tpl_callback_path($tpl){
-		if (strpos($tpl, iPHP_APP . ':/') !== false) {
-			$_tpl = str_replace(iPHP_APP . ':/', iPHP_DEFAULT_TPL, $tpl);
-			if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
-				return $_tpl;
-			}
 
-			if (iPHP_DEVICE != 'desktop') {
-//移动设备
-				$_tpl = str_replace(iPHP_APP . ':/', iPHP_MOBILE_TPL, $tpl); // mobile/
-				if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
-					return $_tpl;
-				}
-
-			}
-			$tpl = str_replace(iPHP_APP . ':/', iPHP_APP, $tpl); //iCMS
-		} elseif (strpos($tpl, '{iTPL}') !== false) {
-			$tpl = str_replace('{iTPL}', iPHP_DEFAULT_TPL, $tpl);
-		}
-		if (iPHP_DEVICE != 'desktop' && strpos($tpl, iPHP_APP) === false) {
-			$current_tpl = dirname($tpl);
-			if (!in_array($current_tpl, array(iPHP_DEFAULT_TPL, iPHP_MOBILE_TPL))) {
-				$tpl = str_replace($current_tpl . '/', iPHP_DEFAULT_TPL . '/', $tpl);
-			}
-		}
-		if (@is_file(iPHP_TPL_DIR . "/" . $tpl)) {
-			return $tpl;
-		} else {
-			self::throw404('运行出错！ 找不到模板文件 <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
-		}
-	}
-    public static function tpl_callback_output($html,$file=null){
-        return $html;
-    }
 	public static function is_ajax() {
 		return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"||$_SERVER["X-Requested-With"] == "XMLHttpRequest");
 	}
@@ -470,36 +318,28 @@ class iPHP {
 	}
 
 	public static function import($path, $dump = false) {
-		$key = str_replace(iPATH, 'iPHP://', $path);
+		$key = str_replace(iPATH, '/', $path);
+		// $key =substr(md5($path), 8,16) ;
 		if ($dump) {
-			if (!isset($GLOBALS['_iPHP_REQ'][$key])) {
-				$GLOBALS['_iPHP_REQ'][$key] = include $path;
+			if (!isset($GLOBALS['iPHP_REQ'][$key])) {
+				$GLOBALS['iPHP_REQ'][$key] = include $path;
 			}
-			return $GLOBALS['_iPHP_REQ'][$key];
+			return $GLOBALS['iPHP_REQ'][$key];
 		}
 
-		if (isset($GLOBALS['_iPHP_REQ'][$key])) {
+		if (isset($GLOBALS['iPHP_REQ'][$key])) {
 			return;
 		}
 
-		$GLOBALS['_iPHP_REQ'][$key] = true;
-		require_once $path;
-	}
-	public static function core($fname, $cname = null, $msg = '',$core = null) {
-		$cname === null && $cname = $fname;
-		$cname = 'i' . $cname;
-		if (!class_exists($cname)) {
-			$core===null && $core = iPHP_CORE;
-			$path = $core . '/i' . $fname . '.class.php';
-			if (@is_file($path)) {
-				self::import($path);
-			} else {
-				$msg OR $msg = 'file ' . $path . ' not exist';
-				self::throwException($msg, 0020);
-			}
-		}
+		$GLOBALS['iPHP_REQ'][$key] = true;
+		require $path;
 	}
 
+	public static function appid($a) {
+		print_r($GLOBALS);
+		print_r($a);
+		exit;
+	}
 	public static function app($app = NULL, $args = NULL) {
 		if($app=='keywords.app'){
 			$obj = new empty_app();
@@ -515,7 +355,7 @@ class iPHP {
 			}else{
 				if($file_type=='admincp'){
 					$file_type='subadmincp';
-					$obj_name = $app_dir.$app_name . 'Admincp';
+					$object = $app_dir.$app_name . 'Admincp';
 					// $app_name = $app_dir.'.'.$app_name;
 				}
 			}
@@ -525,22 +365,22 @@ class iPHP {
 
 		switch ($file_type) {
 			case 'class':
-				$obj_name = $app_name;
+				$object = $app_name;
 				break;
 			case 'admincp':
-				$obj_name = $app_name . 'Admincp';
+				$object = $app_name . 'Admincp';
 				break;
 			case 'subadmincp':
 				$app_file = $app_dir.'.'.$app_name.'.admincp';
 				break;
 			case 'table':
-				$obj_name = $app_name . 'Table';
-				$args = "S";
+				$object = $app_name . 'Table';
+				$args = "static";
 				break;
 			case 'func':
-				$args = "I";
+				$args = "include";
 				break;
-			default:$obj_name = $app_name . 'App';
+			default:$object = $app_name . 'App';
 				break;
 		}
 		$path = iPHP_APP_DIR . '/' . $app_dir . '/' . $app_file . '.php';
@@ -554,8 +394,10 @@ class iPHP {
 			return;
 		}
 
-		$obj = new $obj_name();
-		$args && call_user_func_array(array($obj, '__construct'), (array) $args);
+		$obj = new $object();
+		if(method_exists($obj , '__construct' ) && $args){
+			call_user_func_array(array($obj, '__construct'), (array) $args);
+		}
 		return $obj;
 	}
 	public static function vendor($name, $args = null) {
@@ -570,13 +412,13 @@ class iPHP {
 		}
 	}
 	public static function router($key, $var = null) {
-		if(isset($GLOBALS['ROUTER'])){
-			$routerArray = $GLOBALS['ROUTER'];
+		if(isset($GLOBALS['iPHP_ROUTER'])){
+			$routerArray = $GLOBALS['iPHP_ROUTER'];
 		}else{
 			$path = iPHP_APP_CONF . '/router.json';
-			@is_file($path) OR self::throwException($path . ' not exist', 0013);
+			@is_file($path) OR self::error_throw($path . ' not exist', 0013);
 			$routerArray = json_decode(file_get_contents($path), true);
-			$GLOBALS['ROUTER'] = $routerArray;
+			$GLOBALS['iPHP_ROUTER'] = $routerArray;
 		}
 		$routerKey = $key;
 		is_array($key) && $routerKey = $key[0];
@@ -601,43 +443,8 @@ class iPHP {
 		if ($var == '?&') {
 			$url .= iPHP_ROUTER_REWRITE ? '?' : '&';
 		}
-		$url = str_replace('iCMS_API', iCMS_API, $url);
+		$url = str_replace('__API__', iCMS_API, $url);
 		return $url;
-	}
-
-	public static function throwException($msg, $code) {
-		trigger_error(iPHP_APP . ' ' . $msg . '(' . $code . ')', E_USER_ERROR);
-	}
-
-	public static function throw404($msg = "", $code = "") {
-		iPHP_DEBUG && self::throwException($msg, $code);
-		self::http_status(404, $code);
-		if (defined('iPHP_URL_404')) {
-			iPHP_URL_404 && self::redirect(iPHP_URL_404 . '?url=' . urlencode($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
-		}
-		exit();
-	}
-
-	public static function http_status($code, $ECODE = '') {
-		static $_status = array(
-			// Success 2xx
-			200 => 'OK',
-			// Redirection 3xx
-			301 => 'Moved Permanently',
-			302 => 'Moved Temporarily ', // 1.1
-            304 => 'Not Modified',
-			// Client Error 4xx
-			400 => 'Bad Request',
-			403 => 'Forbidden',
-			404 => 'Not Found',
-			// Server Error 5xx
-			500 => 'Internal Server Error',
-			503 => 'Service Unavailable',
-		);
-		if (isset($_status[$code])) {
-			header('HTTP/1.1 ' . $code . ' ' . $_status[$code]);
-			$ECODE && header("X-iPHP-ECODE:" . $ECODE);
-		}
 	}
 
 	public static function map_sql($where, $type = null, $field = 'iid') {
@@ -786,7 +593,6 @@ class iPHP {
     }
 	//模板翻页函数
 	public static function page($conf) {
-		iPHP::core("Pages");
 		$conf['lang'] = iUI::lang(iPHP_APP . ':page');
 		$iPages = new iPages($conf);
 		if ($iPages->totalpage > 1) {
@@ -830,78 +636,104 @@ class iPHP {
 		}
 		exit;
 	}
-
-}
-
-function iPHP_ERROR_HANDLER($errno, $errstr, $errfile, $errline) {
-	$errno = $errno & error_reporting();
-    if($errno == 0) return;
-	defined('E_STRICT') OR define('E_STRICT', 2048);
-	defined('E_RECOVERABLE_ERROR') OR define('E_RECOVERABLE_ERROR', 4096);
-	$html = "<pre>\n<b>";
-	switch ($errno) {
-        case E_ERROR:              $html.="Error";                  break;
-        case E_WARNING:            $html.="Warning";                break;
-        case E_PARSE:              $html.="Parse Error";            break;
-        case E_NOTICE:             $html.="Notice";                 break;
-        case E_CORE_ERROR:         $html.="Core Error";             break;
-        case E_CORE_WARNING:       $html.="Core Warning";           break;
-        case E_COMPILE_ERROR:      $html.="Compile Error";          break;
-        case E_COMPILE_WARNING:    $html.="Compile Warning";        break;
-        case E_USER_ERROR:         $html.="iPHP Error";             break;
-        case E_USER_WARNING:       $html.="iPHP Warning";           break;
-        case E_USER_NOTICE:        $html.="iPHP Notice";            break;
-        case E_STRICT:             $html.="Strict Notice";          break;
-        case E_RECOVERABLE_ERROR:  $html.="Recoverable Error";      break;
-        default:                   $html.="Unknown error ($errno)"; break;
-	}
-	$html .= ":</b> $errstr\n";
-	if (function_exists('debug_backtrace')) {
-		//print "backtrace:\n";
-		$backtrace = debug_backtrace();
-		foreach ($backtrace as $i => $l) {
-			$html .= "[$i] in function <b>{$l['class']}{$l['type']}{$l['function']}</b>";
-			$l['file'] && $html .= " in <b>{$l['file']}</b>";
-			$l['line'] && $html .= " on line <b>{$l['line']}</b>";
-			$html .= "\n";
+	public static function http_status($code, $ECODE = '') {
+		static $_status = array(
+			// Success 2xx
+			200 => 'OK',
+			// Redirection 3xx
+			301 => 'Moved Permanently',
+			302 => 'Moved Temporarily ', // 1.1
+            304 => 'Not Modified',
+			// Client Error 4xx
+			400 => 'Bad Request',
+			403 => 'Forbidden',
+			404 => 'Not Found',
+			// Server Error 5xx
+			500 => 'Internal Server Error',
+			503 => 'Service Unavailable',
+		);
+		if (isset($_status[$code])) {
+			header('HTTP/1.1 ' . $code . ' ' . $_status[$code]);
+			$ECODE && header("X-iPHP-ECODE:" . $ECODE);
 		}
 	}
-	$html .= "\n</pre>";
-	$html = str_replace('\\', '/', $html);
-	$html = str_replace(iPATH, 'iPHP://', $html);
-    if(PHP_SAPI=='cli'){
-        $html = str_replace(array("<b>", "</b>", "<pre>", "</pre>"), array("\033[31m","\033[0m",''), $html);
-        echo $html."\n";
-        exit;
-    }
-	if (isset($_GET['frame'])) {
-		iUI::$dialog['lock'] = true;
-		$html = str_replace("\n", '<br />', $html);
-		iUI::dialog(array("warning:#:warning-sign:#:{$html}", '系统错误!可发邮件到 idreamsoft@qq.com 反馈错误!我们将及时处理'), 'js:1', 30000000);
-		exit;
+	public static function error_throw($msg, $code) {
+		trigger_error($msg . '(' . $code . ')', E_USER_ERROR);
 	}
-	if ($_POST) {
-        if(iPHP::is_ajax()){
-            $array = array('code'=>'0','msg'=>$html);
-            echo json_encode($array);
-        }else{
-            $html = str_replace(array("\r", "\\", "\"", "\n", "<b>", "</b>", "<pre>", "</pre>"), array(' ', "\\\\", "\\\"", '\n', ''), $html);
-            echo '<script>top.alert("' . $html . '")</script>';
-        }
-        exit;
-    }
-    @header('HTTP/1.1 500 Internal Server Error');
-    @header('Status: 500 Internal Server Error');
-    @header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-    @header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-    @header("Cache-Control: no-store, no-cache, must-revalidate");
-    @header("Cache-Control: post-check=0, pre-check=0", false);
-    @header("Pragma: no-cache");
-	$html = str_replace("\n", '<br />', $html);
-	exit($html);
-}
-class empty_app {
-	public function run($value){
-		return $value;
+	public static function error_404($msg = "", $code = "") {
+		iPHP_DEBUG && self::error_throw($msg, $code);
+		self::http_status(404, $code);
+		if (defined('iPHP_URL_404')) {
+			iPHP_URL_404 && self::redirect(iPHP_URL_404 . '?url=' . urlencode($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']));
+		}
+		exit();
+	}
+	public static function error_handler($errno, $errstr, $errfile, $errline) {
+		$errno = $errno & error_reporting();
+	    if($errno == 0) return;
+		defined('E_STRICT') OR define('E_STRICT', 2048);
+		defined('E_RECOVERABLE_ERROR') OR define('E_RECOVERABLE_ERROR', 4096);
+		$html = "<pre>\n<b>";
+		switch ($errno) {
+	        case E_ERROR:              $html.="Error";                  break;
+	        case E_WARNING:            $html.="Warning";                break;
+	        case E_PARSE:              $html.="Parse Error";            break;
+	        case E_NOTICE:             $html.="Notice";                 break;
+	        case E_CORE_ERROR:         $html.="Core Error";             break;
+	        case E_CORE_WARNING:       $html.="Core Warning";           break;
+	        case E_COMPILE_ERROR:      $html.="Compile Error";          break;
+	        case E_COMPILE_WARNING:    $html.="Compile Warning";        break;
+	        case E_USER_ERROR:         $html.="iPHP Error";             break;
+	        case E_USER_WARNING:       $html.="iPHP Warning";           break;
+	        case E_USER_NOTICE:        $html.="iPHP Notice";            break;
+	        case E_STRICT:             $html.="Strict Notice";          break;
+	        case E_RECOVERABLE_ERROR:  $html.="Recoverable Error";      break;
+	        default:                   $html.="Unknown error ($errno)"; break;
+		}
+		$html .= ":</b> $errstr\n";
+		if (function_exists('debug_backtrace')) {
+			//print "backtrace:\n";
+			$backtrace = debug_backtrace();
+			foreach ($backtrace as $i => $l) {
+				$html .= "[$i] in function <b>{$l['class']}{$l['type']}{$l['function']}</b>";
+				$l['file'] && $html .= " in <b>{$l['file']}</b>";
+				$l['line'] && $html .= " on line <b>{$l['line']}</b>";
+				$html .= "\n";
+			}
+		}
+		$html .= "\n</pre>";
+		$html = str_replace('\\', '/', $html);
+		$html = str_replace(iPATH, 'iPHP://', $html);
+	    if(PHP_SAPI=='cli'){
+	        $html = str_replace(array("<b>", "</b>", "<pre>", "</pre>"), array("\033[31m","\033[0m",''), $html);
+	        echo $html."\n";
+	        exit;
+	    }
+		if (isset($_GET['frame'])) {
+			iUI::$dialog['lock'] = true;
+			$html = str_replace("\n", '<br />', $html);
+			iUI::dialog(array("warning:#:warning-sign:#:{$html}", '系统错误!可发邮件到 idreamsoft@qq.com 反馈错误!我们将及时处理'), 'js:1', 30000000);
+			exit;
+		}
+		if ($_POST) {
+	        if(iPHP::is_ajax()){
+	            $array = array('code'=>'0','msg'=>$html);
+	            echo json_encode($array);
+	        }else{
+	            $html = str_replace(array("\r", "\\", "\"", "\n", "<b>", "</b>", "<pre>", "</pre>"), array(' ', "\\\\", "\\\"", '\n', ''), $html);
+	            echo '<script>top.alert("' . $html . '")</script>';
+	        }
+	        exit;
+	    }
+	    @header('HTTP/1.1 500 Internal Server Error');
+	    @header('Status: 500 Internal Server Error');
+	    @header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+	    @header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+	    @header("Cache-Control: no-store, no-cache, must-revalidate");
+	    @header("Cache-Control: post-check=0, pre-check=0", false);
+	    @header("Pragma: no-cache");
+	    @header("X-iPHP-ERROR:" . $errstr);
+		$html = str_replace("\n", '<br />', $html);
+		exit($html);
 	}
 }

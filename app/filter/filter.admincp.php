@@ -16,8 +16,7 @@ class filterAdmincp{
         $this->do_config();
     }
     public function do_config(){
-        $configApp = iPHP::app('config.admincp');
-        $configApp->app('999999');
+        configAdmincp::app('999999');
     }
     public function do_save_config(){
         $filter  = explode("\n",$_POST['config']['filter']);
@@ -25,13 +24,11 @@ class filterAdmincp{
         $_POST['config']['filter']  = array_unique($filter);
         $_POST['config']['disable'] = array_unique($disable);
 
-        $configApp = iPHP::app('config.admincp');
-        $configApp->save('999999',null,array($this,'cache'));
+        configAdmincp::save('999999',null,array($this,'cache'));
     }
     public function cache($config=null){
         if($config===null){
-            $configApp = iPHP::app('config.admincp');
-            $config  = $configApp->app('999999',null,true);
+            $config  = configAdmincp::app('999999',null,true);
         }
     	iCache::set('iCMS/filter.array',$config['filter'],0);
     	iCache::set('iCMS/filter.disable',$config['disable'],0);

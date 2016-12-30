@@ -328,6 +328,12 @@ function get_user_pic($uid,$size=0,$dir='avatar') {
 	return $path;
 }
 
+function auth_encode($string){
+    return authcode($string,"ENCODE");
+}
+function auth_decode($string){
+    return authcode($string);
+}
 function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
 	$ckey_length   = 8;
 	$key           = md5($key ? $key : iPHP_KEY);
@@ -401,68 +407,8 @@ function get_unicode($string){
 	$json  = json_encode($array);
 	return str_replace(array('["','"]'), '', $json);
 }
-function utf2uni($c) {
-    switch(strlen($c)) {
-        case 1:
-            return ord($c);
-        case 2:
-            $n = (ord($c[0]) & 0x3f) << 6;
-            $n += ord($c[1]) & 0x3f;
-            return $n;
-        case 3:
-            $n = (ord($c[0]) & 0x1f) << 12;
-            $n += (ord($c[1]) & 0x3f) << 6;
-            $n += ord($c[2]) & 0x3f;
-            return $n;
-        case 4:
-            $n = (ord($c[0]) & 0x0f) << 18;
-            $n += (ord($c[1]) & 0x3f) << 12;
-            $n += (ord($c[2]) & 0x3f) << 6;
-            $n += ord($c[3]) & 0x3f;
-            return $n;
-    }
-}
-function pinyin($str,$split="",$pn=true) {
-    if(!isset($GLOBALS["iPHP.PY"])) {
-        $GLOBALS["iPHP.PY"] = unserialize(gzuncompress(iFS::read(iPHP_PATH.'/pinyin.table')));
-    }
-    preg_match_all('/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/',trim($str),$match);
-    $s = $match[0];
-    $c = count($s);
-    for ($i=0;$i<$c;$i++) {
-        $uni = strtoupper(dechex(utf2uni($s[$i])));
-        if(strlen($uni)>2) {
-			$pyArr = $GLOBALS["iPHP.PY"][$uni];
-			$py    = is_array($pyArr)?$pyArr[0]:$pyArr;
-            $pn && $py=str_replace(array('1','2','3','4','5'), '', $py);
-            $zh && $split && $R[]=$split;
-			$R[]  = strtolower($py);
-			$zh   = true;
-			$az09 = false;
-        }else if(preg_match("/[a-z0-9]/i",$s[$i])) {
-            $zh && $i!=0 && !$az09 && $split && $R[]=$split;
-			$R[]  = $s[$i];
-			$zh   = true;
-			$az09 = true;
-        }else {
-            $sp=true;
-            if($split){
-                if($s[$i]==' ') {
-                    $R[]=$sp?'':$split;
-                    $sp=false;
-                }else {
-                    $R[]=$sp?$split:'';
-                    $sp=true;
-                }
-            }else {
-                $R[]='';
-            }
-			$zh   = false;
-			$az09 = false;
-        }
-    }
-    return str_replace(array('Üe','Üan','Ün','lÜ','nÜ'),array('ue','uan','un','lv','nv'),implode('',(array)$R));
-}
+
+
 function select_fields($array,$fields='',$map=false){
     $fields_array = explode(',', $fields);
     foreach ($fields_array as $key => $field) {

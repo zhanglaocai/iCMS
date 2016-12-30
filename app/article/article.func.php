@@ -7,7 +7,6 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('tag.class', 'static');
 function article_list($vars) {
 	if ($vars['loop'] === "rel" && empty($vars['id'])) {
 		return false;
@@ -45,7 +44,6 @@ function article_list($vars) {
 		$vars['sub'] && $cids += iPHP::app("category")->get_cids($vars['cids'], true);
 
 		if ($cids) {
-			iCMS::core('Map');
 			iMap::init('category', iCMS_APP_ARTICLE);
 			$map_where += iMap::where($cids);
 		}
@@ -55,13 +53,11 @@ function article_list($vars) {
 	}
 
 	if (isset($vars['pids']) && !isset($vars['pid'])) {
-		iCMS::core('Map');
 		iMap::init('prop', iCMS_APP_ARTICLE);
 		$map_where += iMap::where($vars['pids']);
 	}
 
 	if (isset($vars['tids'])) {
-		iCMS::core('Map');
 		iMap::init('tags', iCMS_APP_ARTICLE);
 		$map_where += iMap::where($vars['tids']);
 	}
