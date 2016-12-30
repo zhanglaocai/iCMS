@@ -10,7 +10,6 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('tag.class','static');
 class tagAdmincp{
     public $callback = array();
     public function __construct() {
@@ -93,7 +92,7 @@ class tagAdmincp{
         }
         $rs     = iDB::all("SELECT * FROM `#iCMS@__tags` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
-        $propArray = iPHP::app('prop.admincp')->get("pid",null,'array');
+        $propArray = propAdmincp::get("pid",null,'array');
     	include admincp::view("tag.manage");
     }
     public function do_import(){

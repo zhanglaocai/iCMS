@@ -26,7 +26,7 @@ class filterAdmincp{
 
         configAdmincp::save('999999',null,array($this,'cache'));
     }
-    public function cache($config=null){
+    public static function cache($config=null){
         if($config===null){
             $config  = configAdmincp::app('999999',null,true);
         }
@@ -34,7 +34,7 @@ class filterAdmincp{
     	iCache::set('iCMS/filter.disable',$config['disable'],0);
     }
     //过滤
-    public function run(&$content){
+    public static function run(&$content){
         $disable = iCache::get('iCMS/filter.disable');  //disable禁止
         //禁止关键词
         $subject = $content;

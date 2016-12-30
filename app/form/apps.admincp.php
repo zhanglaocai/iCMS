@@ -125,7 +125,7 @@ class appsAdmincp{
 		}
 	}
     public function cache(){
-    	APPS::cache();
+    	apps::cache();
     }
     public function field_html($fid='{fid}',$fname='{fname}',$param='{param}'){
       return '<div class="row-fluid" id="'.$fid.'">'.

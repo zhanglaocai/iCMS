@@ -64,7 +64,7 @@ $(function(){
         <div class="input-prepend"> <span class="add-on">标签属性</span>
           <select name="pid" id="pid" class="span2 chosen-select">
             <option value="-1">所有标签</option>
-            <?php echo $pid_select = iPHP::app('prop.admincp')->get("pid") ; ?>
+            <?php echo $pid_select = propAdmincp::get("pid") ; ?>
           </select>
         </div>
         <div class="input-prepend input-append"> <span class="add-on">栏目</span>
@@ -181,7 +181,7 @@ $(function(){
           </td>
           <td><a href="<?php echo APP_DOURI; ?>&cid=<?php echo $rs[$i]['cid'] ; ?><?php echo $uri ; ?>"><?php echo $C['name'] ; ?></a></td>
           <td><a href="<?php echo APP_DOURI; ?>&tcid=<?php echo $rs[$i]['tcid'] ; ?><?php echo $uri ; ?>"><?php echo $TC['name'] ; ?></a></td>
-          <td><?php $rs[$i]['pid'] && iPHP::app('prop.admincp')->flag($rs[$i]['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?></td>
+          <td><?php $rs[$i]['pid'] && propAdmincp::flag($rs[$i]['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?></td>
           <td><?php echo $rs[$i]['count']; ?></td>
           <td><?php echo get_date($rs[$i]['pubdate'],'Y-m-d H:i');?><br /><?php echo get_date($rs[$i]['postime'],'Y-m-d H:i');?></td>
           <td>

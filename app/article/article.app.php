@@ -100,6 +100,8 @@ class articleApp {
 		);
 		$article = $this->value($article, $article_data, $vars, $page, $tpl);
 
+		iPHP::plugin('article',$article,iCMS::$config['plugin']['article']);
+
 		unset($article_data);
 		if ($article === false) {
 			return false;
@@ -175,7 +177,6 @@ class articleApp {
 				unset($body);
 			}
 
-			$article['body']     = iPHP::app("keywords.app")->run($article['body']);
 			$article['body']     = $this->body_ad($article['body']);
 			$article['body']     = $this->taoke($article['body']);
 			$article['taoke']    = $this->taoke;

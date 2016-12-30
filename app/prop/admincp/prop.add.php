@@ -35,7 +35,7 @@ iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
             <div class="btn-group">
               <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>
               <ul class="dropdown-menu">
-                <?php foreach (APPS::get_array("2") as $key => $value) {?>
+                <?php foreach (apps::get_array("2") as $key => $value) {?>
                   # code...
                 <? }?>
                 <li><a href="javascript:;" appid="2" app='article'>article:文章</a></li>

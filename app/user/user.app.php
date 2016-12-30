@@ -221,11 +221,11 @@ class userApp {
 		empty($cid) && iUI::alert('请选择所属栏目！');
 		empty($body) && iUI::alert('文章内容不能为空！');
 
-		$fwd = iPHP::app('filter.admincp')->run($title);
+		$fwd = filterAdmincp::run($title);
 		$fwd && iUI::alert('user:publish:filter_title');
-		$fwd = iPHP::app('filter.admincp')->run($description);
+		$fwd = filterAdmincp::run($description);
 		$fwd && iUI::alert('user:publish:filter_desc');
-		$fwd = iPHP::app('filter.admincp')->run($body);
+		$fwd = filterAdmincp::run($body);
 		$fwd && iUI::alert('user:publish:filter_body');
 
 		$articleApp = iPHP::app("article.admincp");
@@ -330,7 +330,7 @@ class userApp {
                 AND `id`='$id'
             ");
 
-			$table = APPS::get_table($comment->appid);
+			$table = apps::get_table($comment->appid);
 
 			if($table['name']&&$table['primary']){
 				iDB::query("
@@ -809,7 +809,7 @@ class userApp {
 		$uid = user::$userid;
 		$name = iSecurity::escapeStr($_POST['name']);
 		empty($name) && iUI::code(0, 'user:category:empty', 'add_category', 'json');
-		$fwd = iPHP::app('filter.admincp')->run($name);
+		$fwd = filterAdmincp::run($name);
 		$fwd && iUI::code(0, 'user:category:filter', 'add_category', 'json');
 		$max = iDB::value("
             SELECT COUNT(cid)

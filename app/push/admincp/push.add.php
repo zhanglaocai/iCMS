@@ -52,7 +52,7 @@ $(function(){
           <div class="input-prepend"> <span class="add-on">属性</span>
             <select name="pid" id="pid" class="chosen-select span3">
               <option value="0">普通推送[pid='0']</option>
-              <?php echo iPHP::app('prop.admincp')->get("pid",$rs['pid']) ; ?>
+              <?php echo propAdmincp::get("pid",$rs['pid']) ; ?>
             </select>
           </div>
           <div class="clearfloat mb10"></div>

@@ -120,7 +120,7 @@ class propAdmincp{
         $this->cache();
         iUI::success('缓存更新完成!','js:1');
     }
-    public function cache(){
+    public static function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__prop`");
     	foreach((array)$rs AS $row) {
             $type_field_id[$row['app'].'/'.$row['field']][$row['pid']] =
@@ -135,7 +135,7 @@ class propAdmincp{
     		iCache::set('iCMS/prop/'.$k,$a,0);
     	}
     }
-    public function btn_group($field, $app = null,$target = null){
+    public static function btn_group($field, $app = null,$target = null){
         $app OR $app = admincp::$APP_NAME;
         $propArray = iCache::get("iCMS/prop/{$app}/{$field}");
         $target OR $target = $field;
@@ -148,7 +148,7 @@ class propAdmincp{
         echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.$app.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
         echo '</ul></div>';
     }
-    public function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$app = "") {
+    public static function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$app = "") {
         $app OR $app = admincp::$APP_NAME;
         $propArray = iCache::get("iCMS/prop/{$app}/{$field}");
         is_array($valArray) OR $valArray  = explode(',', $valArray);
@@ -172,7 +172,7 @@ class propAdmincp{
         // $opt.='</select>';
         return implode('', $opt);
     }
-    public function flag($pids,$data,$url=null) {
+    public static function flag($pids,$data,$url=null) {
         $pidArray = explode(',',$pids);
         foreach ((array)$pidArray as $key => $pid) {
             $name = $data[$pid];
@@ -182,7 +182,7 @@ class propAdmincp{
             }
         }
     }
-    public function del_app_data($appid=null){
+    public static function del_app_data($appid=null){
         if($appid){
             iDB::query("DELETE FROM `#iCMS@__prop` WHERE `appid` = '".$appid."'");
             iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `appid` = '".$appid."';");

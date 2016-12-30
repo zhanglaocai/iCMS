@@ -10,7 +10,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('apps.class','static');
+// iPHP::app('apps.class','static');
 iPHP::app('apps.mysql.class','static');
 
 $a=iPinyin::get('asd');
@@ -34,17 +34,17 @@ class appsAdmincp{
       }
     }
     public function do_uninstall(){
-      APPS::uninstall($this->id);
+      apps::uninstall($this->id);
     }
     public function do_install(){
       $app = iSecurity::escapeStr($_GET['appname']);
       strstr($app,'..')!==false  && iUI::alert('您的应用有问题!');
-      $path = APPS::installed($app,'path');
+      $path = apps::installed($app,'path');
       iFS::write($path,'1');
       iUI::success('安装完成!','url:'.APP_URI);
     }
     public function do_add(){
-        $this->id && $rs = APPS::get($this->id);
+        $this->id && $rs = apps::get($this->id);
         include admincp::view("apps.add");
     }
 
@@ -146,8 +146,8 @@ class appsAdmincp{
     	include admincp::view("apps.manage");
     }
     public function do_manage(){
-      APPS::scan('config/app.json');
-      $rs = APPS::config('iApp.json');
+      apps::scan('config/app.json');
+      $rs = apps::config('iApp.json');
       include admincp::view("apps.json.manage");
     }
     public function do_del($id = null,$dialog=true){
@@ -182,7 +182,7 @@ class appsAdmincp{
       iUI::success('更新完成');
     }
     public function cache(){
-    	APPS::cache();
+    	apps::cache();
     }
     public function field_html($fid='{fid}',$fname='{fname}',$param='{param}'){
       return '<div class="row-fluid" id="'.$fid.'">'.

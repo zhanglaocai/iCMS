@@ -278,7 +278,7 @@ function _modal_dialog(cancel_text){
                 <option value="2"> 回收站 [status='2']</option>
                 <option value="3"> 待审核 [status='3']</option>
                 <option value="4"> 未通过 [status='4']</option>
-                <?php echo iPHP::app('prop.admincp')->get("status") ; ?>
+                <?php echo propAdmincp::get("status") ; ?>
               </select>
             </div>
             <div class="clearfloat mb10"></div>
@@ -295,7 +295,7 @@ function _modal_dialog(cancel_text){
             <div class="input-prepend"> <span class="add-on">属 性</span>
               <select name="pid[]" id="pid" class="chosen-select span6" multiple="multiple">
                 <option value="0">普通文章[pid='0']</option>
-                <?php echo iPHP::app('prop.admincp')->get("pid") ; ?>
+                <?php echo propAdmincp::get("pid") ; ?>
               </select>
             </div>
             <div class="clearfloat mb10"></div>
@@ -309,12 +309,12 @@ function _modal_dialog(cancel_text){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">出 处</span>
               <input type="text" name="source" class="span6" id="source" value="<?php echo $rs['source'] ; ?>"/>
-              <?php $propApp->btn_group("source");?>
+              <?php propAdmincp::btn_group("source");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">作 者</span>
               <input type="text" name="author" class="span2" id="author" value="<?php echo $rs['author'] ; ?>"/>
-              <?php $propApp->btn_group("author");?>
+              <?php propAdmincp::btn_group("author");?>
             </div>
             <div class="input-prepend"> <span class="add-on">编 辑</span>
               <input type="text" name="editor" class="span2" id="editor" value="<?php echo $rs['editor'] ; ?>"/>

@@ -219,14 +219,14 @@ class pushAdmincp{
         //删除分类
         iPHP::app('category.admincp')->del_app_data($app['id']);
         //删除属性
-        iPHP::app('prop.admincp')->del_app_data($app['id']);
+        propAdmincp::del_app_data($app['id']);
         //删除文件
         iFile::del_app_data($app['id']);
         //删除配置
         iPHP::app('config.admincp')->del($app['id'],$app['app']);
 
         //删除表
-        APPS::drop_app_table($app['table']);
+        apps::drop_app_table($app['table']);
         // 删除APP
         iFS::rmdir($appdir);
         iUI::success('应用删除完成!','js:1');

@@ -80,7 +80,7 @@ admincp::head();
               <?php foreach ($this->type_array as $key => $type) {?>
                 <option value="<?php echo $key;?>"><?php echo $type;?>[type='<?php echo $key;?>']</option>
               <?php }?>
-              <?php echo iPHP::app('prop.admincp')->get("type") ; ?>
+              <?php echo propAdmincp::get("type") ; ?>
             </select>
           </div>
           <script>$(function(){iCMS.select('type',"<?php echo $rs['type']?$rs['type']:0 ; ?>");})</script>

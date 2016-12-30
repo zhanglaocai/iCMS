@@ -88,7 +88,7 @@ class keywordsAdmincp{
     		break;
 		}
 	}
-    public function cache(){
+    public static function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__keywords` ORDER BY CHAR_LENGTH(`keyword`) DESC");
         // iCache::delete('iCMS/keywords');
         if($rs){

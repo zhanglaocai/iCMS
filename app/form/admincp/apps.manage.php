@@ -53,7 +53,7 @@ $(function(){
           <tbody>
             <?php
             for($i=0;$i<$_count;$i++){
-              $table = APPS::get_table($rs[$i]['id']);
+              $table = apps::get_table($rs[$i]['id']);
             ?>
             <tr id="tr<?php echo $rs[$i]['id'] ; ?>">
               <td>

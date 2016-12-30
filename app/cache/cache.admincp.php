@@ -8,14 +8,13 @@
 * @licence http://www.idreamsoft.com/license.php
 */
 class cacheAdmincp{
-    public $acp = array('config.admincp','prop.admincp','filter.admincp','keywords.admincp');
+    public $acp = array('configAdmincp','propAdmincp','filterAdmincp','keywordsAdmincp');
     public function __construct() {
         $this->do_app();
     }
     public function do_all(){
         foreach ($this->acp as $key => $acp) {
-            $acp = iPHP::app($acp);
-            $acp->cache();
+            $acp::cache();
         }
         $this->do_menu(false);
         $this->do_allcategory(false);
@@ -27,8 +26,8 @@ class cacheAdmincp{
     }
     public function do_iCMS($dialog=true){
 		if (in_array($_GET['acp'], $this->acp)) {
-	    	$acp = iPHP::app($_GET['acp']);
-	    	$acp->cache();
+	    	$acp = $_GET['acp'];
+	    	$acp::cache();
 	    	$dialog && iUI::success('更新完成');
 		}
     }
@@ -37,20 +36,20 @@ class cacheAdmincp{
     	$dialog && iUI::success('更新完成','js:1');
     }
     public function do_allcategory($dialog=true){
-    	$category = iPHP::app('category.class');
+    	$category = new category();
     	$category->cache(true);
     	$dialog && iUI::success('更新完成');
     }
     public function do_category($dialog=true){
-        $categoryApp = new categoryAdmincp();
+        $categoryApp = new articleCategoryAdmincp();
         $categoryApp->do_cache($dialog);
     }
     public function do_pushcategory($dialog=true){
-        $categoryApp = iPHP::app('push.category.admincp');
+        $categoryApp = new pushCategoryAdmincp();
         $categoryApp->do_cache($dialog);
     }
     public function do_tagcategory($dialog=true){
-        $categoryApp = iPHP::app('tag.category.admincp');
+        $categoryApp = new tagCategoryAdmincp();
         $categoryApp->do_cache($dialog);
     }
     public function do_tpl($dialog=true){
@@ -58,12 +57,11 @@ class cacheAdmincp{
     	$dialog && iUI::success('清理完成');
     }
     public function do_article_count($dialog=true){
-        $app = iPHP::app('article.category.admincp');
-    	$app->re_app_count();
+        $categoryApp = new articleCategoryAdmincp();
+    	$categoryApp->re_app_count();
     	$dialog && iUI::success('更新完成');
     }
     public function do_app($dialog=true){
-        iPHP::app('apps.class','static');
-        APPS::cache();
+        apps::cache();
     }
 }

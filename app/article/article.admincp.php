@@ -82,7 +82,6 @@ class articleAdmincp{
         $strpos   = strpos(__REF__,'?');
         $REFERER  = $strpos===false?'':substr(__REF__,$strpos);
         $defArray = iCache::get('iCMS/defaults');
-        $propApp  = iPHP::app('prop.admincp');
         if($this->config['markdown']){
             include admincp::view("article.markdown");
         }else{
@@ -176,7 +175,6 @@ class articleAdmincp{
     			}
     		break;
     		case 'tag':
-    			iPHP::app('tag.class','static');
 		     	foreach($_POST['id'] AS $id){
                     $art  = article::row($id,'tags,cid');
                     $mtag = iSecurity::escapeStr($_POST['mtag']);
@@ -252,7 +250,6 @@ class articleAdmincp{
 
 		$art = article::row($id,'tags,cid');
 		if($tags){
-			iPHP::app('tag.class','static');
 			$tags = tag::diff($tags,$art['tags'],members::$userid,$id,$art['cid']);
 		    $tags = addslashes($tags);
         }
@@ -453,7 +450,7 @@ class articleAdmincp{
         }
         $rs = iDB::all("SELECT * FROM `#iCMS@__article` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
-        $propArray = iPHP::app('prop.admincp')->get("pid",null,'array');
+        $propArray = propAdmincp::get("pid",null,'array');
         include admincp::view("article.manage");
     }
     public function do_save(){
@@ -515,7 +512,7 @@ class articleAdmincp{
         $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
 
         if($this->callback['code']){
-            $fwd = iPHP::app('filter.admincp')->run($title);
+            $fwd = filterAdmincp::run($title);
             if($fwd){
                 echo '标题中包含【'.$fwd.'】被系统屏蔽的字符，请重新填写。';
                 return false;
@@ -523,11 +520,11 @@ class articleAdmincp{
         }
 
         if($this->config['filter']) {
-            $fwd = iPHP::app('filter.admincp')->run($title);
+            $fwd = filterAdmincp::run($title);
             $fwd && iUI::alert('标题中包含被系统屏蔽的字符，请重新填写。');
-            $fwd = iPHP::app('filter.admincp')->run($description);
+            $fwd = filterAdmincp::run($description);
             $fwd && iUI::alert('简介中包含被系统屏蔽的字符，请重新填写。');
-            // $fwd = iPHP::app('filter.admincp')->run($body);
+            // $fwd = filterAdmincp::run($body);
             // $fwd && iUI::alert('内容中包含被系统屏蔽的字符，请重新填写。');
         }
 
@@ -578,8 +575,6 @@ class articleAdmincp{
             admincp::callback($aid,$this,'primary');
 
             if($tags){
-
-                iPHP::app('tag.class','static');
                 if(isset($_POST['tag_status'])){
                     tag::$addStatus = $_POST['tag_status'];
                 }
@@ -635,7 +630,6 @@ class articleAdmincp{
         }else{
             isset($_POST['ischapter']) OR $chapter = 0;
 			if($tags){
-				iPHP::app('tag.class','static');
 	            tag::diff($tags,$_tags,members::$userid,$aid,$cid);
             }
             $picdata = $this->picdata($pic,$mpic,$spic);
@@ -704,7 +698,6 @@ class articleAdmincp{
         $msg.= $this->del_msg('相关文件数据删除');
 
         if($art['tags']){
-            iPHP::app('tag.class','static');
             //只删除关联数据 不删除标签
             tag::$remove = false;
             $msg.= tag::del($art['tags'],'name',$id);

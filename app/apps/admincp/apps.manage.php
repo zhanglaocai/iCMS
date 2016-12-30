@@ -68,7 +68,7 @@ $("#<?php echo APP_FORMID;?>").batch();
               foreach ($rs as $key => $data) {
               $table = json_decode($data['table']);
               $config = json_decode($data['config'],true);
-              $installed = APPS::installed($data['app'],$data['type']);
+              $installed = apps::installed($data['app'],$data['type']);
               // $admincp = __ADMINCP__.'='.$data['app'];
               // if($data['admincp']){
               //   $admincp = __ADMINCP__.'='.$data['admincp'];

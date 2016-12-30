@@ -41,7 +41,7 @@ hr { border-bottom:none; margin:4px 0px; }
           <select name="pid" id="pid" class="span2 chosen-select">
             <option value="-1">所有推送</option>
             <option value="0">普通推送[pid='0']</option>
-            <?php echo iPHP::app('prop.admincp')->get("pid") ; ?>
+            <?php echo propAdmincp::get("pid") ; ?>
           </select>
         </div>
         <div class="input-prepend input-append mb10"> <span class="add-on">版块</span>

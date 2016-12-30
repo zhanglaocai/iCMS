@@ -22,7 +22,6 @@ class iPHP {
 	public static $app_file   = null;
 	public static $app_args   = null;
 	public static $app_vars   = null;
-	public static $config     = array();
 	public static $hooks      = array();
 
 	public static $iTPL       = NULL;
@@ -37,10 +36,16 @@ class iPHP {
      */
 	public static function loader($name,$core=null){
 		if(strpos($name,'App') !== false) {
-			var_dump($name);
+			$app  = substr($name,0,-3);
+			$file = $app.'.app';
+			$path = iPHP_APP_DIR . '/' . $app . '/' . $file . '.php';
 		}else if(strpos($name,'Admincp') !== false) {
-			$app  = rtrim($name,'Admincp');
+			$app  = substr($name,0,-7);
 			$file = $app.'.admincp';
+			if(strpos($app,'Category') !== false) {
+				$app  = substr($app,0,-8);
+				$file = $app.'.category.admincp';
+			}
 			$path = iPHP_APP_DIR . '/' . $app . '/' . $file . '.php';
 		}else if (strncmp('i', $name, 1) === 0) {
 			$map = array(
@@ -63,7 +68,45 @@ class iPHP {
 			$core == iPHP_CORE OR self::error_throw('CLASS <b>' . $name . '</b> NOT FOUND', 0020);
 		}
 	}
-
+	public static function plugin($app,&$resource=null,$plugin){
+		// if($plugin){
+		// 	foreach ($plugin as $_app => $callback) {
+		// 		if($_app==$app){
+		// 			foreach ($callback as $field => $call) {
+		// 				if(is_array($call[0])){
+		// 					foreach ($call as $key => $cb) {
+		// 						$resource[$field] = self::plugin_call_func($cb,$resource[$field]);
+		// 					}
+		// 				}else{
+		// 					$resource[$field] = self::plugin_call_func($call,$resource[$field]);
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }else{
+		// 	return false;
+		// }
+		if($plugin){
+			foreach ($plugin as $field => $call) {
+				if(is_array($call[0])){
+					foreach ($call as $key => $cb) {
+						$resource[$field] = self::plugin_call_func($cb,$resource[$field]);
+					}
+				}else{
+					$resource[$field] = self::plugin_call_func($call,$resource[$field]);
+				}
+			}
+		}else{
+			return false;
+		}
+	}
+	public static function plugin_call_func($callback,$value){
+		if (is_array($callback) && class_exists($callback[0])) {
+			return call_user_func_array($callback, (array)$value);
+		}else{
+			return $value;
+		}
+	}
 	public static function config() {
 		//iPHP_APP::autoload
 		spl_autoload_register(array(iPHP_APP, 'loader'));
@@ -160,7 +203,6 @@ class iPHP {
 				'DO' => self::$app_do,
 				'METHOD' => self::$app_method,
 			),
-			'CONFIG' => self::$config,
 		);
 		iPHP::$iTPL->_iVARS['SAPI'] .= self::$app_name;
 		iPHP::$iTPL->_iVARS += self::$app_vars;
@@ -192,6 +234,9 @@ class iPHP {
 		return self::$iTPL->get_template_vars($key);
 	}
 	public static function clear_tpl($file = null) {
+		if(empty(self::$iTPL)){
+			iTemplate::init();
+		}
 		self::$iTPL->clear_compiled_tpl($file);
 	}
 	public static function assign($key, $value) {

@@ -55,7 +55,7 @@ function modal_tplfile(el,a){
         <li><a href="#config-patch" data-toggle="tab">更新</a></li>
         <li><a href="#config-grade" data-toggle="tab">高级</a></li>
         <li><a href="#config-mail" data-toggle="tab">邮件</a></li>
-        <?php //APPS::config('tabs');?>
+        <?php //apps::config('tabs');?>
       </ul>
     </div>
     <div class="widget-content nopadding iCMS-config">
@@ -94,7 +94,7 @@ function modal_tplfile(el,a){
               </div>
             </div>
             <span class="help-inline">程序错误提示!如果网站显示空白或者不完整,可开启此项,方便排除错误.<a onclick="javscript:$('.debug_php_trace').toggle();">更多</a></span>
-            <div class="hide debug_php_trace">
+            <div class="<?php echo $config['debug']['php_trace']?'':'hide'; ?> debug_php_trace">
               <div class="clearfloat mb10"></div>
               <div class="input-prepend"> <span class="add-on">程序调试信息</span>
                 <div class="switch">
@@ -110,7 +110,7 @@ function modal_tplfile(el,a){
               </div>
             </div>
             <span class="help-inline">模板错误提示!如果网站显示空白或者不完整,可开启此项,方便排除错误!模板调整时也可开启 <a onclick="javscript:$('.debug_tpl_trace').toggle();">更多</a></span>
-            <div class="hide debug_tpl_trace">
+            <div class="<?php echo $config['debug']['tpl_trace']?'':'hide'; ?> debug_tpl_trace">
               <div class="clearfloat mb10"></div>
               <div class="input-prepend"> <span class="add-on">模板调试信息</span>
                 <div class="switch">
@@ -126,7 +126,7 @@ function modal_tplfile(el,a){
               </div>
             </div>
             <span class="help-inline">开启后将显示所有数据库错误信息. <a onclick="javscript:$('.debug_db_trace,.debug_db_explain').toggle();">更多</a></span>
-            <div class="hide debug_db_trace">
+            <div class="<?php echo $config['debug']['db_trace']?'':'hide'; ?> debug_db_trace">
               <div class="clearfloat mb10"></div>
               <div class="input-prepend"> <span class="add-on">SQL跟踪</span>
                 <div class="switch">
@@ -135,7 +135,7 @@ function modal_tplfile(el,a){
               </div>
               <span class="help-inline">开启后将显示所有SQL执行情况</span>
             </div>
-            <div class="hide debug_db_explain">
+            <div class="<?php echo $config['debug']['db_explain']?'':'hide'; ?> debug_db_explain">
               <div class="clearfloat mb10"></div>
               <div class="input-prepend"> <span class="add-on">SQL解释</span>
                 <div class="switch">

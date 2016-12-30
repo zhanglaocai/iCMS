@@ -89,7 +89,7 @@ class userAdmincp{
         }
         $rs     = iDB::all("SELECT * FROM `#iCMS@__user` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
-        $propArray = iPHP::app('prop.admincp')->get("pid",null,'array');
+        $propArray = propAdmincp::get("pid",null,'array');
         include admincp::view("user.manage");
     }
     public function do_save(){

@@ -12,19 +12,18 @@ class keywordsApp {
     public function API_iCMS(){
     }
     //内链
-    public function run($content) {
+    public static function run($content) {
         if (iCMS::$config['keywords']['limit'] == 0) {
             return $content;
         }
-
         $search  = iCache::get('iCMS/keywords.search');
         $replace = iCache::get('iCMS/keywords.replace');
         if($search && $replace){
-            return $this->replace($search, $replace,stripslashes($content),iCMS::$config['keywords']['limit']);
+            return self::replace($search, $replace,stripslashes($content),iCMS::$config['keywords']['limit']);
         }
         return $content;
     }
-    public function replace($search, $replace, $subject, $limit=-1) {
+    public static function replace($search, $replace, $subject, $limit=-1) {
         preg_match_all ("/<a[^>]*?>(.*?)<\/a>/si", $subject, $matches);//链接不替换
         $linkArray  = array_unique($matches[0]);
         $linkArray && $linkflip = array_flip($linkArray);

@@ -55,7 +55,7 @@ $(function(){
           <select name="pid" id="pid" class="span2 chosen-select">
             <option value="-1">所有用户</option>
             <option value="0">普通用户[pid='0']</option>
-            <?php echo iPHP::app('prop.admincp')->get("pid") ; ?>
+            <?php echo propAdmincp::get("pid") ; ?>
           </select>
         </div>
         <div class="input-prepend"> <span class="add-on">排序</span>
@@ -138,7 +138,7 @@ $(function(){
               <td>
                 <a href="<?php echo APP_URI; ?>&gid=<?php echo $rs[$i]['gid'] ; ?>"><?php echo $group->all[$rs[$i]['gid']]['name'] ; ?></a>
                 <br />
-                <?php $rs[$i]['pid'] && iPHP::app('prop.admincp')->flag($rs[$i]['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?>
+                <?php $rs[$i]['pid'] && propAdmincp::flag($rs[$i]['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?>
               </td>
               <td><?php echo $rs[$i]['lastloginip'] ; ?></td>
               <td>
