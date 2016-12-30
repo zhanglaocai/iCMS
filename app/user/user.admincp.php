@@ -12,7 +12,7 @@ class userAdmincp{
     public function __construct() {
         $this->appid    = iCMS_APP_USER;
         $this->uid      = (int)$_GET['id'];
-        $this->groupApp = iPHP::app('group.admincp',0);
+        $this->groupApp = new groupAdmincp(0);
     }
     public function do_config(){
         configAdmincp::app($this->appid);
@@ -37,14 +37,12 @@ class userAdmincp{
     public function do_login(){
         if($this->uid) {
             $user = iDB::row("SELECT * FROM `#iCMS@__user` WHERE `uid`='$this->uid' LIMIT 1;",ARRAY_A);
-            iPHP::app('user.class','static');
             user::set_cookie($user['username'],$user['password'],$user);
             $url = iPHP::router(array('uid:home',$this->uid));
             iPHP::redirect($url);
         }
     }
     public function do_iCMS(){
-        //iPHP::app('user.class','static');
         $sql = "WHERE 1=1";
         $pid = $_GET['pid'];
         if($_GET['keywords']) {

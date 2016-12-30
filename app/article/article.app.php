@@ -6,7 +6,7 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 class articleApp {
-	public $taoke   = false;
+	public static $taoke   = false;
 	public $methods = array('iCMS', 'article', 'clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
 	public $pregimg = "/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
 	public $config  = null;
@@ -48,7 +48,6 @@ class articleApp {
 		$this->article($iid, 1, '{iTPL}/article.comment.htm');
 	}
 	private function vote($type) {
-		// iPHP::app('user.class','static');
 		// user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
 
 		$aid = (int) $_POST['iid'];
@@ -126,8 +125,7 @@ class articleApp {
 
 		$article['appid'] = iCMS_APP_ARTICLE;
 
-		$categoryApp = iPHP::app("category");
-		$category = $categoryApp->category($article['cid'], false);
+		$category = categoryApp::category($article['cid'], false);
 
 		if ($tpl) {
 			$category OR iPHP::error_404('运行出错！找不到该文章的栏目缓存<b>cid:' . $article['cid'] . '</b> 请更新栏目缓存或者确认栏目是否存在', 10002);
@@ -153,9 +151,9 @@ class articleApp {
 
 		($tpl && $category['mode'] == '1') && iCMS::gotohtml($article['iurl']->path, $article['iurl']->href);
 
-		$article['category'] = $categoryApp->get_lite($category);
+		$article['category'] = categoryApp::get_lite($category);
 
-		$this->taoke = false;
+		self::$taoke = false;
 		if ($art_data) {
 			$pkey = intval($page - 1);
 			if ($article['chapter']) {
@@ -191,15 +189,14 @@ class articleApp {
 		if ($vars['tag']) {
 			$article['tags_fname'] = $category['name'];
 			if ($article['tags']) {
-				$tagApp    = iPHP::app("tag.app");
-				$multi_tag =$tagApp->multi_tag(array($article['id']=>$article['tags']));
+				$multi_tag = tagApp::multi_tag(array($article['id']=>$article['tags']));
 				$article+=(array)$multi_tag[$article['id']];
 			}
 			if(is_array($article['tags_array'])){
 				$tags_fname            = array_slice ($article['tags_array'],0,1);
 				$article['tags_fname'] = $tags_fname[0]['name'];
 			}
-			unset($tagApp, $multi_tag, $tags_fname);
+			unset($multi_tag, $tags_fname);
 		}
 
 		if ($vars['meta']) {
@@ -215,8 +212,8 @@ class articleApp {
 				$article['user'] = user::info($article['userid'], $article['author']);
 			}
 		}
-		$article['source'] = $this->text2link($article['source']);
-		$article['author'] = $this->text2link($article['author']);
+		$article['source'] = self::text2link($article['source']);
+		$article['author'] = self::text2link($article['author']);
 
 		$article['hits'] = array(
 			'script' => iCMS_API . '?app=article&do=hits&cid=' . $article['cid'] . '&id=' . $article['id'],
@@ -320,7 +317,7 @@ class articleApp {
 		unset($pagenav, $pagetext, $iPages, $pageArray);
 		return $article_page;
 	}
-	public function text2link($text=null){
+	public static function text2link($text=null){
 		if (strpos($text, '||') !== false) {
 			list($title, $url) = explode('||', $text);
 			return '<a href="' . $url . '" target="_blank">' . $title . '</a>';
@@ -329,7 +326,7 @@ class articleApp {
 		}
 	}
 
-	public function taoke($content) {
+	public static function taoke($content) {
 		preg_match_all('/<[^>]+>((http|https):\/\/(item|detail)\.(taobao|tmall)\.com\/.+)<\/[^>]+>/isU', $content, $taoke_array);
 		if ($taoke_array[1]) {
 			$tk_array = array_unique($taoke_array[1]);
@@ -338,14 +335,14 @@ class articleApp {
 				$tk_parse = parse_url($tk_url);
 				parse_str($tk_parse['query'], $tk_item_array);
 				$itemid = $tk_item_array['id'];
-				$tk_data[$tkid] = $this->taoke_tpl($itemid, $tk_url);
+				$tk_data[$tkid] = self::taoke_tpl($itemid, $tk_url);
 			}
 			$content = str_replace($tk_array, $tk_data, $content);
-			$this->taoke = true;
+			self::$taoke = true;
 		}
 		return $content;
 	}
-	public function taoke_tpl($itemid, $url, $title = null) {
+	public static function taoke_tpl($itemid, $url, $title = null) {
 		iPHP::assign('taoke', array(
 			'itemid' => $itemid,
 			'title' => $title,

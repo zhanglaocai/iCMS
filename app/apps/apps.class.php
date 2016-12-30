@@ -22,14 +22,16 @@ class apps {
         $data = self::get($appid);
 
         if($data){
-            $appname = $data['app'].'.admincp';
-            $app = iPHP::app($appname);
-            $app OR $app = iPHP::app($data['app'].'.app');
-            if(is_object($app)){
-                $app_methods = get_class_methods($app);
-                in_array('__uninstall', $app_methods) OR iUI::alert('卸载出错！ ['.$data['name'].']应用没有设置反安装程序[uninstall],请直接手动删除！');
-                return $app->__uninstall($data,self);
-            }
+            $appname = $data['app'].'Admincp';
+            $appname = $data['app'].'App';
+var_dump(@class_exists($appname));
+            // $app OR $app = iPHP::app($data['app'].'.app');
+
+            // if(is_object($app)){
+            //     $app_methods = get_class_methods($app);
+            //     in_array('__uninstall', $app_methods) OR iUI::alert('卸载出错！ ['.$data['name'].']应用没有设置反安装程序[uninstall],请直接手动删除！');
+            //     return $app->__uninstall($data,self);
+            // }
         }
         return false;
     }
@@ -37,13 +39,13 @@ class apps {
         $appdir  = dirname(strtr(__FILE__,'\\','/'));
         $appname = strtolower(__CLASS__);
         //删除分类
-        iPHP::app('category.admincp')->del_app_data($app['id']);
+        categoryAdmincp::del_app_data($app['id']);
         //删除属性
         propAdmincp::del_app_data($app['id']);
         //删除文件
         iFile::del_app_data($app['id']);
         //删除配置
-        iPHP::app('config.admincp')->del($app['id'],$app['app']);
+        configAdmincp::del($app['id'],$app['app']);
 
         //删除表
         apps::drop_app_table($app['table']);

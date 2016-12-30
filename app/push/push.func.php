@@ -15,12 +15,12 @@ function push_list($vars){
 
     if(isset($vars['cid!'])){
         $ncids    = explode(',',$vars['cid!']);
-        $vars['sub'] && $ncids+=iPHP::app("category")->get_cids($ncids,true);
+        $vars['sub'] && $ncids+=categoryApp::get_cids($ncids,true);
         $where_sql.= iPHP::where($ncids,'cid','not');
     }
     if(isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
-        $vars['sub'] && $cid+=iPHP::app("category")->get_cids($cid,true);
+        $vars['sub'] && $cid+=categoryApp::get_cids($cid,true);
         $where_sql.= iPHP::where($cid,'cid');
     }
 

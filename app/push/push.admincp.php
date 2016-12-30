@@ -40,7 +40,6 @@ class pushAdmincp{
         empty($rs['userid']) && $rs['userid']=members::$userid;
         $strpos 	= strpos(__REF__,'?');
         $REFERER 	= $strpos===false?'':substr(__REF__,$strpos);
-        iPHP::app('apps.class','static');
     	include admincp::view("push.add");
     }
 
@@ -217,13 +216,13 @@ class pushAdmincp{
         $appdir  = dirname(strtr(__FILE__,'\\','/'));
         $appname = strtolower(__CLASS__);
         //删除分类
-        iPHP::app('category.admincp')->del_app_data($app['id']);
+        categoryAdmincp::del_app_data($app['id']);
         //删除属性
         propAdmincp::del_app_data($app['id']);
         //删除文件
         iFile::del_app_data($app['id']);
         //删除配置
-        iPHP::app('config.admincp')->del($app['id'],$app['app']);
+        configAdmincp::del($app['id'],$app['app']);
 
         //删除表
         apps::drop_app_table($app['table']);

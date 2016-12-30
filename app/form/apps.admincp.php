@@ -10,7 +10,6 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('apps.class','include');
 
 class appsAdmincp{
     public function __construct() {

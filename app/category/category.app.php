@@ -5,11 +5,12 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
-define('CACHE_CATEGORY_ID',        'iCMS/category/');
-define('CACHE_CATEGORY_DIR2CID',   'iCMS/category/dir2cid');
-define('CACHE_CATEGORY_ROOTID',    'iCMS/category/rootid');
-
 class categoryApp{
+
+    const CACHE_CATEGORY_ID      = 'iCMS/category/';
+    const CACHE_CATEGORY_DIR2CID = 'iCMS/category/dir2cid';
+    const CACHE_CATEGORY_ROOTID  = 'iCMS/category/rootid';
+
 	public $methods	= array('iCMS','category');
     public function __construct($appid = iCMS_APP_ARTICLE) {
     	$this->appid = iCMS_APP_ARTICLE;
@@ -20,7 +21,7 @@ class categoryApp{
         $cid = (int)$_GET['cid'];
         $dir = iSecurity::escapeStr($_GET['dir']);
 		if(empty($cid) && $dir){
-			$cid = iCache::get(CACHE_CATEGORY_DIR2CID,$dir);
+			$cid = iCache::get(self::CACHE_CATEGORY_DIR2CID,$dir);
             $cid OR iPHP::error_404('运行出错！找不到该栏目<b>dir:'.$dir.'</b> 请更新栏目缓存或者确认栏目是否存在', 20002);
 		}
     	return $this->category($cid,$tpl);
@@ -30,8 +31,8 @@ class categoryApp{
         return $this->do_iCMS();
     }
 
-    public function category($id,$tpl='index') {
-        $category = iCache::get(CACHE_CATEGORY_ID.$id);
+    public static function category($id,$tpl='index') {
+        $category = iCache::get(self::CACHE_CATEGORY_ID.$id);
         if(empty($category) && $tpl){
             iPHP::error_404('运行出错！找不到该栏目<b>cid:'. $id.'</b> 请更新栏目缓存或者确认栏目是否存在', 20001);
         }
@@ -44,7 +45,7 @@ class categoryApp{
         }
 
         if($category['hasbody']){
-           $category['body'] = iCache::get(CACHE_CATEGORY_ID.$category['cid'].'.body');
+           $category['body'] = iCache::get(self::CACHE_CATEGORY_ID.$category['cid'].'.body');
            $category['body'] && $category['body'] = stripslashes($category['body']);
         }
 
@@ -80,7 +81,7 @@ class categoryApp{
         	return $category;
         }
     }
-    public function get_lite($category){
+    public static function get_lite($category){
         $keyArray = array(
             'sortnum','password','mode','domain',
             'isexamine','issend','isucshow',
@@ -88,15 +89,15 @@ class categoryApp{
         );
         foreach ($keyArray as $i => $key) {
             if(is_array($category[$key])){
-                $category[$key] = $this->get_lite($category[$key]);
+                $category[$key] = self::get_lite($category[$key]);
             }else{
                 unset($category[$key]);
             }
         }
         return $category;
     }
-    public function get_cids($cid = "0",$all=true,$root_array=null) {
-        $root_array OR $root_array = iCache::get(CACHE_CATEGORY_ROOTID);
+    public static function get_cids($cid = "0",$all=true,$root_array=null) {
+        $root_array OR $root_array = iCache::get(self::CACHE_CATEGORY_ROOTID);
         $cids = array();
         is_array($cid) OR $cid = explode(',', $cid);
         foreach($cid AS $_id) {
@@ -104,7 +105,7 @@ class categoryApp{
         }
         if($all){
             foreach((array)$cids AS $_cid) {
-                $root_array[$_cid] && $cids+= $this->get_cids($_cid,$all,$root_array);
+                $root_array[$_cid] && $cids+= self::get_cids($_cid,$all,$root_array);
             }
         }
         $cids = array_unique($cids);

@@ -31,17 +31,17 @@ function article_list($vars) {
 
 	if (isset($vars['cid!'])) {
 		$ncids = explode(',', $vars['cid!']);
-		$vars['sub'] && $ncids += iPHP::app("category")->get_cids($ncids, true);
+		$vars['sub'] && $ncids += categoryApp::get_cids($ncids, true);
 		$where_sql .= iPHP::where($ncids, 'cid', 'not');
 	}
 	if ($vars['cid'] && !isset($vars['cids'])) {
 		$cid = explode(',', $vars['cid']);
-		$vars['sub'] && $cid += iPHP::app("category")->get_cids($cid, true);
+		$vars['sub'] && $cid += categoryApp::get_cids($cid, true);
 		$where_sql .= iPHP::where($cid, 'cid');
 	}
 	if (isset($vars['cids']) && !$vars['cid']) {
 		$cids = explode(',', $vars['cids']);
-		$vars['sub'] && $cids += iPHP::app("category")->get_cids($vars['cids'], true);
+		$vars['sub'] && $cids += categoryApp::get_cids($vars['cids'], true);
 
 		if ($cids) {
 			iMap::init('category', iCMS_APP_ARTICLE);
@@ -210,7 +210,7 @@ function article_search($vars) {
 	isset($vars['postype']) && $SPH->SetFilter('postype', array($vars['postype']));
 
 	if (isset($vars['cid'])) {
-		$cids = $vars['sub'] ? iPHP::app("category")->get_cids($vars['cid'], true) : (array) $vars['cid'];
+		$cids = $vars['sub'] ? categoryApp::get_cids($vars['cid'], true) : (array) $vars['cid'];
 		$cids OR $cids = (array) $vars['cid'];
 		$cids = array_map("intval", $cids);
 		$SPH->SetFilter('cid', $cids);
@@ -267,15 +267,8 @@ function article_data($vars) {
 	$vars['aid'] OR iUI::warning('iCMS&#x3a;article&#x3a;data 标签出错! 缺少"aid"属性或"aid"值为空.');
 	$data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $vars['aid'] . "' LIMIT 1;", ARRAY_A);
 	if ($data['body']) {
-		$articleApp = iPHP::app("article");
-		$data['body'] = $articleApp->ubb($data['body']);
-		if (substr($data['body'], 0, 19) == '#--iCMS.Markdown--#') {
-			$data['body'] = substr($data['body'], 19);
-			$data['markdown'] = ture;
-			// $data['body'] = iPHP::Markdown($data['body']);
-		}
-		$data['body'] = $articleApp->keywords($data['body']);
-		$data['body'] = $articleApp->taoke($data['body']);
+		$data['body'] = articleApp::ubb($data['body']);
+		$data['body'] = articleApp::taoke($data['body']);
 	}
 	return $data;
 }
@@ -321,30 +314,29 @@ function article_next($vars) {
 function article_array($vars, $variable) {
 	$resource = array();
 	if ($variable) {
-		$articleApp = iPHP::app("article");
 		$vars['category_lite'] = true;
         if($vars['data']||$vars['pics']){
             $aidArray = iPHP::values($variable,'id','array',null);
-            $aidArray && $article_data = (array) $articleApp->data($aidArray);
+            $aidArray && $article_data = (array) articleApp::data($aidArray);
             unset($aidArray);
         }
         if($vars['tags']){
             $tagArray = iPHP::values($variable,'tags','array',null,'id');
             if($tagArray){
-				$tagApp    = iPHP::app("tag.app");
-				$tags_data = (array)$tagApp->multi_tag($tagArray);
+				$tags_data = (array)tagApp::multi_tag($tagArray);
             }
             unset($tagArray);
         }
 		foreach ($variable as $key => $value) {
-			$value = $articleApp->value($value, false, $vars);
+			$value = articleApp::value($value, false, $vars);
+
 			if ($value === false) {
 				continue;
 			}
             if(($vars['data']||$vars['pics']) && $article_data){
                 $value['data']  = (array)$article_data[$value['id']];
                 if($vars['pics']){
-					$value['pics'] = $articleApp->body_pics($value['data']['body']);
+					$value['pics'] = articleApp::body_pics($value['data']['body']);
 					if(!$value['data']){
 						unset($value['data']);
 					}

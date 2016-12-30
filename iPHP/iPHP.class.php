@@ -35,6 +35,10 @@ class iPHP {
      * @return bool
      */
 	public static function loader($name,$core=null){
+		if(strpos($name,'_') !== false) {
+			$file = $name.'.class';
+			list($name,$sub) = explode('_', $name);
+		}
 		if(strpos($name,'App') !== false) {
 			$app  = substr($name,0,-3);
 			$file = $app.'.app';
@@ -56,14 +60,14 @@ class iPHP {
 			$core===null && $core = iPHP_CORE;
 			$path = $core.'/'.$name.'.class.php';
 		}else if(in_array ($name, iPHP::$apps)){
-			$file = $name.'.class';
+			$file OR $file = $name.'.class';
 			$path = iPHP_APP_DIR . '/' . $name . '/' . $file . '.php';
 		}
 
 		if (@is_file($path)) {
 			$key = str_replace(iPATH, '/', $path);
 			$GLOBALS['iPHP_REQ'][$key] = true;
-			require $path;
+			require_once $path;
 		} else {
 			$core == iPHP_CORE OR self::error_throw('CLASS <b>' . $name . '</b> NOT FOUND', 0020);
 		}
@@ -101,7 +105,7 @@ class iPHP {
 		}
 	}
 	public static function plugin_call_func($callback,$value){
-		if (is_array($callback) && class_exists($callback[0])) {
+		if (is_array($callback) && @class_exists($callback[0])) {
 			return call_user_func_array($callback, (array)$value);
 		}else{
 			return $value;
@@ -206,7 +210,10 @@ class iPHP {
 		);
 		iPHP::$iTPL->_iVARS['SAPI'] .= self::$app_name;
 		iPHP::$iTPL->_iVARS += self::$app_vars;
-		self::$app = iPHP::app($app);
+
+		$obj_name = $app.'App';
+		self::$app = new $obj_name();
+
 		if (self::$app_do && self::$app->methods) {
 			in_array(self::$app_do, self::$app->methods) OR iPHP::error_404('运行出错！ <b>' . self::$app_name . '</b> 类中找不到方法定义: <b>' . self::$app_method . '</b>', '0003');
 			$method = self::$app_method;
@@ -386,10 +393,6 @@ class iPHP {
 		exit;
 	}
 	public static function app($app = NULL, $args = NULL) {
-		if($app=='keywords.app'){
-			$obj = new empty_app();
-			return $obj;
-		}
 		$app_dir = $app_name = $app;
 		$file_type = 'app';
 		if (strpos($app, '.') !== false) {

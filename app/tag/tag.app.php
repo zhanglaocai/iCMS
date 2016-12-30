@@ -77,15 +77,14 @@ class tagApp {
             return $tag;
         }
     }
-    public function value($tag) {
-        $categoryApp = iPHP::app("category");
+    public static function value($tag) {
         if($tag['cid']){
-            $category        = $categoryApp->category($tag['cid'],false);
-            $tag['category'] = $categoryApp->get_lite($category);
+            $category        = categoryApp::category($tag['cid'],false);
+            $tag['category'] = categoryApp::get_lite($category);
         }
         if($tag['tcid']){
-            $tag_category        = $categoryApp->category($tag['tcid'],false);
-            $tag['tag_category'] = $categoryApp->get_lite($tag_category);
+            $tag_category        = categoryApp::category($tag['tcid'],false);
+            $tag['tag_category'] = categoryApp::get_lite($tag_category);
         }
 
         $tag['iurl'] = iURL::get('tag', array($tag, $category, $tag_category));
@@ -114,7 +113,7 @@ class tagApp {
         }
         return $tag_array;
     }
-    public function multi($array) {
+    public static function multi($array) {
         if(empty($array)){
             return;
         }
@@ -125,11 +124,11 @@ class tagApp {
         }
         $rs = iDB::all("SELECT * FROM `#iCMS@__tags` where {$sql} AND `status`='1'", ARRAY_A);
         foreach ((array)$rs as $key => $tag) {
-            $tag && $tagArray[$tag['id']] = $this->value($tag);
+            $tag && $tagArray[$tag['id']] = self::value($tag);
         }
         return $tagArray;
     }
-    public function multi_tag($tags=0){
+    public static function multi_tag($tags=0){
         if(empty($tags)) return array();
 
         if(!is_array($tags) && strpos($tags, ',') !== false){
@@ -145,12 +144,12 @@ class tagApp {
                 }
             }
         }
-        $tagArray = $this->multi($tArray);
-        $tagArray = $this->map($tagArray,$tMap);
-        $tagArray = $this->app_tag($tagArray);
+        $tagArray = self::multi($tArray);
+        $tagArray = self::map($tagArray,$tMap);
+        $tagArray = self::app_tag($tagArray);
         return $tagArray;
     }
-    public function app_tag($array,$aid=null){
+    public static function app_tag($array,$aid=null){
         $tArray = array();
         foreach ((array) $array AS $_aid => $tag) {
             if(isset($tag['id'])){
@@ -158,12 +157,12 @@ class tagApp {
                 $tArray[$aid]['tags_array'][$tag['id']] = $tag;
                 $tArray[$aid]['tags_link'].= $tag['link'];
             }else{
-                $tArray+=(array)$this->app_tag($tag,$_aid);
+                $tArray+=(array)self::app_tag($tag,$_aid);
             }
         }
         return $tArray;
     }
-    public function map($tagArray,$tMap){
+    public static function map($tagArray,$tMap){
         $array = array();
         $map   = $tMap;
         foreach ((array)$tagArray as $tid => $tag) {

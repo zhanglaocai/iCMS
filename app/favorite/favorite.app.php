@@ -13,11 +13,9 @@ class favoriteApp {
         $this->id = (int)$_GET['id'];
     }
     private function __login(){
-        iPHP::app('user.class','static');
         user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
     }
     public function API_list(){
-        iPHP::app('user.class','static');
         user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
 
         iPHP::app('favorite.func');

@@ -39,8 +39,7 @@ class indexApp {
             empty($host) && $host = $_SERVER['HTTP_HOST'];
             $cid  = (int)$domain[$host];
             if($cid){
-                $app = iPHP::app("category");
-                $app->category($cid);
+                categoryApp::category($cid);
                 return true;
             }
         }

@@ -10,8 +10,6 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app("patch.class");
-
 class patchAdmincp{
 
 	public function __construct() {

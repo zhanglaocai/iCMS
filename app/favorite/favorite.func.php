@@ -7,7 +7,6 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('user.class','static');
 
 function favorite_list($vars=null){
 	$maxperpage = isset($vars['row'])?(int)$vars['row']:"10";
@@ -41,7 +40,6 @@ function favorite_list($vars=null){
 	if(empty($resource)){
 		$rs  = iDB::all("SELECT * FROM `#iCMS@__favorite` {$where_sql} {$order_sql} LIMIT {$offset},{$maxperpage}");
 		$resource = array();
-		$vars['user'] && iPHP::app('user.class','static');
 		if($rs)foreach ($rs as $key => $value) {
 			$value['url']  = iPHP::router(array('favorite:id',$value['id']));
 			$vars['user'] && $value['user'] = user::info($value['uid'],$value['nickname']);

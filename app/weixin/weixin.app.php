@@ -7,7 +7,6 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('weixin.class','static');
 
 class weixinApp {
     public $methods = array('interface');

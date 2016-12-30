@@ -9,7 +9,6 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('weixin.class','static');
 class weixinAdmincp{
     public function __construct() {
         $this->appid  = iCMS_APP_WEIXIN;

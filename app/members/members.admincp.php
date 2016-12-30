@@ -12,7 +12,7 @@
 class membersAdmincp{
     public function __construct() {
         $this->uid      = (int)$_GET['id'];
-        $this->groupApp = iPHP::app('group.admincp',1);
+        $this->groupApp = new groupAdmincp(1);
     }
 
     public function do_job(){

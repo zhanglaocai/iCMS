@@ -8,7 +8,6 @@
 defined('iPHP') OR exit('What are you doing?');
 
 function comment_user_info($uid=0,$username=null,$facesize=null){
-	iPHP::app('user.class','static');
 	return user::info($uid,$username,$facesize);
 }
 
@@ -81,12 +80,12 @@ function comment_list($vars){
 	}
     if(isset($vars['cid!'])){
     	$ncids    = explode(',',$vars['cid!']);
-        $vars['sub'] && $ncids+=iPHP::app("category")->get_cids($ncids,true);
+        $vars['sub'] && $ncids+=categoryApp::get_cids($ncids,true);
         $where_sql.= iPHP::where($ncids,'cid','not');
     }
     if(isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
-        $vars['sub'] && $cid+=iPHP::app("category")->get_cids($cid,true);
+        $vars['sub'] && $cid+=categoryApp::get_cids($cid,true);
         $where_sql.= iPHP::where($cid,'cid');
     }
     isset($vars['userid'])&& $where_sql.= " AND `userid`='{$vars['userid']}'";

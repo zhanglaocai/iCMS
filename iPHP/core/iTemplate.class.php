@@ -93,7 +93,7 @@ class iTemplate {
         if (@is_file(iPHP_TPL_DIR . "/" . $tpl)) {
             return $tpl;
         } else {
-            self::error_404('运行出错！ 找不到模板文件 <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
+            iPHP::error_404('运行出错！ 找不到模板文件 <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
         }
     }
     public static function callback_output($html,$file=null){

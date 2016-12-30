@@ -496,10 +496,10 @@ class categoryAdmincp extends category{
             return $url;
         }
     }
-    public function search_sql($cid,$field='cid'){
+    public static function search_sql($cid,$field='cid'){
         if($cid){
             $cids  = (array)$cid;
-            $_GET['sub'] && $cids+=iPHP::app("category")->get_ids($cid,true);
+            $_GET['sub'] && $cids+=categoryApp::get_ids($cid,true);
             $sql= iPHP::where($cids,$field);
         }
         return $sql;
@@ -578,11 +578,11 @@ class categoryAdmincp extends category{
         return $option;
     }
 
-    public function del_app_data($appid=null){
-        $appid===null && $this->appid=(int)$appid;
+    public static function del_app_data($appid=null){
+        $appid===null && self::$appid=(int)$appid;
 
-        iDB::query("DELETE FROM `#iCMS@__category` WHERE `appid` = '".$this->appid."'");
-        iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `appid` = '".$this->appid."';");
+        iDB::query("DELETE FROM `#iCMS@__category` WHERE `appid` = '".self::appid."'");
+        iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `appid` = '".self::appid."';");
     }
     //接口
     public function del_content($cid){

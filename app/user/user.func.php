@@ -6,8 +6,6 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 defined('iPHP') OR exit('What are you doing?');
-
-iPHP::app('user.class','static');
 function user_data($vars=null){
     if($vars['cookie']){
         return user::get_cookie();

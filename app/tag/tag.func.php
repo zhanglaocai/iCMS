@@ -37,12 +37,12 @@ function tag_list($vars){
 
     if(!isset($vars['cids']) && isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
-        $vars['sub'] && $cid+=iPHP::app("category")->get_cids($cid,true);
+        $vars['sub'] && $cid+=categoryApp::get_cids($cid,true);
         $where_sql.= iPHP::where($cid,'cid');
     }
     if(isset($vars['cids']) && !isset($vars['cid'])){
         $cids = explode(',',$vars['cids']);
-        $vars['sub'] && $cids+=iPHP::app("category")->get_cids($vars['cids'],true);
+        $vars['sub'] && $cids+=categoryApp::get_cids($vars['cids'],true);
 
         if($cids){
             iMap::init('category',iCMS_APP_TAG);
@@ -51,7 +51,7 @@ function tag_list($vars){
     }
     if(isset($vars['cid!'])){
         $ncids    = explode(',',$vars['cid!']);
-        $vars['sub'] && $ncids+=iPHP::app("category")->get_cids($ncids,true);
+        $vars['sub'] && $ncids+=categoryApp::get_cids($ncids,true);
         $where_sql.= iPHP::where($ncids,'cid','not');
     }
 
@@ -134,7 +134,6 @@ function tag_list($vars){
 }
 
 function tag_array($vars,$resource=null){
-	$tagApp = iPHP::app("tag");
     if($resource===null){
         if(isset($vars['name'])){
             $array = array($vars['name'],'name');
@@ -142,13 +141,13 @@ function tag_array($vars,$resource=null){
             $array = array($vars['id'],'id');
         }
         if($array){
-            return $tagApp->tag($array[0],$array[1],false);
+            return tagApp::tag($array[0],$array[1],false);
         }else{
             iUI::warning('iCMS&#x3a;tag&#x3a;array 标签出错! 缺少参数"id"或"name".');
         }
     }
     if($resource)foreach ($resource as $key => $value) {
-		$resource[$key] = $tagApp->value($value);
+		$resource[$key] = tagApp::value($value);
     }
     return $resource;
 }

@@ -8,8 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-iPHP::app('user.class','static');
-iPHP::app('apps.class','static');
+
 class commentAdmincp{
     public function __construct($appid=null) {
         $this->appid = iCMS_APP_COMMENT;
@@ -36,7 +35,7 @@ class commentAdmincp{
 		if($_GET['cid']){
             $cid = (int)$_GET['cid'];
             if(isset($_GET['sub'])){
-                $cids  = iPHP::app("category")->get_ids($cid,true);
+                $cids  = categoryApp::get_ids($cid,true);
                 array_push ($cids,$cid);
                 $sql.=" AND cid IN(".implode(',', $cids).")";
             }else{

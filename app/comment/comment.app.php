@@ -26,19 +26,18 @@ class commentApp {
 		$_GET['_display'] = $_GET['display'];
 		$_GET['display'] = 'default';
 		$_GET = iSecurity::escapeStr($_GET);
-		iPHP::app('comment.func');
+		// iPHP::app('comment.func');
 		return comment_list($_GET);
 	}
 	public function API_form() {
 		$_GET['_display'] = $_GET['display'];
 		$_GET['display'] = 'default';
 		$_GET = iSecurity::escapeStr($_GET);
-		iPHP::app('comment.func');
+		// iPHP::app('comment.func');
 		return comment_form($_GET);
 	}
 
 	public function API_like() {
-		// iPHP::app('user.class','static');
 		// user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
 
 		$this->id OR iUI::code(0, 'iCMS:article:empty_id', 0, 'json');
@@ -60,7 +59,6 @@ class commentApp {
 		$_GET['by'] && $vars['by'] = iSecurity::escapeStr($_GET['by']);
 		$_GET['date_format'] && $vars['date_format'] = iSecurity::escapeStr($_GET['date_format']);
 		$vars['page'] = true;
-		// iPHP::app('comment.func', 'static');
 		// $array = comment_list($vars);
 		// iUI::json($array);
 		iPHP::assign('vars',$vars);

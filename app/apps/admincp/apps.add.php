@@ -121,7 +121,7 @@ admincp::head();
       <?php
       if($rs['table'])foreach ($rs['table'] as $key => $table) {
       $tbn = iPHP_DB_PREFIX.$table[0];
-      if(!iMYSQL::check_table($tbn)){
+      if(!apps_db::check_table($tbn)){
       echo $tbn ."表不存在!";
       continue;
       }
@@ -143,7 +143,7 @@ admincp::head();
           </thead>
           <tbody>
             <?php
-            $orig_fields  = iMYSQL::fields($tbn);
+            $orig_fields  = apps_db::fields($tbn);
             foreach ((array)$orig_fields as $field => $value) {
             ?>
             <tr>
@@ -174,7 +174,7 @@ admincp::head();
             </thead>
             <tbody>
               <?php
-              $indexes  = iMYSQL::indexes($tbn);
+              $indexes  = apps_db::indexes($tbn);
               foreach ((array)$indexes as $ikey => $ivalue) {
               ?>
               <tr>
@@ -194,7 +194,7 @@ admincp::head();
             </thead>
             <tbody>
               <?php
-              $table_status  = iMYSQL::table_status($tbn);
+              $table_status  = apps_db::table_status($tbn);
               foreach ((array)$table_status as $tskey => $tsvalue) {
               ?>
               <tr>
@@ -218,7 +218,7 @@ admincp::head();
             <span class="help-inline">主键 自增ID</span>
           </div>
           <div class="clearfloat mb10"></div>
-          <?php foreach ($BASE_FIELDS[1] as $key => $value) { ?>
+          <?php foreach ((array)$BASE_FIELDS[1] as $key => $value) { ?>
           <div id="field_<?php echo $value; ?>">
             <div class="input-prepend">
               <span class="add-on"><?php echo $value; ?></span>

@@ -10,8 +10,6 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-// iPHP::app('article.class','static');
-
 class articleAdmincp{
     public $callback = array();
     public $chapter  = false;
@@ -376,7 +374,7 @@ class articleAdmincp{
                 $cids = $cid;
             }
             if($_GET['sub'] && $cid){
-                $cids = iPHP::app("category")->get_ids($cid,true);
+                $cids = categoryApp::get_ids($cid,true);
                 array_push ($cids,$cid);
             }
             if($_GET['scid'] && $cid){
