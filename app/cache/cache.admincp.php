@@ -41,15 +41,15 @@ class cacheAdmincp{
     	$dialog && iUI::success('更新完成');
     }
     public function do_category($dialog=true){
-        $categoryApp = new articleCategoryAdmincp();
+        $categoryApp = new article_categoryAdmincp();
         $categoryApp->do_cache($dialog);
     }
     public function do_pushcategory($dialog=true){
-        $categoryApp = new pushCategoryAdmincp();
+        $categoryApp = new push_categoryAdmincp();
         $categoryApp->do_cache($dialog);
     }
     public function do_tagcategory($dialog=true){
-        $categoryApp = new tagCategoryAdmincp();
+        $categoryApp = new tag_categoryAdmincp();
         $categoryApp->do_cache($dialog);
     }
     public function do_tpl($dialog=true){
@@ -57,7 +57,7 @@ class cacheAdmincp{
     	$dialog && iUI::success('清理完成');
     }
     public function do_article_count($dialog=true){
-        $categoryApp = new articleCategoryAdmincp();
+        $categoryApp = new article_categoryAdmincp();
     	$categoryApp->re_app_count();
     	$dialog && iUI::success('更新完成');
     }

@@ -12,4 +12,3 @@ function tpl_modifier_string_format()
 	$string = array_shift($_args);
 	return vsprintf($string, $_args);
 }
-?>

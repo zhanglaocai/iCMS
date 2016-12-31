@@ -38,8 +38,8 @@ class pushAdmincp{
         $cata_option	= $this->categoryApp->select('ca',$cid);
 
         empty($rs['userid']) && $rs['userid']=members::$userid;
-        $strpos 	= strpos(__REF__,'?');
-        $REFERER 	= $strpos===false?'':substr(__REF__,$strpos);
+        $strpos 	= strpos(iPHP_REFERER,'?');
+        $REFERER 	= $strpos===false?'':substr(iPHP_REFERER,$strpos);
     	include admincp::view("push.add");
     }
 

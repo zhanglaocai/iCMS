@@ -23,4 +23,3 @@ function tpl_modifier_replace($string, $search, $replace)
 	}
 		return $string;
 }
-?>

@@ -27,5 +27,3 @@ function tpl_modifier_count_words($string)
 
     return count($word_count);
 }
-
-?>

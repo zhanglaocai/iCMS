@@ -77,4 +77,3 @@ function tpl_block_textformat($params, $content, &$template_object)
 	//echo $content;
 }
 
-?>

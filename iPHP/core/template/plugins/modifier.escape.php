@@ -91,5 +91,3 @@ function tpl_modifier_escape($string, $esc_type = 'html', $char_set = 'UTF-8')
             return $string;
     }
 }
-
-?>

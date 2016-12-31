@@ -4,10 +4,9 @@
  * Copyright (c) 2012 iiiphp.com. All rights reserved.
  *
  * @author coolmoo <iiiphp@qq.com>
- * @site http://www.iiiphp.com
- * @licence http://www.iiiphp.com/license
- * @version 1.0.1
- * @package common
+ * @website http://www.iiiphp.com
+ * @license http://www.iiiphp.com/license
+ * @version 2.0.0
  */
 defined('iPHP') OR exit('What are you doing?');
 
@@ -35,23 +34,29 @@ class iPHP {
      * @return bool
      */
 	public static function loader($name,$core=null){
+		//app_mo.class.php
 		if(strpos($name,'_') !== false) {
-			$file = $name.'.class';
-			list($name,$sub) = explode('_', $name);
+			if(strpos($name,'Admincp') === false) {
+				$file = $name.'.class';
+				list($name,) = explode('_', $name);
+			}
 		}
+		//app.app.php
 		if(strpos($name,'App') !== false) {
 			$app  = substr($name,0,-3);
 			$file = $app.'.app';
 			$path = iPHP_APP_DIR . '/' . $app . '/' . $file . '.php';
 		}else if(strpos($name,'Admincp') !== false) {
+			//app.admincp.php
 			$app  = substr($name,0,-7);
 			$file = $app.'.admincp';
-			if(strpos($app,'Category') !== false) {
-				$app  = substr($app,0,-8);
-				$file = $app.'.category.admincp';
+			if(strpos($app,'_') !== false) {
+				//app_mo.admincp.php
+				list($app,) = explode('_', $name);
 			}
 			$path = iPHP_APP_DIR . '/' . $app . '/' . $file . '.php';
 		}else if (strncmp('i', $name, 1) === 0) {
+			//iclass.class.php
 			$map = array(
 				'iFS' => "iFileSystem",
 				'iDB' => version_compare(PHP_VERSION,'5.5','>=')?'iMysqli':'iMysql'
@@ -59,7 +64,8 @@ class iPHP {
 			$map[$name] && $name = $map[$name];
 			$core===null && $core = iPHP_CORE;
 			$path = $core.'/'.$name.'.class.php';
-		}else if(in_array ($name, iPHP::$apps)){
+		}else if(iPHP::$apps[$name]){
+			//app.class.php
 			$file OR $file = $name.'.class';
 			$path = iPHP_APP_DIR . '/' . $name . '/' . $file . '.php';
 		}
@@ -122,21 +128,25 @@ class iPHP {
 		iCache::init($config['cache']);
 		// self::$apps = array("apps");
 		self::$apps = $config['apps'];
-
+		self::define_app();
 		iPHP_DB_DEBUG   && iDB::$show_errors  = true;
 		iPHP_DB_TRACE   && iDB::$debug        = true;
 		iPHP_DB_EXPLAIN && iDB::$show_explain = true;
 		return $config;
 	}
-
+	public static function define_app() {
+		foreach (self::$apps as $_app => $_appid) {
+			define(iPHP_APP.'_APP_'.strtoupper($_app),$_appid);
+		}
+	}
 	public static function run($app = NULL, $do = NULL, $args = NULL, $prefix = "do_") {
 		//empty($app) && $app   = $_GET['app']; //单一入口
 		if (empty($app)) {
-			$fi = iFS::name(__SELF__);
+			$fi = iFS::name(iPHP_SELF);
 			$app = $fi['name'];
 		}
 
-		if (!in_array($app, (array)self::$apps) && iPHP_DEBUG) {
+		if (!self::$apps[$app] && iPHP_DEBUG) {
 			iPHP::error_404('Unable to find application <b>' . $app . '</b>', '0001');
 		}
 		self::$app_path = iPHP_APP_DIR . '/' . $app;
@@ -158,7 +168,7 @@ class iPHP {
 		self::$app_vars = array(
 			"MOBILE" => iPHP::$mobile,
 			'COOKIE_PRE' => iPHP_COOKIE_PRE,
-			'REFER' => __REF__,
+			'REFER' => iPHP_REFERER,
 			"APP" => array(
 				'NAME' => self::$app_name,
 				'DO' => self::$app_do,
@@ -228,6 +238,10 @@ class iPHP {
 		}
 	}
 	public static function debug_info($tpl) {
+			print_r ( get_defined_vars ());
+			print_r ( get_defined_constants ( true ));
+			print_r ( get_declared_classes ());
+exit;
 		if (iPHP_DEBUG && iPHP_DEBUG_TRACE) {
 			echo '<div class="well">';
 			echo '<h3 class="label label-default">调试信息</h3>';
@@ -344,10 +358,13 @@ class iPHP {
 		require $path;
 	}
 
-	public static function appid($a) {
-		print_r($GLOBALS);
-		print_r($a);
-		exit;
+	public static function appid($app=null,$trans=false) {
+		$array = self::$apps;
+		$trans && $array = array_flip($array);
+        if($array[$app]){
+            return $array[$app];
+        }
+        return '0';
 	}
 	public static function app($app = NULL, $args = NULL) {
 		$app_dir = $app_name = $app;
@@ -473,7 +490,7 @@ class iPHP {
 		return $total;
 	}
 	public static function redirect($URL = '') {
-		$URL OR $URL = __REF__;
+		$URL OR $URL = iPHP_REFERER;
 		if (headers_sent()) {
 			echo '<meta http-equiv=\'refresh\' content=\'0;url=' . $URL . '\'><script type="text/javascript">window.location.replace(\'' . $URL . '\');</script>';
 		} else {

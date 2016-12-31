@@ -41,7 +41,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 <script type="text/javascript">
 window.iCMS.init({
-  API:'<?php echo __SELF__;?>',
+  API:'<?php echo iPHP_SELF;?>',
   UI:'./app/admincp/ui',
   URL:'<?php echo iCMS_URL;?>',
   PUBLIC:'<?php echo iCMS_PUBLIC_URL;?>',

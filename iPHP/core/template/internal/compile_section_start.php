@@ -14,7 +14,7 @@ function compile_section_start($arguments, &$object){
 	if (empty($section_name)){
 		$object->trigger_error("missing section name", E_USER_ERROR, __FILE__, __LINE__);
 	}
-	$output .= "if (isset(\$this->_sections['$section_name'])) unset(\$this->_sections['$section_name']);\n";	
+	$output .= "if (isset(\$this->_sections['$section_name'])) unset(\$this->_sections['$section_name']);\n";
 	$section_props = "\$this->_sections['$section_name']";
 	foreach ($attrs as $attr_name => $attr_value){
 		switch ($attr_name){
@@ -99,4 +99,3 @@ function compile_section_start($arguments, &$object){
 
 	return $output;
 }
-?>

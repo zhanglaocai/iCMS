@@ -51,4 +51,3 @@ function tpl_modifier_debug_print_var($var, $depth = 0, $length = 40)
     }
 }
 
-?>

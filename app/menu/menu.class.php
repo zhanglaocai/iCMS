@@ -125,7 +125,7 @@ class menu {
     public function href($a){
         $a['href'] && $href = __ADMINCP__.'='.$a['href'];
         $a['target']=='iPHP_FRAME' && $href.='&frame=iPHP';
-        $a['href']=='__SELF__' && $href = __SELF__;
+        $a['href']=='iPHP_SELF' && $href = iPHP_SELF;
         $a['href'] OR $href = 'javascript:;';
         strstr($a['href'], 'http://') && $href = $a['href'];
         return $href;

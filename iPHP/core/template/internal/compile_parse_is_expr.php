@@ -73,5 +73,3 @@ function compile_parse_is_expr($is_arg, $_args, &$object)
 
 	return $_args;
 }
-
-?>

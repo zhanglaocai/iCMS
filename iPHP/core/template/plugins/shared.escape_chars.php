@@ -15,4 +15,3 @@ function tpl_escape_chars($string)
 	return $string;
 }
 
-?>

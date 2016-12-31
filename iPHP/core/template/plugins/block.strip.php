@@ -22,4 +22,3 @@ function tpl_block_strip($params, $content, &$tpl)
 	);
 	return preg_replace($_strip_search, $_strip_replace, $content);
 }
-?>

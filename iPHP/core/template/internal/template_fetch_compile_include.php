@@ -27,5 +27,3 @@ function template_fetch_compile_include($_templatelite_include_file, $_templatel
 	$object->error && $_compiled_output = str_replace($object->_error_reporting,'',$_compiled_output);
 	return $_compiled_output;
 }
-
-?>

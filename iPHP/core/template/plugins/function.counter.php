@@ -94,4 +94,3 @@ function tpl_function_counter($params, &$tpl)
 
 	return $retval;
 }
-?>

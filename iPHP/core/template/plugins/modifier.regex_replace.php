@@ -30,4 +30,3 @@ function tpl_modifier_regex_replace($string, $search, $replace)
     return preg_replace($search, $replace, $string);
 }
 
-?>

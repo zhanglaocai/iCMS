@@ -94,7 +94,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
       <h5>搜索</h5>
     </div>
     <div class="widget-content">
-      <form action="<?php echo __SELF__ ; ?>" method="get" class="form-inline">
+      <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
         <input type="hidden" name="appid" value="<?php echo $this->appid;?>" />
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <input type="hidden" name="do" value="<?php echo admincp::$APP_DO;?>" />

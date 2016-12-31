@@ -19,7 +19,7 @@ admincp::head();
       </ul>
     </div>
     <div class="widget-content nopadding">
-      <form action="<?php echo __SELF__ ; ?>" method="get" class="form-inline" id="iCMS-html" target="iPHP_FRAME">
+      <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline" id="iCMS-html" target="iPHP_FRAME">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <input type="hidden" name="do" value="createArticle" />
         <input type="hidden" name="frame" value="iPHP" />

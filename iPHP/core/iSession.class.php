@@ -1,20 +1,19 @@
 <?php
 /**
-* iPHP - i PHP Framework
-* Copyright (c) 2012 iiiphp.com. All rights reserved.
-*
-* @author coolmoo <iiiphp@qq.com>
-* @site http://www.iiiphp.com
-* @licence http://www.iiiphp.com/license
-* @version 1.0.1
-* @package iSession
-* CREATE TABLE `sessions` (
-*   `session_id` varchar(255) NOT NULL DEFAULT '',
-*   `expires` int(10) unsigned NOT NULL DEFAULT '0',
-*   `data` text,
-*   PRIMARY KEY (`session_id`)
-* ) ENGINE=MyISAM DEFAULT CHARSET=utf8
-*/
+ * iPHP - i PHP Framework
+ * Copyright (c) 2012 iiiphp.com. All rights reserved.
+ *
+ * @author coolmoo <iiiphp@qq.com>
+ * @website http://www.iiiphp.com
+ * @license http://www.iiiphp.com/license
+ * @version 2.0.0
+ * CREATE TABLE `sessions` (
+ *   `session_id` varchar(255) NOT NULL DEFAULT '',
+ *   `expires` int(10) unsigned NOT NULL DEFAULT '0',
+ *   `data` text,
+ *   PRIMARY KEY (`session_id`)
+ * ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+ */
 
 class iSession {
     // session-lifetime

@@ -24,4 +24,4 @@ function tpl_block_capture($params, $content, &$tpl)
 	}
 	return true;
 }
-?>
+

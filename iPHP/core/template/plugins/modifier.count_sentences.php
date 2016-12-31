@@ -24,4 +24,3 @@ function tpl_modifier_count_sentences($string)
     return preg_match_all('/[^\s]\.(?!\w)/', $string, $match);
 }
 
-?>

@@ -1,14 +1,13 @@
 <?php
 /**
-* iPHP - i PHP Framework
-* Copyright (c) 2012 iiiphp.com. All rights reserved.
-*
-* @author coolmoo <iiiphp@qq.com>
-* @site http://www.iiiphp.com
-* @licence http://www.iiiphp.com/license
-* @version 1.0.1
-* $Id: iPHP.php 2412 2014-05-04 09:52:07Z coolmoo $
-*/
+ * iPHP - i PHP Framework
+ * Copyright (c) 2012 iiiphp.com. All rights reserved.
+ *
+ * @author coolmoo <iiiphp@qq.com>
+ * @website http://www.iiiphp.com
+ * @license http://www.iiiphp.com/license
+ * @version 2.0.0
+ */
 // ini_set('display_errors','OFF');
 // error_reporting(0);//iPHP默认 不显示错误信息
 // error_reporting(E_ALL & ~E_DEPRECATED); //Production
@@ -52,5 +51,5 @@ iWAF::filter();
 iSecurity::filter();
 iSecurity::GP('page','GP',2);
 
-define('__SELF__',	$_SERVER['PHP_SELF']);
-define('__REF__', 	$_SERVER['HTTP_REFERER']);
+define('iPHP_SELF',	$_SERVER['PHP_SELF']);
+define('iPHP_REFERER', 	$_SERVER['HTTP_REFERER']);

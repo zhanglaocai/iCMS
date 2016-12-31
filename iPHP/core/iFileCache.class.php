@@ -1,14 +1,13 @@
 <?php
 /**
-* iPHP - i PHP Framework
-* Copyright (c) 2012 iiiphp.com. All rights reserved.
-*
-* @author coolmoo <iiiphp@qq.com>
-* @site http://www.iiiphp.com
-* @licence http://www.iiiphp.com/license
-* @version 1.0.1
-* @package iFC
-*/
+ * iPHP - i PHP Framework
+ * Copyright (c) 2012 iiiphp.com. All rights reserved.
+ *
+ * @author coolmoo <iiiphp@qq.com>
+ * @website http://www.iiiphp.com
+ * @license http://www.iiiphp.com/license
+ * @version 2.0.0
+ */
 class iFC {
 	protected $_cache_sock;
 	protected $_have_zlib;

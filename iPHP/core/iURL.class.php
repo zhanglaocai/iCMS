@@ -1,15 +1,14 @@
 <?php
 /**
-* iPHP - i PHP Framework
-* Copyright (c) 2012 iiiphp.com. All rights reserved.
-*
-* @author coolmoo <iiiphp@qq.com>
-* @site http://www.iiiphp.com
-* @licence http://www.iiiphp.com/license
-* @version 1.0.1
-* @package iRouter
-*/
-define('PAGE_SIGN', '{P}');
+ * iPHP - i PHP Framework
+ * Copyright (c) 2012 iiiphp.com. All rights reserved.
+ *
+ * @author coolmoo <iiiphp@qq.com>
+ * @website http://www.iiiphp.com
+ * @license http://www.iiiphp.com/license
+ * @version 2.0.0
+ */
+define('iPHP_PAGE_SIGN', '{P}');
 
 class iURL {
     public static $config   = null;
@@ -104,7 +103,7 @@ class iURL {
             case 'TCDIR':	$e = $tc['dir'];break;
 
             case 'EXT':		$e = $c['htmlext']?$c['htmlext']:self::$config['html_ext'];break;
-            case 'P':       $e = PAGE_SIGN;break;
+            case 'P':       $e = iPHP_PAGE_SIGN;break;
         }
         return $e;
     }
@@ -166,7 +165,7 @@ class iURL {
         if($url=='{PHP}'){
             $document_uri.= $primary.'='.$array[$primary];
             if($router[$uri]['PHP_PAGE']){
-                $i->pageurl = $document_uri.'&'.$router[$uri]['PAGE'].'='.PAGE_SIGN;
+                $i->pageurl = $document_uri.'&'.$router[$uri]['PAGE'].'='.iPHP_PAGE_SIGN;
                 iFS::checkHttp($i->pageurl) OR $i->pageurl = rtrim($sURL,'/').'/'.$i->pageurl;
             }
             iFS::checkHttp($document_uri) OR $document_uri = rtrim($sURL,'/').'/'.$document_uri;
@@ -207,8 +206,8 @@ class iURL {
             }
 
             $i->pfile = $i->file;
-            if(strpos($i->file,PAGE_SIGN)===false) {
-                $i->pfile = $i->name.'_'.PAGE_SIGN.$i->ext;
+            if(strpos($i->file,iPHP_PAGE_SIGN)===false) {
+                $i->pfile = $i->name.'_'.iPHP_PAGE_SIGN.$i->ext;
 			}
 
 // var_dump($i);
@@ -242,10 +241,10 @@ class iURL {
         $i->pageurl  = $i->hdir.'/'.$i->pfile ;
         $i->pagepath = $i->dir.'/'.$i->pfile;
 
-        $i->href     = str_replace(PAGE_SIGN,1,$i->href);
-        $i->path     = str_replace(PAGE_SIGN,1,$i->path);
-        $i->file     = str_replace(PAGE_SIGN,1,$i->file);
-        $i->name     = str_replace(PAGE_SIGN,1,$i->name);
+        $i->href     = str_replace(iPHP_PAGE_SIGN,1,$i->href);
+        $i->path     = str_replace(iPHP_PAGE_SIGN,1,$i->path);
+        $i->file     = str_replace(iPHP_PAGE_SIGN,1,$i->file);
+        $i->name     = str_replace(iPHP_PAGE_SIGN,1,$i->name);
         return $i;
     }
 }

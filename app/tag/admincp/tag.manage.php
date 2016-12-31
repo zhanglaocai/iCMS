@@ -58,7 +58,7 @@ $(function(){
       <h5>搜索</h5>
     </div>
     <div class="widget-content">
-      <form action="<?php echo __SELF__ ; ?>" method="get" class="form-inline">
+      <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <input type="hidden" name="uid" value="<?php echo $_GET['uid'] ; ?>" />
         <div class="input-prepend"> <span class="add-on">标签属性</span>

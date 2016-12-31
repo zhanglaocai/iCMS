@@ -1,11 +1,13 @@
 <?php
 /**
- * Template Lite iPHP compile plugin ADD iDreamSoft
+ * iPHP - i PHP Framework
+ * Copyright (c) 2012 iiiphp.com. All rights reserved.
  *
- * Type:	 compile
- * Name:	 compile_iPHP
+ * @author coolmoo <iiiphp@qq.com>
+ * @website http://www.iiiphp.com
+ * @license http://www.iiiphp.com/license
+ * @version 2.0.0
  */
-
 function compile_iPHP($arguments, &$object){
 	$attrs   = $object->_parse_arguments($arguments);
 	$hash    = substr(md5(uniqid(true).rand(1,1000)), -4);
@@ -62,4 +64,3 @@ function compile_iPHP($arguments, &$object){
 //print_r($output);
 	return $output;
 }
-?>

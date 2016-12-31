@@ -63,7 +63,7 @@ body { background-color:#f8f8f8;}
 $(function(){
   $(".iCMS_seccode_img,.iCMS_seccode_text").click(function(event) {
       event.preventDefault();
-      $(".iCMS_seccode_img").attr('src','<?php echo __SELF__; ?>?do=seccode&i='+ Math.random());
+      $(".iCMS_seccode_img").attr('src','<?php echo iPHP_SELF; ?>?do=seccode&i='+ Math.random());
   });
 	$("form").submit(function(){
       var param={
@@ -91,11 +91,11 @@ $(function(){
       $("#seccode").focus();
       return false;
     }
-		$.post("<?php echo __SELF__; ?>",param,function(json){
+		$.post("<?php echo iPHP_SELF; ?>",param,function(json){
 				if(json.code=="1"){
-					window.location.href ='<?php echo __SELF__; ?>';
+					window.location.href ='<?php echo iPHP_SELF; ?>';
 				}else{
-          $(".iCMS_seccode_img").attr('src','<?php echo __SELF__; ?>?do=seccode&i='+ Math.random());
+          $(".iCMS_seccode_img").attr('src','<?php echo iPHP_SELF; ?>?do=seccode&i='+ Math.random());
           if(json.msg){
             iCMS.alert(json.msg);
           }else{
@@ -116,7 +116,7 @@ $(function(){
     </a>
     <div class="clear mt10"></div>
     <div class="login">
-      <form action="<?php echo __SELF__; ?>" method="post" enctype="multipart/form-data" class="form-horizontal" id="iCMS-Login" target="iPHP_FRAME">
+      <form action="<?php echo iPHP_SELF; ?>" method="post" enctype="multipart/form-data" class="form-horizontal" id="iCMS-Login" target="iPHP_FRAME">
         <div class="ipt_uname">
           <label for="username"><i></i><span>账 号</span></label>
           <input type="text" name="username" id="username" />
@@ -130,7 +130,7 @@ $(function(){
         <div class="ipt_seccode">
           <label for="seccode"><i></i><span>验证码</span></label>
           <input type="text" name="seccode" id="seccode" class="iCMS_seccode">
-          <img src="<?php echo __SELF__; ?>?do=seccode" alt="验证码" class="iCMS_seccode_img r3"/>
+          <img src="<?php echo iPHP_SELF; ?>?do=seccode" alt="验证码" class="iCMS_seccode_img r3"/>
           <a href="javascript:;" class="iCMS_seccode_text">换一张</a>
         </div>
         <div class="clear"></div>

@@ -1,11 +1,5 @@
 <?php
 /**
- * Template Lite plugin converted from iPHP
- * @package iPHP
- * @subpackage plugins
- */
-
-/**
  * iPHP explode modifier plugin
  *
  * Type:     modifier<br>
@@ -22,7 +16,7 @@
  */
 function tpl_modifier_method($object,$methodStr){
 	if(empty($object)) return;
-	
+
 	$val	= array();
 	if($methodArray=explode(':',$methodStr))foreach($methodArray AS $methods){
 		list($method,$arg)=explode('(',$methods);
@@ -32,4 +26,3 @@ function tpl_modifier_method($object,$methodStr){
     return implode('',$val);
 }
 
-?>

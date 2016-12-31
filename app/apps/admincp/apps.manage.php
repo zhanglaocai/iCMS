@@ -25,7 +25,7 @@ $("#<?php echo APP_FORMID;?>").batch();
     <a style="margin: 10px;" class="btn btn-mini" href="<?php echo APP_FURI; ?>&do=cache" target="iPHP_FRAME"><i class="fa fa-refresh"></i> 更新缓存</a>
   </div>
   <div class="widget-content">
-    <form action="<?php echo __SELF__ ; ?>" method="get" class="form-inline">
+    <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
       <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
       <div class="input-prepend input-append">
         <span class="add-on">每页</span>
@@ -72,8 +72,8 @@ $("#<?php echo APP_FORMID;?>").batch();
               // $admincp = __ADMINCP__.'='.$data['app'];
               // if($data['admincp']){
               //   $admincp = __ADMINCP__.'='.$data['admincp'];
-              //   if($data['admincp']=='__SELF__'){
-              //     $admincp = __SELF__;
+              //   if($data['admincp']=='iPHP_SELF'){
+              //     $admincp = iPHP_SELF;
               //   }
               //   if($data['admincp']=='null'){
               //     $admincp = null;

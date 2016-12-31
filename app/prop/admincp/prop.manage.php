@@ -19,7 +19,7 @@ $(function(){
       <h5>搜索</h5>
     </div>
     <div class="widget-content">
-      <form action="<?php echo __SELF__ ; ?>" method="get" class="form-inline">
+      <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <div class="input-prepend input-append"> <span class="add-on">栏目</span>
           <select name="cid" id="cid" class="span3 chosen-select">

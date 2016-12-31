@@ -37,4 +37,3 @@ function tpl_make_timestamp($string)
 	}
 }
 
-?>

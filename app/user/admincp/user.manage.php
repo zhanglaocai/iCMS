@@ -34,7 +34,7 @@ $(function(){
       <h5>搜索</h5>
     </div>
     <div class="widget-content">
-      <form action="<?php echo __SELF__ ; ?>" method="get" class="form-inline">
+      <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <div class="input-prepend"> <span class="add-on">账号状态</span>
           <select name="status" id="status" class="span2 chosen-select">

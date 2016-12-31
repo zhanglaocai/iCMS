@@ -77,8 +77,8 @@ class articleAdmincp{
             $rs['userid']  = members::$userid;
 		}
 
-        $strpos   = strpos(__REF__,'?');
-        $REFERER  = $strpos===false?'':substr(__REF__,$strpos);
+        $strpos   = strpos(iPHP_REFERER,'?');
+        $REFERER  = $strpos===false?'':substr(iPHP_REFERER,$strpos);
         $defArray = iCache::get('iCMS/defaults');
         if(self::$config['markdown']){
             include admincp::view("article.markdown");
@@ -551,9 +551,9 @@ class articleAdmincp{
 
         $haspic   = empty($pic)?0:1;
 
-        $SELFURL = __SELF__.$_POST['REFERER'];
+        $SELFURL = iPHP_SELF.$_POST['REFERER'];
         if(empty($_POST['REFERER'])||strstr($_POST['REFERER'], '=save')){
-        	$SELFURL= __SELF__.'?app=article&do=manage';
+        	$SELFURL= iPHP_SELF.'?app=article&do=manage';
         }
 
         $editor OR	$editor	= empty(members::$data->nickname)?members::$data->username:members::$data->nickname;

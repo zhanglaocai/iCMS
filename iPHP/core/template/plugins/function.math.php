@@ -87,4 +87,3 @@ function tpl_function_math($params, &$template_object)
     }
 }
 
-?>

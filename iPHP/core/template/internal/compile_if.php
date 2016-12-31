@@ -150,5 +150,3 @@ function compile_if($arguments, $elseif, $while, &$object)
 	}
 	return $_result;
 }
-
-?>

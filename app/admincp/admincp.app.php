@@ -12,7 +12,7 @@ class admincpApp{
     public function __construct() {}
     public function do_logout(){
    	    members::logout();
-    	iUI::success('注销成功!','url:'.__SELF__);
+    	iUI::success('注销成功!','url:'.iPHP_SELF);
     }
 
     public function do_iCMS(){

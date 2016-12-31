@@ -41,4 +41,3 @@ function tpl_modifier_bbcode2html($data)
 	$data = preg_replace($search, $replace, $data);
 	return $data;
 }
-?>

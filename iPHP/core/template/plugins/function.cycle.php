@@ -98,4 +98,3 @@ function tpl_function_cycle($params, &$tpl)
 
 	return $retval;
 }
-?>

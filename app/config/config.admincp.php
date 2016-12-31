@@ -48,21 +48,14 @@ class configAdmincp{
     	$this->cache();
     	iUI::success('更新完成','js:1');
     }
-    public static function apps(){
-        $appArray = apps::scan('*.app','*',true);
-        $acpArray = apps::scan('*.admincp','*',true);
-        $array    = array_merge((array)$appArray,(array)$acpArray);
-        $array    = array_filter($array);
-        $array    = array_keys($array);
-        return $array;
-    }
+
     /**
      * [cache 更新配置]
      * @return [type] [description]
      */
     public static function cache(){
         $config         = self::get();
-        $config['apps'] = self::apps();
+        $config['apps'] = apps::get_apps();
         self::write($config);
     }
     public static function head($title=null){

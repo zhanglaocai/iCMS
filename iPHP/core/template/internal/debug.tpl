@@ -8,21 +8,21 @@
 			<font color=<!--{if $_debug_tpls[$key].type eq "template"}-->brown<!--{elseif $_debug_tpls[$key].type eq "insert"}-->black<!--{else}-->green<!--{/if}-->>
 			<!--{$_debug_tpls[$key].filename}--></font>
 			<!--{if isset($_debug_tpls[$key].exec_time)}-->
-				(<!--{$_debug_tpls[$key].exec_time|string_format:"%.5f"}--> seconds)
-				<!--{if $key eq 0}--> (total)<!--{/if}-->
+			(<!--{$_debug_tpls[$key].exec_time|string_format:"%.5f"}--> seconds)
+			<!--{if $key eq 0}--> (total)<!--{/if}-->
 			<!--{/if}-->
 		</td>
 	</tr>
 	<!--{foreachelse}-->
-		<tr><td colspan="2"><i>No template assigned</i></td></tr>
+	<tr><td colspan="2"><i>No template assigned</i></td></tr>
 	<!--{/foreach}-->
-		<tr><td colspan="2"><b>Assigned template variables:</b></td></tr>
-		<!--{foreach key=key value=vars from=$_debug_keys}-->
-		<tr>
-			<td width="120px"><font color="blue">{$<!--{$_debug_keys[$key]}-->}</font></td>
-			<td><font color="green"><!--{$_debug_vals[$key]|debug_print_var}--></font></td>
-		</tr>
-			<!--{foreachelse}-->
-		<tr><td colspan="2"><i>No template variables assigned</i></td></tr>
-			<!--{/foreach}-->
-		</table>
+	<tr><td colspan="2"><b>Assigned template variables:</b></td></tr>
+	<!--{foreach key=key value=vars from=$_debug_keys}-->
+	<tr>
+		<td width="120px"><font color="blue">{$<!--{$_debug_keys[$key]}-->}</font></td>
+		<td><font color="green"><!--{$_debug_vals[$key]|debug_print_var}--></font></td>
+	</tr>
+	<!--{foreachelse}-->
+	<tr><td colspan="2"><i>No template variables assigned</i></td></tr>
+	<!--{/foreach}-->
+</table>

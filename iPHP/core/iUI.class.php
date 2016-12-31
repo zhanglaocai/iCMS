@@ -4,10 +4,9 @@
  * Copyright (c) 2012 iiiphp.com. All rights reserved.
  *
  * @author coolmoo <iiiphp@qq.com>
- * @site http://www.iiiphp.com
- * @licence http://www.iiiphp.com/license
- * @version 1.0.1
- * @package common
+ * @website http://www.iiiphp.com
+ * @license http://www.iiiphp.com/license
+ * @version 2.0.0
  */
 defined('iPHP') OR exit('What are you doing?');
 
@@ -102,7 +101,7 @@ class iUI {
 			$act == "1" && $code = 'iTOP.location.href=iTOP.location.href;';
 			break;
 		case 'url':
-			$act == "1" && $act = __REF__;
+			$act == "1" && $act = iPHP_REFERER;
 			$code = "iTOP.location.href='" . $act . "';";
 			break;
 		case 'src':$code = "iTOP.$('#iPHP_FRAME').attr('src','" . $act . "');";

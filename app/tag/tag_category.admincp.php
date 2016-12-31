@@ -10,8 +10,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-
-class tagCategoryAdmincp extends categoryAdmincp {
+class tag_categoryAdmincp extends categoryAdmincp {
     public function __construct() {
         parent::__construct(iCMS_APP_TAG,'category');
         $this->category_name     = "分类";

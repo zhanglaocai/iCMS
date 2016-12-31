@@ -1,14 +1,13 @@
 <?php
 /**
-* iPHP - i PHP Framework
-* Copyright (c) 2012 iiiphp.com. All rights reserved.
-*
-* @author coolmoo <iiiphp@qq.com>
-* @site http://www.iiiphp.com
-* @licence http://www.iiiphp.com/license
-* @version 1.0.1
-* $Id: define.php 2408 2014-04-30 18:58:23Z coolmoo $
-*/
+ * iPHP - i PHP Framework
+ * Copyright (c) 2012 iiiphp.com. All rights reserved.
+ *
+ * @author coolmoo <iiiphp@qq.com>
+ * @website http://www.iiiphp.com
+ * @license http://www.iiiphp.com/license
+ * @version 2.0.0
+ */
 defined('iPHP') OR define('iPHP', TRUE);
 //---------------数据库配置------------------
 defined('iPHP_DB_TYPE') OR define('iPHP_DB_TYPE',		'mysql');// 数据库名

@@ -12,7 +12,7 @@
 defined('iPHP') OR exit('What are you doing?');
 
 define('iCMS_SUPERADMIN_UID', '1');
-define('__ADMINCP__', __SELF__ . '?app');
+define('__ADMINCP__', iPHP_SELF . '?app');
 define('ACP_PATH', iPHP_APP_DIR . '/admincp');
 define('ACP_HOST', (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://" . $_SERVER['HTTP_HOST']);
 
@@ -27,17 +27,17 @@ members::$AJAX       = iPHP::PG('ajax');
 
 
 class admincp {
-	public static $apps = NULL;
-	public static $menu = NULL;
-	public static $app = NULL;
-	public static $APP_NAME = NULL;
-	public static $APP_DO = NULL;
+	public static $apps       = NULL;
+	public static $menu       = NULL;
+	public static $APP_OBJ    = NULL;
+	public static $APP_NAME   = NULL;
+	public static $APP_DO     = NULL;
 	public static $APP_METHOD = NULL;
-	public static $APP_PATH = NULL;
-	public static $APP_TPL = NULL;
-	public static $APP_FILE = NULL;
-	public static $APP_DIR = NULL;
-	public static $APP_ARGS = NULL;
+	public static $APP_PATH   = NULL;
+	public static $APP_TPL    = NULL;
+	public static $APP_FILE   = NULL;
+	public static $APP_DIR    = NULL;
+	public static $APP_ARGS   = NULL;
 
 	public static function init() {
 		self::check_seccode(); //验证码验证
@@ -83,11 +83,11 @@ class admincp {
 		self::$APP_TPL    = ACP_PATH . '/template';
 		self::$APP_FILE   = ACP_PATH . '/' . $app . '.app.php';
 		self::$menu->url  = __ADMINCP__.'='.$app.(($do&&$do!='iCMS')?'&do='.$do:'');
-		$app_name = self::$APP_NAME . 'App';
+		$obj_name = self::$APP_NAME . 'App';
 
 		if(!is_file(self::$APP_FILE)){
 			$app_file = $app . '.admincp.php';
-			$app_name = $app.'Admincp';
+			$obj_name = $app.'Admincp';
 	        if(stripos($app, '_')!== false){
 	            list($app,$sapp) = explode('_', $app);
 	        }
@@ -95,46 +95,32 @@ class admincp {
 			self::$APP_TPL  = self::$APP_PATH . '/admincp';
 			self::$APP_FILE = self::$APP_PATH . '/'.$app_file;
 		}
-		is_file(self::$APP_FILE) OR iPHP::error_throw('Unable to find file <b>' .self::$APP_NAME. '.admincp.php</b>', 1002);
+		is_file(self::$APP_FILE) OR iPHP::error_throw('Unable to find admincp file <b>' .self::$APP_NAME. '.admincp.php</b>', 1002);
 
-		define('APP_URI', __ADMINCP__ . '=' . $app);
+		define('APP_URI', __ADMINCP__ . '=' . self::$APP_NAME);
 		// define('APP_FURI', APP_URI . '&frame=iPHP');
 		define('APP_FURI', APP_URI );
 		define('APP_DOURI', APP_URI . ($do != 'iCMS' ? '&do=' . $do : ''));
 		define('APP_BOXID', self::$APP_NAME . '-box');
 		define('APP_FORMID', 'iCMS-' . APP_BOXID);
 
-		// iPHP::import(self::$APP_FILE);
-		self::$app = new $app_name();
-		$app_methods = get_class_methods($app_name);
-		in_array(self::$APP_METHOD, $app_methods) OR iPHP::error_throw('Call to undefined method <b>' . self::$APP_NAME . '::' . self::$APP_METHOD . '</b>', 1003);
+		self::$APP_OBJ = new $obj_name();
+		$app_methods = get_class_methods(self::$APP_OBJ);
+		in_array(self::$APP_METHOD, $app_methods) OR iPHP::error_throw('Call to undefined method <b>' . $obj_name . '::' . self::$APP_METHOD . '</b>', 1003);
 
 		$method = self::$APP_METHOD;
 		$args === null && $args = self::$APP_ARGS;
 
 		if ($args) {
 			if ($args === 'object') {
-				return self::$app;
+				return self::$APP_OBJ;
 			}
-			return self::$app->$method($args);
+			return self::$APP_OBJ->$method($args);
 		} else {
-			return self::$app->$method();
+			return self::$APP_OBJ->$method();
 		}
 	}
 
-    public static function app($app,$package='admincp'){
-        if(stripos($app, '_')!== false){
-            list($app,$sapp) = explode('_', $app);
-            $package = "{$sapp}.{$package}";
-        }
-        $filename = "{$app}.{$package}.php";
-        $app_path = iPHP_APP_DIR."/$app/".$filename;
-        if(file_exists($app_path)){
-            return array($app,$filename,ucfirst($sapp));
-        }else{
-            return false;
-        }
-    }
 	// public static function set_app_tpl($app){
 	// 	self::$APP_TPL = iPHP_APP_DIR.'/'.$app.'/admincp';
 	// }

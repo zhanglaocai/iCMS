@@ -55,10 +55,13 @@ var_dump(@class_exists($appname));
     }
     public static function get($ids=0){
         if(empty($ids)) return array();
-
-        list($ids,$is_multi)  = iSQL::multi_ids($ids);
-
-        $sql  = iSQL::where($ids,'id',false,true);
+        if($ids=='all'){
+            $sql      = '1=1';
+            $is_multi = true;
+        }else{
+            list($ids,$is_multi)  = iSQL::multi_ids($ids);
+            $sql  = iSQL::where($ids,'id',false,true);
+        }
         $data = array();
         $rs   = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);
         if($rs){
@@ -93,14 +96,32 @@ var_dump(@class_exists($appname));
     }
     public static function get_array($vars){
         $sql = '1=1';
-        $vars['type'] && $sql.=" `type`='".(int)$vars['type']."'";
-        $vars['status'] && $sql.=" `status`='".(int)$vars['status']."'";
+        $vars['type'] && $sql.=" AND `type`='".(int)$vars['type']."'";
+        $vars['status'] && $sql.=" AND `status`='".(int)$vars['status']."'";
         $rs  = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);
         $_count = count($rs);
         for ($i=0; $i < $_count; $i++) {
             $data[$rs[$i]->id]= self::item($rs[$i]);
         }
         return $data;
+    }
+    public static function get_apps($app=null,$trans=false){
+        $rs = apps::get_array(array('status'=>'1'));
+        foreach ($rs as $key => $value) {
+            $array[$value['app']] = $value['id'];
+        }
+        $trans && $array = array_flip($array);
+
+        if($app){
+            return $array[$app];
+        }
+        // asort($array);
+        // $appArray = apps::scan('*.app','*',true);
+        // $acpArray = apps::scan('*.admincp','*',true);
+        // $array    = array_merge((array)$appArray,(array)$acpArray);
+        // $array    = array_filter($array);
+        // $array    = array_keys($array);
+        return $array;
     }
     // public static function get_file($app,$filename,$sapp=null){
     //     $app_path = iPHP_APP_DIR."/$app/".$filename;

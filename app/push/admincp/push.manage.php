@@ -34,7 +34,7 @@ hr { border-bottom:none; margin:4px 0px; }
       <h5>搜索</h5>
     </div>
     <div class="widget-content">
-      <form action="<?php echo __SELF__ ; ?>" method="get" class="form-inline">
+      <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <input type="hidden" name="userid" value="<?php echo $_GET['userid'] ; ?>" />
         <div class="input-prepend mb10"> <span class="add-on">推送属性</span>

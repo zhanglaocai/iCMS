@@ -28,7 +28,7 @@ defined('iPHP') OR exit('What are you doing?');
               <li><a href="<?php echo __ADMINCP__; ?>=members&do=job"><i class="fa fa-bar-chart-o"></i> 工作统计</a></li>
               <li><a href="<?php echo __ADMINCP__; ?>=members&do=edit"><i class="fa fa-user"></i> 更改信息</a></li>
               <li class="divider"></li>
-              <li><a href="<?php echo __SELF__; ?>?do=logout&frame=iPHP" target="iPHP_FRAME"><i class="fa fa-sign-out"></i> 注销</a></li>
+              <li><a href="<?php echo iPHP_SELF; ?>?do=logout&frame=iPHP" target="iPHP_FRAME"><i class="fa fa-sign-out"></i> 注销</a></li>
             </ul>
           </li>
         </ul>
@@ -52,7 +52,7 @@ defined('iPHP') OR exit('What are you doing?');
 <?php }?>
 <div id="content">
   <div id="breadcrumb">
-    <a href="<?php echo __SELF__; ?>" title="返回管理首页" class="tip-bottom"><i class="fa fa-home"></i> 管理中心</a>
+    <a href="<?php echo iPHP_SELF; ?>" title="返回管理首页" class="tip-bottom"><i class="fa fa-home"></i> 管理中心</a>
   </div>
 <script type="text/javascript">
 $(".iMenu-nav,.iMenu-sidebar")

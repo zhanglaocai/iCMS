@@ -29,5 +29,3 @@ function tpl_compiler_debug($params, &$tpl)
 	$debug_output .= generate_compiler_debug_output($tpl);
 	return $debug_output;
 }
-
-?>

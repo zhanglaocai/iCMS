@@ -5,7 +5,7 @@
     "title": "后台系统",
     "description": "基础管理系统",
     "table": ["members","group","config","filedata"],
-    "admincp": "__SELF__",
+    "admincp": "iPHP_SELF",
     "template": [],
     "menu": ["main", "sidebar"],
     "status": "1"
