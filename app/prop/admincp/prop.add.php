@@ -35,14 +35,9 @@ iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
             <div class="btn-group">
               <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>
               <ul class="dropdown-menu">
-                <?php foreach (apps::get_array("2") as $key => $value) {?>
-                  # code...
+                <?php foreach (apps::get_array(array("table"=>true)) as $key => $value) {?>
+                <li><a href="javascript:;" appid="<?php echo $key;?>" app='<?php echo $value['app'];?>'><?php echo $value['app'];?>:<?php echo $value['name'];?></a></li>
                 <? }?>
-                <li><a href="javascript:;" appid="2" app='article'>article:文章</a></li>
-                <li><a href="javascript:;" appid="0" app='push'>push:推送</a></li>
-                <li><a href="javascript:;" appid="0" app='category'>category:栏目</a></li>
-                <li><a href="javascript:;" appid="0" app='tags'>tags:标签</a></li>
-                <li><a href="javascript:;" appid="0" app='user'>user:用户</a></li>
               </ul>
             </div>
           </div>

@@ -71,15 +71,14 @@ class iTemplate {
                 return $_tpl;
             }
 
-            if (iPHP_DEVICE != 'desktop') {
-//移动设备
+            if (iPHP_DEVICE != 'desktop') {//移动设备
                 $_tpl = str_replace(iPHP_APP . ':/', iPHP_MOBILE_TPL, $tpl); // mobile/
                 if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
                     return $_tpl;
                 }
 
             }
-            $tpl = str_replace(iPHP_APP . ':/', iPHP_APP, $tpl); //iCMS
+            $tpl = str_replace(iPHP_APP . ':/', iPHP_APP, $tpl);
         } elseif (strpos($tpl, '{iTPL}') !== false) {
             $tpl = str_replace('{iTPL}', iPHP_DEFAULT_TPL, $tpl);
         }

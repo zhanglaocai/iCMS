@@ -90,7 +90,7 @@ class iPHP {
 		//config.php 中开启iPHP_APP_CONF后 此处设置无效,
 		define('iPHP_APP_CONF', iPHP_CONF_DIR . '/' . $site); //网站配置目录
 		define('iPHP_APP_CONFIG', iPHP_APP_CONF . '/config.php'); //网站配置文件
-		@is_file(iPHP_APP_CONFIG) OR self::error_throw('Unable to find "' . $site . '" config file ('.iPHP_APP_CONFIG.').Please install iCMS', '0001');
+		@is_file(iPHP_APP_CONFIG) OR self::error_throw('Unable to find "' . $site . '" config file ('.iPHP_APP_CONFIG.').Please install '.iPHP_APP, '0001');
 
 		$config = require iPHP_APP_CONFIG;
 		//config.php 中开启后 此处设置无效
@@ -124,9 +124,6 @@ class iPHP {
 		$timezone OR $timezone = 'Asia/Shanghai'; //设置中国时区
 		function_exists('date_default_timezone_set') && @date_default_timezone_set($timezone);
 
-		iFS::init($config['FS'], $config['watermark']);
-		iCache::init($config['cache']);
-		// self::$apps = array("apps");
 		self::$apps = $config['apps'];
 		self::define_app();
 		iPHP_DB_DEBUG   && iDB::$show_errors  = true;
@@ -238,10 +235,6 @@ class iPHP {
 		}
 	}
 	public static function debug_info($tpl) {
-			print_r ( get_defined_vars ());
-			print_r ( get_defined_constants ( true ));
-			print_r ( get_declared_classes ());
-exit;
 		if (iPHP_DEBUG && iPHP_DEBUG_TRACE) {
 			echo '<div class="well">';
 			echo '<h3 class="label label-default">调试信息</h3>';

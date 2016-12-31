@@ -51,6 +51,7 @@ class iFile {
         self::$_data_table = iPHP_DB_PREFIX . self::$TABLE_DATA;
         self::$_map_table  = iPHP_DB_PREFIX . self::$TABLE_MAP;
     }
+
     public static function index_fileid($indexid,$appid='1'){
         $rs      = iDB::all("SELECT `fileid` FROM " . self::$_map_table . " WHERE indexid = '{$indexid}'  AND appid = '{$appid}' ");
         $fileid0 = iSQL::values($rs,'fileid','array',null);

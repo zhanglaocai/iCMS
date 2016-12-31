@@ -42,7 +42,7 @@ class patch {
 			$FileData = iFS::read($tFilePath);
 		} else {
 			$url = PATCH_URL . '/version.' . iPHP_APP . '.' . iCMS_VER . '.patch.' . iCMS_RELEASE . '?t=' . time();
-			$FileData = iFS::remote($url);
+			$FileData = iNET::remote($url);
 			iFS::write($tFilePath, $FileData);
 		}
 		return json_decode($FileData); //版本列表
@@ -54,7 +54,7 @@ class patch {
 		if (iFS::ex($zipFile)) {
 			return $msg;
 		}
-		$FileData = iFS::remote($zipHttp);
+		$FileData = iNET::remote($zipHttp);
 		if ($FileData) {
 			iFS::write($zipFile, $FileData); //下载更新包
 			return $msg;

@@ -46,11 +46,11 @@ class iURL {
         if ($var == '?&') {
             $url .= iPHP_ROUTER_REWRITE ? '?' : '&';
         }
-        $url = str_replace('__API__', iCMS_API, $url);
+        $url = str_replace('__API__', self::$config['conf']['API'], $url);
         return $url;
     }
 
-	public static function init($config=null){
+	public static function init($config=null,$conf=null){
         self::$config           = $config['router'];
         self::$config['tag']    = $config['tag'];
         self::$config['router'] = array(
@@ -61,6 +61,8 @@ class iURL {
             'software' => array('rule'=>'2','primary'=>'id'),
             'tag'      => array('rule'=>'3','primary'=>'id'),
         );
+        self::$config['conf'] = (array) $conf;
+
         // foreach (glob(iPHP_APP_DIR."/*/etc/iURL.router.php",GLOB_NOSORT) as $index=> $filename) {
         //     $app = str_replace(array(iPHP_APP_DIR,'etc/iURL.router.php'), '', $filename);
         //     $app = trim($app,'/');

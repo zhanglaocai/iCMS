@@ -761,7 +761,6 @@ class articleAdmincp{
             $id = article::data_insert($data);
         }
 
-        $_POST['isredirect'] && iFS::$redirect  = true;
         $_POST['iswatermark']&& iFS::$watermark = false;
 
         if(isset($_POST['remote'])){

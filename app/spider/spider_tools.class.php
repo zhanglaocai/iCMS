@@ -544,7 +544,7 @@ class spider_tools {
         spider::$cookie && $options[CURLOPT_COOKIE] = spider::$cookie;
         if(spider::$curl_proxy){
             $proxy   = spider_tools::proxy_test();
-            $proxy && $options = spider_tools::proxy($options,$proxy);
+            $proxy && $options = iNetwork::proxy($options,$proxy);
         }
         if(spider::$PROXY_URL){
             $options[CURLOPT_URL] = self::$PROXY_URL.urlencode($url);
@@ -611,76 +611,10 @@ class spider_tools {
         return $responses;
     }
     public static function proxy_test(){
-        $options = array(
-            CURLOPT_URL                  => 'http://www.baidu.com',
-            CURLOPT_REFERER              => 'http://www.baidu.com',
-            CURLOPT_USERAGENT            => 'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
-            CURLOPT_TIMEOUT              => 10,
-            CURLOPT_CONNECTTIMEOUT       => 8,
-            CURLOPT_RETURNTRANSFER       => 1,
-            CURLOPT_HEADER               => 0,
-            CURLOPT_NOSIGNAL             => true,
-            CURLOPT_DNS_USE_GLOBAL_CACHE => true,
-            CURLOPT_DNS_CACHE_TIMEOUT    => 86400,
-            CURLOPT_SSL_VERIFYPEER       => false,
-            CURLOPT_SSL_VERIFYHOST       => false
-            // CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
-            // CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
-        );
-        if(empty(spider::$proxy_array)){
-            if(empty(spider::$curl_proxy)){
-                return false;
-            }
-            spider::$proxy_array = explode("\n", spider::$curl_proxy); // socks5://127.0.0.1:1080@username:password
-        }
-        if(empty(spider::$proxy_array)){
-            return false;
-        }
-        $rand_keys   = array_rand(spider::$proxy_array,1);
-        $proxy       = spider::$proxy_array[$rand_keys];
-        $proxy       = trim($proxy);
-        $options     = spider_tools::proxy($options,$proxy);
-
-        $ch        = curl_init();
-        curl_setopt_array($ch,$options);
-        curl_exec($ch);
-        $info      = curl_getinfo($ch);
-        curl_close($ch);
-        if($info['http_code']==200){
-            return $proxy;
-        }else{
-            unset(spider::$proxy_array[$rand_keys]);
-            return spider_tools::proxy_test();
-        }
+        iNET::$CURL_PROXY_ARRAY = spider::$proxy_array;
+        iNET::$CURL_PROXY = spider::$curl_proxy;iNET
+        return iNET::proxy_test();
     }
-    public static function proxy($options='',$proxy){
-        if($proxy){
-            // $proxy_array = explode("\n", $this->proxy); // socks5://127.0.0.1:1080@username:password
-            // $rand_keys   = array_rand($proxy_array,1);
-            // $proxy       = $proxy_array[$rand_keys];
-            // if(empty($proxy)){
-            //     return $options;
-            // }
-            //foreach ($proxy_array as $key => $proxy) {
-                $proxy   = trim($proxy);
-                $matches = strpos($proxy,'socks5://');
-                if($matches===false){
-                    // $options[CURLOPT_HTTPPROXYTUNNEL] = true;//HTTP代理开关
-                    $options[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP;//使用http代理模式
-                }else{
-                    $options[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
-                }
-                list($url,$auth) = explode('@', $proxy);
-                $url = str_replace(array('http://','socks5://'), '', $url);
-                $options[CURLOPT_PROXY] = $url;
-                $auth && $options[CURLOPT_PROXYUSERPWD] = $auth;//代理验证格式  username:password
-                $options[CURLOPT_PROXYAUTH] = CURLAUTH_BASIC; //代理认证模式
-            //}
-        }
-
-        return $options;
-    }
-
 	public static function str_cut($str, $start, $end) {
 	    $content = strstr($str, $start);
 	    $content = substr($content, strlen($start), strpos($content, $end) - strlen($start));

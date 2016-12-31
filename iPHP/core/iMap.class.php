@@ -20,7 +20,7 @@ class iMap {
 		return self;
 	}
 	public static function table(){
-		return'#iCMS@__'.self::$table.'_map';
+		return iPHP_DB_PREFIX_TAG.self::$table.'_map';
 	}
 	public static function del($nodes,$iid="0") {
 		$_array   = explode(',',$nodes);

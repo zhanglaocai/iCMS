@@ -124,8 +124,8 @@ class iUI {
 			iUI::js("js:window.alert('{$msg}')");
 		}
 		self::$dialog = array(
-			'id'         => 'iCMS-DIALOG-ALERT',
-			'skin'       => 'iCMS_dialog_alert',
+			'id'         => iPHP_APP.'-DIALOG-ALERT',
+			'skin'       => iPHP_APP.'_dialog_alert',
 			'lock'       => true,
 			'quickClose' => false,
 			'width'      => 360,
@@ -135,8 +135,8 @@ class iUI {
 	}
 	public static function success($msg, $js = null, $s = 3) {
 		self::$dialog = array(
-			'id'         => 'iCMS-DIALOG-ALERT',
-			'skin'       => 'iCMS_dialog_alert',
+			'id'         => iPHP_APP.'-DIALOG-ALERT',
+			'skin'       => iPHP_APP.'_dialog_alert',
 			'lock'       => true,
 			'quickClose' => false,
 			'width'      => 360,

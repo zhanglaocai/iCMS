@@ -1,6 +1,6 @@
 <?php
 /**
- * 腾讯云万象图片服务 iCMS接口 统一
+ * 腾讯云万象图片服务 iPHP接口 统一
  */
 require dirname(__file__) .'/Tencentyun/Http.php';
 require dirname(__file__) .'/Tencentyun/Conf.php';

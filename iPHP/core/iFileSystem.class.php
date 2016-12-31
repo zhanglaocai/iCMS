@@ -10,31 +10,17 @@
  */
 class iFS {
 	public static $forceExt = false;
-	public static $redirect = false;
 	public static $checkFileData = true;
 	public static $validext = true;
 	public static $config = null;
 	public static $FileData = null;
-	public static $watermark = true;
-	public static $watermark_config = null;
-	public static $PROXY_URL = null;
+
 	public static $CALLABLE = null;
 	public static $ERROR = null;
 	public static $ERROR_TYPE = false;
-	public static $CURL_COUNT = 3;
-	public static $CURL_HTTP_CODE = null;
-	public static $CURL_CONTENT_TYPE = null;
-	public static $CURL_PROXY = null;
-	public static $CURL_PROXY_ARRAY = array();
-	public static $CURLOPT_ENCODING = '';
-	public static $CURLOPT_REFERER = null;
-	public static $CURLOPT_TIMEOUT = 10; //数据传输的最大允许时间
-	public static $CURLOPT_CONNECTTIMEOUT = 3; //连接超时时间
-	public static $CURLOPT_USERAGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36';
 
-	public static function init($config, $watermark_config) {
+	public static function init($config) {
 		self::$config = $config;
-		self::$watermark_config = $watermark_config;
 	}
 
 	public static function config($config) {
@@ -79,14 +65,9 @@ class iFS {
 			return true;
 		}
 	}
-    public static function del($fn, $check = 1,$cloud=false) {
+    public static function del($fn, $check = 1) {
 		$check && self::check($fn);
-
-        if(self::$config['cloud']['enable'] && $cloud){
-			iCloud::init(self::$config['cloud']);
-			iCloud::delete($fn);
-		}
-
+		self::hook('delete',array($fn));
 		@chmod($fn, 0777);
 		return @unlink($fn);
 	}
@@ -117,7 +98,7 @@ class iFS {
 	}
 
 	public static function escape_dir($dir) {
-		$dir = str_replace(array("'", '#', '=', '`', '$', '%', '&', ';'), '', $dir);
+		$dir = str_replace(array("'", '#', '=', '`', '$', '%', '&', ';',"\0"), '', $dir);
 		return rtrim(preg_replace('/(\/){2,}|(\\\){1,}/', '/', $dir), '/');
 	}
 	//创建目录
@@ -164,7 +145,6 @@ class iFS {
 	//获取文件夹列表
 	public static function folder($dir = '', $type = NULL) {
 		$dir = trim($dir, '/');
-		$sDir = $dir;
 		$_GET['dir'] && $gDir = trim($_GET['dir'], '/');
 
 		// print_r('$dir='.$dir.'<br />');
@@ -175,8 +155,8 @@ class iFS {
 		//strstr($dir,'.')!==false  && self::alert('What are you doing?','',1000000);
 		//strstr($dir,'..')!==false && self::alert('What are you doing?','',1000000);
 
-		$sDir_PATH = iFS::path_join(iPATH, $sDir);
-		$iDir_PATH = iFS::path_join($sDir_PATH, $gDir);
+		$sDir_PATH = self::path_join(iPATH, $dir);
+		$iDir_PATH = self::path_join($sDir_PATH, $gDir);
 
 		// print_r('$sDir_PATH='.$sDir_PATH."\n");
 		// print_r('$iDir_PATH='.$iDir_PATH."\n");
@@ -191,7 +171,7 @@ class iFS {
 		if ($handle = opendir($iDir_PATH)) {
 			while (false !== ($rs = readdir($handle))) {
 				// print_r('$rs='.$rs."\n");
-				$filepath = iFS::path_join($iDir_PATH, $rs);
+				$filepath = self::path_join($iDir_PATH, $rs);
 				$filepath = rtrim($filepath, '/');
 //              print_r('$filepath='.$filepath."\n");
 				$sFileType = @filetype($filepath);
@@ -291,187 +271,6 @@ class iFS {
 		$rtrim && $path = rtrim($path, '/') . '/';
 		return $path;
 	}
-	public static function proxy_test() {
-		$options = array(
-			CURLOPT_URL => 'http://www.baidu.com',
-			CURLOPT_REFERER => 'http://www.baidu.com',
-			CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
-			CURLOPT_TIMEOUT => 10,
-			CURLOPT_CONNECTTIMEOUT => 8,
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_HEADER => 0,
-			CURLOPT_NOSIGNAL => true,
-			CURLOPT_DNS_USE_GLOBAL_CACHE => true,
-			CURLOPT_DNS_CACHE_TIMEOUT => 86400,
-			CURLOPT_SSL_VERIFYPEER => false,
-			CURLOPT_SSL_VERIFYHOST => false,
-			// CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
-			// CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
-		);
-		if (empty(self::$CURL_PROXY_ARRAY)) {
-			if (empty(self::$CURL_PROXY)) {
-				return false;
-			}
-			self::$CURL_PROXY_ARRAY = explode("\n", self::$CURL_PROXY); // socks5://127.0.0.1:1080@username:password
-		}
-		if (empty(self::$CURL_PROXY_ARRAY)) {
-			return false;
-		}
-		$rand_keys = array_rand(self::$CURL_PROXY_ARRAY, 1);
-		$proxy = self::$CURL_PROXY_ARRAY[$rand_keys];
-		$proxy = trim($proxy);
-		$options = self::proxy($options, $proxy);
-
-		$ch = curl_init();
-		curl_setopt_array($ch, $options);
-		curl_exec($ch);
-		$info = curl_getinfo($ch);
-		curl_close($ch);
-		if ($info['http_code'] == 200) {
-			return $proxy;
-		} else {
-			unset(self::$CURL_PROXY_ARRAY[$rand_keys]);
-			return self::proxy_test();
-		}
-	}
-	public static function proxy($options = array(), $proxy) {
-		if ($proxy) {
-			$proxy = trim($proxy);
-			$matches = strpos($proxy, 'socks5://');
-			if ($matches === false) {
-				// $options[CURLOPT_HTTPPROXYTUNNEL] = true;//HTTP代理开关
-				$options[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP; //使用http代理模式
-			} else {
-				$options[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
-			}
-			list($url, $auth) = explode('@', $proxy);
-			$url = str_replace(array('http://', 'socks5://'), '', $url);
-			$options[CURLOPT_PROXY] = $url;
-			$auth && $options[CURLOPT_PROXYUSERPWD] = $auth; //代理验证格式  username:password
-			$options[CURLOPT_PROXYAUTH] = CURLAUTH_BASIC; //代理认证模式
-		}
-		return $options;
-	}
-	//获取远程页面的内容
-	public static function remote($url, $_count = 0) {
-		$url = str_replace(' ', '%20', $url);
-		if (function_exists('curl_init')) {
-			if (empty($url)) {
-				echo 'remote:(' . $_count . ')' . $url . "\n";
-				echo "url:empty\n";
-				return false;
-			}
-			if (self::$CURLOPT_REFERER === null) {
-				$uri = parse_url($url);
-				self::$CURLOPT_REFERER = $uri['scheme'] . '://' . $uri['host'];
-			}
-			$options = array(
-				CURLOPT_URL => $url,
-				CURLOPT_REFERER => self::$CURLOPT_REFERER,
-				CURLOPT_USERAGENT => self::$CURLOPT_USERAGENT,
-				CURLOPT_ENCODING => self::$CURLOPT_ENCODING,
-				CURLOPT_TIMEOUT => self::$CURLOPT_TIMEOUT, //数据传输的最大允许时间
-				CURLOPT_CONNECTTIMEOUT => self::$CURLOPT_CONNECTTIMEOUT, //连接超时时间
-				CURLOPT_RETURNTRANSFER => 1,
-				CURLOPT_FAILONERROR => 0,
-				CURLOPT_HEADER => 0,
-				CURLOPT_NOSIGNAL => true,
-				CURLOPT_DNS_USE_GLOBAL_CACHE => true,
-				CURLOPT_DNS_CACHE_TIMEOUT => 86400,
-				CURLOPT_SSL_VERIFYPEER => false,
-				CURLOPT_SSL_VERIFYHOST => false,
-				// CURLOPT_FOLLOWLOCATION => 1,// 使用自动跳转
-				// CURLOPT_MAXREDIRS => 7,//查找次数，防止查找太深
-			);
-			if (self::$PROXY_URL) {
-				$options[CURLOPT_URL] = self::$PROXY_URL . $url;
-			}
-
-			if (self::$CURL_PROXY) {
-				$proxy = self::proxy_test();
-				$proxy && $options = self::proxy($options, $proxy);
-			}
-			$ch = curl_init();
-			curl_setopt_array($ch, $options);
-			$responses = curl_exec($ch);
-			$info = curl_getinfo($ch);
-			$errno = curl_errno($ch);
-			if (self::$CURL_HTTP_CODE !== null) {
-				if (self::$CURL_HTTP_CODE == $info['http_code']) {
-					return $responses;
-				}
-			}
-
-			if ($info['http_code'] == 404 || $info['http_code'] == 500) {
-				curl_close($ch);
-				echo $url . "\n";
-				echo "http_code:" . $info['http_code'] . "\n";
-				unset($responses, $info);
-				return false;
-			}
-			if (($info['http_code'] == 301 || $info['http_code'] == 302) && $_count < self::$CURL_COUNT) {
-				$newurl = $info['redirect_url'];
-				if (empty($newurl)) {
-					curl_setopt($ch, CURLOPT_HEADER, 1);
-					$header = curl_exec($ch);
-					preg_match('|Location: (.*)|i', $header, $matches);
-					$newurl = ltrim($matches[1], '/');
-					if (empty($newurl)) {
-						return false;
-					}
-
-					if (!strstr($newurl, 'http://')) {
-						$host = $uri['scheme'] . '://' . $uri['host'];
-						$newurl = $host . '/' . $newurl;
-					}
-				}
-				$newurl = trim($newurl);
-				curl_close($ch);
-				unset($responses, $info);
-				$_count++;
-				return self::remote($newurl, $_count);
-			}
-
-			if (self::$CURL_CONTENT_TYPE !== null && $info['content_type']) {
-				if (stripos($info['content_type'], self::$CURL_CONTENT_TYPE) === false) {
-					curl_close($ch);
-					echo $url . "\n";
-					echo "content_type:" . $info['content_type'] . "\n";
-					unset($responses, $info);
-					return false;
-				}
-			}
-
-			if ($errno > 0 || empty($responses) || empty($info['http_code'])) {
-				if ($_count < self::$CURL_COUNT) {
-					$_count++;
-					curl_close($ch);
-					unset($responses, $info);
-					return self::remote($url, $_count);
-				} else {
-					$curl_error = curl_error($ch);
-					curl_close($ch);
-					unset($responses, $info);
-					echo $url . " remote:{$_count}\n";
-					echo "cURL Error ($errno): $curl_error\n";
-					return false;
-				}
-			}
-			curl_close($ch);
-		} elseif (ini_get('allow_url_fopen') && ($handle = fopen($url, 'rb'))) {
-			if (function_exists('stream_get_contents')) {
-				$responses = stream_get_contents($handle);
-			} else {
-				while (!feof($handle) && connection_status() == 0) {
-					$responses .= fread($handle, 8192);
-				}
-			}
-			fclose($handle);
-		} else {
-			$responses = file_get_contents(urlencode($url));
-		}
-		return $responses;
-	}
 
 	//文件名
 	public static function name($fn) {
@@ -559,41 +358,24 @@ class iFS {
 			return self::_error(array('code' => 0, 'state' => 'UNKNOWN'));
 		}
 	}
-	public static function _array($code, $frs, $RP) {
-		return array('code' => $code,
-			'fid' => $frs->id,
-			'md5' => $frs->filename,
-			'size' => $frs->size,
-			'oname' => $frs->ofilename,
-			'name' => $frs->filename,
-			'fname' => $frs->filename . "." . $frs->ext,
-			'dir' => $frs->path,
-			'ext' => $frs->ext,
-			'RootPath' => $RP . '/' . $frs->path . $frs->filename . "." . $frs->ext,
-			'path' => $frs->filepath,
-			'dirRootPath' => $RP . '/' . $frs->path,
+	public static function _data($value) {
+		$keys = array(
+			'code','fid','md5','size',
+			'oname','name','fname','dir','ext',
+			'RootPath','path','dirRootPath'
 		);
+		return array_combine($keys ,$value);
 	}
-	public static function watermark($ext, $frp) {
-		if (self::$watermark) {
-			$allow_ext = array('jpg', 'jpeg', 'png');
-			self::$watermark_config['allow_ext'] && $allow_ext = explode(',', self::$watermark_config['allow_ext']);
-			if (in_array($ext, $allow_ext)) {
-				iPic::init(self::$watermark_config);
-				iPic::watermark($frp);
-			}
-		}
-	}
-	public static function cloud_write($frp) {
-		if (self::$config['cloud']['enable']) {
-			iCloud::init(self::$config['cloud']);
-			iCloud::write($frp,
-				array(
-					array("iFS","del"),
-					array($frp,1,false)
-				)
-			);
-		}
+	public static function _array($code, $frs, $RP) {
+		$value = array(
+			$code,$frs->id,$frs->filename,$frs->size,
+			$frs->ofilename,$frs->filename, $frs->filename . "." . $frs->ext,
+			$frs->path,$frs->ext,
+			$RP . '/' . $frs->path . $frs->filename . "." . $frs->ext,
+			$frs->filepath,
+			$RP . '/' . $frs->path,
+		);
+		return self::_data($value);
 	}
 
 	public static function IO($FileName = '', $udir = '', $FileExt = 'jpg',$type='3',$filedata=null) {
@@ -614,30 +396,17 @@ class iFS {
 		$FilePath = $FileDir . $FileName . "." . $FileExt;
 		$FileRootPath = $RootPath . $FileName . "." . $FileExt;
 		self::write($FileRootPath, $filedata);
-		self::watermark($FileExt, $FileRootPath);
-		self::cloud_write($FileRootPath);
-
-		$fid = self::insert_filedata(array(
-			'filename' => $FileName,
-			'ofilename' => '',
-			'path' => $FileDir,
-			'ext' => $FileExt,
-			'size' => $FileSize,
-		), $type);
-		return array(
-			'code' => 1,
-			'fid' => $fid,
-			'md5' => $file_md5,
-			'size' => $FileSize,
-			'oname' => '',
-			'name' => $FileName,
-			'fname' => $FileName . "." . $FileExt,
-			'dir' => $FileDir,
-			'ext' => $FileExt,
-			'RootPath' => $FileRootPath,
-			'path' => $FilePath,
-			'dirRootPath' => $RootPath,
+		self::hook('write',array($FileRootPath,$FileExt));
+		// self::watermark($FileExt, $FileRootPath);
+		// self::cloud_write($FileRootPath);
+		$fid = self::insert_filedata(array($FileName,'',$FileDir,'',$FileExt,$FileSize), $type);
+		$value = array(
+			1,$fid,$file_md5,$FileSize,
+			'',$FileName,$FileName.".".$FileExt,
+			$FileDir,$FileExt,
+			$FileRootPath,$FilePath,$RootPath
 		);
+		return self::_data($value);
 	}
 	public static function base64ToFile($base64Data, $udir = '', $FileExt = 'png') {
 		if (empty($base64Data)) {return false;}
@@ -694,35 +463,25 @@ class iFS {
 			$FileRootPath = self::fp($FilePath, "+iPATH");
 			$ret = self::save_ufile($tmp_file, $FileRootPath);
 			@unlink($tmp_file);
-			self::watermark($FileExt, $FileRootPath);
-			self::cloud_write($FileRootPath);
+			self::hook('write',array($FileRootPath,$FileExt));
+			// self::watermark($FileExt, $FileRootPath);
+			// self::cloud_write($FileRootPath);
 			if ($fid) {
 				self::update_filedata(array(
 					'ofilename' => $oFileName,
-					'ext' => $FileExt,
-					'size' => $FileSize,
+					'ext'       => $FileExt,
+					'size'      => $FileSize,
 				), $fid);
 			} else {
-				$fid = self::insert_filedata(array(
-					'filename' => $file_md5,
-					'ofilename' => $oFileName,
-					'path' => $FileDir,
-					'ext' => $FileExt,
-					'size' => $FileSize,
-				), 0);
+				$fid = self::insert_filedata(array($file_md5,$oFileName,$FileDir,'',$FileExt,$FileSize), 0);
 			}
-			return array('code' => 1,
-				'fid' => $fid,
-				'md5' => $file_md5,
-				'size' => $FileSize,
-				'oname' => $oFileName,
-				'name' => $FileName,
-				'fname' => $FileName . "." . $FileExt,
-				'dir' => $FileDir,
-				'ext' => $FileExt,
-				'RootPath' => $FileRootPath,
-				'path' => $FilePath,
-				'dirRootPath' => $RootPath);
+			$value =array(
+				1,$fid,$file_md5,$FileSize,
+				$oFileName,$FileName,$FileName.".".$FileExt,
+				$FileDir,$FileExt,
+				$FileRootPath,$FilePath,$RootPath
+			);
+			return self::_data($value);
 		} else {
 			return false;
 		}
@@ -802,7 +561,7 @@ class iFS {
 	public static function filename($path) {
 		$path = trim($path);
 		if(self::checkHttp($path)){
-			$uri  = parse_url(iCMS_FS_URL);
+			$uri  = parse_url(self::$config['url']);
 			if (stripos($path,$uri['host']) !== false){
 				$path = self::fp($path,'-http');
 			}else{
@@ -829,7 +588,7 @@ class iFS {
 			return false;
 		}
 
-		$fdata = self::remote($http);
+		$fdata = iNET::remote($http);
 		if ($fdata) {
 			$file_md5 = md5($fdata);
 			$frs = self::get_filedata('filename', $file_md5);
@@ -839,8 +598,9 @@ class iFS {
 				if (!is_file($FileRootPath)) {
 					self::mkdir(dirname($FileRootPath));
 					self::write($FileRootPath, $fdata);
-					self::watermark($FileExt, $FileRootPath);
-					self::cloud_write($FileRootPath);
+					self::hook('write',array($FileRootPath,$FileExt));
+					// self::watermark($FileExt, $FileRootPath);
+					// self::cloud_write($FileRootPath);
 				}
 				if ($ret == 'array') {
 					return self::_array(1, $frs, $RootPath);
@@ -850,33 +610,23 @@ class iFS {
 				$FilePath = $FileDir . $FileName;
 				$FileRootPath = $RootPath . $FileName;
 				self::write($FileRootPath, $fdata);
-				self::watermark($FileExt, $FileRootPath);
-				self::cloud_write($FileRootPath);
+
+				self::hook('write',array($FileRootPath,$FileExt));
+
+				// self::watermark($FileExt, $FileRootPath);
+				// self::cloud_write($FileRootPath);
+
 				$FileSize = @filesize($FileRootPath);
 				empty($FileSize) && $FileSize = 0;
-				$fid = self::insert_filedata(array(
-					'filename' => $file_md5,
-					'ofilename' => $http,
-					'path' => $FileDir,
-					'intro' => $intro,
-					'ext' => $FileExt,
-					'size' => $FileSize,
-				), 1);
+				$fid = self::insert_filedata(array($file_md5,$http,$FileDir,$intro,$FileExt,$FileSize),1);
 				if ($ret == 'array') {
-					return array(
-						'code' => 1,
-						'fid' => $fid,
-						'md5' => $file_md5,
-						'size' => $FileSize,
-						'oname' => $http,
-						'name' => $FileName,
-						'fname' => $FileName . "." . $FileExt,
-						'dir' => $FileDir,
-						'ext' => $FileExt,
-						'RootPath' => $FileRootPath,
-						'path' => $FilePath,
-						'dirRootPath' => $RootPath,
+					$value =array(
+						1,$fid,$file_md5,$FileSize,
+						$http,$FileName,$FileName.".".$FileExt,
+						$FileDir,$FileExt,
+						$FileRootPath,$FilePath,$RootPath
 					);
+					return self::_data($value);
 				}
 			}
 			return $FilePath;
@@ -889,30 +639,37 @@ class iFS {
 			// }
 		}
 	}
+	public static function hook($h,$args) {
+		if(is_array(self::$CALLABLE[$h][0])){
+			foreach (self::$CALLABLE[$h] as $key => $cb) {
+				is_callable($cb) && call_user_func_array($cb, $args);
+			}
+		}else{
+			if (self::$CALLABLE[$h] && is_callable(self::$CALLABLE[$h])) {
+				return call_user_func_array(self::$CALLABLE[$h], $args);
+			}
+		}
+	}
 //------callable-----
-	public static function insert_filedata($data, $type = 0,$status=1) {
+	public static function insert_filedata($value, $type = 0,$status=1) {
 		if (!self::$checkFileData) {
 			return;
 		}
-		if (self::$CALLABLE['insert'] && is_callable(self::$CALLABLE['insert'])) {
-			return call_user_func_array(self::$CALLABLE['insert'], array($data, $type,$status));
-		}
+		$keys = array('filename','ofilename','path','intro','ext','size');
+		$data = array_combine($keys ,$value);
+		return self::hook('insert',array($data, $type,$status));
 	}
 	public static function update_filedata($data, $fid = 0) {
 		if (empty($fid)) {
 			return;
 		}
-		if (self::$CALLABLE['update'] && is_callable(self::$CALLABLE['update'])) {
-			return call_user_func_array(self::$CALLABLE['update'], array($data, $fid));
-		}
+		return self::hook('update',array($data, $fid));
 	}
 	public static function get_filedata($f, $v,$s='*') {
 		if (!self::$checkFileData) {
 			return;
 		}
-		if (self::$CALLABLE['get'] && is_callable(self::$CALLABLE['get'])) {
-			return call_user_func_array(self::$CALLABLE['get'], array($f,$v,$s));
-		}
+		return self::hook('get',array($f,$v,$s));
 	}
 //-------------
 	public static function _error($e, $break = false) {

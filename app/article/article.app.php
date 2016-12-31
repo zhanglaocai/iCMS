@@ -6,12 +6,11 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 class articleApp {
-	public static $taoke   = false;
 	public $methods = array('iCMS', 'article', 'clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
-	public $pregimg = "/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
-	public $config  = null;
+	public static $pregimg = "/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
+	public static $config  = null;
 	public function __construct() {
-		$this->config = iCMS::$config['article'];
+		self::$config = iCMS::$config['article'];
 	}
 
 	public function do_iCMS($a = null) {
@@ -120,7 +119,7 @@ class articleApp {
 			return $article;
 		}
 	}
-	public function value($article, $art_data = "", $vars = array(), $page = 1, $tpl = false) {
+	public static function value($article, $art_data = "", $vars = array(), $page = 1, $tpl = false) {
 
 		$article['appid'] = iCMS_APP_ARTICLE;
 
@@ -152,7 +151,6 @@ class articleApp {
 
 		$article['category'] = categoryApp::get_lite($category);
 
-		self::$taoke = false;
 		if ($art_data) {
 			$pkey = intval($page - 1);
 			if ($article['chapter']) {
@@ -163,7 +161,7 @@ class articleApp {
 			}
 
 
-			$article['pics'] = $this->body_pics($art_data['body'],$pic_array);
+			$article['pics'] = self::body_pics($art_data['body'],$pic_array);
 
 			if ($article['chapter']) {
 				$article['body'] = $art_data['body'];
@@ -174,15 +172,15 @@ class articleApp {
 				unset($body);
 			}
 
-			$article['body']     = $this->body_ad($article['body']);
-			$article['body']     = $this->taoke($article['body']);
-			$article['taoke']    = $this->taoke;
+			$article = self::taoke($article);
+
+			$article['body']     = self::body_ad($article['body']);
 			$article['subtitle'] = $art_data['subtitle'];
 			unset($art_data);
-			$total = $count + intval($this->config['pageno_incr']);
-			$article['page'] = $this->page($article,$page,$total,$count,$category['mode']);
+			$total = $count + intval(self::$config['pageno_incr']);
+			$article['page'] = self::page($article,$page,$total,$count,$category['mode']);
 			is_array($article['page']['next'])&& $next_url = $article['page']['next']['url'];
-			$pic_array[0] && $article['body'] = $this->body_pics_page($pic_array,$article,$page,$total,$next_url);
+			$pic_array[0] && $article['body'] = self::body_pics_page($pic_array,$article,$page,$total,$next_url);
 		}
 
 		if ($vars['tag']) {
@@ -267,7 +265,7 @@ class articleApp {
         }
 	   	return $data;
 	}
-	public function page($article,$page,$total,$count,$mode=null){
+	public static function page($article,$page,$total,$count,$mode=null){
 		$pageArray = array();
 		$pageurl = $article['iurl']->pageurl;
 		if ($total > 1) {
@@ -325,7 +323,8 @@ class articleApp {
 		}
 	}
 
-	public static function taoke($content) {
+	public static function taoke($resource) {
+		$content = $resource['body'];
 		preg_match_all('/<[^>]+>((http|https):\/\/(item|detail)\.(taobao|tmall)\.com\/.+)<\/[^>]+>/isU', $content, $taoke_array);
 		if ($taoke_array[1]) {
 			$tk_array = array_unique($taoke_array[1]);
@@ -336,10 +335,10 @@ class articleApp {
 				$itemid = $tk_item_array['id'];
 				$tk_data[$tkid] = self::taoke_tpl($itemid, $tk_url);
 			}
-			$content = str_replace($tk_array, $tk_data, $content);
-			self::$taoke = true;
+			$resource['body'] = str_replace($tk_array, $tk_data, $content);
+			$resource['taoke'] = true;
 		}
-		return $content;
+		return $resource;
 	}
 	public static function taoke_tpl($itemid, $url, $title = null) {
 		iPHP::assign('taoke', array(
@@ -354,8 +353,8 @@ class articleApp {
 		$chapter && $title = $chapterArray[$pn - 1]['subtitle'];
 		return $title;
 	}
-	public function body_pics($body,&$pic_array=array()){
-        preg_match_all($this->pregimg,$body,$pic_array);
+	public static function body_pics($body,&$pic_array=array()){
+        preg_match_all(self::$pregimg,$body,$pic_array);
 		$array = array_unique($pic_array[1]);
 		$pics =  array();
 		foreach ((array)$array as $key => $_pic) {
@@ -363,19 +362,19 @@ class articleApp {
 		}
 		return $pics;
 	}
-	public function body_pics_page($pic_array,$article,$page,$total,$next_url){
+	public static function body_pics_page($pic_array,$article,$page,$total,$next_url){
 		$img_array = array_unique($pic_array[0]);
 		foreach ($img_array as $key => $img) {
 			$img = str_replace('<img', '<img title="' . $article['title'] . '" alt="' . $article['title'] . '"', $img);
-			if ($this->config['pic_center']) {
+			if (self::$config['pic_center']) {
                 $img_replace[$key] = '<p class="article_pic">'.$img.'</p>';
 			} else {
 				$img_replace[$key] = $img;
 			}
-            if($this->config['pic_next'] && $total>1){
+            if(self::$config['pic_next'] && $total>1){
                 $clicknext = '<a href="'.$next_url.'"><b>'.iUI::lang('iCMS:article:clicknext').' ('.$page.'/'.$total.')</b></a>';
 				$clickimg = '<a href="' . $next_url . '" title="' . $article['title'] . '" class="img">' . $img . '</a>';
-				if ($this->config['pic_center']) {
+				if (self::$config['pic_center']) {
                     $img_replace[$key] = '<p class="click2next">'.$clicknext.'</p>';
                     $img_replace[$key].= '<p class="article_pic">'.$clickimg.'</p>';
 				} else {
@@ -386,13 +385,13 @@ class articleApp {
 		}
 		return str_replace($img_array, $img_replace, $article['body']);
 	}
-    public function body_ad($content){
+    public static function body_ad($content){
         $pieces    = 1000;
         $html      = str_replace('</p>', "</p>\n", $content);
         $htmlArray = explode("\n", $html);
         $resource  = array();
         //计算长度
-        preg_match_all($this->pregimg,$content,$img_array);
+        preg_match_all(self::$pregimg,$content,$img_array);
         $len = strlen($content)+(count($img_array[1])*300);
 
         if($len<($pieces*1.5)){

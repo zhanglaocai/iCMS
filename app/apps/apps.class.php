@@ -98,6 +98,7 @@ var_dump(@class_exists($appname));
         $sql = '1=1';
         $vars['type'] && $sql.=" AND `type`='".(int)$vars['type']."'";
         $vars['status'] && $sql.=" AND `status`='".(int)$vars['status']."'";
+        $vars['table'] && $sql.=" AND `table`!='0'";
         $rs  = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);
         $_count = count($rs);
         for ($i=0; $i < $_count; $i++) {

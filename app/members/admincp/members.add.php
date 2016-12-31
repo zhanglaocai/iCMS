@@ -141,7 +141,7 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
           </div>
-          <?php include admincp::view("admincp.power"); ?>
+          <?php include admincp::view("members.power"); ?>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>

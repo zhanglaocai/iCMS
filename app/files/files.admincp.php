@@ -115,17 +115,15 @@ class filesAdmincp{
     public function do_download(){
         iFile::$userid   = false;
         $rs            = iFS::get_filedata('id',$this->id);
-        iFS::$redirect = true;
         $FileRootPath  = iFS::fp($rs->filepath,"+iPATH");
         iFS::check_ext($rs->filepath,true) OR iUI::alert('文件类型不合法!');
         iFile::$userid = members::$userid;
-        $fileresults   = iFS::remote($rs->ofilename);
+        $fileresults   = iNET::remote($rs->ofilename);
     	if($fileresults){
     		iFS::mkdir(dirname($FileRootPath));
     		iFS::write($FileRootPath,$fileresults);
             iFS::$watermark = !isset($_GET['unwatermark']);
-            iFS::watermark($rs->ext,$FileRootPath);
-            iFS::yun_write($FileRootPath);
+            iFS::hook('write',array($FileRootPath,$rs->ext));
 
     		$_FileSize	= strlen($fileresults);
     		if($_FileSize!=$rs->size){

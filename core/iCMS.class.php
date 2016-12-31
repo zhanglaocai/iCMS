@@ -21,7 +21,10 @@ class iCMS {
         define('iCMS_FS_URL',    self::$config['FS']['url']);
         define('iCMS_API',       iCMS_PUBLIC_URL.'/api.php');
         define('iCMS_API_URL',   iCMS_API.'?app=');
-        iURL::init(self::$config);
+
+        iFS::init(self::$config['FS']);
+        iCache::init(self::$config['cache']);
+        iURL::init(self::$config,array("API"=>iCMS_API));
 	}
     /**
      * 运行应用程序
@@ -96,10 +99,41 @@ class iCMS {
     }
     public static function iFile_init(){
         iFile::init(iFS::$config['table'],array('file_data','file_map'));
+        if (iFS::$config['cloud']['enable']) {
+            iCloud::init(iFS::$config['cloud']);
+        }
         iFS::$CALLABLE = array(
             'insert' => array('iFile','insert'),
             'update' => array('iFile','update'),
-            'get'    => array('iFile','get')
+            'get'    => array('iFile','get'),
+            'write'  => array(
+                array('iCMS','watermark'),
+                array('iCMS','cloud_write')
+            ),
+            'delete'  => array('iCMS','cloud_delete')
         );
     }
+    public static function watermark($frp,$ext) {
+        if (self::$watermark) {
+            $allow_ext = array('jpg', 'jpeg', 'png');
+            $config = self::$config['watermark'];
+            $config['allow_ext'] && $allow_ext = explode(',', $config['allow_ext']);
+            if (in_array($ext, $allow_ext)) {
+                iPic::init($config);
+                iPic::watermark($frp);
+            }
+        }
+    }
+    public static function cloud_write($frp) {
+        iCloud::write($frp);
+        if(iFS::$config['cloud']['local']){
+            iFS::del($frp);
+        }
+    }
+    public static function cloud_delete($frp) {
+        // if(!iFS::$config['cloud']['local']){
+            iCloud::delete($frp);
+        // }
+    }
+
 }
