@@ -7,13 +7,50 @@
 * @site http://www.iiiphp.com
 * @licence http://www.iiiphp.com/license
 * @version 1.0.1
-* @package iURL
+* @package iRouter
 */
 define('PAGE_SIGN', '{P}');
 
 class iURL {
     public static $config   = null;
     public static $uriArray = null;
+
+    public static function router($key, $var = null) {
+        if(isset($GLOBALS['iPHP_ROUTER'])){
+            $routerArray = $GLOBALS['iPHP_ROUTER'];
+        }else{
+            $path = iPHP_APP_CONF . '/router.json';
+            @is_file($path) OR iPHP::error_throw($path . ' not exist', 0013);
+            $routerArray = json_decode(file_get_contents($path), true);
+            $GLOBALS['iPHP_ROUTER'] = $routerArray;
+        }
+        $routerKey = $key;
+        is_array($key) && $routerKey = $key[0];
+        $router = $routerArray[$routerKey];
+        $url = iPHP_ROUTER_REWRITE?$router[0]:$router[1];
+
+        if (iPHP_ROUTER_REWRITE && stripos($routerKey, 'uid:') === 0) {
+            $url = rtrim(iPHP_ROUTER_USER, '/') . $url;
+        }
+
+        if (is_array($key)) {
+            if (is_array($key[1])) {
+                /* 多个{} 例:/{uid}/{cid}/ */
+                preg_match_all('/\{(\w+)\}/i', $url, $matches);
+                $url = str_replace($matches[0], $key[1], $url);
+            } else {
+                $url = preg_replace('/\{\w+\}/i', $key[1], $url);
+            }
+            $key[2] && $url = $key[2] . $url;
+        }
+
+        if ($var == '?&') {
+            $url .= iPHP_ROUTER_REWRITE ? '?' : '&';
+        }
+        $url = str_replace('__API__', iCMS_API, $url);
+        return $url;
+    }
+
 	public static function init($config=null){
         self::$config           = $config['router'];
         self::$config['tag']    = $config['tag'];
@@ -139,7 +176,7 @@ class iURL {
 
         if(strpos($url,'{PHP}')===false) {
         	self::$uriArray	= array($array,$category,$_category);
-        	strpos($url,'{')===false OR $url = preg_replace_callback ("/\{(.*?)\}/",'__iurl_rule__',$url);
+        	strpos($url,'{')===false OR $url = preg_replace_callback ("/\{(.*?)\}/",array(__CLASS__,'rule'),$url);
 
             $i->href = $url;
             if(strpos($html_dir,'..')===false) {
@@ -211,7 +248,4 @@ class iURL {
         $i->name     = str_replace(PAGE_SIGN,1,$i->name);
         return $i;
     }
-}
-function __iurl_rule__($a){
-	return iURL::rule($a);
 }

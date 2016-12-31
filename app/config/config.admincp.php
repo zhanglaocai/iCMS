@@ -18,17 +18,6 @@ class configAdmincp{
         admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
     	include admincp::view("config");
     }
-    public static function apps(){
-        apps::scan();
-        $apps  = array();
-        foreach (apps::$array as $key => $value) {
-            $apps[] = $key;
-        }
-        $apps[]='members';
-        $apps[]='menu';
-        $apps[]='apps';
-        return $apps;
-    }
     /**
      * [do_save 保存配置]
      * @return [type] [description]
@@ -58,6 +47,14 @@ class configAdmincp{
     	}
     	$this->cache();
     	iUI::success('更新完成','js:1');
+    }
+    public static function apps(){
+        $appArray = apps::scan('*.app','*',true);
+        $acpArray = apps::scan('*.admincp','*',true);
+        $array    = array_merge((array)$appArray,(array)$acpArray);
+        $array    = array_filter($array);
+        $array    = array_keys($array);
+        return $array;
     }
     /**
      * [cache 更新配置]

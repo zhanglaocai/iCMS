@@ -8,7 +8,6 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-
 class spider{
     public static $cid      = null;
     public static $rid      = null;
@@ -39,6 +38,14 @@ class spider{
 
     public static $spider_url_ids = array();
 
+    // public static function loader() {
+    //     $dir  = dirname(strtr(__FILE__,'\\','/'));
+    //     require $dir.'/iSpider.Tools.php';
+    //     require $dir.'/iSpider.Content.php';
+    //     require $dir.'/iSpider.Urls.php';
+    //     require $dir.'/iSpider.Data.php';
+    // }
+    //
     public static function rule($id) {
         $rs = iDB::row("SELECT * FROM `#iCMS@__spider_rule` WHERE `id`='$id' LIMIT 1;", ARRAY_A);
         $rs['rule'] && $rs['rule'] = stripslashes_deep(unserialize($rs['rule']));
@@ -164,7 +171,7 @@ class spider{
         return $msg;
     }
     public static function publish($work = null) {
-        $_POST = spiderData::crawl();
+        $_POST = spider_data::crawl();
         if(spider::$work && $work===null) $work = spider::$work;
 
         if($work=='shell'){

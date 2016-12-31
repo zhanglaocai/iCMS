@@ -53,8 +53,8 @@ class iPHP {
 			$path = iPHP_APP_DIR . '/' . $app . '/' . $file . '.php';
 		}else if (strncmp('i', $name, 1) === 0) {
 			$map = array(
-				'iFS'=>"iFileSystem",
-				'iDB'=>version_compare(PHP_VERSION,'5.5','>=')?'iMysqli':'iMysql'
+				'iFS' => "iFileSystem",
+				'iDB' => version_compare(PHP_VERSION,'5.5','>=')?'iMysqli':'iMysql'
 			);
 			$map[$name] && $name = $map[$name];
 			$core===null && $core = iPHP_CORE;
@@ -63,20 +63,15 @@ class iPHP {
 			$file OR $file = $name.'.class';
 			$path = iPHP_APP_DIR . '/' . $name . '/' . $file . '.php';
 		}
-
 		if (@is_file($path)) {
 			$key = str_replace(iPATH, '/', $path);
 			$GLOBALS['iPHP_REQ'][$key] = true;
 			require_once $path;
 		} else {
-			$core == iPHP_CORE OR self::error_throw('CLASS <b>' . $name . '</b> NOT FOUND', 0020);
+			self::error_throw("Unable to find class '$name'", 0020);
 		}
 	}
-
 	public static function config() {
-		//iPHP_APP::autoload
-		spl_autoload_register(array(iPHP_APP, 'loader'));
-
 		$site = iPHP_MULTI_SITE ? $_SERVER['HTTP_HOST'] : iPHP_APP;
 		if (iPHP_MULTI_DOMAIN) {
 			//只绑定主域
@@ -89,7 +84,7 @@ class iPHP {
 		//config.php 中开启iPHP_APP_CONF后 此处设置无效,
 		define('iPHP_APP_CONF', iPHP_CONF_DIR . '/' . $site); //网站配置目录
 		define('iPHP_APP_CONFIG', iPHP_APP_CONF . '/config.php'); //网站配置文件
-		@is_file(iPHP_APP_CONFIG) OR self::error_throw('运行出错.找不到"' . $site . '"网站的配置文件(config.php)!请先安装本程序或者确认('.iPHP_APP_CONFIG.')文件是否存在!', '002');
+		@is_file(iPHP_APP_CONFIG) OR self::error_throw('Unable to find "' . $site . '" config file ('.iPHP_APP_CONFIG.').Please install iCMS', '0001');
 
 		$config = require iPHP_APP_CONFIG;
 		//config.php 中开启后 此处设置无效
@@ -142,11 +137,11 @@ class iPHP {
 		}
 
 		if (!in_array($app, (array)self::$apps) && iPHP_DEBUG) {
-			iPHP::error_404('运行出错！找不到应用程序: <b>' . $app . '</b>', '0001');
+			iPHP::error_404('Unable to find application <b>' . $app . '</b>', '0001');
 		}
 		self::$app_path = iPHP_APP_DIR . '/' . $app;
 		self::$app_file = self::$app_path . '/' . $app . '.app.php';
-		is_file(self::$app_file) OR iPHP::error_404('运行出错！找不到文件: <b>' . $app . '.app.php</b>', '0002');
+		is_file(self::$app_file) OR iPHP::error_404('Unable to find application <b>' . $app . '.app.php</b>', '0002');
 		if ($do === NULL) {
 			$do = iPHP_APP;
 			$_GET['do'] && $do = iSecurity::escapeStr($_GET['do']);
@@ -177,7 +172,7 @@ class iPHP {
 		self::$app = new $obj_name();
 
 		if (self::$app_do && self::$app->methods) {
-			in_array(self::$app_do, self::$app->methods) OR iPHP::error_404('运行出错！ <b>' . self::$app_name . '</b> 类中找不到方法定义: <b>' . self::$app_method . '</b>', '0003');
+			in_array(self::$app_do, self::$app->methods) OR iPHP::error_404('Call to undefined method <b>' . self::$app_name . '::'.self::$app_method.'</b>', '0003');
 			$method = self::$app_method;
 			$args === null && $args = self::$app_args;
 			if ($args) {
@@ -186,11 +181,11 @@ class iPHP {
 				}
 				return call_user_func_array(array(self::$app, $method), (array) $args);
 			} else {
-				method_exists(self::$app, self::$app_method) OR iPHP::error_404('运行出错！ <b>' . self::$app_name . '</b> 类中 <b>' . self::$app_method . '</b> 方法不存在', '0004');
+				method_exists(self::$app, self::$app_method) OR iPHP::error_404('Call to undefined method <b>' . self::$app_name . '::'.self::$app_method.'</b>', '0004');
 				return self::$app->$method();
 			}
 		} else {
-			iPHP::error_404('运行出错！ <b>' . self::$app_name . '</b> 类中 <b>' . self::$app_method . '</b> 方法不存在', '0005');
+			iPHP::error_404('Call to undefined method <b>' . self::$app_name . '::'.self::$app_method.'</b>', '0005');
 		}
 	}
 
@@ -224,7 +219,7 @@ class iPHP {
 		return self::$iTPL->fetch($tpl);
 	}
 	public static function view($tpl, $p = 'index') {
-		$tpl OR self::error_404('运行出错！请设置模板文件', '001', 'TPL');
+		$tpl OR self::error_404('Please set the template file', '001', 'TPL');
 		if (self::$iVIEW == 'html') {
 			return self::$iTPL->fetch($tpl);
 		} else {
@@ -362,36 +357,13 @@ class iPHP {
 			if (empty($file_type)) {
 				$file_type = $app_name;
 				$app_name = $app_dir;
-			}else{
-				if($file_type=='admincp'){
-					$file_type='subadmincp';
-					$object = $app_dir.$app_name . 'Admincp';
-					// $app_name = $app_dir.'.'.$app_name;
-				}
 			}
 		}
-
 		$app_file = $app_name.'.'.$file_type;
-
 		switch ($file_type) {
-			case 'class':
-				$object = $app_name;
-				break;
-			case 'admincp':
-				$object = $app_name . 'Admincp';
-				break;
-			case 'subadmincp':
-				$app_file = $app_dir.'.'.$app_name.'.admincp';
-				break;
-			case 'table':
-				$object = $app_name . 'Table';
-				$args = "static";
-				break;
-			case 'func':
-				$args = "include";
-				break;
+			case 'class':$object = $app_name;break;
+			case 'func':break;
 			default:$object = $app_name . 'App';
-				break;
 		}
 		$path = iPHP_APP_DIR . '/' . $app_dir . '/' . $app_file . '.php';
 		if (@is_file($path)) {
@@ -399,16 +371,6 @@ class iPHP {
 		}else{
 			return false;
 		}
-
-		if ($args === "include" || $args === "static"|| $args === "S"|| $args === "I") {
-			return;
-		}
-
-		$obj = new $object();
-		if(method_exists($obj , '__construct' ) && $args){
-			call_user_func_array(array($obj, '__construct'), (array) $args);
-		}
-		return $obj;
 	}
 	public static function vendor($name, $args = null) {
 		iPHP::import(iPHP_LIB . '/vendor/Vendor.' . $name . '.php');
@@ -420,41 +382,6 @@ class iPHP {
 		} else {
 			return false;
 		}
-	}
-	public static function router($key, $var = null) {
-		if(isset($GLOBALS['iPHP_ROUTER'])){
-			$routerArray = $GLOBALS['iPHP_ROUTER'];
-		}else{
-			$path = iPHP_APP_CONF . '/router.json';
-			@is_file($path) OR self::error_throw($path . ' not exist', 0013);
-			$routerArray = json_decode(file_get_contents($path), true);
-			$GLOBALS['iPHP_ROUTER'] = $routerArray;
-		}
-		$routerKey = $key;
-		is_array($key) && $routerKey = $key[0];
-		$router = $routerArray[$routerKey];
-		$url = iPHP_ROUTER_REWRITE?$router[0]:$router[1];
-
-		if (iPHP_ROUTER_REWRITE && stripos($routerKey, 'uid:') === 0) {
-			$url = rtrim(iPHP_ROUTER_USER, '/') . $url;
-		}
-
-		if (is_array($key)) {
-			if (is_array($key[1])) {
-				/* 多个{} 例:/{uid}/{cid}/ */
-				preg_match_all('/\{(\w+)\}/i', $url, $matches);
-				$url = str_replace($matches[0], $key[1], $url);
-			} else {
-				$url = preg_replace('/\{\w+\}/i', $key[1], $url);
-			}
-			$key[2] && $url = $key[2] . $url;
-		}
-
-		if ($var == '?&') {
-			$url .= iPHP_ROUTER_REWRITE ? '?' : '&';
-		}
-		$url = str_replace('__API__', iCMS_API, $url);
-		return $url;
 	}
     //------------------------------------
     public static function timeline(){
@@ -576,7 +503,7 @@ class iPHP {
 		}
 	}
 	public static function error_throw($msg, $code) {
-		trigger_error($msg . '(' . $code . ')', E_USER_ERROR);
+		trigger_error($msg, E_USER_ERROR);
 	}
 	public static function error_404($msg = "", $code = "") {
 		iPHP_DEBUG && self::error_throw($msg, $code);
@@ -591,26 +518,25 @@ class iPHP {
 	    if($errno == 0) return;
 		defined('E_STRICT') OR define('E_STRICT', 2048);
 		defined('E_RECOVERABLE_ERROR') OR define('E_RECOVERABLE_ERROR', 4096);
-		$html = "<pre>\n<b>";
 		switch ($errno) {
-	        case E_ERROR:              $html.="Error";                  break;
-	        case E_WARNING:            $html.="Warning";                break;
-	        case E_PARSE:              $html.="Parse Error";            break;
-	        case E_NOTICE:             $html.="Notice";                 break;
-	        case E_CORE_ERROR:         $html.="Core Error";             break;
-	        case E_CORE_WARNING:       $html.="Core Warning";           break;
-	        case E_COMPILE_ERROR:      $html.="Compile Error";          break;
-	        case E_COMPILE_WARNING:    $html.="Compile Warning";        break;
-	        case E_USER_ERROR:         $html.="iPHP Error";             break;
-	        case E_USER_WARNING:       $html.="iPHP Warning";           break;
-	        case E_USER_NOTICE:        $html.="iPHP Notice";            break;
-	        case E_STRICT:             $html.="Strict Notice";          break;
-	        case E_RECOVERABLE_ERROR:  $html.="Recoverable Error";      break;
-	        default:                   $html.="Unknown error ($errno)"; break;
+	        case E_ERROR:              $type = "Error";                  break;
+	        case E_WARNING:            $type = "Warning";                break;
+	        case E_PARSE:              $type = "Parse Error";            break;
+	        case E_NOTICE:             $type = "Notice";                 break;
+	        case E_CORE_ERROR:         $type = "Core Error";             break;
+	        case E_CORE_WARNING:       $type = "Core Warning";           break;
+	        case E_COMPILE_ERROR:      $type = "Compile Error";          break;
+	        case E_COMPILE_WARNING:    $type = "Compile Warning";        break;
+	        case E_USER_ERROR:         $type = "iPHP Error";             break;
+	        case E_USER_WARNING:       $type = "iPHP Warning";           break;
+	        case E_USER_NOTICE:        $type = "iPHP Notice";            break;
+	        case E_STRICT:             $type = "Strict Notice";          break;
+	        case E_RECOVERABLE_ERROR:  $type = "Recoverable Error";      break;
+	        default:                   $type = "Unknown error ($errno)"; break;
 		}
-		$html .= ":</b> $errstr\n";
+		$html = "<pre style='font-size: 14px;'>";
+		$html.= "<b>{$type}:</b> {$errstr}\n";//in <b>{$errfile}</b> on line <b>{$errline}</b>
 		if (function_exists('debug_backtrace')) {
-			//print "backtrace:\n";
 			$backtrace = debug_backtrace();
 			foreach ($backtrace as $i => $l) {
 				$html .= "[$i] in function <b>{$l['class']}{$l['type']}{$l['function']}</b>";
@@ -619,7 +545,7 @@ class iPHP {
 				$html .= "\n";
 			}
 		}
-		$html .= "\n</pre>";
+		$html .= "</pre>";
 		$html = str_replace('\\', '/', $html);
 		$html = str_replace(iPATH, 'iPHP://', $html);
 	    if(PHP_SAPI=='cli'){

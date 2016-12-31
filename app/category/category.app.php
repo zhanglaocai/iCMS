@@ -22,7 +22,7 @@ class categoryApp{
         $dir = iSecurity::escapeStr($_GET['dir']);
 		if(empty($cid) && $dir){
 			$cid = iCache::get(self::CACHE_CATEGORY_DIR2CID,$dir);
-            $cid OR iPHP::error_404('运行出错！找不到该栏目<b>dir:'.$dir.'</b> 请更新栏目缓存或者确认栏目是否存在', 20002);
+            $cid OR iPHP::error_404('找不到该栏目<b>dir:'.$dir.'</b> 请更新栏目缓存或者确认栏目是否存在', 20002);
 		}
     	return $this->category($cid,$tpl);
     }
@@ -34,7 +34,7 @@ class categoryApp{
     public static function category($id,$tpl='index') {
         $category = iCache::get(self::CACHE_CATEGORY_ID.$id);
         if(empty($category) && $tpl){
-            iPHP::error_404('运行出错！找不到该栏目<b>cid:'. $id.'</b> 请更新栏目缓存或者确认栏目是否存在', 20001);
+            iPHP::error_404('找不到该栏目<b>cid:'. $id.'</b> 请更新栏目缓存或者确认栏目是否存在', 20001);
         }
         if($category['status']==0) return false;
         $iurl = $category['iurl'];

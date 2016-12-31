@@ -10,7 +10,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-class spiderUrls extends spider{
+class spider_urls {
     public static $urls = null;
 
     public static function crawl($work = NULL,$pid = NULL,$_rid = NULL,$_urls=null,$callback=null) {
@@ -43,7 +43,7 @@ class spiderUrls extends spider{
         $rule = $ruleA['rule'];
         $urls = $rule['list_urls'];
         $project['urls'] && $urls = $project['urls'];
-        spiderUrls::$urls && $urls = spiderUrls::$urls;
+        spider_urls::$urls && $urls = spider_urls::$urls;
         $_urls && $urls = $_urls;
 
         $urlsArray  = explode("\n", $urls);
@@ -68,7 +68,7 @@ class spiderUrls extends spider{
                     print_r('<b>使用[rid:'.$_rid.']规则抓取列表</b>:'.$_urls);
                     echo "<hr />";
                 }
-                $_urlsList = spiderUrls::crawl($work,false,$_rid,$_urls,'CALLBACK@URL');
+                $_urlsList = spider_urls::crawl($work,false,$_rid,$_urls,'CALLBACK@URL');
                 $urlsList  = array_merge($urlsList,$_urlsList);
                 unset($urlsArray[$_key]);
             }else{
@@ -81,7 +81,7 @@ class spiderUrls extends spider{
                     }else{
                         list($format,$begin,$num,$step,$zeroize,$reverse) = explode(',',$_matches[1]);
                         $url = str_replace($_matches[1], '*',trim($_matches[0]));
-                        $_urlsList = spiderTools::mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse);
+                        $_urlsList = spider_tools::mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse);
                         unset($urlsArray[$_key]);
                         $urlsList = array_merge($urlsList,$_urlsList);
                     }
@@ -132,7 +132,7 @@ class spiderUrls extends spider{
             if (spider::$ruleTest) {
                 echo '<b>抓取列表:</b>'.$url . "<br />";
             }
-            $html = spiderTools::remote($url);
+            $html = spider_tools::remote($url);
             if(empty($html)){
                 continue;
             }
@@ -140,7 +140,7 @@ class spiderUrls extends spider{
                 $doc       = phpQuery::newDocumentHTML($html,'UTF-8');
                 $list_area = $doc[trim($rule['list_area_rule'])];
                 // if(strpos($rule['list_area_format'], 'DOM::')!==false){
-                //     $list_area = spiderTools::dataClean($rule['list_area_format'], $list_area);
+                //     $list_area = spider_tools::dataClean($rule['list_area_format'], $list_area);
                 // }
 
                 if($rule['list_area_format']){
@@ -161,7 +161,7 @@ class spiderUrls extends spider{
                 // $lists = $list_area;
                 //echo 'list:getDocumentID:'.$lists->getDocumentID()."\n";
             }else{
-                $list_area_rule = spiderTools::pregTag($rule['list_area_rule']);
+                $list_area_rule = spider_tools::pregTag($rule['list_area_rule']);
                 if ($list_area_rule) {
                     preg_match('|' . $list_area_rule . '|is', $html, $matches, $PREG_SET_ORDER);
                     $list_area = $matches['content'];
@@ -178,10 +178,10 @@ class spiderUrls extends spider{
                     echo "<hr />";
                 }
                 if ($rule['list_area_format']) {
-                    $list_area = spiderTools::dataClean($rule['list_area_format'], $list_area);
+                    $list_area = spider_tools::dataClean($rule['list_area_format'], $list_area);
                 }
 
-                preg_match_all('|' . spiderTools::pregTag($rule['list_url_rule']) . '|is', $list_area, $lists, PREG_SET_ORDER);
+                preg_match_all('|' . spider_tools::pregTag($rule['list_url_rule']) . '|is', $list_area, $lists, PREG_SET_ORDER);
 
                 $list_area = null;
                 unset($list_area);
@@ -317,8 +317,8 @@ class spiderUrls extends spider{
                             );
                             switch ($work) {
                                 case 'DATA@RULE':
-                                    $contentArray[$lkey] = spiderData::crawl($pid,$rid,spider::$url,spider::$title);
-                                    // $contentArray[$lkey] = spiderUrls::crawl($work,$_pid);
+                                    $contentArray[$lkey] = spider_data::crawl($pid,$rid,spider::$url,spider::$title);
+                                    // $contentArray[$lkey] = spider_urls::crawl($work,$_pid);
                                     unset($suData['sid']);
                                     $suData['title'] = addslashes($suData['title']);
                                     $suData+= array(
@@ -372,7 +372,7 @@ class spiderUrls extends spider{
     public static function title_url_array($lists,$rule,$url){
         $array = array();
         foreach ($lists AS $lkey => $row) {
-            $arr = spiderTools::title_url($row,$rule,$url);
+            $arr = spider_tools::title_url($row,$rule,$url);
             if($arr){
                 $array[$lkey] = $arr;
             }

@@ -10,7 +10,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-class spiderData extends spider{
+class spider_data {
 
     public static function crawl($_pid = NULL,$_rid = NULL,$_url = NULL,$_title = NULL) {
         ini_get('safe_mode') OR set_time_limit(0);
@@ -56,7 +56,7 @@ class spiderData extends spider{
 
         spider::$curl_proxy = $rule['proxy'];
         $responses = array();
-        $html      = spiderTools::remote($url);
+        $html      = spider_tools::remote($url);
         if(empty($html)){
             $msg = '错误:001..采集 ' . $url . '文件内容为空!请检查采集规则';
             if(spider::$work=='shell'){
@@ -128,7 +128,7 @@ class spiderData extends spider{
                     continue;
                 }
             }
-            $content = spiderContent::crawl($content_html,$data,$rule,$responses);
+            $content = spider_content::crawl($content_html,$data,$rule,$responses);
 
             unset($content_html);
 

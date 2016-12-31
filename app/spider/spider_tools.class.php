@@ -10,7 +10,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-class spiderTools extends spider{
+class spider_tools {
     public static $listArray = array();
 
     /**
@@ -71,7 +71,7 @@ class spiderTools extends spider{
                 }
                 $content  = '';
                 if(strpos($dom_rule, 'DOM::')!==false){
-                    $content = spiderTools::domAttr($DOM,$dom_rule);
+                    $content = spider_tools::domAttr($DOM,$dom_rule);
                     empty($dom_key) && $dom_key  = $dom_key_map[$key];
                 }else{
                     if($dom_rule=='url'||$dom_rule=='href'){
@@ -98,10 +98,10 @@ class spiderTools extends spider{
         $url   = str_replace('<%url%>',$url, $rule['list_url']);
         if(strpos($url, 'AUTO::')!==false && $baseUrl){
             $url = str_replace('AUTO::','',$url);
-            $url = spiderTools::url_complement($baseUrl,$url);
+            $url = spider_tools::url_complement($baseUrl,$url);
         }
         if($rule['list_url_clean']){
-            $url = spiderTools::dataClean($rule['list_url_clean'],$url);
+            $url = spider_tools::dataClean($rule['list_url_clean'],$url);
             if($url===null){
                 return array();
             }
@@ -115,7 +115,7 @@ class spiderTools extends spider{
         // if($responses){
         //     foreach ($responses as $key => $value) {
         //         if(!is_numeric($key) && strpos($key, 'var_')===false){
-        //             spiderTools::$listArray[$key] = $value;
+        //             spider_tools::$listArray[$key] = $value;
         //         }
         //     }
         //     unset($responses);
@@ -543,8 +543,8 @@ class spiderTools extends spider{
         );
         spider::$cookie && $options[CURLOPT_COOKIE] = spider::$cookie;
         if(spider::$curl_proxy){
-            $proxy   = spiderTools::proxy_test();
-            $proxy && $options = spiderTools::proxy($options,$proxy);
+            $proxy   = spider_tools::proxy_test();
+            $proxy && $options = spider_tools::proxy($options,$proxy);
         }
         if(spider::$PROXY_URL){
             $options[CURLOPT_URL] = self::$PROXY_URL.urlencode($url);
@@ -579,7 +579,7 @@ class spiderTools extends spider{
 	        $newurl	= trim($newurl);
 			curl_close($ch);
 			unset($responses,$info);
-            return spiderTools::remote($newurl, $_count);
+            return spider_tools::remote($newurl, $_count);
         }
         if (in_array($info['http_code'],array(404,500))) {
 			curl_close($ch);
@@ -595,11 +595,11 @@ class spiderTools extends spider{
             }
 			curl_close($ch);
 			unset($responses,$info);
-            return spiderTools::remote($url, $_count);
+            return spider_tools::remote($url, $_count);
         }
         $pos = stripos($info['content_type'], 'charset=');
         $pos!==false && $content_charset = trim(substr($info['content_type'], $pos+8));
-        $responses = spiderTools::charsetTrans($responses,$content_charset,spider::$charset);
+        $responses = spider_tools::charsetTrans($responses,$content_charset,spider::$charset);
 		curl_close($ch);
 		unset($info);
         if (spider::$dataTest || spider::$ruleTest) {
@@ -639,7 +639,7 @@ class spiderTools extends spider{
         $rand_keys   = array_rand(spider::$proxy_array,1);
         $proxy       = spider::$proxy_array[$rand_keys];
         $proxy       = trim($proxy);
-        $options     = spiderTools::proxy($options,$proxy);
+        $options     = spider_tools::proxy($options,$proxy);
 
         $ch        = curl_init();
         curl_setopt_array($ch,$options);
@@ -650,7 +650,7 @@ class spiderTools extends spider{
             return $proxy;
         }else{
             unset(spider::$proxy_array[$rand_keys]);
-            return spiderTools::proxy_test();
+            return spider_tools::proxy_test();
         }
     }
     public static function proxy($options='',$proxy){

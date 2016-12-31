@@ -13,30 +13,30 @@ defined('iPHP') OR exit('What are you doing?');
 class articleAdmincp{
     public $callback = array();
     public $chapter  = false;
-    public $config   = null;
+    public static $config   = null;
+    public static $appid       = null;
+    public static $categoryApp = null;
 
     public function __construct() {
-        $this->appid       = iCMS_APP_ARTICLE;
-        // $this->appid       = iPHP::appid('article');
-        // $this->appid       = iCMS::$appid['article'];
+        self::$appid       = iCMS_APP_ARTICLE;
+        // self::$appid       = iPHP::appid('article');
+        // self::$appid       = iCMS::$appid['article'];
         $this->id          = (int)$_GET['id'];
         $this->dataid      = (int)$_GET['dataid'];
-        $this->categoryApp = new categoryAdmincp($this->appid);
+        self::$categoryApp = new categoryAdmincp(self::$appid);
         $this->_postype    = '1';
         $this->_status     = '1';
-        $this->config      = iCMS::$config['article'];
+        self::$config      = iCMS::$config['article'];
 
-        define('TAG_APPID',$this->appid);
+        define('TAG_APPID',self::$appid);
 
     }
-    public function category($cid){
-        return $this->categoryApp->get($cid);
-    }
+
     public function do_config(){
-        configAdmincp::app($this->appid);
+        configAdmincp::app(self::$appid);
     }
     public function do_save_config(){
-        configAdmincp::save($this->appid);
+        configAdmincp::save(self::$appid);
     }
 
     public function do_add(){
@@ -54,7 +54,7 @@ class articleAdmincp{
                     }
                 }else{
                     $adRs['body'] = htmlspecialchars($adRs['body']);
-                    $this->config['editor'] = $rs['markdown']?true:false;
+                    self::$config['editor'] = $rs['markdown']?true:false;
                     $adIdArray = array($adRs['id']);
                     $bodyArray = explode('#--iCMS.PageBreak--#',$adRs['body']);
                 }
@@ -64,12 +64,12 @@ class articleAdmincp{
         $bodyCount = count($bodyArray);
         $bodyCount OR $bodyCount = 1;
         $cid         = empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
-        $cata_option = $this->categoryApp->select('ca',$cid);
+        $cata_option = self::$categoryApp->select('ca',$cid);
 
         //$metadata          = array_merge((array)$contentprop,(array)$rs['metadata']);
         $rs['pubdate']       = get_date($rs['pubdate'],'Y-m-d H:i:s');
         $rs['metadata'] && $rs['metadata'] = unserialize($rs['metadata']);
-        $rs['markdown'] &&  $this->config['markdown'] = "1";
+        $rs['markdown'] &&  self::$config['markdown'] = "1";
         if(empty($this->id)){
             $rs['status']  = "1";
             $rs['postype'] = "1";
@@ -80,7 +80,7 @@ class articleAdmincp{
         $strpos   = strpos(__REF__,'?');
         $REFERER  = $strpos===false?'':substr(__REF__,$strpos);
         $defArray = iCache::get('iCMS/defaults');
-        if($this->config['markdown']){
+        if(self::$config['markdown']){
             include admincp::view("article.markdown");
         }else{
             include admincp::view("article.add");
@@ -90,7 +90,7 @@ class articleAdmincp{
     	$data = admincp::update_args($_GET['_args']);
         if($data){
             if(isset($data['pid'])){
-                iMap::init('prop',$this->appid);
+                iMap::init('prop',self::$appid);
                 $_pid = article::value('pid',$this->id);
                 iMap::diff($data['pid'],$_pid,$this->id);
             }
@@ -122,7 +122,7 @@ class articleAdmincp{
             break;
     		case 'move':
 		        $_POST['cid'] OR iUI::alert("请选择目标栏目!");
-                iMap::init('category',$this->appid);
+                iMap::init('category',self::$appid);
                 $cid = (int)$_POST['cid'];
                 admincp::CP($cid,'ca','alert');
 		        foreach((array)$_POST['id'] AS $id) {
@@ -130,15 +130,15 @@ class articleAdmincp{
                     article::update(compact('cid'),compact('id'));
 		            if($_cid!=$cid) {
                         iMap::diff($cid,$_cid,$id);
-                        $this->categoryApp->update_count_one($_cid,'-');
-                        $this->categoryApp->update_count_one($cid);
+                        self::$categoryApp->update_count_one($_cid,'-');
+                        self::$categoryApp->update_count_one($cid);
 		            }
 		        }
 		        iUI::success('成功移动到目标栏目!','js:1');
             break;
             case 'scid':
                 //$_POST['scid'] OR iUI::alert("请选择目标栏目!");
-                iMap::init('category',$this->appid);
+                iMap::init('category',self::$appid);
                 $scid = implode(',', (array)$_POST['scid']);
                 foreach((array)$_POST['id'] AS $id) {
                     $_scid = article::value('scid',$id);
@@ -148,7 +148,7 @@ class articleAdmincp{
                 iUI::success('文章副栏目设置完成!','js:1');
             break;
             case 'prop':
-                iMap::init('prop',$this->appid);
+                iMap::init('prop',self::$appid);
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {
                     $_pid = article::value('pid',$id);
@@ -356,7 +356,7 @@ class articleAdmincp{
             if(empty($_GET['pid'])){
                 $sql.= " AND `pid`=''";
             }else{
-                iMap::init('prop',$this->appid);
+                iMap::init('prop',self::$appid);
                 $map_where+=iMap::where($pid);
             }
         }
@@ -378,7 +378,7 @@ class articleAdmincp{
                 array_push ($cids,$cid);
             }
             if($_GET['scid'] && $cid){
-                iMap::init('category',$this->appid);
+                iMap::init('category',self::$appid);
                 $map_where+= iMap::where($cids);
             }else{
                 $sql.= iSQL::where($cids,'cid');
@@ -517,7 +517,7 @@ class articleAdmincp{
             }
         }
 
-        if($this->config['filter']) {
+        if(self::$config['filter']) {
             $fwd = filterAdmincp::run($title);
             $fwd && iUI::alert('标题中包含被系统屏蔽的字符，请重新填写。');
             $fwd = filterAdmincp::run($description);
@@ -526,7 +526,7 @@ class articleAdmincp{
             // $fwd && iUI::alert('内容中包含被系统屏蔽的字符，请重新填写。');
         }
 
-        if(empty($aid) && $this->config['repeatitle']) {
+        if(empty($aid) && self::$config['repeatitle']) {
             article::check_title($title) && iUI::alert('该标题的文章已经存在!请检查是否重复');
         }
         $category = $this->category($cid);
@@ -580,17 +580,17 @@ class articleAdmincp{
                 //article::update(compact('tags'),array('id'=>$aid));
             }
 
-            iMap::init('prop',$this->appid);
+            iMap::init('prop',self::$appid);
             $pid && iMap::add($pid,$aid);
 
-            iMap::init('category',$this->appid);
+            iMap::init('category',self::$appid);
             iMap::add($cid,$aid);
             $scid && iMap::add($scid,$aid);
 
             $tagArray && tag::map_iid($tagArray,$aid);
 
             $url OR $this->article_data($body,$aid,$haspic);
-            $this->categoryApp->update_count_one($cid);
+            self::$categoryApp->update_count_one($cid);
 
             $article_url = iURL::get('article',array(array(
                 'id'      =>$aid,
@@ -636,18 +636,18 @@ class articleAdmincp{
 
             admincp::callback($aid,$this,'primary');
 
-            iMap::init('prop',$this->appid);
+            iMap::init('prop',self::$appid);
             iMap::diff($pid,$_pid,$aid);
 
-            iMap::init('category',$this->appid);
+            iMap::init('category',self::$appid);
             iMap::diff($cid,$_cid,$aid);
             iMap::diff($scid,$_scid,$aid);
 
             $url OR $this->article_data($body,$aid,$haspic);
 
             if($_cid!=$cid) {
-                $this->categoryApp->update_count_one($_cid,'-');
-                $this->categoryApp->update_count_one($cid);
+                self::$categoryApp->update_count_one($_cid,'-');
+                self::$categoryApp->update_count_one($cid);
             }
             if($this->callback['code']){
                 return array(
@@ -666,7 +666,10 @@ class articleAdmincp{
         iUI::$dialog['lock'] = true;
         iUI::dialog($msg,'js:1');
     }
-    public function del_msg($str){
+    public function category($cid){
+        return self::$categoryApp->get($cid);
+    }
+    public static function del_msg($str){
         return iUI::msg('success:#:check:#:'.$str.'<hr />',true);
     }
     public function del_pic($pic){
@@ -682,18 +685,18 @@ class articleAdmincp{
         $msg.= $this->del_msg($pic.'数据删除');
         return $msg;
     }
-    public function del($id,$uid='0',$postype='1') {
+    public static function del($id,$uid='0',$postype='1') {
         $id = (int)$id;
         $id OR iUI::alert("请选择要删除的文章");
         $uid && $sql="and `userid`='$uid' and `postype`='$postype'";
         $art = article::row($id,'cid,pic,tags',$sql);
         admincp::CP($art['cid'],'cd','alert');
 
-        $fids   = iFile::index_fileid($id,$this->appid);
+        $fids   = iFile::index_fileid($id,self::$appid);
         $pieces = iFile::delete_file($fids);
-        iFile::delete_fdb($fids,$id,$this->appid);
-        $msg.= $this->del_msg(implode('<br />', $pieces).' 文件删除');
-        $msg.= $this->del_msg('相关文件数据删除');
+        iFile::delete_fdb($fids,$id,self::$appid);
+        $msg.= self::del_msg(implode('<br />', $pieces).' 文件删除');
+        $msg.= self::del_msg('相关文件数据删除');
 
         if($art['tags']){
             //只删除关联数据 不删除标签
@@ -701,17 +704,17 @@ class articleAdmincp{
             $msg.= tag::del($art['tags'],'name',$id);
         }
 
-        iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."';");
-        iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$id' AND `appid` = '".$this->appid."' ;");
+        iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `iid` = '$id' AND `appid` = '".self::$appid."';");
+        iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$id' AND `appid` = '".self::$appid."' ;");
 
         article::del_comment($id);
-        $msg.= $this->del_msg('评论数据删除');
+        $msg.= self::del_msg('评论数据删除');
         article::del($id);
         article::del_data($id);
-        $msg.= $this->del_msg('文章数据删除');
-        $this->categoryApp->update_count_one($art['cid'],'-');
-        $msg.= $this->del_msg('栏目数据更新');
-        $msg.= $this->del_msg('删除完成');
+        $msg.= self::del_msg('文章数据删除');
+        self::$categoryApp->update_count_one($art['cid'],'-');
+        $msg.= self::del_msg('栏目数据更新');
+        $msg.= self::del_msg('删除完成');
         return $msg;
     }
     public function chapter_count($aid){
@@ -744,7 +747,7 @@ class articleAdmincp{
         if($_POST['markdown']){
             $body = $body;
         }else{
-            $this->config['autoformat'] && $body = addslashes(autoformat($body));
+            self::$config['autoformat'] && $body = addslashes(autoformat($body));
         }
 
         article::$ID = $aid;
@@ -779,7 +782,7 @@ class articleAdmincp{
         $this->body_pic_indexid($body,$aid);
     }
     public function autodesc($body){
-        if($this->config['autodesc'] && $this->config['descLen']) {
+        if(self::$config['autodesc'] && self::$config['descLen']) {
             is_array($body) && $bodyText   = implode("\n",$body);
             $bodyText   = str_replace('#--iCMS.PageBreak--#',"\n",$bodyText);
             $bodyText   = str_replace('</p><p>', "</p>\n<p>", $bodyText);
@@ -794,7 +797,7 @@ class articleAdmincp{
                 // $outputLen = strlen($output);
                 $output    = implode('',$resource);
                 $outputLen = strlen($output);
-                if($outputLen>$this->config['descLen']){
+                if($outputLen>self::$config['descLen']){
                     // $pageNum++;
                     // $resource[$pageNum] = $p;
                     break;
@@ -803,7 +806,7 @@ class articleAdmincp{
                 }
             }
             $description = implode("\n", $resource);
-            // $description = csubstr($body_text,$this->config['descLen']);
+            // $description = csubstr($body_text,self::$config['descLen']);
             // $description = addslashes(trim($description));
             // $description = str_replace('#--iCMS.PageBreak--#','',$description);
             unset($bodyText);
@@ -821,7 +824,7 @@ class articleAdmincp{
             $picdata = addslashes(serialize($picdata));
             $haspic  = 1;
             article::update(compact('haspic','pic','picdata'),array('id'=>$aid));
-            iFile::set_map($this->appid,$aid,$pic,'path');
+            iFile::set_map(self::$appid,$aid,$pic,'path');
         }
     }
     public function remotepic($content,$remote = false) {
@@ -882,7 +885,7 @@ class articleAdmincp{
         preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
         $array  = array_unique($match[1]);
         foreach ($array as $key => $value) {
-            iFile::set_map($this->appid,$indexid,$value,'path');
+            iFile::set_map(self::$appid,$indexid,$value,'path');
         }
     }
 

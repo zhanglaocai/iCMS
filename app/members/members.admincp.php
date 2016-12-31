@@ -16,7 +16,7 @@ class membersAdmincp{
     }
 
     public function do_job(){
-		$job	= new JOB;
+		$job	= new members_job();
         $this->uid OR $this->uid = members::$userid;
 		$job->count_post($this->uid);
         $month  = $job->month();
@@ -38,7 +38,7 @@ class membersAdmincp{
     }
     public function do_iCMS(){
     	if($_GET['job']){
-    		$job	=new JOB;
+    		$job = new members_job();
     	}
     	$sql	= "WHERE 1=1";
     	//isset($this->type)	&& $sql.=" AND `type`='$this->type'";

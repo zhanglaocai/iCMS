@@ -32,7 +32,7 @@ class userApp {
 			// &uid=
 			$this->user = user::get($this->uid);
 			empty($this->user) && iPHP::error_404(
-				'运行出错！找不到该用户',
+				'找不到该用户',
 				"user:" . $this->uid
 			);
 		}
@@ -102,20 +102,19 @@ class userApp {
 		iPHP::assign('status', isset($_GET['status']) ? (int) $_GET['status'] : '1');
 		iPHP::assign('cid', (int) $_GET['cid']);
 		iPHP::assign('article', array(
-			'manage' => iPHP::router('user:article', '?&'),
-			'edit' => iPHP::router('user:publish', '?&'),
+			'manage' => iURL::router('user:article', '?&'),
+			'edit' => iURL::router('user:publish', '?&'),
 		));
 	}
 	private function __API_manage_favorite() {
 		iPHP::assign('favorite', array(
 			'fid' => (int) $_GET['fid'],
-			'manage' => iPHP::router('user:manage:favorite', '?&'),
+			'manage' => iURL::router('user:manage:favorite', '?&'),
 		));
 	}
 
 	private function __API_manage_publish() {
 		$id = (int) $_GET['id'];
-		iPHP::app('article.class');
 		list($article, $article_data) = article::data($id, 0, user::$userid);
 		$cid = empty($article['cid']) ? (int) $_GET['cid'] : $article['cid'];
 
@@ -227,10 +226,8 @@ class userApp {
 		$fwd = filterAdmincp::run($body);
 		$fwd && iUI::alert('user:publish:filter_body');
 
-		$articleApp = iPHP::app("article.admincp");
-
 		if (empty($description)) {
-			$description = $articleApp->autodesc($body);
+			$description = articleAdmincp::autodesc($body);
 		}
 
 		$pubdate = time();
@@ -239,7 +236,6 @@ class userApp {
 		$category = iCache::get('iCMS/category/' . $cid);
 		$status = $category['isexamine'] ? 3 : 1;
 
-		iPHP::app('article.class');
 		$fields = article::fields($aid);
 		$data_fields = article::data_fields($aid);
 		if (empty($aid)) {
@@ -294,7 +290,7 @@ class userApp {
 				'3' => 'user:article:update_examine',
 			);
 		}
-		$url = iPHP::router('user:article');
+		$url = iURL::router('user:article');
 		iUI::success($lang[$status], 'url:' . $url);
 	}
 	private function __ACTION_manage_article() {
@@ -622,7 +618,7 @@ class userApp {
 			);
 			$authcode = base64_encode($authcode);
 			$authcode = rawurlencode($authcode);
-			$find_url = iPHP::router('api:user:findpwd', '?&');
+			$find_url = iURL::router('api:user:findpwd', '?&');
 			if (iPHP_ROUTER_REWRITE) {
 				$find_url = iFS::fp($find_url, '+http');
 			}
@@ -1061,23 +1057,23 @@ class userApp {
 	}
 	public function API_config() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
-		$editorApp = iPHP::app("admincp.editor.app");
-		$editorApp->do_config();
+		$editorAdmincp = new editorAdmincp;
+		$editorAdmincp->do_config();
 	}
 	public function API_catchimage() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
-		$editorApp = iPHP::app("admincp.editor.app");
-		$editorApp->do_catchimage();
+		$editorAdmincp = new editorAdmincp;
+		$editorAdmincp->do_catchimage();
 	}
 	public function API_uploadimage() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
-		$editorApp = iPHP::app("admincp.editor.app");
-		$editorApp->do_uploadimage();
+		$editorAdmincp = new editorAdmincp;
+		$editorAdmincp->do_uploadimage();
 	}
 	public function API_uploadvideo() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
-		$editorApp = iPHP::app("admincp.editor.app");
-		$editorApp->do_uploadvideo();
+		$editorAdmincp = new editorAdmincp;
+		$editorAdmincp->do_uploadvideo();
 	} //手机上传
 	public function API_mobileUp() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');

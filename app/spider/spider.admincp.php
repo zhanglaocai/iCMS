@@ -11,11 +11,10 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('spider.iSpider.Autoload', 'static');
-
 class spiderAdmincp {
 
 	public function __construct() {
+		// spider::loader();
 		spider::$cid = $this->cid = (int) $_GET['cid'];
 		spider::$rid = $this->rid = (int) $_GET['rid'];
 		spider::$pid = $this->pid = (int) $_GET['pid'];
@@ -112,16 +111,16 @@ class spiderAdmincp {
 
 	public function do_testdata() {
 		spider::$dataTest = true;
-		spiderData::crawl();
+		spider_data::crawl();
 	}
 
 	public function do_testrule() {
 		spider::$ruleTest = true;
-		spiderUrls::crawl('WEB@AUTO');
+		spider_urls::crawl('WEB@AUTO');
 	}
 
 	public function do_listpub() {
-		$responses = spiderUrls::crawl('WEB@MANUAL');
+		$responses = spider_urls::crawl('WEB@MANUAL');
 		extract($responses);
 		include admincp::view("spider.lists");
 	}
@@ -153,11 +152,10 @@ class spiderAdmincp {
         // iDB::query("DELETE FROM `#iCMS@__article` where `id` IN(
         //     SELECT indexid FROM `#iCMS@__spider_url` where `pid` = '$this->pid'
         // )");
-        $article = iPHP::app('article.admincp');
         $rs      = iDB::all("SELECT indexid FROM `#iCMS@__spider_url` where `pid` = '$this->pid'");
         $_count  = count($rs);
         for ($i=0; $i <$_count ; $i++) {
-            $article->del($rs[$i]['indexid']);
+            articleAdmincp::del($rs[$i]['indexid']);
         }
         iDB::query("DELETE FROM `#iCMS@__spider_url` where `pid` = '$this->pid';");
         iUI::success('所有采集数据删除完成');
@@ -173,7 +171,7 @@ class spiderAdmincp {
 		iUI::success('数据清除完成');
 	}
 	public function do_start() {
-		$a = spiderUrls::crawl('WEB@AUTO');
+		$a = spider_urls::crawl('WEB@AUTO');
 		$this->do_mpublish($a);
 	}
 	public function do_mpublish($pubArray = array()) {
@@ -228,11 +226,11 @@ class spiderAdmincp {
 	}
 
 	public function spider_url($work = NULL, $pid = NULL, $_rid = NULL, $_urls = NULL, $callback = NULL) {
-		return spiderUrls::crawl($work, $pid, $_rid, $_urls, $callback);
+		return spider_urls::crawl($work, $pid, $_rid, $_urls, $callback);
 	}
 
 	public function spider_content() {
-		return spiderData::crawl();
+		return spider_data::crawl();
 	}
 
 	public function do_rule() {
@@ -506,7 +504,7 @@ class spiderAdmincp {
         }
     }
 	public function do_proxy_test() {
-		$a = spiderTools::proxy_test();
+		$a = spider_tools::proxy_test();
 		var_dump($a);
 	}
 

@@ -41,7 +41,7 @@ function favorite_list($vars=null){
 		$rs  = iDB::all("SELECT * FROM `#iCMS@__favorite` {$where_sql} {$order_sql} LIMIT {$offset},{$maxperpage}");
 		$resource = array();
 		if($rs)foreach ($rs as $key => $value) {
-			$value['url']  = iPHP::router(array('favorite:id',$value['id']));
+			$value['url']  = iURL::router(array('favorite:id',$value['id']));
 			$vars['user'] && $value['user'] = user::info($value['uid'],$value['nickname']);
 			if(isset($vars['loop'])){
 				$resource[$key] = $value;

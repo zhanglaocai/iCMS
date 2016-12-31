@@ -108,7 +108,7 @@ $(function(){
         <div class="input-prepend input-append"> <span class="add-on">栏目</span>
           <select name="cid" id="cid" class="chosen-select" style="width: 230px;">
             <option value="0">所有栏目</option>
-            <?php echo $category_select = $this->categoryApp->select('cs') ; ?>
+            <?php echo $category_select = self::$categoryApp->select('cs') ; ?>
           </select>
           <span class="add-on tip" title="选中查询所有关联到此栏目的文章">
           <input type="checkbox" name="scid" id="search_scid"/>
@@ -216,7 +216,7 @@ $(function(){
           <tbody>
             <?php
                 $cidArray = iSQL::values($rs,'cid','array',null);
-                $cidArray && $category_data = (array) $this->categoryApp->get($cidArray);
+                $cidArray && $category_data = (array) self::$categoryApp->get($cidArray);
 
                 if($rs)foreach ($rs as $key => $value) {
                   $ourl = $value['url'];
@@ -274,7 +274,7 @@ $(function(){
                   <i class="fa fa-bookmark"></i>(<?php echo $value['chapter'];?>)
                   <?php } ?>
                 </div>
-                <?php if($value['pic'] && $this->config['showpic']){ ?>
+                <?php if($value['pic'] && self::$config['showpic']){ ?>
                 <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $value['id'] ; ?>" data-toggle="modal" title="预览"><img src="<?php echo iFS::fp($value['pic'],'+http'); ?>" style="height:120px;"/></a>
                 <?php } ?>
               </td>
@@ -285,7 +285,7 @@ $(function(){
                 <?php
                  if($value['scid']){
                    $scid_array = explode(',', $value['scid']);
-                   $sc_data = (array) $this->categoryApp->get($scid_array);
+                   $sc_data = (array) self::$categoryApp->get($scid_array);
                    foreach ($sc_data as $scid => $sc_va) {
                     if($scid!=$value['cid']){
                       echo '<a href="'.APP_DOURI.'&cid='.$scid.'&'.$uri.'">'.$sc_va->name.'</a><br />';

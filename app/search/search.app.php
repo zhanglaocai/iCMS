@@ -22,7 +22,6 @@ class searchApp {
         }
         $q  = iSecurity::escapeStr($q);
 
-        //empty($q) && iPHP::error_404('应用程序运行出错.亲!搜点什么吧!!', 60001);
         $fwd = filterAdmincp::run($q);
         $fwd && iPHP::error_404('非法搜索词!', 60002);
 
@@ -31,7 +30,7 @@ class searchApp {
         $tpl===false && $tpl = '{iTPL}/search.htm';
         $q && $this->slog($q);
         $iurl =  new stdClass();
-        $iurl->href = iPHP::router('/api',iPHP_ROUTER_REWRITE);
+        $iurl->href = iURL::router('/api',iPHP_ROUTER_REWRITE);
         $iurl->href.= '?app=search&q='.$q;
         $iurl->pageurl = $iurl->href.'&page={P}';
         iPHP::set_page_url($iurl);

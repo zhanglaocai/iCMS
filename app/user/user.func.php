@@ -132,7 +132,7 @@ function user_category($vars=null){
 		}else if($value['appid']==iCMS_APP_FAVORITE){
 			$router ='uid:fav:cid';
 		}
-		$value['url'] = iPHP::router(array($router,array($value['uid'],$value['cid'])));
+		$value['url'] = iURL::router(array($router,array($value['uid'],$value['cid'])));
 		if(isset($vars['loop'])){
 			$resource[$key] = $value;
 		}else{
@@ -242,7 +242,7 @@ function user_inbox($vars=null){
 			$value['is_sender'] = false;
 			$value['user']      = $value['sender'];
 		}
-		$value['url'] = iPHP::router(array('user:inbox:uid',$value['user']['uid']));
+		$value['url'] = iURL::router(array('user:inbox:uid',$value['user']['uid']));
 		$resource[$key] = $value;
 	}
 	return $resource;

@@ -8,7 +8,7 @@ defined('iPHP') OR exit('What are you doing?');
 admincp::head();
 ?>
 <script type="text/javascript">
-window.iCMS.config.catchRemoteImageEnable = <?php echo $this->config['catch_remote']=="1"?'true':'false';?>;
+window.iCMS.config.catchRemoteImageEnable = <?php echo self::$config['catch_remote']=="1"?'true':'false';?>;
 </script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.ueditor.js"></script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/ueditor/ueditor.all.min.js"></script>
@@ -251,7 +251,7 @@ function _modal_dialog(cancel_text){
         <input name="postype" type="hidden" value="<?php echo $rs['postype'] ; ?>" />
         <input name="REFERER" type="hidden" value="<?php echo $REFERER ; ?>" />
         <input name="chapter" type="hidden" value="<?php echo $rs['chapter']; ?>" />
-        <input name="markdown" type="hidden" value="<?php echo $this->config['markdown']; ?>" />
+        <input name="markdown" type="hidden" value="<?php echo self::$config['markdown']; ?>" />
         <div id="article-add" class="tab-content">
           <div id="article-add-base" class="tab-pane active">
             <div class="input-prepend"> <span class="add-on">栏 目</span>
@@ -403,9 +403,9 @@ function _modal_dialog(cancel_text){
               <input name="inbox" type="checkbox" id="inbox" value="1" <?php if($rs['status']=="0")echo 'checked="checked"'  ?>/>
               存为草稿</span>
               <span class="add-on wauto">
-              <input name="remote" type="checkbox" id="remote" value="1" <?php if($this->config['remote']=="1")echo 'checked="checked"'  ?>/>
+              <input name="remote" type="checkbox" id="remote" value="1" <?php if(self::$config['remote']=="1")echo 'checked="checked"'  ?>/>
               下载远程图片</span><span class="add-on wauto">
-              <input name="autopic" type="checkbox" id="autopic" value="1" <?php if($this->config['autopic']=="1")echo 'checked="checked"'  ?>/>
+              <input name="autopic" type="checkbox" id="autopic" value="1" <?php if(self::$config['autopic']=="1")echo 'checked="checked"'  ?>/>
               提取缩略图 </span><span class="add-on wauto">
               <input name="dellink" type="checkbox" id="dellink" value="1"/>
               清除链接 </span>  <span class="add-on wauto">

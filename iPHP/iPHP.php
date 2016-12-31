@@ -41,11 +41,11 @@ if(function_exists('ini_get')) {
 function_exists('date_default_timezone_set') && date_default_timezone_set(iPHP_TIME_ZONE);
 
 require_once iPHP_PATH.'/iPHP.class.php';
+iPHP::timer_start();
 
 set_error_handler(array('iPHP', 'error_handler'),E_ALL & ~E_NOTICE);
-spl_autoload_register(array('iPHP', 'loader'));
+spl_autoload_register(array('iPHP', 'loader'), true, true);
 
-iPHP::timer_start();
 //waf
 iWAF::filter();
 //security

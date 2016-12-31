@@ -10,7 +10,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-class spiderContent extends spider{
+class spider_content {
 
     /**
      * 抓取资源
@@ -33,7 +33,7 @@ class spiderContent extends spider{
          * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
          */
         if(strpos($data['rule'], '[DATA@')!==false){
-            $content = spiderTools::getDATA($responses,$data['rule']);
+            $content = spider_tools::getDATA($responses,$data['rule']);
             if(is_array($content)){
                 return $content;
             }else{
@@ -50,7 +50,7 @@ class spiderContent extends spider{
                 print_r('<b>使用[rid:'.$_rid.']规则抓取</b>:'.$_urls);
                 echo "<hr />";
             }
-            return spiderUrls::crawl('DATA@RULE',false,$_rid,$_urls);
+            return spider_urls::crawl('DATA@RULE',false,$_rid,$_urls);
         }
         /**
          * RAND@10,0
@@ -64,7 +64,7 @@ class spiderContent extends spider{
         $contentArray       = array();
         $contentHash        = array();
         $_content           = null;
-        $_content           = spiderContent::match($html,$data,$rule);
+        $_content           = spider_content::match($html,$data,$rule);
         $cmd5               = md5($_content);
         $contentArray[]     = $_content;
         $contentHash[$cmd5] = true;
@@ -87,12 +87,12 @@ class spiderContent extends spider{
                             if($href){
                                 if($rule['page_url_rule']){
                                     if(strpos($rule['page_url_rule'], '<%')!==false){
-                                        $page_url_rule = spiderTools::pregTag($rule['page_url_rule']);
+                                        $page_url_rule = spider_tools::pregTag($rule['page_url_rule']);
                                         if (!preg_match('|' . $page_url_rule . '|is', $href)){
                                             continue;
                                         }
                                     }else{
-                                        $cleanhref = spiderTools::dataClean($rule['page_url_rule'],$href);
+                                        $cleanhref = spider_tools::dataClean($rule['page_url_rule'],$href);
                                         if($cleanhref){
                                             $href = $cleanhref;
                                             unset($cleanhref);
@@ -102,12 +102,12 @@ class spiderContent extends spider{
                                     }
                                 }
                                 $href = str_replace('<%url%>',$href, $rule['page_url']);
-                                $page_url_array[$pn] = spiderTools::url_complement($rule['__url__'],$href);
+                                $page_url_array[$pn] = spider_tools::url_complement($rule['__url__'],$href);
                             }
                         }
                         phpQuery::unloadDocuments($doc->getDocumentID());
                     }else{
-                        $page_area_rule = spiderTools::pregTag($page_area_rule);
+                        $page_area_rule = spider_tools::pregTag($page_area_rule);
                         if ($page_area_rule) {
                             preg_match('|' . $page_area_rule . '|is', $html, $matches, $PREG_SET_ORDER);
                             $page_area = $matches['content'];
@@ -115,11 +115,11 @@ class spiderContent extends spider{
                             $page_area = $html;
                         }
                         if($rule['page_url_rule']){
-                            $page_url_rule = spiderTools::pregTag($rule['page_url_rule']);
+                            $page_url_rule = spider_tools::pregTag($rule['page_url_rule']);
                             preg_match_all('|' .$page_url_rule. '|is', $page_area, $page_url_matches, PREG_SET_ORDER);
                             foreach ($page_url_matches AS $pn => $row) {
                                 $href = str_replace('<%url%>', $row['url'], $rule['page_url']);
-                                $page_url_array[$pn] = spiderTools::url_complement($rule['__url__'],$href);
+                                $page_url_array[$pn] = spider_tools::url_complement($rule['__url__'],$href);
                                 gc_collect_cycles();
                             }
                         }
@@ -129,7 +129,7 @@ class spiderContent extends spider{
                     if($rule['page_url_parse']=='<%url%>'){
                         $page_url = str_replace('<%url%>',$rule['__url__'],$rule['page_url']);
                     }else{
-                        $page_url_rule = spiderTools::pregTag($rule['page_url_parse']);
+                        $page_url_rule = spider_tools::pregTag($rule['page_url_parse']);
                         preg_match('|' . $page_url_rule . '|is', $rule['__url__'], $matches, $PREG_SET_ORDER);
                         $page_url = str_replace('<%url%>', $matches['url'], $rule['page_url']);
                     }
@@ -174,7 +174,7 @@ class spiderContent extends spider{
 
                 foreach ($page_url_array AS $pukey => $purl) {
                     //usleep(100);
-                    $phtml = spiderTools::remote($purl);
+                    $phtml = spider_tools::remote($purl);
                     if (empty($phtml)) {
                         break;
                     }
@@ -182,13 +182,13 @@ class spiderContent extends spider{
                     if($pageurl[$md5]){
                         break;
                     }
-                    $check_content = spiderTools::check_content_code($phtml);
+                    $check_content = spider_tools::check_content_code($phtml);
                     if ($check_content === false) {
                         unset($check_content,$phtml);
                         break;
                     }
 
-                    $_content = spiderContent::match($phtml,$data,$rule);
+                    $_content = spider_content::match($phtml,$data,$rule);
                     $cmd5     = md5($_content);
                     if($contentHash[$cmd5]){
                         break;
@@ -208,7 +208,7 @@ class spiderContent extends spider{
                 }
             }else{
                 foreach ((array)spider::$allHtml as $ahkey => $phtml) {
-                    $contentArray[] = spiderContent::match($phtml,$data,$rule);
+                    $contentArray[] = spider_content::match($phtml,$data,$rule);
                 }
             }
         }
@@ -220,7 +220,7 @@ class spiderContent extends spider{
             echo "<hr />";
         }
         if ($data['cleanbefor']) {
-            $content = spiderTools::dataClean($data['cleanbefor'], $content);
+            $content = spider_tools::dataClean($data['cleanbefor'], $content);
         }
         $content = stripslashes($content);
 
@@ -237,7 +237,7 @@ class spiderContent extends spider{
                 $_img_array = array_unique($img_match[1]);
                 $_img_urls  = array();
                 foreach ((array)$_img_array as $_img_key => $_img_src) {
-                    $_img_urls[$_img_key] = spiderTools::url_complement($rule['__url__'],$_img_src);
+                    $_img_urls[$_img_key] = spider_tools::url_complement($rule['__url__'],$_img_src);
                 }
                $content = str_replace($_img_array, $_img_urls, $content);
             }
@@ -247,20 +247,20 @@ class spiderContent extends spider{
             $content = str_replace('&nbsp;','',trim($content));
         }
         if ($data['capture']) {
-            $content && $content = spiderTools::remote($content);
+            $content && $content = spider_tools::remote($content);
         }
         if ($data['download']) {
             $content && $content = iFS::http($content);
         }
 
         if ($data['autobreakpage']) {
-            $content = spiderTools::autoBreakPage($content);
+            $content = spider_tools::autoBreakPage($content);
         }
         if ($data['mergepage']) {
-            $content = spiderTools::mergePage($content);
+            $content = spider_tools::mergePage($content);
         }
         if ($data['cleanafter']) {
-            $content = spiderTools::dataClean($data['cleanafter'], $content);
+            $content = spider_tools::dataClean($data['cleanafter'], $content);
         }
 
         if ($data['filter']) {
@@ -368,7 +368,7 @@ class spiderContent extends spider{
             if(trim($data['rule'])=='<%content%>'){
                 $content = $html;
             }else{
-                $data_rule = spiderTools::pregTag($data['rule']);
+                $data_rule = spider_tools::pregTag($data['rule']);
                 if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $data_rule)) {
                     if ($data['multi']) {
                         preg_match_all('|' . $data_rule . '|is', $html, $matches, PREG_SET_ORDER);

@@ -12,10 +12,6 @@
 class iTemplate {
     public static function init() {
         iPHP::$iTPL = new iTemplateLite();
-        iPHP::$iTPL->template_callback = array(
-            "resource" => array("iTemplate","callback_path"),
-            "output"   => array("iTemplate","callback_output")
-        );
         iPHP::$iTPL->debugging    = iPHP_TPL_DEBUGGING;
         iPHP::$iTPL->template_dir = iPHP_TPL_DIR;
         iPHP::$iTPL->compile_dir  = iPHP_TPL_CACHE;
@@ -34,6 +30,10 @@ class iTemplate {
         iPHP::$iTPL->register_modifier("random", "random");
         iPHP::$iTPL->register_modifier("fields", "select_fields");
         iPHP::$iTPL->register_block("cache", array("iTemplate", "block_cache"));
+        iPHP::$iTPL->template_callback = array(
+            "resource" => array("iTemplate","callback_path"),
+            "output"   => array("iTemplate","callback_output")
+        );
         iPHP::$iTPL->assign('GET', $_GET);
         iPHP::$iTPL->assign('POST', $_POST);
         iPHP_TPL_DEBUG && iPHP::$iTPL->clear_compiled_tpl();
@@ -93,7 +93,7 @@ class iTemplate {
         if (@is_file(iPHP_TPL_DIR . "/" . $tpl)) {
             return $tpl;
         } else {
-            iPHP::error_404('运行出错！ 找不到模板文件 <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
+            iPHP::error_404('Unable to find the template file <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
         }
     }
     public static function callback_output($html,$file=null){

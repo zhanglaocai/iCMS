@@ -83,17 +83,19 @@ class admincp {
 		self::$APP_TPL    = ACP_PATH . '/template';
 		self::$APP_FILE   = ACP_PATH . '/' . $app . '.app.php';
 		self::$menu->url  = __ADMINCP__.'='.$app.(($do&&$do!='iCMS')?'&do='.$do:'');
-		$appName = self::$APP_NAME . 'App';
+		$app_name = self::$APP_NAME . 'App';
 
 		if(!is_file(self::$APP_FILE)){
-			list($_app,$app_file,$sapp) = self::app($app);
-			self::$APP_PATH = iPHP_APP_DIR . '/' . $_app;
+			$app_file = $app . '.admincp.php';
+			$app_name = $app.'Admincp';
+	        if(stripos($app, '_')!== false){
+	            list($app,$sapp) = explode('_', $app);
+	        }
+			self::$APP_PATH = iPHP_APP_DIR . '/' . $app;
 			self::$APP_TPL  = self::$APP_PATH . '/admincp';
 			self::$APP_FILE = self::$APP_PATH . '/'.$app_file;
-			$appName = $_app.$sapp.'Admincp';
 		}
-
-		is_file(self::$APP_FILE) OR iPHP::error_throw('运行出错！找不到文件: <b>' . self::$APP_FILE . '</b>', 1002);
+		is_file(self::$APP_FILE) OR iPHP::error_throw('Unable to find file <b>' .self::$APP_NAME. '.admincp.php</b>', 1002);
 
 		define('APP_URI', __ADMINCP__ . '=' . $app);
 		// define('APP_FURI', APP_URI . '&frame=iPHP');
@@ -102,10 +104,10 @@ class admincp {
 		define('APP_BOXID', self::$APP_NAME . '-box');
 		define('APP_FORMID', 'iCMS-' . APP_BOXID);
 
-		iPHP::import(self::$APP_FILE);
-		self::$app = new $appName();
-		$app_methods = get_class_methods($appName);
-		in_array(self::$APP_METHOD, $app_methods) OR iPHP::error_throw('运行出错！ <b>' . self::$APP_NAME . '</b> 类中找不到方法定义: <b>' . self::$APP_METHOD . '</b>', 1003);
+		// iPHP::import(self::$APP_FILE);
+		self::$app = new $app_name();
+		$app_methods = get_class_methods($app_name);
+		in_array(self::$APP_METHOD, $app_methods) OR iPHP::error_throw('Call to undefined method <b>' . self::$APP_NAME . '::' . self::$APP_METHOD . '</b>', 1003);
 
 		$method = self::$APP_METHOD;
 		$args === null && $args = self::$APP_ARGS;
@@ -118,10 +120,6 @@ class admincp {
 		} else {
 			return self::$app->$method();
 		}
-		// $handler = array(self::$app,$method);
-		// if (is_callable($handler)) {
-		// 	call_user_func_array($handler, (array)$args);
-		// }
 	}
 
     public static function app($app,$package='admincp'){
