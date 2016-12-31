@@ -67,7 +67,7 @@ class commentApp {
 	public function pm($a) {
 		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');
 		$data = compact($fields);
-		msg::send($data, 1);
+		user_msg::send($data, 1);
 
 	}
 	public function ACTION_add() {
@@ -81,8 +81,6 @@ class commentApp {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
-
-		iPHP::app('user.msg.class', 'static');
 
 		$appid = (int) $_POST['appid'];
 		$iid = (int) $_POST['iid'];

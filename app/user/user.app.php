@@ -7,7 +7,6 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-iPHP::app('user.msg.class', 'static');
 class userApp {
 	public $methods = array('iCMS', 'home', 'favorite', 'article', 'publish', 'manage', 'profile', 'data', 'hits', 'check', 'follow', 'follower', 'fans', 'login', 'findpwd', 'logout', 'register', 'add_category', 'upload', 'mobileUp', 'config', 'uploadvideo', 'uploadimage', 'catchimage', 'report', 'fav_category', 'ucard', 'pm');
 	public $openid = null;
@@ -880,7 +879,7 @@ class userApp {
 
 		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');
 		$data = compact($fields);
-		msg::send($data, 1);
+		user_msg::send($data, 1);
 		iUI::code(1, 'iCMS:pm:success', $id, 'json');
 	}
 	public function ACTION_follow() {

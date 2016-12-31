@@ -23,11 +23,10 @@ class publicApp {
 	 * [API_weixin 向下兼容]
 	 */
 	public function API_weixin() {
-		$weixinApp = iPHP::app("weixin");
-		$weixinApp->API_interface();
+		weixinApp::API_interface();
 	}
 	public function API_crontab() {
-		$sql =iSQL::update_hits(false,0);
+		$sql = iSQL::update_hits(false,0);
 		if ($sql) {
 			//点击初始化
 			iDB::query("UPDATE `#iCMS@__article` SET {$sql}");

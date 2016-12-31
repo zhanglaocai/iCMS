@@ -15,7 +15,7 @@ class weixinApp {
         weixin::$config = $config;
     }
 
-    public function API_interface(){
+    public static function API_interface(){
         if(iPHP_DEBUG){
             // ob_start();
             // iDB::$show_errors = true;

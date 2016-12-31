@@ -32,6 +32,7 @@ class iCMS {
         iDevice::init(self::$config);
         iTemplate::init();
         iPHP::$iTPL->_iVARS = array(
+            'CONFIG'  => self::$config,
             'VERSION' => iCMS_VER,
             'API'     => iCMS_API,
             'SAPI'    => iCMS_API_URL,

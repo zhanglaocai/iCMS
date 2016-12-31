@@ -8,7 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-class msg{
+class user_msg{
 	//type: 0 系统 1 用户对话 2 @ 3留言
 	public static function send($a = array(
 			"send_uid"    => 0,"send_name"   => NULL,
