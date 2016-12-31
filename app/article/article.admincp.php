@@ -346,9 +346,9 @@ class articleAdmincp{
         $this->_postype==='all' OR $sql.= " AND `postype`='{$this->_postype}'";
 
         if(admincp::MP("ARTICLE.VIEW")){
-            $_GET['userid'] && $sql.= iPHP::where($_GET['userid'],'userid');
+            $_GET['userid'] && $sql.= iSQL::where($_GET['userid'],'userid');
         }else{
-            $sql.= iPHP::where(members::$userid,'userid');
+            $sql.= iSQL::where(members::$userid,'userid');
         }
 
         if(isset($_GET['pid']) && $pid!='-1'){
@@ -381,10 +381,10 @@ class articleAdmincp{
                 iMap::init('category',$this->appid);
                 $map_where+= iMap::where($cids);
             }else{
-                $sql.= iPHP::where($cids,'cid');
+                $sql.= iSQL::where($cids,'cid');
             }
         }else{
-            $sql.= iPHP::where('-1','cid');
+            $sql.= iSQL::where('-1','cid');
         }
 
         if($_GET['keywords']) {
@@ -420,7 +420,7 @@ class articleAdmincp{
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
 
         if($map_where){
-            $map_sql = iCMS::map_sql($map_where);
+            $map_sql = iSQL::select_map($map_where);
             $sql     = ",({$map_sql}) map {$sql} AND `id` = map.`iid`";
         }
 
@@ -435,7 +435,7 @@ class articleAdmincp{
                     SELECT `id` FROM `#iCMS@__article` {$sql}
                     ORDER BY {$orderby} {$limit}
                 ");
-                $ids = iPHP::values($ids_array);
+                $ids = iSQL::values($ids_array);
                 $ids = $ids?$ids:'0';
                 $sql = "WHERE `id` IN({$ids})";
             // }else{

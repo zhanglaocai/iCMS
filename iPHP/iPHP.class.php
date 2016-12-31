@@ -72,45 +72,7 @@ class iPHP {
 			$core == iPHP_CORE OR self::error_throw('CLASS <b>' . $name . '</b> NOT FOUND', 0020);
 		}
 	}
-	public static function plugin($app,&$resource=null,$plugin){
-		// if($plugin){
-		// 	foreach ($plugin as $_app => $callback) {
-		// 		if($_app==$app){
-		// 			foreach ($callback as $field => $call) {
-		// 				if(is_array($call[0])){
-		// 					foreach ($call as $key => $cb) {
-		// 						$resource[$field] = self::plugin_call_func($cb,$resource[$field]);
-		// 					}
-		// 				}else{
-		// 					$resource[$field] = self::plugin_call_func($call,$resource[$field]);
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }else{
-		// 	return false;
-		// }
-		if($plugin){
-			foreach ($plugin as $field => $call) {
-				if(is_array($call[0])){
-					foreach ($call as $key => $cb) {
-						$resource[$field] = self::plugin_call_func($cb,$resource[$field]);
-					}
-				}else{
-					$resource[$field] = self::plugin_call_func($call,$resource[$field]);
-				}
-			}
-		}else{
-			return false;
-		}
-	}
-	public static function plugin_call_func($callback,$value){
-		if (is_array($callback) && @class_exists($callback[0])) {
-			return call_user_func_array($callback, (array)$value);
-		}else{
-			return $value;
-		}
-	}
+
 	public static function config() {
 		//iPHP_APP::autoload
 		spl_autoload_register(array(iPHP_APP, 'loader'));
@@ -494,117 +456,25 @@ class iPHP {
 		$url = str_replace('__API__', iCMS_API, $url);
 		return $url;
 	}
-
-	public static function map_sql($where, $type = null, $field = 'iid') {
-		if (empty($where)) {
-			return false;
-		}
-		$i = 0;
-		foreach ($where as $key => $value) {
-			$as = ' map';
-			$i && $as .= $i;
-			$_FROM[] = $key . $as;
-			$_WHERE[] = str_replace($key, $as, $value);
-			$_FIELD[] = $as . ".`{$field}`";
-			$i++;
-		}
-		$_field = $_FIELD[0];
-		$_count = count($_FIELD);
-		if ($_count > 1) {
-			foreach ($_FIELD as $fkey => $fd) {
-				$fkey && array_push($_WHERE, $_field . ' = ' . $fd);
-			}
-		}
-		if ($type == 'join') {
-			return array('from' => implode(',', $_FROM), 'where' => implode(' AND ', $_WHERE));
-		}
-		return 'SELECT ' . $_field . ' AS ' . $field . ' FROM ' . implode(',', $_FROM) . ' WHERE ' . implode(' AND ', $_WHERE);
-	}
-	public static function values($rs, $field = 'id',$ret='string',$quote="'",$key=null) {
-		if (empty($rs)) {
-			return false;
-		}
-
-		$resource = array();
-		foreach ((array) $rs AS $rkey =>$_vars) {
-			if($key===null){
-				$_key = $rkey;
-			}else{
-				$_key = $_vars[$key];
-			}
-
-			if ($field === null) {
-				$_vars!=='' && $resource[$_key] = $quote . $_vars . $quote;
-			} else {
-				if(is_array($field)){
-					foreach ($field as $fk => $fv) {
-						$_vars[$fv]!=='' && $resource[$_key][$fk] = $quote . $_vars[$fv] . $quote;
-					}
-				}else{
-					$_vars[$field]!=='' && $resource[$_key] = $quote . $_vars[$field] . $quote;
-				}
-			}
-		}
-		unset($rs);
-		if ($resource) {
-			is_array($field) OR $resource = array_unique($resource);
-			if($ret=='array'){
-				return $resource;
-			}else{
-				$resource = implode(',', $resource);
-				return $resource;
-			}
-		}
-		return false;
-	}
-	public static function multi_ids($ids,$only=false) {
-        $is_multi = false;
-        if(is_array($ids)){
-            $is_multi = true;
-        }
-        if(!is_array($ids) && strpos($ids, ',') !== false){
-            $ids = explode(',', $ids);
-            $is_multi = true;
-        }
-        if($only){
-        	return $ids;
-        }
-        return array($ids,$is_multi);
-	}
-	public static function where($vars, $field, $not = false, $noand = false, $table = '') {
-		if (is_bool($vars) || empty($vars)) {
-			return '';
-		}
-		if (!is_array($vars) && strpos($vars,',') !== false){
-			$vars = explode(',', $vars);
-		}
-
-		if (is_array($vars)) {
-			foreach ($vars as $key => $value) {
-				if (is_array($value)) {
-					foreach ($value as $vk => $vv) {
-						$vas[] = "'" . addslashes($vv) . "'";
-					}
-				}else{
-					$vas[] = "'" . addslashes($value) . "'";
-				}
-			}
-			$vas  = array_unique($vas);
-			$vars = implode(',', $vas);
-			$sql  = $not ? " NOT IN ($vars)" : " IN ($vars) ";
-		} else {
-			$vars = addslashes($vars);
-			$sql = $not ? "<>'$vars' " : "='$vars' ";
-		}
-		$table && $table .= '.';
-		$sql = "{$table}`{$field}`" . $sql;
-		if ($noand) {
-			return $sql;
-		}
-		$sql = ' AND ' . $sql;
-		return $sql;
-	}
-
+    //------------------------------------
+    public static function timeline(){
+        $_timeline = iCache::get(iPHP_APP.'/timeline');
+        //list($_today,$_week,$_month) = $_timeline ;
+        $time     = $_SERVER['REQUEST_TIME'];
+        $today    = get_date($time,"Ymd");
+        $yday     = get_date($time-86400+1,"Ymd");
+        $week     = get_date($time,"YW");
+        $month    = get_date($time,"Ym");
+        $timeline = array($today,$week,$month);
+        $_timeline[0]==$today OR iCache::set(iPHP_APP.'/timeline',$timeline,0);
+        //var_dump($_timeline,$timeline);
+        return array(
+            'yday'  => ($today-$_timeline[0]),
+            'today' => ($_timeline[0]==$today),
+            'week'  => ($_timeline[1]==$week),
+            'month' => ($_timeline[2]==$month),
+        );
+    }
 	/**
 	 * Starts the timer, for debugging purposes
 	 */

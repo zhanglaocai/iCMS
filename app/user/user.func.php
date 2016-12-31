@@ -45,7 +45,7 @@ function user_list($vars=null){
 
 	isset($vars['type'])  && $where_sql.= " AND `type` ='{$vars['type']}'";
     if(isset($vars['pid']) && !isset($vars['pids'])){
-        $where_sql.= iPHP::where($vars['pid'],'pid');
+        $where_sql.= iSQL::where($vars['pid'],'pid');
     }
     if(isset($vars['pids']) && !isset($vars['pid'])){
         iMap::init('prop',iCMS_APP_USER);
@@ -67,7 +67,7 @@ function user_list($vars=null){
         default:$order_sql=" ORDER BY `uid` $by";
     }
     if($map_where){
-        $map_sql   = iCMS::map_sql($map_where);
+        $map_sql   = iSQL::select_map($map_where);
         $where_sql = ",({$map_sql}) map {$where_sql} AND `uid` = map.`iid`";
     }
 	$offset	= 0;
@@ -90,7 +90,7 @@ function user_list($vars=null){
             $ids_array = iDB::all("SELECT `id` FROM `#iCMS@__user` {$where_sql} {$order_sql} {$limit}");
             $vars['cache'] && iCache::set($map_cache_name,$ids_array,$cache_time);
         }
-        $ids       = iPHP::values($ids_array,'uid');
+        $ids       = iSQL::values($ids_array,'uid');
         $ids       = $ids?$ids:'0';
         $where_sql = "WHERE `uid` IN({$ids})";
     }
@@ -101,7 +101,7 @@ function user_list($vars=null){
 	if(empty($resource)){
         $resource = iDB::all("SELECT * FROM `#iCMS@__user` {$where_sql} {$order_sql} {$limit}");
         if($vars['data']){
-            $uidArray = iPHP::values($resource,'uid','array',null);
+            $uidArray = iSQL::values($resource,'uid','array',null);
             $uidArray && $user_data = (array) user::data($uidArray);
         }
         if($resource)foreach ($resource as $key => $value) {
@@ -166,7 +166,7 @@ function user_follow($vars=null){
     }
 	$resource = iDB::all("SELECT * FROM `#iCMS@__user_follow` {$where_sql} {$limit}");
     if($vars['data']){
-        $uidArray = iPHP::values($resource,array('uid','fuid'),'array',null);
+        $uidArray = iSQL::values($resource,array('uid','fuid'),'array',null);
         $uidArray && $user_data = (array) user::data($uidArray);
     }
     $vars['followed'] && $follow_data = user::follow($vars['followed'],'all');

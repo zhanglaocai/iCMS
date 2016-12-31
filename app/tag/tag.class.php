@@ -180,7 +180,7 @@ VALUES ('$uid', '$cid', '$tcid', '0', '$tkey', '$tag',
 	    		$idA[]=$TL['iid'];
 	    	}
 	    	if($idA){
-	    		$ids = iPHP::values($idA,null);
+	    		$ids = iSQL::values($idA,null);
                 if($ids){
                     $table = apps::table(TAG_APPID);
                     iDB::query("

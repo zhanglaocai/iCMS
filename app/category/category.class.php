@@ -20,9 +20,9 @@ class category {
     public function rootid($rootids=null) {
         if($rootids===null) return array();
 
-        list($rootids,$is_multi)  = iPHP::multi_ids($rootids);
+        list($rootids,$is_multi)  = iSQL::multi_ids($rootids);
 
-        $sql  = iPHP::where($rootids,'rootid',false,true);
+        $sql  = iSQL::where($rootids,'rootid',false,true);
         $sql OR $sql = '1 = 1';
         $data = array();
         $rs   = iDB::all("SELECT `cid`,`rootid` FROM `#iCMS@__category` where {$sql} {$this->appid_sql}",OBJECT);
@@ -53,8 +53,8 @@ class category {
             $field = $callback['field'];
         }
 
-        list($cids,$is_multi)  = iPHP::multi_ids($cids);
-        $sql  = iPHP::where($cids,'cid',false,true);
+        list($cids,$is_multi)  = iSQL::multi_ids($cids);
+        $sql  = iSQL::where($cids,'cid',false,true);
         $sql OR $sql = '1 = 1';
         $data = array();
         $rs   = iDB::all("SELECT {$field} FROM `#iCMS@__category` where {$sql} {$this->appid_sql}",OBJECT);
@@ -182,7 +182,7 @@ class category {
             FROM `#iCMS@__category` {$sql} ORDER BY cid
             LIMIT {$offset},{$maxperpage};
         ");
-        $ids   = iPHP::values($ids_array,'cid');
+        $ids   = iSQL::values($ids_array,'cid');
         $ids   = $ids?$ids:'0';
         $rs  = iDB::all("SELECT * FROM `#iCMS@__category` WHERE `cid` IN({$ids});");
         foreach((array)$rs AS $C) {

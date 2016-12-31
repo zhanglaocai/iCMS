@@ -17,7 +17,7 @@ function comment_array($vars){
 	if(isset($vars['id'])){
 		if(is_array($vars['id'])){
 			$is_multi = true;
-			$where_sql.= iPHP::where($vars['id'],'id',false,false);
+			$where_sql.= iSQL::where($vars['id'],'id',false,false);
 		}else{
 			$where_sql.= " AND `id`='".(int)$vars['id']."'";
 		}
@@ -81,12 +81,12 @@ function comment_list($vars){
     if(isset($vars['cid!'])){
     	$ncids    = explode(',',$vars['cid!']);
         $vars['sub'] && $ncids+=categoryApp::get_cids($ncids,true);
-        $where_sql.= iPHP::where($ncids,'cid','not');
+        $where_sql.= iSQL::where($ncids,'cid','not');
     }
     if(isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
         $vars['sub'] && $cid+=categoryApp::get_cids($cid,true);
-        $where_sql.= iPHP::where($cid,'cid');
+        $where_sql.= iSQL::where($cid,'cid');
     }
     isset($vars['userid'])&& $where_sql.= " AND `userid`='{$vars['userid']}'";
 
@@ -137,7 +137,7 @@ function comment_list($vars){
 	if(empty($resource)){
 		$resource = iDB::all("SELECT * FROM `#iCMS@__comment` WHERE {$where_sql} {$order_sql} {$limit}");
         if($vars['reply']){
-            $ridArray = iPHP::values($resource,'reply_id','array',null);
+            $ridArray = iSQL::values($resource,'reply_id','array',null);
             if($ridArray){
             	$rkey = array_search (0,$ridArray);
             	unset($ridArray[$rkey]);

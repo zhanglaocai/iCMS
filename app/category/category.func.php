@@ -19,22 +19,22 @@ function category_list($vars){
 	$resource   = array();
 
 	isset($vars['mode']) && $where_sql.=" AND `mode` = '{$vars['mode']}'";
-	isset($vars['cid']) && !isset($vars['stype']) && $where_sql.= iPHP::where($vars['cid'],'cid');
-	isset($vars['cid!']) && $where_sql.= iPHP::where($vars['cid!'],'cid','not');
+	isset($vars['cid']) && !isset($vars['stype']) && $where_sql.= iSQL::where($vars['cid'],'cid');
+	isset($vars['cid!']) && $where_sql.= iSQL::where($vars['cid!'],'cid','not');
 	switch ($vars['stype']) {
 		case "top":
-			$vars['cid'] && $where_sql.= iPHP::where($vars['cid'],'cid');
+			$vars['cid'] && $where_sql.= iSQL::where($vars['cid'],'cid');
 			$where_sql.=" AND rootid='0'";
 		break;
 		case "sub":
-			$vars['cid'] && $where_sql.= iPHP::where($vars['cid'],'rootid');
+			$vars['cid'] && $where_sql.= iSQL::where($vars['cid'],'rootid');
 		break;
 		// case "subtop":
-		// 	$vars['cid'] && $where_sql.= iPHP::where($vars['cid'],'cid');
+		// 	$vars['cid'] && $where_sql.= iSQL::where($vars['cid'],'cid');
 		// break;
 		case "suball":
 			$cids = categoryApp::get_cids($vars['cid'],false);
-			$where_sql.= iPHP::where($cids,'cid');
+			$where_sql.= iSQL::where($cids,'cid');
 		break;
 		case "self":
 			$parent = iCache::get('iCMS/category/parent',$vars['cid']);
@@ -71,7 +71,7 @@ function category_list($vars){
 	}
 
     if($vars['orderby']=='rand'){
-        $ids_array = iCMS::get_rand_ids('#iCMS@__category',$where_sql,$maxperpage,'cid');
+        $ids_array = iSQL::get_rand_ids('#iCMS@__category',$where_sql,$maxperpage,'cid');
     }
 
 	$hash = md5($where_sql.$order_sql.$limit);

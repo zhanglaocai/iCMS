@@ -86,67 +86,6 @@ class iCMS {
         iPHP::assign('site',$site);
         iUI::$dialog['title']  = self::$config['site']['name'];
     }
-    //------------------------------------
-    public static function get_rand_ids($table,$where=null,$limit='10',$primary='id'){
-        $whereSQL = $where?"{$where} AND `{$table}`.`{$primary}` >= rand_id":' WHERE `{$table}`.`{$primary}` >= rand_id';
-        // $limitNum = rand(2,10);
-        // $prelimit = ceil($limit/rand(2,10));
-        $randSQL  = "
-            SELECT `{$table}`.`{$primary}` FROM `{$table}`
-            JOIN (SELECT
-                  ROUND(RAND() * (
-                      (SELECT MAX(`{$table}`.`{$primary}`) FROM `{$table}`) -
-                      (SELECT MIN(`{$table}`.`{$primary}`) FROM `{$table}`)
-                    ) + (SELECT MIN(`{$table}`.`{$primary}`) FROM `{$table}`)
-                 ) AS rand_id) RAND_DATA
-            {$whereSQL}
-            LIMIT $limit;
-        ";
-        $randIdsArray = iDB::all($randSQL);
-        // $randIdsArray = null;
-        // for ($i=0; $i <=$prelimit; $i++) {
-        //     $randIdsArray[$i] = array('id'=>iDB::value($randSQL));
-        //     echo iDB::$last_query;
-        // }
-        return $randIdsArray;
-    }
-    public static function hits_sql($all=true,$hit=1){
-        $timeline = self::timeline();
-        // var_dump($timeline);
-        $pieces = array();
-        $all && $pieces[] = '`hits` = hits+'.$hit;
-        foreach ($timeline as $key => $bool) {
-            $field = "hits_{$key}";
-            if($key=='yday'){
-                if($bool==1){
-                    $pieces[]="`hits_yday` = hits_today";
-                }elseif ($bool>1) {
-                    $pieces[]="`hits_yday` = 0";
-                }
-                continue;
-            }
-            $pieces[]="`{$field}` = ".($bool?"{$field}+{$hit}":$hit);
-        }
-        return implode(',', $pieces);
-    }
-    public static function timeline(){
-        $_timeline = iCache::get('iCMS/timeline');
-        //list($_today,$_week,$_month) = $_timeline ;
-        $time     = $_SERVER['REQUEST_TIME'];
-        $today    = get_date($time,"Ymd");
-        $yday     = get_date($time-86400+1,"Ymd");
-        $week     = get_date($time,"YW");
-        $month    = get_date($time,"Ym");
-        $timeline = array($today,$week,$month);
-        $_timeline[0]==$today OR iCache::set('iCMS/timeline',$timeline,0);
-        //var_dump($_timeline,$timeline);
-        return array(
-            'yday'  => ($today-$_timeline[0]),
-            'today' => ($_timeline[0]==$today),
-            'week'  => ($_timeline[1]==$week),
-            'month' => ($_timeline[2]==$month),
-        );
-    }
 
     //------------------------------------
     public static function gotohtml($fp,$url='') {

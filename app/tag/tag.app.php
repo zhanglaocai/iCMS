@@ -117,7 +117,7 @@ class tagApp {
         if(empty($array)){
             return;
         }
-        $sql  = iPHP::where($array,'name',false,true);
+        $sql  = iSQL::where($array,'name',false,true);
 
         if(empty($sql)){
             return;

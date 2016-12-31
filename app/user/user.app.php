@@ -957,7 +957,7 @@ class userApp {
 	public function API_hits($uid = null) {
 		$uid === null && $uid = (int) $_GET['uid'];
 		if ($uid) {
-			$sql = iCMS::hits_sql();
+			$sql = iSQL::update_hits();
 			iDB::query("UPDATE `#iCMS@__user` SET {$sql} WHERE `uid` ='$uid'");
 		}
 	}

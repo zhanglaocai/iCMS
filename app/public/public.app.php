@@ -27,22 +27,7 @@ class publicApp {
 		$weixinApp->API_interface();
 	}
 	public function API_crontab() {
-		$timeline = iCMS::timeline();
-		//var_dump($timeline);
-		$pieces = array();
-		foreach ($timeline as $key => $bool) {
-			$field = "hits_{$key}";
-			if ($key == 'yday') {
-				if ($bool == 1) {
-					$pieces[] = "`hits_yday` = hits_today";
-				} elseif ($bool > 1) {
-					$pieces[] = "`hits_yday` = 0";
-				}
-			} else {
-				$bool OR $pieces[] = "`{$field}` = 0";
-			}
-		}
-		$pieces && $sql = implode(',', $pieces);
+		$sql =iSQL::update_hits(false,0);
 		if ($sql) {
 			//点击初始化
 			iDB::query("UPDATE `#iCMS@__article` SET {$sql}");

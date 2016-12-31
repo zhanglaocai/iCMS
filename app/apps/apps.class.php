@@ -56,9 +56,9 @@ var_dump(@class_exists($appname));
     public static function get($ids=0){
         if(empty($ids)) return array();
 
-        list($ids,$is_multi)  = iPHP::multi_ids($ids);
+        list($ids,$is_multi)  = iSQL::multi_ids($ids);
 
-        $sql  = iPHP::where($ids,'id',false,true);
+        $sql  = iSQL::where($ids,'id',false,true);
         $data = array();
         $rs   = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);
         if($rs){

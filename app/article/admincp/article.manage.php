@@ -215,7 +215,7 @@ $(function(){
           </thead>
           <tbody>
             <?php
-                $cidArray = iPHP::values($rs,'cid','array',null);
+                $cidArray = iSQL::values($rs,'cid','array',null);
                 $cidArray && $category_data = (array) $this->categoryApp->get($cidArray);
 
                 if($rs)foreach ($rs as $key => $value) {

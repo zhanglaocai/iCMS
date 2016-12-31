@@ -71,7 +71,7 @@ class tagAdmincp{
             }
         }
         if($map_where){
-            $map_sql = iCMS::map_sql($map_where);
+            $map_sql = iSQL::select_map($map_where);
             $sql     = ",({$map_sql}) map {$sql} AND `id` = map.`iid`";
         }
 
@@ -85,7 +85,7 @@ class tagAdmincp{
                 SELECT `id` FROM `#iCMS@__tags` {$sql}
                 ORDER BY {$orderby} {$limit}
             ");
-            $ids   = iPHP::values($ids_array);
+            $ids   = iSQL::values($ids_array);
             $ids   = $ids?$ids:'0';
             $sql   = "WHERE `id` IN({$ids})";
             $limit = '';

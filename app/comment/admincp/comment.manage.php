@@ -78,7 +78,7 @@ function update_popover(html,a){
       <form action="<?php echo APP_FURI; ?>&do=batch" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <ul class="recent-comments">
           <?php if($rs){
-                // $cidArray = iPHP::values($rs,'cid','array',null);
+                // $cidArray = iSQL::values($rs,'cid','array',null);
                 // $cidArray && $category_data = (array) $this->categoryApp->get($cidArray);
           foreach ($rs as $key => $value) {
           // $C    = (array)$category_data[$value['cid']];

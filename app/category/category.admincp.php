@@ -366,7 +366,7 @@ class categoryAdmincp extends category{
         admincp::$APP_DO = 'list';
         $sql  = " where `appid`='{$this->appid}'";
         $cids = admincp::CP('__CID__');
-        $sql.= iPHP::where($cids,'cid');
+        $sql.= iSQL::where($cids,'cid');
 
         if($_GET['keywords']) {
             if($_GET['st']=="name") {
@@ -500,7 +500,7 @@ class categoryAdmincp extends category{
         if($cid){
             $cids  = (array)$cid;
             $_GET['sub'] && $cids+=categoryApp::get_ids($cid,true);
-            $sql= iPHP::where($cids,$field);
+            $sql= iSQL::where($cids,$field);
         }
         return $sql;
     }

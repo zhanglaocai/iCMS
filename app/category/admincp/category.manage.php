@@ -165,7 +165,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
           </thead>
           <tbody>
             <?php
-                $rootidArray = iPHP::values($rs,'rootid','array',null);
+                $rootidArray = iSQL::values($rs,'rootid','array',null);
                 $rootidArray && $root_data = (array) $this->get($rootidArray);
             for($i=0;$i<$_count;$i++){?>
             <tr id="<?php echo $rs[$i]['cid'] ; ?>" class="status<?php echo $rs[$i]['status'] ; ?>">

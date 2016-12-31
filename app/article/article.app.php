@@ -31,7 +31,7 @@ class articleApp {
 	public function API_hits($id = null) {
 		$id === null && $id = (int) $_GET['id'];
 		if ($id) {
-			$sql = iCMS::hits_sql();
+			$sql = iSQL::update_hits();
 			iDB::query("UPDATE `#iCMS@__article` SET {$sql} WHERE `id` ='$id'");
 		}
 	}
@@ -98,13 +98,12 @@ class articleApp {
 			'category_lite' => true,
 		);
 		$article = $this->value($article, $article_data, $vars, $page, $tpl);
-
-		iPHP::plugin('article',$article,iCMS::$config['plugin']['article']);
-
 		unset($article_data);
 		if ($article === false) {
 			return false;
 		}
+
+		iPlugin::hook('article',$article,iCMS::$config['plugin']['article']);
 
 		if ($tpl) {
 			$article_tpl = empty($article['tpl']) ? $article['category']['template']['article'] : $article['tpl'];
@@ -249,8 +248,8 @@ class articleApp {
 	public function data($aids=0){
 		if(empty($aids)) return array();
 
-		list($aids,$is_multi)  = iPHP::multi_ids($aids);
-		$sql  = iPHP::where($aids,'aid',false,true);
+		list($aids,$is_multi)  = iSQL::multi_ids($aids);
+		$sql  = iSQL::where($aids,'aid',false,true);
 		$data = array();
 		$rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}",OBJECT);
 		if($rs){

@@ -12,7 +12,7 @@ function tag_list($vars){
         $where_sql.= " AND `rootid`='".(int)$vars['rootid']."'";
     }
     if(!isset($vars['tcids']) && isset($vars['tcid'])){
-        $where_sql.= iPHP::where($vars['tcid'],'tcid');
+        $where_sql.= iSQL::where($vars['tcid'],'tcid');
     }
     if(isset($vars['tcids']) && !isset($vars['tcid'])){
         iMap::init('category',iCMS_APP_TAG);
@@ -20,11 +20,11 @@ function tag_list($vars){
         $map_where+=iMap::where($vars['tcid']);
     }
     if(isset($vars['tcid!'])){
-        $where_sql.= iPHP::where($vars['tcid!'],'tcid','not');
+        $where_sql.= iSQL::where($vars['tcid!'],'tcid','not');
     }
 
     if(!isset($vars['pids']) && isset($vars['pid'])){
-        $where_sql.= iPHP::where($vars['pid'],'pid');
+        $where_sql.= iSQL::where($vars['pid'],'pid');
     }
     if(isset($vars['pids']) && !isset($vars['pid'])){
         iMap::init('prop',iCMS_APP_TAG);
@@ -32,13 +32,13 @@ function tag_list($vars){
         $map_where+= iMap::where($vars['pids']);
     }
     if(isset($vars['pid!'])){
-        $where_sql.= iPHP::where($vars['pid!'],'pid','not');
+        $where_sql.= iSQL::where($vars['pid!'],'pid','not');
     }
 
     if(!isset($vars['cids']) && isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
         $vars['sub'] && $cid+=categoryApp::get_cids($cid,true);
-        $where_sql.= iPHP::where($cid,'cid');
+        $where_sql.= iSQL::where($cid,'cid');
     }
     if(isset($vars['cids']) && !isset($vars['cid'])){
         $cids = explode(',',$vars['cids']);
@@ -52,7 +52,7 @@ function tag_list($vars){
     if(isset($vars['cid!'])){
         $ncids    = explode(',',$vars['cid!']);
         $vars['sub'] && $ncids+=categoryApp::get_cids($ncids,true);
-        $where_sql.= iPHP::where($ncids,'cid','not');
+        $where_sql.= iSQL::where($ncids,'cid','not');
     }
 
     if(isset($vars['keywords'])){//最好使用 iCMS:tag:search
@@ -80,7 +80,7 @@ function tag_list($vars){
 		default:		$order_sql=" ORDER BY `id` $by";
 	}
     if($map_where){
-        $map_sql   = iCMS::map_sql($map_where);
+        $map_sql   = iSQL::select_map($map_where);
         $where_sql = ",({$map_sql}) map {$where_sql} AND `id` = map.`iid`";
     }
 
@@ -95,7 +95,7 @@ function tag_list($vars){
 	}
 
     if($vars['orderby']=='rand'){
-        $ids_array = iCMS::get_rand_ids('#iCMS@__tags',$where_sql,$maxperpage,'id');
+        $ids_array = iSQL::get_rand_ids('#iCMS@__tags',$where_sql,$maxperpage,'id');
     }
 
 	$hash = md5($where_sql.$order_sql.$limit);
@@ -119,7 +119,7 @@ function tag_list($vars){
         }
     }
     if($ids_array){
-        $ids       = iPHP::values($ids_array);
+        $ids       = iSQL::values($ids_array);
         $ids       = $ids?$ids:'0';
         $where_sql = "WHERE `#iCMS@__tags`.`id` IN({$ids})";
         $limit     = '';

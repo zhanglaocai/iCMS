@@ -19,7 +19,7 @@ function article_list($vars) {
 	$vars['call'] == 'user' && $where_sql .= " AND `postype`='0'";
 	$vars['call'] == 'admin' && $where_sql .= " AND `postype`='1'";
 	$hidden = iCache::get('iCMS/category/hidden');
-	$hidden && $where_sql .= iPHP::where($hidden, 'cid', 'not');
+	$hidden && $where_sql .= iSQL::where($hidden, 'cid', 'not');
 	$maxperpage = isset($vars['row']) ? (int) $vars['row'] : 10;
 	$cache_time = isset($vars['time']) ? (int) $vars['time'] : -1;
 	isset($vars['userid']) && $where_sql .= " AND `userid`='{$vars['userid']}'";
@@ -32,12 +32,12 @@ function article_list($vars) {
 	if (isset($vars['cid!'])) {
 		$ncids = explode(',', $vars['cid!']);
 		$vars['sub'] && $ncids += categoryApp::get_cids($ncids, true);
-		$where_sql .= iPHP::where($ncids, 'cid', 'not');
+		$where_sql .= iSQL::where($ncids, 'cid', 'not');
 	}
 	if ($vars['cid'] && !isset($vars['cids'])) {
 		$cid = explode(',', $vars['cid']);
 		$vars['sub'] && $cid += categoryApp::get_cids($cid, true);
-		$where_sql .= iPHP::where($cid, 'cid');
+		$where_sql .= iSQL::where($cid, 'cid');
 	}
 	if (isset($vars['cids']) && !$vars['cid']) {
 		$cids = explode(',', $vars['cids']);
@@ -49,7 +49,7 @@ function article_list($vars) {
 		}
 	}
 	if (isset($vars['pid']) && !isset($vars['pids'])) {
-		$where_sql .= iPHP::where($vars['pid'], 'pid');
+		$where_sql .= iSQL::where($vars['pid'], 'pid');
 	}
 
 	if (isset($vars['pids']) && !isset($vars['pid'])) {
@@ -80,8 +80,8 @@ function article_list($vars) {
 		}
 	}
 
-	$vars['id'] && $where_sql .= iPHP::where($vars['id'], 'id');
-	$vars['id!'] && $where_sql .= iPHP::where($vars['id!'], 'id', 'not');
+	$vars['id'] && $where_sql .= iSQL::where($vars['id'], 'id');
+	$vars['id!'] && $where_sql .= iSQL::where($vars['id!'], 'id', 'not');
 	$by = $vars['by'] == "ASC" ? "ASC" : "DESC";
 	isset($vars['pic']) && $where_sql .= " AND `haspic`='1'";
 	isset($vars['nopic']) && $where_sql .= " AND `haspic`='0'";
@@ -102,7 +102,7 @@ function article_list($vars) {
 	isset($vars['where']) && $where_sql .= $vars['where'];
 
 	if ($map_where) {
-		$map_sql = iCMS::map_sql($map_where, 'join');
+		$map_sql = iSQL::select_map($map_where, 'join');
 		//join
 		//empty($vars['cid']) && $map_order_sql = " ORDER BY map.`iid` $by";
 		$map_table = 'map';
@@ -129,7 +129,7 @@ function article_list($vars) {
 	}
 	//随机特别处理
 	if ($vars['orderby'] == 'rand') {
-		$ids_array = iCMS::get_rand_ids('#iCMS@__article', $where_sql, $maxperpage, 'id');
+		$ids_array = iSQL::get_rand_ids('#iCMS@__article', $where_sql, $maxperpage, 'id');
 		if ($map_order_sql) {
 			$map_order_sql = " ORDER BY `#iCMS@__article`.`id` $by";
 		}
@@ -151,7 +151,7 @@ function article_list($vars) {
 		}
 	}
 	if ($ids_array) {
-		$ids = iPHP::values($ids_array);
+		$ids = iSQL::values($ids_array);
 		$ids = $ids ? $ids : '0';
 		$where_sql = "WHERE `#iCMS@__article`.`id` IN({$ids})";
 		$limit = '';
@@ -179,7 +179,7 @@ function article_search($vars) {
 
 	$resource = array();
 	$hidden = iCache::get('iCMS/category/hidden');
-	$hidden && $where_sql .= iPHP::where($hidden, 'cid', 'not');
+	$hidden && $where_sql .= iSQL::where($hidden, 'cid', 'not');
 	$SPH = iPHP::vendor('SPHINX',iCMS::$config['sphinx']['host']);
 	$SPH->init();
 	$SPH->SetArrayResult(true);
@@ -316,12 +316,12 @@ function article_array($vars, $variable) {
 	if ($variable) {
 		$vars['category_lite'] = true;
         if($vars['data']||$vars['pics']){
-            $aidArray = iPHP::values($variable,'id','array',null);
+            $aidArray = iSQL::values($variable,'id','array',null);
             $aidArray && $article_data = (array) articleApp::data($aidArray);
             unset($aidArray);
         }
         if($vars['tags']){
-            $tagArray = iPHP::values($variable,'tags','array',null,'id');
+            $tagArray = iSQL::values($variable,'tags','array',null,'id');
             if($tagArray){
 				$tags_data = (array)tagApp::multi_tag($tagArray);
             }

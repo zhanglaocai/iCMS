@@ -513,11 +513,11 @@ form{margin-bottom:0;}
   .dataTables_filter{position:relative;}
   .dataTables_filter,.dataTables_paginate{text-align:center;}
 
-.nav-collapse {clear: none;}
+/*.nav-collapse {clear: none;}*/
 /*.nav-collapse, .nav-collapse.collapse{height: auto!important;
     overflow: visible!important;}*/
-.navbar .nav{float: left;}
-.nav-collapse .nav>li{float: left;}
+/*.navbar .nav{float: left;}
+.nav-collapse .nav>li{float: left;}*/
 /*.navbar .btn-navbar{display: none;}*/
 }
 

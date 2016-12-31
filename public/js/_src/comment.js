@@ -24,7 +24,7 @@ define("comment", function(require) {
                     '</div>'+
                     '<div class="clearfix"></div>' +
                 '</div>'),
-            item_tpl:'<div class="commentApp-item" data-id="<%=id%>">' +
+            item:'<div class="commentApp-item" data-id="<%=id%>">' +
                     '<a title="<%=user.name%>" i="ucard:<%=userid%>" class="cmt-item-link-avatar" href="<%=user.url%>">' +
                         '<img src="<%=user.avatar%>" class="cmt-item-img-avatar" onerror="iUSER.NOAVATAR(this);">' +
                     '</a>' +
@@ -190,7 +190,7 @@ define("comment", function(require) {
                         $COMMENT.page_total[iid] = json[0].page.total;
                     }
                     $.each(json, function(i, data) {
-                        var item = $.parseTmpl($COMMENT.widget.item_tpl,data);
+                        var item = $.parseTmpl($COMMENT.widget.item,data);
                         if(type=="after"){
                             $list.after(item);
                         }else if(type=="before"){

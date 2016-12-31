@@ -67,7 +67,7 @@ class userAdmincp{
         }
 
         if($map_where){
-            $map_sql = iCMS::map_sql($map_where);
+            $map_sql = iSQL::select_map($map_where);
             $sql     = ",({$map_sql}) map {$sql} AND `uid` = map.`iid`";
         }
         $orderby    = $_GET['orderby']?$_GET['orderby']:"uid DESC";
@@ -80,7 +80,7 @@ class userAdmincp{
                 SELECT `uid` FROM `#iCMS@__user` {$sql}
                 ORDER BY {$orderby} {$limit}
             ");
-            $ids   = iPHP::values($ids_array,'uid');
+            $ids   = iSQL::values($ids_array,'uid');
             $ids   = $ids?$ids:'0';
             $sql   = "WHERE `uid` IN({$ids})";
             $limit = '';

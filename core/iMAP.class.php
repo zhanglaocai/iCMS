@@ -62,7 +62,7 @@ class iMap {
 
 		$sql = self::sql($nodes);
 		$all = iDB::all($ids.'Limit 10000');
-		return iPHP::values($all,'iid');
+		return iSQL::values($all,'iid');
 	}
 	public static function where($nodes=0){
 		if(empty($nodes)) return false;
@@ -71,8 +71,8 @@ class iMap {
 			$nodes = explode(',', $nodes);
 		}
 		$table     = self::table();
-		$where_sql = iPHP::where(self::$appid,'appid',false,true,$table);
-		$where_sql.= iPHP::where($nodes,self::$field,false,false,$table);
+		$where_sql = iSQL::where(self::$appid,'appid',false,true,$table);
+		$where_sql.= iSQL::where($nodes,self::$field,false,false,$table);
 		return array($table=>$where_sql);
 	}
 
@@ -82,8 +82,8 @@ class iMap {
 		if(!is_array($nodes) && strstr($nodes, ',')){
 			$nodes = explode(',', $nodes);
 		}
-		$where_sql = iPHP::where(self::$appid,'appid',false,true);
-		$where_sql.= iPHP::where($nodes,self::$field);
+		$where_sql = iSQL::where(self::$appid,'appid',false,true);
+		$where_sql.= iSQL::where($nodes,self::$field);
 		return "SELECT `iid` FROM ".self::table()." WHERE {$where_sql}";
 	}
 

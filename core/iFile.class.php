@@ -50,11 +50,11 @@ class iFile {
     }
     public static function index_fileid($indexid,$appid='1'){
         $rs      = iDB::all("SELECT `fileid` FROM " . self::$_map_table . " WHERE indexid = '{$indexid}'  AND appid = '{$appid}' ");
-        $fileid0 = iPHP::values($rs,'fileid','array',null);
+        $fileid0 = iSQL::values($rs,'fileid','array',null);
         $result  = array();
         if($fileid0){
             $rs = iDB::all("SELECT `fileid` FROM " . self::$_map_table . " WHERE `fileid` IN(".implode(',', $fileid0).") and indexid <> '{$indexid}'");
-            $fileid1 = iPHP::values($rs,'fileid','array',null);
+            $fileid1 = iSQL::values($rs,'fileid','array',null);
             if($fileid1){
                 $result  = array_diff((array)$fileid0 , (array)$fileid1);
             }else{
@@ -66,8 +66,8 @@ class iFile {
     public static function delete_file($ids){
         if(empty($ids)) return array();
 
-        $ids  = iPHP::multi_ids($ids,true);
-        $sql  = iPHP::where($ids,'id',false,true);
+        $ids  = iSQL::multi_ids($ids,true);
+        $sql  = iSQL::where($ids,'id',false,true);
         $rs   = iDB::all("SELECT * FROM ".self::$_data_table." where {$sql}");
         $ret  = array();
         foreach ((array)$rs as $key => $value) {
@@ -81,10 +81,10 @@ class iFile {
     public static function delete_fdb($ids,$indexid,$appid='1'){
         if(empty($ids)) return array();
 
-        $ids  = iPHP::multi_ids($ids,true);
-        $sql  = iPHP::where($ids,'id',false,true);
+        $ids  = iSQL::multi_ids($ids,true);
+        $sql  = iSQL::where($ids,'id',false,true);
         $sql && iDB::query("DELETE FROM ".self::$_data_table." where {$sql}");
-        $msql = iPHP::where($ids,'fileid');
+        $msql = iSQL::where($ids,'fileid');
         $msql && iDB::query("DELETE FROM ".self::$_map_table." where indexid = '{$indexid}'  AND appid = '{$appid}' {$msql}");
     }
     public static function del_app_data($appid=null){

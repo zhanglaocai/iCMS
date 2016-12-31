@@ -155,10 +155,10 @@ $(function(){
         </thead>
         <tbody>
           <?php
-          $cidArray = iPHP::values($rs,'cid','array',null);
+          $cidArray = iSQL::values($rs,'cid','array',null);
           $cidArray && $category_data = (array) $this->categoryApp->get($cidArray);
 
-          $tcidArray = iPHP::values($rs,'tcid','array',null);
+          $tcidArray = iSQL::values($rs,'tcid','array',null);
           $tcidArray && $tcategory_data = (array) $this->tagcategory->get($tcidArray);
 
           for($i=0;$i<$_count;$i++){
