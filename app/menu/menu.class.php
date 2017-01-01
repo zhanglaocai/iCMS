@@ -30,13 +30,15 @@ class menu {
         }
         return $data;
     }
-    public function menu_id($vars){
+    public function menu_id($vars,&$sort){
         foreach ($vars as $k => $v) {
+            ++$sort;
             $key = $v['id']?$v['id']:$k;
-            if(!isset($v['sort'])) $v['sort']= '9999999';
+            if(!isset($v['sort'])) $v['sort']= $sort;
+
             $array[$key] = $v;
             if($v['children']){
-                $array[$key]['children']= $this->menu_id($v['children']);
+                $array[$key]['children'] = $this->menu_id($v['children'],$sort);
             }
         }
         return $array;
@@ -44,10 +46,11 @@ class menu {
 
     public function menu_array($cache=false){
         $variable = array();
+        $sort     = 100000;
         foreach (glob(iPHP_APP_DIR."/*/etc/iMenu.*.php",GLOB_NOSORT) as $index=> $filename) {
             $array = $this->json_data($filename);
             if($array){
-                $array = $this->menu_id($array);
+                $array = $this->menu_id($array,$sort);
                 $variable[] = $array;
             }
         }
@@ -103,7 +106,7 @@ class menu {
         if ( $a['sort']  ==  $b['sort'] ) {
             return  0 ;
         }
-        return ( $a['sort']  <  $b['sort'] ) ? - 1  :  1 ;
+        return ( $a['sort']  <=  $b['sort'] ) ? - 1  :  1 ;
         // return @strnatcmp($a['sort'],$b['sort']);
     }
     public function menu_item_unique (&$items){
