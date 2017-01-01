@@ -11,7 +11,7 @@
             "href": "keywords&do=config",
             "icon": "cog"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "内链管理",
             "href": "keywords",

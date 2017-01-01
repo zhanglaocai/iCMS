@@ -9,7 +9,7 @@
         "href": "article&do=config",
         "icon": "cog"
     },{
-        "-": "-"
+        "caption": "-"
     }, {
         "caption": "栏目管理",
         "href": "article_category",
@@ -19,7 +19,7 @@
         "href": "article_category&do=add",
         "icon": "edit"
     }, {
-        "-": "-"
+        "caption": "-"
     }, {
         "caption": "添加文章",
         "href": "article&do=add",
@@ -37,7 +37,7 @@
         "href": "article&do=trash",
         "icon": "trash-o"
     }, {
-        "-": "-"
+        "caption": "-"
     }, {
         "caption": "用户文章管理",
         "href": "article&do=user",
@@ -51,7 +51,7 @@
         "href": "article&do=off",
         "icon": "times-circle"
     }, {
-        "-": "-"
+        "caption": "-"
     }, {
         "caption": "文章评论管理",
         "href": "comment&appname=article&appid={appid}",

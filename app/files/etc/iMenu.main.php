@@ -1,9 +1,6 @@
 <?php defined('iPHP') OR exit('What are you doing?');?>
 [{
     "id": "tools",
-    "sort": "9999998",
-    "caption": "工具",
-    "icon": "gavel",
     "children": [{
         "caption": "文件管理",
         "sort": "-999",
@@ -17,7 +14,7 @@
         "data-toggle": "modal",
         "data-meta": "{\"width\":\"85%\",\"height\":\"640px\"}"
     }, {
-        "-": "-",
+        "caption": "-",
         "sort": "-997"
     }]
 }]

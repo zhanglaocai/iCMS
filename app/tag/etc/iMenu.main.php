@@ -10,7 +10,7 @@
             "href": "tag&do=config",
             "icon": "cog"
         },{
-            "-": "-"
+            "caption": "-"
         },{
             "caption": "标签管理",
             "href": "tag",
@@ -20,7 +20,7 @@
             "href": "tag&do=add",
             "icon": "edit"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "分类管理",
             "href": "tag_category",

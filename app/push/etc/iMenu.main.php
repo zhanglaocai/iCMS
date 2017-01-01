@@ -14,7 +14,7 @@
             "href": "push&do=add",
             "icon": "edit"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "块管理",
             "href": "push_category",

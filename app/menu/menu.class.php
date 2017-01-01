@@ -17,18 +17,41 @@ class menu {
         $this->get_cache();
         // $this->menu_array(true);
 	}
-    public function menu_data($path){
+    public function json_data($path){
         $json  = file_get_contents($path);
         $json  = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
-        return json_decode($json,ture);
+        $data = json_decode($json,ture);
+        $error = json_last_error();
+        if($error!==JSON_ERROR_NONE){
+            $data = array(
+                'id' => $path,
+                'caption' => json_last_error_msg()
+            );
+        }
+        return $data;
+    }
+    public function menu_id($vars){
+        foreach ($vars as $k => $v) {
+            $key = $v['id']?$v['id']:$k;
+            if(!isset($v['sort'])) $v['sort']= '9999999';
+            $array[$key] = $v;
+            if($v['children']){
+                $array[$key]['children']= $this->menu_id($v['children']);
+            }
+        }
+        return $array;
     }
 
     public function menu_array($cache=false){
         $variable = array();
         foreach (glob(iPHP_APP_DIR."/*/etc/iMenu.*.php",GLOB_NOSORT) as $index=> $filename) {
-            $array = $this->menu_data($filename);
-            $array && $variable[]= $this->menu_id($array,$index);
+            $array = $this->json_data($filename);
+            if($array){
+                $array = $this->menu_id($array);
+                $variable[] = $array;
+            }
         }
+
         if($variable){
             $variable = call_user_func_array('array_merge_recursive',$variable);
             array_walk($variable,array($this,'menu_item_unique'));
@@ -58,13 +81,10 @@ class menu {
         // $array = array();
         foreach ($variable as $key => $value) {
             $_id = $id?$id:$value['id'];
-
             if(!$value['-'] && $value['href']){
-                // $array[]= $value['href'];
                 $out[$value['href']] = $_id;
             }
             if($value['children']){
-                // $array[$value['id']]=
                 $this->menu_href_array($value['children'],$out,$_id);
             }
 
@@ -98,29 +118,6 @@ class menu {
             }
         }
     }
-    public function menu_id($variable,$index=0){
-        if(empty($variable)) return;
-        if(is_array($variable)){
-            $i=0;
-            foreach ($variable as $key => $value) {
-                $value = (array)$value;
-
-                isset($value['sort']) OR $value['sort'] = $index*100+$i;
-                if($value['children']){
-                    $value['children'] = $this->menu_id($value['children'],$i);
-                }
-                $variable[$key] = $value;
-                if($value['id']){
-                    $variable[$value['id']]= $value;
-                    unset($variable[$key]);
-                }
-                $i++;
-            }
-            return $variable;
-        }else{
-            return $this->menu_id($variable,$index);
-        }
-    }
 
     public function href($a){
         $a['href'] && $href = __ADMINCP__.'='.$a['href'];
@@ -131,7 +128,7 @@ class menu {
         return $href;
     }
 	public function a($a){
-		if(empty($a)||$a['-']) return;
+		if(empty($a)||$a['caption']=='-') return;
 
         $a['title'] OR $a['title'] = $a['caption'];
 		$a['icon'] && $icon='<i class="'.$a['icon'].'"></i> ';
@@ -151,7 +148,7 @@ class menu {
     }
     public function app_memu($app){
         $path  = iPHP_APP_DIR."/{$app}/etc/iMenu.main.php";
-        $array = $this->menu_data($path);
+        $array = $this->json_data($path);
         $array = $this->menu_id($array);
         $key   = $this->search_href();
         $array = $array[$key]['children'][$app]['children'];
@@ -180,7 +177,7 @@ class menu {
     public function children_count($variable){
         $count = 0;
         foreach ((array)$variable as $key => $value) {
-            $value['-'] OR $count++;
+            $a['caption']=='-' OR $count++;
         }
         return $count;
     }
@@ -188,7 +185,7 @@ class menu {
 		// if(!admincp::MP($id)) return false;
 
         $a = (array)$a;
-		if($a['-']){
+		if($a['caption']=='-'){
 			return '<li data-sort="'.$a['sort'].'" class="'.(($level||$mType=='sidebar')?'divider':'divider-vertical').'"></li>';
 		}
 

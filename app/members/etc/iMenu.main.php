@@ -1,15 +1,7 @@
 <?php defined('iPHP') OR exit('What are you doing?');?>
 [{
-    "-": "-",
-    "sort": "9999995"
-}, {
     "id": "members",
-    "sort": "9999996",
-    "caption": "用户",
-    "icon": "user",
     "children": [{
-        "-": "-"
-    }, {
         "caption": "管理员列表",
         "href": "members",
         "icon": "list-alt"
@@ -18,7 +10,7 @@
         "href": "members&do=add",
         "icon": "user"
     }, {
-        "-": "-"
+        "caption": "-"
     }, {
         "caption": "角色管理",
         "href": "group",
@@ -27,5 +19,7 @@
         "caption": "添加角色",
         "href": "group&do=add",
         "icon": "group"
+    }, {
+        "caption": "-"
     }]
 }]

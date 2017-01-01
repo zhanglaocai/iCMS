@@ -11,7 +11,7 @@
             "href": "html&do=index",
             "icon": "refresh"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "栏目静态化",
             "href": "html&do=category",
@@ -21,19 +21,17 @@
             "href": "html&do=article",
             "icon": "refresh"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "全站生成静态",
             "href": "html&do=all",
             "icon": "refresh"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "静态设置",
             "href": "config&tab=url",
             "icon": "cog"
         }]
-    }, {
-        "-": "-","sort":"-991"
     }]
 }]

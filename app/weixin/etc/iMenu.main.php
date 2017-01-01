@@ -13,7 +13,7 @@
         "href": "weixin&do=config",
         "icon": "cog"
     }, {
-        "-": "-"
+        "caption": "-"
     },{
         "caption": "事件管理",
         "href": "weixin&do=event",

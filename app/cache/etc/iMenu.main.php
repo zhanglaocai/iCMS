@@ -1,11 +1,8 @@
 <?php defined('iPHP') OR exit('What are you doing?');?>
 [{
     "id": "tools",
-    "sort": "9999998",
-    "caption": "工具",
-    "icon": "gavel",
     "children": [{
-        "-": "-"
+        "caption": "-"
     },{
         "id": "cache",
         "caption": "清理缓存",
@@ -16,7 +13,7 @@
             "icon": "refresh",
             "target": "iPHP_FRAME"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "更新系统设置",
             "href": "cache&acp=admincp.config.app",
@@ -33,7 +30,7 @@
             "icon": "refresh",
             "target": "iPHP_FRAME"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "更新所有分类缓存",
             "href": "cache&do=allcategory",
@@ -70,7 +67,7 @@
             "icon": "refresh",
             "target": "iPHP_FRAME"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "重计栏目文章数",
             "href": "cache&do=article_count",

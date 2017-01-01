@@ -2,6 +2,8 @@
 [{
     "id": "tools",
     "children": [{
+        "caption": "-"
+    },{
         "id": "database",
         "caption": "数据库管理",
         "icon": "database",
@@ -14,7 +16,7 @@
             "href": "database&do=recover",
             "icon": "upload"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "修复优化",
             "href": "database&do=repair",
@@ -24,7 +26,7 @@
             "href": "database&do=sharding",
             "icon": "puzzle-piece"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "数据替换",
             "href": "database&do=replace",

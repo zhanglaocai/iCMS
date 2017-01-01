@@ -16,7 +16,7 @@
             "href": "spider&do=inbox",
             "icon": "inbox"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "采集方案",
             "href": "spider&do=project",
@@ -26,7 +26,7 @@
             "href": "spider&do=addproject",
             "icon": "edit"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "采集规则",
             "href": "spider&do=rule",
@@ -36,7 +36,7 @@
             "href": "spider&do=addrule",
             "icon": "edit"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "发布模块",
             "href": "spider&do=post",
@@ -47,6 +47,6 @@
             "icon": "edit"
         }]
     }, {
-        "-": "-","sort":"-993"
+        "caption": "-","sort":"-993"
     }]
 }]

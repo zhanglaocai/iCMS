@@ -10,7 +10,7 @@
             "href": "comment&do=config",
             "icon": "cog"
         }, {
-            "-": "-"
+            "caption": "-"
         }, {
             "caption": "评论管理",
             "href": "comment",

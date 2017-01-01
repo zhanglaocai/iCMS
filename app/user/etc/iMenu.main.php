@@ -6,7 +6,7 @@
         "href": "user&do=config",
         "icon": "cog"
     }, {
-        "-": "-"
+        "caption": "-"
     },{
         "caption": "会员管理",
         "href": "user",
