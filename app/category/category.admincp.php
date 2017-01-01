@@ -435,9 +435,9 @@ class categoryAdmincp extends category{
     public function do_cache($dialog=true){
         $_count = $this->cache(true,$this->appid);
         if($_count>1000){
-            // $this->do_cacheall($_count);
+            $this->do_cacheall($_count);
         }else{
-            // $this->cache_all(0,$_count);
+            $this->cache_all(0,$_count);
         }
         $dialog && iUI::success('更新完成');
    }

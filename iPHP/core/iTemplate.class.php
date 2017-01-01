@@ -31,13 +31,32 @@ class iTemplate {
         iPHP::$iTPL->register_block("cache", array("iTemplate", "block_cache"));
         iPHP::$iTPL->template_callback = array(
             "resource" => array("iTemplate","callback_path"),
-            "output"   => array("iTemplate","callback_output")
+            "output"   => array("iTemplate","callback_output"),
+            "app"      => array("iTemplate","callback_appfunc"),
         );
         iPHP::$iTPL->assign('GET', $_GET);
         iPHP::$iTPL->assign('POST', $_POST);
         iPHP_TPL_DEBUG && iPHP::$iTPL->clear_compiled_tpl();
     }
-    public static function block_cache($vars, $content, &$tpl) {
+    public static function callback_appfunc($args,$tpl) {
+        $keys = isset($args['as'])?$args['as']:$args['app'];
+        if($args['method']){
+            $callback   = $args['app'].'_'.$args['method'];
+            function_exists($callback) OR require_once(iPHP_APP_DIR."/".$args['app']."/".$args['app'].".func.php");
+            isset($args['as']) OR $keys.= '_'.$args['method'];
+        }else{
+            $callback   = iPHP_TPL_VAR.'_' . $args['app'];
+            function_exists($callback) OR require_once(iPHP_TPL_FUN."/".iPHP_TPL_VAR.".".$args['app'].".php");
+        }
+        if(isset($args['vars'])){
+            $vars = $args['vars'];
+            unset($args['vars']);
+            $args = array_merge($args,$vars);
+        }
+
+        $tpl->assign($keys,$callback($args));
+    }
+    public static function block_cache($vars, $content, $tpl) {
         $vars['id'] OR iUI::warning('cache 标签出错! 缺少"id"属性或"id"值为空.');
         $cache_time = isset($vars['time']) ? (int) $vars['time'] : -1;
         $cache_name = iPHP_DEVICE . '/part/' . $vars['id'];

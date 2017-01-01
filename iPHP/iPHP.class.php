@@ -21,7 +21,6 @@ class iPHP {
 	public static $app_file   = null;
 	public static $app_args   = null;
 	public static $app_vars   = null;
-	public static $hooks      = array();
 
 	public static $iTPL       = NULL;
 	public static $iVIEW      = null;

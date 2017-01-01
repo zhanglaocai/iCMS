@@ -308,25 +308,6 @@ class iTemplateLite {
 		return $variable;
 	}
 
-	function _run_iPHP($a){
-		$keys = isset($a['as'])?$a['as']:$a['app'];
-		if($a['method']){
-			$callback	= $a['app'].'_'.$a['method'];
-			function_exists($callback) OR $this->require_one(iPHP_APP_DIR."/".$a['app']."/".$a['app'].".func.php");
-			isset($a['as']) OR $keys.= '_'.$a['method'];
-		}else{
-			$callback	= iPHP_TPL_VAR.'_' . $a['app'];
-			function_exists($callback) OR $this->require_one(iPHP_TPL_FUN."/".iPHP_TPL_VAR.".".$a['app'].".php");
-		}
-		if(isset($a['vars'])){
-			$_a = $a['vars'];
-			unset($a['vars']);
-		 	$a = array_merge($a,$_a);
-		}
-
-		$this->assign($keys,$callback($a));
-	}
-
 	function _get_dir($dir){
 		return rtrim($dir,'/').'/';
 	}
@@ -590,6 +571,12 @@ class iTemplateLite_Compiler extends iTemplateLite {
 				$arguments.=' app="'.$app.'"';
 				$method && $arguments.=' method="'.$method.'"';
 				$_args = $this->_parse_arguments($arguments);
+				isset($_args['app']) OR $this->trigger_error("missing 'app' attribute in '".iPHP_TPL_VAR."'", E_USER_ERROR, __FILE__, __LINE__);
+				foreach ($_args as $key => $value){
+					$arg_list[] = "'$key' => $value";
+				}
+				$code = '<?php $this->template_callback("app",array(array('.implode(',', (array)$arg_list).'),$this)); ?>';
+
 				if($app && isset($_args['loop'])){
 					$this->_iPHP_stack[count($this->_iPHP_stack)-1] = true;
 					$_app	= $this->_dequote($_args['app']);
@@ -602,12 +589,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 					$this->internal('compile_iPHP');
 					$compile_iPHP	= compile_iPHP($arguments, $this);
 				}
-				isset($_args['app']) OR $this->trigger_error("missing 'app' attribute in '".iPHP_TPL_VAR."'", E_USER_ERROR, __FILE__, __LINE__);
 
-				foreach ($_args as $key => $value){
-					$arg_list[] = "'$key' => $value";
-				}
-				$code = '<?php $this->_run_iPHP(array('.implode(',', (array)$arg_list).')); ?>';
 				if(isset($_args['if'])){
 					$this->_iPHP_compile = $compile_iPHP;
 					unset($compile_iPHP);
