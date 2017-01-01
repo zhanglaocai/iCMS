@@ -45,7 +45,7 @@ class admincp {
 		self::$menu = new menu(); //初始化菜单
 		self::MP('ADMINCP', 'page'); //检查是否有后台权限
 		self::MP('__MID__', 'page'); //检查菜单ID
-		iCMS::iFile_init();
+		iCMS::filesystem_init();
 		iFile::$userid = members::$userid;
 	}
 

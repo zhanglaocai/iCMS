@@ -11,7 +11,9 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class iCMS {
-    public static $config = array();
+    public static $config    = array();
+    public static $watermark = true;
+    public static $watermark_config = null;
 
 	public static function init(){
         self::$config = iPHP::config();
@@ -97,26 +99,32 @@ class iCMS {
 
         @is_file($fp) && iPHP::redirect($url);
     }
-    public static function iFile_init(){
-        iFile::init(iFS::$config['table'],array('file_data','file_map'));
+    public static function filesystem_init(){
+        empty(iFS::$config['table']) && iFS::$config['table'] = array('file_data','file_map');
+        iFile::init(iFS::$config['table']);
+
         if (iFS::$config['cloud']['enable']) {
             iCloud::init(iFS::$config['cloud']);
         }
+
         iFS::$CALLABLE = array(
             'insert' => array('iFile','insert'),
             'update' => array('iFile','update'),
             'get'    => array('iFile','get'),
             'write'  => array(
-                array('iCMS','watermark'),
                 array('iCMS','cloud_write')
             ),
-            'delete'  => array('iCMS','cloud_delete')
+            'delete'  => array('iCloud','delete')
         );
+        if(self::$watermark){
+            self::$watermark_config = self::$config['watermark'];
+            iFS::$CALLABLE['write'][]= array('iCMS','watermark');
+        }
     }
     public static function watermark($frp,$ext) {
         if (self::$watermark) {
             $allow_ext = array('jpg', 'jpeg', 'png');
-            $config = self::$config['watermark'];
+            $config = self::$watermark_config;
             $config['allow_ext'] && $allow_ext = explode(',', $config['allow_ext']);
             if (in_array($ext, $allow_ext)) {
                 iPic::init($config);
@@ -124,16 +132,13 @@ class iCMS {
             }
         }
     }
-    public static function cloud_write($frp) {
+    public static function cloud_write($frp,$ext) {
         iCloud::write($frp);
+        //不保留本地功能
         if(iFS::$config['cloud']['local']){
+            //删除delete hook阻止云端删除动作
+            iFS::$CALLABLE['delete'] = null;
             iFS::del($frp);
         }
     }
-    public static function cloud_delete($frp) {
-        // if(!iFS::$config['cloud']['local']){
-            iCloud::delete($frp);
-        // }
-    }
-
 }

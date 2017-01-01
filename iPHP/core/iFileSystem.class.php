@@ -67,9 +67,10 @@ class iFS {
 	}
     public static function del($fn, $check = 1) {
 		$check && self::check($fn);
-		self::hook('delete',array($fn));
 		@chmod($fn, 0777);
-		return @unlink($fn);
+		$del = @unlink($fn);
+		self::hook('delete',array($fn));
+		return $del;
 	}
 
 	public static function read($fn, $check = 1, $method = "rb") {
@@ -396,10 +397,8 @@ class iFS {
 		$FilePath = $FileDir . $FileName . "." . $FileExt;
 		$FileRootPath = $RootPath . $FileName . "." . $FileExt;
 		self::write($FileRootPath, $filedata);
-		self::hook('write',array($FileRootPath,$FileExt));
-		// self::watermark($FileExt, $FileRootPath);
-		// self::cloud_write($FileRootPath);
 		$fid = self::insert_filedata(array($FileName,'',$FileDir,'',$FileExt,$FileSize), $type);
+		self::hook('write',array($FileRootPath,$FileExt));
 		$value = array(
 			1,$fid,$file_md5,$FileSize,
 			'',$FileName,$FileName.".".$FileExt,
@@ -463,9 +462,6 @@ class iFS {
 			$FileRootPath = self::fp($FilePath, "+iPATH");
 			$ret = self::save_ufile($tmp_file, $FileRootPath);
 			@unlink($tmp_file);
-			self::hook('write',array($FileRootPath,$FileExt));
-			// self::watermark($FileExt, $FileRootPath);
-			// self::cloud_write($FileRootPath);
 			if ($fid) {
 				self::update_filedata(array(
 					'ofilename' => $oFileName,
@@ -475,6 +471,7 @@ class iFS {
 			} else {
 				$fid = self::insert_filedata(array($file_md5,$oFileName,$FileDir,'',$FileExt,$FileSize), 0);
 			}
+			self::hook('write',array($FileRootPath,$FileExt));
 			$value =array(
 				1,$fid,$file_md5,$FileSize,
 				$oFileName,$FileName,$FileName.".".$FileExt,
@@ -610,15 +607,10 @@ class iFS {
 				$FilePath = $FileDir . $FileName;
 				$FileRootPath = $RootPath . $FileName;
 				self::write($FileRootPath, $fdata);
-
-				self::hook('write',array($FileRootPath,$FileExt));
-
-				// self::watermark($FileExt, $FileRootPath);
-				// self::cloud_write($FileRootPath);
-
 				$FileSize = @filesize($FileRootPath);
 				empty($FileSize) && $FileSize = 0;
 				$fid = self::insert_filedata(array($file_md5,$http,$FileDir,$intro,$FileExt,$FileSize),1);
+				self::hook('write',array($FileRootPath,$FileExt));
 				if ($ret == 'array') {
 					$value =array(
 						1,$fid,$file_md5,$FileSize,

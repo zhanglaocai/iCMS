@@ -45,9 +45,9 @@ class iCloud{
                 }
             }
         }
-        if(self::$config['local']){
-            $value = call_user_func_array($local[0],(array)$local[1]);
-        }
+        // if(self::$config['local']){
+        //     $local[0] && $value = call_user_func_array($local[0],(array)$local[1]);
+        // }
     }
     public static function delete($frp) {
         if(!self::$config['enable']) return false;

@@ -218,20 +218,20 @@ class spider_data {
 
         }
 
-        iFS::$CURLOPT_ENCODING        = '';
-        iFS::$CURLOPT_REFERER         = '';
-        iFS::$watermark_config['pos'] = iCMS::$config['watermark']['pos'];
-        iFS::$watermark_config['x']   = iCMS::$config['watermark']['x'];
-        iFS::$watermark_config['y']   = iCMS::$config['watermark']['y'];
-        iFS::$watermark_config['img'] = iCMS::$config['watermark']['img'];
+        iNET::$CURLOPT_ENCODING        = '';
+        iNET::$CURLOPT_REFERER         = '';
+        iCMS::$watermark_config['pos'] = iCMS::$config['watermark']['pos'];
+        iCMS::$watermark_config['x']   = iCMS::$config['watermark']['x'];
+        iCMS::$watermark_config['y']   = iCMS::$config['watermark']['y'];
+        iCMS::$watermark_config['img'] = iCMS::$config['watermark']['img'];
 
-        $rule['fs']['encoding'] && iFS::$CURLOPT_ENCODING = $rule['fs']['encoding'];
-        $rule['fs']['referer']  && iFS::$CURLOPT_REFERER  = $rule['fs']['referer'];
+        $rule['fs']['encoding'] && iNET::$CURLOPT_ENCODING = $rule['fs']['encoding'];
+        $rule['fs']['referer']  && iNET::$CURLOPT_REFERER  = $rule['fs']['referer'];
         if($rule['watermark_mode']){
-            iFS::$watermark_config['pos'] = $rule['watermark']['pos'];
-            iFS::$watermark_config['x']   = $rule['watermark']['x'];
-            iFS::$watermark_config['y']   = $rule['watermark']['y'];
-            $rule['watermark']['img'] && iFS::$watermark_config['img'] = $rule['watermark']['img'];
+            iCMS::$watermark_config['pos'] = $rule['watermark']['pos'];
+            iCMS::$watermark_config['x']   = $rule['watermark']['x'];
+            iCMS::$watermark_config['y']   = $rule['watermark']['y'];
+            $rule['watermark']['img'] && iCMS::$watermark_config['img'] = $rule['watermark']['img'];
         }
         if (spider::$callback['data'] && is_callable(spider::$callback['data'])) {
             $responses = call_user_func_array(spider::$callback['data'],array($responses));

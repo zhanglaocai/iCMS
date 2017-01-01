@@ -45,8 +45,7 @@ class iFile {
     private static $_data_table = null;
     private static $_map_table = null;
 
-    public static function init($config,$table = array()) {
-        $config['table'] && $table = $config['table'];
+    public static function init($table = array()) {
         list(self::$TABLE_DATA,self::$TABLE_MAP) = $table;
         self::$_data_table = iPHP_DB_PREFIX . self::$TABLE_DATA;
         self::$_map_table  = iPHP_DB_PREFIX . self::$TABLE_MAP;

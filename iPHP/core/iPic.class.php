@@ -9,12 +9,12 @@
  * @version 2.0.0
  */
 class iPic {
-    protected static $config    = null;
-    protected static $watermark = null;
+    protected static $config        = null;
+    protected static $watermark_dir = null;
 
     public static function init($config) {
 		self::$config    = $config;
-		self::$watermark = iPHP_APP_CONF;
+		self::$watermark_dir = iPHP_APP_CONF;
     }
     /** 图片局部打马赛克
     * @param  String  $source 原图
@@ -65,7 +65,7 @@ class iPic {
         $isWaterImage	= FALSE;
         $formatMsg		= "暂不支持该文件格式，请用图片处理软件将图片转换为GIF、JPG、PNG等格式。";
         //读取水印文件
-        $waterImgPath	= self::$watermark.'/'.self::$config['img'];
+        $waterImgPath	= self::$watermark_dir.'/'.self::$config['img'];
 
         if(self::$config['img'] && file_exists($waterImgPath)) {
             list($water_w, $water_h,$water_imagetype) = @getimagesize($waterImgPath);
@@ -73,7 +73,7 @@ class iPic {
             $water_im OR die($formatMsg);
             $isWaterImage = TRUE;
         }else {
-            $fontfile	= self::$watermark.'/'.self::$config['font'];
+            $fontfile	= self::$watermark_dir.'/'.self::$config['font'];
         }
 
         //读取背景图片

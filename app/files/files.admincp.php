@@ -69,7 +69,7 @@ class filesAdmincp{
         $ext       = iSecurity::escapeStr($_GET['ext']);
         iFS::check_ext($ext,0) OR iUI::json(array('state'=>'ERROR','msg'=>'不允许的文件类型'));
         iFS::$ERROR_TYPE = true;
-        $_GET['watermark'] OR iFS::$watermark = false;
+        $_GET['watermark'] OR iCMS::$watermark = false;
         $F = iFS::IO($name,$udir,$ext);
         $F ===false && iUI::json(iFS::$ERROR);
         iUI::json(array(
@@ -85,7 +85,7 @@ class filesAdmincp{
     public function do_upload(){
         admincp::MP('FILE.UPLOAD','alert');
 //iFS::$checkFileData = true;
-    	$_POST['watermark'] OR iFS::$watermark = false;
+    	$_POST['watermark'] OR iCMS::$watermark = false;
         iFS::$ERROR_TYPE = true;
     	if($this->id){
             iFS::$FileData = iFS::get_filedata('id',$this->id);
@@ -122,7 +122,7 @@ class filesAdmincp{
     	if($fileresults){
     		iFS::mkdir(dirname($FileRootPath));
     		iFS::write($FileRootPath,$fileresults);
-            iFS::$watermark = !isset($_GET['unwatermark']);
+            iCMS::$watermark = !isset($_GET['unwatermark']);
             iFS::hook('write',array($FileRootPath,$rs->ext));
 
     		$_FileSize	= strlen($fileresults);
