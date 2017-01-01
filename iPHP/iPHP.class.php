@@ -124,6 +124,7 @@ class iPHP {
 		function_exists('date_default_timezone_set') && @date_default_timezone_set($timezone);
 
 		self::$apps = $config['apps'];
+		empty(self::$apps) && self::$apps = array('admincp'=>'0');
 		self::define_app();
 		iPHP_DB_DEBUG   && iDB::$show_errors  = true;
 		iPHP_DB_TRACE   && iDB::$debug        = true;
