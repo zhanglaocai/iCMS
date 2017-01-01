@@ -424,7 +424,7 @@ class articleAdmincp{
             $sql     = ",({$map_sql}) map {$sql} AND `id` = map.`iid`";
         }
 
-        $total = iPHP::total(false,article::count_sql($sql),"G");
+        $total = iPHP::page_total_cache(article::count_sql($sql),"G");
         iUI::pagenav($total,$maxperpage,"篇文章");
 
         $limit = 'LIMIT '.iUI::$offset.','.$maxperpage;

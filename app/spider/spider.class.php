@@ -254,7 +254,8 @@ class spider{
                 self::update_spider_url_publish($suid);
             }
         }else{
-            $app = iACP::app($postArgs->app);
+            $obj = $postArgs->app."Admincp";
+            $app = new $obj;
             $app->callback['code'] = $success_code;
             /**
              * 主表 回调 更新关联ID

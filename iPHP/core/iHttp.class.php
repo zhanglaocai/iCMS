@@ -8,7 +8,7 @@
  * @license http://www.iiiphp.com/license
  * @version 2.0.0
  */
-class iNet{
+class iHttp{
     public static $PROXY_URL = null;
 
     public static $CURL_COUNT = 3;

@@ -65,3 +65,4 @@ defined('iPHP_TPL_VAR') OR define('iPHP_TPL_VAR',iPHP_APP);//<!--{iPHP:test }-->
 defined('iPHP_TPL_FUN') OR define('iPHP_TPL_FUN',iPHP_APP_DIR.'/func');
 defined('iPHP_CHARSET') OR define('iPHP_CHARSET','UTF-8');
 defined('iPHP_SESSION') OR define('iPHP_SESSION','COOKIE');// SESSION,COOKIE,SESSION+COOKIE,
+defined('iPHP_SHELL') OR define('iPHP_SHELL',PHP_SAPI=='cli'?true:false);// SESSION,COOKIE,SESSION+COOKIE,

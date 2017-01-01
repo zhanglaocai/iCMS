@@ -120,11 +120,11 @@ admincp::head();
       </div>
       <?php
       if($rs['table'])foreach ($rs['table'] as $key => $table) {
-      $tbn = iPHP_DB_PREFIX.$table[0];
-      if(!apps_db::check_table($tbn)){
-      echo $tbn ."表不存在!";
-      continue;
-      }
+          $tbn = iPHP_DB_PREFIX.$table[0];
+          if(!apps_db::check_table($tbn)){
+            echo $tbn ."表不存在!";
+            continue;
+          }
       ?>
       <div id="apps-add-<?php echo $table[0]; ?>-field" class="tab-pane">
         <table class="table table-hover table-bordered">
@@ -152,12 +152,12 @@ admincp::head();
               <td><?php echo $value['length']; ?></td>
               <td><?php if($value['primary']){?>
                 <font color="green"><i class="fa fa-check"></i></font>
-              <?}?></td>
+              <?php }?></td>
               <td><?php echo $value['null']?'NULL':'NOT NULL'; ?></td>
               <td><?php echo strtoupper($value['unsigned']); ?></td>
               <td><?php if($value['auto_increment']){?>
                 <font color="green"><i class="fa fa-check"></i></font>
-              <?}?></td>
+              <?php }?></td>
               <td><?php echo $value['collation']; ?></td>
               <td><?php echo $value['comment']; ?></td>
             </tr>
@@ -206,7 +206,8 @@ admincp::head();
           </table>
         </div>
       </div>
-      <?php }else{?>
+      <?php }else{ ?>
+
       <?php }?>
       <div id="apps-add-field" class="tab-pane">
         <div id="field-default">

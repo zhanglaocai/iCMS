@@ -14,13 +14,6 @@ function public_ui($vars=null){
 	iPHP::assign("ui",$vars);
 	echo iPHP::view("iCMS://{$dir}public.ui.htm");
 }
-function public_js($vars=null){
-	$node = $vars['node'];
-	echo iPHP::view("iCMS://public.js.{$node}.htm");
-}
-function public_common($vars=null){
-	echo iPHP::view('iCMS://public.common.htm');
-}
 function public_seccode($vars=null){
 	echo iPHP::view('iCMS://public.seccode.htm');
 }

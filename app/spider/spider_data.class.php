@@ -218,15 +218,15 @@ class spider_data {
 
         }
 
-        iNET::$CURLOPT_ENCODING        = '';
-        iNET::$CURLOPT_REFERER         = '';
+        iHttp::$CURLOPT_ENCODING        = '';
+        iHttp::$CURLOPT_REFERER         = '';
         iCMS::$watermark_config['pos'] = iCMS::$config['watermark']['pos'];
         iCMS::$watermark_config['x']   = iCMS::$config['watermark']['x'];
         iCMS::$watermark_config['y']   = iCMS::$config['watermark']['y'];
         iCMS::$watermark_config['img'] = iCMS::$config['watermark']['img'];
 
-        $rule['fs']['encoding'] && iNET::$CURLOPT_ENCODING = $rule['fs']['encoding'];
-        $rule['fs']['referer']  && iNET::$CURLOPT_REFERER  = $rule['fs']['referer'];
+        $rule['fs']['encoding'] && iHttp::$CURLOPT_ENCODING = $rule['fs']['encoding'];
+        $rule['fs']['referer']  && iHttp::$CURLOPT_REFERER  = $rule['fs']['referer'];
         if($rule['watermark_mode']){
             iCMS::$watermark_config['pos'] = $rule['watermark']['pos'];
             iCMS::$watermark_config['x']   = $rule['watermark']['x'];

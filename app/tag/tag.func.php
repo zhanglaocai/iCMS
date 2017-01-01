@@ -87,8 +87,8 @@ function tag_list($vars){
 	$offset	= 0;
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
-		$total	= iPHP::total('sql.md5',"SELECT count(*) FROM `#iCMS@__tags` {$where_sql} ");
-		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
+		$total	= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__tags` {$where_sql}",null,iCMS::$config['cache']['page_total']);
+		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
         iPHP::assign("tags_list_total",$total);

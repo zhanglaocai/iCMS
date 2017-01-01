@@ -585,7 +585,7 @@ class iFS {
 			return false;
 		}
 
-		$fdata = iNET::remote($http);
+		$fdata = iHttp::remote($http);
 		if ($fdata) {
 			$file_md5 = md5($fdata);
 			$frs = self::get_filedata('filename', $file_md5);

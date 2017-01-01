@@ -105,7 +105,7 @@ function comment_list($vars){
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
 		isset($vars['total_cache']) && $_GET['total_cahce'] = true;
-		$total  = iPHP::total($md5,"SELECT count(*) FROM `#iCMS@__comment` WHERE {$where_sql} limit 1");
+		$total  = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__comment` WHERE {$where_sql}",null,iCMS::$config['cache']['page_total']);
 		$pgconf = array(
 			'total'     => $total,
 			'perpage'   => $maxperpage,
@@ -121,7 +121,7 @@ function comment_list($vars){
 
 		isset($vars['total_cache']) && $pgconf['total_type'] = $vars['total_cache'];
 
-		$multi  = iPHP::page($pgconf);
+		$multi  = iUI::page($pgconf);
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
 		// if($offset>1000){

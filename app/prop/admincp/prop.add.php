@@ -37,7 +37,7 @@ iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
               <ul class="dropdown-menu">
                 <?php foreach (apps::get_array(array("table"=>true)) as $key => $value) {?>
                 <li><a href="javascript:;" appid="<?php echo $key;?>" app='<?php echo $value['app'];?>'><?php echo $value['app'];?>:<?php echo $value['name'];?></a></li>
-                <? }?>
+                <?php }?>
               </ul>
             </div>
           </div>

@@ -335,6 +335,14 @@ function modal_tplfile(el,a){
                 <input type="checkbox" data-type="switch" name="config[cache][compress]" id="cache_compress" <?php echo $config['cache']['compress']?'checked':''; ?>/>
               </div>
             </div>
+            <hr />
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend input-append">
+              <span class="add-on">分页缓存</span>
+              <input type="text" name="config[cache][page_total]" class="span1" id="page_total" value="<?php echo $config['cache']['page_total']?$config['cache']['page_total']:$config['cache']['time']; ?>"/>
+              <span class="add-on" style="width:24px;">秒</span>
+            </div>
+            <span class="help-inline">设置分页总数缓存时间,设置此项分页性能将会有极大的提高.</span>
           </div>
           <div id="config-file" class="tab-pane hide">
             <!--

@@ -25,7 +25,11 @@ class QiniuYun
 		    defined('CURLOPT_SAFE_UPLOAD') && curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
 		    $data['file'] = new CURLFile($filePath);
 		} else {
-		    defined('CURLOPT_SAFE_UPLOAD') && curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
+	        if (defined('CURLOPT_SAFE_UPLOAD')) {
+	            if (version_compare('5.6',PHP_VERSION,'>=')) {
+	                curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
+	            }
+	        }
 		    $data['file'] = "@$filePath";
 		}
 		// $data['file'] = "@$filePath";

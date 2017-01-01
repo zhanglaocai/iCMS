@@ -73,8 +73,8 @@ function user_list($vars=null){
 	$offset	= 0;
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
-		$total	= iPHP::total('sql.md5',"SELECT count(*) FROM `#iCMS@__user` {$where_sql} ");
-		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
+		$total	= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__user` {$where_sql}",null,iCMS::$config['cache']['page_total']);
+		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
         iPHP::assign("user_list_total",$total);
@@ -152,8 +152,8 @@ function user_follow($vars=null){
 	$offset	= 0;
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
-		$total	= iPHP::total('sql.md5',"SELECT count(*) FROM `#iCMS@__user_follow` {$where_sql} {$limit}");
-		$multi  = iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
+		$total	= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__user_follow` {$where_sql}",null,iCMS::$config['cache']['page_total']);
+		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
         iPHP::assign("user_follow_total",$total);
@@ -218,9 +218,9 @@ function user_inbox($vars=null){
 	}
 
 	$offset	= 0;
-	$total	= iPHP::total($md5,"SELECT {$p_fields} FROM `#iCMS@__message` {$where_sql} {$group_sql}",'nocache');
+	$total	= iPHP::page_total_cache("SELECT {$p_fields} FROM `#iCMS@__message` {$where_sql} {$group_sql}",'nocache');
 	iPHP::assign("msgs_total",$total);
-    $multi	= iPHP::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
+    $multi	= iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
     $offset	= $multi->offset;
 	$resource = iDB::all("SELECT {$s_fields} FROM `#iCMS@__message` {$where_sql} {$group_sql} ORDER BY `id` DESC LIMIT {$offset},{$maxperpage}");
 	$msg_type_map = array(

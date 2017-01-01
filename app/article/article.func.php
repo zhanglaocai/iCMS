@@ -118,13 +118,13 @@ function article_list($vars) {
 	$offset = 0;
 	$limit = "LIMIT {$maxperpage}";
 	if ($vars['page']) {
-		$total_type = $vars['total_cache'] ? $vars['total_cache'] : null;
-		$total = iPHP::total('sql.md5', "SELECT count(*) FROM `#iCMS@__article` {$where_sql}", $total_type);
-		$pagenav = isset($vars['pagenav']) ? $vars['pagenav'] : "pagenav";
-		$pnstyle = isset($vars['pnstyle']) ? $vars['pnstyle'] : 0;
-		$multi = iPHP::page(array('total_type' => $total_type, 'total' => $total, 'perpage' => $maxperpage, 'unit' => iUI::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
-		$offset = $multi->offset;
-		$limit = "LIMIT {$offset},{$maxperpage}";
+		$total_type = $vars['total_cache'] ? 'G' : null;
+		$total      = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__article` {$where_sql}", $total_type,iCMS::$config['cache']['page_total']);
+		$pagenav    = isset($vars['pagenav']) ? $vars['pagenav'] : "pagenav";
+		$pnstyle    = isset($vars['pnstyle']) ? $vars['pnstyle'] : 0;
+		$multi      = iUI::page(array('total_type' => $total_type, 'total' => $total, 'perpage' => $maxperpage, 'unit' => iUI::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
+		$offset     = $multi->offset;
+		$limit      = "LIMIT {$offset},{$maxperpage}";
 		iPHP::assign("article_list_total", $total);
 	}
 	//随机特别处理
@@ -256,7 +256,7 @@ function article_search($vars) {
 		iPHP::assign("article_search_total", $total);
 		$pagenav = isset($vars['pagenav']) ? $vars['pagenav'] : "pagenav";
 		$pnstyle = isset($vars['pnstyle']) ? $vars['pnstyle'] : 0;
-		$multi = iPHP::page(array('total' => $total, 'perpage' => $maxperpage, 'unit' => iUI::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
+		$multi = iUI::page(array('total' => $total, 'perpage' => $maxperpage, 'unit' => iUI::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
 		$offset = $multi->offset;
 	}
 	$resource = iDB::all("SELECT * FROM `#iCMS@__article` WHERE {$where_sql} {$order_sql} LIMIT {$maxperpage}");

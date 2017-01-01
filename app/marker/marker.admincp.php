@@ -100,7 +100,7 @@ class markerAdmincp{
         $_GET['cid']  && $uri.='&cid='.$_GET['cid'];
 
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-        $total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__marker` {$sql}","G");
+        $total		= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__marker` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"个标记");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__marker` {$sql} order by id DESC LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);

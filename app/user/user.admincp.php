@@ -72,7 +72,7 @@ class userAdmincp{
         }
         $orderby    = $_GET['orderby']?$_GET['orderby']:"uid DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-        $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__user` {$sql}","G");
+        $total      = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__user` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"个用户");
         $limit  = 'LIMIT '.iUI::$offset.','.$maxperpage;
         if($map_sql||iUI::$offset){

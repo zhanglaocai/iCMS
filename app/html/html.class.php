@@ -175,7 +175,7 @@ class html{
 		$endid   && $whereSQL.=" AND `id`<='{$endid}'";
 		$perpage OR $perpage = $this->CP;
 		$orderby OR $orderby = "id DESC";
-		$total     = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__article` {$whereSQL}","G");
+		$total     = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__article` {$whereSQL}","G");
 		$looptimes = ceil($total/$perpage);
 		$offset    = $this->page*$perpage;
 		$rs        = iDB::all("SELECT `id` FROM `#iCMS@__article` {$whereSQL} order by {$orderby} LIMIT {$offset},{$perpage}");

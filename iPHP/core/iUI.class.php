@@ -72,22 +72,27 @@ class iUI {
 		return $a;
 	}
 	public static function msg($info, $ret = false) {
-        if(PHP_SAPI=='cli'){
-            exit($info.PHP_EOL);
-        }
         if(strpos($info,':#:')===false){
             $msg = $info;
         }else{
-		list($label, $icon, $content) = explode(':#:', $info);
-            $msg = '<div class="iPHP-msg"><span class="label label-'.$label.'">';
-		$icon && $msg .= '<i class="fa fa-' . $icon . '"></i> ';
-		if (strpos($content, ':') !== false) {
-			$lang = iUI::lang($content, false);
-			$lang && $content = $lang;
-		}
+			list($label, $icon, $content) = explode(':#:', $info);
+	        if(iPHP_SHELL){
+	        	if($label=="success"){
+	        		$msg ="\033[32m {$content} \033[0m";//green
+	        	}else{
+	        		$msg ="\033[31m {$content} \033[0m";//red
+	        	}
+	        }else{
+	            $msg = '<div class="iPHP-msg"><span class="label label-'.$label.'">';
+				$icon && $msg .= '<i class="fa fa-' . $icon . '"></i> ';
+				if (strpos($content, ':') !== false) {
+					$lang = iUI::lang($content, false);
+					$lang && $content = $lang;
+				}
+	        }
+
             $msg.= $content.'</span></div>';
 		}
-
     	if($ret) return $msg;
 		echo $msg;
 	}
@@ -148,6 +153,10 @@ class iUI {
 		$info = (array) $info;
 		$title = $info[1] ? $info[1] : '提示信息';
         $content = self::msg($info[0],true);
+        if(iPHP_SHELL){
+        	echo $content;
+        	return;
+        }
 		$content = addslashes('<table class="ui-dialog-table" align="center"><tr><td valign="middle">' . $content . '</td></tr></table>');
 		$options = array(
 			"time:null","api:'iPHP'",
@@ -221,12 +230,12 @@ class iUI {
 	//动态翻页函数
 	public static function pagenav($total, $displaypg = 20, $unit = "条记录", $url = '', $target = '') {
 		$pageconf = array(
-			'url' => $url,
-			'target' => $target,
-			'total' => $total,
-			'perpage' => $displaypg,
+			'url'        => $url,
+			'target'     => $target,
+			'total'      => $total,
+			'perpage'    => $displaypg,
 			'total_type' => 'G',
-			'lang' => iUI::lang(iPHP_APP . ':page'),
+			'lang'       => iUI::lang(iPHP_APP . ':page'),
 		);
 		$pageconf['lang']['format_left'] = '<li>';
 		$pageconf['lang']['format_right'] = '</li>';
@@ -243,5 +252,25 @@ class iUI {
 			self::$pagenav .= "<li> <span class=\"muted\">跳到" . $iPages->select() . "页</span></li>";
 		}
 		self::$pagenav .= '</ul>';
+	}
+	//模板翻页函数
+	public static function page($conf) {
+		$conf['lang'] = iUI::lang(iPHP_APP . ':page');
+		$iPages = new iPages($conf);
+		if ($iPages->totalpage > 1) {
+			$pagenav = $conf['pagenav'] ? strtoupper($conf['pagenav']) : 'NAV';
+			$pnstyle = $conf['pnstyle'] ? $conf['pnstyle'] : 0;
+			iPHP::$iTPL->_iVARS['PAGE'] = array(
+				$pagenav  => $iPages->show($pnstyle),
+				'COUNT'   => $conf['total'],
+				'TOTAL'   => $iPages->totalpage,
+				'CURRENT' => $iPages->nowindex,
+				'PN'      => $iPages->nowindex,
+				'PREV'    => $iPages->prev_page(),
+				'NEXT'    => $iPages->next_page(),
+			);
+			iPHP::$iTPL->_iVARS['PAGES'] = $iPages;
+		}
+		return $iPages;
 	}
 }

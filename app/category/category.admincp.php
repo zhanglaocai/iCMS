@@ -382,7 +382,7 @@ class categoryAdmincp extends category{
         }
         $orderby    = $_GET['orderby']?$_GET['orderby']:"cid DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-        $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__category` {$sql}","G");
+        $total      = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__category` {$sql}","G");
         iUI::pagenav($total,$maxperpage);
         $rs     = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);

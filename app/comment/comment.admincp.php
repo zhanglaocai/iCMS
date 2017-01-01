@@ -49,7 +49,7 @@ class commentAdmincp{
         }
 
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-        $total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__comment` {$sql}","G");
+        $total		= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__comment` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"条评论");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__comment` {$sql} order by id DESC LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);

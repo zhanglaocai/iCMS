@@ -110,7 +110,7 @@ class propAdmincp{
         $_GET['cid']  && $uri.='&cid='.$_GET['cid'];
 
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-        $total		= iPHP::total(false,"SELECT count(*) FROM `#iCMS@__prop` {$sql}","G");
+        $total		= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__prop` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"个属性");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__prop` {$sql} order by pid DESC LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);

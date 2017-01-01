@@ -73,7 +73,7 @@ class iPHP {
 			$GLOBALS['iPHP_REQ'][$key] = true;
 			require_once $path;
 		} else {
-			self::error_throw("Unable to find class '$name'", 0020);
+			self::error_throw("Unable to load class '$name'", 0020);
 		}
 	}
 	public static function config() {
@@ -445,41 +445,23 @@ class iPHP {
         $GLOBALS['iPage']['url']  = $iurl['pageurl'];
         $GLOBALS['iPage']['html'] = array('enable'=>true,'index'=>$iurl['href'],'ext'=>$iurl['ext']);
     }
-	//模板翻页函数
-	public static function page($conf) {
-		$conf['lang'] = iUI::lang(iPHP_APP . ':page');
-		$iPages = new iPages($conf);
-		if ($iPages->totalpage > 1) {
-			$pagenav = $conf['pagenav'] ? strtoupper($conf['pagenav']) : 'NAV';
-			$pnstyle = $conf['pnstyle'] ? $conf['pnstyle'] : 0;
-			iPHP::$iTPL->_iVARS['PAGE'] = array(
-				$pagenav => $iPages->show($pnstyle),
-				'COUNT' => $conf['total'],
-				'TOTAL' => $iPages->totalpage,
-				'CURRENT' => $iPages->nowindex,
-				'PN' => $iPages->nowindex,
-				'PREV' => $iPages->prev_page(),
-				'NEXT' => $iPages->next_page(),
-			);
-			iPHP::$iTPL->_iVARS['PAGES'] = $iPages;
-		}
-		return $iPages;
-	}
-	public static function total($tnkey, $sql, $type = null) {
-		$tnkey == 'sql.md5' && $tnkey = md5($sql);
-		$tnkey = substr($tnkey, 8, 16);
+	//分页数缓存
+	public static function page_total_cache($sql, $type = null,$cachetime=3600) {
 		$total = (int) $_GET['total_num'];
-		$cache_key = 'total/'.$tnkey;
-		if (empty($total) && $type === null && !isset($_GET['total_cahce'])) {
-			$total = (int) iCache::get($cache_key);
-		}
-		if (empty($total) || $type === 'nocache' || isset($_GET['total_cahce'])) {
-			$total = iDB::value($sql);
-			if ($type === null) {
-				iCache::set($cache_key,$total,3600);
+		if($type=="G"){
+			empty($total) && $total = iDB::value($sql);
+		}else{
+			$cache_key = 'page_total/'.substr(md5($sql), 8, 16);
+			if(empty($total)){
+				if (!isset($_GET['page_total_cache'])|| $type === 'nocache'||!$cachetime) {
+					$total = iDB::value($sql);
+					$type === null && iCache::set($cache_key,$total,$cachetime);
+				}else{
+					$total = iCache::get($cache_key);
+				}
 			}
 		}
-		return $total;
+		return (int)$total;
 	}
 	public static function redirect($URL = '') {
 		$URL OR $URL = iPHP_REFERER;
@@ -557,7 +539,7 @@ class iPHP {
 		$html .= "</pre>";
 		$html = str_replace('\\', '/', $html);
 		$html = str_replace(iPATH, 'iPHP://', $html);
-	    if(PHP_SAPI=='cli'){
+	    if(iPHP_SHELL){
 	        $html = str_replace(array("<b>", "</b>", "<pre>", "</pre>"), array("\033[31m","\033[0m",''), $html);
 	        echo $html."\n";
 	        exit;

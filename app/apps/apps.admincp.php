@@ -134,7 +134,7 @@ class appsAdmincp{
       }
       $orderby    =$_GET['orderby']?$_GET['orderby']:"id ASC";
       $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
-      $total      = iPHP::total(false,"SELECT count(*) FROM `#iCMS@__apps` {$sql}","G");
+      $total      = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__apps` {$sql}","G");
       iUI::pagenav($total,$maxperpage,"个应用");
       $rs     = iDB::all("SELECT * FROM `#iCMS@__apps` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
       $_count = count($rs);

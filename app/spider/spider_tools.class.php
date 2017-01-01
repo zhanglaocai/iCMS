@@ -611,9 +611,9 @@ class spider_tools {
         return $responses;
     }
     public static function proxy_test(){
-        iNET::$CURL_PROXY_ARRAY = spider::$proxy_array;
-        iNET::$CURL_PROXY = spider::$curl_proxy;iNET
-        return iNET::proxy_test();
+        iHttp::$CURL_PROXY_ARRAY = spider::$proxy_array;
+        iHttp::$CURL_PROXY = spider::$curl_proxy;
+        return iHttp::proxy_test();
     }
 	public static function str_cut($str, $start, $end) {
 	    $content = strstr($str, $start);
