@@ -28,7 +28,7 @@ class html{
 		$query['indexName']	= $indexName;
 
 		$htm	= iCMS::run('index','iCMS',array(array($indexTPL,$indexName)));
-		$fpath	= iPHP::p2num($htm[1]->pagepath);
+		$fpath	= iURL::page_num($htm[1]->pagepath);
 		$total	= $GLOBALS['iPage']['total'];
 		iFS::check_ext($fpath) OR iUI::alert("文件类型不合法,禁止生成!<hr />请更改系统设置->网站URL->文件后缀");
 		iFS::mkdir($htm[1]->dir);
@@ -88,7 +88,7 @@ class html{
 
 		$htm = iCMS::run('category','category',$cid,null);
 		$htm OR iUI::alert("栏目[cid:$cid] URL规则设置问题! 此栏目不能生成静态");
-		$fpath = iPHP::p2num($htm[1]['iurl']['pagepath']);
+		$fpath = iURL::page_num($htm[1]['iurl']['pagepath']);
 		$total = $GLOBALS['iPage']['total'];
 		iFS::check_ext($fpath) OR iUI::alert("文件类型不合法,禁止生成!<hr />请更改栏目->URL规则设置->栏目规则");
 		iFS::mkdir($htm[1]['iurl']['dir']);
@@ -175,7 +175,7 @@ class html{
 		$endid   && $whereSQL.=" AND `id`<='{$endid}'";
 		$perpage OR $perpage = $this->CP;
 		$orderby OR $orderby = "id DESC";
-		$total     = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__article` {$whereSQL}","G");
+		$total     = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__article` {$whereSQL}","G");
 		$looptimes = ceil($total/$perpage);
 		$offset    = $this->page*$perpage;
 		$rs        = iDB::all("SELECT `id` FROM `#iCMS@__article` {$whereSQL} order by {$orderby} LIMIT {$offset},{$perpage}");
@@ -222,7 +222,7 @@ class html{
 		if($total>=2){
 			for($ap=2;$ap<=$total;$ap++){
 				$htm   = $app->article($id,$ap);
-				$fpath = iPHP::p2num($htm[1]['iurl']->pagepath,$ap);
+				$fpath = iURL::page_num($htm[1]['iurl']->pagepath,$ap);
 				iFS::write($fpath,$htm[0]);
 			}
 		}

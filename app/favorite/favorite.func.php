@@ -28,7 +28,7 @@ function favorite_list($vars=null){
 	$md5	= md5($where_sql.$order_sql);
 	$offset	= 0;
 	if($vars['page']){
-		$total	= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__favorite` {$where_sql}",null,iCMS::$config['cache']['page_total']);
+		$total	= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__favorite` {$where_sql}",null,iCMS::$config['cache']['page_total']);
 		iPHP::assign("fav_total",$total);
         $multi	= iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
         $offset	= $multi->offset;
@@ -69,7 +69,7 @@ function favorite_data($vars=null){
 	$md5	= md5($where_sql.$order_sql);
 	$offset	= 0;
 	if($vars['page']){
-		$total	= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__favorite_data` {$where_sql}",null,iCMS::$config['cache']['page_total']);
+		$total	= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__favorite_data` {$where_sql}",null,iCMS::$config['cache']['page_total']);
 		iPHP::assign("fav_data_total",$total);
         $multi	= iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
         $offset	= $multi->offset;

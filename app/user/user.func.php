@@ -45,7 +45,7 @@ function user_list($vars=null){
 
 	isset($vars['type'])  && $where_sql.= " AND `type` ='{$vars['type']}'";
     if(isset($vars['pid']) && !isset($vars['pids'])){
-        $where_sql.= iSQL::where($vars['pid'],'pid');
+        $where_sql.= iSQL::in($vars['pid'],'pid');
     }
     if(isset($vars['pids']) && !isset($vars['pid'])){
         iMap::init('prop',iCMS_APP_USER);
@@ -73,7 +73,7 @@ function user_list($vars=null){
 	$offset	= 0;
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
-		$total	= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__user` {$where_sql}",null,iCMS::$config['cache']['page_total']);
+		$total	= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__user` {$where_sql}",null,iCMS::$config['cache']['page_total']);
 		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
@@ -152,7 +152,7 @@ function user_follow($vars=null){
 	$offset	= 0;
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
-		$total	= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__user_follow` {$where_sql}",null,iCMS::$config['cache']['page_total']);
+		$total	= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__user_follow` {$where_sql}",null,iCMS::$config['cache']['page_total']);
 		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
@@ -218,7 +218,7 @@ function user_inbox($vars=null){
 	}
 
 	$offset	= 0;
-	$total	= iPHP::page_total_cache("SELECT {$p_fields} FROM `#iCMS@__message` {$where_sql} {$group_sql}",'nocache');
+	$total	= iCMS::page_total_cache("SELECT {$p_fields} FROM `#iCMS@__message` {$where_sql} {$group_sql}",'nocache');
 	iPHP::assign("msgs_total",$total);
     $multi	= iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
     $offset	= $multi->offset;

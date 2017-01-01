@@ -22,7 +22,7 @@ class category {
 
         list($rootids,$is_multi)  = iSQL::multi_ids($rootids);
 
-        $sql  = iSQL::where($rootids,'rootid',false,true);
+        $sql  = iSQL::in($rootids,'rootid',false,true);
         $sql OR $sql = '1 = 1';
         $data = array();
         $rs   = iDB::all("SELECT `cid`,`rootid` FROM `#iCMS@__category` where {$sql} {$this->appid_sql}",OBJECT);
@@ -54,7 +54,7 @@ class category {
         }
 
         list($cids,$is_multi)  = iSQL::multi_ids($cids);
-        $sql  = iSQL::where($cids,'cid',false,true);
+        $sql  = iSQL::in($cids,'cid',false,true);
         $sql OR $sql = '1 = 1';
         $data = array();
         $rs   = iDB::all("SELECT {$field} FROM `#iCMS@__category` where {$sql} {$this->appid_sql}",OBJECT);
@@ -91,8 +91,11 @@ class category {
         }
         return $category;
     }
-    public function cid_array($rootid) {
-        $variable = iDB::all("SELECT `cid` FROM `#iCMS@__category` where `rootid`='$rootid' {$this->appid_sql} ORDER BY `sortnum`  ASC",ARRAY_A);
+    public function cid_array($rootid=null,$where=null) {
+        $sql = " 1=1 ";
+        $rootid===null OR $sql.= " AND `rootid`='$rootid'";
+        $sql.= iSQL::where($where,true);
+        $variable = iDB::all("SELECT `cid` FROM `#iCMS@__category` WHERE {$sql} {$this->appid_sql} ORDER BY `sortnum`  ASC",ARRAY_A);
         $category = array();
         foreach ((array)$variable as $key => $value) {
             $category[] = $value['cid'];
@@ -140,7 +143,6 @@ class category {
         }
         configAdmincp::set(array('domain'=>$domain),'category',0,false);
         configAdmincp::cache();
-        unset($configApp);
     }
 
     public function cache($one=false) {

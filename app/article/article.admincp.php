@@ -346,9 +346,9 @@ class articleAdmincp{
         $this->_postype==='all' OR $sql.= " AND `postype`='{$this->_postype}'";
 
         if(admincp::MP("ARTICLE.VIEW")){
-            $_GET['userid'] && $sql.= iSQL::where($_GET['userid'],'userid');
+            $_GET['userid'] && $sql.= iSQL::in($_GET['userid'],'userid');
         }else{
-            $sql.= iSQL::where(members::$userid,'userid');
+            $sql.= iSQL::in(members::$userid,'userid');
         }
 
         if(isset($_GET['pid']) && $pid!='-1'){
@@ -381,10 +381,10 @@ class articleAdmincp{
                 iMap::init('category',self::$appid);
                 $map_where+= iMap::where($cids);
             }else{
-                $sql.= iSQL::where($cids,'cid');
+                $sql.= iSQL::in($cids,'cid');
             }
         }else{
-            $sql.= iSQL::where('-1','cid');
+            $sql.= iSQL::in('-1','cid');
         }
 
         if($_GET['keywords']) {
@@ -424,7 +424,7 @@ class articleAdmincp{
             $sql     = ",({$map_sql}) map {$sql} AND `id` = map.`iid`";
         }
 
-        $total = iPHP::page_total_cache(article::count_sql($sql),"G");
+        $total = iCMS::page_total_cache(article::count_sql($sql),"G");
         iUI::pagenav($total,$maxperpage,"篇文章");
 
         $limit = 'LIMIT '.iUI::$offset.','.$maxperpage;

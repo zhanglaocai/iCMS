@@ -60,7 +60,7 @@ var_dump(@class_exists($appname));
             $is_multi = true;
         }else{
             list($ids,$is_multi)  = iSQL::multi_ids($ids);
-            $sql  = iSQL::where($ids,'id',false,true);
+            $sql  = iSQL::in($ids,'id',false,true);
         }
         $data = array();
         $rs   = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);

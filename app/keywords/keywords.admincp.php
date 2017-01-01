@@ -59,7 +59,7 @@ class keywordsAdmincp{
         }
         $orderby	=$_GET['orderby']?$_GET['orderby']:"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-		$total		= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__keywords` {$sql}","G");
+		$total		= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__keywords` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"个关键词");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__keywords` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);

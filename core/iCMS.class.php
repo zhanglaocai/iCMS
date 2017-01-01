@@ -67,9 +67,7 @@ class iCMS {
         header("Access-Control-Allow-Origin: " . self::$config['router']['URL']);
         header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
     }
-    public static function hooks($key,$array){
-        self::$hooks[$key]  = $array;
-    }
+
     public static function loader($name){
         return iPHP::loader($name,iPHP_APP_CORE);
     }
@@ -92,12 +90,28 @@ class iCMS {
         iPHP::assign('site',$site);
         iUI::$dialog['title']  = self::$config['site']['name'];
     }
-
-    //------------------------------------
-    public static function gotohtml($fp,$url='') {
+    public static function redirect_html($fp,$url='') {
         if(iPHP::$iVIEW=='html'||empty($url)||stristr($url, '.php?')||iPHP_DEVICE!='desktop') return;
 
         @is_file($fp) && iPHP::redirect($url);
+    }
+    //分页数缓存
+    public static function page_total_cache($sql, $type = null,$cachetime=3600) {
+        $total = (int) $_GET['total_num'];
+        if($type=="G"){
+            empty($total) && $total = iDB::value($sql);
+        }else{
+            $cache_key = 'page_total/'.substr(md5($sql), 8, 16);
+            if(empty($total)){
+                if (!isset($_GET['page_total_cache'])|| $type === 'nocache'||!$cachetime) {
+                    $total = iDB::value($sql);
+                    $type === null && iCache::set($cache_key,$total,$cachetime);
+                }else{
+                    $total = iCache::get($cache_key);
+                }
+            }
+        }
+        return (int)$total;
     }
     public static function filesystem_init(){
         empty(iFS::$config['table']) && iFS::$config['table'] = array('file_data','file_map');
@@ -111,34 +125,38 @@ class iCMS {
             'insert' => array('iFile','insert'),
             'update' => array('iFile','update'),
             'get'    => array('iFile','get'),
-            'write'  => array(
-                array('iCMS','cloud_write')
+            // 'write'  => array('iCMS','cloud_write'),
+            'upload' => array(
+                array('iCMS','cloud_upload')
             ),
             'delete'  => array('iCloud','delete')
         );
         if(self::$watermark){
             self::$watermark_config = self::$config['watermark'];
-            iFS::$CALLABLE['write'][]= array('iCMS','watermark');
+            iFS::$CALLABLE['upload'][]= array('iCMS','watermark');
         }
     }
-    public static function watermark($frp,$ext) {
+    public static function watermark($fp,$ext) {
         if (self::$watermark) {
             $allow_ext = array('jpg', 'jpeg', 'png');
             $config = self::$watermark_config;
             $config['allow_ext'] && $allow_ext = explode(',', $config['allow_ext']);
             if (in_array($ext, $allow_ext)) {
                 iPic::init($config);
-                iPic::watermark($frp);
+                iPic::watermark($fp);
             }
         }
     }
-    public static function cloud_write($frp,$ext) {
-        iCloud::write($frp);
+    public static function cloud_upload($fp,$ext) {
+        iCloud::write($fp);
         //不保留本地功能
         if(iFS::$config['cloud']['local']){
             //删除delete hook阻止云端删除动作
             iFS::$CALLABLE['delete'] = null;
-            iFS::del($frp);
+            iFS::del($fp);
         }
+    }
+    public static function cloud_write($fp,$data) {
+        iCloud::write($fp);
     }
 }

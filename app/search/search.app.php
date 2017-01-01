@@ -33,7 +33,7 @@ class searchApp {
         $iurl->href = iURL::router('/api',iPHP_ROUTER_REWRITE);
         $iurl->href.= '?app=search&q='.$q;
         $iurl->pageurl = $iurl->href.'&page={P}';
-        iPHP::set_page_url($iurl);
+        iURL::page_url($iurl);
         iPHP::assign("search",$search);
         return iPHP::view($tpl,'search');
     }

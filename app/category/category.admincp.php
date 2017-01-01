@@ -366,7 +366,7 @@ class categoryAdmincp extends category{
         admincp::$APP_DO = 'list';
         $sql  = " where `appid`='{$this->appid}'";
         $cids = admincp::CP('__CID__');
-        $sql.= iSQL::where($cids,'cid');
+        $sql.= iSQL::in($cids,'cid');
 
         if($_GET['keywords']) {
             if($_GET['st']=="name") {
@@ -382,7 +382,7 @@ class categoryAdmincp extends category{
         }
         $orderby    = $_GET['orderby']?$_GET['orderby']:"cid DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-        $total      = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__category` {$sql}","G");
+        $total      = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__category` {$sql}","G");
         iUI::pagenav($total,$maxperpage);
         $rs     = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
@@ -500,7 +500,7 @@ class categoryAdmincp extends category{
         if($cid){
             $cids  = (array)$cid;
             $_GET['sub'] && $cids+=categoryApp::get_ids($cid,true);
-            $sql= iSQL::where($cids,$field);
+            $sql= iSQL::in($cids,$field);
         }
         return $sql;
     }
@@ -559,8 +559,8 @@ class categoryAdmincp extends category{
         iDB::value($sql) && empty($url) && iUI::alert('该'.$this->category_name.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
     }
 
-    public function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false) {
-        $cidArray  = (array)$this->cid_array($cid);
+    public function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false,$where=null) {
+        $cidArray  = (array)$this->cid_array($cid,$where);
         $CARRAY    = (array)$this->get($cidArray,array('categoryAdmincp','tree_unset'));
         $ROOTARRAY = (array)$this->rootid($cidArray);
 

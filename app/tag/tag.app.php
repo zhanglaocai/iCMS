@@ -92,7 +92,7 @@ class tagApp {
         $tag['link']  = '<a href="'.$tag['url'].'" class="tag" target="_blank">'.$tag['name'].'</a>';
 
         if($category['mode'] && stripos($tag['url'], '.php?')===false){
-            iPHP::set_page_url($tag['iurl']);
+            iURL::page_url($tag['iurl']);
         }
         $tag['metadata'] && $tag['meta'] = json_decode($tag['metadata']);
         $tag['related']  && $tag['relArray'] = explode(',', $tag['related']);
@@ -117,7 +117,7 @@ class tagApp {
         if(empty($array)){
             return;
         }
-        $sql  = iSQL::where($array,'name',false,true);
+        $sql  = iSQL::in($array,'name',false,true);
 
         if(empty($sql)){
             return;

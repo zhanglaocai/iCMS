@@ -16,12 +16,12 @@ function push_list($vars){
     if(isset($vars['cid!'])){
         $ncids    = explode(',',$vars['cid!']);
         $vars['sub'] && $ncids+=categoryApp::get_cids($ncids,true);
-        $where_sql.= iSQL::where($ncids,'cid','not');
+        $where_sql.= iSQL::in($ncids,'cid','not');
     }
     if(isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
         $vars['sub'] && $cid+=categoryApp::get_cids($cid,true);
-        $where_sql.= iSQL::where($cid,'cid');
+        $where_sql.= iSQL::in($cid,'cid');
     }
 
     isset($vars['pid']) 	&& $where_sql.= " AND `type` ='{$vars['pid']}'";

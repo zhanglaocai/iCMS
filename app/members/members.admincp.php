@@ -45,7 +45,7 @@ class membersAdmincp{
 		$_GET['gid'] && $sql.=" AND `gid`='{$_GET['gid']}'";
         $orderby    = $_GET['orderby']?$_GET['orderby']:"uid DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-        $total      = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__members` {$sql}","G");
+        $total      = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__members` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"个用户");
         $rs         = iDB::all("SELECT * FROM `#iCMS@__members` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count		= count($rs);

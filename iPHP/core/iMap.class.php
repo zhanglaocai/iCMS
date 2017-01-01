@@ -74,8 +74,8 @@ class iMap {
 			$nodes = explode(',', $nodes);
 		}
 		$table     = self::table();
-		$where_sql = iSQL::where(self::$appid,'appid',false,true,$table);
-		$where_sql.= iSQL::where($nodes,self::$field,false,false,$table);
+		$where_sql = iSQL::in(self::$appid,'appid',false,true,$table);
+		$where_sql.= iSQL::in($nodes,self::$field,false,false,$table);
 		return array($table=>$where_sql);
 	}
 
@@ -85,8 +85,8 @@ class iMap {
 		if(!is_array($nodes) && strstr($nodes, ',')){
 			$nodes = explode(',', $nodes);
 		}
-		$where_sql = iSQL::where(self::$appid,'appid',false,true);
-		$where_sql.= iSQL::where($nodes,self::$field);
+		$where_sql = iSQL::in(self::$appid,'appid',false,true);
+		$where_sql.= iSQL::in($nodes,self::$field);
 		return "SELECT `iid` FROM ".self::table()." WHERE {$where_sql}";
 	}
 

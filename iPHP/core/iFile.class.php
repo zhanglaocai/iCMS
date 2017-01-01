@@ -70,7 +70,7 @@ class iFile {
         if(empty($ids)) return array();
 
         $ids  = iSQL::multi_ids($ids,true);
-        $sql  = iSQL::where($ids,'id',false,true);
+        $sql  = iSQL::in($ids,'id',false,true);
         $rs   = iDB::all("SELECT * FROM ".self::$_data_table." where {$sql}");
         $ret  = array();
         foreach ((array)$rs as $key => $value) {
@@ -85,9 +85,9 @@ class iFile {
         if(empty($ids)) return array();
 
         $ids  = iSQL::multi_ids($ids,true);
-        $sql  = iSQL::where($ids,'id',false,true);
+        $sql  = iSQL::in($ids,'id',false,true);
         $sql && iDB::query("DELETE FROM ".self::$_data_table." where {$sql}");
-        $msql = iSQL::where($ids,'fileid');
+        $msql = iSQL::in($ids,'fileid');
         $msql && iDB::query("DELETE FROM ".self::$_map_table." where indexid = '{$indexid}'  AND appid = '{$appid}' {$msql}");
     }
     public static function del_app_data($appid=null){

@@ -53,7 +53,16 @@ class iSQL {
         }
         return implode(',', $pieces);
     }
-    public static function where($vars, $field, $not = false, $noand = false, $table = '') {
+
+    public static function where($where,$and=false) {
+        if ( is_array( $where ) ){
+            foreach ( $where as $c => $v ){
+                $wheres[] = "`$c` = '" . addslashes( $v ) . "'";
+            }
+            return ($and?' AND ':'').implode(' AND ', $wheres);
+        }
+    }
+    public static function in($vars, $field, $not = false, $noand = false, $table = '') {
         if (is_bool($vars) || empty($vars)) {
             return '';
         }

@@ -250,7 +250,13 @@ class iPHP {
 	}
 
 	public static function is_ajax() {
-		return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"||$_SERVER["X-Requested-With"] == "XMLHttpRequest");
+		return (
+			$_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"||
+			$_SERVER["X-Requested-With"] == "XMLHttpRequest"||
+			isset($_GET['ajax'])||
+			isset($_GET['is_ajax'])||
+			($_GET['format']=='json')
+		);
 	}
 	public static function PG($key) {
 		return isset($_POST[$key]) ? $_POST[$key] : $_GET[$key];
@@ -432,37 +438,7 @@ class iPHP {
 		$restart && self::$time_start = $time_end;
 		return round($time_total, 4);
 	}
-	public static function p2num($path, $page = false) {
-		$page === false && $page = $GLOBALS['page'];
-		if ($page < 2) {
-			return str_replace(array('_{P}', '&p={P}'), '', $path);
-		}
-		return str_replace('{P}', $page, $path);
-	}
-    public static function set_page_url($iurl){
-        if(isset($GLOBALS['iPage'])) return;
-        $iurl = (array)$iurl;
-        $GLOBALS['iPage']['url']  = $iurl['pageurl'];
-        $GLOBALS['iPage']['html'] = array('enable'=>true,'index'=>$iurl['href'],'ext'=>$iurl['ext']);
-    }
-	//分页数缓存
-	public static function page_total_cache($sql, $type = null,$cachetime=3600) {
-		$total = (int) $_GET['total_num'];
-		if($type=="G"){
-			empty($total) && $total = iDB::value($sql);
-		}else{
-			$cache_key = 'page_total/'.substr(md5($sql), 8, 16);
-			if(empty($total)){
-				if (!isset($_GET['page_total_cache'])|| $type === 'nocache'||!$cachetime) {
-					$total = iDB::value($sql);
-					$type === null && iCache::set($cache_key,$total,$cachetime);
-				}else{
-					$total = iCache::get($cache_key);
-				}
-			}
-		}
-		return (int)$total;
-	}
+
 	public static function redirect($URL = '') {
 		$URL OR $URL = iPHP_REFERER;
 		if (headers_sent()) {

@@ -147,7 +147,7 @@ class articleApp {
 		$article['url'] = $article['iurl']->href;
 		$article['link'] = "<a href='{$article['url']}'>{$article['title']}</a>";
 
-		($tpl && $category['mode'] == '1') && iCMS::gotohtml($article['iurl']->path, $article['iurl']->href);
+		($tpl && $category['mode'] == '1') && iCMS::redirect_html($article['iurl']->path, $article['iurl']->href);
 
 		$article['category'] = categoryApp::get_lite($category);
 
@@ -247,7 +247,7 @@ class articleApp {
 		if(empty($aids)) return array();
 
 		list($aids,$is_multi)  = iSQL::multi_ids($aids);
-		$sql  = iSQL::where($aids,'aid',false,true);
+		$sql  = iSQL::in($aids,'aid',false,true);
 		$data = array();
 		$rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}",OBJECT);
 		if($rs){
@@ -270,7 +270,7 @@ class articleApp {
 		$pageurl = $article['iurl']->pageurl;
 		if ($total > 1) {
 			$_GLOBALS_iPage = $GLOBALS['iPage'];
-			$mode && iPHP::set_page_url($article['iurl']);
+			$mode && iURL::page_url($article['iurl']);
 			$pageconf = array(
 				'page_name' => 'p',
 				'url' => $pageurl,

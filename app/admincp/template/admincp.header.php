@@ -36,7 +36,7 @@ defined('iPHP') OR exit('What are you doing?');
 <script src="./app/admincp/ui/jquery/migrate-1.2.1.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/jquery/scrollUp-1.1.0.min.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/jquery/uniform-2.1.2.min.js" type="text/javascript"></script>
-<script src="./app/admincp/ui/jquery/chosen-1.1.0.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/jquery/chosen.jquery.min.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/admincp.js" type="text/javascript"></script>
 
 <script type="text/javascript">

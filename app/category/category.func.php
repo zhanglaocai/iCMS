@@ -19,22 +19,22 @@ function category_list($vars){
 	$resource   = array();
 
 	isset($vars['mode']) && $where_sql.=" AND `mode` = '{$vars['mode']}'";
-	isset($vars['cid']) && !isset($vars['stype']) && $where_sql.= iSQL::where($vars['cid'],'cid');
-	isset($vars['cid!']) && $where_sql.= iSQL::where($vars['cid!'],'cid','not');
+	isset($vars['cid']) && !isset($vars['stype']) && $where_sql.= iSQL::in($vars['cid'],'cid');
+	isset($vars['cid!']) && $where_sql.= iSQL::in($vars['cid!'],'cid','not');
 	switch ($vars['stype']) {
 		case "top":
-			$vars['cid'] && $where_sql.= iSQL::where($vars['cid'],'cid');
+			$vars['cid'] && $where_sql.= iSQL::in($vars['cid'],'cid');
 			$where_sql.=" AND rootid='0'";
 		break;
 		case "sub":
-			$vars['cid'] && $where_sql.= iSQL::where($vars['cid'],'rootid');
+			$vars['cid'] && $where_sql.= iSQL::in($vars['cid'],'rootid');
 		break;
 		// case "subtop":
-		// 	$vars['cid'] && $where_sql.= iSQL::where($vars['cid'],'cid');
+		// 	$vars['cid'] && $where_sql.= iSQL::in($vars['cid'],'cid');
 		// break;
 		case "suball":
 			$cids = categoryApp::get_cids($vars['cid'],false);
-			$where_sql.= iSQL::where($cids,'cid');
+			$where_sql.= iSQL::in($cids,'cid');
 		break;
 		case "self":
 			$parent = iCache::get('iCMS/category/parent',$vars['cid']);
@@ -63,7 +63,7 @@ function category_list($vars){
 	$offset	= 0;
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
-		$total	= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__category` {$where_sql} ",null,iCMS::$config['cache']['page_total']);
+		$total	= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__category` {$where_sql} ",null,iCMS::$config['cache']['page_total']);
 		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";

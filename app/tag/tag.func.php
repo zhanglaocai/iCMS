@@ -12,7 +12,7 @@ function tag_list($vars){
         $where_sql.= " AND `rootid`='".(int)$vars['rootid']."'";
     }
     if(!isset($vars['tcids']) && isset($vars['tcid'])){
-        $where_sql.= iSQL::where($vars['tcid'],'tcid');
+        $where_sql.= iSQL::in($vars['tcid'],'tcid');
     }
     if(isset($vars['tcids']) && !isset($vars['tcid'])){
         iMap::init('category',iCMS_APP_TAG);
@@ -20,11 +20,11 @@ function tag_list($vars){
         $map_where+=iMap::where($vars['tcid']);
     }
     if(isset($vars['tcid!'])){
-        $where_sql.= iSQL::where($vars['tcid!'],'tcid','not');
+        $where_sql.= iSQL::in($vars['tcid!'],'tcid','not');
     }
 
     if(!isset($vars['pids']) && isset($vars['pid'])){
-        $where_sql.= iSQL::where($vars['pid'],'pid');
+        $where_sql.= iSQL::in($vars['pid'],'pid');
     }
     if(isset($vars['pids']) && !isset($vars['pid'])){
         iMap::init('prop',iCMS_APP_TAG);
@@ -32,13 +32,13 @@ function tag_list($vars){
         $map_where+= iMap::where($vars['pids']);
     }
     if(isset($vars['pid!'])){
-        $where_sql.= iSQL::where($vars['pid!'],'pid','not');
+        $where_sql.= iSQL::in($vars['pid!'],'pid','not');
     }
 
     if(!isset($vars['cids']) && isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
         $vars['sub'] && $cid+=categoryApp::get_cids($cid,true);
-        $where_sql.= iSQL::where($cid,'cid');
+        $where_sql.= iSQL::in($cid,'cid');
     }
     if(isset($vars['cids']) && !isset($vars['cid'])){
         $cids = explode(',',$vars['cids']);
@@ -52,7 +52,7 @@ function tag_list($vars){
     if(isset($vars['cid!'])){
         $ncids    = explode(',',$vars['cid!']);
         $vars['sub'] && $ncids+=categoryApp::get_cids($ncids,true);
-        $where_sql.= iSQL::where($ncids,'cid','not');
+        $where_sql.= iSQL::in($ncids,'cid','not');
     }
 
     if(isset($vars['keywords'])){//最好使用 iCMS:tag:search
@@ -87,7 +87,7 @@ function tag_list($vars){
 	$offset	= 0;
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
-		$total	= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__tags` {$where_sql}",null,iCMS::$config['cache']['page_total']);
+		$total	= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__tags` {$where_sql}",null,iCMS::$config['cache']['page_total']);
 		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";

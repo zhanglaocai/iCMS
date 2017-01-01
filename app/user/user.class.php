@@ -133,7 +133,7 @@ class user {
 
 		list($uids,$is_multi)  = iSQL::multi_ids($uids);
 
-    	$sql = iSQL::where($uids,'uid',false,true);
+    	$sql = iSQL::in($uids,'uid',false,true);
 		$data = array();
 		$rs = iDB::all("SELECT * FROM `#iCMS@__user` where {$sql} AND `status`='1'",OBJECT);
 		if($rs){
@@ -158,7 +158,7 @@ class user {
     		return;
     	}
 		list($uids,$is_multi)  = iSQL::multi_ids($uids);
-    	$sql = iSQL::where($uids,'uid',false,true);
+    	$sql = iSQL::in($uids,'uid',false,true);
 		$data = array();
 		$rs   = iDB::all("SELECT * FROM `#iCMS@__user_data` where {$sql};",OBJECT);
 		if($rs){

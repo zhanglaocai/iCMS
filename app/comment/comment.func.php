@@ -17,7 +17,7 @@ function comment_array($vars){
 	if(isset($vars['id'])){
 		if(is_array($vars['id'])){
 			$is_multi = true;
-			$where_sql.= iSQL::where($vars['id'],'id',false,false);
+			$where_sql.= iSQL::in($vars['id'],'id',false,false);
 		}else{
 			$where_sql.= " AND `id`='".(int)$vars['id']."'";
 		}
@@ -81,12 +81,12 @@ function comment_list($vars){
     if(isset($vars['cid!'])){
     	$ncids    = explode(',',$vars['cid!']);
         $vars['sub'] && $ncids+=categoryApp::get_cids($ncids,true);
-        $where_sql.= iSQL::where($ncids,'cid','not');
+        $where_sql.= iSQL::in($ncids,'cid','not');
     }
     if(isset($vars['cid'])){
         $cid = explode(',',$vars['cid']);
         $vars['sub'] && $cid+=categoryApp::get_cids($cid,true);
-        $where_sql.= iSQL::where($cid,'cid');
+        $where_sql.= iSQL::in($cid,'cid');
     }
     isset($vars['userid'])&& $where_sql.= " AND `userid`='{$vars['userid']}'";
 
@@ -105,7 +105,7 @@ function comment_list($vars){
 	$limit  = "LIMIT {$maxperpage}";
 	if($vars['page']){
 		isset($vars['total_cache']) && $_GET['total_cahce'] = true;
-		$total  = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__comment` WHERE {$where_sql}",null,iCMS::$config['cache']['page_total']);
+		$total  = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__comment` WHERE {$where_sql}",null,iCMS::$config['cache']['page_total']);
 		$pgconf = array(
 			'total'     => $total,
 			'perpage'   => $maxperpage,

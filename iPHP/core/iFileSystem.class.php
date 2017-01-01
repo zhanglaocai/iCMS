@@ -96,6 +96,7 @@ class iFS {
 		// $method == "rb+" && ftruncate($handle, strlen($data));
 		fclose($handle);
 		$chmod && @chmod($fn, 0777);
+		self::hook('write',array($fn,$data));
 	}
 
 	public static function escape_dir($dir) {
@@ -398,7 +399,7 @@ class iFS {
 		$FileRootPath = $RootPath . $FileName . "." . $FileExt;
 		self::write($FileRootPath, $filedata);
 		$fid = self::insert_filedata(array($FileName,'',$FileDir,'',$FileExt,$FileSize), $type);
-		self::hook('write',array($FileRootPath,$FileExt));
+		self::hook('upload',array($FileRootPath,$FileExt));
 		$value = array(
 			1,$fid,$file_md5,$FileSize,
 			'',$FileName,$FileName.".".$FileExt,
@@ -471,7 +472,7 @@ class iFS {
 			} else {
 				$fid = self::insert_filedata(array($file_md5,$oFileName,$FileDir,'',$FileExt,$FileSize), 0);
 			}
-			self::hook('write',array($FileRootPath,$FileExt));
+			self::hook('upload',array($FileRootPath,$FileExt));
 			$value =array(
 				1,$fid,$file_md5,$FileSize,
 				$oFileName,$FileName,$FileName.".".$FileExt,
@@ -595,7 +596,7 @@ class iFS {
 				if (!is_file($FileRootPath)) {
 					self::mkdir(dirname($FileRootPath));
 					self::write($FileRootPath, $fdata);
-					self::hook('write',array($FileRootPath,$FileExt));
+					self::hook('upload',array($FileRootPath,$FileExt));
 					// self::watermark($FileExt, $FileRootPath);
 					// self::cloud_write($FileRootPath);
 				}
@@ -610,7 +611,7 @@ class iFS {
 				$FileSize = @filesize($FileRootPath);
 				empty($FileSize) && $FileSize = 0;
 				$fid = self::insert_filedata(array($file_md5,$http,$FileDir,$intro,$FileExt,$FileSize),1);
-				self::hook('write',array($FileRootPath,$FileExt));
+				self::hook('upload',array($FileRootPath,$FileExt));
 				if ($ret == 'array') {
 					$value =array(
 						1,$fid,$file_md5,$FileSize,

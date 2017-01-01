@@ -41,7 +41,7 @@ class categoryApp{
         if($tpl){
             if(iPHP::$iVIEW=="html" && (strstr($category['rule']['index'],'{PHP}')||$category['outurl']||!$category['mode']) ) return false;
             $category['outurl'] && iPHP::redirect($category['outurl']);
-            $category['mode']=='1' && iCMS::gotohtml($iurl['path'],$iurl['href']);
+            $category['mode']=='1' && iCMS::redirect_html($iurl['path'],$iurl['href']);
         }
 
         if($category['hasbody']){
@@ -60,7 +60,7 @@ class categoryApp{
         );
 
         if($tpl) {
-            $category['mode'] && iPHP::set_page_url($iurl);
+            $category['mode'] && iURL::page_url($iurl);
 
             iPHP::assign('category',$category);
             if(isset($_GET['tpl'])){

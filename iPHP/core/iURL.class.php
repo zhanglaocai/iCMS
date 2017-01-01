@@ -113,15 +113,15 @@ class iURL {
         if(empty($C['mode'])||$C['password']){
             return '{PHP}';
         }else{
-            if(!is_array($C['rule'])){
-                $C['rule'] = json_decode($C['rule'],true);
-            }
+            is_object($C['rule']) && $C['rule'] = (array)$C['rule'];
+            is_array($C['rule'])  OR $C['rule'] = json_decode($C['rule'],true);
+
             return $C['rule'][$key];
         }
     }
     public static function get($uri,$a=array()) {
         $i        = new stdClass();
-        $sURL     = self::$config['URL'];
+        $surl     = self::$config['URL'];
         $html_dir = self::$config['html_dir'];
         $router   = self::$config['router'];
         $category = array();
@@ -138,6 +138,7 @@ class iURL {
                 $category = $array;
                 $i->href  = $category['url'];
                 $url      = self::rule_data($category,'index');
+                // $purl     = self::rule_data($category,'list');
                 break;
             case '2':
                 $array    = (array)$a[0];
@@ -158,7 +159,7 @@ class iURL {
 
                 $tagconf  = self::$config[$uri];
                 $html_dir = $tagconf['dir'];
-                $sURL     = $tagconf['url'];
+                $surl     = $tagconf['url'];
                 $url OR $url = $tagconf['rule'];
                 break;
              default:
@@ -168,52 +169,31 @@ class iURL {
             $document_uri.= $primary.'='.$array[$primary];
             if($router[$uri]['PHP_PAGE']){
                 $i->pageurl = $document_uri.'&'.$router[$uri]['PAGE'].'='.iPHP_PAGE_SIGN;
-                iFS::checkHttp($i->pageurl) OR $i->pageurl = rtrim($sURL,'/').'/'.$i->pageurl;
+                iFS::checkHttp($i->pageurl) OR $i->pageurl = rtrim($surl,'/').'/'.$i->pageurl;
             }
-            iFS::checkHttp($document_uri) OR $document_uri = rtrim($sURL,'/').'/'.$document_uri;
+            iFS::checkHttp($document_uri) OR $document_uri = rtrim($surl,'/').'/'.$document_uri;
             $i->href = $document_uri;
         }
         if($i->href) return $i;
 
         if(strpos($url,'{PHP}')===false) {
         	self::$uriArray	= array($array,$category,$_category);
-        	strpos($url,'{')===false OR $url = preg_replace_callback ("/\{(.*?)\}/",array(__CLASS__,'rule'),$url);
-
-            $i->href = $url;
-            if(strpos($html_dir,'..')===false) {
-                $i->href = $html_dir.$url;
+            $i = self::build($url,$html_dir,$surl,$category['htmlext']);
+            $pfile = $i->file;
+            if(strpos($pfile,iPHP_PAGE_SIGN)===false) {
+                $pfile = $i->name.'_'.iPHP_PAGE_SIGN.$i->ext;
             }
-            $i->href = ltrim(iFS::path($i->href),'/');
-            $i->path = rtrim(iFS::path(iPATH.$html_dir.$url),'/') ;
+            $i->pageurl  = $i->hdir.'/'.$pfile ;
+            $i->pagepath = $i->dir.'/'.$pfile;
 
-            if(iFS::checkHttp($i->href)===false){
-                $i->href = rtrim($sURL,'/').'/'.$i->href;
+            if($purl){
+                $ii = self::build($purl,$html_dir,$surl,$category['htmlext']);
+                $i->pageurl  = $ii->href;
+                $i->pagepath = $ii->path;
+                unset($ii);
             }
-			$pathA = pathinfo($i->path);
-            $i->hdir = pathinfo($i->href,PATHINFO_DIRNAME);
-            $i->dir  = $pathA['dirname'];
-            $i->file = $pathA['basename'];
-            $i->name = $pathA['filename'];
-            $i->ext  = '.'.$pathA['extension'];
-            $i->name OR $i->name = $i->file;
-
-            if(empty($i->file)||substr($url,-1)=='/'||empty($pathA['extension'])) {
-                $i->name = 'index';
-                $i->ext  = self::$config['html_ext'];
-				$category['htmlext'] && $i->ext = $category['htmlext'];
-                $i->file = $i->name.$i->ext;
-                $i->path = $i->path.'/'.$i->file;
-                $i->dir  = dirname($i->path);
-                $i->hdir = dirname($i->href.'/'.$i->file);
-            }
-
-            $i->pfile = $i->file;
-            if(strpos($i->file,iPHP_PAGE_SIGN)===false) {
-                $i->pfile = $i->name.'_'.iPHP_PAGE_SIGN.$i->ext;
-			}
-
 // var_dump($i);
-//exit;
+
 			if($rule=='1') {
                 $domainArray = iCache::get('iCMS/category/domain');
 // var_dump($domainArray);
@@ -231,22 +211,75 @@ class iURL {
                     $i->href = $category['domain'];
 		        }
             }
-// if($rule=='2') {
-// var_dump($category['iurl'],$i);
-// }
-// var_dump($i);
-// exit;
-        }
-        return self::make($i);
-    }
-    public static function make($i) {
-        $i->pageurl  = $i->hdir.'/'.$i->pfile ;
-        $i->pagepath = $i->dir.'/'.$i->pfile;
 
-        $i->href     = str_replace(iPHP_PAGE_SIGN,1,$i->href);
-        $i->path     = str_replace(iPHP_PAGE_SIGN,1,$i->path);
-        $i->file     = str_replace(iPHP_PAGE_SIGN,1,$i->file);
-        $i->name     = str_replace(iPHP_PAGE_SIGN,1,$i->name);
+        }
         return $i;
+    }
+    public static function build($url,$_dir,$_url,$_ext) {
+        if(strpos($url,'{')!==false){
+            $url = preg_replace_callback("/\{(.*?)\}/",array(__CLASS__,'rule'),$url);
+        }
+
+        $i = new stdClass();
+        $i->href = $url;
+        if(strpos($_dir,'..')===false) {
+            $i->href = $_dir.$url;
+        }
+        $i->href = ltrim(iFS::path($i->href),'/');
+        $i->path = rtrim(iFS::path(iPATH.$_dir.$url),'/') ;
+
+        if(iFS::checkHttp($i->href)===false){
+            $i->href = rtrim($_url,'/').'/'.$i->href;
+        }
+        $pathA = pathinfo($i->path);
+        $i->hdir = pathinfo($i->href,PATHINFO_DIRNAME);
+        $i->dir  = $pathA['dirname'];
+        $i->file = $pathA['basename'];
+        $i->name = $pathA['filename'];
+        $i->ext  = '.'.$pathA['extension'];
+        $i->name OR $i->name = $i->file;
+
+        if(empty($i->file)||substr($url,-1)=='/'||empty($pathA['extension'])) {
+            $i->name = 'index';
+            $i->ext  = self::$config['html_ext'];
+            $_ext && $i->ext = $_ext;
+            $i->file = $i->name.$i->ext;
+            $i->path = $i->path.'/'.$i->file;
+            $i->dir  = dirname($i->path);
+            $i->hdir = dirname($i->href.'/'.$i->file);
+        }
+
+        return $i;
+    }
+    // public static function page($i) {
+    //     // $i->pfile = $i->file;
+    //     // if(strpos($i->file,iPHP_PAGE_SIGN)===false) {
+    //     //     $i->pfile = $i->name.'_'.iPHP_PAGE_SIGN.$i->ext;
+    //     // }
+    //     // $i->pageurl  = $i->hdir.'/'.$i->pfile ;
+    //     // $i->pagepath = $i->dir.'/'.$i->pfile;
+    //     $i->href = str_replace(iPHP_PAGE_SIGN,1,$i->href);
+    //     $i->path = str_replace(iPHP_PAGE_SIGN,1,$i->path);
+    //     $i->file = str_replace(iPHP_PAGE_SIGN,1,$i->file);
+    //     $i->name = str_replace(iPHP_PAGE_SIGN,1,$i->name);
+    //     return $i;
+    // }
+    public static function page_num($path, $page = false) {
+        $page === false && $page = $GLOBALS['page'];
+        if ($page < 2) {
+            return str_replace(array('_'.iPHP_PAGE_SIGN, '&p='.iPHP_PAGE_SIGN), '', $path);
+        }
+        return str_replace(iPHP_PAGE_SIGN, $page, $path);
+    }
+    public static function page_url($iurl){
+        if(isset($GLOBALS['iPage'])) return;
+
+        $iurl = (array)$iurl;
+        $GLOBALS['iPage']['url']  = $iurl['pageurl'];
+        $GLOBALS['iPage']['html'] = array(
+            'enable' =>true,
+            'index'  =>$iurl['href'],
+            'ext'    =>$iurl['ext']
+        );
     }
 }

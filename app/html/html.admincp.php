@@ -39,7 +39,7 @@ class htmlAdmincp{
 		$query['indexName']	= $indexName;
 
 		$htm	= iCMS::run('index','iCMS',array(array($indexTPL,$indexName)));
-		$fpath	= iPHP::p2num($htm[1]->pagepath);
+		$fpath	= iURL::page_num($htm[1]->pagepath);
 		$total	= $GLOBALS['iPage']['total'];
 		iFS::check_ext($fpath) OR iUI::alert("文件类型不合法,禁止生成!<hr />请更改系统设置->网站URL->文件后缀");
 		iFS::mkdir($htm[1]->dir);
@@ -85,14 +85,14 @@ class htmlAdmincp{
 		$rootid		= $this->PG['rootid'];
 		$k			= (int)$this->PG['k'];
 		if($k>0||empty($category)){
-			$category = iCache::get('iCMS/create.category');
+			$category = iCache::get('iCMS/html.category');
 		}
 		if(empty($category)){
 			iUI::alert('请选择需要生成静态的栏目!');
 		}
 		$category[0]=='all' && $category = $this->get_category(iCMS_APP_ARTICLE);
 
-		$k===0 && iCache::set('iCMS/create.category',$category,0);
+		$k===0 && iCache::set('iCMS/html.category',$category,0);
 
 		$_GET['loop'] && $loop=0;
 		$GLOBALS['page'] = $p+$this->page;
@@ -102,7 +102,7 @@ class htmlAdmincp{
 
 		$htm = iCMS::run('category','category',$cid,null);
 		$htm OR iUI::alert("栏目[cid:$cid] URL规则设置问题! 此栏目不能生成静态");
-		$fpath = iPHP::p2num($htm[1]['iurl']['pagepath']);
+		$fpath = iURL::page_num($htm[1]['iurl']['pagepath']);
 		$total = $GLOBALS['iPage']['total'];
 		iFS::check_ext($fpath) OR iUI::alert("文件类型不合法,禁止生成!<hr />请更改栏目->URL规则设置->栏目规则");
 		iFS::mkdir($htm[1]['iurl']['dir']);
@@ -192,7 +192,7 @@ class htmlAdmincp{
 		$endid   && $whereSQL.=" AND `id`<='{$endid}'";
 		$perpage OR $perpage = $this->CP;
 		$orderby OR $orderby = "id DESC";
-		$total     = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__article` {$whereSQL}","G");
+		$total     = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__article` {$whereSQL}","G");
 		$looptimes = ceil($total/$perpage);
 		$offset    = $this->page*$perpage;
 		$rs        = iDB::all("SELECT `id` FROM `#iCMS@__article` {$whereSQL} order by {$orderby} LIMIT {$offset},{$perpage}");
@@ -239,7 +239,7 @@ class htmlAdmincp{
 		if($total>=2){
 			for($ap=2;$ap<=$total;$ap++){
 				$htm   = $app->article($id,$ap);
-				$fpath = iPHP::p2num($htm[1]['iurl']->pagepath,$ap);
+				$fpath = iURL::page_num($htm[1]['iurl']->pagepath,$ap);
 				iFS::write($fpath,$htm[0]);
 			}
 		}
@@ -262,11 +262,7 @@ class htmlAdmincp{
     	}
     }
     public function get_category($appid){
-		$rs	= iCache::get('iCMS/category.'.$appid.'/cache');
-		$category = array();
-		foreach((array)$rs AS $_cid=>$C){
-			$C['status'] && $category[]=$C['cid'];
-		}
-		return $category;
+		$category = new category($appid);
+        return $category->cid_array();
     }
 }

@@ -56,7 +56,7 @@ class filesAdmincp{
 
         $orderby	= $_GET['orderby']?iSecurity::escapeStr($_GET['orderby']):"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
-		$total		= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__file_data` {$sql}","G");
+		$total		= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__file_data` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"个文件");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__file_data` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);

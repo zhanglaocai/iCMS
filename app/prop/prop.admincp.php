@@ -97,7 +97,7 @@ class propAdmincp{
 //        if($cid) {
 //	        $cids	= $_GET['sub']?categoryApp::get_cids($cid,true):$cid;
 //	        $cids OR $cids	= $vars['cid'];
-//	        $sql.= iSQL::where($cids,'cid');
+//	        $sql.= iSQL::in($cids,'cid');
 //        }
 
         $_GET['field']&& $sql.=" AND `field`='".$_GET['field']."'";
@@ -110,7 +110,7 @@ class propAdmincp{
         $_GET['cid']  && $uri.='&cid='.$_GET['cid'];
 
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-        $total		= iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__prop` {$sql}","G");
+        $total		= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__prop` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"个属性");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__prop` {$sql} order by pid DESC LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);

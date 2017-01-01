@@ -81,7 +81,7 @@ class weixinAdmincp{
 
         $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-        $total      = iPHP::page_total_cache("SELECT count(*) FROM `#iCMS@__weixin_event` {$sql}","G");
+        $total      = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__weixin_event` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"个事件");
         $rs     = iDB::all("SELECT * FROM `#iCMS@__weixin_event` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         // var_dump(iDB::$last_query);
