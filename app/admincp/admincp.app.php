@@ -56,7 +56,26 @@ class admincpApp{
 
     	include admincp::view("index");
     }
-    public function okORno($o) {
+    // 检测函数支持
+    public function isfun($fun = ''){
+        if (!$fun || trim($fun) == '' || preg_match('~[^a-z0-9\_]+~i', $fun, $tmp)) return '错误';
+        return $this->check((false !== function_exists($fun)));
+    }
+    //检测PHP设置参数
+    public function show($varName){
+        switch($result = get_cfg_var($varName)){
+            case 0:
+                return $this->check(0);
+            break;
+            case 1:
+                return $this->check(1);
+            break;
+            default:
+                return $result;
+            break;
+        }
+    }
+    public function check($o) {
         return $o?'<font color="green"><i class="fa fa-check"></i></font>':'<font color="red"><i class="fa fa-times"></i></font>';
     }
 }

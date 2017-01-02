@@ -72,8 +72,8 @@ admincp::head();
     <div class="widget-title"> <span class="icon"> <i class="fa fa-tachometer"></i> </span>
       <h5>系统信息</h5>
     </div>
-    <div class="widget-content">
-      <table class="table table-bordered">
+    <div class="widget-content nopadding">
+      <table class="table table-bordered table-striped">
         <tr>
           <td>当前程序版本</td>
           <td>iCMS <?php echo iCMS_VER ; ?>[<?php echo iCMS_RELEASE ; ?>]</td>
@@ -82,63 +82,76 @@ admincp::head();
         </tr>
         <tr>
           <td>服务器操作系统</td>
-          <td><?php echo PHP_OS ; ?></td>
+          <td><?php $os = explode(" ", php_uname()); echo $os[0];?> &nbsp;内核版本：<?php if('/'==DIRECTORY_SEPARATOR){echo $os[2];}else{echo $os[1];} ?></td>
           <td>服务器端口</td>
           <td><?php echo getenv(SERVER_PORT) ; ?></td>
         </tr>
         <tr>
+          <td>服务器总空间</td>
+          <td><?php
+            $dt = round(@disk_total_space(".")/(1024*1024*1024),3);
+            echo $dt?$dt:'∞'
+           ?>G</td>
           <td>服务器剩余空间</td>
           <td><?php
-            if(function_exists('diskfreespace')){
-              echo intval(diskfreespace(".") / (1024 * 1024))."M" ;
-            }else{
-              echo '∞';
-            }
-           ?></td>
-          <td>服务器时间</td>
-          <td><?php echo get_date(0,"Y-n-j H:i:s"); ?></td>
+            $df = round(@disk_free_space(".")/(1024*1024*1024),3);
+            echo $df?$df:'∞'
+           ?>G</td>
         </tr>
         <tr>
           <td>WEB服务器版本</td>
           <td><?php echo $_SERVER['SERVER_SOFTWARE'] ; ?></td>
-          <td>服务器语种</td>
-          <td><?php echo getenv("HTTP_ACCEPT_LANGUAGE") ; ?></td>
+          <td>服务器时间</td>
+          <td><?php echo date("Y-m-d H:i:s"); ?></td>
         </tr>
         <tr>
           <td>PHP版本</td>
           <td><?php echo PHP_VERSION ; ?></td>
-          <td>ZEND版本</td>
-          <td><?php echo zend_version() ; ?></td>
+          <td>PHP运行方式</td>
+          <td><?php echo strtoupper(php_sapi_name());?></td>
         </tr>
         <tr>
-          <td>MySQL 数据库</td>
-          <td><?php echo $this->okorno(function_exists("mysql_close")) ; ?></td>
+          <td>脚本占用最大内存</td>
+          <td><?php echo $this->show("memory_limit"); ?></td>
+          <td>脚本上传文件大小限制</td>
+          <td><?php echo $this->show("upload_max_filesize");?></td>
+        </tr>
+        <tr>
+          <td>POST方法提交最大限制</td>
+          <td><?php echo $this->show("post_max_size"); ?></td>
+          <td>脚本超时时间</td>
+          <td><?php echo $this->show("max_execution_time"); ?>秒</td>
+        </tr>
+        <tr>
+          <td>MySQL 类库</td>
+          <td><?php echo version_compare(PHP_VERSION,'5.5','>=')?'mysqli':'mysql';?></td>
           <td>MySQL 版本</td>
           <td><?php echo iDB::version() ; ?></td>
         </tr>
         <tr>
-          <td>图像函数库</td>
-          <td><?php echo function_exists("imageline")==1?$this->okorno(function_exists("imageline")):$this->okorno(function_exists("imageline")) ; ?></td>
+          <td>FTP支持：</td>
+          <td><?php echo $this->isfun("ftp_login");?></td>
+          <td>CURL支持：</td>
+          <td><?php echo $this->isfun("curl_init");?></td>
+        </tr>
+        <tr>
+          <td>GD库支持</td>
+          <td><?php
+            if(function_exists('gd_info')) {
+                $gd_info = @gd_info();
+              echo $gd_info["GD Version"];
+          }else{
+            echo $this->check(0);
+          }
+          ?></td>
           <td>Session支持</td>
-          <td><?php echo $this->okorno(function_exists("session_start")) ; ?></td>
-        </tr>
-        <tr>
-          <td>脚本运行可占最大内存</td>
-          <td><?php echo get_cfg_var("memory_limit")?get_cfg_var("memory_limit"):"无" ; ?></td>
-          <td>脚本上传文件大小限制</td>
-          <td><?php echo get_cfg_var("upload_max_filesize")?get_cfg_var("upload_max_filesize"):"不允许上传附件" ; ?></td>
-        </tr>
-        <tr>
-          <td>POST方法提交限制</td>
-          <td><?php echo get_cfg_var("post_max_size") ; ?></td>
-          <td>脚本超时时间</td>
-          <td><?php echo get_cfg_var("max_execution_time") ; ?></td>
+          <td><?php echo $this->isfun("session_start") ; ?></td>
         </tr>
         <tr>
           <td>被屏蔽的函数</td>
           <td><?php echo get_cfg_var("disable_functions")?'<a class="tip" href="javascript:;" title="'.get_cfg_var("disable_functions").'">查看</a>':"无" ; ?></td>
           <td>安全模式</td>
-          <td><?php echo $this->okorno(ini_get('safe_mode')); ?></td>
+          <td><?php echo $this->check(ini_get('safe_mode')); ?></td>
         </tr>
       </table>
     </div>
