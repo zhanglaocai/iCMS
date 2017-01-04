@@ -12,7 +12,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 class appsAdmincp{
     const STORE_URL = "http://store.idreamsoft.com";
-    const STORE_DIR = iPATH . 'cache/iCMS/store/';
+    const STORE_DIR = 'cache/iCMS/store/';
 
     public function __construct() {
     	$this->id = (int)$_GET['id'];
