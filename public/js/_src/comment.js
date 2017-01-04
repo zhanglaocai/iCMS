@@ -108,7 +108,6 @@ define("comment", function(require) {
         add:function ($form,param,SUCCESS, FAIL) {
             if (!USER.CHECK.LOGIN()) return;
             var me = this;
-
             if($COMMENT.seccode=="1"){
                 var comment_seccode = $('[i="comment_seccode"]', $form);
                 param.seccode = comment_seccode.val();
@@ -124,7 +123,7 @@ define("comment", function(require) {
                 comment_content.focus();
                 return false;
             }
-            var refresh = function (ret) {
+           var refresh = function (ret) {
                 if(ret.forward!='seccode'){
                     comment_content.val('');
                 }

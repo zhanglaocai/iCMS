@@ -34,22 +34,27 @@
             console.log('asd');
             event.preventDefault();
             iCOMMENT.reply(this);
+        })
+        // 赞评论
+        .on('click', '[i="comment_like"]', function(event) {
+            event.preventDefault();
+            var me = this;
+            iCOMMENT.like(this);
+        })
+        //提交评论事件绑定
+        .on('click', '[i="comment_put"]', function(event) {
+            event.preventDefault();
+            var that = $(this),param = <!--{$comment_vars.param|json_encode}-->;
+            var _form = that.parent().parent();
+            iCOMMENT.add(_form, param, function(ret) {
+                //加载评论列表模板
+                iCOMMENT.widget('item',function (tmpl) {
+                   iCOMMENT._widget.item = tmpl;
+                });
+                var itemp = that.parents('.commentApp-item');
+                console.log(itemp);
+                iCOMMENT.list(itemp, param.iid, ret.forward, 'after');
+            })
         });
-        // // 赞评论
-        // .on('click', '[i="comment_like"]', function(event) {
-        //     event.preventDefault();
-        //     var me = this;
-        //     console.log('0000');
-        //     iCOMMENT.like(this);
-        // })
-        // //提交评论事件绑定
-        // .on('click', '[i="comment_put"]', function(event) {
-        //     event.preventDefault();
-        //     var that = $(this),param = <!--{$comment_vars.param|json_encode}-->;
-        //     iCOMMENT.put(this, param, function(ret) {
-        //         var itemp = that.parents('.comment-item');
-        //         iCOMMENT.list(itemp, param.iid, ret.forward, 'before');
-        //     })
-        // });
     });
 </script>

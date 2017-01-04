@@ -127,7 +127,7 @@ $(function() {
 //user模块API
 var iUSER = iCMS.run('user');
 //comment模块API
-var iCOMMENT = iCMS.run('comment');
+// var iCOMMENT = iCMS.run('comment');
 
 function imgFix (im, x, y) {
     x = x || 99999

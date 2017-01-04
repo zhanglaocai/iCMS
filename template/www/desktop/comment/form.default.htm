@@ -27,6 +27,7 @@
     <div class="clearfix mb10"></div>
 </div>
 <script>
+    var iCOMMENT = iCOMMENT||iCMS.run('comment');
     $(function() {
         var $form = $('.comment-form');
         iUSER.STATUS({},
@@ -51,9 +52,13 @@
         $('.cmt-add').click(function(event) {
             event.preventDefault();
             var param = <!--{$comment_vars.param|json_encode}-->;
-            iCOMMENT.put($form,param,
+            iCOMMENT.add($form,param,
                 function(ret) {
                     $(".empty",".comment-list-wrap").remove();
+                    //加载评论列表模板
+                    iCOMMENT.widget('item',function (tmpl) {
+                       iCOMMENT._widget.item = tmpl;
+                    });
                     var $list = $(".comment-list-wrap");
                     iCOMMENT.list($list, param.iid, ret.forward,'append');
                 },
