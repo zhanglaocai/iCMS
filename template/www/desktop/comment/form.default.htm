@@ -1,4 +1,4 @@
-<div class="commentApp-form">
+<div class="comment-form">
     <div class="profile">
         <!--{include file="iCMS://user/profile.menu.htm"}-->
     </div>
@@ -9,15 +9,15 @@
     <div class="alert alert-warning" role="alert">
         <i class="fa fa-warning "></i> 请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论！
     </div>
-    <div class="commentApp-editor">
-        <textarea class="commentApp-textarea form-control" placeholder="写下你的评论…"></textarea>
+    <div class="comment-editor">
+        <textarea i="comment_content" class="comment-textarea form-control" placeholder="写下你的评论…"></textarea>
     </div>
     <div class="clearfix"></div>
-    <div class="commentApp-command">
+    <div class="comment-command">
         <!--{if $iCMS.CONFIG.comment.seccode }-->
-        <div class="commentApp-seccode">
+        <div class="comment-seccode">
             <label for="seccode" class="control-label">验证码：</label>
-            <input type="text" maxlength="4" name="seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
+            <input type="text" maxlength="4" i="comment_seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
             <!--{iCMS:public:seccode}-->
         </div>
         <!--{/if}-->
@@ -28,7 +28,7 @@
 </div>
 <script>
     $(function() {
-        var $form = $('.commentApp-form');
+        var $form = $('.comment-form');
         iUSER.STATUS({},
             //登陆后事件
             function($info) {
@@ -45,16 +45,16 @@
         $('.cmt-cancel').click(function(event) {
             var pp = $(this).parent().parent();
             pp.removeClass('expanded');
-            $('.commentApp-textarea', pp).val("").focus();
+            $('[i="comment_content"]', pp).val("").focus();
         });
         //提交评论
         $('.cmt-add').click(function(event) {
             event.preventDefault();
             var param = <!--{$comment_vars.param|json_encode}-->;
-            iCOMMENT.addnew($form,param,
+            iCOMMENT.put($form,param,
                 function(ret) {
-                    $(".empty",".commentApp-list-wrap").remove();
-                    var $list = $(".commentApp-list-wrap");
+                    $(".empty",".comment-list-wrap").remove();
+                    var $list = $(".comment-list-wrap");
                     iCOMMENT.list($list, param.iid, ret.forward,'append');
                 },
                 function (ret) {

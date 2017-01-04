@@ -8,7 +8,7 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class commentApp {
-	public $methods = array('like', 'json', 'add', 'form', 'list', 'goto');
+	public $methods = array('like','widget', 'json', 'add', 'form', 'list', 'goto');
 	public $config  = null;
 	public function __construct() {
 		$this->config = iCMS::$config['comment'];
@@ -21,6 +21,10 @@ class commentApp {
 
 		$url = apps::get_url($appid, $iid);
 		iPHP::redirect($url);
+	}
+	public function API_widget() {
+		$name = iSecurity::escapeStr($_GET['name']);
+		iPHP::view('iCMS://comment/widget.'.$name.'.htm');
 	}
 	public function API_list() {
 		$_GET['_display'] = $_GET['display'];

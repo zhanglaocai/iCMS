@@ -26,15 +26,21 @@
         </div>
         <div class="commentApp-content-ft" data-param='<!--{$comment_list.param|json_encode}-->'>
             <span class="date"><!--{$comment_list.addtime|format_date}--></span>
-            <a href="javascript:;" i="reply" class="commentApp-op-link"><i class="commentApp-icon comment-reply-icon"></i>回复</a>
-            <a href="javascript:;" i="like" class="commentApp-op-link"><i class="commentApp-icon comment-like-icon"></i>赞</a>
+            <a href="javascript:;" i="comment_reply" class="commentApp-op-link">
+                <i class="commentApp-icon comment-reply-icon"></i>回复
+            </a>
+            <a href="javascript:;" i="comment_like" class="commentApp-op-link">
+                <i class="commentApp-icon comment-like-icon"></i>赞
+            </a>
             <!--{if $comment_list.up!='0'}-->
             <span class="like-num" i="tip:<!--{$comment_list.up}--> 人觉得这个很赞">
                 <em i="comment_up"><!--{$comment_list.up}--></em>
                 <em>赞</em>
             </span>
             <!--{/if}-->
-            <a href="javascript:;" i="report" class="commentApp-op-link"><i class="commentApp-icon comment-report-icon"></i>举报</a>
+            <a href="javascript:;" i="report" class="commentApp-op-link">
+                <i class="commentApp-icon comment-report-icon"></i>举报
+            </a>
         </div>
     </div>
 </div>

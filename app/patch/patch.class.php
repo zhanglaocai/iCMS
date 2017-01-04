@@ -15,7 +15,7 @@
  */
 class patch {
 	const PATCH_URL = "http://patch.idreamsoft.com";	//自动更新服务器
-	const PATCH_DIR = iPATH . 'cache/iCMS/patch/'; 		//临时文件夹
+	const PATCH_DIR = 'cache/iCMS/patch/'; 		//临时文件夹
 
 	public static $version = '';
 	public static $release = '';
@@ -23,6 +23,7 @@ class patch {
 	public static $next = false;
 
 	public static function init($force = false) {
+		self::PATCH_DIR = iPATH . self::PATCH_DIR;
 		$info = self::getVersion($force);
 		if ($info->app == iPHP_APP &&
 			version_compare($info->version, iCMS_VER, '>=') &&

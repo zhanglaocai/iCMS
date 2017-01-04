@@ -1,53 +1,55 @@
-<div class="commentApp-list">
-    <div class="commentApp-list-wrap">
+<div class="comment-list">
+    <div class="comment-list-wrap">
         <!--{iCMS:comment:list loop="true" page="true" ajax="pagenav" row="10" by="ASC" vars="$comment_vars"}-->
         <!--{include file="./comment.item.htm" import="true"}-->
         <!--{iCMSelse}-->
-        <div class="commentApp-item empty"><i class="fa fa-ban"></i> 暂无评论...</div>
+        <div class="comment-item empty"><i class="fa fa-ban"></i> 暂无评论...</div>
         <!--{/iCMS}-->
     </div>
-    <div class="pagination commentApp-pagenav" data-query="<!--{$comment_vars.query}-->">
+    <div class="pagination comment-pagenav" data-query="<!--{$comment_vars.query}-->">
         <!--{$iCMS.PAGES|method:'show(4)'}-->
     </div>
     <div class="hide" data-query="<!--{$comment_vars.query}-->">
-        <div class="commentApp-pagenav-api"></div>
+        <div class="comment-pagenav-api"></div>
     </div>
     <div class="clearfix mb10"></div>
 </div>
 <script>
-    var iCOMMENT = iCMS.run('comment');
+    var iCOMMENT = iCOMMENT||iCMS.run('comment');
     //评论ajax翻页
     var comment_page_ajax = function (pn,a) {
         var pp = $(a).parent().parent();
         iCOMMENT.page(pn,a,function (html) {
-            var list = $(".commentApp-list-wrap",$(html)).html(),
-            pagenav = $(".commentApp-pagenav",$(html)).html();
-            $(".commentApp-list-wrap",pp).html(list);
-            $(".commentApp-pagenav",pp).html(pagenav);
+            var list = $(".comment-list-wrap",$(html)).html(),
+            pagenav = $(".comment-pagenav",$(html)).html();
+            $(".comment-list-wrap",pp).html(list);
+            $(".comment-pagenav",pp).html(pagenav);
             // iUSER.UCARD();
         });
     }
     $(function() {
-        var commentAppList = $('.commentApp-list');
+        var commentList = $('.comment-list');
         //回复评论
-        commentAppList.on('click', '[i="reply"]', function(event) {
+        commentList.on('click', '[i="comment_reply"]', function(event) {
+            console.log('asd');
             event.preventDefault();
             iCOMMENT.reply(this);
-        })
-        //赞评论
-        .on('click', '[i="like"]', function(event) {
-            event.preventDefault();
-            var me = this;
-            iCOMMENT.like(this);
-        })
-        //提交评论事件绑定
-        .on('click', '[i="addnew"]', function(event) {
-            event.preventDefault();
-            var that = $(this),param = <!--{$comment_vars.param|json_encode}-->;
-            iCOMMENT.addnew(this, param, function(ret) {
-                var itemp = that.parents('.commentApp-item');
-                iCOMMENT.list(itemp, param.iid, ret.forward, 'before');
-            })
         });
+        // // 赞评论
+        // .on('click', '[i="comment_like"]', function(event) {
+        //     event.preventDefault();
+        //     var me = this;
+        //     console.log('0000');
+        //     iCOMMENT.like(this);
+        // })
+        // //提交评论事件绑定
+        // .on('click', '[i="comment_put"]', function(event) {
+        //     event.preventDefault();
+        //     var that = $(this),param = <!--{$comment_vars.param|json_encode}-->;
+        //     iCOMMENT.put(this, param, function(ret) {
+        //         var itemp = that.parents('.comment-item');
+        //         iCOMMENT.list(itemp, param.iid, ret.forward, 'before');
+        //     })
+        // });
     });
 </script>

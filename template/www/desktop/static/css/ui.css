@@ -608,9 +608,9 @@ a:hover>.comment-report-icon { background-position: -71px -170px }
 .commentApp-item .commentApp-content-hd .desc, .commentApp-item .commentApp-content-ft .desc { font-size: 14px }
 .commentApp-item .commentApp-content-hd .zg-link {/*font-weight: bolder;*/ color: #259; }
 .commentApp-item .commentApp-content-ft { font-size: 12px }
-.commentApp-item .like-num { float: right; margin-top: -1px }
-.commentApp-item .like-num>span, .commentApp-item .like-num>em { font-style: normal; vertical-align: -2px }
-.commentApp-item .like-num.nil { display: none }
+.commentApp-item .text-num { float: right; margin-top: -1px; }
+.commentApp-item .text-num>span, .commentApp-item .text-num>em { font-style: normal; vertical-align: -2px;font-size: 12px}
+.commentApp-item .text-num.nil { display: none }
 .commentApp-item.focusin .commentApp-op-link, .commentApp-item:hover .commentApp-op-link { visibility: visible }
 .commentApp-item+.commentApp-item { border-top: solid 1px #eee }
 .commentApp-item .commentApp-form { padding: 15px 0 }
@@ -622,11 +622,9 @@ a:hover>.comment-report-icon { background-position: -71px -170px }
 .comment-list .commentApp-pagenav { margin: 10px auto; }
 .comment-list .cmt-item-img-avatar { width: 60px; height: 60px; }
 .comment-list .commentApp-content-wrap { margin-left: 70px; }
-.comment-list .lou-num { float: right; margin-top: -1px; font-size: 12px; }
-.comment-list .lou-num>span, .comment-list .lou-num>em { font-style: normal; vertical-align: -2px }
 
 /* ===========commentApp-form=========== */
-.commentApp-form .commentApp-textarea { padding: 7px 8px; color: #222; font-size: 14px; line-height: 22px; min-height: 22px; width: 95% }
+.commentApp-form .commentApp-textarea { padding: 7px 8px; color: #222; font-size: 14px; line-height: 22px; min-height: 22px;}
 .commentApp-form.expanded .cmt-command { display: block; line-height: 33px; }
 .commentApp-form.expanded .cmt-seccode { float: left; overflow: hidden; line-height: 30px; room: 1; _width: 100%; }
 .commentApp-form.expanded .cmt-seccode span { color: #333; vertical-align: middle; text-align: center; font-size: 14px; }

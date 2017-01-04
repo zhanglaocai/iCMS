@@ -93,7 +93,7 @@ $(function() {
     //通用事件
     iCMS.run('common', function($COMMON) {
         //点赞
-        doc.on('click', '[i^="vote"]', function(event) {
+        doc.on('click', '[i^="vote:"]', function(event) {
             event.preventDefault();
             var me = this;
             $COMMON.vote(this,
@@ -106,16 +106,21 @@ $(function() {
             );
         });
         //收藏
-        doc.on('click', '[i^="favorite"]', function(event) {
+        doc.on('click', '[i^="favorite:"]', function(event) {
             event.preventDefault();
             $COMMON.favorite(this);
         });
     });
     //用户主页评论
     iCMS.run('comment', function($COMMENT) {
-        doc.on('click', '[i^="comment"]', function(event) {
+        doc.on('click', '[i="comment:article"]', function(event) {
             event.preventDefault();
-            $COMMENT.start(this);
+            var me = this;
+            $COMMENT.create(me);
+            //加载评论框模板
+            // $COMMENT.widget('form',function (tmpl) {
+            //     $COMMENT._widget._form = $(tmpl);
+            // });
         });
     });
 });
