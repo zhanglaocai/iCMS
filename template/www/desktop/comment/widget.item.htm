@@ -1,0 +1,46 @@
+<div class="commentApp-item" data-id="<%=id%>">
+    <a title="<%=user.name%>" i="ucard:<%=userid%>" class="cmt-item-link-avatar" href="<%=user.url%>">
+        <img src="<%=user.avatar%>" class="cmt-item-img-avatar" onerror="iUSER.NOAVATAR(this);">
+    </a>
+    <div class="commentApp-content-wrap">
+        <div class="commentApp-content-hd">
+            <a i="ucard:<%=userid%>" href="<%=user.url%>" target="_blank" class="zg-link">
+                <%=user.name%>
+            </a>
+            <%if(suid == userid){%>
+            <span class="desc">（作者）</span>
+            <%};%>
+            <%if(typeof(reply)!=="undefined"){%>
+            <span class="desc"> 回复 </span>
+            <a i="ucard:<%=reply.uid%>" href="<%=reply.url%>" target="_blank" class="zg-link">
+                <%=reply.name%>
+            </a>
+            <%}%>
+            <span class="text-num">
+                <em><%=lou%></em>
+                <em>楼</em>
+            </span>
+        </div>
+        <div class="commentApp-content">
+            <%=content%>
+        </div>
+        <div class="commentApp-content-ft">
+            <span class="date"><%=addtime%></span>
+            <a href="javascript:;" i="comment_reply" class="commentApp-op-link" data-param='{"id":"<%=id%>","userid":"<%=userid%>","name":"<%=user.name%>"}'>
+                <i class="commentApp-icon comment-reply-icon"></i>回复
+            </a>
+            <a href="javascript:;" i="comment_like" class="commentApp-op-link" data-param='{"id":"<%=id%>","userid":"<%=userid%>","name":"<%=user.name%>"}'>
+                <i class="commentApp-icon comment-like-icon"></i>赞
+            </a>
+            <%if(up != "0"){%>
+            <span class="text-num" i="tip:<%=up%> 人觉得这个很赞">
+                <em i="comment_up"><%=up%></em>
+                <em>赞</em>
+            </span>
+            <%}%>
+            <a href="javascript:;" i="report" data-param='{"appid":"5","iid":"<%=id%>","userid":"<%=userid%>"}' class="commentApp-op-link">
+                <i class="commentApp-icon comment-report-icon"></i>举报
+            </a>
+        </div>
+    </div>
+</div>
