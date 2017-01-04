@@ -29,20 +29,20 @@ class iPlugin {
         // }
         if($plugin){
             foreach ($plugin as $field => $call) {
-                if(is_array($call[0])){
+                // if(is_array($call[0])){
                     foreach ($call as $key => $cb) {
                         $resource[$field] = self::call_func($cb,$resource[$field]);
                     }
-                }else{
-                    $resource[$field] = self::call_func($call,$resource[$field]);
-                }
+                // }else{
+                //     $resource[$field] = self::call_func($call,$resource[$field]);
+                // }
             }
         }else{
             return false;
         }
     }
     public static function call_func($callback,$value){
-        if (is_array($callback) && @class_exists($callback[0])) {
+        if (is_array($callback) && @class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {
             return call_user_func_array($callback, (array)$value);
         }else{
             return $value;

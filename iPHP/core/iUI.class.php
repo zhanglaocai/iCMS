@@ -90,7 +90,6 @@ class iUI {
 					$lang && $content = $lang;
 				}
 	        }
-
             $msg.= $content.'</span></div>';
 		}
     	if($ret) return $msg;
@@ -100,18 +99,19 @@ class iUI {
 		$type = substr($str, 0, strpos($str, ':'));
 		$act = substr($str, strpos($str, ':') + 1);
 		switch ($type) {
-		case 'js':
-			$act && $code = $act;
-			$act == "0" && $code = 'iTOP.history.go(-1);';
-			$act == "1" && $code = 'iTOP.location.href=iTOP.location.href;';
+			case 'js':
+				$act && $code = $act;
+				$act == "0" && $code = 'iTOP.history.go(-1);';
+				$act == "1" && $code = 'iTOP.location.href=iTOP.location.href;';
 			break;
-		case 'url':
-			$act == "1" && $act = iPHP_REFERER;
-			$code = "iTOP.location.href='" . $act . "';";
+			case 'url':
+				$act == "1" && $act = iPHP_REFERER;
+				$code = "iTOP.location.href='" . $act . "';";
 			break;
-		case 'src':$code = "iTOP.$('#iPHP_FRAME').attr('src','" . $act . "');";
+			case 'src':
+				$code = "iTOP.$('#iPHP_FRAME').attr('src','" . $act . "');";
 			break;
-		default:$code = '';
+			default:$code = '';
 		}
 
 		if ($ret) {
@@ -157,7 +157,15 @@ class iUI {
         	echo $content;
         	return;
         }
-		$content = addslashes('<table class="ui-dialog-table" align="center"><tr><td valign="middle">' . $content . '</td></tr></table>');
+		$content =
+			'<table class="ui-dialog-table" align="center">'.
+				'<tr>'.
+					'<td valign="middle">' . $content . '</td>'.
+				'</tr>'.
+			'</table>';
+		$content = str_replace(array("\n","\r","\\"), array('','',"\\\\"), $content);
+		$content = addslashes($content);
+
 		$options = array(
 			"time:null","api:'iPHP'",
 			"id:'" . (self::$dialog['id'] ? self::$dialog['id'] : 'iPHP-DIALOG'). "'",
@@ -177,7 +185,8 @@ class iUI {
 		$auto_func = 'd.close().remove();';
 		$func = iUI::js($js, true);
 		if ($func) {
-			$buttons OR $options[] = 'okValue: "确 定",ok: function(){' . $func . ';},';
+			$ok = 'okValue: "确 定",ok: function(){' . $func . '}';
+			// $buttons OR $options[] = $ok
 			$auto_func = $func . 'd.close().remove();';
 		}
 		if (is_array($buttons)) {
@@ -198,9 +207,13 @@ class iUI {
                     $val['next'] && $auto_func = $func;
                 }
             }
-			//$buttonA[] = $okbtn;
 			$button = implode(",", $buttonA);
+		}else{
+			self::$dialog['ok'] OR $options[] = $ok;
 		}
+		self::$dialog['ok'] && $options[] = 'okValue: "确 定",ok: function(){}';
+		self::$dialog['cancel'] && $options[] = 'cancelValue: "取 消",cancel: function(){}';
+
 		$dialog = 'var iTOP = window.top,';
 		if ($update) {
 			$dialog .= "d = iTOP.dialog.get('iPHP-DIALOG');";

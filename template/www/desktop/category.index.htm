@@ -48,10 +48,12 @@
                     <!--{iCMS:article:list  row="8" orderby="month"}-->
                     <div class="topnews">
                         <h1><a href="<!--{$article_list[0].url}-->" target="_blank"><!--{$article_list[0].title}--></a></h1>
+                        <!--{if $article_list[0].description}-->
                         <p>
                             <!--{$article_list[0].description|cut:100}-->...
                             <a href="<!--{$article_list[0].url}-->" target="_blank" class="blue">[详细]</a>
                         </p>
+                        <!--{/if}-->
                         <p class="clearfix dotted mb10"></p>
                         <ul>
                             <!--{foreach value="alist" start="2" from="$article_list"}-->
@@ -90,8 +92,8 @@
                             </li>
                             <!--{/foreach}-->
                         </ul>
+                        <div class="clearfix"></div>
                     </div>
-                    <div class="clearfix"></div>
                     <div class="tabs-content">
                         <div class="tabs-pane" id="tabs_c0">
                             <div class="kwLink">
@@ -113,11 +115,13 @@
                                     <div class="media-body">
                                         <h4 class="media-heading">
                                             <a href="<!--{$article_list.url}-->" target="_blank"><!--{$article_list.title}--></a>
-                                            </h4>
+                                        </h4>
+                                        <!--{if $article_list.description}-->
                                         <p class="media-text">
                                             <!--{$article_list.description|cut:110:'...'}-->
                                             <a href="<!--{$article_list.url}-->" target="_blank" class="blue">[详细]</a>
                                         </p>
+                                        <!--{/if}-->
                                         <div class="media-info">
                                             <span class="date"><!--{$article_list.pubdate|date:'Y-m-d H:i'}--></span>
                                             <span class="category">分类：<!--{$article_list.category.link}--></span>
@@ -134,6 +138,7 @@
                                 <!--{$iCMS.PAGE.NAV}-->
                             </div>
                         </div>
+                        <div class="clearfix"></div>
                     </div>
                 </div>
             </div>

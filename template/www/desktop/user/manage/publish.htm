@@ -1,30 +1,25 @@
 <style>
 .manage-publish { margin-left: 20px; }
-.input-group-addon {padding: 5px 12px;width: 60px !important;}
-.input-group-addon label{float: right;}
-.input-group-addon #user_category_dropdown{    height: 20px;
-    display: block;
-    line-height: 20px;
-    text-decoration: none;}
-#add_category{border-radius: 0px;}
-
-.input-group input.form-control,
-.input-group textarea.form-control{width: 500px !important;}
-.input-group select.form-control{width: 300px !important;}
-#description { width: 580px !important;height: 120px; }
-#body { width: 98%;height: 500px; }
+.input-group-addon { padding: 5px 12px; width: 60px !important; }
+.input-group-addon label { float: right; }
+.input-group-addon #user_category_dropdown { height: 20px; display: block; line-height: 20px; text-decoration: none; }
+#add_category { border-radius: 0px; }
+.input-group input.form-control, .input-group textarea.form-control { width: 500px !important; }
+.input-group select.form-control { width: 300px !important; }
+#description { width: 580px !important; height: 120px; }
+#body { width: 98%; height: 500px; }
 #source-box .form-control { width: 285px !important; }
-
 .creative { width: 220px; display: inline-block; }
-.creative .bootstrap-switch { border-radius: 0px 5px 5px 0px !important; box-shadow:none !important;border-color: #ccc !important; width: 106px !important; height: 35px !important; }
-.creative .bootstrap-switch .bootstrap-switch-label{background: #fafafa;}
+.creative .bootstrap-switch { border-radius: 0px 5px 5px 0px !important; box-shadow: none !important; border-color: #ccc !important; width: 106px !important; height: 35px !important; }
+.creative .bootstrap-switch .bootstrap-switch-label { background: #fafafa; }
 .creative .bootstrap-switch-container span { width: 53px !important; height: 35px !important; }
 .creative .bootstrap-switch-container .bootstrap-switch-primary { border-radius: 0px !important; }
+.manage-publish .dropdown-menu{top:31px;}
+.manage-publish .dropdown-menu:before {left: 35%;}
+.manage-publish .dropdown-menu:after {left: 35%;top: -6px;}
 </style>
 <link href="<!--{$site.urls.tpl}-->/static/css/bootstrap-switch.min.css" type="text/css" rel="stylesheet" />
 <script src="<!--{$site.urls.tpl}-->/static/js/bootstrap-switch.min.js"></script>
-<script src="<!--{$site.urls.tpl}-->/static/js/bootstrap-dropdown.min.js"></script>
-
 <script>
 window.UMEDITOR_HOME_URL = "<!--{$site.urls.public}-->/js/libs/umeditor/";
 </script>

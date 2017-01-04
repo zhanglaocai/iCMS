@@ -11,6 +11,9 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class appsAdmincp{
+    const STORE_URL = "http://store.idreamsoft.com";
+    const STORE_DIR = iPATH . 'cache/iCMS/store/';
+
     public function __construct() {
     	$this->id = (int)$_GET['id'];
       $this->type_array = array(
@@ -19,7 +22,36 @@ class appsAdmincp{
         '2' => '插件',
       );
     }
+    public function do_store(){
+      include admincp::view("apps.store");
+    }
+    public function do_store_json(){
+      $url  = self::STORE_URL.'/store.json.php';
+      $json = iHttp::remote($url);
+      echo $json;
+    }
+    public function do_store_install(){
+      $sid  = $_GET['sid'];
+      $url  = self::STORE_URL.'/store.get.php?sid='.$sid;
+      $json = iHttp::remote($url);
+      if($json){
+        $array = json_decode($json);
+        if($array->premium){
+          $key = md5(iPHP_KEY.iCMS_URL.time());
+          echo '<script type="text/javascript">
+            top.pay_notify("'.$key.'");
+          </script>';
+          iUI::$dialog['ok']  = true;
+          iUI::$dialog['cancel']  = true;
+          iUI::dialog('
+            此应用为付费版,请先付费后安装!<br />
+            请使用微信扫描下面二维码<br />
+            <img alt="模式一扫码支付" src="http://paysdk.weixin.qq.com/example/qrcode.php?data=weixin%3A%2F%2Fwxpay%2Fbizpayurl%3Fappid%3Dwx2cb18020197974af%26mch_id%3D1385319402%26nonce_str%3Duq4bkjaslnlxdlhlutvba42nd238mejc%26product_id%3D123456789%26time_stamp%3D1483357237%26sign%3DC0F608167DE12A73C2CC5D6FD46C2E12"/>
+          ','js:1',1000000);
+        }
+      }
 
+    }
     public function get_app($id=null){
       $id === null && $id = $this->id;
       if($id){

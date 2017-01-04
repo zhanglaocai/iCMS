@@ -124,6 +124,21 @@ var_dump(@class_exists($appname));
         // $array    = array_keys($array);
         return $array;
     }
+    public static function get_hooks(){
+        $rs = apps::get_array(array('status'=>'1'));
+        foreach ($rs as $key => $value) {
+            $config = $value['config'];
+            if($config['hooks']){
+                foreach ($config['hooks'] as $_app => $hooks) {
+                    foreach ($hooks as $field => $callback) {
+                        $array[$_app][$field][]= (array)$callback;
+                    }
+                }
+            }
+
+        }
+        return $array;
+    }
     // public static function get_file($app,$filename,$sapp=null){
     //     $app_path = iPHP_APP_DIR."/$app/".$filename;
     //     if(file_exists($app_path)){

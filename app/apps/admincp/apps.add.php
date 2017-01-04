@@ -91,6 +91,29 @@ admincp::head();
           </div>
         </div>
         <div class="clearfloat mb10"></div>
+          <?php var_dump($rs['config']['hooks']) ; ?>
+        <div class="input-prepend input-append">
+          <span class="add-on">钩子</span>
+          <span class="add-on">应用</span>
+          <select name="hooks[]" id="hooks_app" class="span2 chosen-select">
+            <option value="">===不启用===</option>
+            <option value="all">==所有应用==</option>
+            <?php foreach (apps::get_array(array("table"=>true)) as $key => $value) {?>
+             <option value="<?php echo $value['app'];?>"><?php echo $value['app'];?>:<?php echo $value['name'];?></option>
+            <?php }?>
+          </select>
+          <span class="add-on">字段</span>
+          <select name="hooks[]" id="hooks_app" class="span2 chosen-select">
+          </select>
+          <span class="add-on">钩子</span>
+          <select name="hooks[]" id="hooks_app" class="span2 chosen-select">
+          </select>
+        </div>
+        <script>
+        iCMS.select('hooks_app',"<?php echo $rs['hooks']?trim($rs['hooks']):0 ; ?>");
+        </script>
+        <span class="help-inline"></span>
+        <div class="clearfloat mb10"></div>
         <?php if($rs['table']){?>
         <h3 class="title">数据表</h3>
         <table class="table table-bordered bordered" style="width:360px;">

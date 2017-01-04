@@ -13,7 +13,7 @@ admincp::head();
 </style>
 <script type="text/javascript">
 $(function(){
-  $("#<?php echo APP_FORMID;?>").batch();
+$("#<?php echo APP_FORMID;?>").batch();
 });
 </script>
 <div class="iCMS-container">
@@ -40,78 +40,85 @@ $(function(){
     </div>
   </div>
   <div class="widget-box" id="<?php echo APP_BOXID;?>">
-    <div class="widget-title"> <span class="icon">
-      <input type="checkbox" class="checkAll" data-target="#<?php echo APP_BOXID;?>" />
-    </span>
-  </div>
-  <div class="widget-content nopadding">
-    <form action="<?php echo APP_FURI; ?>&do=batch" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
-      <div class="tab-content">
-          <table class="table table-bordered table-condensed table-hover">
-            <thead>
-              <tr>
-                <th style="width:90px;">标识</th>
-                <th>名称</th>
-                <th>简介</th>
-                <th class="span2">数据表</th>
-                <th class="span3">模板标签</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody id="store-container">
-            </tbody>
-            </table>
-        </div>
+    <div class="widget-title">
+      <span class="icon">
+        <i class="fa fa-bank"></i> <span>应用市场</span>
+      </span>
+    </div>
+    <div class="widget-content">
+      <form action="<?php echo APP_FURI; ?>&do=batch" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
+            <div class="row" id="store-container">
+
+
+            </div>
+          <div class="clearfloat"></div>
       </form>
     </div>
   </div>
-</div>
-<script type="text/javascript" src="./app/admincp/ui/template-3.0.js"></script>
+  <script type="text/javascript" src="./app/admincp/ui/template-3.0.js"></script>
+<style>
+#store-container{margin-left: -15px;}
+.store-item{margin-left: 15px;width: 22%; border: 1px solid #CDCDCD; border-radius: 5px;padding: 8px;margin-bottom: 10px;height: 300px;background-color: #fff;}
+.item-head{margin-bottom: 10px;height: 100px; background-color: #333;text-align: center;}
+.item-head h3{height: 100px;line-height: 90px;font-size: 36px;color: #f5f5f5;}
+.item-head img{height: 100px;width: 100%; background-color: #dadada;}
+
+.item-author{height: 60px;}
+.item-author .avatar img {width: 60px;height: 60px;border-radius: 30px;float: left;}
+.item-author .name{margin-left: 70px; line-height: 30px;}
+.item-author .name span.version{color: #666;}
+.item-author .name b{display: block;}
+.item-author .name .demo{font-size: 12px;}
+.item-description{height: 68px;margin-top: 10px;overflow: hidden;color: #666;}
+.item-description p{font-size: 14px;}
+.item-action {margin-top: 10px;}
+.item-action .btn-large{ width: 100%; height: 35px;line-height: 35px;padding: 0px;}
+
+</style>
 <script id="store-item" type="text/html">
 {{each data as value i}}
-<tr id="store-item-{{i}}">
-  <td>{{value.app}}</td>
-  <td>
-    {{value.name}}
-    {{if value.premium}}
-      <br />
-      <span class="label label-important">付费版</span>
-      <br />
-      <span class="label label-success">价格:{{value.price}} <i class="fa fa-rmb"></i></span>
-    {{/if}}
-  </td>
-  <td>
-    <img src="{{value.pic}}" height="30"/>
-    <p>
-    {{value.description}}
-    {{if value.demo}}
-      <a href="{{value.demo}}" target="_blank">&gt;&gt;&gt;&gt;&gt;演示</a>
-    {{/if}}
-    </p>
-  </td>
-  <td>
-    {{each value.table as v}}
-        {{v[2]}}[{{v[0]}}]<br />
-    {{/each}}
-  </td>
-  <td>
-    {{each value.template as v}}
-        {{if v[1]}}
-          <a href="{{v[1]}}" target="_blank" title="点击查看模板标签说明">&lt;!--&#x7B;{{v[0]}}&#x7D;--&gt;</a>
+  <div id="store-item-{{value.app}}" class="store-item span3">
+    <div class="item-head">
+      {{if value.pic}}
+        <img src="{{value.pic}}"/>
+      {{else}}
+        <h3>{{value.name}}</h3>
+      {{/if}}
+    </div>
+    <div class="item-author">
+      <p class="avatar"><img src="{{value.author.avatar}}" /></p>
+      <p class="name">
+        <b>@{{value.author.name}}</b>
+        <span class="version">当前版本:{{value.version}}</span>
+        {{if value.demo}}
+          <a class="demo" href="{{value.demo}}" target="_blank">&gt;&gt;演示</a>
+        {{/if}}
+      </p>
+    </div>
+    <div class="item-description">
+        {{if value.premium}}
+          <span class="label label-important">付费版</span>
+          <span class="label label-success">价格:{{value.price}} <i class="fa fa-rmb"></i></span>
+        {{/if}}
+        <p>{{value.description}}</p>
+    </div>
+    <div class="item-action">
+      <a href="<?php echo APP_FURI; ?>&do=store_install&sid={{value.id}}" target="iPHP_FRAME" class="btn btn-large btn-success">
+        <i class="fa fa-download"></i>
+        {{if value.premium}}
+        付费安装
         {{else}}
-          <a href="http://www.idreamsoft.com/iCMS/doc/{{v[0]}}" target="_blank" title="点击查看模板标签说明">&lt;!--&#x7B;{{v[0]}}&#x7D;--&gt;</a>
-        {{/if}}<br />
-    {{/each}}
-  </td>
-  <td>
-    <a href="<?php echo APP_FURI; ?>&do=store_install&sid={{value.id}}" target="iPHP_FRAME" class="btn btn-success" title='安装'><i class="fa fa-plug"></i> 安装应用</a>
-  </td>
-</tr>
+        立即安装
+        {{/if}}
+      </a>
+    </div>
+    <div class="clearfloat"></div>
+  </div>
 {{/each}}
 </script>
 <script type="text/javascript">
 $(function(){
-    $.getJSON("<?php echo APP_URI; ?>&do=store_json",
+$.getJSON("<?php echo APP_URI; ?>&do=store_json",
         function(json){
             var html = template('store-item', {"data":json});
             $("#store-container").html(html);
@@ -119,4 +126,4 @@ $(function(){
     );
 });
 </script>
-<?php admincp::foot();?>
+  <?php admincp::foot();?>

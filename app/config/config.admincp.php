@@ -54,8 +54,9 @@ class configAdmincp{
      * @return [type] [description]
      */
     public static function cache(){
-        $config         = self::get();
-        $config['apps'] = apps::get_apps();
+        $config          = self::get();
+        $config['apps']  = apps::get_apps();
+        $config['hooks'] = apps::get_hooks();
         self::write($config);
     }
     public static function head($title=null){

@@ -12,7 +12,7 @@ class keywordsApp {
     public function API_iCMS(){
     }
     //内链
-    public static function run($content) {
+    public static function hook($content) {
         if (iCMS::$config['keywords']['limit'] == 0) {
             return $content;
         }

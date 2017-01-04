@@ -16,7 +16,7 @@
             "caption": "-"
         }, {
             "caption": "更新系统设置",
-            "href": "cache&acp=admincp.config.app",
+            "href": "cache&acp=configAdmincp",
             "icon": "refresh",
             "target": "iPHP_FRAME"
         }, {

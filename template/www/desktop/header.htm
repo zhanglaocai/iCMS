@@ -4,7 +4,7 @@
             <!--{$site.name}-->
         </div>
         <div id="user-login" class="fr">
-            <ul>
+            <ul class="ul">
                 <!--{if $iCMS.CONFIG.open.QQ.enable }-->
                 <li><a href="<!--{iCMS:router url='api:user:login:qq'}-->" class="login_qq">QQ登录</a></li>
                 <!--{/if}-->
@@ -19,8 +19,10 @@
             </ul>
         </div>
         <div id="user-profile" class="fr hide">
-            <ul>
-                <li>您好，<span i="user_nickname" class="label label-success">iCMS</span></li>
+            <span class="profile">
+            <!--{include file="iCMS://user/profile.menu.htm"}-->
+            </span>
+            <ul class="ul">
                 <li><a href="<!--{iCMS:router url='user:publish'}-->" target="_blank"><i class="fa fa-edit"></i> 发表文章</a></li>
                 <li><a href="<!--{iCMS:router url='user:profile'}-->" target="_blank"><i class="fa fa-cog"></i> 账号设置</a></li>
                 <li class="last">
@@ -46,20 +48,23 @@
         </div>
     </div>
 </div>
-<div class="navbar clearfix">
+<div class="navbar">
     <ul class="navbar-wrap">
-        <li id="navbar_c0" class="active"><a target="_self" href="<!--{$site.url}-->"><strong>首页</strong></a></li>
+        <li id="navbar_c0" class="active"><a target="_self" href="<!--{$site.url}-->">首页</a></li>
         <!--{iCMS:category:list loop="true" stype='top' row="13"}-->
         <!--{if $category_list.child}-->
-        <li id="navbar_c<!--{$category_list.cid}-->" class="dropdown"><a href="<!--{$category_list.url}-->" target="_blank"><strong><!--{$category_list.name}--></strong></a>
+        <li id="navbar_c<!--{$category_list.cid}-->" class="dropdown">
+            <a data-toggle="dropdown" href="<!--{$category_list.url}-->" target="_blank">
+                <span class="caret"></span> <!--{$category_list.name}-->
+            </a>
             <ul class="dropdown-menu">
                 <!--{iCMS:category:list as="subcate" loop="true" stype='sub' row="10" cid="$category_list.cid"}-->
-                <li><a href="<!--{$subcate.url}-->"><strong><!--{$subcate.name}--></strong></a></li>
+                <li><a href="<!--{$subcate.url}-->"><!--{$subcate.name}--></a></li>
                 <!--{/iCMS}-->
             </ul>
         </li>
         <!--{else}-->
-        <li id="navbar_c<!--{$category_list.cid}-->"><a href="<!--{$category_list.url}-->" target="_blank"><strong><!--{$category_list.name}--></strong></a></li>
+        <li id="navbar_c<!--{$category_list.cid}-->"><a href="<!--{$category_list.url}-->" target="_blank"><!--{$category_list.name}--></a></li>
         <!--{/if}-->
         <!--{/iCMS}-->
     </ul>
@@ -73,4 +78,5 @@
     $("#navbar_c0").addClass("active");
     <!--{/if}-->
     </script>
+    <div class="clearfix"></div>
 </div>

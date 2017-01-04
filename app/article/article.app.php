@@ -102,7 +102,7 @@ class articleApp {
 			return false;
 		}
 
-		iPlugin::hook('article',$article,iCMS::$config['plugin']['article']);
+		iPlugin::hook('article',$article,iCMS::$config['hooks']['article']);
 
 		if ($tpl) {
 			$article_tpl = empty($article['tpl']) ? $article['category']['template']['article'] : $article['tpl'];

@@ -430,11 +430,25 @@ class articleAdmincp{
         $limit = 'LIMIT '.iUI::$offset.','.$maxperpage;
 
         if($map_sql||iUI::$offset){
+                if(iUI::$offset > 1000 && $total > 2000 && iUI::$offset > $total/2) {
+                    $_offset = $total-iUI::$offset-$maxperpage;
+                    if($_offset < 0) {
+                        $maxperpage += $_offset;
+                        $_offset = 0;
+                    }
+                    $orderby = "id ASC";
+                    $limit = 'LIMIT '.$_offset.','.$maxperpage;
+                }
             // if($map_sql){
                 $ids_array = iDB::all("
                     SELECT `id` FROM `#iCMS@__article` {$sql}
                     ORDER BY {$orderby} {$limit}
                 ");
+                if(isset($_offset)){
+                    $ids_array = array_reverse($ids_array, TRUE);
+                    $orderby   = "id DESC";
+                }
+
                 $ids = iSQL::values($ids_array);
                 $ids = $ids?$ids:'0';
                 $sql = "WHERE `id` IN({$ids})";

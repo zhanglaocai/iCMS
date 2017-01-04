@@ -43,8 +43,8 @@
                             </li>
                             <!--{/foreach}-->
                         </ul>
+                        <div class="clearfix"></div>
                     </div>
-                    <div class="clearfix"></div>
                     <div class="tabs-content">
                         <div class="tabs-pane" id="tabs_c0">
                             <div class="kwLink">
@@ -66,11 +66,13 @@
                                     <div class="media-body">
                                         <h4 class="media-heading">
                                             <a href="<!--{$article_list.url}-->" target="_blank"><!--{$article_list.title}--></a>
-                                            </h4>
+                                        </h4>
+                                        <!--{if $article_list.description}-->
                                         <p class="media-text">
                                             <!--{$article_list.description|cut:110:'...'}-->
                                             <a href="<!--{$article_list.url}-->" target="_blank" class="blue">[详细]</a>
                                         </p>
+                                        <!--{/if}-->
                                         <div class="media-info">
                                             <span class="date"><!--{$article_list.pubdate|date:'Y-m-d H:i'}--></span>
                                             <span class="category">分类：<!--{$article_list.category.link}--></span>
@@ -87,6 +89,7 @@
                                 <!--{$iCMS.PAGE.NAV}-->
                             </div>
                         </div>
+                        <div class="clearfix"></div>
                     </div>
                 </div>
             </div>
