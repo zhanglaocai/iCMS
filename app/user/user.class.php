@@ -131,7 +131,7 @@ class user {
 	public static function get($uids=0,$unpass=true){
 		if(empty($uids)) return array();
 
-		list($uids,$is_multi)  = iSQL::multi_ids($uids);
+		list($uids,$is_multi)  = iSQL::multi_var($uids);
 
     	$sql = iSQL::in($uids,'uid',false,true);
 		$data = array();
@@ -157,7 +157,7 @@ class user {
     	if(empty($uids)){
     		return;
     	}
-		list($uids,$is_multi)  = iSQL::multi_ids($uids);
+		list($uids,$is_multi)  = iSQL::multi_var($uids);
     	$sql = iSQL::in($uids,'uid',false,true);
 		$data = array();
 		$rs   = iDB::all("SELECT * FROM `#iCMS@__user_data` where {$sql};",OBJECT);

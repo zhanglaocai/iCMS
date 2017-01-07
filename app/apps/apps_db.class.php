@@ -3,7 +3,7 @@
  * @package iCMS
  * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
- * @author c00lt3a <idreamsoft@qq.com>
+ * @author coolmoo <idreamsoft@qq.com>
  */
 
 class apps_db {

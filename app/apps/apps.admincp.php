@@ -15,12 +15,48 @@ class appsAdmincp{
     const STORE_DIR = 'cache/iCMS/store/';
 
     public function __construct() {
+      $this->appid = iCMS_APP_APPS;
     	$this->id = (int)$_GET['id'];
       $this->type_array = array(
         '0' => '系统组件',
         '1' => '应用',
         '2' => '插件',
       );
+    }
+    public function do_hooks(){
+        configAdmincp::app($this->appid,'hooks');
+    }
+    public function do_save_hooks(){
+        $hooks = array();
+        foreach ((array)$_POST['hooks']['method'] as $key => $method) {
+          $h_app   = $_POST['hooks']['app'][$key];
+          $h_field = $_POST['hooks']['field'][$key];
+          if($method && $h_app && $h_field){
+            $hooks[$h_app][$h_field][]= explode("::", $method);
+          }
+        }
+        $_POST['config'] = $hooks;
+        configAdmincp::save($this->appid,'hooks');
+    }
+    // public function do_hooks(){
+    //   include admincp::view("apps.hooks");
+    // }
+    public function app_type_select(){
+      $option = '';
+      foreach ($this->type_array as $key => $type) {
+        $option.='<option value="'.$key.'">'.$type.'[type=\''.$type.'\']</option>';
+      }
+      $option.= propAdmincp::get("type");
+      return $option;
+    }
+    public function do_hook_app_method_opt(){
+      $app = $_GET['_app'];
+      echo apps_hook::app_fields($app);
+
+    }
+    public function do_hook_app_field_opt(){
+      $app = $_GET['_app'];
+      echo apps_hook::app_fields($app);
     }
     public function do_store(){
       include admincp::view("apps.store");
@@ -32,22 +68,24 @@ class appsAdmincp{
     }
     public function do_store_install(){
       $sid  = $_GET['sid'];
-      $url  = self::STORE_URL.'/store.get.php?sid='.$sid;
+      $key  = md5(iPHP_KEY.iPHP_SELF.time());
+      $url  = self::STORE_URL.'/store.get.php?sid='.$sid.'&key='.$key;
       $json = iHttp::remote($url);
       if($json){
         $array = json_decode($json);
         if($array->premium){
-          $key = md5(iPHP_KEY.iCMS_URL.time());
-          echo '<script type="text/javascript">
-            top.pay_notify("'.$key.'");
-          </script>';
-          iUI::$dialog['ok']  = true;
-          iUI::$dialog['cancel']  = true;
+          iUI::$break            = false;
+          iUI::$dialog['ok']     = true;
+          iUI::$dialog['cancel'] = true;
           iUI::dialog('
             此应用为付费版,请先付费后安装!<br />
             请使用微信扫描下面二维码<br />
-            <img alt="模式一扫码支付" src="http://paysdk.weixin.qq.com/example/qrcode.php?data=weixin%3A%2F%2Fwxpay%2Fbizpayurl%3Fappid%3Dwx2cb18020197974af%26mch_id%3D1385319402%26nonce_str%3Duq4bkjaslnlxdlhlutvba42nd238mejc%26product_id%3D123456789%26time_stamp%3D1483357237%26sign%3DC0F608167DE12A73C2CC5D6FD46C2E12"/>
+            <img alt="模式一扫码支付" src="http://paysdk.weixin.qq.com/example/qrcode.php?data='.$array->pay.'"/>
           ','js:1',1000000);
+          echo '<script type="text/javascript">
+            top.pay_notify("'.$key.'","'.$sid.'",d);
+          </script>';
+          exit;
         }
       }
 

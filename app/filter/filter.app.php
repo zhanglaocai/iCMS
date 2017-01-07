@@ -12,8 +12,8 @@ class filterApp{
     public function __construct() {
         $this->appid = iCMS_APP_FILTER;
     }
-    //过滤
-    public static function hook(&$content){
+    //禁止
+    public static function HOOK_disable(&$content){
         $disable = iCache::get('iCMS/filter.disable');  //disable禁止
         //禁止关键词
         $subject = $content;
@@ -35,7 +35,9 @@ class filterApp{
                 }
             }
         }
-
+    }
+    //过滤
+    public static function HOOK_filter($content){
         $filter  = iCache::get('iCMS/filter.array');    //filter过滤
         if($filter){
             //过滤关键词
@@ -51,5 +53,6 @@ class filterApp{
             }
             $search && $content = preg_replace($search,$replace,$content);
         }
+        return $content;
     }
 }

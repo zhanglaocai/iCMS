@@ -17,6 +17,12 @@
             }, {
                 "caption": "-"
             }, {
+                "caption": "钩子管理",
+                "href": "apps&do=hooks",
+                "icon": "plug"
+            }, {
+                "caption": "-"
+            }, {
                 "caption": "应用市场",
                 "href": "apps&do=store",
                 "icon": "bank"

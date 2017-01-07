@@ -1,14 +1,23 @@
 if ($.browser.msie && !$.support.style) {
     alert("系统检测到您使用的是IE内核的浏览器!!\n\nIE内核的浏览器访问可能会出现各种不可预料的错误!!\n\n为了您更好的使用本程序\n\n推荐使用 Chrome,FireFox 等浏览器\n\n如使用 搜狗 或者 360 等双核浏览器的请切换成 极速模式!");
 }
+var chosen_config = {
+    allow_single_deselect:true,
+    search_contains:true,
+    disable_search_threshold:20,
+    no_results_text:'没找到相关结果',
+    placeholder_text_single:'请选择...',
+    placeholder_text_multiple:'请选择(可多选)...'
+}
 $(function() {
     var _iCMS = {
         select: function(el, v) {
             var va = v.split(',');
             $.each(va, function(i,val){
-              $("#" + el+" option[value='"+val+"']").attr("selected", true);
+               $("#"+el).val(val).trigger("chosen:updated");
+              // $("#" + el+" option[value='"+val+"']").attr("selected", true);
             });
-            $("#"+el).trigger("chosen:updated");
+            // $("#"+el).trigger("chosen:updated");
         },
         checked: function(el){
             $(el).prop("checked",true).closest('.checker > span').addClass('checked');
@@ -35,16 +44,8 @@ $(function() {
         }
     });
 
-
     $(':checkbox[data-type!=switch],:radio[data-type!=switch]').uniform();
-    $(".chosen-select").chosen({
-        allow_single_deselect:true,
-        search_contains:true,
-        disable_search_threshold:20,
-        no_results_text:'没找到相关结果',
-        placeholder_text_single:'请选择...',
-        placeholder_text_multiple:'请选择(可多选)...'
-    });
+    $(".chosen-select").chosen(chosen_config);
     $('.ui-datepicker').datepicker({format: 'yyyy-mm-dd'});
 
     $('[data-toggle="popover"]').popover({html:true});

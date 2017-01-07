@@ -11,8 +11,9 @@ class keywordsApp {
     }
     public function API_iCMS(){
     }
+
     //内链
-    public static function hook($content) {
+    public static function HOOK($content) {
         if (iCMS::$config['keywords']['limit'] == 0) {
             return $content;
         }

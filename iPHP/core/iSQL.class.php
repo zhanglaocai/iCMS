@@ -95,7 +95,7 @@ class iSQL {
         $sql = ' AND ' . $sql;
         return $sql;
     }
-    public static function multi_ids($ids,$only=false) {
+    public static function multi_var($ids,$only=false) {
         $is_multi = false;
         if(is_array($ids)){
             $is_multi = true;

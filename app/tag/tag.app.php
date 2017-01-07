@@ -36,7 +36,9 @@ class tagApp {
         }
         return $this->tag($val, $field);
     }
-
+    public function hooked($data){
+        return apps::hook('tag',$data,iCMS::$config['hooks']['tag']);
+    }
     public function tag($val, $field = 'name', $tpl = 'tag') {
         $val OR iPHP::error_404('TAG不能为空', 30002);
         is_array($val) OR $tag = iDB::row("SELECT * FROM `#iCMS@__tags` where `$field`='$val' AND `status`='1'  LIMIT 1;", ARRAY_A);
@@ -49,6 +51,8 @@ class tagApp {
             }
         }
         $tag = $this->value($tag);
+        $tag = $this->hooked($tag);
+
         $tag['param'] = array(
             "appid" => $tag['appid'],
             "iid"   => $tag['id'],

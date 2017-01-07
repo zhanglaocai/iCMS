@@ -9,7 +9,7 @@
  * @version 2.0.0
  */
 class iPlugin {
-    public static function hook($app,&$resource=null,$plugin){
+    public static function hook($app,$resource=null,$plugin){
         // if($plugin){
         //  foreach ($plugin as $_app => $callback) {
         //      if($_app==$app){
@@ -37,9 +37,9 @@ class iPlugin {
                 //     $resource[$field] = self::call_func($call,$resource[$field]);
                 // }
             }
-        }else{
-            return false;
         }
+        return $resource;
+
     }
     public static function call_func($callback,$value){
         if (is_array($callback) && @class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {

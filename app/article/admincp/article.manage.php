@@ -40,7 +40,7 @@ $(function(){
 			edsource= $('#edsource',box),
 			eddesc	= $('#eddesc',box);
 
-		$(".chosen-select",box).chosen({disable_search_threshold: 30});
+		$(".chosen-select",box).chosen(chosen_config);
 
 		$.getJSON("<?php echo APP_URI; ?>",{'do':'getjson','id':aid},function(d){
 			edcid.val(d.cid).trigger("chosen:updated");	edpid.val(d.pid).trigger("chosen:updated");

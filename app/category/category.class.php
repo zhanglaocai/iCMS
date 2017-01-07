@@ -20,7 +20,7 @@ class category {
     public function rootid($rootids=null) {
         if($rootids===null) return array();
 
-        list($rootids,$is_multi)  = iSQL::multi_ids($rootids);
+        list($rootids,$is_multi)  = iSQL::multi_var($rootids);
 
         $sql  = iSQL::in($rootids,'rootid',false,true);
         $sql OR $sql = '1 = 1';
@@ -53,7 +53,7 @@ class category {
             $field = $callback['field'];
         }
 
-        list($cids,$is_multi)  = iSQL::multi_ids($cids);
+        list($cids,$is_multi)  = iSQL::multi_var($cids);
         $sql  = iSQL::in($cids,'cid',false,true);
         $sql OR $sql = '1 = 1';
         $data = array();

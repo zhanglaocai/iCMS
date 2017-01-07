@@ -3,7 +3,7 @@
  * @package iCMS
  * @copyright 2007-2017, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
- * @author c00lt3a <idreamsoft@qq.com>
+ * @author coolmoo <idreamsoft@qq.com>
  */
 
 class apps {
@@ -18,6 +18,14 @@ class apps {
     //     $path = self::$etc."/install.lock.php";
     //     return self::get_file($app,$path);
     // }
+    public static function path($app,$type='app',$arr=false){
+        $path = iPHP_APP_DIR . '/' . $app . '/' . $app.'.'.$type.'.php';
+        if($arr){
+            $obj  = $app.ucfirst($type);
+            return array($path,$obj);
+        }
+        return $path;
+    }
     public static function uninstall($appid){
         $data = self::get($appid);
 
@@ -53,14 +61,14 @@ var_dump(@class_exists($appname));
         iFS::rmdir($appdir);
         iUI::success('应用删除完成!','js:1');
     }
-    public static function get($ids=0){
-        if(empty($ids)) return array();
-        if($ids=='all'){
+    public static function get($vars=0,$field='id'){
+        if(empty($vars)) return array();
+        if($vars=='all'){
             $sql      = '1=1';
             $is_multi = true;
         }else{
-            list($ids,$is_multi)  = iSQL::multi_ids($ids);
-            $sql  = iSQL::in($ids,'id',false,true);
+            list($vars,$is_multi)  = iSQL::multi_var($vars);
+            $sql  = iSQL::in($vars,$field,false,true);
         }
         $data = array();
         $rs   = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);
@@ -68,7 +76,7 @@ var_dump(@class_exists($appname));
             if($is_multi){
                 $_count = count($rs);
                 for ($i=0; $i < $_count; $i++) {
-                    $data[$rs[$i]->id]= self::item($rs[$i]);
+                    $data[$rs[$i]->$field]= self::item($rs[$i]);
                 }
             }else{
                 $data = self::item($rs[0]);
@@ -328,5 +336,22 @@ var_dump(@class_exists($appname));
        	return $array;
 	}
 
+    public static function hook($app,$resource=null,$plugin){
+        if($plugin){
+            foreach ($plugin as $field => $call) {
+                foreach ($call as $key => $cb) {
+                    $resource[$field] = self::call_func($cb,array($resource[$field],&$resource));
+                }
+            }
+        }
+        return $resource;
 
+    }
+    public static function call_func($callback,$value){
+        if (is_array($callback) && @class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {
+            return call_user_func_array($callback, (array)$value);
+        }else{
+            return $value;
+        }
+    }
 }

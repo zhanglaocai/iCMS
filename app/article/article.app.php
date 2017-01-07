@@ -66,6 +66,9 @@ class articleApp {
 		iUI::code(1, 'iCMS:article:' . $type, 0, 'json');
 
 	}
+    public function hooked($data){
+        return apps::hook('article',$data,iCMS::$config['hooks']['article']);
+    }
 	public function article($id, $page = 1, $tpl = true) {
 		$article = iDB::row("SELECT * FROM `#iCMS@__article` WHERE id='" . (int) $id . "' AND `status` ='1' LIMIT 1;", ARRAY_A);
 		$article OR iPHP::error_404('找不到文章: <b>ID:' . $id . '</b>', 10001);
@@ -102,7 +105,7 @@ class articleApp {
 			return false;
 		}
 
-		iPlugin::hook('article',$article,iCMS::$config['hooks']['article']);
+		$article = $this->hooked($article);
 
 		if ($tpl) {
 			$article_tpl = empty($article['tpl']) ? $article['category']['template']['article'] : $article['tpl'];
@@ -172,9 +175,6 @@ class articleApp {
 				unset($body);
 			}
 
-			$article = self::taoke($article);
-
-			$article['body']     = self::body_ad($article['body']);
 			$article['subtitle'] = $art_data['subtitle'];
 			unset($art_data);
 			$total = $count + intval(self::$config['pageno_incr']);
@@ -246,7 +246,7 @@ class articleApp {
 	public function data($aids=0){
 		if(empty($aids)) return array();
 
-		list($aids,$is_multi)  = iSQL::multi_ids($aids);
+		list($aids,$is_multi)  = iSQL::multi_var($aids);
 		$sql  = iSQL::in($aids,'aid',false,true);
 		$data = array();
 		$rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}",OBJECT);
@@ -323,31 +323,6 @@ class articleApp {
 		}
 	}
 
-	public static function taoke($resource) {
-		$content = $resource['body'];
-		preg_match_all('/<[^>]+>((http|https):\/\/(item|detail)\.(taobao|tmall)\.com\/.+)<\/[^>]+>/isU', $content, $taoke_array);
-		if ($taoke_array[1]) {
-			$tk_array = array_unique($taoke_array[1]);
-			foreach ($tk_array as $tkid => $tk_url) {
-				$tk_url = htmlspecialchars_decode($tk_url);
-				$tk_parse = parse_url($tk_url);
-				parse_str($tk_parse['query'], $tk_item_array);
-				$itemid = $tk_item_array['id'];
-				$tk_data[$tkid] = self::taoke_tpl($itemid, $tk_url);
-			}
-			$resource['body'] = str_replace($tk_array, $tk_data, $content);
-			$resource['taoke'] = true;
-		}
-		return $resource;
-	}
-	public static function taoke_tpl($itemid, $url, $title = null) {
-		iPHP::assign('taoke', array(
-			'itemid' => $itemid,
-			'title' => $title,
-			'url' => $url,
-		));
-		return iPHP::fetch('iCMS://taoke.tpl.htm');
-	}
 	public function pnTitle($pn, $chapterArray, $chapter) {
 		$title = $pn;
 		$chapter && $title = $chapterArray[$pn - 1]['subtitle'];
@@ -385,11 +360,35 @@ class articleApp {
 		}
 		return str_replace($img_array, $img_replace, $article['body']);
 	}
-    public static function body_ad($content){
+	public static function HOOK_taoke($content,$resource) {
+		preg_match_all('/<[^>]+>((http|https):\/\/(item|detail)\.(taobao|tmall)\.com\/.+)<\/[^>]+>/isU', $content, $taoke_array);
+		if ($taoke_array[1]) {
+			$tk_array = array_unique($taoke_array[1]);
+			foreach ($tk_array as $tkid => $tk_url) {
+				$tk_url = htmlspecialchars_decode($tk_url);
+				$tk_parse = parse_url($tk_url);
+				parse_str($tk_parse['query'], $tk_item_array);
+				$itemid = $tk_item_array['id'];
+				$tk_data[$tkid] = self::taoke_tpl($itemid, $tk_url);
+			}
+			$content = str_replace($tk_array, $tk_data, $content);
+			$resource['taoke'] = true;
+		}
+		return $content;
+	}
+	public static function taoke_tpl($itemid, $url, $title = null) {
+		iPHP::assign('taoke', array(
+			'itemid' => $itemid,
+			'title' => $title,
+			'url' => $url,
+		));
+		return iPHP::fetch('iCMS://taoke.tpl.htm');
+	}
+    public static function HOOK_body_ad($content){
         $pieces    = 1000;
         $html      = str_replace('</p>', "</p>\n", $content);
         $htmlArray = explode("\n", $html);
-        $resource  = array();
+        $result  = array();
         //计算长度
         preg_match_all(self::$pregimg,$content,$img_array);
         $len = strlen($content)+(count($img_array[1])*300);
@@ -413,15 +412,15 @@ class articleApp {
                 //     var_dump('---------------------------');
                 // }
                 $ad = '<script>if(typeof showBodyUI==="function")showBodyUI("body.'.$i.'");</script>';
-                $resource[$i].= $phtm.$ad;
+                $result[$i].= $phtm.$ad;
                 $pLen = 0;
                 $len = $llen;
                 $i++;
             }else{
-                $resource[$i].= $phtm;
+                $result[$i].= $phtm;
             }
         }
         unset($html,$htmlArray);
-        return implode('', (array)$resource);
+        return implode('', (array)$result);
     }
 }

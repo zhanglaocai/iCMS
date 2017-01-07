@@ -56,7 +56,6 @@ class configAdmincp{
     public static function cache(){
         $config          = self::get();
         $config['apps']  = apps::get_apps();
-        $config['hooks'] = apps::get_hooks();
         self::write($config);
     }
     public static function head($title=null){
@@ -70,13 +69,13 @@ class configAdmincp{
      * @param  integer $appid [应用ID]
      * @param  [sting] $name   [应用名]
      */
-    public static  function app($appid=0,$name=null,$ret=false){
+    public static  function app($appid=0,$name=null,$ret=false,$suffix="config"){
         $name===null && $name = admincp::$APP_NAME;
         $config = self::get($appid,$name);
         if($ret){
             return $config;
         }
-        include admincp::view($name.".config");
+        include admincp::view($name.'.'.$suffix);
     }
     /**
      * [save 其它应用配置保存]

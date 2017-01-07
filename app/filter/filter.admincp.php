@@ -35,42 +35,11 @@ class filterAdmincp{
     }
     //过滤
     public static function run(&$content){
-        $disable = iCache::get('iCMS/filter.disable');  //disable禁止
-        //禁止关键词
-        $subject = $content;
-        $pattern = '/(~|`|!|@|\#|\$|%|\^|&|\*|\(|\)|\-|=|_|\+|\{|\}|\[|\]|;|:|"|\'|<|>|\?|\/|,|\.|\s|\n|。|，|、|；|：|？|！|…|-|·|ˉ|ˇ|¨|‘|“|”|々|～|‖|∶|＂|＇|｀|｜|〃|〔|〕|〈|〉|《|》|「|」|『|』|．|〖|〗|【|】|（|）|［|］|｛|｝|°|′|″|＄|￡|￥|‰|％|℃|¤|￠|○|§|№|☆|★|○|●|◎|◇|◆|□|■|△|▲|※|→|←|↑|↓|〓|＃|＆|＠|＾|＿|＼|№|)*/i';
-        $subject = preg_replace($pattern, '', $subject);
-        foreach ((array)$disable AS $val) {
-            $val = trim($val);
-            if(strpos($val,'::')!==false){
-                list($tag,$start,$end) = explode('::',$val);
-                if($tag=='NUM'){
-                    $subject = cnum($subject);
-                    if (preg_match('/\d{'.$start.','.$end.'}/i', $subject)) {
-                        return $val;
-                    }
-                }
-            }else{
-                if ($val && preg_match("/".preg_quote($val, '/')."/i", $subject)) {
-                    return $val;
-                }
-            }
+        $result = filterApp::HOOK_disable($content);
+        if($result){
+            return $result;
         }
 
-        $filter  = iCache::get('iCMS/filter.array');    //filter过滤
-        if($filter){
-            //过滤关键词
-            foreach ((array)$filter AS $k =>$val) {
-                $val = trim($val);
-                if($val){
-                    $exp = explode("=", $val);
-                    empty($exp[1]) && $exp[1] = '***';
-                    $search[$k]  = '/'.preg_quote($exp[0], '/').'/i';
-                    $replace[$k] = $exp[1];
-                }
-
-            }
-            $search && $content = preg_replace($search,$replace,$content);
-        }
+        $content = filterApp::HOOK_filter($content);
     }
 }

@@ -69,7 +69,7 @@ class iFile {
     public static function delete_file($ids){
         if(empty($ids)) return array();
 
-        $ids  = iSQL::multi_ids($ids,true);
+        $ids  = iSQL::multi_var($ids,true);
         $sql  = iSQL::in($ids,'id',false,true);
         $rs   = iDB::all("SELECT * FROM ".self::$_data_table." where {$sql}");
         $ret  = array();
@@ -84,7 +84,7 @@ class iFile {
     public static function delete_fdb($ids,$indexid,$appid='1'){
         if(empty($ids)) return array();
 
-        $ids  = iSQL::multi_ids($ids,true);
+        $ids  = iSQL::multi_var($ids,true);
         $sql  = iSQL::in($ids,'id',false,true);
         $sql && iDB::query("DELETE FROM ".self::$_data_table." where {$sql}");
         $msql = iSQL::in($ids,'fileid');
