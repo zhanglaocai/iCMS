@@ -792,7 +792,7 @@ class articleAdmincp{
         }
         $this->body_pic_indexid($body,$aid);
     }
-    public function autodesc($body){
+    public static function autodesc($body){
         if(self::$config['autodesc'] && self::$config['descLen']) {
             is_array($body) && $bodyText   = implode("\n",$body);
             $bodyText   = str_replace('#--iCMS.PageBreak--#',"\n",$bodyText);

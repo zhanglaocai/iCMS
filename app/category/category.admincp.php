@@ -523,6 +523,10 @@ class categoryAdmincp extends category{
             $C['iurl'] = (array) iURL::get('category',$C);
             $C['href'] = $C['iurl']['href'];
             $C = $this->tree_unset($C);
+            $C['CP_ADD']  = admincp::CP($C['cid'],'a')?true:false;
+            $C['CP_EDIT'] = admincp::CP($C['cid'],'e')?true:false;
+            $C['CP_DEL']  = admincp::CP($C['cid'],'d')?true:false;
+
             $a = array('id'=>$C['cid'],'data'=>$C);
             if($rootid[$C['cid']]){
                 if($expanded){
