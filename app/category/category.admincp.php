@@ -380,7 +380,7 @@ class categoryAdmincp extends category{
             $sql.=" AND `rootid`='{$_GET['rootid']}'";
         }
         $orderby    = $_GET['orderby']?$_GET['orderby']:"cid DESC";
-        $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
+        $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
         $total      = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__category` {$sql}","G");
         iUI::pagenav($total,$maxperpage);
         $rs     = iDB::all("SELECT * FROM `#iCMS@__category` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
@@ -520,6 +520,9 @@ class categoryAdmincp extends category{
         $rootid = iCache::get('iCMS/category/rootid');
         foreach((array)$rootid[$cid] AS $root=>$_cid) {
             $C = $this->cache_get($_cid);
+            $C['iurl'] = (array) iURL::get('category',$C);
+            $C['href'] = $C['iurl']['href'];
+            $C = $this->tree_unset($C);
             $a = array('id'=>$C['cid'],'data'=>$C);
             if($rootid[$C['cid']]){
                 if($expanded){

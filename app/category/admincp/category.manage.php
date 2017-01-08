@@ -165,9 +165,11 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
           </thead>
           <tbody>
             <?php
-                $rootidArray = iSQL::values($rs,'rootid','array',null);
-                $rootidArray && $root_data = (array) $this->get($rootidArray);
-            for($i=0;$i<$_count;$i++){?>
+              $rootidArray = iSQL::values($rs,'rootid','array',null);
+              $rootidArray && $root_data = (array) $this->get($rootidArray);
+              for($i=0;$i<$_count;$i++){
+
+            ?>
             <tr id="<?php echo $rs[$i]['cid'] ; ?>" class="status<?php echo $rs[$i]['status'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['cid'] ; ?>" /></td>
               <td><?php echo $rs[$i]['cid'] ; ?></td>
@@ -180,7 +182,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
               <td><a href="<?php echo APP_DOURI; ?>&rootid=<?php echo $rs[$i]['rootid'] ; ?>"><?php echo  $root_data[$rs[$i]['rootid']]->name ; ?></a></td>
               <td><?php echo $rs[$i]['count'] ; ?></td>
               <td>
-               <a href="<?php echo iURL::get('category',$rs)->href;?>" class="btn btn-small"><i class="fa fa-link"></i> 访问</a>
+               <a href="<?php echo iURL::get('category',$rs[$i])->href;?>" class="btn btn-small"><i class="fa fa-link"></i> 访问</a>
                 <?php if(admincp::CP($rs[$i]['cid'],'ca') ){?>
                 <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&do=add&<?php echo $this->_app_cid;?>=<?php echo $rs['cid'] ;?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加<?php echo $this->_app_name;?></a>
                 <?php } ?>

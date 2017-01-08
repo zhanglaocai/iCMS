@@ -5,7 +5,7 @@
         ,imageUrl:window.iCMS.CONFIG.API + '?app=user&do=uploadimage'
         ,imageFieldName:"upfile"
         ,toolbar:[
-            'source preview | undo redo | bold italic underline strikethrough | superscript subscript | forecolor backcolor |',
+            'preview | undo redo | bold italic underline strikethrough | superscript subscript | forecolor backcolor |',
             'insertorderedlist insertunorderedlist | paragraph | fontsize' ,
             '| justifyleft justifycenter justifyright justifyjustify |',
             'link unlink | image video',
