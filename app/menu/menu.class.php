@@ -14,8 +14,8 @@ class menu {
     public $url = null;
 
 	public function __construct() {
-        // $this->get_cache();
-        $this->menu_array(true);
+        $this->get_cache();
+        // $this->menu_array(true);
 	}
     public function json_data($path){
         $json  = file_get_contents($path);

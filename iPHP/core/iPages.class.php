@@ -311,6 +311,7 @@ class iPages {
 		if($pageno<2){
 			$url = $this->url;
 			$this->html['enable'] OR $url = str_replace(array('?'.$this->page_name.'={P}','&'.$this->page_name.'={P}'),'',$this->url);
+			$url = preg_replace('@&total_num=\d+@is', '', $url);
 			return str_replace(array('_{P}','{P}'),array('',1),$url);
 		}
 		return str_replace('{P}',$pageno,$this->url);

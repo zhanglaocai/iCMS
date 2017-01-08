@@ -65,7 +65,7 @@ $(function(){
               <td><?php echo $rs[$i]['uid'] ; ?></td>
               <td><a class="tip-top" title="注册时间:<?php if($rs[$i]['regtime']) echo get_date($rs[$i]['regtime'],"Y-m-d") ; ?><hr />累计登陆次数:<?php echo $rs[$i]['logintimes'] ; ?>"><?php echo $rs[$i]['username'] ; ?></a></td>
               <td><?php echo $rs[$i]['nickname'] ; ?></td>
-              <td><a href="<?php echo APP_DOURI; ?>&gid=<?php echo $rs[$i]['gid'] ; ?>"><?php echo $this->groupApp->array[$rs[$i]['gid']]['name'] ; ?></a></td>
+              <td><a href="<?php echo APP_DOURI; ?>&gid=<?php echo $rs[$i]['gid'] ; ?>"><?php echo $this->groupAdmincp->array[$rs[$i]['gid']]['name'] ; ?></a></td>
               <td><?php echo $rs[$i]['lastip'] ; ?></td>
               <td><?php if($rs[$i]['lastlogintime']) echo get_date($rs[$i]['lastlogintime'],"Y-m-d") ; ?></td>
               <td>

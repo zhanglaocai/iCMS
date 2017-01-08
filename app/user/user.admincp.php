@@ -9,10 +9,11 @@
 * @version 6.0.0
 */
 class userAdmincp{
+    public $groupAdmincp = null;
     public function __construct() {
-        $this->appid    = iCMS_APP_USER;
-        $this->uid      = (int)$_GET['id'];
-        $this->groupApp = new groupAdmincp(0);
+        $this->appid        = iCMS_APP_USER;
+        $this->uid          = (int)$_GET['id'];
+        $this->groupAdmincp = new groupAdmincp(0);
     }
     public function do_config(){
         configAdmincp::app($this->appid);

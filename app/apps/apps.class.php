@@ -26,6 +26,7 @@ class apps {
         }
         return $path;
     }
+
     public static function uninstall($appid){
         $data = self::get($appid);
 
@@ -61,6 +62,7 @@ var_dump(@class_exists($appname));
         iFS::rmdir($appdir);
         iUI::success('应用删除完成!','js:1');
     }
+
     public static function get($vars=0,$field='id'){
         if(empty($vars)) return array();
         if($vars=='all'){
@@ -292,25 +294,12 @@ var_dump(@class_exists($appname));
         $rs = iDB::all("SELECT * FROM `#iCMS@__apps`");
 
         foreach((array)$rs AS $a) {
-        	$tb_array = json_decode($a['table']);
-        	$table = array(
-				'name'    => $tb_array[0][0]?'#iCMS@__'.$tb_array[0][0]:'',
-				'primary' => $tb_array[0][1],
-        	);
-        	if($tb_array[1]){
-				$table['join'] = $tb_array[1][0]?'#iCMS@__'.$tb_array[1][0]:'';
-				$table['on']   = $tb_array[1][1];
-        	}
-        	$a['table'] = $table;
-			$appid_array[$a['id']]     = $a;
-			$app_array[$a['app']] = $a;
+            $a = self::item($a);
+			$appid_array[$a['id']] = $a;
+			$app_array[$a['app']]  = $a;
 
-			iCache::delete('iCMS/app/'.$a['id']);
 			iCache::set('iCMS/app/'.$a['id'],$a,0);
-
-			iCache::delete('iCMS/app/'.$a['app']);
 			iCache::set('iCMS/app/'.$a['app'],$a,0);
-
         }
         iCache::set('iCMS/app/idarray',  $appid_array,0);
         iCache::set('iCMS/app/array',$app_array,0);
@@ -335,10 +324,16 @@ var_dump(@class_exists($appname));
 		}
        	return $array;
 	}
-
-    public static function hook($app,$resource=null,$plugin){
-        if($plugin){
-            foreach ($plugin as $field => $call) {
+    /**
+     * [hook 应用钩子]
+     * @param  [type] $app      [应用]
+     * @param  [type] $resource [资源]
+     * @param  [type] $hooks    [钩子]
+     * @return [type]           [description]
+     */
+    public static function hook($app,$resource=null,$hooks){
+        if($hooks){
+            foreach ($hooks as $field => $call) {
                 foreach ($call as $key => $cb) {
                     $resource[$field] = self::call_func($cb,array($resource[$field],&$resource));
                 }
@@ -347,6 +342,12 @@ var_dump(@class_exists($appname));
         return $resource;
 
     }
+    /**
+     * [call_func 应用钩子执行]
+     * @param  [type] $callback [执行函数]
+     * @param  [type] $value    [参数]
+     * @return [type]           [description]
+     */
     public static function call_func($callback,$value){
         if (is_array($callback) && @class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {
             return call_user_func_array($callback, (array)$value);

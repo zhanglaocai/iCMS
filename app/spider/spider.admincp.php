@@ -82,7 +82,7 @@ class spiderAdmincp {
 		iUI::success('删除完成', 'js:1');
 	}
 	public function do_manage($doType = null) {
-		$categoryApp = new categoryAdmincp(iCMS_APP_ARTICLE);
+		$categoryAdmincp = new categoryAdmincp(iCMS_APP_ARTICLE);
 
 		$sql = " WHERE 1=1";
 		$_GET['keywords'] && $sql .= "  AND `title` REGEXP '{$_GET['keywords']}'";
@@ -92,7 +92,7 @@ class spiderAdmincp {
 		$_GET['starttime'] && $sql .= " AND `addtime`>=UNIX_TIMESTAMP('" . $_GET['starttime'] . " 00:00:00')";
 		$_GET['endtime'] && $sql .= " AND `addtime`<=UNIX_TIMESTAMP('" . $_GET['endtime'] . " 23:59:59')";
 
-		$sql .= $categoryApp->search_sql($this->cid);
+		$sql .= $categoryAdmincp->search_sql($this->cid);
 
 		$ruleArray = $this->rule_opt(0, 'array');
 		$postArray = $this->post_opt(0, 'array');

@@ -19,16 +19,15 @@ class articleAdmincp{
 
     public function __construct() {
         self::$appid       = iCMS_APP_ARTICLE;
-        // self::$appid       = iPHP::appid('article');
-        // self::$appid       = iCMS::$appid['article'];
+        // self::$appid    = iPHP::appid('article');
+        // self::$appid    = iCMS::$appid['article'];
         $this->id          = (int)$_GET['id'];
         $this->dataid      = (int)$_GET['dataid'];
         self::$categoryApp = new categoryAdmincp(self::$appid);
         $this->_postype    = '1';
         $this->_status     = '1';
         self::$config      = iCMS::$config['article'];
-
-        define('TAG_APPID',self::$appid);
+        tag::$appid        = self::$appid;
 
     }
 
@@ -430,28 +429,27 @@ class articleAdmincp{
         $limit = 'LIMIT '.iUI::$offset.','.$maxperpage;
 
         if($map_sql||iUI::$offset){
-                if(iUI::$offset > 1000 && $total > 2000 && iUI::$offset > $total/2) {
-                    $_offset = $total-iUI::$offset-$maxperpage;
-                    if($_offset < 0) {
-                        $maxperpage += $_offset;
-                        $_offset = 0;
-                    }
-                    $orderby = "id ASC";
-                    $limit = 'LIMIT '.$_offset.','.$maxperpage;
+            if(iUI::$offset > 1000 && $total > 2000 && iUI::$offset >= $total/2) {
+                $_offset = $total-iUI::$offset-$maxperpage;
+                if($_offset < 0) {
+                    $_offset = 0;
                 }
-            // if($map_sql){
-                $ids_array = iDB::all("
-                    SELECT `id` FROM `#iCMS@__article` {$sql}
-                    ORDER BY {$orderby} {$limit}
-                ");
-                if(isset($_offset)){
-                    $ids_array = array_reverse($ids_array, TRUE);
-                    $orderby   = "id DESC";
-                }
+                $orderby = "id ASC";
+                $limit = 'LIMIT '.$_offset.','.$maxperpage;
+            }
+        // if($map_sql){
+            $ids_array = iDB::all("
+                SELECT `id` FROM `#iCMS@__article` {$sql}
+                ORDER BY {$orderby} {$limit}
+            ");
+            if(isset($_offset)){
+                $ids_array = array_reverse($ids_array, TRUE);
+                $orderby   = "id DESC";
+            }
 
-                $ids = iSQL::values($ids_array);
-                $ids = $ids?$ids:'0';
-                $sql = "WHERE `id` IN({$ids})";
+            $ids = iSQL::values($ids_array);
+            $ids = $ids?$ids:'0';
+            $sql = "WHERE `id` IN({$ids})";
             // }else{
                 // $sql = ",(
                     // SELECT `id` AS aid FROM `#iCMS@__article` {$sql}
@@ -588,7 +586,7 @@ class articleAdmincp{
 
             if($tags){
                 if(isset($_POST['tag_status'])){
-                    tag::$addStatus = $_POST['tag_status'];
+                    tag::$add_status = $_POST['tag_status'];
                 }
                 tag::add($tags,$userid,$aid,$cid);
                 //article::update(compact('tags'),array('id'=>$aid));

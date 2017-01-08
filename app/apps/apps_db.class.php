@@ -1,12 +1,190 @@
 <?php
 /**
- * @package iCMS
- * @copyright 2007-2017, iDreamSoft
- * @license http://www.idreamsoft.com iDreamSoft
- * @author coolmoo <idreamsoft@qq.com>
+ * 大部份方法移植自adminer
  */
 
 class apps_db {
+    public static function make_sql($vars=null){
+      $field    = $vars['field'];  //字段类型
+      $label    = $vars['label']; //字段名称
+      $name     = $vars['name'];  //字 段 名
+      $default  = $vars['default']; //默 认 值
+      $len      = $vars['len']; //数据长度
+
+      empty($name) && $name = iPinyin::get($label);
+      $field = strtolower($field);
+      $DEFAULT = " DEFAULT '$default'";
+      switch ($field) {
+        case 'varchar':
+        case 'multivarchar':
+          $data_type = 'varchar';
+          $data_len  = '('.$len.')';
+        break;
+        case 'tinyint':
+          $data_type = 'tinyint';
+          $data_len  = '(1)';
+          $default   = (int)$default;
+        break;
+        case 'int':
+        case 'time':
+          $data_type = 'int';
+          $data_len  = '(10)';
+          $default   = (int)$default;
+        break;
+        case 'bigint':
+          $data_type = 'bigint';
+          $data_len  = '(20)';
+          $default   = (int)$default;
+        break;
+        case 'radio':
+        case 'select':
+          $data_type = 'smallint';
+          $data_len  = '(6)';
+        break;
+        case 'checkbox':
+        case 'multiselect':
+          $data_type = 'varchar';
+          $data_len  = '(255)';
+        break;
+        case 'image':
+        case 'file':
+          $data_type = 'varchar';
+          $data_len  = '(255)';
+        break;
+        case 'multiimage':
+        case 'multifile':
+          $data_type = 'varchar';
+          $data_len  = '(10240)';
+        break;
+        case 'text':
+          $data_type = 'text';
+          $DEFAULT   = '';
+        break;
+        case 'mediumtext':
+        case 'editor':
+          $data_type = 'mediumtext';
+          $DEFAULT   = '';
+        break;
+        default:
+         $data_type = 'varchar';
+         $data_len  = '(255)';
+        break;
+      }
+
+      return "`$name` $data_type$data_len NOT NULL $DEFAULT COMMENT '$label'";
+      // return "ADD COLUMN `$name` $data_type$data_len DEFAULT '$default' NOT NULL  COMMENT '$label'";
+    }
+    public static function base_fields(){
+      $sql = self::CREATE_TABLE('test',null,true);
+      preg_match_all("@`(.+)`\s(.+)\sDEFAULT\s'(.*?)'\sCOMMENT\s'(.+)',@", $sql, $matches);
+      return $matches;
+    }
+    public static function create_table($name,$fields=null,$sql=false){
+      $create_sql = "CREATE TABLE `#iCMS@__{$name}` (";
+      $create_sql.= "
+        `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键 自增ID',
+        `cid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '栏目id',
+        `ucid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户分类',
+        `pid` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '属性',
+        `sortnum` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
+        `title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题',
+        `editor` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '编辑 用户名',
+        `userid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
+        `pubdate` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发布时间',
+        `postime` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '提交时间',
+        `tpl` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '模板',
+        `hits` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总点击数',
+        `hits_today` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '当天点击数',
+        `hits_yday` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '昨天点击数',
+        `hits_week` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '周点击',
+        `hits_month` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '月点击',
+        `favorite` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '收藏数',
+        `comments` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '评论数',
+        `good` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '顶',
+        `bad` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '踩',
+        `creative` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '内容类型 1:原创 0:转载',
+        `weight` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '权重',
+        `mobile` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '1:手机发布 0:pc',
+        `postype` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型 0用户 1管理员',
+        `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '状态 0:草稿,1:正常,2:回收,3:审核,4:不合格',
+      ";
+      if($fields){
+        $fsql_array = array();
+
+        foreach ($fields as $key => $_field) {
+          if(stripos($_field, 'UI:')===false){
+            $output = array();
+            parse_str($_field,$output);
+            $output && $fsql_array[] = self::make_sql($output);
+          }
+        }
+        $fsql_array && $create_sql.= implode(",\n", $fsql_array).',';
+      }
+      $create_sql.="
+        PRIMARY KEY (`id`),
+        KEY `id` (`status`,`id`),
+        KEY `hits` (`status`,`hits`),
+        KEY `pubdate` (`status`,`pubdate`),
+        KEY `hits_week` (`status`,`hits_week`),
+        KEY `hits_month` (`status`,`hits_month`),
+        KEY `cid_hits` (`status`,`cid`,`hits`)
+      ) ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
+
+// print_r($create_sql);
+// exit;
+     if($sql){
+        return $create_sql;
+     }
+     return iDB::query($create_sql);
+    }
+    /** Filter length value including enums
+    * @param string
+    * @return string
+    */
+    public static function process_length($length) {
+        $enum_length = "'(?:''|[^'\\\\]|\\\\.)*'";
+        return (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches)
+            ? "(" . implode(",", $matches[0]) . ")"
+            : preg_replace('~^[0-9].*~', '(\0)', preg_replace('~[^-0-9,+()[\]]~', '', $length))
+        );
+    }
+
+    /** Create SQL string from field type
+    * @param array
+    * @param string
+    * @return string
+    */
+    public static function process_type($field, $collate = "COLLATE") {
+        $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
+        return " $field[type]"
+            . self::process_length($field["length"])
+            . (preg_match('~(^|[^o])int|float|double|decimal~', $field["type"]) && in_array($field["unsigned"], $unsigned) ? " $field[unsigned]" : "")
+            . (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . q($field["collation"]) : "")
+        ;
+    }
+
+    /** Create SQL string from field
+    * @param array basic field information
+    * @param array information about field type
+    * @return array array("field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT")
+    */
+    public static function process_field($field, $type_field) {
+        $default = $field["default"];
+        return array(
+            self::idf_escape(trim($field["field"])),
+            self::process_type($type_field),
+            ($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
+            (isset($default) ? " DEFAULT " . (
+                (preg_match('~time~', $field["type"]) && preg_match('~^CURRENT_TIMESTAMP$~i', $default))
+                || (iPHP_DB_TYPE == "sqlite" && preg_match('~^CURRENT_(TIME|TIMESTAMP|DATE)$~i', $default))
+                || ($field["type"] == "bit" && preg_match("~^([0-9]+|b'[0-1]+')\$~", $default))
+                || (iPHP_DB_TYPE == "pgsql" && preg_match("~^[a-z]+\\(('[^']*')+\\)\$~", $default))
+                ? $default : q($default)) : ""),
+            (preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
+            (self::support("comment") && $field["comment"] != "" ? " COMMENT " . iDB::quo($field["comment"]) : ""),
+            ($field["auto_increment"] ? auto_increment() : null),
+        );
+    }
     public static function check_table($table) {
         $variable = apps_db::tables_list();
         foreach ($variable as $key => $value) {
@@ -141,9 +319,28 @@ class apps_db {
                 ? " (" . implode(",", $partitions) . "\n)"
                 : ($row["partitions"] ? " PARTITIONS " . (+$row["partitions"]) : "")
             );
-        } elseif (support("partitioning") && preg_match("~partitioned~", $table_status["Create_options"])) {
+        } elseif (self::support("partitioning") && preg_match("~partitioned~", $table_status["Create_options"])) {
             $partitioning .= "\nREMOVE PARTITIONING";
         }
+    }
+    /** Generate modifier for auto increment column
+    * @return string
+    */
+    function auto_increment() {
+        $auto_increment_index = " PRIMARY KEY";
+        // don't overwrite primary key by auto_increment
+        if ($_GET["create"] != "" && $_POST["auto_increment_col"]) {
+            foreach (self::indexes($_GET["create"]) as $index) {
+                if (in_array($_POST["fields"][$_POST["auto_increment_col"]]["orig"], $index["columns"], true)) {
+                    $auto_increment_index = "";
+                    break;
+                }
+                if ($index["type"] == "PRIMARY") {
+                    $auto_increment_index = " UNIQUE";
+                }
+            }
+        }
+        return " AUTO_INCREMENT$auto_increment_index";
     }
     /** Run commands to create or alter table
     * @param string "" to create
@@ -293,6 +490,14 @@ class apps_db {
     */
     public static function table($idf) {
         return self::idf_escape($idf);
+    }
+    /** Check whether a feature is supported
+    * @param string "comment", "copy", "database", "drop_col", "dump", "event", "kill", "materializedview", "partitioning", "privileges", "procedure", "processlist", "routine", "scheme", "sequence", "status", "table", "trigger", "type", "variables", "view", "view_trigger"
+    * @return bool
+    */
+    function support($feature) {
+        $version = iDB::version();
+        return !preg_match("~scheme|sequence|type|view_trigger" . ($version < 5.1 ? "|event|partitioning" . ($version < 5 ? "|routine|trigger|view" : "") : "") . "~", $feature);
     }
     public static function init() {
         $types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)

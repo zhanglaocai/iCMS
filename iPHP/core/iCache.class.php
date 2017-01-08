@@ -140,6 +140,7 @@ class iCache {
 		return self::get($keys, $ckey);
 	}
 	public static function sysCache() {
+		require_once iPHP_CORE . '/iFileCache.class.php';
 		return new iFC(array(
 			'dirs' => '',
 			'level' => 0,

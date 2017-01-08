@@ -79,7 +79,7 @@ class pushAdmincp{
 			$sql.=" AND CONCAT(title,title2,title3) REGEXP '{$_GET['keywords']}'";
         }
 
-        $sql.=$this->categoryApp->search_sql($cid);
+        $sql.=categoryAdmincp::search_sql($cid);
 
         isset($_GET['nopic'])&& $sql.=" AND `haspic` ='0'";
         $_GET['starttime']   && $sql.=" and `addtime`>=UNIX_TIMESTAMP('".$_GET['starttime']." 00:00:00')";

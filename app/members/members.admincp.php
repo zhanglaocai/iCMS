@@ -10,9 +10,11 @@
 */
 // class membersApp extends admincp{
 class membersAdmincp{
+    public $groupAdmincp =null;
+
     public function __construct() {
         $this->uid      = (int)$_GET['id'];
-        $this->groupApp = new groupAdmincp(1);
+        $this->groupAdmincp = new groupAdmincp(1);
     }
 
     public function do_job(){

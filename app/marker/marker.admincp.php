@@ -37,7 +37,7 @@ class markerAdmincp{
 
         $name OR iUI::alert('标记名称不能为空!');
         // $key OR iUI::alert('标记key值不能为空!');
-        $key OR $key = pinyin($name);
+        $key OR $key = iPinyin::get($name);
 
         $fields = array('cid','pid','name','key','data','status');
         $data   = compact ($fields);

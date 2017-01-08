@@ -16,11 +16,11 @@ defined('iPHP_DB_PORT') OR define('iPHP_DB_PORT', '3306');
 defined('iPHP_DB_NEW_LINK') OR define('iPHP_DB_NEW_LINK', null);
 
 class iDB{
-    public static $debug = false;
+    public static $show_trace = false;
     public static $show_errors = false;
     public static $show_explain = false;
+    public static $trace_info;
     public static $num_queries = 0;
-    public static $debug_info;
     public static $last_query;
     public static $col_info;
     public static $backtrace;
@@ -119,7 +119,7 @@ class iDB{
         self::$last_query = $query;
 
         // Perform the query via std mysql_query function..
-        self::$debug && self::timer_start();
+        self::$show_trace && self::timer_start();
 
         // $query = self::quote($query);
         self::$result = @mysql_query($query, self::$link);
@@ -131,12 +131,12 @@ class iDB{
 
         if(strpos($query,'EXPLAIN')===false){
             self::$num_queries++;
-            self::$debug && self::backtrace($query);
+            self::$show_trace && self::backtrace($query);
         }
 
-        self::$debug && self::timer_start();
+        self::$show_trace && self::timer_start();
 
-	    if($QT=='get') return $result;
+	    if($QT=='get') return self::$result;
 
         $QH = strtoupper(substr($query,0,strpos($query, ' ')));
         if (in_array($QH,array('INSERT','DELETE','UPDATE','REPLACE','SET','CREATE','DROP','ALTER'))) {
@@ -167,8 +167,9 @@ class iDB{
                 // Return number of rows selected
                 $return_val = $num_rows;
             }
-            @mysql_free_result(self::$result);
         }
+        @mysql_free_result(self::$result);
+        self::$result = null;
 
         return $return_val;
     }
@@ -447,7 +448,7 @@ class iDB{
             $l['file'] && $trace .= " in <b>{$l['file']}</b>";
             $l['line'] && $trace .= " on line <b>{$l['line']}</b>";
         }
-        self::$debug_info[] = array('sql'=>$query, 'exec_time'=>self::timer_stop(true),'backtrace'=>$trace);
+        self::$trace_info[] = array('sql'=>$query, 'exec_time'=>self::timer_stop(true),'backtrace'=>$trace);
         unset($trace,$backtrace);
     }
     /**

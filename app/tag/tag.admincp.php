@@ -81,10 +81,22 @@ class tagAdmincp{
         iUI::pagenav($total,$maxperpage,"个标签");
         $limit  = 'LIMIT '.iUI::$offset.','.$maxperpage;
         if($map_sql||iUI::$offset){
+            if(iUI::$offset > 1000 && $total > 2000 && iUI::$offset >= $total/2) {
+                $_offset = $total-iUI::$offset-$maxperpage;
+                if($_offset < 0) {
+                    $_offset = 0;
+                }
+                $orderby = "id ASC";
+                $limit = 'LIMIT '.$_offset.','.$maxperpage;
+            }
             $ids_array = iDB::all("
                 SELECT `id` FROM `#iCMS@__tags` {$sql}
                 ORDER BY {$orderby} {$limit}
             ");
+            if(isset($_offset)){
+                $ids_array = array_reverse($ids_array, TRUE);
+                $orderby   = "id DESC";
+            }
             $ids   = iSQL::values($ids_array);
             $ids   = $ids?$ids:'0';
             $sql   = "WHERE `id` IN({$ids})";
@@ -133,7 +145,7 @@ class tagAdmincp{
                         $msg['has']++;
                         continue;
                     }
-                    $tkey    = strtolower(pinyin($name));
+                    $tkey    = strtolower(iPinyin::get($name));
                     $uid     = members::$userid;
                     $haspic  = '0';
                     $status  = '1';
@@ -231,7 +243,7 @@ class tagAdmincp{
             }
 		}
 
-		$tkey OR $tkey = strtolower(pinyin($name));
+		$tkey OR $tkey = strtolower(iPinyin::get($name));
 
         iFS::$forceExt = "jpg";
         iFS::checkHttp($pic) && $pic = iFS::http($pic);

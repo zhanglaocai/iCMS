@@ -33,6 +33,7 @@ class iTemplate {
             "resource" => array("iTemplate","callback_path"),
             "output"   => array("iTemplate","callback_output"),
             "app"      => array("iTemplate","callback_appfunc"),
+            "app"      => array("iTemplate","callback_appfunc"),
         );
         iPHP::$iTPL->assign('GET', $_GET);
         iPHP::$iTPL->assign('POST', $_POST);

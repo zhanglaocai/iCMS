@@ -83,8 +83,8 @@ $("#<?php echo APP_FORMID;?>").batch();
               <tr id="tr<?php echo $data['id'] ; ?>">
                 <td><b><?php echo $data['id'] ; ?></b></td>
                 <td>
-                  <b><?php echo $data['app'] ; ?></b>
                   <span class="label label-success"><?php echo $this->type_array[$data['type']] ; ?></span>
+                  <b><?php echo $data['app'] ; ?></b>
                 </td>
                 <td>
                   <?php echo $data['name'] ; ?>

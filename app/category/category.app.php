@@ -7,7 +7,7 @@
  */
 class categoryApp{
 
-    const CACHE_CATEGORY_ID      = 'iCMS/category/';
+    const CACHE_CATEGORY_ID      = 'iCMS/category/C';
     const CACHE_CATEGORY_DIR2CID = 'iCMS/category/dir2cid';
     const CACHE_CATEGORY_ROOTID  = 'iCMS/category/rootid';
 

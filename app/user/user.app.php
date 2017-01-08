@@ -1091,13 +1091,13 @@ class userApp {
 	public function API_ucard() {
 		$this->user(true);
 		if ($this->auth) {
-			$secondary = $this->__secondary();
+			$secondary = $this->secondary();
 			iPHP::assign('secondary', $secondary);
 		}
 		iPHP::view('iCMS://user/user.card.htm');
 	}
 
-	private function __secondary() {
+	private function secondary() {
 		if ($this->uid == user::$userid) {
 			return;
 		}
@@ -1124,8 +1124,9 @@ class userApp {
 	}
 
 	public function category($permission = '', $_cid = "0", $cid = "0", $level = 1) {
-		$array = iCache::get('iCMS/category.' . iCMS_APP_ARTICLE . '/array');
-		foreach ((array) $array[$cid] AS $root => $C) {
+		$rootid = iCache::get('iCMS/category/rootid');
+		foreach ((array) $rootid[$cid] AS $root => $_cid) {
+			$C = category::cache_get($_cid);
 			if ($C['status'] && $C['isucshow'] && $C['issend'] && empty($C['outurl'])) {
 				$tag = ($level == '1' ? "" : "├ ");
 				$selected = ($_cid == $C['cid']) ? "selected" : "";
@@ -1133,7 +1134,7 @@ class userApp {
 				$C['isexamine'] && $text .= '[审核]';
 				$option .= "<option value='{$C['cid']}' $selected>{$text}</option>";
 			}
-			$array[$C['cid']] && $option .= $this->category($permission, $_cid, $C['cid'], $level + 1, $url);
+			$rootid[$C['cid']] && $option .= $this->category($permission, $_cid, $C['cid'], $level + 1, $url);
 		}
 		return $option;
 	}

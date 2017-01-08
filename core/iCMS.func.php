@@ -268,3 +268,11 @@ function key2num($resource){
     return $_resource;
 }
 
+function metadata($data=null) {
+    $mdArray = array();
+    $data    = json_decode($data,true);
+    foreach((array)$data as $key => $value){
+        $mdArray[$key] = $value;
+    }
+    return $mdArray;
+}

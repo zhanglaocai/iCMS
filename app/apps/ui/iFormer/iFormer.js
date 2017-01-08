@@ -6,8 +6,17 @@ var iFormer = {
     widget: function(t) {
         var tags = {
             input: '<input/>',
-            textarea: '<textarea/>'
+            textarea: '<textarea/>',
+            btngroup: function (text) {
+                var btngroup = iFormer.widget('div').addClass('btn-group btn-group-vertical');
+                btngroup.append('<a class="btn dropdown-toggle">'+
+                    ' <span class="caret"></span> '+text+'</a>');
+                return btngroup;
+            }
         };
+        if(typeof(tags[t])==="function"){
+            return tags[t];
+        }
         if(tags[t]){
           return $(tags[t]);
         }else{
@@ -32,9 +41,58 @@ var iFormer = {
         }else{
             var $div  = this.widget('div').addClass('input-prepend'),
                 $label= this.widget('span').addClass('add-on'),
-                $help = this.widget('span').addClass('help-inline'),
-                // $span = this.widget('span'),
-                $elem = this.widget(obj['tag']);
+                $help = this.widget('span').addClass('help-inline');
+
+            switch (obj['tag']) {
+                case 'multimage':
+                case 'multifile':
+                    var $elem = this.widget('textarea');
+                case 'file':
+                case 'image':
+                case 'prop':
+                    var tagText = {
+                        prop:'选择属性',
+                        image:'图片上传',
+                        multimage:'多图上传',
+                        file:'文件上传',
+                        multifile:'批量上传',
+                    }
+                    var $elem = $elem||this.widget('input');
+                    var handle2 = function () {
+                        var btngroup = iFormer.widget('btngroup');
+                        $div.addClass('input-append');
+                        $div.append(btngroup(tagText[obj['tag']]));
+                    }
+                break;
+                case 'seccode':
+                    var $elem = iFormer.widget('input').addClass('seccode');
+                    $elem.attr('maxlength',"4");
+                    var handle2 = function () {
+                        var span = iFormer.widget('span').addClass('add-on');
+                        span.append('<img src="'+iCMS.config.API+'?do=seccode" alt="验证码" class="seccode-img r3">'+
+                            '<a href="javascript:;" class="seccode-text">换一张</a>'
+                        );
+                        $div.addClass('input-append');
+                        $div.append(span);
+                    }
+
+                break;
+                case 'textarea':
+                    var $elem = this.widget('textarea');
+                    obj['class'] = "span6";
+                    $elem.css('height','300px');
+                break;
+                case 'editor':
+                    var $elem = this.widget('textarea').hide();
+                    var handle2 = function () {
+                        var img = iFormer.widget('img');
+                        img.prop('src', './app/apps/ui/iFormer/img/editor.png');
+                        $div.append(img);
+                    }
+
+                break;
+                default:var $elem = this.widget(obj['tag']);
+            }
 
             obj['type']  = obj['type']||'text';
             obj['class'] = obj['class']||'span3';
@@ -48,11 +106,10 @@ var iFormer = {
                 case 'radio':
                 case 'checkbox':
                     obj['class'] = 'checkbox';
-                    var handle = function (div,label,elem) {
+                    var handle = function () {
                         var parent = iFormer.widget('span').addClass('add-on')
-                        parent.append(elem);
-                        div.append(label,parent);
-                        return div;
+                        parent.append($elem);
+                        $div.append($label,parent);
                     }
                 break;
                 case 'multiple':
@@ -77,12 +134,11 @@ var iFormer = {
                 break;
                 case 'currency2':
                 case 'percentage':
-                    var handle = function (div,label,elem) {
+                    var handle2 = function () {
                         var text = helper.attr('label-after');
                         var label2 = iFormer.widget('span').addClass('add-on');
                         label2.append(text);
-                        $div.append($label,$elem,label2).addClass('input-append');
-                        return div;
+                        $div.append(label2).addClass('input-append');
                     }
                     obj['class'] = 'span2';
                     obj['type']  = 'text';
@@ -104,11 +160,16 @@ var iFormer = {
             $label.text(obj['label']);
             $help.text(obj['help']);
 
-            if(typeof(handle)!=="undefined"){
-                $div = handle($div,$label,$elem);
+            if(typeof(handle)==="function"){
+                handle();
             }else{
                 $div.append($label,$elem);
             }
+
+            if(typeof(handle2)==="function"){
+                handle2();
+            }
+
             $container.append($div,$action,$help);
         }
         if(data){
@@ -194,7 +255,7 @@ var iFormer = {
         // $container.dblclick(function(event) {
             event.preventDefault();
             var me   = $(this);
-            var data = $("[name='data[]']",$container).val();
+            var data = $("[name='fields[]']",$container).val();
             var obj  = iFormer.urlDecode(data);
             iFormer.edit_dialog(obj, function(param,qt) {
                 var render = iFormer.render($container,param,qt);
@@ -204,7 +265,7 @@ var iFormer = {
     },
     edit_dialog: function(obj, func) {
         var me = this;
-        var fbox = document.getElementById("field_box");
+        var fbox = document.getElementById("field_edit");
 
         for(var i in obj) {
             $("#iFormer-"+i, fbox).val(obj[i]);

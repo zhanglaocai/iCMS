@@ -45,6 +45,7 @@
 .iFormer-ui{display:inline-block;float:left;}
 .iFormer-ui .action{display:inline-block;margin-left:5px;vertical-align:middle;}
 .iFormer-ui .action a{font-size:16px;margin-right:5px;color:#999;}
+.iFormer-ui .seccode-img{height: 24px;margin-top: -2px;margin-right:5px;}
 #custom_field_list{margin:10px;padding-bottom:60px;}
 #custom_field_list .row-fluid{height:35px;}
 #custom_field_list .row-fluid div{background-color:#efefef;}

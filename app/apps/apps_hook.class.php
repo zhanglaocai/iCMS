@@ -7,11 +7,6 @@
  */
 
 class apps_hook {
-    public static function check($app=null) {
-        $obj_name = $app.'App';
-        return class_exists($obj_name);
-    }
-
     public static function app_select($app=null) {
         foreach (apps::get_array(array("table"=>true)) as $key => $value) {
             list($path,$obj_name)= apps::path($value['app'],'app',true);

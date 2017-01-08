@@ -94,7 +94,7 @@ class categoryAdmincp extends category{
         $isucshow     = (int)$_POST['isucshow'];
         $issend       = (int)$_POST['issend'];
         $isexamine    = (int)$_POST['isexamine'];
-        $sortnum     = (int)$_POST['sortnum'];
+        $sortnum      = (int)$_POST['sortnum'];
         $mode         = (int)$_POST['mode'];
         $pid          = implode(',', (array)$_POST['pid']);
         $_pid         = iSecurity::escapeStr($_POST['_pid']);
@@ -179,10 +179,10 @@ class categoryAdmincp extends category{
 
                 if($_count=="1"){
                     if(empty($dir) && empty($url)) {
-                        $dir = strtolower(pinyin($_name));
+                        $dir = strtolower(iPinyin::get($_name));
                     }
                 }else{
-                    empty($url) && $dir = strtolower(pinyin($_name));
+                    empty($url) && $dir = strtolower(iPinyin::get($_name));
                 }
                 $mode=="2" && $this->check_dir($dir,$appid,$url);
                 $data['name']     = $_name;
@@ -195,13 +195,12 @@ class categoryAdmincp extends category{
                 $cid = iDB::insert('category',$data);
                 iDB::update('category', array('sortnum'=>$cid), array('cid'=>$cid));
                 $pid && iMap::add($pid,$cid);
-	            $this->cache(false,$this->appid);
-	            $this->cahce_one($cid);
+                $this->cahce_one($cid);
             }
-            $msg = $this->category_name."添加完成!";
+            $msg = $this->category_name."添加完成!请记得更新缓存!";
         }else {
             if(empty($dir) && empty($url)) {
-                $dir = strtolower(pinyin($name));
+                $dir = strtolower(iPinyin::get($name));
             }
             admincp::CP($cid,'e','alert');
             $mode=="2" && $this->check_dir($dir,$appid,$url,$cid);
@@ -210,7 +209,7 @@ class categoryAdmincp extends category{
             iDB::update('category', $data, array('cid'=>$cid));
             iMap::diff($pid,$_pid,$cid);
             $this->cahce_one($cid);
-            $msg = $this->category_name."编辑完成!";
+            $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
         $hasbody && iCache::set('iCMS/category/'.$cid.'.body',$body,0);
 
@@ -280,7 +279,7 @@ class categoryAdmincp extends category{
             case 'mkdir':
                 foreach($id_array as $k=>$cid){
                     $name = iSecurity::escapeStr($_POST['name'][$cid]);
-                    $dir  = pinyin($name);
+                    $dir  = iPinyin::get($name);
                     iDB::query("UPDATE `#iCMS@__category` SET `dir` = '$dir' WHERE `cid` ='".(int)$cid."' LIMIT 1");
                 }
                 iUI::success('更新完成!','js:1');
@@ -434,11 +433,11 @@ class categoryAdmincp extends category{
     }
     public function do_cache($dialog=true){
         $_count = $this->cache(true,$this->appid);
-        if($_count>1000){
-            $this->do_cacheall($_count);
-        }else{
-            $this->cache_all(0,$_count);
-        }
+        // if($_count>1000){
+        //     $this->do_cacheall($_count);
+        // }else{
+        //     $this->cache_all(0,$_count);
+        // }
         $dialog && iUI::success('更新完成');
    }
     public function do_cacheall($total){
@@ -506,35 +505,23 @@ class categoryAdmincp extends category{
     }
 
     public static function tree_unset($C){
-        unset($C->rule,
-            $C->template,
-            $C->description,
-            $C->keywords,
-            $C->metadata,
-            $C->mpic,
-            $C->password,
-            $C->spic,
-            $C->title,
-            $C->subname,
-            $C->iurl,
-            $C->dir,
-            $C->hasbody,
-            $C->htmlext,
-            $C->isexamine,
-            $C->issend,
-            $C->isucshow,
-            $C->comments
+        unset(
+            $C->rule,$C->template,
+            $C->description,$C->keywords,$C->metadata,
+            $C->password,$C->mpic,$C->spic,
+            $C->title,$C->subname,$C->iurl,$C->dir,
+            $C->hasbody,$C->htmlext,
+            $C->isexamine,$C->issend,$C->isucshow,$C->comments
         );
         return $C;
     }
     public function tree($cid = 0,$expanded=false,$ret=false){
         $html = array();
-        $cidArray = (array)$this->cid_array($cid);
-        $CARRAY= (array)$this->get($cidArray,array('categoryAdmincp','tree_unset'));
-        foreach($cidArray AS $root=>$_cid) {
-            $C = (array)$CARRAY[$_cid];
+        $rootid = iCache::get('iCMS/category/rootid');
+        foreach((array)$rootid[$cid] AS $root=>$_cid) {
+            $C = $this->cache_get($_cid);
             $a = array('id'=>$C['cid'],'data'=>$C);
-            if($this->cid_array($C['cid'])){
+            if($rootid[$C['cid']]){
                 if($expanded){
                     $a['hasChildren'] = false;
                     $a['expanded']    = true;
@@ -560,20 +547,18 @@ class categoryAdmincp extends category{
     }
 
     public function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false,$where=null) {
-        $cidArray  = (array)$this->cid_array($cid,$where);
-        $CARRAY    = (array)$this->get($cidArray,array('categoryAdmincp','tree_unset'));
-        $ROOTARRAY = (array)$this->rootid($cidArray);
+        $rootid = iCache::get('iCMS/category/rootid');
 
-        foreach($cidArray AS $root=>$_cid) {
-            $C = (array)$CARRAY[$_cid];
-            if(admincp::CP($_cid,$permission) && $C['status']) {
+        foreach((array)$rootid[$cid] AS $root=>$_cid) {
+            $C = $this->cache_get($_cid);
+            if($C['status']) {
                 $tag      = ($level=='1'?"":"├ ");
                 $selected = ($select_cid==$_cid)?"selected":"";
                 $text     = str_repeat("│　", $level-1).$tag.$C['name']."[cid:{$_cid}][pid:{$C['pid']}]".($C['url']?"[∞]":"");
                 ($C['url'] && !$url) && $selected ='disabled';
                 $option.="<option value='{$_cid}' $selected>{$text}</option>";
             }
-            $ROOTARRAY[$_cid] && $option.=$this->select($permission,$select_cid,$C['cid'],$level+1,$url);
+            $rootid[$_cid] && $option.=$this->select($permission,$select_cid,$C['cid'],$level+1,$url);
         }
         return $option;
     }

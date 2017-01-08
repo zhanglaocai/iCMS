@@ -5,11 +5,11 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
-defined('TAG_APPID') OR define('TAG_APPID',0);
 
 class tag {
-    public static $remove = true;
-    public static $addStatus = '1';
+    public static $appid      = '1';
+    public static $remove     = true;
+    public static $add_status = '1';
 
 	public static function data($fv=0,$field='name',$limit=0){
 		$sql      = $fv ? "where `$field`='$fv'":'';
@@ -45,7 +45,7 @@ class tag {
 
         foreach($strArray AS $k=>$name){
         	$name				= trim($name);
-        	$_cache				= self::getCache($name,$C['cid'],$TC['cid']);
+        	$_cache				= self::get_cache($name,$C['cid'],$TC['cid']);
 			$strA[$k]['name']	= $name;
 			$strA[$k]['url']	= $_cache['url']?$_cache['url']:iCMS_PUBLIC_URL.'/search.php?q='.$name;
 			$strLink.='<a href="'.$strA[$k]['url'].'" target="_self">'.$strA[$k]['name'].'</a> ';
@@ -68,12 +68,12 @@ class tag {
         );
     }
 
-	public static function getCache($tid){
+	public static function get_cache($tid){
 		$tkey	= self::tkey($tid);
 		return iCache::get($tkey);
 	}
 
-    public static function delCache($tid) {
+    public static function del_cache($tid) {
 		$ids = implode(',',(array)$tid);
 		iDB::query("DELETE FROM `#iCMS@__tags` WHERE `id` in ($ids) ");
 		$c   = count($tid);
@@ -91,71 +91,71 @@ class tag {
 	public static function add($tags,$uid="0",$iid="0",$cid='0',$tcid='0') {
 		$a        = explode(',',$tags);
 		$c        = count($a);
-		$tagArray = array();
+		$tag_array = array();
 	    for($i=0;$i<$c;$i++) {
-	        $tagArray[$i] = self::update($a[$i],$uid,$iid,$cid,$tcid);
+	        $tag_array[$i] = self::update($a[$i],$uid,$iid,$cid,$tcid);
 	    }
-	    return implode(',', (array)$tagArray);
+	    return implode(',', (array)$tag_array);
 	}
-	public static function update($tag,$uid="0",$iid="0",$cid='0',$tcid='0') {
-	    if(empty($tag)) return;
-
-	    $tag = htmlspecialchars_decode($tag);
-	    $tag = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tag);
-	    $tid = iDB::value("SELECT `id` FROM `#iCMS@__tags` WHERE `name`='$tag'");
+	public static function update($name,$uid="0",$iid="0",$cid='0',$tcid='0') {
+	    if(empty($name)) return;
+        $name = trim($name,"\0\n\r\t\x0B");
+	    $name = htmlspecialchars_decode($name);
+	    $name = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$name);
+	    $tid = iDB::value("SELECT `id` FROM `#iCMS@__tags` WHERE `name`='$name'");
 	    if($tid) {
 	        $tlid = iDB::value("
                 SELECT `id` FROM `#iCMS@__tags_map`
-                WHERE `iid`='$iid' and `node`='$tid' and `appid`='".TAG_APPID."'");
+                WHERE `iid`='$iid' and `node`='$tid' and `appid`='".self::$appid."'");
 	        if(empty($tlid)) {
-	            iDB::query("
-                    INSERT INTO `#iCMS@__tags_map` (`node`, `iid`, `appid`)
-                    VALUES ('$tid', '$iid', '".TAG_APPID."')");
+                $tlid = iDB::insert('tags_map',array(
+                    'node'  => $tid,
+                    'iid'   => $iid,
+                    'appid' => self::$appid,
+                ));
 	            iDB::query("
                     UPDATE `#iCMS@__tags`
                     SET  `count`=count+1,`pubdate`='".time()."'
                     WHERE `id`='$tid'");
 	        }
 	    }else {
-			$tkey   = pinyin($tag,iCMS::$config['other']['py_split']);
-			// $fields = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'status');
-			// $data   = compact ($fields);
-			// $data['pid'] = '0';
-			// iDB::insert('tags',$data);
-	        iDB::query("INSERT INTO `#iCMS@__tags`
-(`uid`, `cid`, `tcid`, `pid`, `tkey`, `name`,
-    `seotitle`, `subtitle`, `keywords`, `description`, `haspic`, `pic`, `url`,
-    `related`, `count`, `weight`, `tpl`, `sortnum`,
-    `pubdate`,`postime`, `status`)
-VALUES ('$uid', '$cid', '$tcid', '0', '$tkey', '$tag',
-    '', '', '', '', '', '', '', '', '1', '0', '', '0',
-    '".time()."', '".time()."', '".self::$addStatus."');");
-	        $tid = iDB::$insert_id;
-	        self::cache($tag);
-	        iDB::query("
-                INSERT INTO `#iCMS@__tags_map` (`node`, `iid`, `appid`)
-                VALUES ('$tid', '$iid', '".TAG_APPID."')");
-	    	$tmid = iDB::$insert_id;
+			$tkey   = iPinyin::get($name,iCMS::$config['other']['py_split']);
+			$fields = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'postime', 'status');
+			$data   = compact ($fields);
+            $data['pid']     = '0';
+            $data['count']   = '1';
+            $data['weight']  = '0';
+            $data['sortnum'] = '0';
+            $data['pubdate'] = time();
+            $data['postime'] = $data['pubdate'];
+            $data['status']  = self::$add_status;
+
+			$tid = iDB::insert('tags',$data);
+            $tmid = iDB::insert('tags_map',array(
+                'node'  => $tid,
+                'iid'   => $iid,
+                'appid' => self::$appid,
+            ));
 	    }
-	    return $tag;
+	    return $name;
 	}
 	public static function diff($Ntags,$Otags,$uid="0",$iid="0",$cid='0',$tcid='0') {
 		$N        = explode(',', $Ntags);
 		$O        = explode(',', $Otags);
 		$diff     = array_diff_values($N,$O);
-		$tagArray = array();
+		$tag_array = array();
 	    foreach((array)$N AS $i=>$tag) {//新增
-            $tagArray[$i] = self::update($tag,$uid,$iid,$cid,$tcid);
+            $tag_array[$i] = self::update($tag,$uid,$iid,$cid,$tcid);
 		}
 	    foreach((array)$diff['-'] AS $tag) {//减少
-	        $tA	= iDB::row("
+	        $ot	= iDB::row("
                 SELECT `id`,`count`
                 FROM `#iCMS@__tags`
                 WHERE `name`='$tag' LIMIT 1;");
-	        if($tA->count<=1) {
+	        if($ot->count<=1) {
 	        	//$iid && $sql="AND `iid`='$iid'";
 	            iDB::query("DELETE FROM `#iCMS@__tags`  WHERE `name`='$tag'");
-	            iDB::query("DELETE FROM `#iCMS@__tags_map` WHERE `node`='$tA->id'");
+	            iDB::query("DELETE FROM `#iCMS@__tags_map` WHERE `node`='$ot->id'");
 	        }else {
 	            iDB::query("
                     UPDATE `#iCMS@__tags`
@@ -164,25 +164,25 @@ VALUES ('$uid', '$cid', '$tcid', '0', '$tkey', '$tag',
 	            iDB::query("
                     DELETE FROM `#iCMS@__tags_map`
                     WHERE `iid`='$iid'
-                    AND `node`='$tA->id'
-                    AND `appid`='".TAG_APPID."'");
+                    AND `node`='$ot->id'
+                    AND `appid`='".self::$appid."'");
 	        }
 	   }
-	   return implode(',', (array)$tagArray);
+	   return implode(',', (array)$tag_array);
 	}
 	public static function del($tags,$field='name',$iid=0){
-	    $tagArray	= explode(",",$tags);
+	    $tag_array	= explode(",",$tags);
 	    $iid && $sql="AND `iid`='$iid'";
-	    foreach($tagArray AS $k=>$v) {
+	    foreach($tag_array AS $k=>$v) {
 	    	$tag	= iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `$field`='$v' LIMIT 1;");
-	    	$tRS	= iDB::all("SELECT `iid` FROM `#iCMS@__tags_map` WHERE `node`='$tag->id' AND `appid`='".TAG_APPID."' {$sql}");
+	    	$tRS	= iDB::all("SELECT `iid` FROM `#iCMS@__tags_map` WHERE `node`='$tag->id' AND `appid`='".self::$appid."' {$sql}");
 	    	foreach((array)$tRS AS $TL) {
 	    		$idA[]=$TL['iid'];
 	    	}
 	    	if($idA){
 	    		$ids = iSQL::values($idA,null);
                 if($ids){
-                    $table = apps::table(TAG_APPID);
+                    $table = apps::table(self::$appid);
                     iDB::query("
                         UPDATE `#iCMS@__$table`
                         SET `tags`= REPLACE(tags, '$tag->name,',''),
@@ -196,9 +196,9 @@ VALUES ('$uid', '$cid', '$tcid', '0', '$tkey', '$tag',
                 DELETE FROM
                 `#iCMS@__tags_map`
                 WHERE `node`='$tag->id'
-                AND `appid`='".TAG_APPID."' {$sql}");
+                AND `appid`='".self::$appid."' {$sql}");
             $ckey = self::tkey($tag->cid);
-            iCache::delete($ckey);
+            // iCache::delete($ckey);
 	    }
 	}
 }

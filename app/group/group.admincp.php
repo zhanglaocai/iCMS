@@ -9,9 +9,10 @@
 * @version 6.0.0
 */
 class groupAdmincp{
-	public $group = NULL;
-	public $array = NULL;
-	public $type  = NULL;
+    public $gid   = NULL;
+    public $group = NULL;
+    public $array = NULL;
+    public $type  = NULL;
 
     public function __construct($type=null) {
     	$this->gid	= (int)$_GET['gid'];
@@ -26,23 +27,17 @@ class groupAdmincp{
 			$this->group[$rs[$i]['type']][] = $rs[$i];
 		}
     }
-
+    public function do_iCMS(){
+        $this->do_manage();
+    }
     public function do_add(){
         $this->gid && $rs = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='$this->gid' LIMIT 1;");
         include admincp::view("group.add");
     }
-	public function select($type=null,$currentid=NULL){
-		$type===null && $type = $this->type;
-		if($this->group[$type])foreach($this->group[$type] AS $G){
-			$selected=($currentid==$G['gid'])?" selected='selected'":'';
-			$option.="<option value='{$G['gid']}'{$selected}>".$G['name']."[GID:{$G['gid']}] </option>";
-		}
-		return $option;
-	}
-    public function do_iCMS(){
-    	$rs		= iDB::all("SELECT * FROM `#iCMS@__group` ORDER BY `type` , `gid` ASC");
-		$_count	= count($rs);
-    	include admincp::view("group.manage");
+    public function do_manage(){
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__group` ORDER BY `type` , `gid` ASC");
+        $_count = count($rs);
+        include admincp::view("group.manage");
     }
     public function do_del($gid = null,$dialog=true){
     	$gid===null && $gid=$this->gid;
@@ -85,4 +80,12 @@ class groupAdmincp{
 		}
 		iUI::success($msg,'url:'.APP_URI);
 	}
+    public function select($type=null,$currentid=NULL){
+        $type===null && $type = $this->type;
+        if($this->group[$type])foreach($this->group[$type] AS $G){
+            $selected=($currentid==$G['gid'])?" selected='selected'":'';
+            $option.="<option value='{$G['gid']}'{$selected}>".$G['name']."[GID:{$G['gid']}] </option>";
+        }
+        return $option;
+    }
 }

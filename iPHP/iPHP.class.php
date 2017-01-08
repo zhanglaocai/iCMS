@@ -127,7 +127,7 @@ class iPHP {
 		empty(self::$apps) && self::$apps = array('admincp'=>'0');
 		self::define_app();
 		iPHP_DB_DEBUG   && iDB::$show_errors  = true;
-		iPHP_DB_TRACE   && iDB::$debug        = true;
+		iPHP_DB_TRACE   && iDB::$show_trace   = true;
 		iPHP_DB_EXPLAIN && iDB::$show_explain = true;
 		return $config;
 	}
@@ -239,12 +239,12 @@ class iPHP {
 			echo '<div class="well">';
 			echo '<h3 class="label label-default">调试信息</h3>';
 			echo '<span class="label label-success">模板:'.$tpl.' 内存:'.iFS::sizeUnit(memory_get_usage()).', 执行时间:'.self::timer_stop().'s, SQL累计执行:'.iDB::$num_queries.'次</span>';
-			if(iDB::$debug_info && iPHP_DB_TRACE){
+			if(iDB::$trace_info && iPHP_DB_TRACE){
 				echo '<br /><h3 class="label label-default">数据调用汇总:</h3>';
 				echo '<pre class="alert alert-info">';
-				print_r(iDB::$debug_info);
+				print_r(iDB::$trace_info);
 				echo '</pre>';
-				iDB::$debug_info = null;
+				iDB::$trace_info = null;
 			}
 			echo '</div>';
 		}

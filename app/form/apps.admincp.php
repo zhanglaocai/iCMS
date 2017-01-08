@@ -35,7 +35,7 @@ class appsAdmincp{
         $field       = $_POST['fields'];
 
         $title OR iUI::alert('应用名称不能为空!');
-        empty($name) && $name = pinyin($title);
+        empty($name) && $name = iPinyin::get($title);
         $table_array = array(array($name,'id'));
         $table       = json_encode($table_array);
 
@@ -153,7 +153,7 @@ class appsAdmincp{
       $fun      = $vars['fun'];     //数据处理
       $foreign  = $vars['foreign']; //关联应用
 
-      empty($fname) && $fname = pinyin($label);
+      empty($fname) && $fname = iPinyin::get($label);
 
       switch ($type) {
         case 'varchar':
