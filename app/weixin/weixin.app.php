@@ -91,8 +91,8 @@ class weixinApp {
             }
 
 
-            iPHP::assign('weixin',$data);
-            iPHP::view("iCMS://weixin.api.htm");
+            iView::assign('weixin',$data);
+            iView::render("iCMS://weixin.api.htm");
         }
         if(iPHP_DEBUG){
             // $output = ob_get_contents();

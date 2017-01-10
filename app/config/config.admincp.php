@@ -123,7 +123,7 @@ class configAdmincp{
      * @param boolean $cache [description]
      */
     public static function set($value, $name, $appid, $cache = false) {
-        $cache && iCache::set('iCMS/config/' . $name, $value, 0);
+        $cache && iCache::set('config/' . $name, $value, 0);
         is_array($value) && $value = addslashes(serialize($value));
         $check  = iDB::value("SELECT `name` FROM `#iCMS@__config` WHERE `appid` ='$appid' AND `name` ='$name'");
         $fields = array('appid','name','value');

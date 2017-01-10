@@ -55,14 +55,7 @@ define('iPHP_TPL_CACHE',iPATH."cache/template");
 defined('iPHP_APP') OR define('iPHP_APP',"iPHP");
 defined('iPHP_MEMORY_LIMIT') OR define('iPHP_MEMORY_LIMIT', '128M');
 
-//-----------------其它由应用程序动态加载-----------------------
-//define('iPHP_APP_CONF',	iPHP_CONF_DIR."/iPHP");
-//define('iPHP_URL_404','');
 //-----------------模板标签-----------------------
-defined('iPHP_TPL_VAR') OR define('iPHP_TPL_VAR',iPHP_APP);//<!--{iPHP:test }--><!--{iPHP.now}-->
-//defined('iPHP_TPL_DOMAIN') OR define('iPHP_TPL_DOMAIN','www.idreamsoft.com');
-//defined('iPHP_DEFAULT_TPL') OR define('iPHP_DEFAULT_TPL','default');
 defined('iPHP_TPL_FUN') OR define('iPHP_TPL_FUN',iPHP_APP_DIR.'/func');
 defined('iPHP_CHARSET') OR define('iPHP_CHARSET','UTF-8');
-defined('iPHP_SESSION') OR define('iPHP_SESSION','COOKIE');// SESSION,COOKIE,SESSION+COOKIE,
 defined('iPHP_SHELL') OR define('iPHP_SHELL',PHP_SAPI=='cli'?true:false);// SESSION,COOKIE,SESSION+COOKIE,

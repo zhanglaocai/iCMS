@@ -23,7 +23,7 @@ class iTemplateLite {
 
 	public $_error_reporting          = "<?php defined('iPHP') OR exit('What are you doing?');error_reporting(iPHP_TPL_DEBUG?E_ALL & ~E_NOTICE:0);?>\n";
 
-	public $reserved_template_varname = iPHP_TPL_VAR;
+	public $reserved_template_varname = 'iTPL';
 
 	// private internal variables
 	public $_vars                     = array();	// stores all internal assigned variables
@@ -340,9 +340,9 @@ class iTemplateLite {
 		is_file($path) OR $this->trigger_error($path. " does not exist", E_USER_ERROR);
 		$key	= str_replace(iPATH,'iPHP://',$path);
 		//$key	= str_replace(array('/','.'),'_',$key);
-      	if(isset($GLOBALS['_iPHP_REQ'][$key])) return;
+      	if(isset($GLOBALS['iPHP_REQ'][$key])) return;
 
-		$GLOBALS['_iPHP_REQ'][$key] = true;
+		$GLOBALS['iPHP_REQ'][$key] = true;
 		require $path;
     }
 }
@@ -558,7 +558,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 		return $_result;
 	}
 	function _parse_function($function, $modifiers, $arguments){
-		if(strpos($function,iPHP_TPL_VAR.':')!==false){
+		if(strpos($function,$this->reserved_template_varname.':')!==false){
 			list($function,$app,$method)=explode(':',$function);
 		}
 		//var_dump($function,$app,$method);
@@ -567,11 +567,11 @@ class iTemplateLite_Compiler extends iTemplateLite {
 				$this->internal('compile_include');
 				return $include_file = str_replace($this->_error_reporting, '', compile_include($arguments, $this));
 				break;
-			case iPHP_TPL_VAR:
+			case $this->reserved_template_varname:
 				$arguments.=' app="'.$app.'"';
 				$method && $arguments.=' method="'.$method.'"';
 				$_args = $this->_parse_arguments($arguments);
-				isset($_args['app']) OR $this->trigger_error("missing 'app' attribute in '".iPHP_TPL_VAR."'", E_USER_ERROR, __FILE__, __LINE__);
+				isset($_args['app']) OR $this->trigger_error("missing 'app' attribute in '".$this->reserved_template_varname."'", E_USER_ERROR, __FILE__, __LINE__);
 				foreach ($_args as $key => $value){
 					$arg_list[] = "'$key' => $value";
 				}
@@ -597,12 +597,12 @@ class iTemplateLite_Compiler extends iTemplateLite {
 				}
 				return $code.$compile_iPHP;
 				break;
-			case iPHP_TPL_VAR.'else':
+			case $this->reserved_template_varname.'else':
 				$this->_iPHP_else_stack = true;
 				return "<?php }}else{ ?>";
 				break;
-			case '/'.iPHP_TPL_VAR:
-				array_pop($this->_iPHP_stack) OR $this->trigger_error("missing 'loop' attribute in '".iPHP_TPL_VAR."'", E_USER_ERROR, __FILE__, __LINE__);
+			case '/'.$this->reserved_template_varname:
+				array_pop($this->_iPHP_stack) OR $this->trigger_error("missing 'loop' attribute in '".$this->reserved_template_varname."'", E_USER_ERROR, __FILE__, __LINE__);
 				if($this->_iPHP_else_stack){
 					$this->_iPHP_else_stack = false;
 					return "<?php } ?>";

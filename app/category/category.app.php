@@ -7,9 +7,9 @@
  */
 class categoryApp{
 
-    const CACHE_CATEGORY_ID      = 'iCMS/category/C';
-    const CACHE_CATEGORY_DIR2CID = 'iCMS/category/dir2cid';
-    const CACHE_CATEGORY_ROOTID  = 'iCMS/category/rootid';
+    const CACHE_CATEGORY_ID      = 'category/C';
+    const CACHE_CATEGORY_DIR2CID = 'category/dir2cid';
+    const CACHE_CATEGORY_ROOTID  = 'category/rootid';
 
 	public $methods	= array('iCMS','category');
     public function __construct($appid = iCMS_APP_ARTICLE) {
@@ -39,7 +39,7 @@ class categoryApp{
         if($category['status']==0) return false;
         $iurl = $category['iurl'];
         if($tpl){
-            if(iPHP::$iVIEW=="html" && (strstr($category['rule']['index'],'{PHP}')||$category['outurl']||!$category['mode']) ) return false;
+            if(iView::$gateway=="html" && (strstr($category['rule']['index'],'{PHP}')||$category['outurl']||!$category['mode']) ) return false;
             $category['outurl'] && iPHP::redirect($category['outurl']);
             $category['mode']=='1' && iCMS::redirect_html($iurl['path'],$iurl['href']);
         }
@@ -62,7 +62,7 @@ class categoryApp{
         if($tpl) {
             $category['mode'] && iURL::page_url($iurl);
 
-            iPHP::assign('category',$category);
+            iView::assign('category',$category);
             if(isset($_GET['tpl'])){
                 $tpl = iSecurity::escapeStr($_GET['tpl']);
                 if(strpos($tpl, '..') !== false){
@@ -72,11 +72,11 @@ class categoryApp{
                 }
             }
             if(strpos($tpl, '.htm')!==false){
-            	return iPHP::view($tpl,'category');
+            	return iView::render($tpl,'category');
             }
             $GLOBALS['page']>1 && $tpl='list';
-            $html = iPHP::view($category['template'][$tpl],'category.'.$tpl);
-            if(iPHP::$iVIEW=="html") return array($html,$category);
+            $html = iView::render($category['template'][$tpl],'category.'.$tpl);
+            if(iView::$gateway=="html") return array($html,$category);
         }else{
         	return $category;
         }

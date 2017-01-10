@@ -22,8 +22,6 @@ class iPHP {
 	public static $app_args   = null;
 	public static $app_vars   = null;
 
-	public static $iTPL       = NULL;
-	public static $iVIEW      = null;
 	public static $mobile     = false;
 	public static $time_start = false;
 
@@ -83,13 +81,13 @@ class iPHP {
 			preg_match("/[^\.\/][\w\-]+\.[^\.\/]+$/", $site, $matches);
 			$site = $matches[0];
 		}
-		iPHP_MULTI_SITE && define('iPHP_APP_SITE', $site);
 		strpos($site, '..') === false OR self::error_throw('What are you doing','001');
 
 		//config.php 中开启iPHP_APP_CONF后 此处设置无效,
-		define('iPHP_APP_CONF', iPHP_CONF_DIR . '/' . $site); //网站配置目录
+		define('iPHP_APP_SITE', $site);
+		define('iPHP_APP_CONF', iPHP_CONF_DIR . '/' . iPHP_APP_SITE); //网站配置目录
 		define('iPHP_APP_CONFIG', iPHP_APP_CONF . '/config.php'); //网站配置文件
-		@is_file(iPHP_APP_CONFIG) OR self::error_throw('Unable to find "' . $site . '" config file ('.iPHP_APP_CONFIG.').Please install '.iPHP_APP, '0001');
+		@is_file(iPHP_APP_CONFIG) OR self::error_throw('Unable to find "' . iPHP_APP_SITE . '" config file ('.iPHP_APP_CONFIG.').Please install '.iPHP_APP, '0001');
 
 		$config = require iPHP_APP_CONFIG;
 		//config.php 中开启后 此处设置无效
@@ -162,7 +160,7 @@ class iPHP {
 		self::$app_do = $do;
 		self::$app_method = $prefix . $do;
 		self::$app_tpl = iPHP_APP_DIR . '/' . $app . '/template';
-		self::$app_vars = array(
+		$app_vars = array(
 			"MOBILE" => iPHP::$mobile,
 			'COOKIE_PRE' => iPHP_COOKIE_PRE,
 			'REFER' => iPHP_REFERER,
@@ -172,8 +170,8 @@ class iPHP {
 				'METHOD' => self::$app_method,
 			),
 		);
-		iPHP::$iTPL->_iVARS['SAPI'] .= self::$app_name;
-		iPHP::$iTPL->_iVARS += self::$app_vars;
+		iView::$handle->_iVARS['SAPI'] .= self::$app_name;
+		iView::$handle->_iVARS += $app_vars;
 
 		$obj_name = $app.'App';
 		self::$app = new $obj_name();
@@ -196,44 +194,6 @@ class iPHP {
 		}
 	}
 
-	public static function app_vars($app_name = true, $out = false) {
-		$app_name === true && $app_name = self::$app_name;
-		$rs = iPHP::get_vars($app_name);
-		return $rs['param'];
-	}
-	public static function get_vars($key = null) {
-		return self::$iTPL->get_template_vars($key);
-	}
-	public static function clear_tpl($file = null) {
-		if(empty(self::$iTPL)){
-			iTemplate::init();
-		}
-		self::$iTPL->clear_compiled_tpl($file);
-	}
-	public static function assign($key, $value) {
-		self::$iTPL->assign($key, $value);
-	}
-	public static function append($key, $value = null, $merge = false) {
-		self::$iTPL->append($key, $value, $merge);
-	}
-	public static function clear($key) {
-		self::$iTPL->clear_assign($key);
-	}
-	public static function display($tpl) {
-		self::$iTPL->display($tpl);
-	}
-	public static function fetch($tpl) {
-		return self::$iTPL->fetch($tpl);
-	}
-	public static function view($tpl, $p = 'index') {
-		$tpl OR self::error_404('Please set the template file', '001', 'TPL');
-		if (self::$iVIEW == 'html') {
-			return self::$iTPL->fetch($tpl);
-		} else {
-			self::$iTPL->display($tpl);
-			self::debug_info($tpl);
-		}
-	}
 	public static function debug_info($tpl) {
 		if (iPHP_DEBUG && iPHP_DEBUG_TRACE) {
 			echo '<div class="well">';
@@ -290,53 +250,24 @@ class iPHP {
 		// $cookiedomain = iPHP_COOKIE_DOMAIN;
 		$cookiedomain = '';
 		$cookiepath = iPHP_COOKIE_PATH;
-
 		$value = rawurlencode($value);
 		$life = ($life ? $life : iPHP_COOKIE_TIME);
 		$name = iPHP_COOKIE_PRE . '_' . $name;
-
-		if (strpos(iPHP_SESSION, 'SESSION') !== false) {
-			$_SESSION[$name] = $value;
-		}
-		if (strpos(iPHP_SESSION, 'COOKIE') !== false) {
-			$_COOKIE[$name] = $value;
-			$timestamp = time();
-			$life = $life > 0 ? $timestamp + $life : ($life < 0 ? $timestamp - 31536000 : 0);
-			$path = $httponly && PHP_VERSION < '5.2.0' ? $cookiepath . '; HttpOnly' : $cookiepath;
-			$secure = $_SERVER['SERVER_PORT'] == 443 ? 1 : 0;
-			if (PHP_VERSION < '5.2.0') {
-				setcookie($name, $value, $life, $path, $cookiedomain, $secure);
-			} else {
-				setcookie($name, $value, $life, $path, $cookiedomain, $secure, $httponly);
-			}
+		$_COOKIE[$name] = $value;
+		$timestamp = time();
+		$life = $life > 0 ? $timestamp + $life : ($life < 0 ? $timestamp - 31536000 : 0);
+		$path = $httponly && PHP_VERSION < '5.2.0' ? $cookiepath . '; HttpOnly' : $cookiepath;
+		$secure = $_SERVER['SERVER_PORT'] == 443 ? 1 : 0;
+		if (PHP_VERSION < '5.2.0') {
+			setcookie($name, $value, $life, $path, $cookiedomain, $secure);
+		} else {
+			setcookie($name, $value, $life, $path, $cookiedomain, $secure, $httponly);
 		}
 	}
 	//取得COOKIE
 	public static function get_cookie($name) {
 		$name = iPHP_COOKIE_PRE . '_' . $name;
-
-		if (strpos(iPHP_SESSION, 'COOKIE') !== false) {
-			$cvalue = $_COOKIE[$name];
-			$cvalue = rawurldecode($cvalue);
-		}
-		if (strpos(iPHP_SESSION, 'SESSION') !== false) {
-			$svalue = $_SESSION[$name];
-			$svalue = rawurldecode($svalue);
-		}
-		if (iPHP_SESSION == 'SESSION+COOKIE') {
-			if ($cvalue == $svalue) {
-				return $svalue;
-			} else if ($svalue) {
-				return $svalue;
-			} else if ($cvalue) {
-				return $cvalue;
-			}
-		} else if (iPHP_SESSION == 'SESSION') {
-			return $svalue;
-		} else if (iPHP_SESSION == 'COOKIE') {
-			return $cvalue;
-		}
-		return false;
+		return rawurldecode($_COOKIE[$name]);
 	}
 
 	public static function import($path, $dump = false) {
@@ -400,22 +331,20 @@ class iPHP {
 		}
 	}
     //------------------------------------
-    public static function timeline(){
-        $_timeline = iCache::get(iPHP_APP.'/timeline');
-        //list($_today,$_week,$_month) = $_timeline ;
+    public static function timer_task(){
+        $timestamp = iCache::get('timer_task');
+        //list($_today,$_week,$_month) = $timestamp ;
         $time     = $_SERVER['REQUEST_TIME'];
         $today    = get_date($time,"Ymd");
         $yday     = get_date($time-86400+1,"Ymd");
         $week     = get_date($time,"YW");
         $month    = get_date($time,"Ym");
-        $timeline = array($today,$week,$month);
-        $_timeline[0]==$today OR iCache::set(iPHP_APP.'/timeline',$timeline,0);
-        //var_dump($_timeline,$timeline);
+        $timestamp[0]==$today OR iCache::set('timer_task',array($today,$week,$month),0);
         return array(
-            'yday'  => ($today-$_timeline[0]),
-            'today' => ($_timeline[0]==$today),
-            'week'  => ($_timeline[1]==$week),
-            'month' => ($_timeline[2]==$month),
+            'yday'  => ($today-$timestamp[0]),
+            'today' => ($timestamp[0]==$today),
+            'week'  => ($timestamp[1]==$week),
+            'month' => ($timestamp[2]==$month),
         );
     }
 	/**

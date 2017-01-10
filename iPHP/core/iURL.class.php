@@ -195,7 +195,7 @@ class iURL {
 // var_dump($i);
 
 			if($rule=='1') {
-                $domainArray = iCache::get('iCMS/category/domain');
+                $domainArray = iCache::get('category/domain');
 // var_dump($domainArray);
                 if($domainArray){
                     $m = $domainArray[$category['cid']];

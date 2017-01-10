@@ -8,16 +8,16 @@
 class publicApp {
 	public $methods = array('weixin', 'sitemapindex', 'sitemap', 'seccode', 'agreement', 'crontab', 'time', 'qrcode');
 	public function API_agreement() {
-		iPHP::view('{iTPL}/user/agreement.htm');
+		iView::render('{iTPL}/user/agreement.htm');
 	}
 	public function API_sitemapindex() {
 		header("Content-type:text/xml");
-		iPHP::view('/tools/sitemap.index.htm');
+		iView::render('/tools/sitemap.index.htm');
 	}
 	public function API_sitemap() {
 		header("Content-type:text/xml");
-		iPHP::assign('cid', (int) $_GET['cid']);
-		iPHP::view('/tools/sitemap.baidu.htm');
+		iView::assign('cid', (int) $_GET['cid']);
+		iView::render('/tools/sitemap.baidu.htm');
 	}
 	/**
 	 * [API_weixin 向下兼容]

@@ -34,8 +34,8 @@ class searchApp {
         $iurl->href.= '?app=search&q='.$q;
         $iurl->pageurl = $iurl->href.'&page={P}';
         iURL::page_url($iurl);
-        iPHP::assign("search",$search);
-        return iPHP::view($tpl,'search');
+        iView::assign("search",$search);
+        return iView::render($tpl,'search');
     }
     private function slog($search){
         $sid    = iDB::value("SELECT `id` FROM `#iCMS@__search_log` WHERE `search` = '$search' LIMIT 1");

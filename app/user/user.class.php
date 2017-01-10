@@ -115,12 +115,12 @@ class user {
 		return $uid;
 	}
 	public static function get_cache($uid){
-		return iCache::get('iCMS:user:'.$uid);
+		return iCache::get(iPHP_APP.':user:'.$uid);
 	}
 	public static function set_cache($uid){
 		$user = iDB::row("SELECT * FROM `#iCMS@__user` where `uid`='{$uid}'",ARRAY_A);
 		unset($user['password']);
-		iCache::set('iCMS:user:'.$user['uid'],$user,0);
+		iCache::set('user/'.$user['uid'],$user,0);
 	}
 	public static function category($cid=0,$appid=1){
 		if(empty($cid)) return false;

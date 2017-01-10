@@ -58,7 +58,7 @@ class categoryAdmincp extends category{
             $rs['rule']     = json_decode($rs['rule'],true);
             $rs['template'] = json_decode($rs['template'],true);
             $rs['metadata'] = json_decode($rs['metadata'],true);
-            $rs['body'] = iCache::get('iCMS/category/'.$this->cid.'.body');
+            $rs['body'] = iCache::get('category/'.$this->cid.'.body');
             $rs['body'] && $rs['body'] = stripslashes($rs['body']);
 
         }else {
@@ -211,7 +211,7 @@ class categoryAdmincp extends category{
             $this->cahce_one($cid);
             $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
-        $hasbody && iCache::set('iCMS/category/'.$cid.'.body',$body,0);
+        $hasbody && iCache::set('category/'.$cid.'.body',$body,0);
 
         admincp::callback($cid,$this);
         if($this->callback['code']){
@@ -516,8 +516,8 @@ class categoryAdmincp extends category{
         return $C;
     }
     public function tree($cid = 0,$expanded=false,$ret=false){
-        $html = array();
-        $rootid = iCache::get('iCMS/category/rootid');
+        $tree = array();
+        $rootid = iCache::get('category/rootid');
         foreach((array)$rootid[$cid] AS $root=>$_cid) {
             $C = $this->cache_get($_cid);
             $C['iurl'] = (array) iURL::get('category',$C);
@@ -537,14 +537,14 @@ class categoryAdmincp extends category{
                     $a['hasChildren'] = true;
                 }
             }
-            $a && $html[] = $a;
+            $a && $tree[] = $a;
         }
         if($ret||($expanded && $cid)){
-            return $html;
+            return $tree;
         }
 
         //var_dump($html);
-        return $html?json_encode($html):'[]';
+        return $tree?json_encode($tree):'[]';
     }
 
     public function check_dir($dir,$appid,$url,$cid=0){
@@ -554,7 +554,7 @@ class categoryAdmincp extends category{
     }
 
     public function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false,$where=null) {
-        $rootid = iCache::get('iCMS/category/rootid');
+        $rootid = iCache::get('category/rootid');
 
         foreach((array)$rootid[$cid] AS $root=>$_cid) {
             $C = $this->cache_get($_cid);

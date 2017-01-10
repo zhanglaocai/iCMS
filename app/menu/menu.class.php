@@ -63,9 +63,9 @@ class menu {
             $this->menu_array = $variable;
             unset($variable);
             if($cache){
-                $iCache = iCache::sysCache();
-                $iCache->add('iCMS/iMenu/menu_array', $this->menu_array,0);
-                $iCache->add('iCMS/iMenu/href_array', $this->href_array,0);
+                $iCache = iCache::file_cache();
+                $iCache->add(iPHP_APP.'/menu/array', $this->menu_array,0);
+                $iCache->add(iPHP_APP.'/menu/href', $this->href_array,0);
             }
         }
     }
@@ -73,9 +73,9 @@ class menu {
         $this->menu_array(true);
     }
     public function get_cache(){
-         $cache = iCache::sysCache();
-         $this->menu_array  = $cache->get('iCMS/iMenu/menu_array');
-         $this->href_array  = $cache->get('iCMS/iMenu/href_array');
+         $iCache = iCache::file_cache();
+         $this->menu_array  = $iCache->get(iPHP_APP.'/menu/array');
+         $this->href_array  = $iCache->get(iPHP_APP.'/menu/href');
          if(empty($this->menu_array)||empty($this->href_array)){
             $this->cache();
          }

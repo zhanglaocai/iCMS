@@ -10,7 +10,7 @@
 */
 class htmlAdmincp{
     public function __construct() {
-		iPHP::$iVIEW = "html";
+		iView::$gateway = "html";
 		$this->page      = $GLOBALS['page'];
 		$this->PG        = $_POST?$_POST:$_GET;
 		$this->CP        = iCMS::$config['router']['speed'];
@@ -85,14 +85,14 @@ class htmlAdmincp{
 		$rootid		= $this->PG['rootid'];
 		$k			= (int)$this->PG['k'];
 		if($k>0||empty($category)){
-			$category = iCache::get('iCMS/html.category');
+			$category = iCache::get('html/category');
 		}
 		if(empty($category)){
 			iUI::alert('请选择需要生成静态的栏目!');
 		}
 		$category[0]=='all' && $category = $this->get_category(iCMS_APP_ARTICLE);
 
-		$k===0 && iCache::set('iCMS/html.category',$category,0);
+		$k===0 && iCache::set('html/category',$category,0);
 
 		$_GET['loop'] && $loop=0;
 		$GLOBALS['page'] = $p+$this->page;

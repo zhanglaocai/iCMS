@@ -220,18 +220,18 @@ class spider_data {
 
         iHttp::$CURLOPT_ENCODING        = '';
         iHttp::$CURLOPT_REFERER         = '';
-        iCMS::$watermark_config['pos'] = iCMS::$config['watermark']['pos'];
-        iCMS::$watermark_config['x']   = iCMS::$config['watermark']['x'];
-        iCMS::$watermark_config['y']   = iCMS::$config['watermark']['y'];
-        iCMS::$watermark_config['img'] = iCMS::$config['watermark']['img'];
+        iFile::$watermark_config['pos'] = iCMS::$config['watermark']['pos'];
+        iFile::$watermark_config['x']   = iCMS::$config['watermark']['x'];
+        iFile::$watermark_config['y']   = iCMS::$config['watermark']['y'];
+        iFile::$watermark_config['img'] = iCMS::$config['watermark']['img'];
 
         $rule['fs']['encoding'] && iHttp::$CURLOPT_ENCODING = $rule['fs']['encoding'];
         $rule['fs']['referer']  && iHttp::$CURLOPT_REFERER  = $rule['fs']['referer'];
         if($rule['watermark_mode']){
-            iCMS::$watermark_config['pos'] = $rule['watermark']['pos'];
-            iCMS::$watermark_config['x']   = $rule['watermark']['x'];
-            iCMS::$watermark_config['y']   = $rule['watermark']['y'];
-            $rule['watermark']['img'] && iCMS::$watermark_config['img'] = $rule['watermark']['img'];
+            iFile::$watermark_config['pos'] = $rule['watermark']['pos'];
+            iFile::$watermark_config['x']   = $rule['watermark']['x'];
+            iFile::$watermark_config['y']   = $rule['watermark']['y'];
+            $rule['watermark']['img'] && iFile::$watermark_config['img'] = $rule['watermark']['img'];
         }
         if (spider::$callback['data'] && is_callable(spider::$callback['data'])) {
             $responses = call_user_func_array(spider::$callback['data'],array($responses));

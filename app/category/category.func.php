@@ -37,7 +37,7 @@ function category_list($vars){
 			$where_sql.= iSQL::in($cids,'cid');
 		break;
 		case "self":
-			$parent = iCache::get('iCMS/category/parent',$vars['cid']);
+			$parent = iCache::get('category/parent',$vars['cid']);
 			$where_sql.=" AND `rootid`='$parent'";
 		break;
 	}
@@ -67,7 +67,7 @@ function category_list($vars){
 		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
-		iPHP::assign("category_list_total",$total);
+		iView::assign("category_list_total",$total);
 	}
 
     if($vars['orderby']=='rand'){

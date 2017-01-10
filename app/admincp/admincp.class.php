@@ -16,14 +16,14 @@ define('__ADMINCP__', iPHP_SELF . '?app');
 define('ACP_PATH', iPHP_APP_DIR . '/admincp');
 define('ACP_HOST', (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://" . $_SERVER['HTTP_HOST']);
 
-iDB::$show_errors  = true;
-iDB::$show_trace   = false;
-iDB::$show_explain = false;
-iUI::$dialog['title'] = 'iCMS';
+iDB::$show_errors     = true;
+iDB::$show_trace      = false;
+iDB::$show_explain    = false;
+iUI::$dialog['title'] = iPHP_APP;
 
-members::$LOGIN_PAGE = ACP_PATH.'/template/admincp.login.php';
-members::$AUTH       = 'ADMIN_AUTH';
-members::$AJAX       = iPHP::PG('ajax');
+members::$LOGIN_PAGE  = ACP_PATH.'/template/admincp.login.php';
+members::$AUTH        = 'ADMIN_AUTH';
+members::$AJAX        = iPHP::PG('ajax');
 
 
 class admincp {
@@ -45,8 +45,10 @@ class admincp {
 		self::$menu = new menu(); //初始化菜单
 		self::MP('ADMINCP', 'page'); //检查是否有后台权限
 		self::MP('__MID__', 'page'); //检查菜单ID
-		iCMS::filesystem_init();
-		iFile::$userid = members::$userid;
+		iFile::init(array(
+			'userid'    => members::$userid,
+			'watermark' => iCMS::$config['watermark']
+		));
 	}
 
 	public static function get_seccode() {

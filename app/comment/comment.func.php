@@ -51,8 +51,8 @@ function comment_list_display($vars){
 		'appid' => $vars['appid'],
 		'title' => $vars['title'],
 	);
-	iPHP::assign('comment_vars',$vars);
-	echo iPHP::view("iCMS://comment/{$tpl}.htm");
+	iView::assign('comment_vars',$vars);
+	echo iView::render("iCMS://comment/{$tpl}.htm");
 }
 function comment_list($vars){
 	if(iCMS::$config['comment']['plugin']['changyan']['enable']){
@@ -60,13 +60,13 @@ function comment_list($vars){
 	}
 
 	// if(!isset($vars['ref'])){
-	// 	$_vars = iPHP::app_vars(true);
+	// 	$_vars = iView::app_vars(true);
 	// 	$vars  = array_merge($vars,$_vars);
 	// 	unset($vars['ref'],$_vars);
 	// }
 
 	if ($vars['display'] && empty($vars['loop'])) {
-		$_vars = iPHP::app_vars(true);
+		$_vars = iView::app_vars(true);
 		$vars  = array_merge($vars,$_vars);
 		$vars['iid']   OR iUI::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"iid"或"iid"值为空.');
 		$vars['appid'] OR iUI::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"appid"或"appid"值为空.');
@@ -128,7 +128,7 @@ function comment_list($vars){
 			//$where_sql.=" AND `id` >= (SELECT `id` FROM `#iCMS@__comment` WHERE {$where_sql} {$order_sql} LIMIT {$offset},1)";
 			//$limit  = "LIMIT {$maxperpage}";
 		// }
-		iPHP::assign("comment_list_total",$total);
+		iView::assign("comment_list_total",$total);
 	}
 	if($vars['cache']){
 		$cache_name = iPHP_DEVICE.'/comment/'.$md5."/".(int)$offset;
@@ -191,14 +191,14 @@ function comment_form($vars){
 		iCMS::$config['comment']['plugin']['changyan']['appkey'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appkey"或"appkey"值为空.');
 
 		if(iPHP::$mobile){
-			echo iPHP::view('iCMS://comment/changyan.mobile.htm');
+			echo iView::render('iCMS://comment/changyan.mobile.htm');
 		}else{
-			echo iPHP::view('iCMS://comment/changyan.pc.htm');
+			echo iView::render('iCMS://comment/changyan.pc.htm');
 		}
 		return;
 	}
 	if(!isset($vars['ref'])){
-		$_vars = iPHP::app_vars(true);
+		$_vars = iView::app_vars(true);
 		$vars  = array_merge($vars,$_vars);
 		unset($vars['ref'],$_vars);
 	}
@@ -226,6 +226,6 @@ function comment_form($vars){
 	}
 	unset($vars['method'],$vars['_display']);
 	$vars['query'] = http_build_query($vars);
-	iPHP::assign('comment_vars',$vars);
-	echo iPHP::view('iCMS://comment/'.$tpl.'.htm');
+	iView::assign('comment_vars',$vars);
+	echo iView::render('iCMS://comment/'.$tpl.'.htm');
 }

@@ -77,7 +77,7 @@ function user_list($vars=null){
 		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
-        iPHP::assign("user_list_total",$total);
+        iView::assign("user_list_total",$total);
 	}
     $hash = md5($where_sql.$order_sql.$limit);
 
@@ -156,7 +156,7 @@ function user_follow($vars=null){
 		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
-        iPHP::assign("user_follow_total",$total);
+        iView::assign("user_follow_total",$total);
 	}
     $hash = md5($where_sql.$limit);
 
@@ -207,19 +207,19 @@ function user_inbox($vars=null){
 		$group_sql = '';
 		$p_fields  = 'COUNT(*)';
 		$s_fields  = '*';
-		iPHP::assign("msg_count",false);
+		iView::assign("msg_count",false);
 	}else{
 //	 	$where_sql.= " AND (`userid`='".user::$userid."' OR (`userid`='10000' AND `friend`='0'))";
 	 	$where_sql.= " AND `userid`='".user::$userid."'";
 		$group_sql = ' GROUP BY `friend` DESC';
 		$p_fields  = 'COUNT(DISTINCT id)';
 		$s_fields  = 'max(id) AS id ,COUNT(id) AS msg_count,`userid`, `friend`, `send_uid`, `send_name`, `receiv_uid`, `receiv_name`, `content`, `type`, `sendtime`, `readtime`';
-	 	iPHP::assign("msg_count",true);
+	 	iView::assign("msg_count",true);
 	}
 
 	$offset	= 0;
 	$total	= iCMS::page_total_cache("SELECT {$p_fields} FROM `#iCMS@__message` {$where_sql} {$group_sql}",'nocache');
-	iPHP::assign("msgs_total",$total);
+	iView::assign("msgs_total",$total);
     $multi	= iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
     $offset	= $multi->offset;
 	$resource = iDB::all("SELECT {$s_fields} FROM `#iCMS@__message` {$where_sql} {$group_sql} ORDER BY `id` DESC LIMIT {$offset},{$maxperpage}");

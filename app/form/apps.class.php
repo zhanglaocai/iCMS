@@ -51,17 +51,17 @@ class apps {
 			$app_name_array[$a['name']] = $a;
 
 			iCache::delete('iCMS/app/'.$a['id']);
-			iCache::set('iCMS/app/'.$a['id'],$a,0);
+			iCache::set('app/'.$a['id'],$a,0);
 
 			iCache::delete('iCMS/app/'.$a['name']);
-			iCache::set('iCMS/app/'.$a['name'],$a,0);
+			iCache::set('app/'.$a['name'],$a,0);
 
         }
-        iCache::set('iCMS/app/cache_id',  $app_id_array,0);
-        iCache::set('iCMS/app/cache_name',$app_name_array,0);
+        iCache::set('app/cache_id',  $app_id_array,0);
+        iCache::set('app/cache_name',$app_name_array,0);
 	}
 	public static function get_app($appid=1){
-		$rs	= iCache::get('iCMS/app/'.$appid);
+		$rs	= iCache::get('app/'.$appid);
        	$rs OR iPHP::error_throw('app no exist', '0005');
        	return $rs;
 	}
@@ -74,7 +74,7 @@ class apps {
        	return $rs['table'];
 	}
 	public static function get_label($appid=0,$key='title'){
-		$array	= iCache::get('iCMS/app/cache_id');
+		$array	= iCache::get('app/cache_id');
 		if($appid){
 			return $array[$appid][$key];
 		}

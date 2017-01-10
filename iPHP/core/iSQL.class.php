@@ -35,11 +35,11 @@ class iSQL {
         return $randIdsArray;
     }
     public static function update_hits($all=true,$hit=1){
-        $timeline = iPHP::timeline();
-        // var_dump($timeline);
+        $timer_task = iPHP::timer_task();
+        // var_dump($timer_task);
         $pieces = array();
         $all && $pieces[] = '`hits` = hits+'.$hit;
-        foreach ($timeline as $key => $bool) {
+        foreach ($timer_task as $key => $bool) {
             $field = "hits_{$key}";
             if($key=='yday'){
                 if($bool==1){

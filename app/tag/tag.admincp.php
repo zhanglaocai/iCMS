@@ -109,7 +109,7 @@ class tagAdmincp{
     }
     public function do_import(){
         $_POST['cid'] OR iUI::alert('请选择标签所属栏目！');
-        iFS::$checkFileData           = false;
+        iFile::$check_data           = false;
         iFS::$config['allow_ext']     = 'txt';
         iFS::$config['yun']['enable'] = false;
         $F    = iFS::upload('upfile');
@@ -245,7 +245,7 @@ class tagAdmincp{
 
 		$tkey OR $tkey = strtolower(iPinyin::get($name));
 
-        iFS::$forceExt = "jpg";
+        iFS::$force_ext = "jpg";
         iFS::checkHttp($pic) && $pic = iFS::http($pic);
         iFS::checkHttp($bpic)&& $bpic = iFS::http($bpic);
         iFS::checkHttp($mpic)&& $mpic = iFS::http($mpic);

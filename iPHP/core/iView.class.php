@@ -8,36 +8,40 @@
  * @license http://www.iiiphp.com/license
  * @version 2.0.0
  */
-class iTemplate {
+class iView {
+    public static $handle       = NULL;
+    public static $gateway      = null;
+
     public static function init() {
-        iPHP::$iTPL = new iTemplateLite();
-        iPHP::$iTPL->debugging    = iPHP_TPL_DEBUGGING;
-        iPHP::$iTPL->template_dir = iPHP_TPL_DIR;
-        iPHP::$iTPL->compile_dir  = iPHP_TPL_CACHE;
-        iPHP::$iTPL->left_delimiter = '<!--{';
-        iPHP::$iTPL->right_delimiter = '}-->';
-        iPHP::$iTPL->register_modifier("date", "get_date");
-        iPHP::$iTPL->register_modifier("cut", "csubstr");
-        iPHP::$iTPL->register_modifier("htmlcut", "htmlcut");
-        iPHP::$iTPL->register_modifier("cnlen", "cstrlen");
-        iPHP::$iTPL->register_modifier("html2txt", "html2text");
-        iPHP::$iTPL->register_modifier("key2num", "key2num");
-        //iPHP::$iTPL->register_modifier("pinyin","GetPinyin");
-        iPHP::$iTPL->register_modifier("unicode", "get_unicode");
-        //iPHP::$iTPL->register_modifier("small","gethumb");
-        iPHP::$iTPL->register_modifier("thumb", "small");
-        iPHP::$iTPL->register_modifier("random", "random");
-        iPHP::$iTPL->register_modifier("fields", "select_fields");
-        iPHP::$iTPL->register_block("cache", array("iTemplate", "block_cache"));
-        iPHP::$iTPL->template_callback = array(
-            "resource" => array("iTemplate","callback_path"),
-            "output"   => array("iTemplate","callback_output"),
-            "app"      => array("iTemplate","callback_appfunc"),
-            "app"      => array("iTemplate","callback_appfunc"),
+        self::$handle = new iTemplateLite();
+        self::$handle->debugging    = iPHP_TPL_DEBUGGING;
+        self::$handle->template_dir = iPHP_TPL_DIR;
+        self::$handle->compile_dir  = iPHP_TPL_CACHE;
+        self::$handle->reserved_template_varname  = iPHP_APP;
+        self::$handle->left_delimiter = '<!--{';
+        self::$handle->right_delimiter = '}-->';
+        self::$handle->register_modifier("date", "get_date");
+        self::$handle->register_modifier("cut", "csubstr");
+        self::$handle->register_modifier("htmlcut", "htmlcut");
+        self::$handle->register_modifier("cnlen", "cstrlen");
+        self::$handle->register_modifier("html2txt", "html2text");
+        self::$handle->register_modifier("key2num", "key2num");
+        //self::$handle->register_modifier("pinyin","GetPinyin");
+        self::$handle->register_modifier("unicode", "get_unicode");
+        //self::$handle->register_modifier("small","gethumb");
+        self::$handle->register_modifier("thumb", "small");
+        self::$handle->register_modifier("random", "random");
+        self::$handle->register_modifier("fields", "select_fields");
+        self::$handle->register_block("cache", array("iView", "block_cache"));
+        self::$handle->template_callback = array(
+            "resource" => array("iView","callback_path"),
+            "output"   => array("iView","callback_output"),
+            "app"      => array("iView","callback_appfunc"),
+            "app"      => array("iView","callback_appfunc"),
         );
-        iPHP::$iTPL->assign('GET', $_GET);
-        iPHP::$iTPL->assign('POST', $_POST);
-        iPHP_TPL_DEBUG && iPHP::$iTPL->clear_compiled_tpl();
+        self::$handle->assign('GET', $_GET);
+        self::$handle->assign('POST', $_POST);
+        iPHP_TPL_DEBUG && self::$handle->clear_compiled_tpl();
     }
     public static function callback_appfunc($args,$tpl) {
         $keys = isset($args['as'])?$args['as']:$args['app'];
@@ -116,5 +120,46 @@ class iTemplate {
     }
     public static function callback_output($html,$file=null){
         return $html;
+    }
+    public static function app_vars($app_name = true, $out = false) {
+        $app_name === true && $app_name = iPHP::$app_name;
+        $rs = self::get_vars($app_name);
+        return $rs['param'];
+    }
+    public static function get_vars($key = null) {
+        return self::$handle->get_template_vars($key);
+    }
+    public static function clear_tpl($file = null) {
+        if(empty(self::$handle)){
+            self::init();
+        }
+        self::$handle->clear_compiled_tpl($file);
+    }
+    public static function value($key, $value) {
+        self::$handle->assign($key, $value);
+    }
+    public static function assign($key, $value) {
+        self::$handle->assign($key, $value);
+    }
+    public static function append($key, $value = null, $merge = false) {
+        self::$handle->append($key, $value, $merge);
+    }
+    public static function clear($key) {
+        self::$handle->clear_assign($key);
+    }
+    public static function display($tpl) {
+        self::$handle->display($tpl);
+    }
+    public static function fetch($tpl) {
+        return self::$handle->fetch($tpl);
+    }
+    public static function render($tpl, $p = 'index') {
+        $tpl OR iPHP::error_404('Please set the template file', '001', 'TPL');
+        if (self::$gateway == 'html') {
+            return self::$handle->fetch($tpl);
+        } else {
+            self::$handle->display($tpl);
+            iPHP::debug_info($tpl);
+        }
     }
 }

@@ -30,8 +30,8 @@ class filterAdmincp{
         if($config===null){
             $config  = configAdmincp::app('999999',null,true);
         }
-    	iCache::set('iCMS/filter.array',$config['filter'],0);
-    	iCache::set('iCMS/filter.disable',$config['disable'],0);
+    	iCache::set('filter/array',$config['filter'],0);
+    	iCache::set('filter/disable',$config['disable'],0);
     }
     //过滤
     public static function run(&$content){

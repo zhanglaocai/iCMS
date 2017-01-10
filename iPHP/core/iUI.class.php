@@ -273,7 +273,7 @@ class iUI {
 		if ($iPages->totalpage > 1) {
 			$pagenav = $conf['pagenav'] ? strtoupper($conf['pagenav']) : 'NAV';
 			$pnstyle = $conf['pnstyle'] ? $conf['pnstyle'] : 0;
-			iPHP::$iTPL->_iVARS['PAGE'] = array(
+			iView::$handle->_iVARS['PAGE'] = array(
 				$pagenav  => $iPages->show($pnstyle),
 				'COUNT'   => $conf['total'],
 				'TOTAL'   => $iPages->totalpage,
@@ -282,7 +282,7 @@ class iUI {
 				'PREV'    => $iPages->prev_page(),
 				'NEXT'    => $iPages->next_page(),
 			);
-			iPHP::$iTPL->_iVARS['PAGES'] = $iPages;
+			iView::$handle->_iVARS['PAGES'] = $iPages;
 		}
 		return $iPages;
 	}

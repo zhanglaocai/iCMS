@@ -128,16 +128,16 @@ class propAdmincp{
     	}
         // prop/article/author
         foreach((array)$type_field_id AS $key=>$a){
-            iCache::set('iCMS/prop/'.$key,$a,0);
+            iCache::set('prop/'.$key,$a,0);
         }
         // prop/article
     	foreach((array)$type_field_val AS $k=>$a){
-    		iCache::set('iCMS/prop/'.$k,$a,0);
+    		iCache::set('prop/'.$k,$a,0);
     	}
     }
     public static function btn_group($field, $app = null,$target = null){
         $app OR $app = admincp::$APP_NAME;
-        $propArray = iCache::get("iCMS/prop/{$app}/{$field}");
+        $propArray = iCache::get("prop/{$app}/{$field}");
         $target OR $target = $field;
         echo '<div class="btn-group">'.
         '<a class="btn dropdown-toggle iCMS-default" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>'.
@@ -150,7 +150,7 @@ class propAdmincp{
     }
     public static function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$app = "") {
         $app OR $app = admincp::$APP_NAME;
-        $propArray = iCache::get("iCMS/prop/{$app}/{$field}");
+        $propArray = iCache::get("prop/{$app}/{$field}");
         is_array($valArray) OR $valArray  = explode(',', $valArray);
         $opt = array();
         foreach ((array)$propArray AS $k => $P) {

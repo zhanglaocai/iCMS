@@ -234,7 +234,7 @@ var_dump(@class_exists($appname));
 
         $array = self::scan('admincp/'.$pattern,$appdir,true);
         // var_dump($array);
-        $app_array = iCache::get('iCMS/app/cache_name');
+        $app_array = iCache::get('app/cache_name');
         // var_dump($app_array);
         $paths = array();
         foreach ($array as $key => $path) {
@@ -298,14 +298,14 @@ var_dump(@class_exists($appname));
 			$appid_array[$a['id']] = $a;
 			$app_array[$a['app']]  = $a;
 
-			iCache::set('iCMS/app/'.$a['id'],$a,0);
-			iCache::set('iCMS/app/'.$a['app'],$a,0);
+			iCache::set('app/'.$a['id'],$a,0);
+			iCache::set('app/'.$a['app'],$a,0);
         }
-        iCache::set('iCMS/app/idarray',  $appid_array,0);
-        iCache::set('iCMS/app/array',$app_array,0);
+        iCache::set('app/idarray',  $appid_array,0);
+        iCache::set('app/array',$app_array,0);
 	}
 	public static function get_app($appid=1){
-		$rs	= iCache::get('iCMS/app/'.$appid);
+		$rs	= iCache::get('app/'.$appid);
        	$rs OR iPHP::error_throw('app no exist', '0005');
        	return $rs;
 	}
@@ -318,7 +318,7 @@ var_dump(@class_exists($appname));
        	return $rs['table'];
 	}
 	public static function get_label($appid=0,$key='title'){
-		$array	= iCache::get('iCMS/app/cache_id');
+		$array	= iCache::get('app/cache_id');
 		if($appid){
 			return $array[$appid][$key];
 		}

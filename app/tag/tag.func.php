@@ -91,7 +91,7 @@ function tag_list($vars){
 		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
 		$offset = $multi->offset;
 		$limit  = "LIMIT {$offset},{$maxperpage}";
-        iPHP::assign("tags_list_total",$total);
+        iView::assign("tags_list_total",$total);
 	}
 
     if($vars['orderby']=='rand'){

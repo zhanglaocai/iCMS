@@ -9,11 +9,10 @@
  * @version 2.0.0
  */
 class iFS {
-	public static $forceExt = false;
-	public static $checkFileData = true;
-	public static $validext = true;
+	public static $force_ext = false;
+	public static $valid_ext = true;
 	public static $config = null;
-	public static $FileData = null;
+	public static $file_data = null;
 
 	public static $CALLABLE = null;
 	public static $ERROR = null;
@@ -442,13 +441,13 @@ class iFS {
 				return false;
 			}
 
-			if (self::$FileData) {
-				$fid = self::$FileData->id;
-				$file_md5 = self::$FileData->filename;
-				$oFileName = self::$FileData->ofilename;
-				$FileDir = self::$FileData->path;
-				// $FileExt = self::$FileData->ext;
-				$FileSize = self::$FileData->size;
+			if (self::$file_data) {
+				$fid = self::$file_data->id;
+				$file_md5 = self::$file_data->filename;
+				$oFileName = self::$file_data->ofilename;
+				$FileDir = self::$file_data->path;
+				// $FileExt = self::$file_data->ext;
+				$FileSize = self::$file_data->size;
 			} else {
 				$file_md5 = md5_file($tmp_file);
 				$frs = self::get_filedata('filename', $file_md5);
@@ -513,11 +512,11 @@ class iFS {
 		$_ext = strtolower(self::get_ext($fn));
 		$ext = self::check_ext($_ext, 0) ? $_ext : 'file';
 
-		if (self::$forceExt !== false) {
-			(empty($_ext) || strlen($_ext) > 4 || $ext == 'file') && $ext = self::$forceExt;
+		if (self::$force_ext !== false) {
+			(empty($_ext) || strlen($_ext) > 4 || $ext == 'file') && $ext = self::$force_ext;
 			return $ext;
 		}
-		if (!self::$validext) {
+		if (!self::$valid_ext) {
 			return $ext;
 		}
 
@@ -645,9 +644,6 @@ class iFS {
 	}
 //------callable-----
 	public static function insert_filedata($value, $type = 0,$status=1) {
-		if (!self::$checkFileData) {
-			return;
-		}
 		$keys = array('filename','ofilename','path','intro','ext','size');
 		$data = array_combine($keys ,$value);
 		return self::hook('insert',array($data, $type,$status));
@@ -659,9 +655,6 @@ class iFS {
 		return self::hook('update',array($data, $fid));
 	}
 	public static function get_filedata($f, $v,$s='*') {
-		if (!self::$checkFileData) {
-			return;
-		}
 		return self::hook('get',array($f,$v,$s));
 	}
 //-------------

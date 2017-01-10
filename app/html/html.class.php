@@ -71,14 +71,14 @@ class html{
 		$rootid		= $this->PG['rootid'];
 		$k			= (int)$this->PG['k'];
 		if($k>0||empty($category)){
-			$category = iCache::get('iCMS/create.category');
+			$category = iCache::get('html/create.category');
 		}
 		if(empty($category)){
 			iUI::alert('请选择需要生成静态的栏目!');
 		}
 		$category[0]=='all' && $category = $this->get_category(iCMS_APP_ARTICLE);
 
-		$k===0 && iCache::set('iCMS/create.category',$category,0);
+		$k===0 && iCache::set('html/create.category',$category,0);
 
 		$_GET['loop'] && $loop=0;
 		$GLOBALS['page'] = $p+$this->page;
@@ -245,7 +245,7 @@ class html{
     	}
     }
     public function get_category($appid){
-		$rs	= iCache::get('iCMS/category.'.$appid.'/cache');
+		$rs	= iCache::get('category/appid/'.$appid);
 		$category = array();
 		foreach((array)$rs AS $_cid=>$C){
 			$C['status'] && $category[]=$C['cid'];

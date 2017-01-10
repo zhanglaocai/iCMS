@@ -24,7 +24,7 @@ class commentApp {
 	}
 	public function API_widget() {
 		$name = iSecurity::escapeStr($_GET['name']);
-		iPHP::view('iCMS://comment/widget.'.$name.'.htm');
+		iView::render('iCMS://comment/widget.'.$name.'.htm');
 	}
 	public function API_list() {
 		$_GET['_display'] = $_GET['display'];
@@ -65,8 +65,8 @@ class commentApp {
 		$vars['page'] = true;
 		// $array = comment_list($vars);
 		// iUI::json($array);
-		iPHP::assign('vars',$vars);
-		iPHP::view('iCMS://comment/api.json.htm');
+		iView::assign('vars',$vars);
+		iView::render('iCMS://comment/api.json.htm');
 	}
 	public function pm($a) {
 		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');

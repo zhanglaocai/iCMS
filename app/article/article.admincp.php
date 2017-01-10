@@ -78,7 +78,7 @@ class articleAdmincp{
 
         $strpos   = strpos(iPHP_REFERER,'?');
         $REFERER  = $strpos===false?'':substr(iPHP_REFERER,$strpos);
-        $defArray = iCache::get('iCMS/defaults');
+        $defArray = iCache::get('defaults');
         if(self::$config['markdown']){
             include admincp::view("article.markdown");
         }else{
@@ -773,7 +773,7 @@ class articleAdmincp{
             $id = article::data_insert($data);
         }
 
-        $_POST['iswatermark']&& iCMS::$watermark = false;
+        $_POST['iswatermark']&& iFile::$watermark = false;
 
         if(isset($_POST['remote'])){
             $body = $this->remotepic($body,true,$aid);
@@ -841,7 +841,7 @@ class articleAdmincp{
     public function remotepic($content,$remote = false) {
         if (!$remote) return $content;
 
-        iFS::$forceExt = "jpg";
+        iFS::$force_ext = "jpg";
         $content = stripslashes($content);
         preg_match_all('@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is', $content, $match);
         $array  = array_unique($match[2]);

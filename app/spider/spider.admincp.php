@@ -261,7 +261,7 @@ class spiderAdmincp {
 		echo $data;
 	}
 	public function do_import_rule() {
-		iFS::$checkFileData = false;
+		iFile::$check_data = false;
 		iFS::$config['allow_ext'] = 'txt';
 		iFS::$config['yun']['enable'] = false;
 		$F = iFS::upload('upfile');
@@ -485,7 +485,7 @@ class spiderAdmincp {
 		iUI::success('完成', 'url:' . APP_URI . '&do=project');
 	}
     public function do_import_project(){
-        iFS::$checkFileData           = false;
+        iFile::$check_data           = false;
         iFS::$config['allow_ext']     = 'txt';
         iFS::$config['yun']['enable'] = false;
         $F    = iFS::upload('upfile');

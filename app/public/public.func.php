@@ -11,11 +11,11 @@ function public_ui($vars=null){
 	}
 	isset($vars['script']) OR $vars['script'] = true;
 	$dir = isset($vars['dir'])?$vars['dir'].'/':'';
-	iPHP::assign("ui",$vars);
-	echo iPHP::view("iCMS://{$dir}public.ui.htm");
+	iView::assign("ui",$vars);
+	echo iView::render("iCMS://{$dir}public.ui.htm");
 }
 function public_seccode($vars=null){
-	echo iPHP::view('iCMS://public.seccode.htm');
+	echo iView::render('iCMS://public.seccode.htm');
 }
 function public_crontab(){
 	echo '<img src="'.iCMS_API.'?app=public&do=crontab&'.$_SERVER['REQUEST_TIME'].'" id="iCMS_public_crontab"/>';

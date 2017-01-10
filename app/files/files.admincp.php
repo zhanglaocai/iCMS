@@ -69,7 +69,7 @@ class filesAdmincp{
         $ext       = iSecurity::escapeStr($_GET['ext']);
         iFS::check_ext($ext,0) OR iUI::json(array('state'=>'ERROR','msg'=>'不允许的文件类型'));
         iFS::$ERROR_TYPE = true;
-        $_GET['watermark'] OR iCMS::$watermark = false;
+        $_GET['watermark'] OR iFile::$watermark = false;
         $F = iFS::IO($name,$udir,$ext);
         $F ===false && iUI::json(iFS::$ERROR);
         iUI::json(array(
@@ -84,13 +84,13 @@ class filesAdmincp{
     }
     public function do_upload(){
         admincp::MP('FILE.UPLOAD','alert');
-//iFS::$checkFileData = true;
-    	$_POST['watermark'] OR iCMS::$watermark = false;
+//iFile::$check_data = true;
+    	$_POST['watermark'] OR iFile::$watermark = false;
         iFS::$ERROR_TYPE = true;
     	if($this->id){
-            iFS::$FileData = iFS::get_filedata('id',$this->id);
+            iFS::$file_data = iFile::get('id',$this->id);
             $F = iFS::upload('upfile');
-            if($F && $F['size']!=iFS::$FileData->size){
+            if($F && $F['size']!=iFS::$file_data->size){
                 iDB::query("update `#iCMS@__file_data` SET `size`='".$F['size']."' WHERE `id` = '$this->id'");
             }
     	}else{
@@ -122,7 +122,7 @@ class filesAdmincp{
     	if($fileresults){
     		iFS::mkdir(dirname($FileRootPath));
     		iFS::write($FileRootPath,$fileresults);
-            iCMS::$watermark = !isset($_GET['unwatermark']);
+            iFile::$watermark = !isset($_GET['unwatermark']);
             iFS::hook('write',array($FileRootPath,$rs->ext));
 
     		$_FileSize	= strlen($fileresults);

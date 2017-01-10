@@ -68,15 +68,15 @@ class tagApp {
             $tag_tpl OR $tag_tpl = iCMS::$config['tag']['tpl'];
             $tag_tpl OR $tag_tpl = '{iTPL}/tag.index.htm';
 
-            iPHP::assign('category',$tag['category']);
-            iPHP::assign('tag_category',$tag['tag_category']);
+            iView::assign('category',$tag['category']);
+            iView::assign('tag_category',$tag['tag_category']);
             unset($tag['category'],$tag['tag_category']);
-            iPHP::assign("tag", $tag);
+            iView::assign("tag", $tag);
             if (strstr($tpl, '.htm')) {
-                return iPHP::view($tpl, 'tag');
+                return iView::render($tpl, 'tag');
             }
-            $html = iPHP::view($tag_tpl,'tag');
-            if(iPHP::$iVIEW=="html") return array($html,$tag);
+            $html = iView::render($tag_tpl,'tag');
+            if(iView::$gateway=="html") return array($html,$tag);
         }else{
             return $tag;
         }

@@ -38,17 +38,69 @@
  */
 
 class iFile {
-    public static $TABLE_DATA = null;
-    public static $TABLE_MAP = null;
-    public static $userid = 0;
+    public static $TABLE_DATA       = null;
+    public static $TABLE_MAP        = null;
+    public static $check_data       = true;
+    public static $userid           = 0;
+    public static $watermark        = true;
+    public static $watermark_config = null;
 
-    private static $_data_table = null;
-    private static $_map_table = null;
+    private static $_data_table     = null;
+    private static $_map_table      = null;
 
-    public static function init($table = array()) {
+    public static function config($table = array()) {
         list(self::$TABLE_DATA,self::$TABLE_MAP) = $table;
         self::$_data_table = iPHP_DB_PREFIX . self::$TABLE_DATA;
         self::$_map_table  = iPHP_DB_PREFIX . self::$TABLE_MAP;
+    }
+
+    public static function init($vars=null){
+        empty(iFS::$config['table']) && iFS::$config['table'] = array('file_data','file_map');
+        iFile::config(iFS::$config['table']);
+
+        isset($vars['userid']) && iFile::$userid = $vars['userid'];
+
+        if (iFS::$config['cloud']['enable']) {
+            iCloud::init(iFS::$config['cloud']);
+        }
+
+        iFS::$CALLABLE = array(
+            'insert' => array('iFile','insert'),
+            'update' => array('iFile','update'),
+            'get'    => array('iFile','get'),
+            // 'write'  => array('iFile','cloud_write'),
+            'upload' => array(
+                array('iFile','cloud_upload')
+            ),
+            'delete'  => array('iCloud','delete')
+        );
+        if(self::$watermark){
+            $vars['watermark'] && self::$watermark_config = $vars['watermark'];
+            self::$watermark_config && iFS::$CALLABLE['upload'][]= array('iFile','watermark');
+        }
+    }
+    public static function watermark($fp,$ext) {
+        if (self::$watermark) {
+            $allow_ext = array('jpg', 'jpeg', 'png');
+            $config = self::$watermark_config;
+            $config['allow_ext'] && $allow_ext = explode(',', $config['allow_ext']);
+            if (in_array($ext, $allow_ext)) {
+                iPic::init($config);
+                iPic::watermark($fp);
+            }
+        }
+    }
+    public static function cloud_upload($fp,$ext) {
+        iCloud::write($fp);
+        //不保留本地功能
+        if(iFS::$config['cloud']['local']){
+            //删除delete hook阻止云端删除动作
+            iFS::$CALLABLE['delete'] = null;
+            iFS::del($fp);
+        }
+    }
+    public static function cloud_write($fp,$data) {
+        iCloud::write($fp);
     }
 
     public static function index_fileid($indexid,$appid='1'){
@@ -107,6 +159,9 @@ class iFile {
         return $path;
     }
     public static function insert($data, $type = 0,$status=1) {
+        if (!self::$check_data) {
+            return;
+        }
         $userid = self::$userid === false ? 0 : self::$userid;
         $data['userid'] = $userid;
         $data['time']   = time();
@@ -126,7 +181,9 @@ class iFile {
         iDB::update(self::$TABLE_DATA, $data, array('id' => $fid));
     }
     public static function get($f, $v,$s='*') {
-
+        if (!self::$check_data) {
+            return;
+        }
         $sql = self::$userid === false ? '' : " AND `userid`='" . self::$userid . "'";
         $rs = iDB::row("SELECT {$s} FROM " . self::$_data_table. " WHERE `$f`='$v' {$sql} LIMIT 1");
 

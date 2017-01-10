@@ -22,9 +22,11 @@ class userApp {
 		$this->forward OR iPHP::get_cookie('forward');
 		$this->forward OR $this->forward = iCMS_URL;
 		$this->login_uri = user::login_uri();
-		iCMS::filesystem_init();
-		iFile::$userid = user::$userid;
-		iPHP::assign('forward', $this->forward);
+		iFile::init(array(
+			'userid'    => user::$userid,
+			'watermark' => iCMS::$config['watermark']
+		));
+		iView::assign('forward', $this->forward);
 	}
 	private function user($userdata = false) {
 		$status = array('logined' => false, 'followed' => false, 'isme' => false);
@@ -50,14 +52,14 @@ class userApp {
 				$status['isme'] = true;
 				$this->user = $this->me;
 			}
-			iPHP::assign('me', (array) $this->me);
+			iView::assign('me', (array) $this->me);
 		}
 		$this->user->hits_script = iCMS_API . '?app=user&do=hits&uid=' . $this->user->uid;
 		$user = (array) $this->user;
 		$userdata && $user['data'] = (array) user::data($this->user->uid);
 
-		iPHP::assign('status', $status);
-		iPHP::assign('user',$user);
+		iView::assign('status', $status);
+		iView::assign('user',$user);
 	}
 
 	public function API_iCMS($a = null) {
@@ -66,8 +68,8 @@ class userApp {
 	public function API_home($category = true) {
 		$this->user(true);
 		$category && $u['category'] = user::category((int) $_GET['cid'], iCMS_APP_ARTICLE);
-		iPHP::append('user', $u, true);
-		iPHP::view('iCMS://user/home.htm');
+		iView::append('user', $u, true);
+		iView::render('iCMS://user/home.htm');
 	}
 	public function API_fans() {
 		$this->API_home();
@@ -85,29 +87,29 @@ class userApp {
 		$pg OR $pg = 'article';
 		if (in_array($pg, $pgArray)) {
 			if ($_GET['pg'] == 'comment') {
-				$app_array = iCache::get('iCMS/app/cache_id');
-				iPHP::assign('iAPP', $app_array);
+				$app_array = iCache::get('app/cache_id');
+				iView::assign('iAPP', $app_array);
 			}
 			$this->user(true);
 			$funname = '__API_manage_' . $pg;
 			$class_methods = get_class_methods(__CLASS__);
 			in_array($funname, $class_methods) && $this->$funname();
-			iPHP::assign('pg', $pg);
-			iPHP::assign('pg_file', "./manage/$pg.htm");
-			iPHP::view("iCMS://user/manage.htm");
+			iView::assign('pg', $pg);
+			iView::assign('pg_file', "./manage/$pg.htm");
+			iView::render("iCMS://user/manage.htm");
 		}
 	}
 
 	private function __API_manage_article() {
-		iPHP::assign('status', isset($_GET['status']) ? (int) $_GET['status'] : '1');
-		iPHP::assign('cid', (int) $_GET['cid']);
-		iPHP::assign('article', array(
+		iView::assign('status', isset($_GET['status']) ? (int) $_GET['status'] : '1');
+		iView::assign('cid', (int) $_GET['cid']);
+		iView::assign('article', array(
 			'manage' => iURL::router('user:article', '?&'),
 			'edit' => iURL::router('user:publish', '?&'),
 		));
 	}
 	private function __API_manage_favorite() {
-		iPHP::assign('favorite', array(
+		iView::assign('favorite', array(
 			'fid' => (int) $_GET['fid'],
 			'manage' => iURL::router('user:manage:favorite', '?&'),
 		));
@@ -122,9 +124,9 @@ class userApp {
 			$article['mobile'] = "1";
 		}
 
-		iPHP::assign('article', $article);
-		iPHP::assign('article_data', $article_data);
-		iPHP::assign('option', $this->category('', $cid));
+		iView::assign('article', $article);
+		iView::assign('article_data', $article_data);
+		iView::assign('option', $this->category('', $cid));
 	}
 	/**
 	 * [ACTION_manage description]
@@ -233,7 +235,7 @@ class userApp {
 		$pubdate = time();
 		$postype = "0";
 
-		$category = iCache::get('iCMS/category/' . $cid);
+		$category = iCache::get('category/' . $cid);
 		$status = $category['isexamine'] ? 3 : 1;
 
 		$fields = article::fields($aid);
@@ -393,15 +395,15 @@ class userApp {
 		$pg OR $pg = 'base';
 		if (in_array($pg, $pgArray)) {
 			$this->user();
-			iPHP::assign('pg', $pg);
+			iView::assign('pg', $pg);
 			if ($pg == 'bind') {
 				$platform = user::openid(user::$userid);
-				iPHP::assign('platform', $platform);
+				iView::assign('platform', $platform);
 			}
 			if ($pg == 'base') {
-				iPHP::assign('userdata', (array) user::data(user::$userid));
+				iView::assign('userdata', (array) user::data(user::$userid));
 			}
-			iPHP::view("iCMS://user/profile.htm");
+			iView::render("iCMS://user/profile.htm");
 		}
 	}
 	/**
@@ -484,8 +486,8 @@ class userApp {
 		iUI::success('user:profile:success');
 	}
 	private function __ACTION_profile_custom() {
-		iCMS::$watermark = false;
-		iFS::$checkFileData = false;
+		iFile::$watermark = false;
+		iFile::$check_data = false;
 		$dir = get_user_dir(user::$userid, 'coverpic');
 		$filename = user::$userid;
 		if (iPHP_DEVICE != 'desktop') {
@@ -522,8 +524,8 @@ class userApp {
 		iUI::js_callback($array);
 	}
 	private function __ACTION_profile_avatar() {
-		iCMS::$watermark = false;
-		iFS::$checkFileData = false;
+		iFile::$watermark = false;
+		iFile::$check_data = false;
 		$dir = get_user_dir(user::$userid);
 		$F = iFS::upload('upfile', $dir, user::$userid, 'jpg');
 		if (empty($F)) {
@@ -993,9 +995,9 @@ class userApp {
 		if (iCMS::$config['user']['register']['enable']) {
 			iPHP::set_cookie('forward', $this->forward);
 			user::status($this->forward, "login");
-			iPHP::view('iCMS://user/register.htm');
+			iView::render('iCMS://user/register.htm');
 		} else {
-			iPHP::view('iCMS://user/register.close.htm');
+			iView::render('iCMS://user/register.close.htm');
 		}
 	}
 	public function API_data($uid = 0) {
@@ -1038,11 +1040,11 @@ class userApp {
 				exit;
 			}
 			unset($user->password);
-			iPHP::assign('auth', $auth);
-			iPHP::assign('user', (array) $user);
-			iPHP::view('iCMS://user/resetpwd.htm');
+			iView::assign('auth', $auth);
+			iView::assign('user', (array) $user);
+			iView::render('iCMS://user/resetpwd.htm');
 		} else {
-			iPHP::view('iCMS://user/findpwd.htm');
+			iView::render('iCMS://user/findpwd.htm');
 		}
 	}
 	public function API_login() {
@@ -1050,9 +1052,9 @@ class userApp {
 			$this->openid();
 			iPHP::set_cookie('forward', $this->forward);
 			user::status($this->forward, "login");
-			iPHP::view('iCMS://user/login.htm');
+			iView::render('iCMS://user/login.htm');
 		} else {
-			iPHP::view('iCMS://user/login.close.htm');
+			iView::render('iCMS://user/login.close.htm');
 		}
 	}
 	public function API_config() {
@@ -1086,15 +1088,15 @@ class userApp {
 	}
 	public function API_collections() {
 
-		//iPHP::view('iCMS://user/card.htm');
+		//iView::render('iCMS://user/card.htm');
 	}
 	public function API_ucard() {
 		$this->user(true);
 		if ($this->auth) {
 			$secondary = $this->secondary();
-			iPHP::assign('secondary', $secondary);
+			iView::assign('secondary', $secondary);
 		}
-		iPHP::view('iCMS://user/user.card.htm');
+		iView::render('iCMS://user/user.card.htm');
 	}
 
 	private function secondary() {
@@ -1124,7 +1126,7 @@ class userApp {
 	}
 
 	public function category($permission = '', $_cid = "0", $cid = "0", $level = 1) {
-		$rootid = iCache::get('iCMS/category/rootid');
+		$rootid = iCache::get('category/rootid');
 		foreach ((array) $rootid[$cid] AS $root => $_cid) {
 			$C = category::cache_get($_cid);
 			if ($C['status'] && $C['isucshow'] && $C['issend'] && empty($C['outurl'])) {
@@ -1182,8 +1184,8 @@ class userApp {
 					$user['openid'] = $api->openid;
 					$user['platform'] = $platform;
 					$api->cleancookie();
-					iPHP::assign('user', $user);
-					iPHP::view('iCMS://user/login.htm');
+					iView::assign('user', $user);
+					iView::render('iCMS://user/login.htm');
 				} else {
 					$user = $api->get_user_info();
 					$user['openid'] = $api->openid;
@@ -1195,9 +1197,9 @@ class userApp {
                         ")) {
 						$user['nickname'] = $sign . '_' . $user['nickname'];
 					}
-					iPHP::assign('user', $user);
-					iPHP::assign('query', compact(array('sign', 'code', 'state', 'bind')));
-					iPHP::view('iCMS://user/register.htm');
+					iView::assign('user', $user);
+					iView::assign('query', compact(array('sign', 'code', 'state', 'bind')));
+					iView::render('iCMS://user/register.htm');
 				}
 				exit;
 			}

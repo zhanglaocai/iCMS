@@ -18,7 +18,7 @@ function article_list($vars) {
 	$where_sql = "WHERE `status`='{$status}'";
 	$vars['call'] == 'user' && $where_sql .= " AND `postype`='0'";
 	$vars['call'] == 'admin' && $where_sql .= " AND `postype`='1'";
-	$hidden = iCache::get('iCMS/category/hidden');
+	$hidden = iCache::get('category/hidden');
 	$hidden && $where_sql .= iSQL::in($hidden, 'cid', 'not');
 	$maxperpage = isset($vars['row']) ? (int) $vars['row'] : 10;
 	$cache_time = isset($vars['time']) ? (int) $vars['time'] : -1;
@@ -125,7 +125,7 @@ function article_list($vars) {
 		$multi      = iUI::page(array('total_type' => $total_type, 'total' => $total, 'perpage' => $maxperpage, 'unit' => iUI::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
 		$offset     = $multi->offset;
 		$limit      = "LIMIT {$offset},{$maxperpage}";
-		iPHP::assign("article_list_total", $total);
+		iView::assign("article_list_total", $total);
 	}
 	//随机特别处理
 	if ($vars['orderby'] == 'rand') {
@@ -178,7 +178,7 @@ function article_search($vars) {
 	}
 
 	$resource = array();
-	$hidden = iCache::get('iCMS/category/hidden');
+	$hidden = iCache::get('category/hidden');
 	$hidden && $where_sql .= iSQL::in($hidden, 'cid', 'not');
 	$SPH = iPHP::vendor('SPHINX',iCMS::$config['sphinx']['host']);
 	$SPH->init();
@@ -253,7 +253,7 @@ function article_search($vars) {
 	$offset = 0;
 	if ($vars['page']) {
 		$total = $res['total'];
-		iPHP::assign("article_search_total", $total);
+		iView::assign("article_search_total", $total);
 		$pagenav = isset($vars['pagenav']) ? $vars['pagenav'] : "pagenav";
 		$pnstyle = isset($vars['pnstyle']) ? $vars['pnstyle'] : 0;
 		$multi = iUI::page(array('total' => $total, 'perpage' => $maxperpage, 'unit' => iUI::lang('iCMS:page:list'), 'nowindex' => $GLOBALS['page']));
@@ -300,7 +300,7 @@ function article_next($vars) {
 	if (empty($array)) {
 		$rs = iDB::row("SELECT * FROM `#iCMS@__article` WHERE `status`='1' {$sql}");
 		if ($rs) {
-			$category = iCache::get('iCMS/category/' . $rs->cid);
+			$category = iCache::get('category/' . $rs->cid);
 			$array = array(
 				'title' => $rs->title,
 				'pic' => get_pic($rs->pic),

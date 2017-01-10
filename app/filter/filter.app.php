@@ -14,7 +14,7 @@ class filterApp{
     }
     //禁止
     public static function HOOK_disable(&$content){
-        $disable = iCache::get('iCMS/filter.disable');  //disable禁止
+        $disable = iCache::get('filter/disable');  //disable禁止
         //禁止关键词
         $subject = $content;
         $pattern = '/(~|`|!|@|\#|\$|%|\^|&|\*|\(|\)|\-|=|_|\+|\{|\}|\[|\]|;|:|"|\'|<|>|\?|\/|,|\.|\s|\n|。|，|、|；|：|？|！|…|-|·|ˉ|ˇ|¨|‘|“|”|々|～|‖|∶|＂|＇|｀|｜|〃|〔|〕|〈|〉|《|》|「|」|『|』|．|〖|〗|【|】|（|）|［|］|｛|｝|°|′|″|＄|￡|￥|‰|％|℃|¤|￠|○|§|№|☆|★|○|●|◎|◇|◆|□|■|△|▲|※|→|←|↑|↓|〓|＃|＆|＠|＾|＿|＼|№|)*/i';
@@ -38,7 +38,7 @@ class filterApp{
     }
     //过滤
     public static function HOOK_filter($content){
-        $filter  = iCache::get('iCMS/filter.array');    //filter过滤
+        $filter  = iCache::get('filter/array');    //filter过滤
         if($filter){
             //过滤关键词
             foreach ((array)$filter AS $k =>$val) {

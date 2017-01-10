@@ -17,8 +17,8 @@ class keywordsApp {
         if (iCMS::$config['keywords']['limit'] == 0) {
             return $content;
         }
-        $search  = iCache::get('iCMS/keywords.search');
-        $replace = iCache::get('iCMS/keywords.replace');
+        $search  = iCache::get('keywords/search');
+        $replace = iCache::get('keywords/replace');
         if($search && $replace){
             return self::replace($search, $replace,stripslashes($content),iCMS::$config['keywords']['limit']);
         }

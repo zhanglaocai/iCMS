@@ -73,7 +73,7 @@ class articleApp {
 		$article = iDB::row("SELECT * FROM `#iCMS@__article` WHERE id='" . (int) $id . "' AND `status` ='1' LIMIT 1;", ARRAY_A);
 		$article OR iPHP::error_404('找不到文章: <b>ID:' . $id . '</b>', 10001);
 		if ($article['url']) {
-			if (iPHP::$iVIEW == "html") {
+			if (iView::$gateway == "html") {
 				return false;
 			} else {
 				$this->API_hits($id);
@@ -110,11 +110,11 @@ class articleApp {
 		if ($tpl) {
 			$article_tpl = empty($article['tpl']) ? $article['category']['template']['article'] : $article['tpl'];
 			strstr($tpl, '.htm') && $article_tpl = $tpl;
-			iPHP::assign('category', $article['category']);
+			iView::assign('category', $article['category']);
 			unset($article['category']);
-			iPHP::assign('article', $article);
-			$html = iPHP::view($article_tpl, 'article');
-			if (iPHP::$iVIEW == "html") {
+			iView::assign('article', $article);
+			$html = iView::render($article_tpl, 'article');
+			if (iView::$gateway == "html") {
 				return array($html, $article);
 			}
 
@@ -141,7 +141,7 @@ class articleApp {
 			return false;
 		}
 
-		if (iPHP::$iVIEW == "html" && $tpl && (strstr($category['contentRule'], '{PHP}') || $category['outurl'] || $category['mode'] == "0")) {
+		if (iView::$gateway == "html" && $tpl && (strstr($category['contentRule'], '{PHP}') || $category['outurl'] || $category['mode'] == "0")) {
 			return false;
 		}
 
@@ -377,12 +377,12 @@ class articleApp {
 		return $content;
 	}
 	public static function taoke_tpl($itemid, $url, $title = null) {
-		iPHP::assign('taoke', array(
+		iView::assign('taoke', array(
 			'itemid' => $itemid,
 			'title' => $title,
 			'url' => $url,
 		));
-		return iPHP::fetch('iCMS://taoke.tpl.htm');
+		return iView::fetch('iCMS://taoke.tpl.htm');
 	}
     public static function HOOK_body_ad($content){
         $pieces    = 1000;

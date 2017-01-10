@@ -90,7 +90,6 @@ class keywordsAdmincp{
 	}
     public static function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__keywords` ORDER BY CHAR_LENGTH(`keyword`) DESC");
-        // iCache::delete('iCMS/keywords');
         if($rs){
             foreach($rs AS $i=>$val) {
                 if($val['times']>0) {
@@ -98,8 +97,8 @@ class keywordsAdmincp{
                     $replace[] = '<a class="keyword" target="_blank" href="'.$val['url'].'">'.$val['keyword'].'</a>';
                 }
             }
-            iCache::set('iCMS/keywords.search',$search,0);
-            iCache::set('iCMS/keywords.replace',$replace,0);
+            iCache::set('keywords/search',$search,0);
+            iCache::set('keywords/replace',$replace,0);
         }
     }
 }

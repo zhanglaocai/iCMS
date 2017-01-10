@@ -21,8 +21,8 @@ class tag {
 		$rs     = self::data($value,$field);
 		$_count = count($rs);
 	    for($i=0;$i<$_count;$i++) {
-			$C              = iCache::get('iCMS/category/'.$rs[$i]['cid']);
-			$TC             = iCache::get('iCMS/category/'.$rs[$i]['tcid']);
+			$C              = iCache::get('category/'.$rs[$i]['cid']);
+			$TC             = iCache::get('category/'.$rs[$i]['tcid']);
 			$rs[$i]['iurl'] = iURL::get('tag',array($rs[$i],$C,$TC));
 			$rs[$i]['url']  = $rs[$i]['iurl']->href;
 			$tkey           = self::tkey($rs[$i]['cid']);
