@@ -10,7 +10,7 @@
 */
 class markerAdmincp{
     public function __construct() {
-        $this->categoryApp = new categoryAdmincp('all');
+        $this->categoryAdmincp = new categoryAdmincp();
         $this->id         = (int)$_GET['id'];
     }
     public function do_add(){

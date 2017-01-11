@@ -47,7 +47,7 @@ hr { border-bottom:none; margin:4px 0px; }
         <div class="input-prepend input-append mb10"> <span class="add-on">版块</span>
           <select name="cid" id="cid" class="chosen-select">
             <option value="0">所有版块</option>
-            <?php echo $this->categoryApp->select('cs') ; ?>
+            <?php echo $this->categoryAdmincp->select('cs') ; ?>
           </select>
           <span class="add-on">
           <input type="checkbox" name="sub" id="sub"/>
@@ -91,7 +91,7 @@ hr { border-bottom:none; margin:4px 0px; }
           <tbody>
             <?php
             $cidArray = iSQL::values($rs,'cid','array',null);
-            $cidArray && $category_data = (array) $this->categoryApp->get($cidArray);
+            $cidArray && $category_data = (array) $this->categoryAdmincp->get($cidArray);
             for($i=0;$i<$_count;$i++){
               $C = (array)$category_data[$rs[$i]['cid']];
             ?>

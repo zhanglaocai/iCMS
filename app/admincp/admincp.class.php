@@ -28,7 +28,6 @@ members::$AJAX        = iPHP::PG('ajax');
 
 class admincp {
 	public static $apps       = NULL;
-	public static $menu       = NULL;
 	public static $APP_OBJ    = NULL;
 	public static $APP_NAME   = NULL;
 	public static $APP_DO     = NULL;
@@ -41,8 +40,8 @@ class admincp {
 
 	public static function init() {
 		self::check_seccode(); //验证码验证
-		members::checkLogin(); //用户登陆验证
-		self::$menu = new menu(); //初始化菜单
+		members::check_login(); //用户登陆验证
+		menu::init(); //菜单
 		self::MP('ADMINCP', 'page'); //检查是否有后台权限
 		self::MP('__MID__', 'page'); //检查菜单ID
 		iFile::init(array(
@@ -84,7 +83,7 @@ class admincp {
 		self::$APP_PATH   = ACP_PATH;
 		self::$APP_TPL    = ACP_PATH . '/template';
 		self::$APP_FILE   = ACP_PATH . '/' . $app . '.app.php';
-		self::$menu->url  = __ADMINCP__.'='.$app.(($do&&$do!='iCMS')?'&do='.$do:'');
+
 		$obj_name = self::$APP_NAME . 'App';
 
 		if(!is_file(self::$APP_FILE)){
@@ -109,6 +108,9 @@ class admincp {
 		self::$APP_OBJ = new $obj_name();
 		$app_methods = get_class_methods(self::$APP_OBJ);
 		in_array(self::$APP_METHOD, $app_methods) OR iPHP::error_throw('Call to undefined method <b>' . $obj_name . '::' . self::$APP_METHOD . '</b>', 1003);
+		menu::history(APP_DOURI);
+
+		// iPHP::callback(array('menu','history'),APP_DOURI);
 
 		$method = self::$APP_METHOD;
 		$args === null && $args = self::$APP_ARGS;

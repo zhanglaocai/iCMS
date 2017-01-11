@@ -2,6 +2,7 @@ if ($.browser.msie && !$.support.style) {
     alert("系统检测到您使用的是IE内核的浏览器!!\n\nIE内核的浏览器访问可能会出现各种不可预料的错误!!\n\n为了您更好的使用本程序\n\n推荐使用 Chrome,FireFox 等浏览器\n\n如使用 搜狗 或者 360 等双核浏览器的请切换成 极速模式!");
 }
 var chosen_config = {
+    max_selected_options:10,
     allow_single_deselect:true,
     search_contains:true,
     disable_search_threshold:20,

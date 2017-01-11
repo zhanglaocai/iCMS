@@ -37,7 +37,7 @@ class tagApp {
         return $this->tag($val, $field);
     }
     public function hooked($data){
-        return apps::hook('tag',$data,iCMS::$config['hooks']['tag']);
+        return iPHP::hook('tag',$data,iCMS::$config['hooks']['tag']);
     }
     public function tag($val, $field = 'name', $tpl = 'tag') {
         $val OR iPHP::error_404('TAG不能为空', 30002);

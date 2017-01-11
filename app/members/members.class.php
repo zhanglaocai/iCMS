@@ -38,7 +38,7 @@ class members{
         return self::$data;
     }
     //登陆验证
-    public static function checkLogin() {
+    public static function check_login() {
 //        self::$LOGIN_COUNT = (int)authcode(get_cookie('iCMS_LOGIN_COUNT'),'DECODE');
 //        if(self::$LOGIN_COUNT>iCMS_LOGIN_COUNT) exit();
 

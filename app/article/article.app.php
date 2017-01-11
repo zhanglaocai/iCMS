@@ -67,7 +67,7 @@ class articleApp {
 
 	}
     public function hooked($data){
-        return apps::hook('article',$data,iCMS::$config['hooks']['article']);
+        return iPHP::hook('article',$data,iCMS::$config['hooks']['article']);
     }
 	public function article($id, $page = 1, $tpl = true) {
 		$article = iDB::row("SELECT * FROM `#iCMS@__article` WHERE id='" . (int) $id . "' AND `status` ='1' LIMIT 1;", ARRAY_A);

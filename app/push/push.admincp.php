@@ -13,7 +13,7 @@ class pushAdmincp{
     public function __construct() {
         $this->appid       = iCMS_APP_PUSH;
         $this->id          = (int)$_GET['id'];
-        $this->categoryApp = new categoryAdmincp($this->appid);
+        $this->categoryAdmincp = new categoryAdmincp($this->appid);
     }
     public function do_add(){
         $id = (int)$_GET['id'];
@@ -35,7 +35,7 @@ class pushAdmincp{
         empty($rs['userid']) && $rs['userid']=members::$userid;
         $rs['addtime']	= $id?get_date(0,"Y-m-d H:i:s"):get_date($rs['addtime'],'Y-m-d H:i:s');
         $cid			= empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
-        $cata_option	= $this->categoryApp->select('ca',$cid);
+        $cata_option	= $this->categoryAdmincp->select('ca',$cid);
 
         empty($rs['userid']) && $rs['userid']=members::$userid;
         $strpos 	= strpos(iPHP_REFERER,'?');
@@ -72,7 +72,7 @@ class pushAdmincp{
         	break;
        		default:
 	       		$sql.=" `status` ='1'";
-		       	$cid && $position=$this->categoryApp->get($cid)->name;
+		       	$cid && $position=$this->categoryAdmincp->get($cid)->name;
 		}
 
         if($_GET['keywords']) {

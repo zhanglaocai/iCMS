@@ -407,13 +407,13 @@ class spiderAdmincp {
 	}
 
 	public function do_project() {
-		$categoryApp = new categoryAdmincp(iCMS_APP_ARTICLE);
+		$categoryAdmincp = new categoryAdmincp(iCMS_APP_ARTICLE);
 
 		$sql = "where 1=1";
 		if ($_GET['keywords']) {
 			$sql .= " and `name` REGEXP '{$_GET['keywords']}'";
 		}
-		$sql .= $categoryApp->search_sql($this->cid);
+		$sql .= $categoryAdmincp->search_sql($this->cid);
 
 		if ($_GET['rid']) {
 			$sql .= " AND `rid` ='" . (int) $_GET['rid'] . "'";
@@ -446,9 +446,9 @@ class spiderAdmincp {
 		$this->pid && $rs = spider::project($this->pid);
 		$cid = empty($rs['cid']) ? $this->cid : $rs['cid'];
 
-		$categoryApp = new categoryAdmincp(iCMS_APP_ARTICLE);
+		$categoryAdmincp = new categoryAdmincp(iCMS_APP_ARTICLE);
 
-		$cata_option = $categoryApp->select(false, $cid);
+		$cata_option = $categoryAdmincp->select(false, $cid);
 		$rule_option = $this->rule_opt($rs['rid']);
 		$post_option = $this->post_opt($rs['poid']);
 

@@ -52,7 +52,7 @@ function update_popover(html,a){
         <div class="input-prepend input-append"> <span class="add-on">栏目</span>
           <select name="cid" id="cid" class="span3 chosen-select">
             <option value="0">所有栏目</option>
-            <?php echo $this->categoryApp->select('cs') ; ?>
+            <?php echo $this->categoryAdmincp->select('cs') ; ?>
           </select>
           <span class="add-on">
           <input type="checkbox" name="sub" id="sub"/>
@@ -79,7 +79,7 @@ function update_popover(html,a){
         <ul class="recent-comments">
           <?php if($rs){
                 // $cidArray = iSQL::values($rs,'cid','array',null);
-                // $cidArray && $category_data = (array) $this->categoryApp->get($cidArray);
+                // $cidArray && $category_data = (array) $this->categoryAdmincp->get($cidArray);
           foreach ($rs as $key => $value) {
           // $C    = (array)$category_data[$value['cid']];
           $url  = iCMS_API.'?app=comment&do=goto&iid='.$value['iid'].'&appid='.$value['appid'].'&cid='.$value['cid'];

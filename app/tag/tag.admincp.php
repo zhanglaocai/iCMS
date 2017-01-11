@@ -15,8 +15,8 @@ class tagAdmincp{
     public function __construct() {
         $this->appid       = iCMS_APP_TAG;
         $this->id          = (int)$_GET['id'];
-        $this->categoryApp = new categoryAdmincp();
-        $this->tagcategory = new categoryAdmincp($this->appid);
+        $this->categoryAdmincp = new categoryAdmincp();
+        $this->tag_categoryAdmincp = new categoryAdmincp($this->appid);
     }
     public function do_config(){
         configAdmincp::app($this->appid);
@@ -53,8 +53,8 @@ class tagAdmincp{
 
         $_GET['keywords'] && $sql.=" AND CONCAT(name,seotitle,subtitle,keywords,description) REGEXP '{$_GET['keywords']}'";
 
-        $sql.= $this->categoryApp->search_sql($cid);
-        $sql.= $this->tagcategory->search_sql($tcid,'tcid');
+        $sql.= $this->categoryAdmincp->search_sql($cid);
+        $sql.= $this->tag_categoryAdmincp->search_sql($tcid,'tcid');
         $_GET['starttime'] && $sql.=" AND `pubdate`>='".str2time($_GET['starttime']." 00:00:00")."'";
         $_GET['endtime']   && $sql.=" AND `pubdate`<='".str2time($_GET['endtime']." 23:59:59")."'";
         $_GET['post_starttime'] && $sql.=" AND `postime`>='".str2time($_GET['post_starttime']." 00:00:00")."'";
@@ -368,8 +368,8 @@ class tagAdmincp{
                     iDB::update("tags",compact('cid'),compact('id'));
 		            if($_cid!=$cid) {
                         iMap::diff($cid,$_cid,$id);
-                        $this->categoryApp->update_count_one($_cid,'-');
-                        $this->categoryApp->update_count_one($cid);
+                        $this->categoryAdmincp->update_count_one($_cid,'-');
+                        $this->categoryAdmincp->update_count_one($cid);
 		            }
 		        }
 		        iUI::success('成功移动到目标栏目!','js:1');
@@ -383,8 +383,8 @@ class tagAdmincp{
                     iDB::update("tags",compact('tcid'),compact('id'));
 		            if($_tcid!=$tcid) {
                         iMap::diff($tcid,$_tcid,$id);
-                        $this->categoryApp->update_count_one($_tcid,'-');
-                        $this->categoryApp->update_count_one($tcid);
+                        $this->categoryAdmincp->update_count_one($_tcid,'-');
+                        $this->categoryAdmincp->update_count_one($tcid);
 		            }
 		        }
 		        iUI::success('成功移动到目标分类!','js:1');

@@ -43,7 +43,7 @@ class categoryAdmincp extends category{
 
     public function __construct($appid = null,$dir=null) {
         $this->cid       = (int)$_GET['cid'];
-        $this->appid     = '-1';
+        $this->appid     = null;
         $appid          && $this->appid = $appid;
         $_GET['appid']  && $this->appid = (int)$_GET['appid'];
         parent::__construct($this->appid);
@@ -356,12 +356,12 @@ class categoryAdmincp extends category{
         $tabs=="list"?$this->do_list():$this->do_tree();
     }
     public function do_tree() {
-        admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
+        menu::$url = __ADMINCP__.'='.admincp::$APP_NAME;
         admincp::$APP_DO = 'tree';
         include admincp::view($this->_view_manage,$this->_view_tpl_dir);
     }
     public function do_list(){
-        admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
+        menu::$url = __ADMINCP__.'='.admincp::$APP_NAME;
         admincp::$APP_DO = 'list';
         $sql  = " where `appid`='{$this->appid}'";
         $cids = admincp::CP('__CID__');
@@ -516,19 +516,13 @@ class categoryAdmincp extends category{
         return $C;
     }
     public function tree($cid = 0,$expanded=false,$ret=false){
-        $tree = array();
-        $rootid = iCache::get('category/rootid');
-        foreach((array)$rootid[$cid] AS $root=>$_cid) {
-            $C = $this->cache_get($_cid);
-            $C['iurl'] = (array) iURL::get('category',$C);
-            $C['href'] = $C['iurl']['href'];
-            $C = $this->tree_unset($C);
-            $C['CP_ADD']  = admincp::CP($C['cid'],'a')?true:false;
-            $C['CP_EDIT'] = admincp::CP($C['cid'],'e')?true:false;
-            $C['CP_DEL']  = admincp::CP($C['cid'],'d')?true:false;
-
+        $html     = array();
+        $cidArray = (array)$this->cid_array($cid);
+        $CARRAY   = (array)$this->get($cidArray);
+        foreach($cidArray AS $root=>$_cid) {
+            $C = (array)$CARRAY[$_cid];
             $a = array('id'=>$C['cid'],'data'=>$C);
-            if($rootid[$C['cid']]){
+            if($this->cid_array($C['cid'])){
                 if($expanded){
                     $a['hasChildren'] = false;
                     $a['expanded']    = true;
@@ -537,15 +531,46 @@ class categoryAdmincp extends category{
                     $a['hasChildren'] = true;
                 }
             }
-            $a && $tree[] = $a;
+            $a && $html[] = $a;
         }
         if($ret||($expanded && $cid)){
-            return $tree;
+            return $html;
         }
 
         //var_dump($html);
-        return $tree?json_encode($tree):'[]';
+        return $html?json_encode($html):'[]';
     }
+    // public function tree($cid = 0,$expanded=false,$ret=false){
+    //     $tree = array();
+    //     $rootid = iCache::get('category/rootid');
+    //     foreach((array)$rootid[$cid] AS $root=>$_cid) {
+    //         $C = $this->cache_get($_cid);
+    //         $C['iurl'] = (array) iURL::get('category',$C);
+    //         $C['href'] = $C['iurl']['href'];
+    //         $C = $this->tree_unset($C);
+    //         $C['CP_ADD']  = admincp::CP($C['cid'],'a')?true:false;
+    //         $C['CP_EDIT'] = admincp::CP($C['cid'],'e')?true:false;
+    //         $C['CP_DEL']  = admincp::CP($C['cid'],'d')?true:false;
+
+    //         $a = array('id'=>$C['cid'],'data'=>$C);
+    //         if($rootid[$C['cid']]){
+    //             if($expanded){
+    //                 $a['hasChildren'] = false;
+    //                 $a['expanded']    = true;
+    //                 $a['children']    = $this->tree($C['cid'],$expanded,$ret);
+    //             }else{
+    //                 $a['hasChildren'] = true;
+    //             }
+    //         }
+    //         $a && $tree[] = $a;
+    //     }
+    //     if($ret||($expanded && $cid)){
+    //         return $tree;
+    //     }
+
+    //     //var_dump($html);
+    //     return $tree?json_encode($tree):'[]';
+    // }
 
     public function check_dir($dir,$appid,$url,$cid=0){
         $sql ="SELECT `dir` FROM `#iCMS@__category` where `dir` ='$dir' AND `appid`='$appid'";
@@ -553,21 +578,39 @@ class categoryAdmincp extends category{
         iDB::value($sql) && empty($url) && iUI::alert('该'.$this->category_name.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
     }
 
-    public function select($permission='',$select_cid="0",$cid="0",$level = 1,$url=false,$where=null) {
-        $rootid = iCache::get('category/rootid');
-
-        foreach((array)$rootid[$cid] AS $root=>$_cid) {
-            $C = $this->cache_get($_cid);
-            if($C['status']) {
+    public function select_lite($permission='',$scid="0",$cid="0",$level = 1,$url=false,$where=null) {
+        $cidArray  = (array)$this->cid_array($cid,$where);
+        $CARRAY    = (array)$this->get($cidArray);
+        $ROOTARRAY = (array)$this->rootid($cidArray);
+        foreach($cidArray AS $root=>$_cid) {
+            $C = (array)$CARRAY[$_cid];
+            if(admincp::CP($_cid,$permission) && $C['status']) {
                 $tag      = ($level=='1'?"":"├ ");
-                $selected = ($select_cid==$_cid)?"selected":"";
+                $selected = ($scid==$_cid)?"selected":"";
                 $text     = str_repeat("│　", $level-1).$tag.$C['name']."[cid:{$_cid}][pid:{$C['pid']}]".($C['url']?"[∞]":"");
                 ($C['url'] && !$url) && $selected ='disabled';
                 $option.="<option value='{$_cid}' $selected>{$text}</option>";
             }
-            $rootid[$_cid] && $option.=$this->select($permission,$select_cid,$C['cid'],$level+1,$url);
+            $ROOTARRAY[$_cid] && $option.=$this->select_lite($permission,$scid,$C['cid'],$level+1,$url);
         }
         return $option;
+    }
+    public function select($permission='',$scid="0",$cid="0",$level = 1,$url=false,$where=null) {
+        $cc = iDB::value("SELECT count(*) FROM `#iCMS@__category`");
+        if($cc<=500){
+            return $this->select_lite($permission,$scid,$cid,$level,$url,$where);
+        }else{
+            $array = iCache::get('category/cookie');
+            foreach((array)$array AS $root=>$_cid) {
+                $C = $this->cache_get($_cid);
+                if($C['status']) {
+                    $selected = ($scid==$_cid)?"selected":"";
+                    $text     = $C['name']."[cid:{$_cid}][pid:{$C['pid']}]";
+                    $option  .= "<option value='{$_cid}' $selected>{$text}</option>";
+                }
+            }
+            return $option;
+        }
     }
 
     public static function del_app_data($appid=null){

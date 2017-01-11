@@ -10,11 +10,11 @@ class category {
     public $_array    = array();
     public $rootid    = array();
     public $rs        = array();
-    public $appid_sql = null;
+    public $sql_appid = null;
 
     public function __construct($appid=null) {
         $this->appid = $appid;
-        $this->appid && $this->appid_sql=" AND `appid`='$this->appid'";
+        $this->appid===null OR $this->sql_appid=" AND `appid`='$this->appid'";
     }
 
     public function rootid($rootids=null) {
@@ -25,7 +25,7 @@ class category {
         $sql  = iSQL::in($rootids,'rootid',false,true);
         $sql OR $sql = '1 = 1';
         $data = array();
-        $rs   = iDB::all("SELECT `cid`,`rootid` FROM `#iCMS@__category` where {$sql} {$this->appid_sql}",OBJECT);
+        $rs   = iDB::all("SELECT `cid`,`rootid` FROM `#iCMS@__category` where {$sql} {$this->sql_appid}",OBJECT);
         if($rs){
             $_count = count($rs);
             for ($i=0; $i < $_count; $i++) {
@@ -57,7 +57,7 @@ class category {
         $sql  = iSQL::in($cids,'cid',false,true);
         $sql OR $sql = '1 = 1';
         $data = array();
-        $rs   = iDB::all("SELECT {$field} FROM `#iCMS@__category` where {$sql} {$this->appid_sql}",OBJECT);
+        $rs   = iDB::all("SELECT {$field} FROM `#iCMS@__category` where {$sql} {$this->sql_appid}",OBJECT);
         if($rs){
             if($is_multi){
                 $_count = count($rs);
@@ -95,7 +95,7 @@ class category {
         $sql = " 1=1 ";
         $rootid===null OR $sql.= " AND `rootid`='$rootid'";
         $sql.= iSQL::where($where,true);
-        $variable = iDB::all("SELECT `cid` FROM `#iCMS@__category` WHERE {$sql} {$this->appid_sql} ORDER BY `sortnum`  ASC",ARRAY_A);
+        $variable = iDB::all("SELECT `cid` FROM `#iCMS@__category` WHERE {$sql} {$this->sql_appid} ORDER BY `sortnum`  ASC",ARRAY_A);
         $category = array();
         foreach ((array)$variable as $key => $value) {
             $category[] = $value['cid'];
@@ -103,7 +103,7 @@ class category {
         return $category;
     }
     public function cache($one=false) {
-        $rs  = iDB::all("SELECT * FROM `#iCMS@__category` WHERE 1=1".$this->appid_sql.' ORDER BY `sortnum`  ASC');
+        $rs  = iDB::all("SELECT * FROM `#iCMS@__category` WHERE 1=1".$this->sql_appid.' ORDER BY `sortnum`  ASC');
         $hidden = array();
         foreach((array)$rs AS $C) {
             $this->cahce_one($C);
@@ -151,7 +151,7 @@ class category {
     }
 
     public function cache_all($offset,$maxperpage) {
-        $sql = "WHERE 1=1".$this->appid_sql;
+        $sql = "WHERE 1=1".$this->sql_appid;
         $ids_array  = iDB::all("
             SELECT `cid`
             FROM `#iCMS@__category` {$sql} ORDER BY cid

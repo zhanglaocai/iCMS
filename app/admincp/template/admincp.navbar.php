@@ -16,7 +16,7 @@ defined('iPHP') OR exit('What are you doing?');
     </a>
       <div class="nav-collapse collapse">
         <ul class="nav iMenu-nav" id="iCMS-menu">
-          <?php echo admincp::$menu->nav(); ?>
+          <?php echo menu::nav(); ?>
         </ul>
         <ul class="nav pull-right">
           <li><a href="<?php echo iCMS_URL;?>" target="_blank" title="网站首页"><i class="fa fa-home fa-lg"></i></a></li>
@@ -43,7 +43,7 @@ defined('iPHP') OR exit('What are you doing?');
     </a>
   </div>
   <ul class="iMenu-sidebar">
-    <?php echo admincp::$menu->sidebar(); ?>
+    <?php echo menu::sidebar(); ?>
     <li class="last"></li>
   </ul>
   <div class="clearfloat"></div>
@@ -56,7 +56,7 @@ defined('iPHP') OR exit('What are you doing?');
   </div>
 <script type="text/javascript">
 $(".iMenu-nav,.iMenu-sidebar")
-.find('a[href="<?php echo admincp::$menu->url; ?>"]')
+.find('a[href="<?php echo menu::$url; ?>"]')
 .each(function(){
   find_parent(this);
 });

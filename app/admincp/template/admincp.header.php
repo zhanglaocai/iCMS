@@ -20,14 +20,14 @@ defined('iPHP') OR exit('What are you doing?');
 <link rel="stylesheet" href="./app/admincp/ui/bootstrap/2.3.2/css/datepicker.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/bootstrap/2.3.2/css/bootstrap-switch.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/artDialog/6.0.3/ui-dialog.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/artDialog/ui-dialog.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/iCMS.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/jquery/uniform-2.1.2.min.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/jquery/chosen.min.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/admincp.css" type="text/css" />
 
 <script src="./app/admincp/ui/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="./app/admincp/ui/artDialog/6.0.3/dialog-plus-min.js" type="text/javascript"></script>
+<script src="./app/admincp/ui/artDialog/dialog-plus-min.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/bootstrap/2.3.2/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/bootstrap/2.3.2/js/bootstrap-datepicker.js" type="text/javascript"></script>
 <script src="./app/admincp/ui/bootstrap/2.3.2/js/bootstrap-switch.min.js" type="text/javascript"></script>

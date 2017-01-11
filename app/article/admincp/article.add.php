@@ -33,6 +33,19 @@ $(function(){
       iCMS.select('status',"1");
     }
   })
+
+  $('#cid_chosen').click(function(event){
+    event.preventDefault();
+        iCMS.UI.dialog({
+            follow:document.getElementById('cid_chosen'),
+            content: document.getElementById('category_select'),
+            quickClose: false,title: null,width:"auto",height:"auto",
+            okValue: '选择',
+            ok: function() {
+            }
+        });
+
+  });
 	// $("#cid").change(function() {
  //    var cid = this.value;
 	// 	$.getJSON("<?php echo APP_URI; ?>",{'do':'getmeta','cid':cid},function(prop){
@@ -255,17 +268,12 @@ function _modal_dialog(cancel_text){
         <div id="article-add" class="tab-content">
           <div id="article-add-base" class="tab-pane active">
             <div class="input-prepend"> <span class="add-on">栏 目</span>
-              <?php if($cata_option){  ?>
-              <select name="cid" id="cid" class="chosen-select span3">
-                <option value="0"> == 请选择所属栏目 == </option>
-                <?php echo $cata_option;}else{  ?>
-                <select onclick="window.location.replace('<?php echo __ADMINCP__; ?>=category&do=add');">
-                <option value="0"> == 暂无栏目请先添加 == </option>
-                <?php }  ?>
+              <select name="cid" id="cid" class="chosen-select span3" data-placeholder="== 请选择所属栏目 ==">
+                <?php echo $cata_option;?>
               </select>
             </div>
             <div class="input-prepend"> <span class="add-on">状 态</span>
-              <select name="status" id="status" class="chosen-select span2">
+              <select name="status" id="status" class="chosen-select span3">
                 <option value="0"> 草稿 [status='0']</option>
                 <option value="1"> 正常 [status='1']</option>
                 <option value="2"> 回收站 [status='2']</option>
@@ -276,12 +284,8 @@ function _modal_dialog(cancel_text){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">副栏目</span>
-              <?php if($cata_option){  ?>
               <select name="scid[]" id="scid" class="chosen-select span6" multiple="multiple"  data-placeholder="请选择副栏目(可多选)...">
-                <?php echo $cata_option;}else{  ?>
-                <select onclick="window.location.replace('<?php echo __ADMINCP__; ?>=category&do=add');">
-                <option value="0"> == 暂无栏目请先添加 == </option>
-                <?php }  ?>
+                <?php echo $cata_option;?>
               </select>
             </div>
             <div class="clearfloat mb10"></div>
@@ -518,5 +522,8 @@ function _modal_dialog(cancel_text){
       </form>
     </div>
   </div>
+</div>
+<div id="category_select" style="display: none;">
+    <input class="form-control input-lg" id="user_category_new" type="text" placeholder="请输入分类名称">
 </div>
 <?php admincp::foot();?>

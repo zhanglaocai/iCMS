@@ -32,7 +32,7 @@ class cacheAdmincp{
 		}
     }
     public function do_menu($dialog=true){
-    	admincp::$menu->cache();
+    	menu::cache();
     	$dialog && iUI::success('更新完成','js:1');
     }
     public function do_allcategory($dialog=true){
@@ -41,24 +41,24 @@ class cacheAdmincp{
     	$dialog && iUI::success('更新完成');
     }
     public function do_category($dialog=true){
-        $categoryApp = new article_categoryAdmincp();
-        $categoryApp->do_cache($dialog);
+        $categoryAdmincp = new article_categoryAdmincp();
+        $categoryAdmincp->do_cache($dialog);
     }
     public function do_pushcategory($dialog=true){
-        $categoryApp = new push_categoryAdmincp();
-        $categoryApp->do_cache($dialog);
+        $categoryAdmincp = new push_categoryAdmincp();
+        $categoryAdmincp->do_cache($dialog);
     }
     public function do_tagcategory($dialog=true){
-        $categoryApp = new tag_categoryAdmincp();
-        $categoryApp->do_cache($dialog);
+        $categoryAdmincp = new tag_categoryAdmincp();
+        $categoryAdmincp->do_cache($dialog);
     }
     public function do_tpl($dialog=true){
     	iPHP::clear_tpl();
     	$dialog && iUI::success('清理完成');
     }
     public function do_article_count($dialog=true){
-        $categoryApp = new article_categoryAdmincp();
-    	$categoryApp->re_app_count();
+        $categoryAdmincp = new article_categoryAdmincp();
+    	$categoryAdmincp->re_app_count();
     	$dialog && iUI::success('更新完成');
     }
     public function do_app($dialog=true){

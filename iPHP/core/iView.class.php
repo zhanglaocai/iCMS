@@ -50,8 +50,8 @@ class iView {
             function_exists($callback) OR require_once(iPHP_APP_DIR."/".$args['app']."/".$args['app'].".func.php");
             isset($args['as']) OR $keys.= '_'.$args['method'];
         }else{
-            $callback   = iPHP_TPL_VAR.'_' . $args['app'];
-            function_exists($callback) OR require_once(iPHP_TPL_FUN."/".iPHP_TPL_VAR.".".$args['app'].".php");
+            $callback   = iPHP_APP.'_' . $args['app'];
+            function_exists($callback) OR require_once(iPHP_TPL_FUN."/".iPHP_APP.".".$args['app'].".php");
         }
         if(isset($args['vars'])){
             $vars = $args['vars'];

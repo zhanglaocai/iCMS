@@ -15,20 +15,18 @@ class articleAdmincp{
     public $chapter  = false;
     public static $config   = null;
     public static $appid       = null;
-    public static $categoryApp = null;
+    public static $categoryAdmincp = null;
 
     public function __construct() {
         self::$appid       = iCMS_APP_ARTICLE;
-        // self::$appid    = iPHP::appid('article');
-        // self::$appid    = iCMS::$appid['article'];
         $this->id          = (int)$_GET['id'];
         $this->dataid      = (int)$_GET['dataid'];
-        self::$categoryApp = new categoryAdmincp(self::$appid);
         $this->_postype    = '1';
         $this->_status     = '1';
         self::$config      = iCMS::$config['article'];
         tag::$appid        = self::$appid;
 
+        self::$categoryAdmincp = new categoryAdmincp(self::$appid);
     }
 
     public function do_config(){
@@ -63,7 +61,7 @@ class articleAdmincp{
         $bodyCount = count($bodyArray);
         $bodyCount OR $bodyCount = 1;
         $cid         = empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
-        $cata_option = self::$categoryApp->select('ca',$cid);
+        $cata_option = self::$categoryAdmincp->select('ca',$cid);
 
         //$metadata          = array_merge((array)$contentprop,(array)$rs['metadata']);
         $rs['pubdate']       = get_date($rs['pubdate'],'Y-m-d H:i:s');
@@ -129,8 +127,8 @@ class articleAdmincp{
                     article::update(compact('cid'),compact('id'));
 		            if($_cid!=$cid) {
                         iMap::diff($cid,$_cid,$id);
-                        self::$categoryApp->update_count_one($_cid,'-');
-                        self::$categoryApp->update_count_one($cid);
+                        self::$categoryAdmincp->update_count_one($_cid,'-');
+                        self::$categoryAdmincp->update_count_one($cid);
 		            }
 		        }
 		        iUI::success('成功移动到目标栏目!','js:1');
@@ -602,7 +600,7 @@ class articleAdmincp{
             $tagArray && tag::map_iid($tagArray,$aid);
 
             $url OR $this->article_data($body,$aid,$haspic);
-            self::$categoryApp->update_count_one($cid);
+            self::$categoryAdmincp->update_count_one($cid);
 
             $article_url = iURL::get('article',array(array(
                 'id'      =>$aid,
@@ -658,8 +656,8 @@ class articleAdmincp{
             $url OR $this->article_data($body,$aid,$haspic);
 
             if($_cid!=$cid) {
-                self::$categoryApp->update_count_one($_cid,'-');
-                self::$categoryApp->update_count_one($cid);
+                self::$categoryAdmincp->update_count_one($_cid,'-');
+                self::$categoryAdmincp->update_count_one($cid);
             }
             if($this->callback['code']){
                 return array(
@@ -679,7 +677,7 @@ class articleAdmincp{
         iUI::dialog($msg,'js:1');
     }
     public function category($cid){
-        return self::$categoryApp->get($cid);
+        return self::$categoryAdmincp->get($cid);
     }
     public static function del_msg($str){
         return iUI::msg('success:#:check:#:'.$str.'<hr />',true);
@@ -724,7 +722,7 @@ class articleAdmincp{
         article::del($id);
         article::del_data($id);
         $msg.= self::del_msg('文章数据删除');
-        self::$categoryApp->update_count_one($art['cid'],'-');
+        self::$categoryAdmincp->update_count_one($art['cid'],'-');
         $msg.= self::del_msg('栏目数据更新');
         $msg.= self::del_msg('删除完成');
         return $msg;

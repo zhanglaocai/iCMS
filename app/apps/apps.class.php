@@ -324,35 +324,4 @@ var_dump(@class_exists($appname));
 		}
        	return $array;
 	}
-    /**
-     * [hook 应用钩子]
-     * @param  [type] $app      [应用]
-     * @param  [type] $resource [资源]
-     * @param  [type] $hooks    [钩子]
-     * @return [type]           [description]
-     */
-    public static function hook($app,$resource=null,$hooks){
-        if($hooks){
-            foreach ($hooks as $field => $call) {
-                foreach ($call as $key => $cb) {
-                    $resource[$field] = self::call_func($cb,array($resource[$field],&$resource));
-                }
-            }
-        }
-        return $resource;
-
-    }
-    /**
-     * [call_func 应用钩子执行]
-     * @param  [type] $callback [执行函数]
-     * @param  [type] $value    [参数]
-     * @return [type]           [description]
-     */
-    public static function call_func($callback,$value){
-        if (is_array($callback) && @class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {
-            return call_user_func_array($callback, (array)$value);
-        }else{
-            return $value;
-        }
-    }
 }

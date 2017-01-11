@@ -102,6 +102,7 @@
 				if ($this.hasClass("hasChildren")) {
 					var childList = $this.removeClass("hasChildren").find("ul");
 					childList.empty();
+					childList.html('<p id="tree-loading"><img src="./app/admincp/ui/img/ajax_loader.gif" /></p>')
 					load(settings, this.id, childList, container);
 				}
 				if (userToggle) {

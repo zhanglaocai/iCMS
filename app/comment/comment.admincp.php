@@ -22,8 +22,8 @@ class commentAdmincp{
         configAdmincp::save($this->appid);
     }
     public function do_iCMS($appid=0){
-        $this->categoryApp = new categoryAdmincp($appid);
-        $this->category    = $this->categoryApp->category;
+        $this->categoryAdmincp = new categoryAdmincp($this->appid);
+        $this->category    = $this->categoryAdmincp->category;
 
         $sql = "WHERE 1=1";
 		if($appid ||$_GET['appid']){

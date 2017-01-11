@@ -9,15 +9,16 @@
 * @version 6.0.0
 */
 class menu {
-    public $menu_array = array();
-    public $href_array = array();
-    public $url = null;
+    public static $menu_array = array();
+    public static $href_array = array();
+    public static $callback  = array();
+    public static $url        = null;
 
-	public function __construct() {
-        $this->get_cache();
-        // $this->menu_array(true);
+	public static function init() {
+        // self::get_cache();
+        self::get_array(true);
 	}
-    public function json_data($path){
+    public static function json_data($path){
         $json  = file_get_contents($path);
         $json  = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
         $data = json_decode($json,ture);
@@ -30,7 +31,7 @@ class menu {
         }
         return $data;
     }
-    public function menu_id($vars,&$sort){
+    public static function mid($vars,&$sort){
         foreach ($vars as $k => $v) {
             ++$sort;
             $key = $v['id']?$v['id']:$k;
@@ -38,91 +39,98 @@ class menu {
 
             $array[$key] = $v;
             if($v['children']){
-                $array[$key]['children'] = $this->menu_id($v['children'],$sort);
+                $array[$key]['children'] = self::mid($v['children'],$sort);
             }
         }
         return $array;
     }
 
-    public function menu_array($cache=false){
+    public static function get_array($cache=false){
         $variable = array();
         $sort     = 100000;
         foreach (glob(iPHP_APP_DIR."/*/etc/iMenu.*.php") as $index=> $filename) {
-            $array = $this->json_data($filename);
+            $array = self::json_data($filename);
             if($array){
-                $array = $this->menu_id($array,$sort);
+                $array = self::mid($array,$sort);
                 $variable[] = $array;
             }
         }
 
         if($variable){
             $variable = call_user_func_array('array_merge_recursive',$variable);
-            array_walk($variable,array($this,'menu_item_unique'));
-            $this->menu_item_sort($variable);
-            $this->menu_href_array($variable,$this->href_array);
-            $this->menu_array = $variable;
+            array_walk($variable,array(__CLASS__,'item_unique'));
+            self::item_sort($variable);
+            self::href_array($variable,self::$href_array,$caption);
+            self::$menu_array = $variable;
             unset($variable);
             if($cache){
                 $iCache = iCache::file_cache();
-                $iCache->add(iPHP_APP.'/menu/array', $this->menu_array,0);
-                $iCache->add(iPHP_APP.'/menu/href', $this->href_array,0);
+                $iCache->add(iPHP_APP.'/menu/array', self::$menu_array,0);
+                $iCache->add(iPHP_APP.'/menu/href', self::$href_array,0);
+                $iCache->add(iPHP_APP.'/menu/caption',$caption,0);
             }
         }
     }
-    public function cache(){
-        $this->menu_array(true);
+    public static function cache(){
+        self::get_array(true);
     }
-    public function get_cache(){
+    public static function get_caption(){
+        $iCache = iCache::file_cache();
+        return $iCache->get(iPHP_APP.'/menu/caption');
+    }
+    public static function get_cache(){
          $iCache = iCache::file_cache();
-         $this->menu_array  = $iCache->get(iPHP_APP.'/menu/array');
-         $this->href_array  = $iCache->get(iPHP_APP.'/menu/href');
-         if(empty($this->menu_array)||empty($this->href_array)){
-            $this->cache();
+         self::$menu_array  = $iCache->get(iPHP_APP.'/menu/array');
+         self::$href_array  = $iCache->get(iPHP_APP.'/menu/href');
+         if(empty(self::$menu_array)||empty(self::$href_array)){
+            self::cache();
          }
     }
-    public function menu_href_array($variable,&$out,$id=null){
+
+    public static function href_array($variable,&$out,&$caption,$id=null){
         // $array = array();
         foreach ($variable as $key => $value) {
             $_id = $id?$id:$value['id'];
             if(!$value['-'] && $value['href']){
                 $out[$value['href']] = $_id;
+                $caption[$value['href']] = $value['caption'];
             }
             if($value['children']){
-                $this->menu_href_array($value['children'],$out,$_id);
+                self::href_array($value['children'],$out,$caption,$_id);
             }
 
         }
         // return $array;
     }
-    public function menu_item_sort(&$variable){
-        uasort ($variable,array($this,'array_sort'));
+    public static function item_sort(&$variable){
+        uasort ($variable,array(__CLASS__,'array_sort'));
     	foreach ($variable as $key => $value) {
     		if($value['children']){
-	    		$this->menu_item_sort($variable[$key]['children']);
+	    		self::item_sort($variable[$key]['children']);
     		}
     	}
     }
-    public function array_sort($a,$b){
+    public static function array_sort($a,$b){
         if ( $a['sort']  ==  $b['sort'] ) {
             return  0 ;
         }
         return ( $a['sort']  <  $b['sort'] ) ? - 1  :  1 ;
         // return @strnatcmp($a['sort'],$b['sort']);
     }
-    public function menu_item_unique (&$items){
+    public static function item_unique (&$items){
         if(is_array($items)){
             foreach ($items as $key => $value) {
                 if(in_array($key, array('id','name','icon','caption','sort'))){
                     is_array($value) &&$items[$key] = $value[0];
                 }
                 if(is_array($items['children'])){
-                    array_walk ($items['children'],array($this,'menu_item_unique'));
+                    array_walk ($items['children'],array(__CLASS__,'item_unique'));
                 }
             }
         }
     }
 
-    public function href($a){
+    public static function href($a){
         $a['href'] && $href = __ADMINCP__.'='.$a['href'];
         $a['target']=='iPHP_FRAME' && $href.='&frame=iPHP';
         $a['href']=='iPHP_SELF' && $href = iPHP_SELF;
@@ -130,61 +138,83 @@ class menu {
         strstr($a['href'], 'http://') && $href = $a['href'];
         return $href;
     }
-	public function a($a){
+	public static function a($a){
 		if(empty($a)||$a['caption']=='-') return;
 
         $a['title'] OR $a['title'] = $a['caption'];
 		$a['icon'] && $icon='<i class="'.$a['icon'].'"></i> ';
-		$link = '<a href="'.$this->href($a).'"';
+		$link = '<a href="'.self::href($a).'"';
 		$a['title']  && $link.= ' title="'.$a['title'].'"';
 		$link.= ' class="tip-bottom '.$a['a_class'].'"';
 		$link.='>';
 		return $link.$icon.' '.$a['caption'].'</a>';
 	}
-    public function search_href(){
-        $path =  str_replace(__ADMINCP__.'=', '', $this->url);
-        foreach ($this->href_array as $key => $value) {
+
+    public static function history($url=null,$get=false){
+        $url===null OR self::$url = $url;
+        $iCache    = iCache::file_cache();
+        $key       = iPHP_APP.'/menu/history';
+        $history   = (array)$iCache->get($key);
+        if($get){
+            return $history;
+        }
+        array_unshift($history,$url);
+        $history = array_unique ($history);
+        if(count($history)>20){
+            array_pop($history);
+        }
+        $iCache->add($key, $history,0);
+    }
+
+    public static function search_href($url=null){
+        $url===null OR self::$url = $url;
+        $path =  str_replace(__ADMINCP__.'=', '', self::$url);
+        foreach (self::$href_array as $key => $value) {
             if($path==$key){
                return $value;
             }
         }
     }
-    public function app_memu($app){
+    public static function app_memu($app){
         $path  = iPHP_APP_DIR."/{$app}/etc/iMenu.main.php";
-        $array = $this->json_data($path);
-        $array = $this->menu_id($array);
-        $key   = $this->search_href();
+        $array = self::json_data($path);
+        $array = self::menu_id($array);
+        $key   = self::search_href();
         $array = $array[$key]['children'][$app]['children'];
 
         foreach((array)$array AS $_array) {
-            $nav.= $this->li('sidebar',$_array,0);
+            $nav.= self::li('sidebar',$_array,0);
         }
         return $nav;
 
     }
-	public function sidebar(){
-        $key= $this->search_href();
-        $menu_array = $this->menu_array[$key]['children'];
+	public static function sidebar(){
+        $key = self::search_href();
+        $menu_array = self::$menu_array[$key]['children'];
         foreach((array)$menu_array AS $array) {
-            $nav.= $this->li('sidebar',$array,0);
+            $nav.= self::li('sidebar',$array,0);
+        }
+        if(self::$callback['sidebar']){
+            $callback = self::$callback['sidebar'];
+            $nav.= call_user_func_array($callback[0], array($key,$menu_array));
         }
         return $nav;
 	}
-	public function nav(){
-        foreach((array)$this->menu_array AS $array) {
-            $nav.= $this->li('nav',$array,0);
+	public static function nav(){
+        foreach((array)self::$menu_array AS $array) {
+            $nav.= self::li('nav',$array,0);
         }
 		return $nav;
 	}
 
-    public function children_count($variable){
+    public static function children_count($variable){
         $count = 0;
         foreach ((array)$variable as $key => $value) {
             $a['caption']=='-' OR $count++;
         }
         return $count;
     }
-	public function li($mType,$a,$level = 0){
+	public static function li($mType,$a,$level = 0){
 		// if(!admincp::MP($id)) return false;
 
         $a = (array)$a;
@@ -192,7 +222,7 @@ class menu {
 			return '<li data-sort="'.$a['sort'].'" class="'.(($level||$mType=='sidebar')?'divider':'divider-vertical').'"></li>';
 		}
 
-        $href = $this->href($a);
+        $href = self::href($a);
 		$children = count($a['children']);
 
 		if($children && $mType=='nav'){
@@ -204,7 +234,7 @@ class menu {
 		if($mType=='sidebar' && $children && $level==0){
             // $href       = 'javascript:;';
 			$a['class']	= 'submenu';
-			$label		= '<span class="label">'.$this->children_count($a['children']).'</span>';
+			$label		= '<span class="label">'.self::children_count($a['children']).'</span>';
 		}
 
 		if($mType=='tab'){
@@ -238,7 +268,7 @@ class menu {
 		if($children){
 			$SMli	= '';
 			foreach((array)$a['children'] AS $id=>$ca) {
-				$SMli.= $this->li($mType,$ca,$level+1);
+				$SMli.= self::li($mType,$ca,$level+1);
 			}
 			$mType =='nav' && $SMul='<ul class="dropdown-menu">'.$SMli.'</ul>';
 			if($mType=='sidebar'){
@@ -249,7 +279,7 @@ class menu {
 		return $li;
 	}
 
-    public function check_power($p){
-    	return is_array($p)?array_intersect((string)$p,$this->power):in_array((string)$p,$this->power);
+    public static function check_power($p){
+    	return is_array($p)?array_intersect((string)$p,self::$power):in_array((string)$p,self::power);
     }
 }

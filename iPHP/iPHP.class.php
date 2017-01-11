@@ -296,6 +296,56 @@ class iPHP {
         }
         return '0';
 	}
+    /**
+     * [callback 回调]
+     * @param  [type]   $obj    [类]
+     * @param  [type]   $method [方法]
+     * @param  [type]   $value  [参数]
+     * @param  boolean  $run    [是否执行]
+     * @return function         [description]
+     */
+    public static function callback1($obj,$method,$value,$run=false){
+	    if (@class_exists($obj) && method_exists($obj, $method)) {
+           return call_user_func_array(array($obj,$method), (array)$value);
+        }
+	        // if (@class_exists($obj) && method_exists($obj, $method)) {
+	        //     return call_user_func_array(array($obj,$method), (array)$value);
+	        // }
+        // if($run){
+        // }
+        // $GLOBALS['iPHP_CALLBACK'][$obj][] = array($method, (array)$value);
+    }
+    /**
+     * [hook 应用钩子]
+     * @param  [type] $app      [应用]
+     * @param  [type] $resource [资源]
+     * @param  [type] $hooks    [钩子]
+     * @return [type]           [description]
+     */
+    public static function hook($app,$resource=null,$hooks){
+        if($hooks){
+            foreach ($hooks as $field => $call) {
+                foreach ($call as $key => $cb) {
+                    // $resource[$field] = self::call_func($cb,array($resource[$field],&$resource));
+                    $resource[$field] = iPHP::callback($cb,array($resource[$field],&$resource));
+                }
+            }
+        }
+        return $resource;
+    }
+    /**
+     * [callback 回调执行]
+     * @param  [type] $callback [执行函数]
+     * @param  [type] $value    [参数]
+     * @return [type]           [description]
+     */
+    public static function callback($callback,$value){
+        if (is_array($callback) && @class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {
+            return call_user_func_array($callback, (array)$value);
+        }else{
+            return $value;
+        }
+    }
 	public static function app($app = NULL, $args = NULL) {
 		$app_dir = $app_name = $app;
 		$file_type = 'app';

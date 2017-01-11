@@ -123,7 +123,10 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
   </div>
   <?php } ?>
   <div class="widget-box" id="<?php echo APP_BOXID;?>">
-    <div class="widget-title"> <span class="icon"> <i class="fa fa-list"></i> </span>
+    <div class="widget-title">
+      <span class="icon">
+        <a href="<?php echo $this->category_uri; ?>&do=add" title="添加<?php echo $this->category_name;?>"><i class="fa fa-plus-square"></i></a>
+      </span>
       <ul class="nav nav-tabs" id="category-tab">
         <li<?php if(admincp::$APP_DO=='tree'){ ?> class="active" <?php } ?>><a href="<?php echo $this->category_uri; ?>&do=tree"><i class="fa fa-tasks"></i> 树模式</a></li>
         <li<?php if(admincp::$APP_DO=='list'){ ?> class="active" <?php } ?>><a href="<?php echo $this->category_uri; ?>&do=list"><i class="fa fa-list"></i> 列表模式</a></li>
@@ -134,7 +137,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
       <form action="<?php echo $this->category_furi; ?>&do=update" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <div id="category-list" class="tab-content">
           <div id="category-tree" class="row-fluid category-treeview">
-            <ul id="tree"><p id="tree-loading"><img src="./app/admincp/ui/img/loading.gif" /></p></ul>
+            <ul id="tree"><p id="tree-loading"><img src="./app/admincp/ui/img/ajax_loader.gif" /></p></ul>
           </div>
         </div>
         <div class="form-actions">
@@ -168,26 +171,25 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
               $rootidArray = iSQL::values($rs,'rootid','array',null);
               $rootidArray && $root_data = (array) $this->get($rootidArray);
               for($i=0;$i<$_count;$i++){
-
+                $root = $root_data[$rs[$i]['rootid']];
             ?>
             <tr id="<?php echo $rs[$i]['cid'] ; ?>" class="status<?php echo $rs[$i]['status'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['cid'] ; ?>" /></td>
-              <td><?php echo $rs[$i]['cid'] ; ?></td>
+              <td><a href="<?php echo iURL::get('category',$rs[$i])->href;?>"><?php echo $rs[$i]['cid'] ; ?></a></td>
               <td><?php echo $rs[$i]['pid'] ; ?></td>
               <td><input <?php if($rs[$i]['rootid']=="0"){ ?> style="font-weight:bold"<?php } ?> type="text" name="name[<?php echo $rs[$i]['cid'] ; ?>]" value="<?php echo $rs[$i]['name'] ; ?>">
                 <?php if(!$rs[$i]['status']){ ?>
                 <i class="fa fa-eye-slash" title="隐藏<?php echo $this->category_name;?>"></i>
                 <?php } ?></td>
               <td><?php echo $rs[$i]['dir'] ; ?></td>
-              <td><a href="<?php echo APP_DOURI; ?>&rootid=<?php echo $rs[$i]['rootid'] ; ?>"><?php echo  $root_data[$rs[$i]['rootid']]->name ; ?></a></td>
+              <td><a href="<?php echo APP_DOURI; ?>&rootid=<?php echo $rs[$i]['rootid'] ; ?>"><?php echo  $root?$root->name:'顶级'.$this->category_name ; ?></a></td>
               <td><?php echo $rs[$i]['count'] ; ?></td>
               <td>
-               <a href="<?php echo iURL::get('category',$rs[$i])->href;?>" class="btn btn-small"><i class="fa fa-link"></i> 访问</a>
                 <?php if(admincp::CP($rs[$i]['cid'],'ca') ){?>
-                <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&do=add&<?php echo $this->_app_cid;?>=<?php echo $rs['cid'] ;?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加<?php echo $this->_app_name;?></a>
+                <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&do=add&<?php echo $this->_app_cid;?>=<?php echo $rs[$i]['cid'] ;?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加<?php echo $this->_app_name;?></a>
                 <?php } ?>
                 <?php if(admincp::CP($rs[$i]['cid'],'cs') ){?>
-                <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&<?php echo $this->_app_cid;?>=<?php echo $rs['cid'] ;?>&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> <?php echo $this->_app_name;?>管理</a>
+                <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&<?php echo $this->_app_cid;?>=<?php echo $rs[$i]['cid'] ;?>&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> <?php echo $this->_app_name;?>管理</a>
                 <?php } ?>
                 <?php if(admincp::CP($rs[$i]['cid'],'a') ){?>
                 <a href="<?php echo $this->category_uri; ?>&do=add&rootid=<?php echo $rs[$i]['cid'] ; ?>" class="btn btn-small"><i class="fa fa-plus-square"></i> 子<?php echo $this->category_name;?></a>

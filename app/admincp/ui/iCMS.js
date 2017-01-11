@@ -18,10 +18,6 @@
         init: function(options) {
             this.config = $.extend(this.config,options);
         },
-        start:function(){
-            $(".tip").tooltip();
-        },
-
         api: function(app, _do) {
             return iCMS.config.API + '?app=' + app + (_do || '');
         },
@@ -64,8 +60,10 @@
                 icon: 'warning'
             }
             opts.id      = 'iPHP-DIALOG-ALERT';
+            opts.skin    = 'iCMS_dialog_alert'
             opts.content = msg;
             opts.height  = 150;
+            opts.lock    = true;
             opts.time    = 3000;
             window.top.iCMS.dialog(opts,callback);
         },
@@ -74,13 +72,18 @@
                 id:'iCMS-DIALOG',
                 title:'iCMS - 提示信息',
                 width:360,height:150,
-                className:'iCMS_dialog',//skin:'iCMS_dialog',
-                backdropBackground:'#666',backdropOpacity: 0.5,
-                fixed:true,autofocus:false,quickClose:true,
-                lock:true,time: null,
+                className:'iCMS_UI_DIALOG',
+                backdropBackground: '#333',
+                backdropOpacity: 0.5,
+                fixed: true,
+                autofocus: false,
+                quickClose: true,
+                lock: true,
+                time: null,
                 label:'success',icon: 'check',api:false,elemBack:'beforeremove'
-            },_elemBack,timeOutID = null,
-            opts = $.extend(defaults,options,iCMS.config.DIALOG);
+            },
+            timeOutID = null,
+            opts = $.extend(defaults,iCMS.config.DIALOG,options);
 
             if(opts.follow){
                 opts.fixed = false;
@@ -92,39 +95,9 @@
             var content = opts.content;
             //console.log(typeof content);
             if (content instanceof jQuery){
-                opts.content = content.html();
+                opts.content = content;
             }else if (typeof content === "string") {
-                //console.log('typeof content === "string"');
                 opts.content = __msg(content);
-            }else if (typeof content === "object") {
-                if(content.nodeType === 1){
-                    if (_elemBack) {
-                        _elemBack();
-                        delete _elemBack;
-                    };
-                    //console.log($(content).data( "events" ));
-                    // artDialog 5.0.4
-                    // 让传入的元素在对话框关闭后可以返回到原来的地方
-                    var display = content.style.display;
-                    var prev    = content.previousSibling;
-                    var next    = content.nextSibling;
-                    var parent  = content.parentNode;
-                    _elemBack = function () {
-                        if (prev && prev.parentNode) {
-                            prev.parentNode.insertBefore(content, prev.nextSibling);
-                        } else if (next && next.parentNode) {
-                            next.parentNode.insertBefore(content, next);
-                        } else if (parent) {
-                            parent.appendChild(content);
-                        };
-                        content.style.display = display;
-                        _elemBack = null;
-                    };
-                    opts.width   = 'auto';
-                    opts.height  = 'auto';
-                    opts.content = content;
-                    $(content).show();
-                }
             }
             opts.onclose = function(){
                 __callback('close');
@@ -137,7 +110,6 @@
             };
             var d = window.dialog(opts);
 
-            //console.log(opts.api);
             if(opts.lock){
                 d.showModal();
                 // $(d.backdrop).addClass("ui-popup-overlay").click(function(){
@@ -164,14 +136,6 @@
 
             function __callback(type){
                 window.clearTimeout(timeOutID);
-                //console.log('opts.elemBack:'+opts.elemBack,'type:'+type);
-                if(opts.elemBack==type){
-                    //console.log('_elemBack:'+_elemBack);
-                    if (_elemBack) { //删除前把元素返回原来的地方
-                        _elemBack();
-                    }
-                }
-
                 if (typeof(callback) === "function") {
                     callback(type);
                 }
@@ -185,25 +149,7 @@
                 + '</span></div>'
                 +'</td></tr></table>';
             }
-            // dd = $.extend(d,{
-            //     content:function(c){
-            //         d.content(__msg(c));
-            //     }
-            // });
             return d;
-        },
-
-        setcookie: function(cookieName, cookieValue, seconds, path, domain, secure) {
-            var expires = new Date();
-            expires.setTime(expires.getTime() + seconds);
-            cookieName = this.config.COOKIE + '_' + cookieName;
-            document.cookie = escape(cookieName) + '=' + escape(cookieValue) + (expires ? '; expires=' + expires.toGMTString() : '') + (path ? '; path=' + path : '/') + (domain ? '; domain=' + domain : '') + (secure ? '; secure' : '');
-        },
-        getcookie: function(name) {
-            name = this.config.COOKIE + '_' + name;
-            var cookie_start = document.cookie.indexOf(name);
-            var cookie_end = document.cookie.indexOf(";", cookie_start);
-            return cookie_start == -1 ? '' : unescape(document.cookie.substring(cookie_start + name.length + 1, (cookie_end > cookie_start ? cookie_end : document.cookie.length)));
         },
         random: function(len,ischar) {
             len = len || 16;
@@ -291,26 +237,4 @@
 function pad(num, n) {
     num = num.toString();
     return Array(n > num.length ? (n - ('' + num).length + 1) : 0).join(0) + num;
-}
-
-$(function(){
-    if(!placeholderSupport()){   // 判断浏览器是否支持 placeholder
-        $('[placeholder]').focus(function() {
-            var input = $(this);
-            if (input.val() == input.attr('placeholder')) {
-                input.val('');
-                input.removeClass('placeholder');
-            }
-        }).blur(function() {
-            var input = $(this);
-            if (input.val() == '' || input.val() == input.attr('placeholder')) {
-                input.addClass('placeholder');
-                input.val(input.attr('placeholder'));
-            }
-        }).blur();
-    };
-})
-
-function placeholderSupport() {
-    return 'placeholder' in document.createElement('input');
 }

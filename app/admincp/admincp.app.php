@@ -9,7 +9,21 @@
 * @version 6.0.0
 */
 class admincpApp{
-    public function __construct() {}
+    public function __construct() {
+        menu::$callback['sidebar'] = array(
+            array('admincpApp','__sidebar__')
+        );
+    }
+    public static function __sidebar__(){
+        $history   = menu::history(null,true);
+        $caption   = menu::get_caption();
+        foreach ($history as $key => $url) {
+            $uri   =  str_replace(__ADMINCP__.'=', '', $url);
+            $title = $caption[$uri];
+            $title && $nav.= '<li><a href="'.$url.'"><i class="fa fa-link"></i> <span>'.$title.'</span></a></li>';
+        }
+        return $nav;
+    }
     public function do_logout(){
    	    members::logout();
     	iUI::success('注销成功!','url:'.iPHP_SELF);

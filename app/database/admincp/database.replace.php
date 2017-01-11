@@ -12,7 +12,7 @@ admincp::head();
     <div class="widget-title"> <span class="icon"> <i class="fa fa-cloud"></i> </span>
       <h5 class="brs">数据库</h5>
       <ul class="nav nav-tabs iMenu-tabs">
-        <?php echo admincp::$menu->app_memu(admincp::$APP_NAME); ?>
+        <?php echo menu::app_memu(admincp::$APP_NAME); ?>
       </ul>
     </div>
     <div class="widget-content nopadding">

@@ -77,7 +77,7 @@ class htmlAdmincp{
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
     public function do_category(){
-        $this->categoryApp = new categoryAdmincp(iCMS_APP_ARTICLE);
+        $this->categoryAdmincp = new categoryAdmincp(iCMS_APP_ARTICLE);
     	include admincp::view("html.category");
     }
     public function do_createCategory($cid=0,$p=1,$loop=1){
@@ -161,7 +161,7 @@ class htmlAdmincp{
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
     }
     public function do_article(){
-        $this->categoryApp = new categoryAdmincp(iCMS_APP_ARTICLE);
+        $this->categoryAdmincp = new categoryAdmincp(iCMS_APP_ARTICLE);
     	include admincp::view("html.article");
     }
     public function do_createArticle($aid=null){

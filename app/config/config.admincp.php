@@ -15,7 +15,7 @@ class configAdmincp{
     	$config['site']['indexName'] OR $config['site']['indexName'] = 'index';
         $redis    = extension_loaded('redis');
         $memcache = extension_loaded('memcached');
-        admincp::$menu->url = __ADMINCP__.'='.admincp::$APP_NAME;
+        menu::$url = __ADMINCP__.'='.admincp::$APP_NAME;
     	include admincp::view("config");
     }
     /**

@@ -11,7 +11,7 @@
 class propAdmincp{
     public function __construct() {
         $this->pid         = (int)$_GET['pid'];
-        $this->categoryApp = new categoryAdmincp('all');
+        $this->categoryAdmincp = new categoryAdmincp();
     }
     public function do_add(){
         $this->pid && $rs = iDB::row("SELECT * FROM `#iCMS@__prop` WHERE `pid`='$this->pid' LIMIT 1;",ARRAY_A);
@@ -142,7 +142,7 @@ class propAdmincp{
         echo '<div class="btn-group">'.
         '<a class="btn dropdown-toggle iCMS-default" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>'.
         '<ul class="dropdown-menu">';
-        foreach ((array)$propArray as $prop) {
+        if($propArray)foreach ((array)$propArray as $prop) {
             echo '<li><a href="javascript:;" data-toggle="insert" data-target="#' . $target . '" data-value="' . $prop['val'] . '">' . $prop['name'] . '</a></li>';
         }
         echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.$app.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
@@ -153,7 +153,7 @@ class propAdmincp{
         $propArray = iCache::get("prop/{$app}/{$field}");
         is_array($valArray) OR $valArray  = explode(',', $valArray);
         $opt = array();
-        foreach ((array)$propArray AS $k => $P) {
+        if($propArray)foreach ((array)$propArray AS $k => $P) {
             if ($out == 'option') {
                 $opt[]="<option value='{$P['val']}'" . (isset($valArray[$P['val']]) ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";
             } elseif ($out == 'array') {
