@@ -16,16 +16,6 @@ define('__ADMINCP__', iPHP_SELF . '?app');
 define('ACP_PATH', iPHP_APP_DIR . '/admincp');
 define('ACP_HOST', (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://" . $_SERVER['HTTP_HOST']);
 
-iDB::$show_errors     = true;
-iDB::$show_trace      = false;
-iDB::$show_explain    = false;
-iUI::$dialog['title'] = iPHP_APP;
-
-members::$LOGIN_PAGE  = ACP_PATH.'/template/admincp.login.php';
-members::$AUTH        = 'ADMIN_AUTH';
-members::$AJAX        = iPHP::PG('ajax');
-
-
 class admincp {
 	public static $apps       = NULL;
 	public static $APP_OBJ    = NULL;
@@ -40,6 +30,15 @@ class admincp {
 
 	public static function init() {
 		self::check_seccode(); //验证码验证
+
+		iUI::$dialog['title'] = iPHP_APP;
+		iDB::$show_errors     = true;
+		iDB::$show_trace      = false;
+		iDB::$show_explain    = false;
+
+		members::$LOGIN_PAGE  = ACP_PATH.'/template/admincp.login.php';
+		members::$AUTH        = 'ADMIN_AUTH';
+		members::$AJAX        = iPHP::PG('ajax');
 		members::check_login(); //用户登陆验证
 		menu::init(); //菜单
 		self::MP('ADMINCP', 'page'); //检查是否有后台权限

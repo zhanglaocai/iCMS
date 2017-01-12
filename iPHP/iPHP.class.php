@@ -339,7 +339,7 @@ class iPHP {
      * @param  [type] $value    [参数]
      * @return [type]           [description]
      */
-    public static function callback($callback,$value){
+    public static function callback($callback,$value=array()){
         if (is_array($callback) && @class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {
             return call_user_func_array($callback, (array)$value);
         }else{

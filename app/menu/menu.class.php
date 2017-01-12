@@ -9,19 +9,20 @@
 * @version 6.0.0
 */
 class menu {
-    public static $menu_array = array();
-    public static $href_array = array();
-    public static $callback  = array();
-    public static $url        = null;
+    public static $menu_array  = array();
+    public static $href_array  = array();
+    public static $callback    = array();
+    public static $url         = null;
+    public static $history_key = null;
 
 	public static function init() {
-        // self::get_cache();
-        self::get_array(true);
+        self::get_cache();
+        // self::get_array(true);
 	}
     public static function json_data($path){
         $json  = file_get_contents($path);
         $json  = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
-        $data = json_decode($json,ture);
+        $data  = json_decode($json,ture);
         $error = json_last_error();
         if($error!==JSON_ERROR_NONE){
             $data = array(
@@ -153,7 +154,7 @@ class menu {
     public static function history($url=null,$get=false){
         $url===null OR self::$url = $url;
         $iCache    = iCache::file_cache();
-        $key       = iPHP_APP.'/menu/history';
+        $key       = iPHP_APP.'/menu/history'.self::$history_key;
         $history   = (array)$iCache->get($key);
         if($get){
             return $history;
