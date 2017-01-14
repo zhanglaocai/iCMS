@@ -21,7 +21,7 @@ class templateAdmincp{
         $navbar    = true;
         $file_edit = true;
 
-    	include admincp::view("files.explorer");
+    	include admincp::view("files.explorer","files");
     }
 
 }

@@ -21,22 +21,21 @@ class keywordsAdmincp{
     }
     public function do_add(){
         if($this->id) {
-            $rs			= iDB::row("SELECT * FROM `#iCMS@__keywords` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
+            $rs = iDB::row("SELECT * FROM `#iCMS@__keywords` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
         }else{
         	$rs['keyword']	= $_GET['keyword'];
-        	$rs['url']		= $_GET['url'];
+        	$rs['replace']		= $_GET['replace'];
         }
         include admincp::view("keywords.add");
     }
     public function do_save(){
-		$id		= (int)$_POST['id'];
-		$keyword= iSecurity::escapeStr($_POST['keyword']);
-		$url	= iSecurity::escapeStr($_POST['url']);
-		$times	= (int)$_POST['times'];
+        $id      = (int)$_POST['id'];
+        $keyword = iSecurity::escapeStr($_POST['keyword']);
+        $replace = iSecurity::escapeStr($_POST['replace']);
 
         $keyword OR iUI::alert('关键词不能为空!');
-        $url 	OR iUI::alert('链接不能为空!');
-        $fields = array('keyword', 'url', 'times');
+        $replace OR iUI::alert('替换词不能为空!');
+        $fields = array('keyword', 'replace', 'times');
         $data   = compact ($fields);
 
         if(empty($id)) {
@@ -88,17 +87,16 @@ class keywordsAdmincp{
     		break;
 		}
 	}
+    public function do_cache($dialog=true){
+        $this->cache();
+        $dialog && iUI::success('更新完成');
+    }
     public static function cache(){
-    	$rs	= iDB::all("SELECT * FROM `#iCMS@__keywords` ORDER BY CHAR_LENGTH(`keyword`) DESC");
-        if($rs){
-            foreach($rs AS $i=>$val) {
-                if($val['times']>0) {
-                    $search[]  = $val['keyword'];
-                    $replace[] = '<a class="keyword" target="_blank" href="'.$val['url'].'">'.$val['keyword'].'</a>';
-                }
-            }
-            iCache::set('keywords/search',$search,0);
-            iCache::set('keywords/replace',$replace,0);
+        $rs    = iDB::all("SELECT * FROM `#iCMS@__keywords` ORDER BY CHAR_LENGTH(`keyword`) DESC");
+        $array = array();
+        foreach((array)$rs AS $i=>$val) {
+            $array[] = array($val['keyword'],htmlspecialchars_decode($val['replace']));
         }
+        iCache::set(keywordsApp::CACHE_KEY,$array,0);
     }
 }

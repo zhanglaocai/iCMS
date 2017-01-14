@@ -71,12 +71,17 @@ body{background-color:#EDEDED;color:#000;}
 }
 .chosen-container-single .chosen-single abbr {top:9px;}
 .chosen-results em{color: #08c;font-weight: bold;}
-.iCMS_dialog .ui-dialog-content .chosen-container{position:absolute;}
 
 /* uniform */
 .add-on .checker{margin-right:0px;margin-bottom:4px;}
 
 /* dialog */
+.ui-dialog{padding:0;}
+.ui-dialog .ui-dialog-title{font-size:14px;margin:4px 0 0;padding: 8px;line-height: 1.6;}
+.ui-dialog .ui-dialog-close{ top: 10px;}
+.ui-widget-overlay{position:fixed;}
+
+.iCMS_dialog .ui-dialog-content .chosen-container{position:absolute;}
 .iCMS_dialog .ui-dialog-header{background-color:#333;background-image:-moz-linear-gradient(top,#3c3c3c,#0a0a0a);background-image:-ms-linear-gradient(top,#3c3c3c,#0a0a0a);background-image:-webkit-gradient(linear,0 0,0 100%,from(#3c3c3c),to(#0a0a0a));background-image:-webkit-linear-gradient(top,#3c3c3c,#0a0a0a);background-image:-o-linear-gradient(top,#3c3c3c,#0a0a0a);background-image:linear-gradient(top,#3c3c3c,#0a0a0a);background-repeat:repeat-x;filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3c3c3c',endColorstr='#0a0a0a',GradientType=0);}
 .iCMS_dialog .ui-dialog-header .ui-dialog-close{color:#999;opacity:.4;font-weight:normal;filter:alpha(opacity=40);}
 .iCMS_dialog .ui-dialog-header .ui-dialog-close:hover,.iCMS_dialog .ui-dialog-header .ui-dialog-close:focus{opacity:0.7;filter:alpha(opacity=70);}
@@ -307,12 +312,8 @@ color:#666666;}
 .widget-content{padding:12px 15px;border-bottom:1px solid #cdcdcd;}
 .widget-box.widget-plain .widget-content{padding:12px 0 0;}
 .widget-box.collapsible .collapse.in .widget-content{border-bottom:1px solid #CDCDCD;}
-.ui-dialog{padding:0;}
-.ui-dialog .ui-dialog-title{font-size:14px;margin:4px 0 0;}
-.ui-widget-overlay{position:fixed;}
 
-/* .ui-dialog .ui-dialog-titlebar-close { background: transparent url("img/glyphicons-halflings.png") -310px 2px scroll; margin: -15px 0 0; }
-*/
+
 ul#icons li{cursor:pointer;float:left;list-style:none outside none;margin:2px;padding:4px 0;position:relative;}
 .recent-posts,.recent-comments,.recent-users{margin:0;padding:0;}
 .recent-posts li,.recent-comments li,.article-post li,.recent-users li{border-bottom:1px dotted #AEBDC8;list-style:none outside none;padding:10px;}

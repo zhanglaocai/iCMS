@@ -218,7 +218,7 @@ $lock_file = iPATH.'cache/install.lock';
 			<div class="license well hide step" id="step1">
 				<h1>iCMS使用许可协议</h1>
 				<p></p>
-				<p>感谢您选择iCMS <?php echo iCMS_VER ;?>。希望我们的努力能为您提供一个高效快速和强大的内容管理解决方案。</p>
+				<p>感谢您选择iCMS <?php echo iCMS_VERSION ;?>。希望我们的努力能为您提供一个高效快速和强大的内容管理解决方案。</p>
 				<p>本软件为开源软件，遵循 <a href="http://www.gnu.org/licenses/lgpl-2.1.html">LGPL</a> (GNU Lesser General Public License)开源协议</p>
 				<p>本软件版权归 iCMS 官方所有，且受《中华人民共和国计算机软件保护条例》等知识产权法律及国际条约与惯例的保护。</p>
 				<p>无论个人或组织、盈利与否、用途如何，均需仔细阅读本协议，在理解、同意、并遵守本协议的全部条款后，方可开始使用本软件。 </p>
@@ -255,7 +255,7 @@ $lock_file = iPATH.'cache/install.lock';
 			</div>
 			<div class="well hide step" id="step2">
 				<h1>第一步：安装须知</h1>
-				<p>欢迎使用 iCMS <?php echo iCMS_VER ;?>，本向导将帮助您将程序完整地安装在您的服务器内。</p>
+				<p>欢迎使用 iCMS <?php echo iCMS_VERSION ;?>，本向导将帮助您将程序完整地安装在您的服务器内。</p>
 				<h2>请您先确认以下安装配置: </h2>
 				<ul>
 					<li>MySQL 主机名称/IP 地址 </li>

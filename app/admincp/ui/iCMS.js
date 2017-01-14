@@ -71,7 +71,7 @@
             var defaults = {
                 id:'iCMS-DIALOG',
                 title:'iCMS - 提示信息',
-                width:360,height:150,
+                width:'auto',height:120,
                 className:'iCMS_UI_DIALOG',
                 backdropBackground: '#333',
                 backdropOpacity: 0.5,

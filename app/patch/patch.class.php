@@ -26,7 +26,7 @@ class patch {
 		self::PATCH_DIR = iPATH . self::PATCH_DIR;
 		$info = self::getVersion($force);
 		if ($info->app == iPHP_APP &&
-			version_compare($info->version, iCMS_VER, '>=') &&
+			version_compare($info->version, iCMS_VERSION, '>=') &&
 			$info->release > iCMS_RELEASE) {
 			self::$version = $info->version;
 			self::$release = $info->release;
@@ -40,7 +40,7 @@ class patch {
 		if (iFS::ex($tFilePath) && time() - iFS::mtime($tFilePath) < 3600 && !$force) {
 			$FileData = iFS::read($tFilePath);
 		} else {
-			$url = self::PATCH_URL . '/version.' . iPHP_APP . '.' . iCMS_VER . '.patch.' . iCMS_RELEASE . '?t=' . time();
+			$url = self::PATCH_URL . '/version.' . iPHP_APP . '.' . iCMS_VERSION . '.patch.' . iCMS_RELEASE . '?t=' . time();
 			$FileData = iHttp::remote($url);
 			iFS::write($tFilePath, $FileData);
 		}

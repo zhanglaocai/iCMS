@@ -6,10 +6,6 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 function public_ui($vars=null){
-	if(isset($vars['js'])){
-		return public_js(array('node'=>$vars['js']));
-	}
-	isset($vars['script']) OR $vars['script'] = true;
 	$dir = isset($vars['dir'])?$vars['dir'].'/':'';
 	iView::assign("ui",$vars);
 	echo iView::render("iCMS://{$dir}public.ui.htm");

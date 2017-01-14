@@ -258,37 +258,28 @@ function sechtml($string) {
     return $string;
 }
 //HTML TO TEXT
-function html2text($string) {
-    if(is_array($string)) {
-        foreach($string as $key => $val) {
-            $string[$key] = html2text($val);
-        }
-    } else {
-        $string  = preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$string);
-    }
-    return $string;
+function html2text($value) {
+    $value = is_array($value) ?
+        array_map('html2text', $value) :
+        preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$value);
+
+    return $value;
 }
-function html2js($string) {
-    if(is_array($string)) {
-        foreach($string as $key => $val) {
-            $string[$key] = html2js($val);
-        }
-    } else {
-        $string = str_replace(array("\n","\r","\\","\""), array(' ',' ',"\\\\","\\\""), $string);
-    }
-    return $string;
+function html2js($value) {
+    $value = is_array($value) ?
+            array_map('html2js', $value) :
+            str_replace(array("\n","\r","\\","\""), array(' ',' ',"\\\\","\\\""), $value);
+
+    return $value;
 }
 
 if (!function_exists('htmlspecialchars_decode')) {
-    function htmlspecialchars_decode($string) {
-        if(is_array($string)) {
-            foreach($string as $key => $val) {
-                $string[$key] = htmlspecialchars_decode($val);
-            }
-        } else {
-            $string = str_replace (array('&amp;','&#039;','&quot;','&lt;','&gt;'), array('&','\'','\"','<','>'), $string );
-        }
-        return $string;
+    function htmlspecialchars_decode($value) {
+        $value = is_array($value) ?
+                array_map('htmlspecialchars_decode', $value) :
+                str_replace (array('&amp;','&#039;','&quot;','&lt;','&gt;'), array('&','\'','\"','<','>'), $value );
+
+        return $value;
     }
 }
 function stripslashes_deep($value) {

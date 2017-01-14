@@ -43,7 +43,7 @@ $(function(){
     <?php }?>
     $('#mkdir').click(function() {
   		iCMS.dialog({
-          follow:this,
+          follow:this,height:'auto',
           content:document.getElementById('mkdir-box'),
           lock:false,
   		    title: '创建新目录',
@@ -214,7 +214,7 @@ $(function(){
   <?php if($this->from!='modal'){?>
 </div>
 <?php } ?>
-<div id="mkdir-box">
+<div id="mkdir-box" style="width:150px;">
   <input class="span2" id="newdirname" type="text" placeholder="请输入目录名称">
 </div>
 <?php admincp::foot();?>

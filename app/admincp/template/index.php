@@ -76,7 +76,7 @@ admincp::head();
       <table class="table table-bordered table-striped">
         <tr>
           <td>当前程序版本</td>
-          <td>iCMS <?php echo iCMS_VER ; ?>[<?php echo iCMS_RELEASE ; ?>]</td>
+          <td>iCMS <?php echo iCMS_VERSION ; ?>[<?php echo iCMS_RELEASE ; ?>]</td>
           <td><a href="<?php echo __ADMINCP__;?>=patch&do=check&force=1&frame=iPHP" target="iPHP_FRAME" id="home_patch">最新版本</a></td>
           <td><span id="newversion"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span></td>
         </tr>
@@ -222,7 +222,7 @@ admincp::head();
         <div class="widget-content nopadding">
           <form action="http://www.idreamsoft.com/cms/feedback.php" method="post" class="form-inline" id="iCMS-feedback" target="iPHP_FRAME">
             <textarea id="bug_content" name="content" class="tip" title="为了保证效率，请务必描述清楚你的问题，例如包含 iCMS 版本号、服务器操作系统、WEB服务器版本、浏览器版本等必要信息，不合格问题将可能会被无视掉" style="width:95%; height: 160px; margin:4px 0px 4px 10px;padding: 4px;">
-  iCMS 版本号:iCMS <?php echo iCMS_VER ; ?>[<?php echo iCMS_RELEASE ; ?>]
+  iCMS 版本号:iCMS <?php echo iCMS_VERSION ; ?>[<?php echo iCMS_RELEASE ; ?>]
   服务器操作系统:<?php echo PHP_OS ; ?>;
   WEB服务器版本:<?php echo $_SERVER['SERVER_SOFTWARE'] ; ?>;
   MYSQL版本:<?php echo iDB::version() ; ?>;

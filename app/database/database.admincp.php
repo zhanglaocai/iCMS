@@ -78,7 +78,7 @@ class databaseAdmincp {
 		!$step && $this->sizelimit /= 2;
 
 		$bakupdata = $this->bakupdata($tableA, $this->start);
-		$bakTag = "# iCMS Backup SQL File\n# Version:iCMS " . iCMS_VER . "\n# Time: " . get_date(0, "Y-m-d H:i:s") . "\n# iCMS: http://www.iDreamSoft.com\n# --------------------------------------------------------\n\n\n";
+		$bakTag = "# iCMS Backup SQL File\n# Version:iCMS " . iCMS_VERSION . "\n# Time: " . get_date(0, "Y-m-d H:i:s") . "\n# iCMS: http://www.iDreamSoft.com\n# --------------------------------------------------------\n\n\n";
 		if (!$step) {
 			!$tableA && iUI::alert('没有选择操作对象');
 			$tablesel = implode("|", $tableA);

@@ -124,9 +124,9 @@ class iSecurity {
 		}
 
 		if (!get_magic_quotes_gpc()) {
-			iSecurity::slashes($_POST);
-			iSecurity::slashes($_GET);
-			iSecurity::slashes($_COOKIE);
+			iSecurity::_addslashes($_POST);
+			iSecurity::_addslashes($_GET);
+			iSecurity::_addslashes($_COOKIE);
 		}
 		iSecurity::getServer(array('HTTP_REFERER','HTTP_HOST','HTTP_X_FORWARDED_FOR','HTTP_USER_AGENT',
 							'HTTP_CLIENT_IP','HTTP_SCHEME','HTTPS','PHP_SELF','SERVER_PORT',
@@ -230,11 +230,11 @@ class iSecurity {
 	 * 变量转义
 	 * @param $array
 	 */
-	public static function slashes(&$array) {
+	public static function _addslashes(&$array) {
 		if (is_array($array)) {
 			foreach ($array as $key => $value) {
 				if (is_array($value)) {
-					iSecurity::slashes($array[$key]);
+					iSecurity::_addslashes($array[$key]);
 				} else {
 					$array[$key] = addslashes($value);
 				}

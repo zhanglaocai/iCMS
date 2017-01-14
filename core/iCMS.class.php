@@ -36,7 +36,7 @@ class iCMS {
         iView::init();
         iView::$handle->_iVARS = array(
             'CONFIG'  => self::$config,
-            'VERSION' => iCMS_VER,
+            'VERSION' => iCMS_VERSION,
             'API'     => iCMS_API,
             'SAPI'    => iCMS_API_URL,
             'APPID'   => array(

@@ -19,6 +19,9 @@ $(function(){
       <h5>搜索</h5>
     </div>
     <div class="widget-content">
+      <div class="fr">
+        <a class="btn btn-success" href="<?php echo APP_FURI; ?>&do=cache" target="iPHP_FRAME"><i class="fa fa-refresh"></i> 更新内链缓存</a>
+      </div>
       <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <div class="input-prepend input-append"> <span class="add-on">每页</span>
@@ -32,8 +35,9 @@ $(function(){
     </div>
   </div>
   <div class="widget-box" id="<?php echo APP_BOXID;?>">
-    <div class="widget-title"> <span class="icon">
-      <input type="checkbox" class="checkAll" data-target="#<?php echo APP_BOXID;?>" />
+    <div class="widget-title">
+      <span class="icon">
+        <input type="checkbox" class="checkAll" data-target="#<?php echo APP_BOXID;?>" />
       </span>
       <h5>关键词列表</h5>
     </div>
@@ -45,8 +49,7 @@ $(function(){
               <th><i class="fa fa-arrows-v"></i></th>
               <th>ID</th>
               <th class="span3">关键词</th>
-              <th class="span6">链接</th>
-              <th class="span2">替换次数</th>
+              <th class="span6">替换内容</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -56,8 +59,7 @@ $(function(){
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id'] ; ?>" /></td>
               <td><?php echo $rs[$i]['id'] ; ?></td>
               <td><?php echo $rs[$i]['keyword'] ; ?></td>
-              <td><?php echo $rs[$i]['url'] ; ?></td>
-              <td><?php echo $rs[$i]['times'] ; ?></td>
+              <td><?php echo $rs[$i]['replace'] ; ?></td>
               <td><a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a> <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $rs[$i]['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a></td>
             </tr>
             <?php }  ?>
