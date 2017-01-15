@@ -1,76 +1,66 @@
 <style>
-.label-0 { background-color: #333; }
-.label-1 { background-color: #468847; }
-.label-2 { background-color: #FFD600; }
-.label-3 { background-color: #3A87AD; }
 .info { text-align: right; }
 .info span { float: left; }
 </style>
 <h4 class="manage-title">我的私信</h4>
-<form action="<!--{iCMS:router url='user'}-->" method="post" target="iCMS_FRAME">
-    <input name="action" type="hidden" value="manage" />
-    <input name="pg" type="hidden" value="pm" />
-    <div class="pm w670">
-        <table class="table table-striped">
-            <tbody>
+<div class="manage-pm">
+    <table class="table table-striped">
+        <tbody>
             <!--{iCMS:user:inbox loop="true"}-->
-                <tr id="id-<!--{$user_inbox.id}-->">
-                    <td class="avatar_35">
-                        <a i="ucard:<!--{$user_inbox.user.uid}-->" href="<!--{$user_inbox.user.url}-->">
-                            <img class="iCMS_user_avatar avatar_35" src="<!--{$user_inbox.user.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a>
-                        </td>
-                    <td>
-                        <!--{if $user_inbox.type=="0"}-->
-                            <!--{$user_inbox.sender.link}-->
-                        <!--{/if}-->
-                        <!--{if $user_inbox.type=="1"}-->
-                            <span class="label label-success">私信</span>
-                        <!--{if $user_inbox.is_sender}-->
-                            我发送给
-                        <!--{/if}-->
-                            <!--{$user_inbox.user.link}-->
-                        <!--{/if}-->
-                        ：
-                        <div class="inbox_content"><!--{$user_inbox.content}--></div>
-                        <div class="clearfix mt10"></div>
-                        <div class="info">
-                            <span class="label label-default"><!--{$user_inbox.sendtime|format_date}--></span>
+            <tr id="id-<!--{$user_inbox.id}-->">
+                <td class="avatar_35">
+                    <a i="ucard:<!--{$user_inbox.user.uid}-->" href="<!--{$user_inbox.user.url}-->">
+                    <img class="iCMS_user_avatar avatar_35" src="<!--{$user_inbox.user.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a>
+                </td>
+                <td>
+                    <!--{if $user_inbox.type=="0"}-->
+                    <!--{$user_inbox.sender.link}-->
+                    <!--{/if}-->
+                    <!--{if $user_inbox.type=="1"}-->
+                    <span class="label label-success">私信</span>
+                    <!--{if $user_inbox.is_sender}-->
+                    我发送给
+                    <!--{/if}-->
+                    <!--{$user_inbox.user.link}-->
+                    <!--{/if}-->
+                    ：
+                    <div class="inbox_content"><!--{$user_inbox.content}--></div>
+                    <div class="clearfix mt10"></div>
+                    <div class="info">
+                        <span class="label label-default"><!--{$user_inbox.sendtime|format_date}--></span>
                         <!--{if $msg_count}-->
-                            <a href="<!--{$user_inbox.url}-->"> 共 <!--{$user_inbox.msg_count}--> 条对话 </a>
+                        <a href="<!--{$user_inbox.url}-->"> 共 <!--{$user_inbox.msg_count}--> 条对话 </a>
                         <!--{/if}-->
-
                         <!--{if $user_inbox.type}-->
-                            <a href="javascript:;" class="btn btn-small btn-primary"
-                                i="pm:<!--{$user_inbox.user.uid}-->:<!--{$user_inbox.user.name}-->:<!--{$user_inbox.id|authcode:'ENCODE'}-->">
-                                    <i class="fa fa-reply"></i> 回复
-                            </a>
-                        <!--{/if}-->
-
-                        <!--{if $user_inbox.type && $msg_count}-->
-                            <a href="javascript:;" class="btn btn-small btn-warning"
-                                i="report"
-                                data-param='{"appid":"6","iid":"<!--{$user_inbox.id}-->","userid":"<!--{$user_inbox.send_uid}-->"}' title="举报私信骚扰">
-                                    <i class="fa fa-flag"></i> 举报
-                            </a>
-                        <!--{/if}-->
-
-                        <!--{if $msg_count}-->
-                            <a href="javascript:;" class="btn btn-small btn-danger"
-                                data-id="<!--{$user_inbox.id}-->"
-                                data-user="<!--{$user_inbox.user.uid}-->"
-                                data-action="del">
-                                  <i class="fa fa-trash-o"></i> 删除
-                            </a>
-                        <!--{else}-->
-                            <a href="javascript:;" class="btn btn-small btn-danger"
-                                data-id="<!--{$user_inbox.id}-->"
-                                data-action="del">
-                                 <i class="fa fa-trash-o"></i> 删除
+                        <a href="javascript:;" class="btn btn-small btn-primary"
+                            i="pm:<!--{$user_inbox.user.uid}-->:<!--{$user_inbox.user.name}-->:<!--{$user_inbox.id|authcode:'ENCODE'}-->">
+                            <i class="fa fa-reply"></i> 回复
                         </a>
                         <!--{/if}-->
-                        </div>
-                    </td>
-                </tr>
+                        <!--{if $user_inbox.type && $msg_count}-->
+                        <a href="javascript:;" class="btn btn-small btn-warning"
+                            i="report"
+                            data-param='{"appid":"6","iid":"<!--{$user_inbox.id}-->","userid":"<!--{$user_inbox.send_uid}-->"}' title="举报私信骚扰">
+                            <i class="fa fa-flag"></i> 举报
+                        </a>
+                        <!--{/if}-->
+                        <!--{if $msg_count}-->
+                        <a href="javascript:;" class="btn btn-small btn-danger"
+                            data-id="<!--{$user_inbox.id}-->"
+                            data-user="<!--{$user_inbox.user.uid}-->"
+                            data-action="del">
+                            <i class="fa fa-trash-o"></i> 删除
+                        </a>
+                        <!--{else}-->
+                        <a href="javascript:;" class="btn btn-small btn-danger"
+                            data-id="<!--{$user_inbox.id}-->"
+                            data-action="del">
+                            <i class="fa fa-trash-o"></i> 删除
+                        </a>
+                        <!--{/if}-->
+                    </div>
+                </td>
+            </tr>
             <!--{/iCMS}-->
         </tbody>
         <tfoot>
@@ -84,7 +74,6 @@
         </tfoot>
     </table>
 </div>
-</form>
 <script type="text/javascript">
 $(function() {
     $("[data-action]").on('click', function(event) {

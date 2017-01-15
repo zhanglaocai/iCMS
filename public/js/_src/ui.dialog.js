@@ -5,7 +5,6 @@ define("ui.dialog", function(require) {
         var defaults = {
                 id: 'iCMS-DIALOG',
                 title: 'iCMS - 提示信息',
-                // width:360,height:150,
                 className: 'iCMS_UI_DIALOG',
                 backdropBackground: '#333',
                 backdropOpacity: 0.5,
@@ -16,8 +15,7 @@ define("ui.dialog", function(require) {
                 time: null,
                 label: 'success',
                 icon: 'check',
-                api: false,
-                width:'auto',height:120
+                api: false
             },
             timeOutID = null,
             opts = $.extend(defaults, iCMS.CONFIG.DIALOG, options);

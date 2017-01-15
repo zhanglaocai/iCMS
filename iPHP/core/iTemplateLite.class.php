@@ -195,15 +195,7 @@ class iTemplateLite {
 	function _get_resource($file){
 		if(strpos($file, 'debug.tpl')!==false) return 'debug.tpl';
 
-		$file = ltrim($file,'/');
-		strpos($file,'..') && $this->trigger_error("resource file has '..'", E_USER_ERROR);
-		if(strpos($file, 'file::')!==false){
-			list($_dir,$file)   = explode('||',str_replace('file::','',$file));
-			$this->template_dir = $_dir;
-		}else{
-			strpos($file,'./') !==false && $file = str_replace('./',dirname($this->_file).'/',$file);
-			$file = $this->template_callback('resource',$file);
-		}
+		$file = $this->template_callback('resource',array($file,$this));
 
 		$this->template_dir = $this->_get_dir($this->template_dir);
 		$RootPath           = $this->template_dir.$file;

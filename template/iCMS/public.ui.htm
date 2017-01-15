@@ -8,13 +8,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta content="iDreamSoft Inc." name="Copyright" />
-<script src="http://apps.bdimg.com/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
 <!--{if $iCMS.CONST.iCMS_RELEASE=='Beta'}-->
-<script src="<!--{$site.urls.public}-->/js/iCMS.js"></script>
+<script src="<!--{$site.urls.public}-->/js/iCMS.js?<!--{$iCMS.NOW}-->"></script>
 <!--{else}-->
-<script src="<!--{$site.urls.public}-->/js/iCMS.min.js"></script>
+<script src="<!--{$site.urls.public}-->/js/iCMS.min.js?<!--{$iCMS.NOW}-->"></script>
 <!--{/if}-->
-<link rel="stylesheet" href="<!--{$site.urls.public}-->/css/iCMS.min.css" type="text/css" />
+<link rel="stylesheet" href="<!--{$site.urls.public}-->/css/iCMS.min.css?<!--{$iCMS.NOW}-->" type="text/css" />
+<link rel="stylesheet" href="http://apps.bdimg.com/libs/fontawesome/4.4.0/css/font-awesome.min.css" type="text/css" />
 <script>
 iCMS.init({
     API: "<!--{iCMS:router url='api'}-->",

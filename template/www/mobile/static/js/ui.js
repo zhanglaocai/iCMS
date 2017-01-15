@@ -18,7 +18,7 @@ $(function() {
             //登陆后事件
             function($info) {
                 iCMS.$('user_nickname').text($info.nickname);
-                iCMS.$('user_avatar').attr("src",$info.avatar).show();
+                iCMS.$('user_avatar').attr("src", $info.avatar).show();
                 $("#user-login").hide();
                 $("#user-profile").show();
             },
@@ -31,27 +31,27 @@ $(function() {
         doc.on('click', "[i='logout']", function(event) {
             event.preventDefault();
             $USER.LOGOUT({
-                'forward': window.top.location.href
-            },
-            //退出成功事件
-            function(s) {
-                window.top.location.reload();
-            });
+                    'forward': window.top.location.href
+                },
+                //退出成功事件
+                function(s) {
+                    window.top.location.reload();
+                });
         });
         //点击关注
         doc.on('click', "[i^='follow']", function(event) {
             event.preventDefault();
             $USER.FOLLOW(this,
                 //关注成功
-                function(ret,$param){
-                    if(ret.code){
+                function(ret, $param) {
+                    if (ret.code) {
                         var show = ($param.follow == '1' ? '0' : '1');
-                        $("[i='follow:"+$param.uid+":"+$param.follow+"']").hide();
-                        $("[i='follow:"+$param.uid+":"+show+"']").show();
+                        $("[i='follow:" + $param.uid + ":" + $param.follow + "']").hide();
+                        $("[i='follow:" + $param.uid + ":" + show + "']").show();
                     }
                 },
                 //关注失败
-                function (ret) {
+                function(ret) {
                     iCMS.UI.alert(ret.msg);
                 }
             );
@@ -77,10 +77,10 @@ $(function() {
             var me = this;
             $COMMON.vote(this,
                 //点赞成功后
-                function(ret,param) {
-                       var numObj = iCMS.$('vote_'+param['type']+'_num',me),
-                           count = parseInt(numObj.text());
-                        numObj.text(count + 1);
+                function(ret, param) {
+                    var numObj = iCMS.$('vote_' + param['type'] + '_num', me),
+                        count = parseInt(numObj.text());
+                    numObj.text(count + 1);
                 }
             );
         });
@@ -102,71 +102,86 @@ $(function() {
             // });
         });
     });
+
+    var touchmove_handler = function(event) {
+        event.preventDefault();
+    };
+    document.body.addEventListener('touchmove', touchmove_handler, false);
+    document.body.removeEventListener('touchmove', touchmove_handler, false);
+
+    // $("#iCMS-menu-box").on('show.bs.collapse', function() {
+    // }).on('hide.bs.collapse', function() {
+    // })
+    $(".menu_right", "#iCMS-menu-box").click(function(event) {
+        $("#iCMS-menu-box").collapse('hide');
+    });
+
 });
 //user模块API
 var iUSER = iCMS.run('user');
 //comment模块API
 // var iCOMMENT = iCMS.run('comment');
 
-function imgFix (im, x, y) {
+function imgFix(im, x, y) {
     x = x || 99999
     y = y || 99999
     im.removeAttribute("width");
     im.removeAttribute("height");
     if (im.width / im.height > x / y && im.width > x) {
         im.height = im.height * (x / im.width)
-        im.width  = x
+        im.width = x
         im.parentNode.style.height = im.height * (x / im.width) + 'px';
     } else if (im.width / im.height <= x / y && im.height > y) {
-        im.width  = im.width * (y / im.height)
+        im.width = im.width * (y / im.height)
         im.height = y
         im.parentNode.style.height = y + 'px';
     }
 }
-function scrollLoad(contents,one,next,maxPage,callback,pathParse){
-  if ( !( $(contents).length && $(next).length) ){
-    return false;
-  };
-  var $container = $(contents);
-  $container.infinitescroll({
-    pathParse:pathParse,
-    //  pathParse: function(path, page){
-    //   return function(curPage) {
-    //     return path.replace("{P}",curPage);
-    //   };
-    // },
-    // debug:true,
-    dataType:"html+callback",
-    showPageNum:5,
-    maxPage: maxPage||100,
-    clickMoreBtn:'.click_more',
-    navSelector: next, // selector for the paged navigation
-    nextSelector: next + ' a', // selector for the NEXT link (to page 2)
-    itemSelector: contents + ' ' + one, // selector for all items you'll retrieve
-    loading: {
-      finishedMsg: '<button class="click_more btn btn-success btn-lg btn-block"><i class="fa fa-gift"></i> 恭喜您！居然到底了！</button>',
-      msgText: '<p class="loading_wrap"><i class="fa fa-spinner"></i> 正在加载...</p>',
-      clickMoreMsg:'<button class="click_more btn btn-primary btn-lg btn-block"><i class="fa fa-cloud-download"></i> 点击加载更多</button>',
-      img: '',
-    }
-  },
-  // trigger Masonry as a callback
-  function(newElements) {
-    var $newElems = $(newElements).css({
-      opacity: 0
-    });
-    if (typeof(callback) === "function") {
-            callback($newElems);
-    }
-    $container.append($newElems);
-    $newElems.animate({
-      opacity: 1
-    }, "fast", function() {
-      $("#infscr-loading").fadeOut('normal');
-    });
-    // lazylaod
-    $("img").lazyload();
 
-  });
+function scrollLoad(contents, one, next, maxPage, callback, pathParse) {
+    if (!($(contents).length && $(next).length)) {
+        return false;
+    };
+    var $container = $(contents);
+    $container.infinitescroll({
+            pathParse: pathParse,
+            //  pathParse: function(path, page){
+            //   return function(curPage) {
+            //     return path.replace("{P}",curPage);
+            //   };
+            // },
+            // debug:true,
+            dataType: "html+callback",
+            showPageNum: 5,
+            maxPage: maxPage || 100,
+            clickMoreBtn: '.click_more',
+            navSelector: next, // selector for the paged navigation
+            nextSelector: next + ' a', // selector for the NEXT link (to page 2)
+            itemSelector: contents + ' ' + one, // selector for all items you'll retrieve
+            loading: {
+                finishedMsg: '<button class="click_more btn btn-success btn-lg btn-block"><i class="fa fa-gift"></i> 恭喜您！居然到底了！</button>',
+                msgText: '<p class="loading_wrap"><i class="fa fa-spinner"></i> 正在加载...</p>',
+                clickMoreMsg: '<button class="click_more btn btn-primary btn-lg btn-block"><i class="fa fa-cloud-download"></i> 点击加载更多</button>',
+                img: '',
+            }
+        },
+        // trigger Masonry as a callback
+        function(newElements) {
+            var $newElems = $(newElements).css({
+                opacity: 0
+            });
+            if (typeof(callback) === "function") {
+                callback($newElems);
+            }
+            $container.append($newElems);
+            $newElems.animate({
+                opacity: 1
+            }, "fast", function() {
+                $("#infscr-loading").fadeOut('normal');
+            });
+            // lazylaod
+            $("img").lazyload();
+
+        });
     return $container;
 }

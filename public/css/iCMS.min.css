@@ -132,8 +132,11 @@ del{text-decoration:line-through;padding:3px 0;background:#f5dfdf;color:#ac1414}
 .label{font-size:12px;line-height:1.6;}
 
 /* seccode */
+.public_seccode{}
 .seccode{width:90px!important;height:34px!important;}
-.seccode-img{margin-left:10px;}
+.seccode-img{margin-left:10px; vertical-align: middle;}
+.seccode-text{font-size: 12px;color: #0099CC}
+/* p */
 p.click2next,p.article_pic{text-indent:0px !important;text-align:center;}
 
 /* dropdown-menu */
@@ -188,7 +191,10 @@ p.click2next,p.article_pic{text-indent:0px !important;text-align:center;}
 .iPHP-msg pre{text-align:left;}
 .iPHP-msg i{font-size:18px;}
 .iPHP-msg .label-success hr{margin:10px 0;border-top:1px solid #007202;border-bottom:1px solid #6A946B;}
-
+/* dialog */
+.iCMS_tooltip_popup{padding:0;}
+.iCMS_tooltip_popup .ui-dialog-title{font-size:14px;margin:4px 0 0;padding: 8px;line-height: 1.6;}
+.iCMS_tooltip_popup .ui-dialog-close{ top: 10px;}
 /*popover*/
 .popover{position:absolute;top:0;left:0;z-index:1010;display:none;max-width:400px;padding:1px;text-align:left;white-space:normal;background-color:#fff;border:1px solid #ccc;border:1px solid rgba(0,0,0,0.2);-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;-webkit-box-shadow:0 5px 10px rgba(0,0,0,0.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,0.2);box-shadow:0 5px 10px rgba(0,0,0,0.2);-webkit-background-clip:padding-box;-moz-background-clip:padding;background-clip:padding-box}
 .popover.top{margin-top:-10px}
@@ -295,3 +301,5 @@ p.click2next,p.article_pic{text-indent:0px !important;text-align:center;}
 .iCMS_FAVORITE_DIALOG .favorite_create .form-group{margin-bottom:10px;}
 .iCMS_FAVORITE_DIALOG .favorite_create_error{color:#C33;display:none;margin-bottom:10px;padding-left:18%;}
 .iCMS_FAVORITE_DIALOG .buttons .create{margin-top:5px;}
+
+

@@ -13,17 +13,16 @@
  *
  * @author coolmoo
  */
+define('PATCH_DIR', iPATH . 'cache/iCMS/patch/');//临时文件夹
+
 class patch {
 	const PATCH_URL = "http://patch.idreamsoft.com";	//自动更新服务器
-	const PATCH_DIR = 'cache/iCMS/patch/'; 		//临时文件夹
-
 	public static $version = '';
 	public static $release = '';
 	public static $zipName = '';
 	public static $next = false;
 
 	public static function init($force = false) {
-		self::PATCH_DIR = iPATH . self::PATCH_DIR;
 		$info = self::getVersion($force);
 		if ($info->app == iPHP_APP &&
 			version_compare($info->version, iCMS_VERSION, '>=') &&
@@ -35,8 +34,8 @@ class patch {
 		}
 	}
 	public static function getVersion($force = false) {
-		iFS::mkdir(self::PATCH_DIR);
-		$tFilePath = self::PATCH_DIR . 'version.json'; //临时文件夹
+		iFS::mkdir(PATCH_DIR);
+		$tFilePath = PATCH_DIR . 'version.json'; //临时文件夹
 		if (iFS::ex($tFilePath) && time() - iFS::mtime($tFilePath) < 3600 && !$force) {
 			$FileData = iFS::read($tFilePath);
 		} else {
@@ -47,7 +46,7 @@ class patch {
 		return json_decode($FileData); //版本列表
 	}
 	public static function download() {
-		$zipFile = self::PATCH_DIR . self::$zipName; //临时文件
+		$zipFile = PATCH_DIR . self::$zipName; //临时文件
 		$zipHttp = self::PATCH_URL . '/' . self::$zipName;
 		$msg = '正在下载 [' . self::$release . '] 更新包 ' . $zipHttp . '<iCMS>下载完成....<iCMS>';
 		if (iFS::ex($zipFile)) {

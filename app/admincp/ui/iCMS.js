@@ -151,6 +151,18 @@
             }
             return d;
         },
+        setcookie: function(cookieName, cookieValue, seconds, path, domain, secure) {
+            var expires = new Date();
+            expires.setTime(expires.getTime() + seconds);
+            cookieName = this.config.COOKIE + '_' + cookieName;
+            document.cookie = escape(cookieName) + '=' + escape(cookieValue) + (expires ? '; expires=' + expires.toGMTString() : '') + (path ? '; path=' + path : '/') + (domain ? '; domain=' + domain : '') + (secure ? '; secure' : '');
+        },
+        getcookie: function(name) {
+            name = this.config.COOKIE + '_' + name;
+            var cookie_start = document.cookie.indexOf(name);
+            var cookie_end = document.cookie.indexOf(";", cookie_start);
+            return cookie_start == -1 ? '' : unescape(document.cookie.substring(cookie_start + name.length + 1, (cookie_end > cookie_start ? cookie_end : document.cookie.length)));
+        },
         random: function(len,ischar) {
             len = len || 16;
             var chars = "abcdefhjmnpqrstuvwxyz23456789ABCDEFGHJKLMNPQRSTUVWYXZ";

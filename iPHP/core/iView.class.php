@@ -88,30 +88,47 @@ class iView {
      * @param  [type] $tpl [description]
      * @return [type]      [description]
      */
-    public static function callback_path($tpl){
-        if (strpos($tpl, iPHP_APP . ':/') !== false) {
-            $_tpl = str_replace(iPHP_APP . ':/', iPHP_DEFAULT_TPL, $tpl);
+    public static function callback_path($tpl,$obj){
+
+        $tpl = ltrim($tpl,'/');
+
+        strpos($tpl,'..') && iPHP::error_404("The template file path has a '..'");
+        if(strpos($tpl, 'file::')!==false){
+            list($_dir,$tpl)   = explode('||',str_replace('file::','',$tpl));
+            $obj->template_dir = $_dir;
+            return $tpl;
+        }
+
+        strpos($tpl,'./') !==false && $tpl = str_replace('./',dirname($obj->_file).'/',$tpl);
+
+        $flag = iPHP_APP . ':/';
+        if (strpos($tpl, $flag) !== false) {
+            $_tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
             if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
                 return $_tpl;
             }
 
-            if (iPHP_DEVICE != 'desktop') {//移动设备
-                $_tpl = str_replace(iPHP_APP . ':/', iPHP_MOBILE_TPL, $tpl); // mobile/
-                if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
-                    return $_tpl;
-                }
+            // if (iPHP_DEVICE != 'desktop') {//移动设备
+            //     $_tpl = str_replace($flag, iPHP_MOBILE_TPL, $tpl); // mobile/
+            //     if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
+            //         return $_tpl;
+            //     }
 
+            // }
+            $_tpl = str_replace($flag, iPHP_APP, $tpl);
+            if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
+                return $_tpl;
             }
-            $tpl = str_replace(iPHP_APP . ':/', iPHP_APP, $tpl);
+            $tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
         } elseif (strpos($tpl, '{iTPL}') !== false) {
             $tpl = str_replace('{iTPL}', iPHP_DEFAULT_TPL, $tpl);
         }
-        if (iPHP_DEVICE != 'desktop' && strpos($tpl, iPHP_APP) === false) {
-            $current_tpl = dirname($tpl);
-            if (!in_array($current_tpl, array(iPHP_DEFAULT_TPL, iPHP_MOBILE_TPL))) {
-                $tpl = str_replace($current_tpl . '/', iPHP_DEFAULT_TPL . '/', $tpl);
-            }
-        }
+        // if (iPHP_DEVICE != 'desktop' && strpos($tpl, iPHP_APP) === false) {
+        //     $current_tpl = dirname($tpl);
+        //     if (!in_array($current_tpl, array(iPHP_DEFAULT_TPL, iPHP_MOBILE_TPL))) {
+        //         $tpl = str_replace($current_tpl . '/', iPHP_DEFAULT_TPL . '/', $tpl);
+        //     }
+        // }
         if (@is_file(iPHP_TPL_DIR . "/" . $tpl)) {
             return $tpl;
         } else {
