@@ -103,15 +103,19 @@ $(function() {
         });
     });
 
-    var touchmove_handler = function(event) {
-        event.preventDefault();
-    };
-    document.body.addEventListener('touchmove', touchmove_handler, false);
-    document.body.removeEventListener('touchmove', touchmove_handler, false);
+    // document.addEventListener('touchmove', function(e) {
+    //   e.preventDefault();
+    // });
 
-    // $("#iCMS-menu-box").on('show.bs.collapse', function() {
-    // }).on('hide.bs.collapse', function() {
-    // })
+    // var touchmove_handler = function(event) {
+    //     event.preventDefault();
+    // };
+    // document.body.addEventListener('touchmove', touchmove_handler, false);
+    // document.body.removeEventListener('touchmove', touchmove_handler, false);
+
+    // // $("#iCMS-menu-box").on('show.bs.collapse', function() {
+    // // }).on('hide.bs.collapse', function() {
+    // // })
     $(".menu_right", "#iCMS-menu-box").click(function(event) {
         $("#iCMS-menu-box").collapse('hide');
     });

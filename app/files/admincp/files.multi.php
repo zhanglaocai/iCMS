@@ -53,6 +53,7 @@ var settings = {
                 <div id="dndArea" class="placeholder">
                     <div id="filePicker"></div>
                     <p>或将照片拖到这里，单次最多可选300张</p>
+                    <p>您可以尝试文件拖拽，使用QQ截屏工具，然后激活窗口后粘贴，或者点击添加图片按钮，来上传图片.</p>
                 </div>
             </div>
             <div class="statusBar" style="display:none;">
