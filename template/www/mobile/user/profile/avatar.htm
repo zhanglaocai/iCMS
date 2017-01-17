@@ -2,12 +2,20 @@
 <link rel="stylesheet" type="text/css" href="<!--{$site.urls.tpl}-->/static/cropper/cropper.min.css" />
 <script src="<!--{$site.urls.tpl}-->/static/webuploader/webuploader.min.js" type="text/javascript"></script>
 <script src="<!--{$site.urls.tpl}-->/static/cropper/cropper.min.js" type="text/javascript"></script>
-<script src="<!--{$site.urls.tpl}-->/static/js/avatar.js?<!--{$iCMS.NOW}-->" type="text/javascript"></script>
 <script>
 var SERVER_UPLOADER_URL = "<!--{iCMS:router url='user'}-->";
-var SERVER_UPLOADER_URL = "/fileupload.php";
 var SERVER_PREVIEW_URL  = "<!--{iCMS:router url='user'}-->&action=preview";
+var _options ={
+  'pg':'avatar',
+  'preview':'.img-preview',
+  'width':'300',
+  'height':'300',
+  'aspectRatio':1/1
+}
+//custom
 </script>
+<script src="<!--{$site.urls.tpl}-->/static/js/cropper.js?<!--{$iCMS.NOW}-->" type="text/javascript"></script>
+
 <style>
 .img-container {display: block; position: relative; margin: 0px;padding: 0px;width: 300px;}
 .img-container #avatar { max-width: 100%; vertical-align: top; border-radius: 5px 5px 0px 0px; }
@@ -24,7 +32,7 @@ var SERVER_PREVIEW_URL  = "<!--{iCMS:router url='user'}-->&action=preview";
 <h4 class="profile-title">设置头像</h4>
 <div class="cropper-wraper">
   <div class="img-container">
-    <img id="avatar" src="<!--{$me.avatar}-->?<!--{$iCMS.TIME}-->" alt="个人封面" onerror="iCMS.user.noavatar(this);">
+    <img id="avatar" src="<!--{$me.avatar}-->?<!--{$iCMS.TIME}-->" alt="个人封面" onerror="iUSER.NOAVATAR(this);">
     <div class="cropper-info">
       <span id="oimg-size"></span>
       <span id="img-size"></span>

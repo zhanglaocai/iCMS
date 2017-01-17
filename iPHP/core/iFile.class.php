@@ -44,6 +44,7 @@ class iFile {
     public static $userid           = 0;
     public static $watermark        = true;
     public static $watermark_config = null;
+    public static $cloud_enable     = true;
 
     private static $_data_table     = null;
     private static $_map_table      = null;
@@ -60,20 +61,20 @@ class iFile {
 
         isset($vars['userid']) && iFile::$userid = $vars['userid'];
 
-        if (iFS::$config['cloud']['enable']) {
-            iCloud::init(iFS::$config['cloud']);
-        }
+
 
         iFS::$CALLABLE = array(
             'insert' => array('iFile','insert'),
             'update' => array('iFile','update'),
             'get'    => array('iFile','get'),
             // 'write'  => array('iFile','cloud_write'),
-            'upload' => array(
-                array('iFile','cloud_upload')
-            ),
-            'delete'  => array('iCloud','delete')
+            'upload' => array(),
         );
+        if (iFS::$config['cloud']['enable'] && self::$cloud_enable) {
+            iCloud::init(iFS::$config['cloud']);
+            iFS::$CALLABLE['upload'][] = array('iFile','cloud_upload');
+            iFS::$CALLABLE['delete']   = array('iCloud','delete');
+        }
         if(self::$watermark){
             $vars['watermark'] && self::$watermark_config = $vars['watermark'];
             self::$watermark_config && iFS::$CALLABLE['upload'][]= array('iFile','watermark');

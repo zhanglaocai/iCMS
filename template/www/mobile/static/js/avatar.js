@@ -187,7 +187,7 @@
                 $("#oimg-size").text('原图尺寸:' + Math.round(d.naturalWidth) + ' x ' + Math.round(d.naturalHeight));
                 // $("#img-size").text('缩略图尺寸:' + Math.round(d.width) + ' x ' + Math.round(d.width));
                 // $("#ocrop-size").text('需要尺寸:150 x 150');
-                var w = 300 / d.aspectRatio
+                // var w = 300 / d.aspectRatio
                 var CropBoxData = $(this).cropper('CropBoxData');
                 CropBoxData.width = 300;
                 CropBoxData.height = 300;
@@ -275,7 +275,7 @@
                     dataType: 'json',
                     success: function(c) {
                           if(c.code){
-                            $image.cropper("replace", c.url+'?'+ Math.random());
+                            $image.cropper("replace", c.forward+'?'+ Math.random());
                             $image.cropper("reset");
                             $(".upload-btn").hide();
                           }else{

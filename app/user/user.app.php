@@ -486,70 +486,68 @@ class userApp {
 		iUI::success('user:profile:success');
 	}
 	private function __ACTION_profile_custom() {
-		iFile::$watermark = false;
-		iFile::$check_data = false;
+		iFile::$watermark    = false;
+		iFile::$check_data   = false;
+		iFS::$CALLABLE['upload'] = null;
 		$dir = get_user_dir(user::$userid, 'coverpic');
 		$filename = user::$userid;
-		if (iPHP_DEVICE != 'desktop') {
+
+		$isBlob = false;
+		if($_FILES['upfile']['name']=='blob'){
+			$isBlob = true;
+		    $_FILES['upfile']['name'] = uniqid().'.jpg';
 			$filename = 'm_' . user::$userid;
 		}
+
 		$F = iFS::upload('upfile', $dir, $filename, 'jpg');
 		if (empty($F)) {
-			if ($_POST['format'] == 'json') {
-				iUI::code(0, 'user:iCMS:error', 0, 'json');
-			} else {
-				iUI::js_callback(array("code" => 0));
-			}
+			iUI::code(0, 'user:iCMS:error', 0, 'json');
 		}
 		$F OR iUI::code(0, 'user:iCMS:error', 0, 'json');
-		// $F['code'] && iDB::update(
-		// 	'user_data',
-		// 	array('coverpic' => $F["path"]),
-		// 	array('uid' => user::$userid)
-		// );
-		$url = iFS::fp($F['path'], '+http');
-		if ($_POST['format'] == 'json') {
-			iUI::code(1, 'user:profile:custom', $url, 'json');
+
+		if($isBlob){
+			//在cropper.min.js 没有找到更好的解决办法前只能先用PHP强制生成
+			require iPHP_CORE.'/Gmagick.class.php';
+			$srcPath = $F['RootPath'];
+            $gmagick = new Gmagick();
+            $gmagick->readImage($srcPath);
+            $gmagick->resizeImage(480,300, null, 1);
+            $srcData = $gmagick->current();
+            file_put_contents($srcPath, $srcData);
 		}
-		$array = array(
-			"code" => $F["code"],
-			"value" => $F["path"],
-			"url" => $url,
-			"fid" => $F["fid"],
-			"fileType" => $F["ext"],
-			"image" => in_array($F["ext"], array('gif', 'jpg', 'jpeg', 'png')) ? 1 : 0,
-			"original" => $F["oname"],
-			"state" => ($F['code'] ? 'SUCCESS' : $F['state']),
-		);
-		iUI::js_callback($array);
+
+		$url = iFS::fp($F['path'], '+http');
+		iUI::code(1, 'user:profile:custom', $url, 'json');
 	}
 	private function __ACTION_profile_avatar() {
-		iFile::$watermark = false;
-		iFile::$check_data = false;
+		iFile::$watermark    = false;
+		iFile::$check_data   = false;
+		iFS::$CALLABLE['upload'] = null;
+
+		$isBlob = false;
+		if($_FILES['upfile']['name']=='blob'){
+			$isBlob = true;
+		    $_FILES['upfile']['name'] = uniqid().'.jpg';
+		}
+
 		$dir = get_user_dir(user::$userid);
 		$F = iFS::upload('upfile', $dir, user::$userid, 'jpg');
+
 		if (empty($F)) {
-			if ($_POST['format'] == 'json') {
-				iUI::code(0, 'user:iCMS:error', 0, 'json');
-			} else {
-				iUI::js_callback(array("code" => 0));
-			}
+			iUI::code(0, 'user:iCMS:error', 0, 'json');
+		}
+		if($isBlob){
+			//在cropper.min.js 没有找到更好的解决办法前只能先用PHP强制生成
+			require iPHP_CORE.'/Gmagick.class.php';
+			$srcPath = $F['RootPath'];
+            $gmagick = new Gmagick();
+            $gmagick->readImage($srcPath);
+            $gmagick->resizeImage(300,300, null, 1);
+            $srcData = $gmagick->current();
+            file_put_contents($srcPath, $srcData);
 		}
 		$url = iFS::fp($F['path'], '+http');
-		if ($_POST['format'] == 'json') {
-			iUI::code(1, 'user:profile:avatar', $url, 'json');
-		}
-		$array = array(
-			"code" => $F["code"],
-			"value" => $F["path"],
-			"url" => $url,
-			"fid" => $F["fid"],
-			"fileType" => $F["ext"],
-			"image" => in_array($F["ext"], array('gif', 'jpg', 'jpeg', 'png')) ? 1 : 0,
-			"original" => $F["oname"],
-			"state" => ($F['code'] ? 'SUCCESS' : $F['state']),
-		);
-		iUI::js_callback($array);
+		iUI::code(1, 'user:profile:avatar', $url, 'json');
 	}
 
 	private function __ACTION_profile_setpassword() {
