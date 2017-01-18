@@ -190,11 +190,12 @@ function comment_form($vars){
 		iCMS::$config['comment']['plugin']['changyan']['appid'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appid"或"appid"值为空.');
 		iCMS::$config['comment']['plugin']['changyan']['appkey'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appkey"或"appkey"值为空.');
 
-		if(iPHP::$mobile){
-			echo iView::render('iCMS://comment/changyan.mobile.htm');
-		}else{
-			echo iView::render('iCMS://comment/changyan.pc.htm');
-		}
+		// if(iPHP::$mobile){
+		// 	echo iView::render('iCMS://comment/changyan.mobile.htm');
+		// }else{
+		// 	echo iView::render('iCMS://comment/changyan.pc.htm');
+		// }
+		echo iView::render('iCMS://comment/changyan.htm');
 		return;
 	}
 	if(!isset($vars['ref'])){

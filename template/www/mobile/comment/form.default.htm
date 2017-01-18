@@ -1,0 +1,71 @@
+<div class="comment-form">
+    <div class="profile">
+        <!--{include file="iCMS://user/profile.menu.htm"}-->
+    </div>
+    <div class="passport">
+        <a href="<!--{iCMS:router url='api:user:login'}-->" title="登录"><i class="fa fa-user"></i> 登录</a>
+        <a href="<!--{iCMS:router url='api:user:register'}-->" target="_blank"><i class="fa fa-heart"></i> 注册</a>
+    </div>
+    <div class="alert alert-warning" role="alert">
+        <i class="fa fa-warning "></i> 请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论！
+    </div>
+    <div class="comment-editor">
+        <textarea i="comment_content" class="comment-textarea form-control" placeholder="写下你的评论…"></textarea>
+    </div>
+    <div class="clearfix"></div>
+    <div class="comment-command">
+        <!--{if $iCMS.CONFIG.comment.seccode }-->
+        <div class="comment-seccode">
+            <label for="seccode" class="control-label">验证码：</label>
+            <input type="text" maxlength="4" i="comment_seccode" class="seccode form-control" id="seccode" placeholder="请输入验证码">
+            <!--{iCMS:public:seccode}-->
+        </div>
+        <!--{/if}-->
+        <button class="btn btn-primary cmt-add" type="submit"><i class="fa fa-check"></i> 评 论</button>
+        <a href="javascript:;" class="cmt-cancel">取 消</a>
+    </div>
+    <div class="clearfix mb10"></div>
+</div>
+<script>
+    var iCOMMENT = iCOMMENT||iCMS.run('comment');
+    $(function() {
+        var $form = $('.comment-form');
+        iUSER.STATUS({},
+            //登录后事件
+            function($info) {
+                console.log($info);
+                $(".passport",$form).hide();
+                $(".profile",$form).show();
+            },
+            //未登录事件
+            function(f) {
+                console.log(f)
+            }
+        );
+        // 取消
+        $('.cmt-cancel').click(function(event) {
+            var pp = $(this).parent().parent();
+            pp.removeClass('expanded');
+            $('[i="comment_content"]', pp).val("").focus();
+        });
+        //提交评论
+        $('.cmt-add').click(function(event) {
+            event.preventDefault();
+            var param = <!--{$comment_vars.param|json_encode}-->;
+            iCOMMENT.add($form,param,
+                function(ret) {
+                    $(".empty",".comment-list-wrap").remove();
+                    //加载评论列表模板
+                    iCOMMENT.widget('item',function (tmpl) {
+                       iCOMMENT._widget.item = tmpl;
+                    });
+                    var $list = $(".comment-list-wrap");
+                    iCOMMENT.list($list, param.iid, ret.forward,'append');
+                },
+                function (ret) {
+                    iCMS.UI.alert(ret.msg);
+                }
+            )
+        });
+    })
+</script>

@@ -107,8 +107,79 @@ $(function(){
                         <div class="clearfix mt10"> </div>
                     </div>
                 </article>
+                <div class="article-like" data-param='<!--{$article.param|json_encode}-->'>
+                    <a i="vote:article:good" class="like-btn">
+                        <i class="like-icon up"></i>
+                        <span i="vote_good_num" class="like-num"><!--{$article.good}--></span>
+                        <span class="like-txt">赞</span>
+                    </a>
+                    <a i="vote:article:bad" class="like-btn">
+                        <i class="like-icon down"></i>
+                        <span i="vote_bad_num" class="like-num"><!--{$article.bad}--></span>
+                        <span class="like-txt">踩</span>
+                    </a>
+                </div>
+                <!--{if $iCMS.CONFIG.article.prev_next}-->
+                <div class="clearfix"></div>
+                <div class="article-prevnext mt10">
+                    <p class="prev"><b>上一篇:</b>
+                        <!--{iCMS:article:prev cid="$article.cid" id="$article.id"}-->
+                        <a href="<!--{$article.prev.url}-->" class="prev" target="_self">
+                            <!--{$article.prev.title}-->
+                        </a>
+                    </p>
+                    <p class="next">
+                        <!--{iCMS:article:next cid="$article.cid" id="$article.id"}-->
+                        <a href="<!--{$article.next.url}-->" class="next" target="_self">
+                            <!--{$article.next.title}-->
+                        </a><b>:下一篇</b></p>
+                </div>
+                <!--{/if}-->
+                <div class="share">
+                    <div class="share-icon">
+                        <div class="t">分享到</div>
+                        <div class="bdsharebuttonbox" id="share-bd">
+                            <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                            <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                            <a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>
+                            <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                            <a href="#" class="bds_more" data-cmd="more"></a>
+                        </div>
+                    </div>
+                    <script>
+                    window._bd_share_config = {
+                            common: {
+                                bdText: '<!--{$article.title}-->',
+                                bdDesc: '<!--{$article.description|html2txt}-->',
+                                bdUrl: '<!--{$article.url}-->',
+                                bdPic: '<!--{$article.pic.url}-->'
+                            },
+                            share: [{
+                                "bdSize": 16
+                            }]
+                        }
+                        //以下为js加载部分
+                    with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion=' + ~(-new Date() / 36e5)];
+                    </script>
+                </div>
             </div>
             <div class="clearfix mt10"> </div>
+            <section class="bg-white comment">
+                <div class="u-ttl">
+                    <h2><i class="icon-comments"></i> 精彩评论</h2>
+                </div>
+                <div class="mod-content">
+                    <div id="comment-list">
+                        <!--{iCMS:comment:list display="default"}-->
+                    </div>
+                    <div class="clearfix"></div>
+                    <div id="comment-form">
+                        <!--{iCMS:comment:form display="default"}-->
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </section>
+            <div class="clearfix mt10"></div>
             <section class="bg-white">
                 <div class="u-ttl">
                     <h2><i class="iconfont icon-news"></i> 最新<!--{$category.name}--></h2>
@@ -120,6 +191,7 @@ $(function(){
                 </ul>
             </section>
             <div class="clearfix mt10"> </div>
+
             <section class="bg-white">
                 <div class="u-ttl">
                     <h2><i class="iconfont icon-ranking"></i> <!--{$category.name}-->排行榜</h2>

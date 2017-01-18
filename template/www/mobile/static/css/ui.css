@@ -108,6 +108,28 @@ article .article_body .content h2.subtitle { font-size: 24px; margin-bottom: 20p
 article .article_pagenav { text-align: center; }
 article .pagination a, article .pagination span { padding: 10px; }
 
+/* ===========comment-list=========== */
+#comment-list .commentApp-pagenav { margin: 10px auto; }
+#comment-list .cmt-item-img-avatar { width: 30px; height: 30px; }
+#comment-list .commentApp-content-wrap { margin-left: 40px; }
+
+
+/* ===========comment-form=========== */
+#comment-form { border-top: 1px solid #eaeaea; }
+#comment-form .comment-form { margin: 10px auto; width: 95%; }
+#comment-form .comment-form .alert { margin: 10px 0px; padding: 4px 10px; font-size: 12px }
+#comment-form .profile { display: none }
+#comment-form .login { margin: 10px 0px }
+#comment-form .comment-editor { }
+#comment-form .comment-textarea { width: 100%; height: 120px; background: url(../img/iCMS.logo.bg.png) no-repeat center center; font-size: 14px; }
+#comment-form .comment-seccode { float: left; overflow: hidden; margin-top: 8px; line-height: 30px; }
+#comment-form .comment-seccode label, #comment-form .comment-seccode input, #comment-form .comment-seccode img, #comment-form .comment-seccode a { float: left; display: inline-block; vertical-align: middle; }
+#comment-form .comment-seccode .seccode-img { margin-top: 2px; }
+#comment-form .comment-seccode .seccode-text { color: #999; margin-left: 5px; font-size: 12px; }
+#comment-form .comment-command { text-align: right }
+#comment-form .comment-command .cmt-add { float: right; margin: 8px 0px 8px 8px; padding: 5px 10px; font-size: 18px; width: 90px; height: 36px; }
+#comment-form .comment-command .cmt-cancel { float: right; margin: 15px 15px 0 0; cursor: pointer }
+
 /* ==footer== */
 .footer { font-size: 12px; background-color: #333; color: #666; min-height: 90px; margin: 0 auto; text-align: center; padding-top: 5px; }
 .footer p { margin: 2px auto; line-height: 18px; }
