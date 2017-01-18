@@ -7,7 +7,7 @@
 #userApp-home .userApp_name a{color:#fff;font-size:18px;font-weight:bold;-webkit-text-shadow:1px 1px 0px rgba(0,0,0,0.8);text-shadow:1px 1px 0px rgba(0,0,0,0.8);}
 #userApp-home .userApp_avatar{position:absolute;bottom:20px;right:20px;}
 #userApp-home .userApp_avatar_img{width:90px;height:90px;padding:1px;border:solid #eee 1px;background-color:#fff;}
-#userApp-home .userApp_slogan{color:#AAA;    /* margin-top: 45px; */text-align:right;padding-right:100px;    /* height: 48px; */overflow:hidden;position:absolute;    /* bottom: 20px; */right:20px;font-size:12px;}
+#userApp-home .userApp_slogan{color:#AAA;   padding-left: 10px;    /* margin-top: 45px; */text-align:right;padding-right:100px;    /* height: 48px; */overflow:hidden;position:absolute;    /* bottom: 20px; */right:20px;font-size:12px;}
 #userApp-home .userApp_content{margin-top:45px;padding-bottom:30px;}
 #userApp-home .userApp_day{margin-bottom:20px;width:100%;clear:both;}
 #userApp-home .userApp_day .date{margin-top:-10px;float:left;width:100px;font-size:30px;font-weight:bold;text-align:center;}
@@ -30,5 +30,5 @@
 .x_hd_box .x_logo_icon{background-position:0 0;margin:15px auto 0;position:inherit;width:86px;height:20px}
 .x_hd_box .x_search_icon{background-position:0 -58px;right:46px}
 .x_hd_box .x_login_icon{background-position:0 -86px;right:10px}
-.x_hd_box .x_loginheader{width:22px;height:20px;display:block;position:absolute;top:13px;right:10px}
-.x_hd_box .x_loginheader img{width:22px;height:22px;border-radius:50%;-webkit-border-radius:50%;-moz-border-radius:50%}
+.x_hd_box .x_profile{width:22px;height:20px;display:block;position:absolute;top:13px;right:10px}
+.x_hd_box .x_profile img{width:22px;height:22px;border-radius:50%;-webkit-border-radius:50%;-moz-border-radius:50%}

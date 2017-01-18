@@ -3,7 +3,7 @@
         <div class="sitename fl">
             <i class="iconfont icon-home"></i> <!--{$site.name}-->
         </div>
-        <div i="user-login" id="user-login" class="fr">
+        <div i="login" class="user-login fr">
             <ul class="ul">
                 <!--{if $iCMS.CONFIG.open.QQ.enable }-->
                 <li><a href="<!--{iCMS:router url='api:user:login:qq'}-->" class="login_qq">QQ登录</a></li>
@@ -18,7 +18,7 @@
                 <li class="last"><a href="<!--{iCMS:router url='api:user:register'}-->" target="_blank">注册</a></li>
             </ul>
         </div>
-        <div i="user-profile" id="user-profile" class="fr hide">
+        <div i="profile" class="user-profile fr hide">
             <span class="profile">
                 <!--{include file="iCMS://user/profile.menu.htm"}-->
             </span>
@@ -29,7 +29,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="<!--{$site.url}-->">
-                <img src="<!--{$site.urls.tpl}-->/static/img/iCMS.LOGO.png"/>
+                <img src="<!--{$site.urls.tpl}-->/static/img/iCMS.LOGO.fff.png"/>
             </a>
         </div>
         <a href="javascript:void(0)" class="iconfont icon-search" id="JS_srarch"></a>

@@ -11,11 +11,11 @@ body{background:#e6e6e6;}
 .top .top-wrap .sitename{font-weight:bold;}
 
 /* ==user-login== */
-.top-wrap #user-login{}
-.top-wrap #user-profile{margin-right:20px;}
+.top-wrap .user-login{}
+.top-wrap .user-profile{margin-right:20px;}
 .top-wrap .profile-wrap .dropdown-menu{width:90px;min-width:90px;}
 
-/*.top-wrap #user-login ul { list-style: none; margin: 0px; }*/
+/*.top-wrap .user-login ul { list-style: none; margin: 0px; }*/
 .top-wrap ul.ul li{float:left;border-right:1px dotted #CCC;padding-left:15px;line-height:18px;margin-top:6px;}
 .top-wrap ul.ul li.last{border:0;}
 .top-wrap ul.ul li>a{display:block;padding-right:15px;height:18px;}

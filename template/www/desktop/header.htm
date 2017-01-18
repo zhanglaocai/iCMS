@@ -3,7 +3,7 @@
         <div class="sitename fl">
             <!--{$site.name}-->
         </div>
-        <div id="user-login" class="fr">
+        <div i="login" class="user-login fr">
             <ul class="ul">
                 <!--{if $iCMS.CONFIG.open.QQ.enable }-->
                 <li><a href="<!--{iCMS:router url='api:user:login:qq'}-->" class="login_qq">QQ登录</a></li>
@@ -14,11 +14,11 @@
                 <!--{if $iCMS.CONFIG.open.WX.enable }-->
                 <li><a href="<!--{iCMS:router url='api:user:login:wx'}-->" class="login_wx">微信登录</a></li>
                 <!--{/if}-->
-                <li><a id="user-login-btn" href="<!--{iCMS:router url='api:user:login'}-->" title="登录">登录</a></li>
+                <li><a href="<!--{iCMS:router url='api:user:login'}-->" title="登录">登录</a></li>
                 <li class="last"><a href="<!--{iCMS:router url='api:user:register'}-->" target="_blank">注册</a></li>
             </ul>
         </div>
-        <div id="user-profile" class="fr hide">
+        <div i="profile" class="user-profile fr hide">
             <span class="profile">
             <!--{include file="iCMS://user/profile.menu.htm"}-->
             </span>
@@ -48,7 +48,7 @@
         </div>
     </div>
 </div>
-<div class="navbar">
+<div class="navbar category_navbar">
     <ul class="navbar-wrap">
         <li id="navbar_c0" class="active"><a target="_self" href="<!--{$site.url}-->">首页</a></li>
         <!--{iCMS:category:list loop="true" stype='top' row="13"}-->

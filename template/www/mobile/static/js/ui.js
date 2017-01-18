@@ -19,11 +19,8 @@ $(function() {
             function($info) {
                 iCMS.$('user_nickname').text($info.nickname);
                 iCMS.$('user_avatar').attr("src", $info.avatar).show();
-                iCMS.$('user-login').hide();
-                iCMS.$('user-profile').show();
-
-                $("#user-login").hide();
-                $("#user-profile").show();
+                iCMS.$('login').hide();
+                iCMS.$('profile').show();
             },
             //未登陆事件
             function(f) {
