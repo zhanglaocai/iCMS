@@ -13,14 +13,13 @@
 <nav class="collapse" role="navigation" id="userApp-menu">
   <div class="navbar-collapse">
     <div class="menu-head">
-      <div i="login" id="user-login">
+      <div i="login" class="user-login">
         <a class="navbar-brand mlogo" href="<!--{$site.url}-->"><img src="<!--{$site.urls.tpl}-->/static/img/iCMS.LOGO.fff.png" /></a>
         <a class="btn btn-primary btn-sm" href="<!--{iCMS:router url='/api/user/login'}-->"><i class="fa fa-user"></i> 登 录</a>
         <a class="btn btn-success btn-sm" href="<!--{iCMS:router url='/api/user/register'}-->"><i class="fa fa-heart"></i> 注册</a>
       </div>
-      <div i="profile" id="user-profile" class="hide">
-        <a class="btn btn-default btn-sm publish" href="<!--{iCMS:router url='/user/publish'}-->" target="_blank"><i class="fa fa-edit"></i> 发表文章</a>
-        <!--{include file="iCMS://user/profile.menu.htm"}-->
+      <div i="profile" class="user-profile hide">
+
       </div>
     </div>
     <div class="clearfix"></div>
