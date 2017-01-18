@@ -3,7 +3,7 @@
         <div class="sitename fl">
             <i class="iconfont icon-home"></i> <!--{$site.name}-->
         </div>
-        <div id="user-login" class="fr">
+        <div i="user-login" id="user-login" class="fr">
             <ul class="ul">
                 <!--{if $iCMS.CONFIG.open.QQ.enable }-->
                 <li><a href="<!--{iCMS:router url='api:user:login:qq'}-->" class="login_qq">QQ登录</a></li>
@@ -18,7 +18,7 @@
                 <li class="last"><a href="<!--{iCMS:router url='api:user:register'}-->" target="_blank">注册</a></li>
             </ul>
         </div>
-        <div id="user-profile" class="fr hide">
+        <div i="user-profile" id="user-profile" class="fr hide">
             <span class="profile">
                 <!--{include file="iCMS://user/profile.menu.htm"}-->
             </span>
@@ -61,16 +61,4 @@ var ncid = "#navbar_c0";
 $(ncid).addClass("active");
 var offset = $(ncid).offset();
 $(".navbar-menu").scrollLeft(offset.left - 120);
-$(function(){
-    $("#JS_srarch").click(function(){
-        $(".search").slideToggle();
-    });
-    $(".search_btn").click(function(event){
-        var q = $('[name="q"]', ".search").val();
-        if (q == ""){
-            alert("请输入关键词");
-            return false;
-        }
-    });
-})
 </script>

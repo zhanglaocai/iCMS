@@ -146,7 +146,7 @@ p.click2next,p.article_pic{text-indent:0px !important;text-align:center;}
 .dropdown-menu:before{position:absolute;top:-7px;left:24px;display:inline-block;border-right:7px solid transparent;border-bottom:7px solid #ccc;border-left:7px solid transparent;border-bottom-color:rgba(0,0,0,0.2);content:''}
 .dropdown-menu:after{position:absolute;top:-6px;left:24px;display:inline-block;border-right:6px solid transparent;border-bottom:6px solid #fff;border-left:6px solid transparent;content:''}
 .dropdown-menu li{clear:both;background-color:#fff;height:30px;}
-.dropdown-menu li a{line-height:30px;display:block;padding:0px 10px 0px 10px;margin-bottom:1px;color:#333;font-size:12px;font-weight:bold;}
+.dropdown-menu li a{line-height:30px;display:block;padding:0px 10px 0px 10px;margin-bottom:1px;color:#333;font-size:14px;}
 .dropdown-menu li a:hover{color:#fff;background-color:#079CF1;}
 
 /* ==pagination == */
@@ -186,15 +186,18 @@ p.click2next,p.article_pic{text-indent:0px !important;text-align:center;}
 .iCMS_UI_DIALOG .ui-dialog-header{+height:40px;}
 .iCMS_UI_DIALOG .ui-dialog-header .ui-dialog-title{+margin-top:4px;}
 .iCMS_UI_DIALOG .ui-dialog-header .ui-dialog-close{+padding-top:4px;}
+/*iPHP-msg */
 .iPHP-msg{text-align:center;margin:0px 5px;padding:0px 4px;}
 .iPHP-msg .label{white-space:pre-wrap;padding:8px 10px;font-size:14px;letter-spacing:1px;line-height:160%;}
 .iPHP-msg pre{text-align:left;}
 .iPHP-msg i{font-size:18px;}
 .iPHP-msg .label-success hr{margin:10px 0;border-top:1px solid #007202;border-bottom:1px solid #6A946B;}
+
 /* dialog */
 .iCMS_tooltip_popup{padding:0;}
 .iCMS_tooltip_popup .ui-dialog-title{font-size:14px;margin:4px 0 0;padding: 8px;line-height: 1.6;}
 .iCMS_tooltip_popup .ui-dialog-close{ top: 10px;}
+
 /*popover*/
 .popover{position:absolute;top:0;left:0;z-index:1010;display:none;max-width:400px;padding:1px;text-align:left;white-space:normal;background-color:#fff;border:1px solid #ccc;border:1px solid rgba(0,0,0,0.2);-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;-webkit-box-shadow:0 5px 10px rgba(0,0,0,0.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,0.2);box-shadow:0 5px 10px rgba(0,0,0,0.2);-webkit-background-clip:padding-box;-moz-background-clip:padding;background-clip:padding-box}
 .popover.top{margin-top:-10px}
@@ -233,7 +236,7 @@ p.click2next,p.article_pic{text-indent:0px !important;text-align:center;}
 .iCMS_USER_CARD .upper .male{background-position:-145px -111px;width:12px;height:12px;vertical-align:-1px;margin-left:3px}
 .iCMS_USER_CARD .upper .female{background-position:-130px -110px;width:10px;height:14px;vertical-align:-1px;margin-left:3px}
 .iCMS_USER_CARD .upper span.name{font-size:14px;font-weight:700}
-.iCMS_USER_CARD .upper div.slogan{font-size:14px;color:#222;padding-top:4px;}
+.iCMS_USER_CARD .upper div.slogan{font-size:13px;color:#666;padding-top:4px;}
 .iCMS_USER_CARD .upper .personal{padding-top:8px}
 .iCMS_USER_CARD .upper .personal .zg-icon{vertical-align:-1px}
 .iCMS_USER_CARD .upper .personal .zg-icon.employment{background-position:-94px -111px;width:12px;height:11px;margin-right:6px;margin-left:2px}
@@ -266,7 +269,7 @@ p.click2next,p.article_pic{text-indent:0px !important;text-align:center;}
 .iCMS_PM_DIALOG dt label{color:#999;font-size:14px;}
 .iCMS_PM_DIALOG .pm_uname{float:left;}
 .iCMS_PM_DIALOG .pm_inbox{float:right;color:#259;}
-.iCMS_PM_DIALOG .pm_content{width:300px;padding:5px;height:90px;}
+.iCMS_PM_DIALOG .pm_content{padding:5px;height:90px;}
 .iCMS_PM_DIALOG .pm_warnmsg{text-align:right;color:#C3412F;display:none;font-size:14px;}
 .iCMS_PM_DIALOG .buttons{padding-right:3px!important;}
 
@@ -303,3 +306,70 @@ p.click2next,p.article_pic{text-indent:0px !important;text-align:center;}
 .iCMS_FAVORITE_DIALOG .buttons .create{margin-top:5px;}
 
 
+/* ===========commentApp=========== */
+/* icon */
+.commentApp-icon { width: 16px; height: 16px; background-image: url(../ui/sprites-1.9.2.png); background-repeat: no-repeat; display: inline-block; vertical-align: middle }
+.comment-like-icon { background-position: -222px -92px }
+.comment-reply-icon { background-position: -250px -92px }
+.comment-report-icon { background-position: -71px -183px }
+.comment-spike-icon { position: absolute; top: -8px; left: 23px; width: 13px; height: 8px; background-position: -200px -165px }
+a:hover>.comment-reply-icon { background-position: -250px -79px }
+a:hover>.comment-like-icon { background-position: -222px -79px }
+a:hover>.comment-report-icon { background-position: -71px -170px }
+.spinner-gray, .spinner-lightgray { display: inline-block; margin: 0 5px; width: 14px; height: 15px; vertical-align: -3px; background-size: 14px 15px; background-repeat: no-repeat; background-image: url(/img/grey-loading.gif); }
+.spinner-lightgray { background-image: url(../ui/lightgray-loading.gif); }
+.commentApp-wrap { margin: 10px 0 0 35px; background: #fff; /*max-width: 540px; */ position: relative; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 1px 1px rgba(0, 0, 0, .05) }
+.commentApp-wrap .load-more { padding: 8px 0; display: block; font-size: 14px; height: 42px; text-align: center; border: 1px solid #eee; border-width: 1px 0 0; color: #698ebf; box-shadow: 0 0 5px rgba(180, 180, 180, .1) inset; text-shadow: 0 1px 0 #fff }
+.commentApp-wrap .load-more .text { position: relative }
+.commentApp-wrap .load-more .spinner { position: absolute; top: 0; right: -20px; display: none }
+.commentApp-wrap .load-more.loading .spinner { display: block }
+.commentApp-wrap .load-more:active { background: #fbfbfb; box-shadow: 0 0 5px rgba(180, 180, 180, .2) inset }
+.commentApp-wrap .load-more+.commentApp-item { margin: 0; padding: 8px 12px; border-top: 1px solid #eee }
+.commentApp-wrap .commentApp-bubble { position: absolute; top: -8px; left: 81px; display: none }
+.commentApp-wrap.empty { border: 0; box-shadow: none }
+.commentApp-wrap.empty.cannot-comment { border: 1px solid #ddd }
+.commentApp-wrap.cannot-comment .editable, .commentApp-wrap.cannot-comment .cmt-command, .commentApp-wrap.cannot-comment .commentApp-op-link.reply { display: none !important }
+.commentApp-wrap.empty .commentApp-bubble { display: none !important }
+.commentApp-wrap.empty.cannot-comment .commentApp-bubble { display: block !important }
+.commentApp-wrap.empty .commentApp-wrap-ft { margin: 0 30px 0 0; padding: 0; border: 0 !important; background: 0 }
+.commentApp-wrap.empty.cannot-comment .commentApp-form { margin: 0 }
+.commentApp-wrap.empty.cannot-comment .commentApp-form, .commentApp-wrap .commentApp-form { padding: 15px }
+.commentApp-wrap.empty.cannot-comment .commentApp-wrap-ft, .commentApp-wrap .commentApp-wrap-ft { background: #fbfbfb; border-radius: 0 0 4px 4px; border-top: 1px solid #EEE; position: relative }
+.commentApp-wrap.empty.cannot-comment .commentApp-wrap-ft { background: #fff }
+.commentApp-spinner { padding: 6px 12px; font-size: 14px; }
+.commentApp-item { position: relative; margin: 0 12px; padding: 8px 0 }
+.commentApp-item .commentApp-content-wrap { margin: 0 0 0 35px }
+.commentApp-item>.cmt-item-link-avatar { float: left; margin: 4px 0 0 }
+.commentApp-item .cmt-item-img-avatar { width: 25px; height: 25px; border-radius: 4px }
+.commentApp-item .commentApp-content { color: #222; min-height: 22px }
+.commentApp-item .commentApp-content-hd, .commentApp-item .commentApp-content-ft { color: #999 }
+.commentApp-item .commentApp-content-hd .desc, .commentApp-item .commentApp-content-ft .desc { font-size: 14px }
+.commentApp-item .commentApp-content-hd .zg-link {/*font-weight: bolder;*/ color: #259; }
+.commentApp-item .commentApp-content-ft { font-size: 12px }
+.commentApp-item .text-num { float: right; margin-top: -1px; }
+.commentApp-item .text-num>span, .commentApp-item .text-num>em { font-style: normal; vertical-align: -2px;font-size: 12px}
+.commentApp-item .text-num.nil { display: none }
+.commentApp-item.focusin .commentApp-op-link, .commentApp-item:hover .commentApp-op-link { visibility: visible }
+.commentApp-item+.commentApp-item { border-top: solid 1px #eee }
+.commentApp-item .commentApp-form { padding: 15px 0 }
+.commentApp-info { text-align: center }
+.commentApp-item.empty { margin-top: 10px; margin-left: 10px; color: #b1b1b1; }
+.commentApp-op-link>.commentApp-icon { margin-right: 5px; width: 11px; height: 11px; vertical-align: -1px }
+
+/* ===========commentApp-form=========== */
+.commentApp-form .commentApp-textarea { padding: 7px 8px; color: #222; font-size: 14px; line-height: 22px; min-height: 22px;}
+.commentApp-form.expanded .cmt-command { display: block; line-height: 33px; }
+.commentApp-form.expanded .cmt-seccode { float: left; overflow: hidden; line-height: 30px; room: 1; _width: 100%; }
+.commentApp-form.expanded .cmt-seccode span { color: #333; vertical-align: middle; text-align: center; font-size: 14px; }
+.commentApp-form.expanded .cmt-seccode .commentApp-seccode { width: 80px; display: inline-block; margin-right: 10px; }
+.commentApp-form .cmt-command { display: none; padding: 10px 0; text-align: right }
+.commentApp-form .cmt-command .btn-primary { float: right; }
+.commentApp-form .cmt-command .cmt-command-cancel { float: right; }
+.commentApp-op-link { margin-left: .5em; color: #999; font-size: 12px; visibility: hidden }
+.cmt-command-cancel { margin: 0 15px 0 0; cursor: pointer; float: left; }
+.cmt-command-cancel:hover { text-decoration: underline }
+
+@media (max-width:767px){
+  .iCMS_FAVORITE_DIALOG{width:auto;}
+  .iCMS_REPORT_DIALOG{width:auto;}
+}

@@ -5,75 +5,64 @@
     <meta name="keywords" content="<!--{$site.keywords}-->" />
     <meta name="description" content="<!--{$site.description}-->"/>
     <!--{iCMS:public:ui}-->
-    <script>
-
-    </script>
   </head>
-  <body class="iCMS-mobile">
-    <nav id="header" class="navbar navbar-default" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="btn btn-default header-back" href="<!--{$forward}-->"><i class="fa fa-arrow-left"></i></a>
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#iCMS-menu-box">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          </button>
-          <h3 class="header-title"><!--{if $user}-->绑定已有用户<!--{else}-->用户登录<!--{/if}--></h1>
-        </div>
-      </div>
-    </nav>
+  <body class="userApp passport">
+    <!--{include file="./navbar.htm"}-->
     <div class="container">
-      <div class="wrapper login_reg_wrapper" id="iCMS-login-page">
-          <div class="logo"><a href="<!--{$site.url}-->"><img src="<!--{$site.urls.ui}-->/img/iCMS.logo-6.0.png" width="180"/></a></div>
-          <div class="form-group">
-            <label for="login_uname">用户名</label>
-            <input type="text" placeholder="邮箱 或 昵称" data-container=".uname_tip" name="uname" id="login_uname" class="iCMS_login_uname form-control">
-            <span class="help-block uname_tip"></span>
-          </div>
-          <div class="form-group">
-            <label for="login_pass">密码</label>
-            <input type="password" placeholder="请输入您的密码" data-container=".pass_tip" name="pass" id="login_pass" class="iCMS_login_pass form-control">
-            <span class="help-block pass_tip"></span>
-          </div>
-          <!--{if $iCMS.CONFIG.user.login.seccode }-->
-          <div class="form-group">
-            <input type="text" maxlength="4" name="seccode" class="iCMS_login_seccode iCMS_seccode form-control" placeholder="验证码"  data-container=".seccode_tip" >
-            <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
-            <a href="javascript:;" class="iCMS_seccode_text" style="float: none">换一张</a>
-            <span class="help-block seccode_tip">请输入图片中的字符!</span>
-          </div>
+      <div class="wrapper">
+        <div class="logo">
+          <a href="<!--{$site.url}-->">
+            <img src="<!--{$site.urls.tpl}-->/static/img/iCMS.LOGO2.png" width="180"/>
+          </a>
+        </div>
+        <div class="form-group">
+          <label for="login_uname">用户名</label>
+          <input type="text" placeholder="邮箱 或 昵称" data-container=".uname_tip" name="uname" id="login_uname" class="iCMS_login_uname form-control">
+          <span class="help-block uname_tip"></span>
+        </div>
+        <div class="form-group">
+          <label for="login_pass">密码</label>
+          <input type="password" placeholder="请输入您的密码" data-container=".pass_tip" name="pass" id="login_pass" class="iCMS_login_pass form-control">
+          <span class="help-block pass_tip"></span>
+        </div>
+        <!--{if $iCMS.CONFIG.user.login.seccode }-->
+        <div class="form-group">
+          <label for="login_pass">验证码</label>
+          <input type="text" maxlength="4" name="seccode" class="form-control" placeholder="验证码"  data-container=".seccode_tip" >
+          <!--{iCMS:public:seccode}-->
+          <span class="help-block seccode_tip">请输入图片中的字符!</span>
+        </div>
+        <!--{/if}-->
+        <div class="checkbox">
+          <label for="login_remember">
+            <input type="checkbox" value="1" name="remember" id="login_remember" class="iCMS_login_remember" checked="checked"><span>记住我（两周免登录）</span>
+          </label>
+        </div>
+        <div class="clearfix mt10">
+          <button type="submit" class="btn btn-primary btn-lg btn-block iCMS_login_btn">登 录</button>
+        </div>
+        <div class="clearfix mt10">
+          <a class="btn btn-success" href="<!--{iCMS:router url='api:user:register'}-->"><i class="fa fa-user"></i> 我没有账号？去注册 »</a>
+        </div>
+        <!--{if !$user}-->
+        <hr />
+        <div class="open-btn">
+          <h3 class="gray mb10">您也可以用以下方式登录：</h3>
+          <!--{if $iCMS.CONFIG.open.QQ.enable }-->
+          <a class="btn btn-primary btn-sm" href="<!--{iCMS:router url='api:user:login:qq'}-->"><i class="fa fa-qq"></i> QQ 登录</a>
           <!--{/if}-->
-          <div class="checkbox">
-            <label for="login_remember">
-              <input type="checkbox" value="1" name="remember" id="login_remember" class="iCMS_login_remember" checked="checked"><span>记住我（两周免登录）</span>
-            </label>
-          </div>
-          <div class="clearfix mt10">
-            <button type="submit" class="btn btn-primary btn-lg btn-block iCMS_login_btn">登 录</button>
-          </div>
-          <div class="clearfix mt10">
-            <a class="btn btn-success" href="<!--{iCMS:router url='/api/user/register'}-->"><i class="fa fa-user"></i> 我没有账号？去注册 »</a>
-          </div>
-          <!--{if !$user}-->
-          <hr />
-          <div class="open-btn">
-            <h3 class="gray mb10">您也可以用以下方式登录：</h3>
-            <!--{if $iCMS.CONFIG.open.QQ.enable }-->
-            <a class="btn btn-primary btn-sm" href="<!--{iCMS:router url='/api/user/login/qq'}-->"><i class="fa fa-qq"></i> QQ 登录</a>
-            <!--{/if}-->
-            <!--{if $iCMS.CONFIG.open.WB.enable }-->
-            <a class="btn btn-danger btn-sm" href="<!--{iCMS:router url='/api/user/login/wb'}-->"><i class="fa fa-weibo"></i> 微博登录</a>
-            <!--{/if}-->
-            <!--{if $iCMS.CONFIG.open.WX.enable }-->
-            <a class="btn btn-success btn-sm" href="<!--{iCMS:router url='/api/user/login/wx'}-->"><i class="fa fa-weixin"></i> 微信登录</a>
-            <!--{/if}-->
-          </div>
+          <!--{if $iCMS.CONFIG.open.WB.enable }-->
+          <a class="btn btn-danger btn-sm" href="<!--{iCMS:router url='api:user:login:wb'}-->"><i class="fa fa-weibo"></i> 微博登录</a>
           <!--{/if}-->
-          <div class="clearfix mb20"></div>
+          <!--{if $iCMS.CONFIG.open.WX.enable }-->
+          <a class="btn btn-success btn-sm" href="<!--{iCMS:router url='api:user:login:wx'}-->"><i class="fa fa-weixin"></i> 微信登录</a>
+          <!--{/if}-->
+        </div>
+        <!--{/if}-->
+        <div class="clearfix mt10"></div>
       </div>
     </div>
-    <!--{include file="{iTPL}/footer.htm"}-->
+    <div class="clearfix mt10"></div>
+    <!--{include file="iCMS://footer.htm"}-->
   </body>
 </html>

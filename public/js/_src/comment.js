@@ -196,6 +196,7 @@ define("comment", function(require) {
                     }
                 }, 'json');
         },
+
         create: function(a) {
             var $this = $(a),
                 p = $this.parent(),
@@ -211,10 +212,13 @@ define("comment", function(require) {
                 $wrap = $('<div class="commentApp-wrap">'),
                 $list = $('<div class="commentApp-list">'),
                 $form  = $COMMENT.form();
-                iid   = param['iid'],
-                left  = $this.position().left;
+                iid   = param['iid'];
 
-            $spike.show().css({'left':left});
+            var pos = $this.position();
+            var _isMobile = 'createTouch' in document && !('onmousemove' in document)
+                || /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
+
+            $spike.css({'left':_isMobile?event.offsetX:pos.left,'display':'inline'});
             $form.addClass('commentApp-wrap-ft');
             $wrap.html($COMMENT._widget.spinner);
             $wrap.append($spike, $list, $form);

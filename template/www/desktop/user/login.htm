@@ -89,17 +89,18 @@
     <div class="login-wrap">
         <div class="logo">
             <a href="<!--{$site.url}-->" title="<!--{$site.title}-->">
-                <span><!--{$site.title}--></span></a>
+                <span>
+                    <!--{$site.title}-->
+                </span>
+            </a>
         </div>
         <div class="passport-wrap">
             <div class="passport-main">
                 <h1>
-                        <!--{if $user}-->
-                        绑定已有用户
-                        <!--{else}-->
-                        用户登录
-                        <!--{/if}-->
-                        </h1>
+                    <!--{if $user}-->绑定已有用户
+                    <!--{else}-->用户登录
+                    <!--{/if}-->
+                </h1>
                 <div id="login-box" class="passport-form form-horizontal">
                     <div class="form-group">
                         <label for="uname" class="control-label">用户名：</label>
@@ -121,8 +122,7 @@
                     <!--{/if}-->
                     <div class="form-group opt">
                         <label for="remember">
-                            <input type="checkbox" value="1" name="remember" class="check" checked="checked"> 记住我（两周免登录）
-                        </label>
+                            <input type="checkbox" value="1" name="remember" class="check" checked="checked"> 记住我（两周免登录） </label>
                         <a class="findpwd" href="<!--{$iCMS.SAPI}-->&do=findpwd">忘记密码？</a>
                     </div>
                     <div class="form-group submit">
@@ -156,5 +156,6 @@
     </div>
     <!--{include file="{iTPL}/footer.htm"}-->
 </body>
+
 
 </html>

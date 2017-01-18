@@ -14,14 +14,14 @@ i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 
 .z-icon-follow { width: 8px; height: 9px; background-position: -97px -23px }
 .z-icon-fold { width: 8px; height: 9px; background-position: -135px -22px }
 .z-icon-thumbs-up { width: 10px; height: 10px; background-position: -222px -93px; }
-.list_fun a:hover .z-icon-fold { background-position: -135px -37px }
-.list_fun a:hover .z-icon-thumbs-up { background-position: -222px -80px; }
-.list_fun a:hover .z-icon-follow { background-position: -97px -38px }
-.list_fun a:hover .z-icon-share { background-position: -67px -37px }
-.list_fun a:hover .z-icon-thank { background-position: -41px -37px }
-.list_fun a:hover .z-icon-collect { background-position: -56px -37px }
-.list_fun a:hover .z-icon-comment { background-position: -28px -37px }
-.list_fun a { color: #999; vertical-align: middle; font-size: 13px; }
+.article_action a:hover .z-icon-fold { background-position: -135px -37px }
+.article_action a:hover .z-icon-thumbs-up { background-position: -222px -80px; }
+.article_action a:hover .z-icon-follow { background-position: -97px -38px }
+.article_action a:hover .z-icon-share { background-position: -67px -37px }
+.article_action a:hover .z-icon-thank { background-position: -41px -37px }
+.article_action a:hover .z-icon-collect { background-position: -56px -37px }
+.article_action a:hover .z-icon-comment { background-position: -28px -37px }
+.article_action a { color: #999; vertical-align: middle; font-size: 13px; }
 .icon { width: 16px; height: 16px; background-image: url(../img/sprites-1.9.2.png); background-repeat: no-repeat; display: inline-block; vertical-align: middle; }
 .icon-profile-male { background-position: -144px -110px; margin-top: 10px; margin-left: 5px; }
 .icon-profile-female { background-position: -127px -110px; margin-top: 10px; margin-left: 5px; }
@@ -44,7 +44,7 @@ i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 
 /* ------home.header---------- */
 .userhome-header { border-bottom: 1px solid #E4E4E4; background-color: #fff;     border-radius: 5px 5px 0px 0px;}
 .card_top { height: 72px; line-height: normal; position: relative; *z-index: 1001; }
-.card_info { padding: 0px; max-width: 600px; float: left; width: 40%; padding-top: 5px; }
+.card_info { padding: 0px; max-width: 600px; float: left;  padding-top: 5px; }
 .card_data { margin: 0; overflow: hidden; border: none; }
 .card_avatar { *border: solid 1px #CCC; position: absolute; left: 0; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.41); border: 1px solid #DCDBDB; }
 .card_avatar,
@@ -97,8 +97,8 @@ i[class*=" z-icon-"] { display: inline-block; *margin-right: .3em; line-height: 
 .home-article .list_detail { margin-top: 5px; }
 .home-article .list_detail .text { font-size: 12px; }
 .home-article .list_detail .pic { /* height: 150px;  */overflow: hidden; }
-.home-article .list_fun { text-align: right; }
-.home-article .list_fun a { color: #333; margin-left: 10px; }
+.home-article .article_action { text-align: right; }
+.home-article .article_action a { color: #333; margin-left: 10px; }
 .home-favorite li { width: 100%; padding: 4px 0 10px; border-bottom: 1px dotted #E4E4E4; line-height: 23px; }
 .home-favorite .fav-follow { float: right; margin-top: 10px; }
 .home-favorite .fav-link h2 { font-weight: bold; display: inline; }

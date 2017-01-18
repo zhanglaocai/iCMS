@@ -1,22 +1,25 @@
-<nav id="header" class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#iCMS-menu-box">
-      <i class="fa fa-bars"></i>
-      </button>
-      <a class="navbar-brand" href="<!--{$site.url}-->"><img src="<!--{$site.urls.tpl}-->/static/img/iCMS.LOGO.png" width="180" /></a>
-    </div>
+<link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/user.css?<!--{$iCMS.NOW}-->" type="text/css" />
+<header class="x_header">
+  <div class="x_hd_box">
+    <a href="javascript:void(0);" class="x_menu_icon" data-toggle="collapse" data-target="#userApp-menu"></a>
+    <a href="<!--{$site.url}-->" class="x_logo_icon"></a>
+    <a href="<!--{$user.urls.home}-->" class="x_loginheader">
+      <img src="<!--{$user.avatar}-->">
+    </a>
+    <a href="javascript:void(0);" class="x_login_icon"></a>
   </div>
-</nav>
-<nav class="collapse" role="navigation" id="iCMS-menu-box">
+</header>
+<div class="clearfix" style="height:45px;"></div>
+
+<nav class="collapse" role="navigation" id="userApp-menu">
   <div class="navbar-collapse">
-    <div class="menu_head">
+    <div class="menu-head">
       <div id="user-login">
-        <a class="navbar-brand mlogo" href="<!--{$site.url}-->"><img src="<!--{$site.urls.ui}-->/img/iCMS.mlogo-6.0.png" width="90"/></a>
+        <a class="navbar-brand mlogo" href="<!--{$site.url}-->"><img src="<!--{$site.urls.tpl}-->/static/img/iCMS.LOGO.png" /></a>
         <a class="btn btn-primary btn-sm" href="<!--{iCMS:router url='/api/user/login'}-->"><i class="fa fa-user"></i> 登 录</a>
         <a class="btn btn-success btn-sm" href="<!--{iCMS:router url='/api/user/register'}-->"><i class="fa fa-heart"></i> 注册</a>
       </div>
-      <div id="user-profile">
+      <div id="user-profile" class="hide">
         <a class="btn btn-default btn-sm publish" href="<!--{iCMS:router url='/user/publish'}-->" target="_blank"><i class="fa fa-edit"></i> 发表文章</a>
         <!--{include file="iCMS://user/profile.menu.htm"}-->
       </div>
@@ -38,7 +41,7 @@
     </ul>
     <script>$("li.<!--{$pg}-->").addClass('active');</script>
   </div>
-  <div class="menu_right">
-    <span class="circle menu_close"><i class="fa fa-times"></i></span>
+  <div class="menu-right">
+    <span class="circle menu-close"><i class="fa fa-times">X</i></span>
   </div>
 </nav>

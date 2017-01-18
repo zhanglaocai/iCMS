@@ -52,8 +52,11 @@
             // hook element events
             if (this.opts.showOn != 'none') {
                 this.$elm.on({
+                    'click.poshytip': $.proxy(this.mouseenter, this),
                     'mouseenter.poshytip': $.proxy(this.mouseenter, this),
-                    'mouseleave.poshytip': $.proxy(this.mouseleave, this)
+                    'mouseleave.poshytip': $.proxy(this.mouseleave, this),
+                    'touchstart.poshytip': $.proxy(this.mouseenter, this),
+                    'touchend.poshytip'  : $.proxy(this.mouseleave, this),
                 });
                 switch (this.opts.showOn) {
                     case 'hover':
@@ -61,6 +64,9 @@
                             this.$elm.on('mousemove.poshytip', $.proxy(this.mousemove, this));
                         if (this.opts.allowTipHover)
                             this.$tip.hover($.proxy(this.clearTimeouts, this), $.proxy(this.mouseleave, this));
+
+                        this.$tip.on("click",$.proxy(this.clearTimeouts, this));
+
                         break;
                     case 'focus':
                         this.$elm.on({
@@ -72,6 +78,8 @@
             }
         },
         mouseenter: function(e) {
+            e.preventDefault();
+
             if (this.disabled)
                 return true;
 
@@ -371,6 +379,7 @@
     };
 
     $.fn.poshytip = function(options) {
+
         if (typeof options == 'string') {
             var args = arguments,
                 method = options;
@@ -378,8 +387,14 @@
             // unhook live events if 'destroy' is called
             if (method == 'destroy') {
                 this.die ?
-                    this.die('mouseenter.poshytip').die('focus.poshytip') :
-                    $(document).off(this.selector, 'mouseenter.poshytip').off(this.selector, 'focus.poshytip');
+                    this.die('mouseenter.poshytip')
+                    .die('touchstart.poshytip')
+                    .die('click.poshytip')
+                    .die('focus.poshytip'):
+                    $(document).off(this.selector, 'mouseenter.poshytip')
+                    .off(this.selector, 'click.poshytip')
+                    .off(this.selector, 'touchstart.poshytip')
+                    .off(this.selector, 'focus.poshytip');
             }
             return this.each(function() {
                 var poshytip = $(this).data('poshytip');
@@ -399,11 +414,13 @@
                         var $this = $(this);
                         if (!$this.data('poshytip'))
                             $this.poshytip(deadOpts).poshytip('mouseenter');
+                            $this.poshytip(deadOpts).poshytip('touchstart');
+                            $this.poshytip(deadOpts).poshytip('click');
                     };
                     // support 1.4.2+ & 1.9+
                     this.live ?
-                        this.live('mouseenter.poshytip', handler) :
-                        $(document).on(this.selector, 'mouseenter.poshytip', handler);
+                        this.live('mouseenter.poshytip,touchstart.poshytip,click.poshytip', handler) :
+                        $(document).on(this.selector, 'mouseenter.poshytip,touchstart.poshytip,click.poshytip', handler);
                     break;
                 case 'focus':
                     handler = function() {
@@ -416,7 +433,7 @@
                         $(document).on(this.selector, 'focus.poshytip', handler);
                     break;
             }
-            return this;
+            // return this;
         }
         return this.each(function() {
             new $.Poshytip(this, opts);
