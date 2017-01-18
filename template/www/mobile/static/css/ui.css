@@ -122,9 +122,9 @@ a.circle { color: #fff; }
 #userApp-menu .navbar-nav li.active { background-color: #057AFD; }
 #userApp-menu .navbar-nav li.active a { color: #fff; }
 #userApp-menu .divider { border-top: solid #111 1px; border-bottom: solid #444 1px; display: block; }
-#userApp-menu .menu-head .mlogo { padding: 10px 0px; }
-#userApp-menu .menu-head .mlogo img { width: 90px; }
-#userApp-menu .menu-head #iCMS-nav-login a.btn { height: auto; font-size: 12px; float: right; margin-right: 10px; margin-top: 15px; width: auto; }
+#userApp-menu .menu-head .mlogo { padding: 15px 0px; }
+#userApp-menu .menu-head .mlogo img { width: 10pc; }
+#userApp-menu .menu-head .user-login a.btn { height: auto; font-size: 12px; float: right; margin-right: 10px; margin-top: 15px; width: auto; }
 #userApp-menu .nav>li>a:hover, #userApp-menu .nav>li>a:focus { background-color: #444; }
 #userApp-menu .nav .open>a, #userApp-menu .nav .open>a:hover, #userApp-menu .nav .open>a:focus { background-color: #444; }
 #iCMS-nav-profile { display: none; margin-top: 5px; }

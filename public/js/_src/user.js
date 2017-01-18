@@ -18,7 +18,8 @@ define("user", function(require) {
         NOCOVER: function(img,type) {
             var name = 'coverpic';
             if(type=="m"){
-                name = 'm_coverpic';
+                // name = 'm_coverpic';
+                name = 'coverpic';
             }
             img.src = iCMS.CONFIG.PUBLIC+'/ui/'+name+'.jpg';
         },

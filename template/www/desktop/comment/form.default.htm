@@ -31,13 +31,13 @@
     $(function() {
         var $form = $('.comment-form');
         iUSER.STATUS({},
-            //登陆后事件
+            //登录后事件
             function($info) {
                 console.log($info);
                 $(".passport",$form).hide();
                 $(".profile",$form).show();
             },
-            //未登陆事件
+            //未登录事件
             function(f) {
                 console.log(f)
             }

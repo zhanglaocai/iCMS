@@ -7,32 +7,21 @@
     <!--{iCMS:public:ui}-->
     <style>#iCMS-scrollUp{display: none !important;}</style>
   </head>
-  <body class="iCMS-mobile">
-    <nav id="header" class="navbar navbar-default" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="btn btn-default header-back" href="<!--{$forward}-->"><i class="fa fa-arrow-left"></i></a>
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#iCMS-menu-box">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          </button>
-          <h3 class="header-title">Warning!</h1>
+  <body class="userApp passport">
+    <!--{include file="./navbar.htm"}-->
+    <div class="container">
+      <div class="wrapper">
+        <div class="logo">
+          <a href="<!--{$site.url}-->">
+            <img src="<!--{$site.urls.tpl}-->/static/img/iCMS.LOGO.png" />
+          </a>
+        </div>
+        <div class="alert alert-warning" role="alert">
+          <strong>Warning!</strong> 系统已经关闭注册功能!
         </div>
       </div>
-    </nav>
-    <div class="container">
-      <div class="wrapper login_reg_wrapper" id="iCMS-register-box">
-          <div class="logo"><a href="<!--{$site.url}-->"><img src="<!--{$site.urls.ui}-->/img/iCMS.logo-6.0.png" width="180"/></a></div>
-          <div class="clearfix mt10"></div>
-          <div class="alert alert-warning" role="alert">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong>Warning!</strong> 系统已经关闭注册功能!
-          </div>
-          <div class="clearfix mb20"></div>
-      </div>
     </div>
+    <div class="clearfix mt10"></div>
     <!--{include file="{iTPL}/footer.htm"}-->
   </body>
 </html>
