@@ -55,6 +55,9 @@ function comment_list_display($vars){
 	echo iView::render("iCMS://comment/{$tpl}.htm");
 }
 function comment_list($vars){
+	if(!iCMS::$config['comment']['enable']){
+		return;
+	}
 	if(iCMS::$config['comment']['plugin']['changyan']['enable']){
 		return;
 	}
@@ -183,6 +186,9 @@ function comment_list($vars){
 	return $resource;
 }
 function comment_form($vars){
+	if(!iCMS::$config['comment']['enable']){
+		return;
+	}
 	// if(!iCMS::$hooks['enable_comment']){
 	// 	iUI::warning('此页面禁止调用 iCMS&#x3a;comment&#x3a;form 标签！');
 	// }
@@ -190,11 +196,6 @@ function comment_form($vars){
 		iCMS::$config['comment']['plugin']['changyan']['appid'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appid"或"appid"值为空.');
 		iCMS::$config['comment']['plugin']['changyan']['appkey'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appkey"或"appkey"值为空.');
 
-		// if(iPHP::$mobile){
-		// 	echo iView::render('iCMS://comment/changyan.mobile.htm');
-		// }else{
-		// 	echo iView::render('iCMS://comment/changyan.pc.htm');
-		// }
 		echo iView::render('iCMS://comment/changyan.htm');
 		return;
 	}

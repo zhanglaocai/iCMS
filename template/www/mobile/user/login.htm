@@ -119,13 +119,13 @@
         <hr />
         <div class="open-btn">
           <h3 class="gray mb10">您也可以用以下方式登录：</h3>
-          <!--{if $iCMS.CONFIG.open.QQ.enable }-->
+          <!--{if $iCMS.CONFIG.user.open.QQ.enable }-->
           <a class="btn btn-primary btn-sm" href="<!--{iCMS:router url='api:user:login:qq'}-->"><i class="fa fa-qq"></i> QQ 登录</a>
           <!--{/if}-->
-          <!--{if $iCMS.CONFIG.open.WB.enable }-->
+          <!--{if $iCMS.CONFIG.user.open.WB.enable }-->
           <a class="btn btn-danger btn-sm" href="<!--{iCMS:router url='api:user:login:wb'}-->"><i class="fa fa-weibo"></i> 微博登录</a>
           <!--{/if}-->
-          <!--{if $iCMS.CONFIG.open.WX.enable }-->
+          <!--{if $iCMS.CONFIG.user.open.WX.enable }-->
           <a class="btn btn-success btn-sm" href="<!--{iCMS:router url='api:user:login:wx'}-->"><i class="fa fa-weixin"></i> 微信登录</a>
           <!--{/if}-->
         </div>

@@ -18,7 +18,17 @@ class userAdmincp{
     public function do_config(){
         configAdmincp::app($this->appid);
     }
+    public function _config_filter_open($open){
+
+        return $open;
+    }
     public function do_save_config(){
+        foreach ((array)$_POST['config']['open'] as $key => $value) {
+            if($value['appid'] && $value['appkey']){
+                $_POST['config']['open'][$key]['enable'] = true;
+            }
+        }
+
         configAdmincp::save($this->appid);
     }
     public function do_update(){

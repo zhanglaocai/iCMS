@@ -128,13 +128,13 @@
                         <div class="platform">
                             <span>您也可以用以下方式登录：</span>
                             <div class="platform-btn">
-                                <!--{if $iCMS.CONFIG.open.QQ.enable }-->
+                                <!--{if $iCMS.CONFIG.user.open.QQ.enable }-->
                                 <a href="<!--{iCMS:router url='api:user:login:qq'}-->" class="login_qq"></a>
                                 <!--{/if}-->
-                                <!--{if $iCMS.CONFIG.open.WB.enable }-->
+                                <!--{if $iCMS.CONFIG.user.open.WB.enable }-->
                                 <a href="<!--{iCMS:router url='api:user:login:wb'}-->" class="login_wb"></a>
                                 <!--{/if}-->
-                                <!--{if $iCMS.CONFIG.open.WX.enable }-->
+                                <!--{if $iCMS.CONFIG.user.open.WX.enable }-->
                                 <a href="<!--{iCMS:router url='api:user:login:wx'}-->" class="login_wx"></a>
                                 <!--{/if}-->
                             </div>
@@ -151,7 +151,7 @@
                 <div class="clearfix"></div>
             </div>
         </div>
-        <!--{include file="{iTPL}/footer.htm"}-->
+        <!--{include file="iCMS://footer.htm"}-->
     </body>
 
 

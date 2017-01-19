@@ -261,13 +261,13 @@
                         <a class="btn btn-primary" href="<!--{iCMS:router url='api:user:login' query="$query"}-->">登 录</a>
                         <div class="other_login">
                             <p>您也可以用以下方式登录：</p>
-                            <!--{if $iCMS.CONFIG.open.QQ.enable }-->
+                            <!--{if $iCMS.CONFIG.user.open.QQ.enable }-->
                             <a class="open_icon icon_qq" href="<!--{iCMS:router url='api:user:login:qq'}-->">QQ 帐号</a>
                             <!--{/if}-->
-                            <!--{if $iCMS.CONFIG.open.WB.enable }-->
+                            <!--{if $iCMS.CONFIG.user.open.WB.enable }-->
                             <a class="open_icon icon_wb" href="<!--{iCMS:router url='api:user:login:wb'}-->">新浪微博</a>
                             <!--{/if}-->
-                            <!--{if $iCMS.CONFIG.open.WX.enable }-->
+                            <!--{if $iCMS.CONFIG.user.open.WX.enable }-->
                             <a class="open_icon icon_wx" href="<!--{iCMS:router url='api:user:login:wx'}-->">微信账号</a>
                             <!--{/if}-->
                         </div>
@@ -276,6 +276,6 @@
                 <div class="clearfix"></div>
             </div>
         </div>
-        <!--{include file="{iTPL}/footer.htm"}-->
+        <!--{include file="iCMS://footer.htm"}-->
     </body>
 </html>

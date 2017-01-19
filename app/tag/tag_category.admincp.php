@@ -22,7 +22,7 @@ class tag_categoryAdmincp extends categoryAdmincp {
          *  模板
          */
         $this->category_template+=array(
-            'tag'     => array('标签','{iTPL}/tag.index.htm'),
+            'tag'     => array('标签','{iTPL}/tag.htm'),
         );
 
         /**

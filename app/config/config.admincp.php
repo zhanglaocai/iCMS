@@ -12,7 +12,6 @@ class configAdmincp{
     public function __construct() {}
     public function do_iCMS(){
     	$config	= $this->get();
-    	$config['site']['indexName'] OR $config['site']['indexName'] = 'index';
         $redis    = extension_loaded('redis');
         $memcache = extension_loaded('memcached');
         menu::$url = __ADMINCP__.'='.admincp::$APP_NAME;
@@ -35,12 +34,6 @@ class configAdmincp{
         $config['router']['DIR']        = rtrim($config['router']['DIR'],'/').'/';
         $config['router']['html_dir']   = rtrim($config['router']['html_dir'],'/').'/';
         $config['FS']['url']            = trim($config['FS']['url'],'/').'/';
-
-        foreach ((array)$config['open'] as $platform => $value) {
-            if($value['appid'] && $value['appkey']){
-                $config['open'][$platform]['enable'] = true;
-            }
-        }
 
     	foreach($config AS $n=>$v){
     		$this->set($v,$n,0);
@@ -105,13 +98,15 @@ class configAdmincp{
             $rs  = iDB::all("SELECT * FROM `#iCMS@__config` WHERE appid< '999999' $sql");
             foreach ($rs AS $c) {
                 $value = $c['value'];
-                strpos($c['value'], 'a:')===false OR $value = unserialize($c['value']);
+                // strpos($c['value'], 'a:')===false OR $value = serialize($c['value']);
+                $value = (array)json_decode($value,true);
                 $config[$c['name']] = $value;
             }
             return $config;
         } else {
             $value = iDB::value("SELECT `value` FROM `#iCMS@__config` WHERE `appid`='$appid' AND `name` ='$name'");
-            strpos($value, 'a:')===false OR $value = unserialize($value);
+            // strpos($value, 'a:')===false OR $value = unserialize($value);
+            $value = (array)json_decode($value,true);
             return $value;
         }
     }
@@ -124,7 +119,8 @@ class configAdmincp{
      */
     public static function set($value, $name, $appid, $cache = false) {
         $cache && iCache::set('config/' . $name, $value, 0);
-        is_array($value) && $value = addslashes(serialize($value));
+        // is_array($value) && $value = addslashes(serialize($value));
+        is_array($value) && $value = addslashes(json_encode($value));
         $check  = iDB::value("SELECT `name` FROM `#iCMS@__config` WHERE `appid` ='$appid' AND `name` ='$name'");
         $fields = array('appid','name','value');
         $data   = compact ($fields);

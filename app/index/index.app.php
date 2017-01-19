@@ -19,14 +19,14 @@ class indexApp {
         return $this->do_iCMS();
     }
     public function index($a = null){
-        $index_name = $a[1]?$a[1]:iCMS::$config['template']['index_name'];
-        $index_tpl  = $a[0]?$a[0]:iCMS::$config['template']['index'];
+        $index_name = $a[1]?$a[1]:iCMS::$config['template']['index']['name'];
+        $index_tpl  = $a[0]?$a[0]:iCMS::$config['template']['index']['tpl'];
         $index_name OR $index_name = 'index';
         $iurl = iURL::get('index',array('rule'=>$index_name.iCMS::$config['router']['html_ext']));
-        if(iCMS::$config['template']['index_mode'] && iPHP_DEVICE=="desktop"){
+        if(iCMS::$config['template']['index']['mode'] && iPHP_DEVICE=="desktop"){
             iCMS::redirect_html($iurl->path,$iurl->href);
         }
-        if(iView::$gateway=="html" || iCMS::$config['template']['index_rewrite']){
+        if(iView::$gateway=="html" || iCMS::$config['template']['index']['rewrite']){
             iURL::page_url($iurl);
         }
         $html = iView::render($index_tpl);

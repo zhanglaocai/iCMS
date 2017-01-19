@@ -5,13 +5,13 @@
         </div>
         <div i="login" class="user-login fr">
             <ul class="ul">
-                <!--{if $iCMS.CONFIG.open.QQ.enable }-->
+                <!--{if $iCMS.CONFIG.user.open.QQ.enable }-->
                 <li><a href="<!--{iCMS:router url='api:user:login:qq'}-->" class="login_qq">QQ登录</a></li>
                 <!--{/if}-->
-                <!--{if $iCMS.CONFIG.open.WB.enable }-->
+                <!--{if $iCMS.CONFIG.user.open.WB.enable }-->
                 <li><a href="<!--{iCMS:router url='api:user:login:wb'}-->" class="login_wb">微博登录</a></li>
                 <!--{/if}-->
-                <!--{if $iCMS.CONFIG.open.WX.enable }-->
+                <!--{if $iCMS.CONFIG.user.open.WX.enable }-->
                 <li><a href="<!--{iCMS:router url='api:user:login:wx'}-->" class="login_wx">微信登录</a></li>
                 <!--{/if}-->
                 <li><a href="<!--{iCMS:router url='api:user:login'}-->" title="登录">登录</a></li>

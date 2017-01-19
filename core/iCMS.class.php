@@ -35,22 +35,15 @@ class iCMS {
         iDevice::init(self::$config);
         iView::init();
         iView::$handle->_iVARS = array(
-            'CONFIG'  => self::$config,
             'VERSION' => iCMS_VERSION,
             'API'     => iCMS_API,
             'SAPI'    => iCMS_API_URL,
-            'APPID'   => array(
-                'ARTICLE'  => iCMS_APP_ARTICLE,
-                'CATEGORY' => iCMS_APP_CATEGORY,
-                'TAG'      => iCMS_APP_TAG,
-                'PUSH'     => iCMS_APP_PUSH,
-                'COMMENT'  => iCMS_APP_COMMENT,
-                'PROP'     => iCMS_APP_PROP,
-                'MESSAGE'  => iCMS_APP_MESSAGE,
-                'FAVORITE' => iCMS_APP_FAVORITE,
-                'USER'     => iCMS_APP_USER,
-            )
+            'CONFIG'  => self::$config,
+            'APPID'   => array()
         );
+        foreach ((array)self::$config['apps'] as $_app => $_appid) {
+            iView::$handle->_iVARS['APPID'][strtoupper($_app)] = $_appid;
+        }
         self::send_access_control();
         self::assign_site();
 
@@ -72,7 +65,7 @@ class iCMS {
 
     public static function assign_site(){
         $site          = self::$config['site'];
-        $site['title'] = self::$config['site']['name'];
+        $site['title'] = $site['name'];
         $site['404']   = iPHP_URL_404;
         $site['url']   = iCMS_URL;
         $site['tpl']   = iPHP_DEFAULT_TPL;
@@ -86,7 +79,7 @@ class iCMS {
             "mobile" => self::$config['template']['mobile']['domain'],
         );
         iView::assign('site',$site);
-        iUI::$dialog['title']  = self::$config['site']['name'];
+        iUI::$dialog['title']  = $site['name'];
     }
     public static function redirect_html($fp,$url='') {
         if(iView::$gateway=='html'||empty($url)||stristr($url, '.php?')||iPHP_DEVICE!='desktop') return;

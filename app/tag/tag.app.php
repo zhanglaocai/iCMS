@@ -66,7 +66,7 @@ class tagApp {
             $tag_tpl = $tag['category']['template']['tag'];
             $tag_tpl OR $tag_tpl = $tag['tag_category']['template']['tag'];
             $tag_tpl OR $tag_tpl = iCMS::$config['tag']['tpl'];
-            $tag_tpl OR $tag_tpl = '{iTPL}/tag.index.htm';
+            $tag_tpl OR $tag_tpl = '{iTPL}/tag.htm';
 
             iView::assign('category',$tag['category']);
             iView::assign('tag_category',$tag['tag_category']);

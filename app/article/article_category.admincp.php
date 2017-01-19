@@ -23,7 +23,7 @@ class article_categoryAdmincp extends categoryAdmincp {
          */
         $this->category_template+=array(
             'article' => array('文章','{iTPL}/article.htm'),
-            'tag'     => array('标签','{iTPL}/tag.index.htm'),
+            'tag'     => array('标签','{iTPL}/tag.htm'),
         );
 
         /**
