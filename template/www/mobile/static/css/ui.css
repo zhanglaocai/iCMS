@@ -197,3 +197,11 @@ a.circle { color: #fff; }
 .userApp-wrap .profile_wrapper { position: relative; }
 .userApp-wrap .manage_wrapper { }
 .userApp-wrap .manage_article .nav-tabs li a { color: #337ab7; }
+
+.tagApp  blockquote { text-indent: 2em; background-color: #EEE; color: #666; padding: 10px; margin: 5px; font-size: 16px; line-height: 32px; }
+.tagApp  blockquote h2 { margin: 0px; font-size: 18px; font-weight: bold; }
+.tagApp  blockquote p { margin: 0px; }
+.tagApp .kwLink { height: 20px; overflow: hidden; line-height: 20px; margin: 8px 0px; }
+.tagApp .kwLink b {/* background: url(../img/sprites.png) no-repeat 0px -440px; *//* width: 18px; *//* height: 18px; */display: inline-block; }
+.tagApp .kwLink a { margin-right: 10px; position: relative; display: inline-block; color: #0e82bf; }
+.tagApp .kwLink a i { color: #99CC33; display: block; position: absolute; width: 4px; height: 4px; overflow: hidden; background: #ccc; left: 4px; top: 8px; _top: 6px; }
