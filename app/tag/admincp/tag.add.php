@@ -70,7 +70,7 @@ $(function(){
             <div class="input-prepend"> <span class="add-on">标签分类</span>
               <select name="tcid[]" id="tcid" class="chosen-select span6" multiple="multiple" data-placeholder="请选择标签分类(可多选)...">
                 <option value="0"> ==== 默认分类 ==== </option>
-                <?php echo $this->tagcategory->select('ca',$rs['tcid'],0,1,true);?>
+                <?php echo $this->tag_categoryAdmincp->select('ca',$rs['tcid'],0,1,true);?>
               </select>
             </div>
             <span class="help-inline">本标签所属的标签分类</span>
@@ -111,22 +111,22 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩 略 图</span>
               <input type="text" name="pic" class="span6" id="pic" value="<?php echo $rs['pic'] ; ?>"/>
-              <?php admincp::pic_btn_group("pic");?>
+              <?php filesAdmincp::pic_btn("pic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">大图</span>
               <input type="text" name="bpic" class="span6" id="bpic" value="<?php echo $rs['bpic'] ; ?>"/>
-              <?php admincp::pic_btn_group("bpic");?>
+              <?php filesAdmincp::pic_btn("bpic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">中图</span>
               <input type="text" name="mpic" class="span6" id="mpic" value="<?php echo $rs['mpic'] ; ?>"/>
-              <?php admincp::pic_btn_group("mpic");?>
+              <?php filesAdmincp::pic_btn("mpic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">小图</span>
               <input type="text" name="spic" class="span6" id="spic" value="<?php echo $rs['spic'] ; ?>"/>
-              <?php admincp::pic_btn_group("spic");?>
+              <?php filesAdmincp::pic_btn("spic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">标签描述</span>

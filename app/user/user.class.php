@@ -42,7 +42,7 @@ class user {
 					'inbox'    => iURL::router(array('user:inbox:uid',$uid)),
 					'home'     => iURL::router(array('uid:home',$uid)),
 					'comment'  => iURL::router(array('uid:comment',$uid)),
-					'favorite' => iURL::router(array('uid:favorit/',$uid)),
+					'favorite' => iURL::router(array('uid:favorit',$uid)),
 					//'share'  => iURL::router(array('uid:share',$uid)),
 					'fans'     => iURL::router(array('uid:fans',$uid)),
 					'follower' => iURL::router(array('uid:follower',$uid)),

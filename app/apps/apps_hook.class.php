@@ -48,10 +48,47 @@ class apps_hook {
         $class_methods = get_class_methods ($obj_name);
         foreach ($class_methods as $key => $method) {
             if(stripos($method, 'HOOK_') !== false||$method=="HOOK"){
-                $option[]='<option value="'.$obj_name.'::'.$method.'">'.$obj_name.'::'.$method.'</option>';
+                $doc = self::get_doc($obj_name,$method);
+                if($doc){
+                    $title = $doc[0];
+                }else{
+                    $title = $obj_name.'::'.$method;
+                }
+                $option[]='<option value="'.$obj_name.'::'.$method.'">'.$title.'</option>';
             }
         }
         return implode('', (array)$option);
     }
+    public static function get_doc($class,$method) {
+        $reflection = new ReflectionMethod($class,$method);
+        $docblockr  = $reflection->getDocComment();
+        preg_match_all ( '#^\s*\s(.+)\n#m', $docblockr, $lines );
+        $doc = array();
+        foreach ($lines[1] as $key => $line) {
+            $doc[$key]= self::parseLine($line);
+        }
+        return $doc;
+    }
+    private static function parseLine($line) {
+        // trim the whitespace from the line
+        $line = trim ( $line );
 
+        if (empty ( $line ))
+            return null; // Empty line
+
+        if (strpos ( $line, '@' ) !== false) {
+            preg_match ('#\*\s@(\w+)\s+\[(\w+)\]\s(.+)\s\[(.+)\]#is', $line, $match );
+            $rs = array(
+                'desc'=>$match[4],
+                'type'=>$match[1],
+                'var' => '('.$match[2].')'.$match[3]
+            );
+        }else{
+            preg_match ('#^\*\s\[(.+)\]#is',$line,$match);
+            $rs = $match[1];
+        }
+        if($rs){
+            return $rs;
+        }
+    }
 }

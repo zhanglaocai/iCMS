@@ -224,9 +224,6 @@ class admincp {
 	public static function foot() {
 		include self::view("admincp.footer",'admincp');
 	}
-	public static function pic_btn_group($callback, $indexid = 0, $type = 'pic') {
-		include self::view("admincp.picbtngroup",'admincp');
-	}
 
 	public static function callback($id, &$that, $type = null) {
 		if ($type === null || $type == 'primary') {

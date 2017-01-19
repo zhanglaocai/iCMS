@@ -76,7 +76,7 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图</span>
               <input type="text" name="pic" class="span6" id="pic" value="<?php echo $rs['pic'] ; ?>"/>
-              <?php admincp::pic_btn_group("pic");?>
+              <?php filesAdmincp::pic_btn("pic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">链 接</span>
@@ -96,7 +96,7 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图</span>
               <input type="text" name="pic2" class="span6" id="pic2" value="<?php echo $rs['pic2'] ; ?>"/>
-              <?php admincp::pic_btn_group("pic2");?>
+              <?php filesAdmincp::pic_btn("pic2");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">链 接</span>
@@ -116,7 +116,7 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图</span>
               <input type="text" name="pic3" class="span6" id="pic3" value="<?php echo $rs['pic3'] ; ?>"/>
-              <?php admincp::pic_btn_group("pic3");?>
+              <?php filesAdmincp::pic_btn("pic3");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">链 接</span>

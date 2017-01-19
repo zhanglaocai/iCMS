@@ -10,6 +10,9 @@ class searchApp {
 	public function API_iCMS(){
         return $this->search();
 	}
+    // public function hooked($data){
+    //     return iPHP::hook('search',$data,iCMS::$config['hooks']['search']);
+    // }
     public function search($tpl=false) {
         $q  = htmlspecialchars(rawurldecode($_GET['q']));
         $encode = mb_detect_encoding($q, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
@@ -22,7 +25,7 @@ class searchApp {
         }
         $q  = iSecurity::escapeStr($q);
 
-        $fwd = filterAdmincp::run($q);
+        $fwd = filterApp::run($q);
         $fwd && iPHP::error_404('非法搜索词!', 60002);
 
         $search['title']   = stripslashes($q);
@@ -30,7 +33,7 @@ class searchApp {
         $tpl===false && $tpl = '{iTPL}/search.htm';
         $q && $this->slog($q);
         $iurl =  new stdClass();
-        $iurl->href = iURL::router('/api',iPHP_ROUTER_REWRITE);
+        $iurl->href = iURL::router('api',iPHP_ROUTER_REWRITE);
         $iurl->href.= '?app=search&q='.$q;
         $iurl->pageurl = $iurl->href.'&page={P}';
         iURL::page_url($iurl);

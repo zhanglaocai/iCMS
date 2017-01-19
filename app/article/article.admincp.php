@@ -520,7 +520,7 @@ class articleAdmincp{
         $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
 
         if($this->callback['code']){
-            $fwd = filterAdmincp::run($title);
+            $fwd = iPHP::callback(array("filterApp","run"),$title);
             if($fwd){
                 echo '标题中包含【'.$fwd.'】被系统屏蔽的字符，请重新填写。';
                 return false;
@@ -528,10 +528,11 @@ class articleAdmincp{
         }
 
         if(self::$config['filter']) {
-            $fwd = filterAdmincp::run($title);
-            $fwd && iUI::alert('标题中包含被系统屏蔽的字符，请重新填写。');
-            $fwd = filterAdmincp::run($description);
-            $fwd && iUI::alert('简介中包含被系统屏蔽的字符，请重新填写。');
+            $fwd = iPHP::callback(array("filterApp","run"),$title);
+            // filterAdmincp::run($title);
+            $fwd && iUI::alert('标题中包含【'.$fwd.'】被系统屏蔽的字符，请重新填写。');
+            $fwd = iPHP::callback(array("filterApp","run"),$description);
+            $fwd && iUI::alert('简介中包含被【'.$fwd.'】系统屏蔽的字符，请重新填写。');
             // $fwd = filterAdmincp::run($body);
             // $fwd && iUI::alert('内容中包含被系统屏蔽的字符，请重新填写。');
         }

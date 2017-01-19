@@ -12,8 +12,12 @@ class filterApp{
     public function __construct() {
         $this->appid = iCMS_APP_FILTER;
     }
-    //禁止
-    public static function HOOK_disable(&$content){
+    /**
+     * [查找判断禁用词]
+     * @param [string] $content [参数]
+     * @return [string]         [返回禁用词]
+     */
+    public static function HOOK_disable($content){
         $disable = iCache::get('filter/disable');  //disable禁止
         //禁止关键词
         $subject = $content;
@@ -36,7 +40,11 @@ class filterApp{
             }
         }
     }
-    //过滤
+    /**
+     * [关键词替换过滤]
+     * @param [sting] $content [参数]
+     * @return [string]        [返回替换过的内容]
+     */
     public static function HOOK_filter($content){
         $filter  = iCache::get('filter/array');    //filter过滤
         if($filter){
@@ -54,5 +62,18 @@ class filterApp{
             $search && $content = preg_replace($search,$replace,$content);
         }
         return $content;
+    }
+
+    /**
+     * [run 先判断后过滤]
+     * @param  [array] &$content [引用内容]
+     * @return [sting]           [返回内容]
+     */
+    public static function run(&$content){
+        if($result = self::HOOK_disable($content)){
+            return $result;
+        }
+
+        $content = self::HOOK_filter($content);
     }
 }

@@ -12,8 +12,12 @@ class keywordsApp {
     public function do_iCMS(){}
     public function API_iCMS(){}
 
-    //内链
-    public static function HOOK($content) {
+    /**
+     * [内链替换]
+     * @param [type] $content [参数]
+     * @return [string]       [返回替换过的内容]
+     */
+    public static function HOOK_run($content) {
         if (iCMS::$config['keywords']['limit'] == 0) {
             return $content;
         }

@@ -18,6 +18,7 @@ class filesAdmincp{
 	    $this->callback OR $this->callback	= 'icms';
         $this->upload_max_filesize = get_cfg_var("upload_max_filesize");
     }
+
 	public function do_add(){
         admincp::MP('FILE.UPLOAD','page');
 		$this->id && $rs = iFS::get_filedata('id',$this->id);
@@ -189,17 +190,7 @@ class filesAdmincp{
     	}
 		iUI::json(array('code'=>0,'msg'=>'创建失败,请检查目录权限!!'));
     }
-    public function explorer($dir=NULL,$type=NULL){
-        admincp::MP('FILE.BROWSE','page');
-        $res    = iFS::folder($dir,$type);
-        $dirRs  = $res['DirArray'];
-        $fileRs = $res['FileArray'];
-        $pwd    = $res['pwd'];
-        $parent = $res['parent'];
-        $URI    = $res['URI'];
-        $navbar = false;
-    	include admincp::view("files.explorer");
-    }
+
     public function do_seltpl(){
     	$this->explorer('template');
     }
@@ -286,11 +277,24 @@ class filesAdmincp{
         }
         iUI::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
     }
+    public function explorer($dir=NULL,$type=NULL){
+        admincp::MP('FILE.BROWSE','page');
+        $res    = iFS::folder($dir,$type);
+        $dirRs  = $res['DirArray'];
+        $fileRs = $res['FileArray'];
+        $pwd    = $res['pwd'];
+        $parent = $res['parent'];
+        $URI    = $res['URI'];
+        $navbar = false;
+        include admincp::view("files.explorer");
+    }
     public static function modal_btn($title='',$click='file',$target='template_index',$callback='',$do='seltpl',$from='modal'){
         $href = __ADMINCP__."=files&do={$do}&from={$from}&click={$click}&target={$target}&callback={$callback}";
         $_title=$title.'文件';
         $click=='dir' && $_title=$title.'目录';
         echo '<a href="'.$href.'" class="btn files_modal" data-toggle="modal" title="选择'.$_title.'"><i class="fa fa-search"></i> 选择</a>';
     }
-
+    public static function pic_btn($callback, $indexid = 0, $type = 'pic') {
+        include admincp::view("files.picbtn","files");
+    }
 }

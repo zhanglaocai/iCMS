@@ -33,13 +33,4 @@ class filterAdmincp{
     	iCache::set('filter/array',$config['filter'],0);
     	iCache::set('filter/disable',$config['disable'],0);
     }
-    //过滤
-    public static function run(&$content){
-        $result = filterApp::HOOK_disable($content);
-        if($result){
-            return $result;
-        }
-
-        $content = filterApp::HOOK_filter($content);
-    }
 }

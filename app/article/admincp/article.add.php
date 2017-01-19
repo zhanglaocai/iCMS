@@ -319,7 +319,7 @@ function _modal_dialog(cancel_text){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图</span>
               <input type="text" name="pic" class="span6" id="pic" value="<?php echo $rs['pic'] ; ?>"/>
-              <?php admincp::pic_btn_group("pic",$this->id);?>
+              <?php filesAdmincp::pic_btn("pic",$this->id);?>
               <span class="add-on" title="远程文件不执行本地化"><input type="checkbox" name="pic_http"/> <s>http</s></span>
               <script>
               <?php if(iFS::checkHttp($rs['pic'])){ ?>
@@ -330,7 +330,7 @@ function _modal_dialog(cancel_text){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图2</span>
               <input type="text" name="mpic" class="span6" id="mpic" value="<?php echo $rs['mpic'] ; ?>"/>
-              <?php admincp::pic_btn_group("mpic",$this->id);?>
+              <?php filesAdmincp::pic_btn("mpic",$this->id);?>
               <span class="add-on" title="远程文件不执行本地化"><input type="checkbox" name="mpic_http" /> <s>http</s></span>
               <script>
               <?php if(iFS::checkHttp($rs['mpic'])){ ?>
@@ -341,7 +341,7 @@ function _modal_dialog(cancel_text){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图3</span>
               <input type="text" name="spic" class="span6" id="spic" value="<?php echo $rs['spic'] ; ?>"/>
-              <?php admincp::pic_btn_group("spic",$this->id);?>
+              <?php filesAdmincp::pic_btn("spic",$this->id);?>
               <span class="add-on" title="远程文件不执行本地化"><input type="checkbox" name="spic_http"/> <s>http</s></span>
               <script>
               <?php if(iFS::checkHttp($rs['spic'])){ ?>

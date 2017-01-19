@@ -66,6 +66,11 @@ class articleApp {
 		iUI::code(1, 'iCMS:article:' . $type, 0, 'json');
 
 	}
+	/**
+	 * [hooked 钩子]
+	 * @param  [type] $data [description]
+	 * @return [type]       [description]
+	 */
     public function hooked($data){
         return iPHP::hook('article',$data,iCMS::$config['hooks']['article']);
     }
@@ -360,6 +365,11 @@ class articleApp {
 		}
 		return str_replace($img_array, $img_replace, $article['body']);
 	}
+	/**
+	 * [转换淘宝客链接]
+	 * @param [type] $content  [参数]
+	 * @param [type] $resource [返回替换过的内容]
+	 */
 	public static function HOOK_taoke($content,$resource) {
 		preg_match_all('/<[^>]+>((http|https):\/\/(item|detail)\.(taobao|tmall)\.com\/.+)<\/[^>]+>/isU', $content, $taoke_array);
 		if ($taoke_array[1]) {
@@ -384,6 +394,10 @@ class articleApp {
 		));
 		return iView::fetch('iCMS://taoke.tpl.htm');
 	}
+	/**
+	 * [正文插入广告]
+	 * @param [type] $content [参数]
+	 */
     public static function HOOK_body_ad($content){
         $pieces    = 1000;
         $html      = str_replace('</p>', "</p>\n", $content);
