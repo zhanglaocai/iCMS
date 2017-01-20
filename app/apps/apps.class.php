@@ -160,39 +160,15 @@ var_dump(@class_exists($appname));
     public static function scan($pattern='*.app',$appdir='*',$ret=false){
         $array = array();
         foreach (glob(iPHP_APP_DIR."/{$appdir}/{$pattern}.php") as $filename) {
-
-            // if($check){
-            //     var_dump($filename, $pattern);
-            //     if(stripos($filename, $pattern) === false){
-            //         continue;
-            //     }
-            // }
-
             $parts = pathinfo($filename);
+            $app   = str_replace(iPHP_APP_DIR.'/','',$parts['dirname']);
 
-            $app = str_replace(iPHP_APP_DIR.'/','',$parts['dirname']);
             if(stripos($app, '/') !== false){
                 list($app,) = explode('/', $app);
             }
             $path = str_replace(iPHP_APP_DIR.'/','',$filename);
-            list($a,$b,$c) = explode('.', $parts['filename']);
-            $array[$app] = $path;
-
-            // if($b=='admincp' && $c===null){
-            // }else{
-                // self::$array[$app][$b] = $path;
-            // }
-            // print_r($app.PHP_EOL);
-            // print_r($parts['filename'].PHP_EOL);
-            // self::$array[$app] = $path;
-
-            // self::$app_paths[$app] = $filename;
-
-            // var_dump($dirname);
-            // if (!in_array($dirname,array('admincp','usercp'))) {
-            //     $app = str_replace('.app','',$parts['filename']);
-            //     in_array($app,$this->apps) OR array_push($this->apps,$app);
-            // }
+            list($a,$b,) = explode('.', $parts['filename']);
+            $array[$app] = array($a,$b,$path);
         }
         if($ret){
             return $array;

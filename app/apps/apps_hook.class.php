@@ -35,16 +35,23 @@ class apps_hook {
     public static function app_method() {
         $option = '';
         foreach (apps::get_array(array("status"=>'1')) as $key => $value) {
-            $option.=self::app_hook_method($value['app']);
+            // $option.=self::app_hook_method($value['app']);
+            list($path,$obj_name)= apps::path($value['app'],'app',true);
+            if(@is_file($path)){
+                $option.= self::app_hook_method($obj_name);
+            }
+        }
+        //plugins
+        foreach (glob(iPHP_APP_DIR."/plugin/plugin_*.class.php") as $filename) {
+            $parts = pathinfo($filename);
+            $path = str_replace(iPHP_APP_DIR.'/','',$filename);
+            $obj_name = substr($parts['filename'],0,-6);
+            $option.= self::app_hook_method($obj_name);
         }
         return $option;
     }
-    public static function app_hook_method($app=null) {
-        list($path,$obj_name)= apps::path($app,'app',true);
 
-        if(!is_file($path)){
-            return false;
-        }
+    public static function app_hook_method($obj_name=null) {
         $class_methods = get_class_methods ($obj_name);
         foreach ($class_methods as $key => $method) {
             if(stripos($method, 'HOOK_') !== false||$method=="HOOK"){

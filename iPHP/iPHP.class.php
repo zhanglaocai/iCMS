@@ -304,12 +304,11 @@ class iPHP {
      * @param  [type] $hooks    [钩子]
      * @return [type]           [description]
      */
-    public static function hook($app,&$resource=null,$hooks){
+    public static function hook($app,$resource=null,$hooks){
         if($hooks){
             foreach ($hooks as $field => $call) {
                 foreach ($call as $key => $cb) {
-                    // $resource[$field] = self::call_func($cb,array($resource[$field],&$resource));
-                    $resource[$field] = iPHP::callback($cb,array($resource[$field],$resource));
+                    $resource[$field] = iPHP::callback($cb,array($resource[$field],&$resource));
                 }
             }
         }
@@ -318,15 +317,15 @@ class iPHP {
     /**
      * [callback 回调执行]
      * @param  [type] $callback [执行函数]
-     * @param  [type] $value    [参数]
+     * @param  [type] $value    [引用参数]
      * @return [type]           [description]
      */
-    public static function callback($callback,&$value=array()){
+    public static function callback($callback,$value=array()){
         if (is_array($callback) && @class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {
-           return call_user_func_array($callback,is_array($value)?$value:array(&$value));
+           return call_user_func_array($callback,(array)$value);
         }
         return $value;
-   }
+    }
 	public static function app($app = NULL, $args = NULL) {
 		$app_dir = $app_name = $app;
 		$file_type = 'app';
