@@ -56,7 +56,7 @@ class weixinAdmincp{
         }
         $url = iCMS_WEIXIN_COMPONENT.'/iCMS/login?'.
         'token='.$token.
-        '&url='.urlencode(iCMS::$config['router']['public_url']);
+        '&url='.urlencode(iCMS::$config['router']['public']);
         iPHP::redirect($url);
     }
     public function do_event(){

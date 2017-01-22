@@ -11,8 +11,11 @@
 define('iPHP_PAGE_SIGN', '{P}');
 
 class iURL {
-    public static $config   = null;
-    public static $uriArray = null;
+    public static $CONFIG   = null;
+    public static $ARRAY    = null;
+    public static $API_URL  = null;
+    public static $USER_URL = null;
+    public static $APP_CONF = null;
 
     public static function router($key, $var = null) {
         if(isset($GLOBALS['iPHP_ROUTER'])){
@@ -29,7 +32,7 @@ class iURL {
         $url = iPHP_ROUTER_REWRITE?$router[0]:$router[1];
 
         if (iPHP_ROUTER_REWRITE && stripos($routerKey, 'uid:') === 0) {
-            $url = rtrim(iPHP_ROUTER_USER, '/') . $url;
+            $url = rtrim(self::$USER_URL, '/') . $url;
         }
 
         if (is_array($key)) {
@@ -46,35 +49,19 @@ class iURL {
         if ($var == '?&') {
             $url .= iPHP_ROUTER_REWRITE ? '?' : '&';
         }
-        $url = str_replace('__API__', self::$config['conf']['API'], $url);
+        if(!iPHP_ROUTER_REWRITE){
+            $url = self::$API_URL.'?app='.$url;
+        }
         return $url;
     }
 
-	public static function init($config=null,$conf=null){
-        self::$config           = $config['router'];
-        self::$config['tag']    = $config['tag'];
-        self::$config['router'] = array(
-            'http'     => array('rule'=>'0','primary'=>''),
-            'index'    => array('rule'=>'0','primary'=>''),
-            'category' => array('rule'=>'1','primary'=>'cid'),
-            'article'  => array('rule'=>'2','primary'=>'id','PHP_PAGE'=>'p'),
-            'software' => array('rule'=>'2','primary'=>'id'),
-            'tag'      => array('rule'=>'3','primary'=>'id'),
-        );
-        self::$config['conf'] = (array) $conf;
-
-        // foreach (glob(iPHP_APP_DIR."/*/etc/iURL.router.php",GLOB_NOSORT) as $index=> $filename) {
-        //     $app = str_replace(array(iPHP_APP_DIR,'etc/iURL.router.php'), '', $filename);
-        //     $app = trim($app,'/');
-        //     self::$config['router'][$app] = include $filename;
-        // }
-        // var_dump(self::$config);
-        // exit;
+	public static function init($config=null){
+        self::$CONFIG = $config;
 	}
 
     public static function rule($matches) {
     	$b	= $matches[1];
-    	list($a,$c,$tc) = self::$uriArray;
+    	list($a,$c,$tc) = self::$ARRAY;
         switch($b) {
             case 'ID':		$e = $a['id'];break;
             case '0xID':	$e = sprintf("%08s",$a['id']);break;
@@ -104,7 +91,7 @@ class iURL {
             case 'TCID':	$e = $tc['tcid'];break;
             case 'TCDIR':	$e = $tc['dir'];break;
 
-            case 'EXT':		$e = $c['htmlext']?$c['htmlext']:self::$config['html_ext'];break;
+            case 'EXT':		$e = $c['htmlext']?$c['htmlext']:self::$CONFIG['ext'];break;
             case 'P':       $e = iPHP_PAGE_SIGN;break;
         }
         return $e;
@@ -120,65 +107,67 @@ class iURL {
         }
     }
     public static function get($uri,$a=array()) {
-        $i        = new stdClass();
-        $surl     = self::$config['URL'];
-        $html_dir = self::$config['html_dir'];
-        $router   = self::$config['router'];
-        $category = array();
-        $array    = (array)$a;
-        $primary  = $router[$uri]['primary'];
-        $rule     = $router[$uri]['rule'];
-        $document_uri = $uri.'.php?';
-        switch($rule) {
+        $i          = new stdClass();
+        $category   = array();
+        $array      = (array)$a;
+        $router_url = self::$CONFIG['url'];
+        $router_dir = self::$CONFIG['dir'];
+        $app_conf   = self::$CONFIG['app'][$uri];
+
+        switch($app_conf['rule']) {
             case '0':
                 $i->href = $array['url'];
                 $url     = $array['rule'];
                 break;
-            case '1':
+            case '1'://分类
                 $category = $array;
                 $i->href  = $category['url'];
                 $url      = self::rule_data($category,'index');
                 // $purl     = self::rule_data($category,'list');
                 break;
-            case '2':
+            case '2'://内容
                 $array    = (array)$a[0];
                 $category = (array)$a[1];
                 $i->href  = $array['url'];
                 $url      = self::rule_data($category,$uri);
                 break;
-            case '3':
+            case '3'://标签
                 $array     = (array)$a[0];
                 $category  = (array)$a[1];
                 $_category = (array)$a[2];
                 $i->href   = $array['url'];
-                $url       = self::rule_data($category,$uri);
+                $category && $url = self::rule_data($category,$uri);
 
                 if($_category['rule'][$uri]){
                     $url = self::rule_data($_category,$uri);
                 }
-
-                $tagconf  = self::$config[$uri];
-                $html_dir = $tagconf['dir'];
-                $surl     = $tagconf['url'];
-                $url OR $url = $tagconf['rule'];
                 break;
              default:
                 $url = $array['rule'];
         }
+        $default  = self::$CONFIG[$uri];
+        if($default){
+            $router_dir = $default['dir'];
+            $router_url     = $default['url'];
+            empty($url) && $url = $default['rule'];
+        }
+
         if($url=='{PHP}'){
-            $document_uri.= $primary.'='.$array[$primary];
-            if($router[$uri]['PHP_PAGE']){
-                $i->pageurl = $document_uri.'&'.$router[$uri]['PAGE'].'='.iPHP_PAGE_SIGN;
-                iFS::checkHttp($i->pageurl) OR $i->pageurl = rtrim($surl,'/').'/'.$i->pageurl;
+            $href = $uri.'.php?';
+            $primary = $app_conf['primary'];
+            $href.= $primary.'='.$array[$primary];
+            if($app_conf['page']){
+                $i->pageurl = $href.'&'.$app_conf['page'].'='.iPHP_PAGE_SIGN;
+                iFS::checkHttp($i->pageurl) OR $i->pageurl = rtrim($router_url,'/').'/'.$i->pageurl;
             }
-            iFS::checkHttp($document_uri) OR $document_uri = rtrim($surl,'/').'/'.$document_uri;
-            $i->href = $document_uri;
+            iFS::checkHttp($href) OR $href = rtrim($router_url,'/').'/'.$href;
+            $i->href = $href;
         }
         if($i->href) return $i;
 
         if(strpos($url,'{PHP}')===false) {
-        	self::$uriArray	= array($array,$category,$_category);
-            $i = self::build($url,$html_dir,$surl,$category['htmlext']);
+        	self::$ARRAY = array($array,$category,$_category);
+            $i = self::build($url,$router_dir,$router_url,$category['htmlext']);
             $pfile = $i->file;
             if(strpos($pfile,iPHP_PAGE_SIGN)===false) {
                 $pfile = $i->name.'_'.iPHP_PAGE_SIGN.$i->ext;
@@ -187,14 +176,14 @@ class iURL {
             $i->pagepath = $i->dir.'/'.$pfile;
 
             if($purl){
-                $ii = self::build($purl,$html_dir,$surl,$category['htmlext']);
+                $ii = self::build($purl,$router_dir,$router_url,$category['htmlext']);
                 $i->pageurl  = $ii->href;
                 $i->pagepath = $ii->path;
                 unset($ii);
             }
 // var_dump($i);
 
-			if($rule=='1') {
+			if($app_conf['rule']=='1') {
                 $domainArray = iCache::get('category/domain');
 // var_dump($domainArray);
                 if($domainArray){
@@ -202,7 +191,7 @@ class iURL {
                     if($m->domain) {
                         $i->href   = str_replace($i->hdir,$m->dmpath,$i->href);
                         $i->hdir   = $m->dmpath;
-                        $i->dmdir  = iFS::path(iPATH.$html_dir.'/'.$m->pd);
+                        $i->dmdir  = iFS::path(iPATH.$router_dir.'/'.$m->pd);
                         $bits      = parse_url($i->href);
                         $i->domain = $bits['scheme'].'://'.$bits['host'];
                     }
@@ -241,7 +230,7 @@ class iURL {
 
         if(empty($i->file)||substr($url,-1)=='/'||empty($pathA['extension'])) {
             $i->name = 'index';
-            $i->ext  = self::$config['html_ext'];
+            $i->ext  = self::$CONFIG['ext'];
             $_ext && $i->ext = $_ext;
             $i->file = $i->name.$i->ext;
             $i->path = $i->path.'/'.$i->file;

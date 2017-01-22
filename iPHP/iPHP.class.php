@@ -104,7 +104,6 @@ class iPHP {
 		defined('iPHP_ROUTER_REWRITE') OR define('iPHP_ROUTER_REWRITE', $config['router']['rewrite']);
 		defined('iPHP_APP_SITE') && $config['cache']['prefix'] = iPHP_APP_SITE;
 
-		define('iPHP_ROUTER_USER', $config['router']['user_url']);
 		define('iPHP_URL_404', $config['router']['404']); //404定义
 
 		//config.php --END--

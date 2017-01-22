@@ -167,7 +167,7 @@ function modal_tplfile(el,a){
             <span class="help-inline">首页默认模板，注：最好使用<span class="label label-inverse">{iTPL}</span>代替模板目录,程序将会自行切换PC端或者移动端</span>
             <div class="clearfloat mb10 solid"></div>
             <div class="input-prepend"> <span class="add-on">桌面端域名</span>
-              <input type="text" name="config[router][URL]" class="span3" value="<?php echo $config['router']['URL'] ; ?>"/>
+              <input type="text" name="config[router][url]" class="span3" value="<?php echo $config['router']['url'] ; ?>"/>
             </div>
             <span class="help-inline">例:<span class="label label-info">http://www.idreamsoft.com</span></span>
             <div class="clearfloat mb10"></div>
@@ -259,33 +259,28 @@ function modal_tplfile(el,a){
             </table>
           </div>
           <div id="config-url" class="tab-pane hide">
-            <div class="input-prepend"> <span class="add-on">CMS安装目录</span>
-              <input type="text" name="config[router][DIR]" class="span4" id="router_dir" value="<?php echo $config['router']['DIR'] ; ?>"/>
-            </div>
-            <span class="help-inline">CMS安装目录，如：http://www.idreamsoft.com/iCMS/ 则安装目录为:iCMS/ 根目录请输入<span class="label label-info">/</span></span>
-            <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">404页面</span>
               <input type="text" name="config[router][404]" class="span4" id="router_404" value="<?php echo $config['router']['404'] ; ?>"/>
             </div>
             <span class="help-inline">404时跳转到的页面</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">公共资源URL</span>
-              <input type="text" name="config[router][public_url]" class="span4" id="router_public_url" value="<?php echo $config['router']['public_url'] ; ?>"/>
+              <input type="text" name="config[router][public]" class="span4" id="router_public" value="<?php echo $config['router']['public'] ; ?>"/>
             </div>
             <span class="help-inline">公共资源访问URL 如果访问出错请修改public/config.php文件</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">用户URL</span>
-              <input type="text" name="config[router][user_url]" class="span4" id="router_user_url" value="<?php echo $config['router']['user_url'] ; ?>"/>
+              <input type="text" name="config[router][user]" class="span4" id="router_user" value="<?php echo $config['router']['user'] ; ?>"/>
             </div>
             <span class="help-inline">用户URL</span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">静态目录</span>
-              <input type="text" name="config[router][html_dir]" class="span4" id="router_html_dir" value="<?php echo $config['router']['html_dir'] ; ?>"/>
+            <div class="input-prepend"> <span class="add-on">目录</span>
+              <input type="text" name="config[router][dir]" class="span4" id="router_dir" value="<?php echo $config['router']['dir'] ; ?>"/>
             </div>
-            <span class="help-inline">存放静态页面目录，相对于admin目录。可用../表示上级目录</span>
+            <span class="help-inline">网页目录，相对于admin目录。可用../表示上级目录</span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">文件后缀</span>
-              <input type="text" name="config[router][html_ext]" class="span4" id="router_html_ext" value="<?php echo $config['router']['html_ext'] ; ?>"/>
+            <div class="input-prepend"> <span class="add-on">网页后缀</span>
+              <input type="text" name="config[router][ext]" class="span4" id="router_ext" value="<?php echo $config['router']['ext'] ; ?>"/>
             </div>
             <span class="help-inline">推荐使用.html</span>
             <div class="clearfloat mb10"></div>

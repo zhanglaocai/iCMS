@@ -33,7 +33,7 @@ class searchApp {
         $tpl===false && $tpl = '{iTPL}/search.htm';
         $q && $this->slog($q);
         $iurl =  new stdClass();
-        $iurl->href = iURL::router('api',iPHP_ROUTER_REWRITE);
+        $iurl->href = iURL::router('api');
         $iurl->href.= '?app=search&q='.$q;
         $iurl->pageurl = $iurl->href.'&page={P}';
         iURL::page_url($iurl);

@@ -185,7 +185,7 @@ class category {
             $ii->pdir   = $dm->pdir.'/'.$C[$akey];
             $ii->dmpath = $dm->dmpath.'/'.$C[$akey];
         }else {
-            $ii->pd     = $ii->pdir   = ltrim(iFS::path(iCMS::$config['router']['html_dir'].$ii->sdir),'/') ;
+            $ii->pd     = $ii->pdir   = ltrim(iFS::path(iCMS::$config['router']['dir'].$ii->sdir),'/') ;
             $ii->dmpath = $ii->domain = iFS::checkHttp($C['domain'])?$C['domain']:'http://'.$C['domain'];
         }
         return $ii;
@@ -202,7 +202,7 @@ class category {
         }
         return $domain;
     }
-    public function domain_config($domain=null){
+    public static function domain_config($domain=null){
         if(empty($domain)){
             $rs  = iDB::all("
                 SELECT `cid`,`domain`

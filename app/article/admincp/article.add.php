@@ -34,18 +34,18 @@ $(function(){
     }
   })
 
-  $('#cid_chosen').click(function(event){
-    event.preventDefault();
-        iCMS.UI.dialog({
-            follow:document.getElementById('cid_chosen'),
-            content: document.getElementById('category_select'),
-            quickClose: false,title: null,width:"auto",height:"auto",
-            okValue: '选择',
-            ok: function() {
-            }
-        });
-
-  });
+  // $('#cid_chosen').click(function(event){
+  //   event.preventDefault();
+  //       iCMS.UI.dialog({
+  //           follow:document.getElementById('cid_chosen'),
+  //           content: document.getElementById('category_select'),
+  //           quickClose: false,title: null,width:"auto",height:"auto",
+  //           okValue: '选择',
+  //           ok: function() {
+  //           }
+  //       });
+  // });
+  //
 	// $("#cid").change(function() {
  //    var cid = this.value;
 	// 	$.getJSON("<?php echo APP_URI; ?>",{'do':'getmeta','cid':cid},function(prop){

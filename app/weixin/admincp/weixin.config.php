@@ -12,10 +12,10 @@ $(function () {
   $("#weixin_token_make").click(function(event) {
     var token = iCMS.random(20);
     $("#weixin_token").val(token);
-    $("#weixin_interface").val('<?php echo iCMS::$config['router']['public_url'] ; ?>/api.php?app=weixin&do=interface&api_token='+token);
+    $("#weixin_interface").val('<?php echo iCMS::$config['router']['public'] ; ?>/api.php?app=weixin&do=interface&api_token='+token);
   });
   $("#weixin_token").keypress(function(event) {
-    $("#weixin_interface").val('<?php echo iCMS::$config['router']['public_url'] ; ?>/api.php?app=weixin&do=interface&api_token='+this.value);
+    $("#weixin_interface").val('<?php echo iCMS::$config['router']['public'] ; ?>/api.php?app=weixin&do=interface&api_token='+this.value);
   });
 })
 </script>
@@ -61,7 +61,7 @@ $(function () {
                 <span class="add-on">
                   接口URL
                 </span>
-                <input disabled type="text" class="span7" id="weixin_interface" value="<?php echo iCMS::$config['router']['public_url'] ; ?>/api.php?app=weixin&do=interface&api_token=<?php echo $config['token']?$config['token']:'Token(令牌)' ; ?>"/>
+                <input disabled type="text" class="span7" id="weixin_interface" value="<?php echo iCMS::$config['router']['public'] ; ?>/api.php?app=weixin&do=interface&api_token=<?php echo $config['token']?$config['token']:'Token(令牌)' ; ?>"/>
                 <a class="btn" href="http://www.idreamsoft.com/doc/iCMS/weixin_interface.html" target="_blank">
                   <i class="fa fa-question-circle"></i> 配置帮助
                 </a>

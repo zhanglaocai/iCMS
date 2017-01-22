@@ -15,16 +15,27 @@ class iCMS {
 
 	public static function init(){
         self::$config = iPHP::config();
-        define('iCMS_DIR',       self::$config['router']['DIR']);
-        define('iCMS_URL',       self::$config['router']['URL']);
-        define('iCMS_PUBLIC_URL',self::$config['router']['public_url']);
+        define('iCMS_URL',       self::$config['router']['url']);
+        define('iCMS_PUBLIC_URL',self::$config['router']['public']);
+        define('iCMS_USER_URL',  self::$config['router']['user']);
         define('iCMS_FS_URL',    self::$config['FS']['url']);
         define('iCMS_API',       iCMS_PUBLIC_URL.'/api.php');
         define('iCMS_API_URL',   iCMS_API.'?app=');
 
         iFS::init(self::$config['FS']);
         iCache::init(self::$config['cache']);
-        iURL::init(self::$config,array("API"=>iCMS_API));
+        iURL::init(self::$config['router']);
+        iURL::$USER_URL = iCMS_USER_URL;
+        iURL::$API_URL  = iCMS_API;
+        iURL::$CONFIG['tag'] = self::$config['tag'];
+        iURL::$CONFIG['app'] = array(
+            'http'     => array('rule'=>'0','primary'=>''),
+            'index'    => array('rule'=>'0','primary'=>''),
+            'category' => array('rule'=>'1','primary'=>'cid'),
+            'article'  => array('rule'=>'2','primary'=>'id','page'=>'p'),
+            'software' => array('rule'=>'2','primary'=>'id'),
+            'tag'      => array('rule'=>'3','primary'=>'id'),
+        );
 	}
     /**
      * 运行应用程序
@@ -55,7 +66,7 @@ class iCMS {
         return self::run($app,null,null,'API_');
     }
     public static function send_access_control() {
-        header("Access-Control-Allow-Origin: " . self::$config['router']['URL']);
+        header("Access-Control-Allow-Origin: " . iCMS_URL);
         header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
     }
 
@@ -72,7 +83,7 @@ class iCMS {
         $site['urls']  = array(
             "tpl"    => iCMS_URL.'/template/'.iPHP_DEFAULT_TPL,
             "public" => iCMS_PUBLIC_URL,
-            "user"   => iPHP_ROUTER_USER,
+            "user"   => iCMS_USER_URL,
             "res"    => iCMS_FS_URL,
             "ui"     => iCMS_PUBLIC_URL.'/ui',
             "avatar" => iCMS_FS_URL.'avatar/',

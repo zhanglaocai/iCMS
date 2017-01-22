@@ -300,14 +300,14 @@ function article_next($vars) {
 	if (empty($array)) {
 		$rs = iDB::row("SELECT * FROM `#iCMS@__article` WHERE `status`='1' {$sql}");
 		if ($rs) {
-			$category = iCache::get('category/' . $rs->cid);
+			$category = iCache::get(categoryApp::CACHE_CATEGORY_ID.$rs->cid);
 			$array = array(
 				'title' => $rs->title,
 				'pic' => get_pic($rs->pic),
 				'url' => iURL::get('article', array((array) $rs, $category))->href,
 			);
 		}
-		iCache::set($cache, $array, $cache_time);
+		$vars['cache'] && iCache::set($cache, $array, $cache_time);
 	}
 	return $array;
 }

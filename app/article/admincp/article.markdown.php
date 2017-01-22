@@ -258,21 +258,16 @@ function _modal_dialog(cancel_text){
         <input name="postype" type="hidden" value="<?php echo $rs['postype'] ; ?>" />
         <input name="REFERER" type="hidden" value="<?php echo $REFERER ; ?>" />
         <input name="chapter" type="hidden" value="<?php echo $rs['chapter']; ?>" />
-        <input name="markdown" type="hidden" value="<?php echo $this->config['markdown']; ?>" />
+        <input name="markdown" type="hidden" value="<?php echo self::$config['markdown']; ?>" />
         <div id="article-add" class="tab-content">
           <div id="article-add-base" class="tab-pane active">
             <div class="input-prepend"> <span class="add-on">栏 目</span>
-              <?php if($cata_option){  ?>
-              <select name="cid" id="cid" class="chosen-select span3">
-                <option value="0"> == 请选择所属栏目 == </option>
-                <?php echo $cata_option;}else{  ?>
-                <select onclick="window.location.replace('<?php echo __ADMINCP__; ?>=category&do=add');">
-                <option value="0"> == 暂无栏目请先添加 == </option>
-                <?php }  ?>
+              <select name="cid" id="cid" class="chosen-select span3" data-placeholder="== 请选择所属栏目 ==">
+                <?php echo $cata_option;?>
               </select>
             </div>
             <div class="input-prepend"> <span class="add-on">状 态</span>
-              <select name="status" id="status" class="chosen-select span2">
+              <select name="status" id="status" class="chosen-select span3">
                 <option value="0"> 草稿 [status='0']</option>
                 <option value="1"> 正常 [status='1']</option>
                 <option value="2"> 回收站 [status='2']</option>
@@ -283,12 +278,8 @@ function _modal_dialog(cancel_text){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">副栏目</span>
-              <?php if($cata_option){  ?>
               <select name="scid[]" id="scid" class="chosen-select span6" multiple="multiple"  data-placeholder="请选择副栏目(可多选)...">
-                <?php echo $cata_option;}else{  ?>
-                <select onclick="window.location.replace('<?php echo __ADMINCP__; ?>=category&do=add');">
-                <option value="0"> == 暂无栏目请先添加 == </option>
-                <?php }  ?>
+                <?php echo $cata_option;?>
               </select>
             </div>
             <div class="clearfloat mb10"></div>

@@ -25,14 +25,13 @@ class configAdmincp{
         $config = iSecurity::escapeStr($_POST['config']);
 
         iFS::allow_files($config['FS']['allow_ext']) OR iUI::alert("附件设置 > 允许上传类型设置不合法!");
-        iFS::allow_files(trim($config['router']['html_ext'],'.')) OR iUI::alert('URL设置 > 文件后缀设置不合法!');
+        iFS::allow_files(trim($config['router']['ext'],'.')) OR iUI::alert('URL设置 > 文件后缀设置不合法!');
 
-        $config['router']['html_ext']   = '.'.trim($config['router']['html_ext'],'.');
-        $config['router']['URL']        = trim($config['router']['URL'],'/');
-        $config['router']['public_url'] = rtrim($config['router']['public_url'],'/');
-        $config['router']['user_url']   = rtrim($config['router']['user_url'],'/');
-        $config['router']['DIR']        = rtrim($config['router']['DIR'],'/').'/';
-        $config['router']['html_dir']   = rtrim($config['router']['html_dir'],'/').'/';
+        $config['router']['ext']   = '.'.trim($config['router']['ext'],'.');
+        $config['router']['url']        = trim($config['router']['url'],'/');
+        $config['router']['public'] = rtrim($config['router']['public'],'/');
+        $config['router']['user']   = rtrim($config['router']['user'],'/');
+        $config['router']['dir']   = rtrim($config['router']['dir'],'/').'/';
         $config['FS']['url']            = trim($config['FS']['url'],'/').'/';
 
     	foreach($config AS $n=>$v){

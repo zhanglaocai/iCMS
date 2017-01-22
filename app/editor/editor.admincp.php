@@ -112,12 +112,12 @@ class editorAdmincp{
     }
     public function do_imageManager(){
 		$res = iFS::folder(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
-		$res['public_url'] = iCMS_PUBLIC_URL;
+		$res['public'] = iCMS_PUBLIC_URL;
 		iUI::json($res);
     }
     public function do_fileManager(){
         $res = iFS::folder(iCMS::$config['FS']['dir']);
-        $res['public_url'] = iCMS_PUBLIC_URL;
+        $res['public'] = iCMS_PUBLIC_URL;
         iUI::json($res);
     }
     public function do_catchimage(){

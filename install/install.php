@@ -110,12 +110,11 @@ if($_POST['action']=='install'){
     }
 
 
-	$config['router']['URL']        = $router_url;
-	$config['router']['DIR']        = $router_dir;
-	$config['router']['public_url'] = $router_url.'/public';
-	$config['router']['user_url']   = $router_url.'/usercp';
-	$config['router']['404']        = $router_url.'/public/404.htm';
-	$config['router']['tag_url']    = $router_url;
+    $config['router']['url']        = $router_url;
+    $config['router']['public']     = $router_url.'/public';
+    $config['router']['user']       = $router_url.'/usercp';
+    $config['router']['404']        = $router_url.'/public/404.htm';
+    $config['router']['tag']['url'] = $router_url;
 
 	$config['FS']['url']            = $router_url.'/res/';
 

@@ -1,75 +1,75 @@
 {
     "user": [
         "/user",
-        "__API__?app=user"
+        "user"
     ],
     "user:home": [
         "/user/home",
-        "__API__?app=user&do=home"
+        "user&do=home"
     ],
     "user:publish": [
         "/user/publish",
-        "__API__?app=user&do=manage&pg=publish"
+        "user&do=manage&pg=publish"
     ],
     "user:article": [
         "/user/article",
-        "__API__?app=user&do=manage&pg=article"
+        "user&do=manage&pg=article"
     ],
     "user:category": [
         "/user/category",
-        "__API__?app=user&do=manage&pg=category"
+        "user&do=manage&pg=category"
     ],
     "user:comment": [
         "/user/comment",
-        "__API__?app=user&do=manage&pg=comment"
+        "user&do=manage&pg=comment"
     ],
     "user:inbox": [
         "/user/inbox",
-        "__API__?app=user&do=manage&pg=inbox"
+        "user&do=manage&pg=inbox"
     ],
     "user:inbox:uid": [
         "/user/inbox/{uid}",
-        "__API__?app=user&do=manage&pg=inbox&user={uid}"
+        "user&do=manage&pg=inbox&user={uid}"
     ],
     "user:manage": [
         "/user/manage",
-        "__API__?app=user&do=manage"
+        "user&do=manage"
     ],
     "user:manage:favorite": [
         "/user/manage/favorite",
-        "__API__?app=user&do=manage&pg=favorite"
+        "user&do=manage&pg=favorite"
     ],
     "user:manage:fans": [
         "/user/manage/fans",
-        "__API__?app=user&do=manage&pg=fans"
+        "user&do=manage&pg=fans"
     ],
     "user:manage:follow": [
         "/user/manage/follow",
-        "__API__?app=user&do=manage&pg=follow"
+        "user&do=manage&pg=follow"
     ],
     "user:profile": [
         "/user/profile",
-        "__API__?app=user&do=profile"
+        "user&do=profile"
     ],
     "user:profile:base": [
         "/user/profile/base",
-        "__API__?app=user&do=profile&pg=base"
+        "user&do=profile&pg=base"
     ],
     "user:profile:avatar": [
         "/user/profile/avatar",
-        "__API__?app=user&do=profile&pg=avatar"
+        "user&do=profile&pg=avatar"
     ],
     "user:profile:setpassword": [
         "/user/profile/setpassword",
-        "__API__?app=user&do=profile&pg=setpassword"
+        "user&do=profile&pg=setpassword"
     ],
     "user:profile:bind": [
         "/user/profile/bind",
-        "__API__?app=user&do=profile&pg=bind"
+        "user&do=profile&pg=bind"
     ],
     "user:profile:custom": [
         "/user/profile/custom",
-        "__API__?app=user&do=profile&pg=custom"
+        "user&do=profile&pg=custom"
     ],
     "api": [
         "/api",
@@ -77,110 +77,110 @@
     ],
     "api:comment": [
         "/api/comment",
-        "__API__?app=comment"
+        "comment"
     ],
     "api:favorite": [
         "/api/favorite",
-        "__API__?app=favorite"
+        "favorite"
     ],
     "api:search": [
         "/api/search",
-        "__API__?app=search"
+        "search"
     ],
 
     "api:public:seccode": [
         "/api/public/seccode",
-        "__API__?app=public&do=seccode"
+        "public&do=seccode"
     ],
     "api:public:agreement": [
         "/api/public/agreement",
-        "__API__?app=public&do=agreement"
+        "public&do=agreement"
     ],
 
     "api:user": [
         "/api/user",
-        "__API__?app=user"
+        "user"
     ],
     "api:user:ucard": [
         "/api/user/ucard",
-        "__API__?app=user&do=ucard"
+        "user&do=ucard"
     ],
     "api:user:register": [
         "/api/user/register",
-        "__API__?app=user&do=register"
+        "user&do=register"
     ],
     "api:user:logout": [
         "/api/user/logout",
-        "__API__?app=user&do=logout"
+        "user&do=logout"
     ],
     "api:user:login": [
         "/api/user/login",
-        "__API__?app=user&do=login"
+        "user&do=login"
     ],
     "api:user:login:qq": [
         "/api/user/login/qq",
-        "__API__?app=user&do=login&sign=qq"
+        "user&do=login&sign=qq"
     ],
     "api:user:login:wb": [
         "/api/user/login/wb",
-        "__API__?app=user&do=login&sign=wb"
+        "user&do=login&sign=wb"
     ],
     "api:user:login:wx": [
         "/api/user/login/wx",
-        "__API__?app=user&do=login&sign=wx"
+        "user&do=login&sign=wx"
     ],
     "api:user:findpwd": [
         "/api/user/findpwd",
-        "__API__?app=user&do=findpwd"
+        "user&do=findpwd"
     ],
     "api:user:follow": [
         "/api/user/follow",
-        "__API__?app=user&do=follow"
+        "user&do=follow"
     ],
     "api:user:check": [
         "/api/user/check",
-        "__API__?app=user&do=check"
+        "user&do=check"
     ],
 
     "uid:home": [
         "/{uid}/",
-        "__API__?app=user&do=home&uid={uid}"
+        "user&do=home&uid={uid}"
     ],
     "uid:comment": [
         "/{uid}/comment/",
-        "__API__?app=user&do=comment&uid={uid}"
+        "user&do=comment&uid={uid}"
     ],
     "uid:share": [
         "/{uid}/share/",
-        "__API__?app=user&do=share&uid={uid}"
+        "user&do=share&uid={uid}"
     ],
     "uid:favorite": [
         "/{uid}/favorite/",
-        "__API__?app=user&do=favorite&uid={uid}"
+        "user&do=favorite&uid={uid}"
     ],
     "uid:fans": [
         "/{uid}/fans/",
-        "__API__?app=user&do=fans&uid={uid}"
+        "user&do=fans&uid={uid}"
     ],
     "uid:follower": [
         "/{uid}/follower/",
-        "__API__?app=user&do=follower&uid={uid}"
+        "user&do=follower&uid={uid}"
     ],
     "uid:cid": [
         "/{uid}/{cid}/",
-        "__API__?app=user&do=home&uid={uid}&cid={cid}"
+        "user&do=home&uid={uid}&cid={cid}"
     ],
     "uid:favorite:id": [
         "/{uid}/favorite/{id}/",
-        "__API__?app=user&do=favorite&uid={uid}&id={id}"
+        "user&do=favorite&uid={uid}&id={id}"
     ],
 
     "favorite:id": [
         "/favorite/{id}/",
-        "__API__?app=favorite&id={id}"
+        "favorite&id={id}"
     ],
     "comment:id": [
         "/comment/{id}/",
-        "__API__?app=comment&id={id}"
+        "comment&id={id}"
     ]
 }

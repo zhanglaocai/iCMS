@@ -55,7 +55,7 @@ class iDevice {
         define('iPHP_DEVICE', $device_name);
         define('iPHP_DOMAIN', $domain);
 
-        iPHP_DOMAIN && $config['router'] = str_replace($config['router']['URL'], iPHP_DOMAIN, $config['router']);
+        iPHP_DOMAIN && $config['router'] = str_replace($config['router']['url'], iPHP_DOMAIN, $config['router']);
         // self::redirect();
     }
     private static function redirect(){

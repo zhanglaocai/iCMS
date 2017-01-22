@@ -22,7 +22,7 @@ class indexApp {
         $index_name = $a[1]?$a[1]:iCMS::$config['template']['index']['name'];
         $index_tpl  = $a[0]?$a[0]:iCMS::$config['template']['index']['tpl'];
         $index_name OR $index_name = 'index';
-        $iurl = iURL::get('index',array('rule'=>$index_name.iCMS::$config['router']['html_ext']));
+        $iurl = iURL::get('index',array('rule'=>$index_name.iCMS::$config['router']['ext']));
         if(iCMS::$config['template']['index']['mode'] && iPHP_DEVICE=="desktop"){
             iCMS::redirect_html($iurl->path,$iurl->href);
         }

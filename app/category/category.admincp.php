@@ -74,7 +74,7 @@ class categoryAdmincp extends category{
                 'hasbody'   => '2',
                 'sortnum'  => '0',
                 'mode'      => '0',
-                'htmlext'   => iCMS::$config['router']['html_ext'],
+                'htmlext'   => iCMS::$config['router']['ext'],
                 'metadata'  => ''
             );
 	        if($rootid){
@@ -212,6 +212,8 @@ class categoryAdmincp extends category{
             $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
         $hasbody && iCache::set('category/'.$cid.'.body',$body,0);
+
+        $data['domain'] && category::domain_config();
 
         admincp::callback($cid,$this);
         if($this->callback['code']){
