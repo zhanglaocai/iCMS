@@ -116,6 +116,16 @@ var_dump(@class_exists($appname));
         }
         return $data;
     }
+    public static function get_router(){
+        return array(
+            'http'     => array('rule'=>'0','primary'=>''),
+            'index'    => array('rule'=>'0','primary'=>''),
+            'category' => array('rule'=>'1','primary'=>'cid'),
+            'article'  => array('rule'=>'2','primary'=>'id','page'=>'p'),
+            'software' => array('rule'=>'2','primary'=>'id'),
+            'tag'      => array('rule'=>'3','primary'=>'id'),
+        );
+    }
     public static function get_apps($app=null,$trans=false){
         $rs = apps::get_array(array('status'=>'1'));
         foreach ($rs as $key => $value) {

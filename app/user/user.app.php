@@ -8,7 +8,7 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class userApp {
-	public $methods = array('iCMS', 'home', 'favorite', 'article', 'publish', 'manage', 'profile', 'data', 'hits', 'check', 'follow', 'follower', 'fans', 'login', 'findpwd', 'logout', 'register', 'add_category', 'upload', 'mobileUp', 'config', 'uploadvideo', 'uploadimage', 'catchimage', 'report', 'fav_category', 'ucard', 'pm');
+	public $methods = array('iCMS', 'home', 'favorite', 'article', 'publish', 'manage', 'profile', 'data', 'hits', 'check', 'follow', 'follower', 'fans', 'login', 'findpwd', 'logout', 'register', 'add_category', 'upload', 'uploadpic', 'mobileUp','config', 'uploadvideo', 'uploadimage', 'catchimage', 'report', 'fav_category', 'ucard', 'pm');
 	public $openid = null;
 	public $user = array();
 	public $me = array();
@@ -28,7 +28,7 @@ class userApp {
 		));
 		iView::assign('forward', $this->forward);
 	}
-	private function user($userdata = false) {
+	private function __user($userdata = false) {
 		$status = array('logined' => false, 'followed' => false, 'isme' => false);
 		if ($this->uid) {
 			// &uid=
@@ -66,7 +66,7 @@ class userApp {
 		$this->API_home();
 	}
 	public function API_home($category = true) {
-		$this->user(true);
+		$this->__user(true);
 		$category && $u['category'] = user::category((int) $_GET['cid'], iCMS_APP_ARTICLE);
 		iView::append('user', $u, true);
 		iView::render('iCMS://user/home.htm');
@@ -90,7 +90,7 @@ class userApp {
 				$app_array = iCache::get('app/cache_id');
 				iView::assign('iAPP', $app_array);
 			}
-			$this->user(true);
+			$this->__user(true);
 			$funname = '__API_manage_' . $pg;
 			$class_methods = get_class_methods(__CLASS__);
 			in_array($funname, $class_methods) && $this->$funname();
@@ -394,7 +394,7 @@ class userApp {
 		$pg = iSecurity::escapeStr($_GET['pg']);
 		$pg OR $pg = 'base';
 		if (in_array($pg, $pgArray)) {
-			$this->user();
+			$this->__user();
 			iView::assign('pg', $pg);
 			if ($pg == 'bind') {
 				$platform = user::openid(user::$userid);
@@ -1074,7 +1074,17 @@ class userApp {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 		$editorAdmincp = new editorAdmincp;
 		$editorAdmincp->do_uploadvideo();
-	} //手机上传
+	}
+	public function API_uploadpic() {
+		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
+		$F = iFS::upload('upfile');
+		// $F['path'] && $url = iFS::fp($F['path'], '+http');
+		iUI::js_callback(array(
+			'url' => $F['path'],
+			'code' => $F['code'],
+		));
+	}
+	//手机上传
 	public function API_mobileUp() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 		$F = iFS::upload('upfile');
@@ -1089,15 +1099,15 @@ class userApp {
 		//iView::render('iCMS://user/card.htm');
 	}
 	public function API_ucard() {
-		$this->user(true);
+		$this->__user(true);
 		if ($this->auth) {
-			$secondary = $this->secondary();
+			$secondary = $this->__secondary();
 			iView::assign('secondary', $secondary);
 		}
 		iView::render('iCMS://user/user.card.htm');
 	}
 
-	private function secondary() {
+	private function __secondary() {
 		if ($this->uid == user::$userid) {
 			return;
 		}

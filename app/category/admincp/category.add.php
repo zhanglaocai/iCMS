@@ -73,12 +73,13 @@ $(function(){
         <input name="_pid" type="hidden" value="<?php echo $rs['pid']  ; ?>" />
         <div id="category-add" class="tab-content">
           <div id="category-add-base" class="tab-pane active">
-            <div class="input-prepend"> <span class="add-on">上级<?php echo $this->category_name;?></span>
+            <div class="input-prepend input-append"> <span class="add-on">上级<?php echo $this->category_name;?></span>
               <?php if(admincp::CP($rootid) || empty($rootid)) {   ?>
-              <select name="rootid" class="span3 chosen-select">
+              <select name="rootid" class="span6 chosen-select">
                 <option value="0">======顶级<?php echo $this->category_name;?>=====</option>
                 <?php echo $this->select('a',$rootid,0,1,true);?>
               </select>
+              <span class="add-on" title="继承"><input type="checkbox" name="extends" /> 继承</span>
               <?php }else { ?>
               <input name="rootid" id="rootid" type="hidden" value="<?php echo $rootid ; ?>" />
               <input readonly="true" value="<?php echo $this->get($rootid)->name ; ?>" type="text" class="txt" />

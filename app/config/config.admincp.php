@@ -27,12 +27,12 @@ class configAdmincp{
         iFS::allow_files($config['FS']['allow_ext']) OR iUI::alert("附件设置 > 允许上传类型设置不合法!");
         iFS::allow_files(trim($config['router']['ext'],'.')) OR iUI::alert('URL设置 > 文件后缀设置不合法!');
 
-        $config['router']['ext']   = '.'.trim($config['router']['ext'],'.');
-        $config['router']['url']        = trim($config['router']['url'],'/');
+        $config['router']['ext']    = '.'.trim($config['router']['ext'],'.');
+        $config['router']['url']    = trim($config['router']['url'],'/');
         $config['router']['public'] = rtrim($config['router']['public'],'/');
         $config['router']['user']   = rtrim($config['router']['user'],'/');
-        $config['router']['dir']   = rtrim($config['router']['dir'],'/').'/';
-        $config['FS']['url']            = trim($config['FS']['url'],'/').'/';
+        $config['router']['dir']    = rtrim($config['router']['dir'],'/').'/';
+        $config['FS']['url']        = trim($config['FS']['url'],'/').'/';
 
     	foreach($config AS $n=>$v){
     		$this->set($v,$n,0);
@@ -46,8 +46,9 @@ class configAdmincp{
      * @return [type] [description]
      */
     public static function cache(){
-        $config          = self::get();
-        $config['apps']  = apps::get_apps();
+        $config         = self::get();
+        $config['apps'] = apps::get_apps();
+        $config['iurl'] = apps::get_router();
         self::write($config);
     }
     public static function head($title=null){

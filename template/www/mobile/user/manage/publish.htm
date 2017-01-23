@@ -1,6 +1,19 @@
+<style>
+.creative {}
+.creative .bootstrap-switch { border-radius: 0px 5px 5px 0px !important; box-shadow: none !important; border-color: #ccc !important; width: 106px !important; height: 35px !important; }
+.creative .bootstrap-switch .bootstrap-switch-label { background: #fafafa; }
+.creative .bootstrap-switch-container span { width: 53px !important; height: 35px !important; }
+.creative .bootstrap-switch-container .bootstrap-switch-primary { border-radius: 0px !important; }
+</style>
 <link href="<!--{$site.urls.tpl}-->/static/css/bootstrap-switch.min.css" type="text/css" rel="stylesheet" />
 <script src="<!--{$site.urls.tpl}-->/static/js/bootstrap-switch.min.js"></script>
-<form class="form-inline" role="form" action="<!--{iCMS:router url='/user'}-->" method="post" target="iCMS_FRAME">
+<script>
+window.UMEDITOR_HOME_URL = "<!--{$site.urls.public}-->/js/libs/umeditor/";
+</script>
+<link href="<!--{$site.urls.public}-->/js/libs/umeditor/themes/default/css/umeditor.min.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="<!--{$site.urls.public}-->/js/libs/umeditor/umeditor.mconfig.js" charset="utf-8"></script>
+<script type="text/javascript" src="<!--{$site.urls.public}-->/js/libs/umeditor/umeditor.min.js" charset="utf-8"></script>
+<form class="form-inline" role="form" action="<!--{iCMS:router url='user'}-->" method="post" target="iCMS_FRAME">
     <input name="action" type="hidden" value="manage" />
     <input name="pg" type="hidden" value="publish" />
     <input name="id" type="hidden" value="<!--{$article.id}-->" />
@@ -47,7 +60,7 @@
         <span class="input-group-addon">
             <label for="description" class="control-label">简 介</label>
         </span>
-        <textarea name="description" id="description" class="form-control" rows="3">
+        <textarea name="description" id="description" class="form-control" rows="4">
         <!--{$article.description}-->
         </textarea>
     </div>
@@ -57,11 +70,6 @@
         <input class="form-control" name="source" id="source" type="text" value="<!--{$article.source}-->">
     </div>
     <div class="clearfix mt10"></div>
-    <div class="btn-group pull-right">
-        <button type="button" class="btn btn-success" id="upload" data-loading-text='<i class="fa fa-spinner"></i> 上传中...'>
-        <i class="fa fa-picture-o"></i> 插入图片
-        </button>
-    </div>
     <div class="input-group creative">
         <div class="input-group-addon">
             <label for="article-type" class="control-label">文章类型？</label>
@@ -71,14 +79,9 @@
         </div>
     </div>
     <div class="clearfix mt10"></div>
-    <div class="editor">
-        <!--{if !$article.mobile && $article.id}-->
-        <p class="alert alert-warning alert-dismissable">
-        <i class="fa fa-warning"></i> 本文章由桌面端发布 在手机上编辑可能造成相关格式丢失</p>
-        <!--{/if}-->
-        <textarea name="body" id="abody" class="form-control" rows="15" placeholder="请输入文章的内容">
-        <!--{$article_data.body}-->
-        </textarea>
+    <div class="input-group" style="width:100%;">
+        <h3 class="title"><span>正 文</span></h3>
+        <script type="text/plain" id="editor" style="width:100%;height:360px;"><!--{$article_data.body}--></script>
     </div>
     <div class="clearfix mt10"></div>
     <!--{if $iCMS.CONFIG.user.post.seccode }-->
@@ -92,152 +95,99 @@
     <div class="clearfix mt10"></div>
     <!--{/if}-->
     <div class="form-actions">
-        <button class="btn btn-primary btn-lg btn-block" type="submit" id="iCMS-article" data-loading-text='<i class="fa fa-spinner"></i> 提交中...'>
+        <button class="btn btn-primary btn-lg btn-block _user_publish" type="submit">
         <i class="fa fa-check"></i> 提交
         </button>
     </div>
+    <div class="clearfix mt20"></div>
 </form>
 <div id="user_category_add" style="display: none;">
     <input class="form-control input-lg" id="user_category_new" type="text" placeholder="请输入分类名称">
 </div>
-<form id="upfileform" action="<!--{iCMS:router url='/api'}-->?app=user&do=mobileUp&callback=upload_pic" role="form" method="post" enctype="multipart/form-data" target="iCMS_FRAME">
-    <input type="file" name="upfile" class="hide">
+<form class="hide" id="upfile" action="<!--{iCMS:router url='api'}-->?app=user&do=mobileUp&callback=upload_pic" role="form" method="post" enctype="multipart/form-data" target="iCMS_FRAME">
+    <input type="file" name="upfile">
 </form>
-<style>
-.creative {}
-.creative .bootstrap-switch { border-radius: 0px 5px 5px 0px !important; box-shadow: none !important; border-color: #ccc !important; width: 106px !important; height: 35px !important; }
-.creative .bootstrap-switch .bootstrap-switch-label { background: #fafafa; }
-.creative .bootstrap-switch-container span { width: 53px !important; height: 35px !important; }
-.creative .bootstrap-switch-container .bootstrap-switch-primary { border-radius: 0px !important; }
-</style>
+
 <script type="text/javascript">
-function upload_pic(c)
-{
-    //console.log(info);
-    if (c.code)
-    {
-        $('#abody').insertContent('[img]' + c.url + '[/img]');
-        $("#upload").button('reset');
-    }
-}
-function simple_ubb()
-{
-    var body = $("#abody").text();
-    // body = iCMS.format(body, true);
-    $("#abody").text(body);
-}
-$(function()
-{
-    simple_ubb();
-    $("#upload").click(function()
-    {
-        $("input[name=upfile]").click();
-    })
-    $("input[name=upfile]").change(function()
-        {
-            $("#upfileform").submit();
-            $("#upload").button('loading');
-        })
-        <!--{if $article.cid}-->
-    $("#cid").val("<!--{$article.cid}-->");
-    <!--{/if}-->
-    <!--{if $article.ucid}-->
-    var uc = $("[cid='<!--{$article.ucid}-->']");
-    uc.parent().addClass('active');
-    $("#uc_select").text(uc.text());
-    <!--{/if}-->
-    $("#iCMS-article").click(function()
-    {
-        $(this).button('loading');
-        if ($("#cid option:selected").val() == "0")
-        {
-            $("#cid").focus();
-            iCMS.alert("请选择所属栏目");
-            $(this).button('reset');
-            return false;
-        }
-        if ($("#title").val() == '')
-        {
-            $("#title").focus();
-            iCMS.alert("标题不能为空!");
-            $(this).button('reset');
-            return false;
-        }
-        if ($("#abody").val() == '')
-        {
-            $("#abody").focus();
-            iCMS.alert("内容不能为空!");
-            $(this).button('reset');
-            return false;
-        }
-    });
-    $('#article-type').bootstrapSwitch().on('switchChange.bootstrapSwitch', function(e, data)
-    {
-        var value = data.value;
-        if (data.value)
-        {
+var ed = UM.getEditor('editor');
+
+$(function(){
+    $('[name="creative"]').bootstrapSwitch().on('switchChange.bootstrapSwitch',function(event, state) {
+        if (state) {
             $('#source-box').hide();
             $('#source').val('');
-        }
-        else
-        {
+        } else {
             $('#source-box').show();
         }
     });
-    $(document).on('click', '.user_category', function(event)
-    {
+
+    <!--{if $article.cid}-->
+    $("#cid").val("<!--{$article.cid}-->");
+    <!--{/if}-->
+
+    <!--{if $article.ucid}-->
+    var uc = $("[cid='<!--{$article.ucid}-->']");
+    uc.parent().addClass('active');
+    $("#user_category_select").text(uc.text());
+    <!--{/if}-->
+
+    $("._user_publish").click(function() {
+        if ($("#cid option:selected").val() == "0") {
+            $("#cid").focus();
+            iCMS.UI.alert("请选择所属栏目");
+            return false;
+        }
+        if ($("#title").val() == '') {
+            $("#title").focus();
+            iCMS.UI.alert("标题不能为空!");
+            return false;
+        }
+
+        <!--{if $iCMS.CONFIG.user.post.seccode }-->
+        if ($(".seccode").val() == '') {
+            $(".seccode").focus();
+            iCMS.UI.alert("验证码不能为空!");
+            return false;
+        }
+        <!--{/if}-->
+
+        if (!ed.hasContents()) {
+            ed.focus();
+            iCMS.UI.alert("内容不能为空!");
+            return false;
+        }
+    });
+
+    $(document).on('click', '.user_category_item', function(event) {
         event.preventDefault();
-        var $this = $(this),
-            cid = $this.attr("cid"),
-            name = $this.text();
+        var $this = $(this),cid = $this.attr("cid"),name = $this.text();
+
         $("#ucid").val(cid);
-        $("#uc_select").text(name);
-        $(".user_category").parent().removeClass('active');
+        $("#user_category_select").text(name);
+        $(".user_category_item").parent().removeClass('active');
         $this.parent().addClass('active');
         $this.parent().parent().parent().removeClass("open");
         return false;
     });
-    $('#add_category').click(function()
-    {
-        iCMS.dialog(
-        {
-            follow: document.getElementById('user_category'),
-            title: '添加新分类',
-            content: document.getElementById('add_category_box'),
-            okValue: '添加',
-            ok: function()
-            {
-                var a = $("#newcategoryname"),
-                    n = a.val(),
-                    d = this;
-                if (n == "")
-                {
-                    iCMS.alert("请输入分类名称!");
-                    a.focus();
+
+    $('#add_category').click(function() {
+        iCMS.UI.dialog({
+            follow:document.getElementById('user_category_dropdown'),
+            content: document.getElementById('user_category_add'),
+            quickClose: false,title: null,width:"auto",height:"auto",
+            okValue: '添加新分类',
+            ok: function() {
+                var a = $("#user_category_new"),name = a.val(),me = this;
+                if (name == "") {
+                    alert("请输入分类名称!");
                     return false;
-                }
-                else
-                {
-                    $.post('<!--{iCMS:router url=' / user '}-->',
-                    {
-                        'action': 'add_category',
-                        name: n
-                    }, function(j)
-                    {
-                        if (j.code)
-                        {
-                            d.content(j.msg).button([
-                            {
-                                value: '完成',
-                                callback: function()
-                                {
-                                        $("#user_category_0").before('<li><a href="javascript:;" cid="' + j.forward + '" class="user_category">' + n + '</a></li>');
-                                },
-                                autofocus: true
-                            }]);
-                        }
-                        else
-                        {
+                } else {
+                    $.post("<!--{iCMS:router url='user'}-->",{'action': 'add_category',name: name},function(j) {
+                        if (j.code) {
+                            $("#user_category_item_0").before('<li><a href="javascript:;" cid="' + j.forward + '" class="user_category_item">' + name + '</a></li>');
+                            $(".user_category_item[cid='"+j.forward+"']").click();
+                            me.close().remove();
+                        } else {
                             alert(j.msg);
                             a.focus();
                             return false;

@@ -1,186 +1,186 @@
 {
     "user": [
         "/user",
-        "user"
+        "api.php?app=user"
     ],
     "user:home": [
         "/user/home",
-        "user&do=home"
+        "api.php?app=user&do=home"
     ],
     "user:publish": [
         "/user/publish",
-        "user&do=manage&pg=publish"
+        "api.php?app=user&do=manage&pg=publish"
     ],
     "user:article": [
         "/user/article",
-        "user&do=manage&pg=article"
+        "api.php?app=user&do=manage&pg=article"
     ],
     "user:category": [
         "/user/category",
-        "user&do=manage&pg=category"
+        "api.php?app=user&do=manage&pg=category"
     ],
     "user:comment": [
         "/user/comment",
-        "user&do=manage&pg=comment"
+        "api.php?app=user&do=manage&pg=comment"
     ],
     "user:inbox": [
         "/user/inbox",
-        "user&do=manage&pg=inbox"
+        "api.php?app=user&do=manage&pg=inbox"
     ],
     "user:inbox:uid": [
         "/user/inbox/{uid}",
-        "user&do=manage&pg=inbox&user={uid}"
+        "api.php?app=user&do=manage&pg=inbox&user={uid}"
     ],
     "user:manage": [
         "/user/manage",
-        "user&do=manage"
+        "api.php?app=user&do=manage"
     ],
     "user:manage:favorite": [
         "/user/manage/favorite",
-        "user&do=manage&pg=favorite"
+        "api.php?app=user&do=manage&pg=favorite"
     ],
     "user:manage:fans": [
         "/user/manage/fans",
-        "user&do=manage&pg=fans"
+        "api.php?app=user&do=manage&pg=fans"
     ],
     "user:manage:follow": [
         "/user/manage/follow",
-        "user&do=manage&pg=follow"
+        "api.php?app=user&do=manage&pg=follow"
     ],
     "user:profile": [
         "/user/profile",
-        "user&do=profile"
+        "api.php?app=user&do=profile"
     ],
     "user:profile:base": [
         "/user/profile/base",
-        "user&do=profile&pg=base"
+        "api.php?app=user&do=profile&pg=base"
     ],
     "user:profile:avatar": [
         "/user/profile/avatar",
-        "user&do=profile&pg=avatar"
+        "api.php?app=user&do=profile&pg=avatar"
     ],
     "user:profile:setpassword": [
         "/user/profile/setpassword",
-        "user&do=profile&pg=setpassword"
+        "api.php?app=user&do=profile&pg=setpassword"
     ],
     "user:profile:bind": [
         "/user/profile/bind",
-        "user&do=profile&pg=bind"
+        "api.php?app=user&do=profile&pg=bind"
     ],
     "user:profile:custom": [
         "/user/profile/custom",
-        "user&do=profile&pg=custom"
+        "api.php?app=user&do=profile&pg=custom"
     ],
     "api": [
         "/api",
-        "__API__"
+        "api.php"
     ],
     "api:comment": [
         "/api/comment",
-        "comment"
+        "api.php?app=comment"
     ],
     "api:favorite": [
         "/api/favorite",
-        "favorite"
+        "api.php?app=favorite"
     ],
     "api:search": [
         "/api/search",
-        "search"
+        "api.php?app=search"
     ],
 
     "api:public:seccode": [
         "/api/public/seccode",
-        "public&do=seccode"
+        "api.php?app=public&do=seccode"
     ],
     "api:public:agreement": [
         "/api/public/agreement",
-        "public&do=agreement"
+        "api.php?app=public&do=agreement"
     ],
 
     "api:user": [
         "/api/user",
-        "user"
+        "api.php?app=user"
     ],
     "api:user:ucard": [
         "/api/user/ucard",
-        "user&do=ucard"
+        "api.php?app=user&do=ucard"
     ],
     "api:user:register": [
         "/api/user/register",
-        "user&do=register"
+        "api.php?app=user&do=register"
     ],
     "api:user:logout": [
         "/api/user/logout",
-        "user&do=logout"
+        "api.php?app=user&do=logout"
     ],
     "api:user:login": [
         "/api/user/login",
-        "user&do=login"
+        "api.php?app=user&do=login"
     ],
     "api:user:login:qq": [
         "/api/user/login/qq",
-        "user&do=login&sign=qq"
+        "api.php?app=user&do=login&sign=qq"
     ],
     "api:user:login:wb": [
         "/api/user/login/wb",
-        "user&do=login&sign=wb"
+        "api.php?app=user&do=login&sign=wb"
     ],
     "api:user:login:wx": [
         "/api/user/login/wx",
-        "user&do=login&sign=wx"
+        "api.php?app=user&do=login&sign=wx"
     ],
     "api:user:findpwd": [
         "/api/user/findpwd",
-        "user&do=findpwd"
+        "api.php?app=user&do=findpwd"
     ],
     "api:user:follow": [
         "/api/user/follow",
-        "user&do=follow"
+        "api.php?app=user&do=follow"
     ],
     "api:user:check": [
         "/api/user/check",
-        "user&do=check"
+        "api.php?app=user&do=check"
     ],
 
     "uid:home": [
         "/{uid}/",
-        "user&do=home&uid={uid}"
+        "api.php?app=user&do=home&uid={uid}"
     ],
     "uid:comment": [
         "/{uid}/comment/",
-        "user&do=comment&uid={uid}"
+        "api.php?app=user&do=comment&uid={uid}"
     ],
     "uid:share": [
         "/{uid}/share/",
-        "user&do=share&uid={uid}"
+        "api.php?app=user&do=share&uid={uid}"
     ],
     "uid:favorite": [
         "/{uid}/favorite/",
-        "user&do=favorite&uid={uid}"
+        "api.php?app=user&do=favorite&uid={uid}"
     ],
     "uid:fans": [
         "/{uid}/fans/",
-        "user&do=fans&uid={uid}"
+        "api.php?app=user&do=fans&uid={uid}"
     ],
     "uid:follower": [
         "/{uid}/follower/",
-        "user&do=follower&uid={uid}"
+        "api.php?app=user&do=follower&uid={uid}"
     ],
     "uid:cid": [
         "/{uid}/{cid}/",
-        "user&do=home&uid={uid}&cid={cid}"
+        "api.php?app=user&do=home&uid={uid}&cid={cid}"
     ],
     "uid:favorite:id": [
         "/{uid}/favorite/{id}/",
-        "user&do=favorite&uid={uid}&id={id}"
+        "api.php?app=user&do=favorite&uid={uid}&id={id}"
     ],
 
     "favorite:id": [
         "/favorite/{id}/",
-        "favorite&id={id}"
+        "api.php?app=favorite&id={id}"
     ],
     "comment:id": [
         "/comment/{id}/",
-        "comment&id={id}"
+        "api.php?app=comment&id={id}"
     ]
 }

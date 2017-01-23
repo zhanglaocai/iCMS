@@ -36,7 +36,7 @@ class articleApp {
 	}
 	public function ACTION_vote() {
 		$type = $_POST['type'];
-		$this->vote($type);
+		$this->__vote($type);
 		// $type=='up' && $this->vote('good');
 		// $type=='down' && $this->vote('bad');
 	}
@@ -46,7 +46,7 @@ class articleApp {
 		$iid = (int) $_GET['iid'];
 		$this->article($iid, 1, '{iTPL}/article.comment.htm');
 	}
-	private function vote($type) {
+	private function __vote($type) {
 		// user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
 
 		$aid = (int) $_POST['iid'];

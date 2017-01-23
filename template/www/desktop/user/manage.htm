@@ -68,6 +68,9 @@
         </div>
         <div class="clearfix"></div>
     </div>
+    <form class="hide" id="upfileform" action="<!--{iCMS:router url='api:user'}-->&do=uploadpic&callback=upload_pic" role="form" method="post" enctype="multipart/form-data" target="iCMS_FRAME">
+        <input type="file" name="upfile">
+    </form>
     <iframe class="hide" id="iCMS_FRAME" name="iCMS_FRAME"></iframe>
     <!--{include file="iCMS://footer.htm"}-->
 </body>

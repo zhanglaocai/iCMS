@@ -42,7 +42,7 @@ window.UMEDITOR_HOME_URL = "<!--{$site.urls.public}-->/js/libs/umeditor/";
             <!--{$option}-->
         </select>
     </div>
-    <button class="btn btn-primary iCMS_user_publish" type="submit"><i class="fa fa-check"></i> 提交</button>
+    <button class="btn btn-primary _user_publish" type="submit"><i class="fa fa-check"></i> 提交</button>
     <div class="mb10"></div>
     <div class="input-group">
         <div class="input-group-addon">
@@ -66,6 +66,16 @@ window.UMEDITOR_HOME_URL = "<!--{$site.urls.public}-->/js/libs/umeditor/";
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="mb10"></div>
+    <div class="input-group">
+        <div class="input-group-addon">
+            <label for="pic" class="control-label">缩略图</label>
+        </div>
+        <input class="form-control" type="text" name="pic" id="pic" value="<!--{$article.pic}-->"/>
+        <span class="input-group-btn">
+            <button id="upload_pic" type="button" class="btn btn-success">上传图片</button>
+        </span>
     </div>
     <div class="mb10"></div>
     <div class="input-group">
@@ -111,7 +121,7 @@ window.UMEDITOR_HOME_URL = "<!--{$site.urls.public}-->/js/libs/umeditor/";
     <!--{/if}-->
     <div class="mb10"></div>
     <div class="form-actions">
-        <button class="btn btn-lg btn-primary iCMS_user_publish" type="submit">
+        <button class="btn btn-lg btn-primary _user_publish" type="submit">
         <i class="fa fa-check"></i> 提 交
         </button>
     </div>
@@ -119,10 +129,22 @@ window.UMEDITOR_HOME_URL = "<!--{$site.urls.public}-->/js/libs/umeditor/";
 <div id="user_category_add" style="display: none;">
     <input class="form-control input-lg" id="user_category_new" type="text" placeholder="请输入分类名称">
 </div>
+
 <script type="text/javascript">
 var ed = UM.getEditor('editor');
-
+function upload_pic(c){
+    if (c.code){
+        $('#pic').val(c.url);
+    }
+}
 $(function() {
+
+    $("#upload_pic").click(function(){
+        $("input[name=upfile]").click();
+    })
+    $("input[name=upfile]").change(function(){
+        $("#upfileform").submit();
+    })
     var publish = $("#publish");
     $('[name="creative"]',publish).bootstrapSwitch().on('switchChange.bootstrapSwitch',function(event, state) {
         if (state) {
@@ -143,7 +165,7 @@ $(function() {
         $("#user_category_select").text(uc.text());
     <!--{/if}-->
 
-    $(".iCMS_user_publish").click(function() {
+    $("._user_publish").click(function() {
         if ($("#cid option:selected").val() == "0") {
             $("#cid").focus();
             iCMS.UI.alert("请选择所属栏目");

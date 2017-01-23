@@ -8,7 +8,7 @@
  * @license http://www.iiiphp.com/license
  * @version 2.0.0
  */
-class iPic {
+class iPicture {
     protected static $config        = null;
     protected static $watermark_dir = null;
 

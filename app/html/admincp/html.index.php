@@ -26,7 +26,7 @@ admincp::head();
             <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=indexTPL" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">文 件 名</span>
-            <input type="text" name="indexName" class="span3" id="indexName" value="<?php echo iCMS::$config['template']['index_name'] ; ?>"/>
+            <input type="text" name="indexName" class="span3" id="indexName" value="<?php echo iCMS::$config['template']['index']['name'] ; ?>"/>
           </div>
           <span class="help-inline"><?php echo iCMS::$config['router']['ext'] ; ?> 首页文件名,一般为<span class="label label-important">index</span> 不用填写文件后缀名</span> </div>
         <div class="form-actions">

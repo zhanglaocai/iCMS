@@ -267,7 +267,7 @@ function modal_tplfile(el,a){
             <div class="input-prepend"> <span class="add-on">公共资源URL</span>
               <input type="text" name="config[router][public]" class="span4" id="router_public" value="<?php echo $config['router']['public'] ; ?>"/>
             </div>
-            <span class="help-inline">公共资源访问URL 如果访问出错请修改public/config.php文件</span>
+            <span class="help-inline">公共资源访问URL</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">用户URL</span>
               <input type="text" name="config[router][user]" class="span4" id="router_user" value="<?php echo $config['router']['user'] ; ?>"/>

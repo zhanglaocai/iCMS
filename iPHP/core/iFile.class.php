@@ -86,8 +86,8 @@ class iFile {
             $config = self::$watermark_config;
             $config['allow_ext'] && $allow_ext = explode(',', $config['allow_ext']);
             if (in_array($ext, $allow_ext)) {
-                iPic::init($config);
-                iPic::watermark($fp);
+                iPicture::init($config);
+                iPicture::watermark($fp);
             }
         }
     }

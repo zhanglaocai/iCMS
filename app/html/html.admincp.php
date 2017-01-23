@@ -263,6 +263,6 @@ class htmlAdmincp{
     }
     public function get_category($appid){
 		$category = new category($appid);
-        return $category->cid_array();
+        return $category->get_cid();
     }
 }

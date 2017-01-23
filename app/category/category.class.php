@@ -41,9 +41,9 @@ class category {
         }
         return $data;
     }
-    public function rootid_check($rootid="0"){
-        $check = iDB::value("SELECT `cid` FROM `#iCMS@__category` where `rootid`='$rootid'");
-        return $check?true:false;
+    public function is_root($rootid="0"){
+        $is = iDB::value("SELECT `cid` FROM `#iCMS@__category` where `rootid`='$rootid'");
+        return $is?true:false;
     }
     public function get($cids,$callback=null) {
         if(empty($cids)) return array();
@@ -62,13 +62,13 @@ class category {
             if($is_multi){
                 $_count = count($rs);
                 for ($i=0; $i < $_count; $i++) {
-                    $data[$rs[$i]->cid]= $this->item($rs[$i],$callback);
+                    $data[$rs[$i]->cid]= $this->__item($rs[$i],$callback);
                 }
             }else{
                 if(isset($callback['field'])){
                     return $rs[0];
                 }else{
-                    $data = $this->item($rs[0],$callback);
+                    $data = $this->__item($rs[0],$callback);
                 }
             }
         }
@@ -77,7 +77,7 @@ class category {
         }
         return $data;
     }
-    public function item($category,$callback=null) {
+    private function __item($category,$callback=null) {
         $category->iurl     = iURL::get('category',(array)$category);
         $category->href     = $category->iurl->href;
         $category->CP_ADD   = admincp::CP($category->cid,'a')?true:false;
@@ -91,7 +91,7 @@ class category {
         }
         return $category;
     }
-    public function cid_array($rootid=null,$where=null) {
+    public function get_cid($rootid=null,$where=null) {
         $sql = " 1=1 ";
         $rootid===null OR $sql.= " AND `rootid`='$rootid'";
         $sql.= iSQL::where($where,true);
@@ -106,11 +106,8 @@ class category {
         $rs  = iDB::all("SELECT * FROM `#iCMS@__category` WHERE 1=1".$this->sql_appid.' ORDER BY `sortnum`  ASC');
         $hidden = array();
         foreach((array)$rs AS $C) {
-            $this->cahce_one($C);
+            $this->cahce_item($C);
 
-            if($C['domain']){
-                $domain_array[] = $C['cid'];
-            }
             $C['status'] OR $hidden[]        = $C['cid'];
             $dir2cid[$C['dir']]              = $C['cid'];
             $parent[$C['cid']]               = $C['rootid'];
@@ -121,29 +118,34 @@ class category {
         foreach ((array)$app as $appid => $value) {
             iCache::set('category/appid.'.$appid,$value,0);
         }
-        iCache::set('category/rootid',$rootid,0);
         iCache::set('category/dir2cid',$dir2cid,0);
         iCache::set('category/hidden', $hidden,0);
+        iCache::set('category/rootid',$rootid,0);
         iCache::set('category/parent',$parent,0);
-        iCache::set('category/domain',$this->domain_array($domain_array),0);
+
+        $domain_rootid = array();
+        foreach((array)$rs AS $C) {
+            if($C['domain']){
+                $root = $this->get_root($C['cid'],$rootid);
+                $root && $domain_rootid+= array_fill_keys($root, $C['cid']);
+            }
+        }
+
+        iCache::set('category/domain_rootid',$domain_rootid,0);unset($domain_rootid,$root);
 
         foreach((array)$rs AS $C) {
             $C = $this->data($C);
-            $this->cahce_one($C,'C');
+            $this->cahce_item($C,'C');
         }
+        unset($rootid,$parent,$dir2cid,$hidden,$app,$rs,$C);
 
-        unset(
-            $rootid,$parent,$dir2cid,
-            $hidden,$domain_array,
-            $app,$rs,$C
-        );
         gc_collect_cycles();
     }
-    public static function cache_get($cid="0") {
-        $data = iCache::get('category/'.$cid);
-        return $data;
+
+    public static function cache_get($cid="0",$fix=null) {
+        return iCache::get('category/'.$fix.$cid);
     }
-    public function cahce_one($C=null,$fix=null){
+    public function cahce_item($C=null,$fix=null){
         if(!is_array($C)){
             $C = iDB::row("SELECT * FROM `#iCMS@__category` where `cid`='$C' LIMIT 1;",ARRAY_A);
         }
@@ -162,7 +164,7 @@ class category {
         $rs  = iDB::all("SELECT * FROM `#iCMS@__category` WHERE `cid` IN({$ids});");
         foreach((array)$rs AS $C) {
             $C = $this->data($C);
-            $this->cahce_one($C,'C');
+            $this->cahce_item($C,'C');
         }
         unset($$rs,$C,$ids_array);
     }
@@ -171,49 +173,59 @@ class category {
             return;
         }
         iCache::delete('category/'.$cid);
+        iCache::delete('category/C'.$cid);
     }
 
-    public function domain($cid="0",$akey='dir') {
-        $ii       = new stdClass();
-        $C        = (array)$this->cache_get($cid);
-        $rootid   = $C['rootid'];
-        $ii->sdir = $C[$akey];
-        if($rootid && empty($C['domain'])) {
-            $dm         = $this->domain($rootid);
-            $ii->pd     = $dm->pd;
-            $ii->domain = $dm->domain;
-            $ii->pdir   = $dm->pdir.'/'.$C[$akey];
-            $ii->dmpath = $dm->dmpath.'/'.$C[$akey];
-        }else {
-            $ii->pd     = $ii->pdir   = ltrim(iFS::path(iCMS::$config['router']['dir'].$ii->sdir),'/') ;
-            $ii->dmpath = $ii->domain = iFS::checkHttp($C['domain'])?$C['domain']:'http://'.$C['domain'];
-        }
-        return $ii;
-    }
-    public function domain_array($array){
-        $domain    = array();
-        $ROOTARRAY = iCache::get('category/rootid');
-        foreach ((array)$array as $akey => $cid) {
-            $rootData = $ROOTARRAY[$cid];
-            if($rootData){
-                $domain+=$this->domain_array($rootData);
+    // public function domain($cid="0",$akey='dir') {
+    //     $ii       = new stdClass();
+    //     $C        = (array)$this->cache_get($cid);
+    //     $rootid   = $C['rootid'];
+    //     $ii->sdir = $C[$akey];
+    //     if($rootid && empty($C['domain'])) {
+    //         $dm         = $this->domain($rootid);
+    //         $ii->pd     = $dm->pd;
+    //         $ii->domain = $dm->domain;
+    //         $ii->pdir   = $dm->pdir.'/'.$C[$akey];
+    //         $ii->dmpath = $dm->dmpath.'/'.$C[$akey];
+    //     }else {
+    //         $ii->pd     = $ii->pdir   = ltrim(iFS::path(iCMS::$config['router']['dir'].$ii->sdir),'/') ;
+    //         $ii->dmpath = $ii->domain = iFS::checkHttp($C['domain'])?$C['domain']:'http://'.$C['domain'];
+    //     }
+    //     return $ii;
+    // }
+    // public function domain_array($array){
+    //     $domain    = array();
+    //     $ROOTARRAY = iCache::get('category/rootid');
+    //     foreach ((array)$array as $akey => $cid) {
+    //         $rootData = $ROOTARRAY[$cid];
+    //         if($rootData){
+    //             $domain+=$this->domain_array($rootData);
+    //         }
+    //         $domain[$cid] = $this->domain($cid);
+    //     }
+    //     return $domain;
+    // }
+
+    public static function get_root($cid="0",$root=null) {
+        empty($root) && $root = iCache::get('category/rootid');
+        $ids = $root[$cid];
+        if(is_array($ids)){
+            $array = $ids;
+            foreach ($ids as $key => $_cid) {
+              $array+=self::get_root($_cid,$root);
             }
-            $domain[$cid] = $this->domain($cid);
         }
-        return $domain;
+        return (array)$array;
     }
-    public static function domain_config($domain=null){
-        if(empty($domain)){
-            $rs  = iDB::all("
-                SELECT `cid`,`domain`
-                FROM `#iCMS@__category`
-                WHERE `domain`!='' and `status`='1'");
-            foreach((array)$rs AS $C) {
-                $domain[$C['domain']] = $C['cid'];
+    public static function get_parent($cid="0",$parent=null) {
+        if($cid){
+            empty($parent) && $parent = iCache::get('category/parent');
+            $rootid = $parent[$cid];
+            if($rootid){
+                return self::get_parent($rootid,$parent);
             }
         }
-        configAdmincp::set(array('domain'=>$domain),'category',0,false);
-        configAdmincp::cache();
+        return $cid;
     }
     public function data($C){
         if($C['url']){
@@ -225,12 +237,13 @@ class category {
         $C['url']    = $C['iurl']['href'];
         $C['link']   = "<a href='{$C['url']}'>{$C['name']}</a>";
         $C['sname']  = $C['subname'];
-        $C['subid']  = iCache::get('category/rootid',$C['cid']);
 
+        $C['subid']  = $this->get_root($C['cid']);
         $C['child']  = $C['subid']?true:false;
         $C['subids'] = implode(',',(array)$C['subid']);
+
         $C['dirs']   = $this->data_dirs($C['cid']);
-        $C['self:appid'] = iCMS_APP_CATEGORY;
+        $C['sappid'] = iCMS_APP_CATEGORY;
 
         $C = $this->data_pic($C);
         $C = $this->data_parent($C);

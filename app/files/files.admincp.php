@@ -294,7 +294,13 @@ class filesAdmincp{
         $click=='dir' && $_title=$title.'目录';
         echo '<a href="'.$href.'" class="btn files_modal" data-toggle="modal" title="选择'.$_title.'"><i class="fa fa-search"></i> 选择</a>';
     }
-    public static function pic_btn($callback, $indexid = 0, $type = 'pic') {
+    public static function pic_btn($callback, $indexid = 0, $type = 'pic',$ret=false) {
+        $ret && ob_start();
         include admincp::view("files.picbtn","files");
+        if ($ret) {
+            $output = ob_get_contents();
+            ob_end_clean();
+            return $output;
+        }
     }
 }

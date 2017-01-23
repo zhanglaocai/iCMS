@@ -38,7 +38,7 @@
         $.post(iCMS.api('user'), param, function(ret) {
           if (ret.code) {
             alert(ret.msg);
-            window.top.location.href = '<!--{iCMS:router url='/api/user/login'}-->';
+            window.top.location.href = '<!--{iCMS:router url='api:user:login'}-->';
           } else {
             iCMS.alert(ret.msg);
           }
@@ -85,8 +85,7 @@
           </div>
           <div class="form-group">
             <input type="text" maxlength="4" name="seccode" class="iCMS_login_seccode iCMS_seccode form-control" placeholder="验证码"  data-container=".seccode_tip" >
-            <img src="<!--{iCMS:router url='/api/public/seccode'}-->" alt="验证码" class="iCMS_seccode_img r3"/>
-            <a href="javascript:;" class="iCMS_seccode_text" style="float: none">换一张</a>
+             <!--{iCMS:public:seccode}-->
             <span class="help-block seccode_tip">请输入图片中的字符!</span>
           </div>
           <div class="clearfix mt10">

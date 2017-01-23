@@ -50,7 +50,7 @@ class iURL {
             $url .= iPHP_ROUTER_REWRITE ? '?' : '&';
         }
         if(!iPHP_ROUTER_REWRITE){
-            $url = self::$API_URL.'?app='.$url;
+            $url = self::$API_URL.'/'.$url;
         }
         return $url;
     }
@@ -93,6 +93,9 @@ class iURL {
 
             case 'EXT':		$e = $c['htmlext']?$c['htmlext']:self::$CONFIG['ext'];break;
             case 'P':       $e = iPHP_PAGE_SIGN;break;
+            default:
+                $key = strtolower($b);
+                $a[$key] && $e = $a[$key];
         }
         return $e;
     }
@@ -108,6 +111,7 @@ class iURL {
     }
     public static function get($uri,$a=array()) {
         $i          = new stdClass();
+        $default    = array();
         $category   = array();
         $array      = (array)$a;
         $router_url = self::$CONFIG['url'];
@@ -145,6 +149,7 @@ class iURL {
              default:
                 $url = $array['rule'];
         }
+
         $default  = self::$CONFIG[$uri];
         if($default){
             $router_dir = $default['dir'];
@@ -162,47 +167,54 @@ class iURL {
             }
             iFS::checkHttp($href) OR $href = rtrim($router_url,'/').'/'.$href;
             $i->href = $href;
-        }
-        if($i->href) return $i;
-
-        if(strpos($url,'{PHP}')===false) {
+        }else if(strpos($url,'{PHP}')===false) {
         	self::$ARRAY = array($array,$category,$_category);
             $i = self::build($url,$router_dir,$router_url,$category['htmlext']);
+
             $pfile = $i->file;
             if(strpos($pfile,iPHP_PAGE_SIGN)===false) {
                 $pfile = $i->name.'_'.iPHP_PAGE_SIGN.$i->ext;
             }
-            $i->pageurl  = $i->hdir.'/'.$pfile ;
-            $i->pagepath = $i->dir.'/'.$pfile;
-
             if($purl){
                 $ii = self::build($purl,$router_dir,$router_url,$category['htmlext']);
                 $i->pageurl  = $ii->href;
                 $i->pagepath = $ii->path;
                 unset($ii);
+            }else{
+                $i->pageurl  = $i->hdir.'/'.$pfile ;
+                $i->pagepath = $i->dir.'/'.$pfile;
             }
-// var_dump($i);
-
-			if($app_conf['rule']=='1') {
-                $domainArray = iCache::get('category/domain');
-// var_dump($domainArray);
-                if($domainArray){
-                    $m = $domainArray[$category['cid']];
-                    if($m->domain) {
-                        $i->href   = str_replace($i->hdir,$m->dmpath,$i->href);
-                        $i->hdir   = $m->dmpath;
-                        $i->dmdir  = iFS::path(iPATH.$router_dir.'/'.$m->pd);
-                        $bits      = parse_url($i->href);
-                        $i->domain = $bits['scheme'].'://'.$bits['host'];
-                    }
-                }
-                if(iFS::checkHttp($category['domain'])){
-                    $i->href = $category['domain'];
-		        }
-            }
-
+            // call_user_func_array(self::$callback, array($uri,$i,self::$ARRAY,$app_conf));
+        }
+        $category && $i = self::domain($i,$category['cid'],$router_url);
+        return $i;
+    }
+    public static function domain($i,$cid,$base_url) {
+        if(self::$CONFIG['domain']){
+            $i = call_user_func_array(self::$CONFIG['domain'], array($i,$cid,$base_url));
         }
         return $i;
+
+        // $domain_array = (array)iCMS::$config['category']['domain'];
+        // if($domain_array){
+        //     $domain_array = array_flip($domain_array);
+        //     $domain = $domain_array[$cid];
+        //     if(empty($domain)){
+        //         $rootid_array = iCache::get('category/domain_rootid');
+        //         if($rootid_array){
+        //             $rootid = $rootid_array[$cid];
+        //             $rootid && $domain = $domain_array[$rootid];
+        //         }
+        //     }
+        // }
+        // if($domain){
+        //     if(iFS::checkHttp($domain)){
+        //         $i->href    = str_replace($base_url, $domain, $i->href);
+        //         $i->hdir    = str_replace($base_url, $domain, $i->hdir);
+        //         $i->pageurl = str_replace($base_url, $domain, $i->pageurl);
+        //     }
+        // }
+        // return $i;
     }
     public static function build($url,$_dir,$_url,$_ext) {
         if(strpos($url,'{')!==false){

@@ -25,17 +25,11 @@ class iCMS {
         iFS::init(self::$config['FS']);
         iCache::init(self::$config['cache']);
         iURL::init(self::$config['router']);
-        iURL::$USER_URL = iCMS_USER_URL;
-        iURL::$API_URL  = iCMS_API;
-        iURL::$CONFIG['tag'] = self::$config['tag'];
-        iURL::$CONFIG['app'] = array(
-            'http'     => array('rule'=>'0','primary'=>''),
-            'index'    => array('rule'=>'0','primary'=>''),
-            'category' => array('rule'=>'1','primary'=>'cid'),
-            'article'  => array('rule'=>'2','primary'=>'id','page'=>'p'),
-            'software' => array('rule'=>'2','primary'=>'id'),
-            'tag'      => array('rule'=>'3','primary'=>'id'),
-        );
+        iURL::$USER_URL         = iCMS_USER_URL;
+        iURL::$API_URL          = iCMS_PUBLIC_URL;
+        iURL::$CONFIG['tag']    = self::$config['tag'];
+        iURL::$CONFIG['app']    = self::$config['iurl'];
+        iURL::$CONFIG['domain'] = array('categoryApp','domain');
 	}
     /**
      * 运行应用程序

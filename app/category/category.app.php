@@ -112,4 +112,26 @@ class categoryApp{
         $cids = array_filter($cids);
         return $cids;
     }
+    public static function domain($i,$cid,$base_url) {
+        $domain_array = (array)iCMS::$config['category']['domain'];
+        if($domain_array){
+            $domain_array = array_flip($domain_array);
+            $domain = $domain_array[$cid];
+            if(empty($domain)){
+                $rootid_array = iCache::get('category/domain_rootid');
+                if($rootid_array){
+                    $rootid = $rootid_array[$cid];
+                    $rootid && $domain = $domain_array[$rootid];
+                }
+            }
+        }
+        if($domain){
+            if(iFS::checkHttp($domain)){
+                $i->href    = str_replace($base_url, $domain, $i->href);
+                $i->hdir    = str_replace($base_url, $domain, $i->hdir);
+                $i->pageurl = str_replace($base_url, $domain, $i->pageurl);
+            }
+        }
+        return $i;
+    }
 }

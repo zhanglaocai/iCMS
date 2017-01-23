@@ -195,7 +195,7 @@ class categoryAdmincp extends category{
                 $cid = iDB::insert('category',$data);
                 iDB::update('category', array('sortnum'=>$cid), array('cid'=>$cid));
                 $pid && iMap::add($pid,$cid);
-                $this->cahce_one($cid);
+                $this->cahce_item($cid);
             }
             $msg = $this->category_name."添加完成!请记得更新缓存!";
         }else {
@@ -208,12 +208,12 @@ class categoryAdmincp extends category{
             $data['dir'] = $dir;
             iDB::update('category', $data, array('cid'=>$cid));
             iMap::diff($pid,$_pid,$cid);
-            $this->cahce_one($cid);
+            $this->cahce_item($cid);
             $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
         $hasbody && iCache::set('category/'.$cid.'.body',$body,0);
 
-        $data['domain'] && category::domain_config();
+        // $this->category_config();
 
         admincp::callback($cid,$this);
         if($this->callback['code']){
@@ -225,12 +225,17 @@ class categoryAdmincp extends category{
 
         iUI::success($msg,'url:'.$this->category_uri);
     }
-
+    // public static function data_insert($data){
+    //     return iDB::insert('category_data',$data);
+    // }
+    // public static function data_update($data,$where){
+    //     return iDB::update('category_data',$data,$where);
+    // }
     public function do_update(){
     	foreach((array)$_POST['name'] as $cid=>$name){
     		$name	= iSecurity::escapeStr($name);
 			iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name',`sortnum` = '".(int)$_POST['sortnum'][$cid]."' WHERE `cid` ='".(int)$cid."' LIMIT 1");
-	    	$this->cahce_one($cid);
+	    	$this->cahce_item($cid);
     	}
     	iUI::success('更新完成');
     }
@@ -290,7 +295,7 @@ class categoryAdmincp extends category{
                 foreach($id_array as $k=>$cid){
                     $name   = iSecurity::escapeStr($_POST['name'][$cid]);
                     iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name' WHERE `cid` ='".(int)$cid."' LIMIT 1");
-                    $this->cahce_one($cid);
+                    $this->cahce_item($cid);
                 }
                 iUI::success('更新完成!','js:1');
             break;
@@ -337,7 +342,7 @@ class categoryAdmincp extends category{
                 foreach($id_array AS $cid){
                     admincp::CP($cid,'d','alert');
                     $this->do_del($cid,false);
-                    $this->cahce_one($cid);
+                    $this->cahce_item($cid);
                 }
                 iUI::$break    = true;
                 iUI::success('全部删除完成!','js:1');
@@ -350,7 +355,7 @@ class categoryAdmincp extends category{
     public function do_updateorder(){
     	foreach((array)$_POST['sortnum'] as $sortnum=>$cid){
             iDB::query("UPDATE `#iCMS@__category` SET `sortnum` = '".intval($sortnum)."' WHERE `cid` ='".intval($cid)."' LIMIT 1");
-	    	$this->cahce_one($cid);
+	    	$this->cahce_item($cid);
     	}
     }
     public function do_iCMS(){
@@ -416,7 +421,7 @@ class categoryAdmincp extends category{
         admincp::CP($cid,'d','alert');
         $msg    = '请选择要删除的'.$this->category_name.'!';
 
-        if(!$this->rootid_check($cid)) {
+        if(!$this->is_root($cid)) {
             $this->del_content($cid);
             iDB::query("DELETE FROM `#iCMS@__category` WHERE `cid` = '$cid'");
             iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `node` = '$cid' AND `appid` = '".$this->appid."';");
@@ -434,6 +439,7 @@ class categoryAdmincp extends category{
 	 	echo $this->tree((int)$_GET["root"],$expanded);
     }
     public function do_cache($dialog=true){
+        $this->category_config();
         $_count = $this->cache(true,$this->appid);
         // if($_count>1000){
         //     $this->do_cacheall($_count);
@@ -518,13 +524,13 @@ class categoryAdmincp extends category{
         return $C;
     }
     public function tree($cid = 0,$expanded=false,$ret=false){
-        $html     = array();
-        $cidArray = (array)$this->cid_array($cid);
-        $CARRAY   = (array)$this->get($cidArray);
-        foreach($cidArray AS $root=>$_cid) {
-            $C = (array)$CARRAY[$_cid];
+        $html       = array();
+        $cid_array  = (array)$this->get_cid($cid);
+        $cate_array = (array)$this->get($cid_array);
+        foreach($cid_array AS $root=>$_cid) {
+            $C = (array)$cate_array[$_cid];
             $a = array('id'=>$C['cid'],'data'=>$C);
-            if($this->cid_array($C['cid'])){
+            if($this->get_cid($C['cid'])){
                 if($expanded){
                     $a['hasChildren'] = false;
                     $a['expanded']    = true;
@@ -581,19 +587,19 @@ class categoryAdmincp extends category{
     }
 
     public function select_lite($permission='',$scid="0",$cid="0",$level = 1,$url=false,$where=null) {
-        $cidArray  = (array)$this->cid_array($cid,$where);
-        $CARRAY    = (array)$this->get($cidArray);
-        $ROOTARRAY = (array)$this->rootid($cidArray);
-        foreach($cidArray AS $root=>$_cid) {
-            $C = (array)$CARRAY[$_cid];
+        $cid_array  = (array)$this->get_cid($cid,$where);
+        $cate_array = (array)$this->get($cid_array);
+        $root_array = (array)$this->rootid($cid_array);
+        foreach($cid_array AS $root=>$_cid) {
+            $C = (array)$cate_array[$_cid];
             if(admincp::CP($_cid,$permission) && $C['status']) {
                 $tag      = ($level=='1'?"":"├ ");
                 $selected = ($scid==$_cid)?"selected":"";
-                $text     = str_repeat("│　", $level-1).$tag.$C['name']."[cid:{$_cid}][pid:{$C['pid']}]".($C['url']?"[∞]":"");
+                $text     = str_repeat("│　", $level-1).$tag.$C['name']."[cid:{$_cid}]".($C['url']?"[∞]":"");
                 ($C['url'] && !$url) && $selected ='disabled';
                 $option.="<option value='{$_cid}' $selected>{$text}</option>";
             }
-            $ROOTARRAY[$_cid] && $option.=$this->select_lite($permission,$scid,$C['cid'],$level+1,$url);
+            $root_array[$_cid] && $option.=$this->select_lite($permission,$scid,$C['cid'],$level+1,$url);
         }
         return $option;
     }
@@ -657,5 +663,21 @@ class categoryAdmincp extends category{
                 <li><a data-toggle="batch" data-action="indexTPL"><i class="fa fa-columns"></i> 首页模板</a></li>
                 <li><a data-toggle="batch" data-action="listTPL"><i class="fa fa-columns"></i> 列表模板</a></li>
                 <li><a data-toggle="batch" data-action="contentTPL"><i class="fa fa-columns"></i> 内容模板</a></li>';
+    }
+    public function category_config($domain=null){
+        if(empty($domain)){
+            $rs  = iDB::all("
+                SELECT `cid`,`domain`
+                FROM `#iCMS@__category`
+                WHERE `domain`!='' and `status`='1'");
+            foreach((array)$rs AS $C) {
+                $domain[$C['domain']] = $C['cid'];
+            }
+        }
+        configAdmincp::set(array(
+            'domain'=>$domain
+        ),'category',0,false);
+
+        configAdmincp::cache();
     }
 }
