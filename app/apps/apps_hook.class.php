@@ -19,9 +19,9 @@ class apps_hook {
     public static function app_fields($app=null) {
         $rs = apps::get($app,'app');
         if($rs['table'])foreach ($rs['table'] as $key => $table) {
-            $tbn = iPHP_DB_PREFIX.$table[0];
+            $tbn = $table['table'];
             if(apps_db::check_table($tbn)){
-                $option[] = '<optgroup label="'.$table[0].'表">';
+                $option[] = '<optgroup label="'.$table['label'].'表">';
                 $orig_fields  = apps_db::fields($tbn);
                 foreach ((array)$orig_fields as $field => $value) {
                     $option[]='<option value="'.$field.'">'.($value['comment']?$value['comment'].' ('.$field.')':$field).'</option>';
