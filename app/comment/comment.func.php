@@ -153,7 +153,7 @@ function comment_list($vars){
 			if($vars['date_format']){
 				$value['addtime'] = get_date($value['addtime'],$vars['date_format']);
 			}
-			$value['url'] = iCMS_API.'?app=comment&do=goto&iid='.$value['iid'].'&appid='.$value['appid'].'&cid='.$value['cid'];
+			$value['url'] = commentApp::redirect_url($value);
 			if($vars['by']=='ASC'){
 				$value['lou'] = $key+$ln*$maxperpage+1;
 			}else{

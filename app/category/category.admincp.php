@@ -580,10 +580,20 @@ class categoryAdmincp extends category{
     //     return $tree?json_encode($tree):'[]';
     // }
 
-    public function check_dir($dir,$appid,$url,$cid=0){
-        $sql ="SELECT `dir` FROM `#iCMS@__category` where `dir` ='$dir' AND `appid`='$appid'";
-        $cid && $sql.=" AND `cid` !='$cid'";
-        iDB::value($sql) && empty($url) && iUI::alert('该'.$this->category_name.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
+    public function check_dir(&$dir,$appid,$url,$cid=0){
+        if(empty($url)){
+            // $sql ="SELECT `dir` FROM `#iCMS@__category` where `dir` ='$dir' AND `appid`='$appid'";
+            // $cid && $sql.=" AND `cid` !='$cid'";
+            $sql = "SELECT count(`cid`) FROM `#iCMS@__category` where `dir` ='$dir' ";
+            $cid && $sql.=" AND `cid` !='$cid'";
+            $hasDir = iDB::value($sql);
+            if($hasDir){
+                $count = iDB::value("SELECT count(`cid`) FROM `#iCMS@__category` where `dir` LIKE '{$dir}-%'");
+                $dir = $dir.'-'.($count+1);
+            }
+       }
+
+        // iDB::value($sql) && empty($url) && iUI::alert('该'.$this->category_name.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
     }
 
     public function select_lite($permission='',$scid="0",$cid="0",$level = 1,$url=false,$where=null) {

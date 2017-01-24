@@ -255,6 +255,8 @@ class tagAdmincp{
         $data   = compact ($fields);
 
 		if(empty($id)){
+            $this->check_tkey($tkey);
+            $data['tkey']     = $tkey;
             $data['postime']  = $pubdate;
             $data['count']    = '0';
             $data['comments'] = '0';
@@ -284,6 +286,8 @@ class tagAdmincp{
                 ($hasTag['pid'] && $pid)    && $data['pid']=$pid;   $_pid = $hasTag['pid'];
 
             }
+            $this->check_tkey($tkey,$id);
+            $data['tkey'] = $tkey;
 
             unset($data['count'],$data['comments']);
             iDB::update('tags', $data, array('id'=>$id));
@@ -305,6 +309,15 @@ class tagAdmincp{
             );
         }
         iUI::success($msg,"url:".APP_URI);
+    }
+    public function check_tkey(&$tkey,$id=0){
+        $sql = "SELECT count(`id`) FROM `#iCMS@__tags` where `tkey` ='$tkey' ";
+        $id && $sql.=" AND `id` !='$id'";
+        $hasTkey = iDB::value($sql);
+        if($hasTkey){
+            $count = iDB::value("SELECT count(`id`) FROM `#iCMS@__tags` where `tkey` LIKE '{$tkey}-%'");
+            $tkey = $tkey.'-'.($count+1);
+        }
     }
     public function __callback($id){
         if ($this->callback['primary']) {

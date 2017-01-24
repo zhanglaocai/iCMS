@@ -93,7 +93,10 @@ var_dump(@class_exists($appname));
     public static function item($rs){
         if($rs){
             $rs = (array)$rs;
-            $rs['table'] && $rs['table']  = json_decode($rs['table'],true);
+            if($rs['table']){
+                $table = json_decode($rs['table'],true);
+                $table && $rs['table']  = self::table_item($table);
+            }
             $rs['config']&& $rs['config'] = json_decode($rs['config'],true);
             $rs['fields']&& $rs['fields'] = json_decode($rs['fields'],true);
         }
@@ -253,6 +256,19 @@ var_dump(@class_exists($appname));
         //     $table['on']   = $tb_array[1][1];
         // }
     }
+    public static function table_item($variable){
+        if($variable){
+            foreach ($variable as $key => $value) {
+                $table[$value[0]]=array(
+                    'table'   => iPHP_DB_PREFIX.$value[0],
+                    'name'    => $value[0],
+                    'primary' => $value[1],
+                    'label'   => $value[2],
+                );
+            }
+            return $table;
+        }
+    }
     public static function table($appId){
         $appMap = array(
             '1'  => 'article',   //文章
@@ -296,8 +312,14 @@ var_dump(@class_exists($appname));
        	return $rs;
 	}
 	public static function get_url($appid=1,$primary=''){
-		$rs	= self::get_app($appid);
-		return iCMS_URL.'/'.$rs['app'].'.php?'.$rs['table']['primary'].'='.$primary;
+        $rs    = self::get_app($appid);
+        if($rs['table']){
+            $table = reset($rs['table']);
+            $key   = $table['primary'];
+        }
+        empty($key) && $key = 'id';
+
+		return iCMS_URL.'/'.$rs['app'].'.php?'.$key.'='.$primary;
 	}
 	public static function get_table($appid=1){
 		$rs	= self::get_app($appid);

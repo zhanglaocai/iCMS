@@ -52,7 +52,7 @@
             // hook element events
             if (this.opts.showOn != 'none') {
                 this.$elm.on({
-                    'click.poshytip': $.proxy(this.mouseenter, this),
+                    // 'click.poshytip': $.proxy(this.mouseenter, this),
                     'mouseenter.poshytip': $.proxy(this.mouseenter, this),
                     'mouseleave.poshytip': $.proxy(this.mouseleave, this),
                     'touchstart.poshytip': $.proxy(this.mouseenter, this),
@@ -65,7 +65,7 @@
                         if (this.opts.allowTipHover)
                             this.$tip.hover($.proxy(this.clearTimeouts, this), $.proxy(this.mouseleave, this));
 
-                        this.$tip.on("click",$.proxy(this.clearTimeouts, this));
+                        // this.$tip.on("click",$.proxy(this.clearTimeouts, this));
 
                         break;
                     case 'focus':
@@ -389,10 +389,10 @@
                 this.die ?
                     this.die('mouseenter.poshytip')
                     .die('touchstart.poshytip')
-                    .die('click.poshytip')
+                    // .die('click.poshytip')
                     .die('focus.poshytip'):
                     $(document).off(this.selector, 'mouseenter.poshytip')
-                    .off(this.selector, 'click.poshytip')
+                    // .off(this.selector, 'click.poshytip')
                     .off(this.selector, 'touchstart.poshytip')
                     .off(this.selector, 'focus.poshytip');
             }

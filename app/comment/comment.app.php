@@ -8,16 +8,16 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class commentApp {
-	public $methods = array('like','widget', 'json', 'add', 'form', 'list', 'goto');
+	public $methods = array('like','widget', 'json', 'add', 'form', 'list', 'redirect');
 	public $config  = null;
 	public function __construct() {
 		$this->config = iCMS::$config['comment'];
 		$this->id     = (int) $_GET['id'];
 	}
-	public function API_goto() {
+	public function API_redirect() {
 		$appid = (int) $_GET['appid'];
-		$iid = (int) $_GET['iid'];
-		$_GET = iSecurity::escapeStr($_GET);
+		$iid   = (int) $_GET['iid'];
+		// $_GET  = iSecurity::escapeStr($_GET);
 
 		$url = apps::get_url($appid, $iid);
 		iPHP::redirect($url);
@@ -74,6 +74,10 @@ class commentApp {
 		user_msg::send($data, 1);
 
 	}
+	public static function redirect_url($var) {
+		$url = iCMS_API.'?app=comment&do=redirect&iid='.$var['iid'].'&appid='.$var['appid'].'&cid='.$var['cid'];
+		return $url;
+	}
 	public function ACTION_add() {
 		if (!$this->config['enable']) {
 			iUI::code(0, 'iCMS:comment:close', 0, 'json');
@@ -121,7 +125,6 @@ class commentApp {
 			iUI::code(0, 'iCMS:comment:examine', $id, 'json');
 		}
 		iUI::code(1, 'iCMS:comment:success', $id, 'json');
-
 	}
 
 }

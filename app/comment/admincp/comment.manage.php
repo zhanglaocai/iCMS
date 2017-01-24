@@ -82,7 +82,7 @@ function update_popover(html,a){
                 // $cidArray && $category_data = (array) $this->categoryAdmincp->get($cidArray);
           foreach ($rs as $key => $value) {
           // $C    = (array)$category_data[$value['cid']];
-          $url  = iCMS_API.'?app=comment&do=goto&iid='.$value['iid'].'&appid='.$value['appid'].'&cid='.$value['cid'];
+          $url  = commentApp::redirect_url($value);
           $user = user::info($value['userid'],$value['username']);
           $app_label =apps::get_label($value['appid'],'title');
           ?>
@@ -100,6 +100,7 @@ function update_popover(html,a){
                 <a href="<?php echo APP_URI; ?>&userid=<?php echo $value['userid'] ; ?>" class="tip" title="查看该用户所有评论"><span class="label label-info"><?php echo $user['name'] ; ?></span></a>
                 在<?php echo $app_label; ?>
                 <a href="<?php echo APP_URI; ?>&iid=<?php echo $value['iid'] ; ?>" class="tip" title="查看该<?php echo $app_label;?>所有评论"><?php echo $value['title'] ; ?></a>
+                <a href="<?php echo $url; ?>" target="_blank">[原文]</a>
                 <?php if($value['reply_id']){?>
                   对<a href="<?php echo APP_URI; ?>&userid=<?php echo $value['reply_uid'] ; ?>" class="tip" title="查看该用户所有评论"><span class="label label-success"><?php echo $value['reply_name'] ; ?></span></a>的回帖发表评论
                 <?php }else{?>
