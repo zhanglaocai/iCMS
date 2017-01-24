@@ -29,16 +29,13 @@ function category_list($vars){
 		case "sub":
 			$vars['cid'] && $where_sql.= iSQL::in($vars['cid'],'rootid');
 		break;
-		// case "subtop":
-		// 	$vars['cid'] && $where_sql.= iSQL::in($vars['cid'],'cid');
-		// break;
 		case "suball":
 			$cids = categoryApp::get_cids($vars['cid'],false);
 			$where_sql.= iSQL::in($cids,'cid');
 		break;
 		case "self":
-			$parent = iCache::get('category/parent',$vars['cid']);
-			$where_sql.=" AND `rootid`='$parent'";
+			$parentid = iCache::get(categoryApp::CACHE_CATEGORY_PARENT,$vars['cid']);
+			$where_sql.=" AND `rootid`='$parentid'";
 		break;
 	}
 	if(isset($vars['pids'])){

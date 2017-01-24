@@ -44,7 +44,7 @@ window.iCMS.init({
   UI:'./app/admincp/ui',
   URL:'<?php echo iCMS_URL;?>',
   PUBLIC:'<?php echo iCMS_PUBLIC_URL;?>',
-  DEFTPL:'<?php echo iPHP_DEFAULT_TPL;?>',
+  DEFTPL:'<?php echo iCMS::$config['template']['desktop']['tpl'];?>',
   COOKIE:'<?php echo iPHP_COOKIE_PRE;?>',
 });
 $(function(){

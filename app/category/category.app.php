@@ -10,6 +10,7 @@ class categoryApp{
     const CACHE_CATEGORY_ID      = 'category/C';
     const CACHE_CATEGORY_DIR2CID = 'category/dir2cid';
     const CACHE_CATEGORY_ROOTID  = 'category/rootid';
+    const CACHE_CATEGORY_PARENT  = 'category/parent';
 
 	public $methods	= array('iCMS','category');
     public function __construct($appid = iCMS_APP_ARTICLE) {
@@ -31,10 +32,10 @@ class categoryApp{
         return $this->do_iCMS();
     }
 
-    public static function category($id,$tpl='index') {
-        $category = iCache::get(self::CACHE_CATEGORY_ID.$id);
+    public static function category($cid,$tpl='index') {
+        $category = iCache::get(self::CACHE_CATEGORY_ID.$cid);
         if(empty($category) && $tpl){
-            iPHP::error_404('找不到该栏目<b>cid:'. $id.'</b> 请更新栏目缓存或者确认栏目是否存在', 20001);
+            iPHP::error_404('找不到该栏目<b>cid:'. $cid.'</b> 请更新栏目缓存或者确认栏目是否存在', 20001);
         }
         if($category['status']==0) return false;
         $iurl = $category['iurl'];
@@ -110,8 +111,10 @@ class categoryApp{
         }
         $cids = array_unique($cids);
         $cids = array_filter($cids);
+
         return $cids;
     }
+    //绑定域名 iURL 回调函数
     public static function domain($i,$cid,$base_url) {
         $domain_array = (array)iCMS::$config['category']['domain'];
         if($domain_array){

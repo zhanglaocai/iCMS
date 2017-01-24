@@ -157,8 +157,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
           <thead>
             <tr>
               <th style="width:10px;"><i class="fa fa-arrows-v"></i></th>
-              <th style="width:24px;">cid</th>
-              <th style="width:24px;">pid</th>
+              <th style="width:24px;">CID</th>
               <th><?php echo $this->category_name;?></th>
               <th>目录</th>
               <th>父<?php echo $this->category_name;?></th>
@@ -175,12 +174,15 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
             ?>
             <tr id="<?php echo $rs[$i]['cid'] ; ?>" class="status<?php echo $rs[$i]['status'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['cid'] ; ?>" /></td>
-              <td><a href="<?php echo iURL::get('category',$rs[$i])->href;?>"><?php echo $rs[$i]['cid'] ; ?></a></td>
-              <td><?php echo $rs[$i]['pid'] ; ?></td>
+              <td><a href="<?php echo iURL::get('category',$rs[$i])->href;?>" target="_blank"><?php echo $rs[$i]['cid'] ; ?></a></td>
               <td><input <?php if($rs[$i]['rootid']=="0"){ ?> style="font-weight:bold"<?php } ?> type="text" name="name[<?php echo $rs[$i]['cid'] ; ?>]" value="<?php echo $rs[$i]['name'] ; ?>">
                 <?php if(!$rs[$i]['status']){ ?>
                 <i class="fa fa-eye-slash" title="隐藏<?php echo $this->category_name;?>"></i>
-                <?php } ?></td>
+                <?php } ?>
+                <?php if($rs[$i]['pid']){
+                  propAdmincp::flag($rs[$i]['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);
+                } ?>
+              </td>
               <td><?php echo $rs[$i]['dir'] ; ?></td>
               <td><a href="<?php echo APP_DOURI; ?>&rootid=<?php echo $rs[$i]['rootid'] ; ?>"><?php echo  $root?$root->name:'顶级'.$this->category_name ; ?></a></td>
               <td><?php echo $rs[$i]['count'] ; ?></td>
@@ -266,95 +268,13 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
             <input type="checkbox" data-type="switch" name="status" id="status"/>
           </div>
         </div>
-        <div id="categoryRuleBatch">
-          <div class="input-append" style="margin-right: 70px;">
-            <input type="text" name="categoryRule" class="span4" id="categoryRule" value="{CDIR}/index{EXT}">
-            <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
-              <ul class="dropdown-menu">
-                <li><a href="{CID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{CID}</span> <?php echo $this->category_name;?>ID</a></li>
-                <li><a href="{CDIR}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-important">{CDIR}</span> <?php echo $this->category_name;?>目录</a></li>
-                <li><a href="{0xCID}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{0xCID}</span> <?php echo $this->category_name;?>ID补零（8位）</a></li>
-                <li class="divider"></li>
-                <li><a href="{MD5}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{MD5}</span> 文章ID(16位)</a></li>
-                <li class="divider"></li>
-                <li><a href="{P}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{P}</span> 分页数</a></li>
-                <li><a href="{EXT}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{EXT}</span> 后缀</a></li>
-                <li class="divider"></li>
-                <li><a href="{PHP}" data-toggle="insertContent" data-target="#categoryRule"><span class="label label-inverse">{PHP}</span> 动态程序</a></li>
-              </ul>
-            </div>
-          </div>
-          <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{CID}</span>或<span class="label label-important">{CDIR}</span>或直接填写URL</span> </div>
-        <div id="contentRuleBatch">
-          <div class="input-append" style="margin-right: 70px;">
-            <input type="text" name="contentRule" class="span5" value=""/>
-            <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
-              <ul class="dropdown-menu">
-                <li><a href="{CID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CID}</span> <?php echo $this->category_name;?>ID</a></li>
-                <li><a href="{CDIR}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CDIR}</span> <?php echo $this->category_name;?>目录</a></li>
-                <li><a href="{CPDIR}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{CPDIR}</span> <?php echo $this->category_name;?>目录(含父目录)</a></li>
-                <li class="divider"></li>
-                <li><a href="{YYYY}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{YYYY}</span> 4位数年份2012</a></li>
-                <li><a href="{YY}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{YY}</span> 2位数年份12</a></li>
-                <li><a href="{MM}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{MM}</span> 月份 01-12月份</a></li>
-                <li><a href="{M}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{M}</span> 月份 1-12 月份</a></li>
-                <li><a href="{DD}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{DD}</span> 日期 01-31</a></li>
-                <li><a href="{D}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{D}</span> 日期1-31</a></li>
-                <li><a href="{TIME}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{TIME}</span> 文章发布时间戳</a></li>
-                <li class="divider"></li>
-                <li><a href="{ID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-important">{ID}</span> 文章ID</a></li>
-                <li><a href="{0xID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-important">{0xID}</span> 文章ID补零（8位）</a></li>
-                <li><a href="{0x3ID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{0x3ID}</span> 文章ID补零(8位前3位)</a></li>
-                <li><a href="{0x3,2ID}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{0x3,2ID}</span> 文章ID补零(8位从第3位起两位)</a></li>
-                <li class="divider"></li>
-                <li><a href="{TITLE}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{TITLE}</span> 文章标题</a></li>
-                <li><a href="{LINK}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{LINK}</span> 文章自定义链接</a></li>
-                <li><a href="{MD5}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{MD5}</span> 文章ID(16位)</a></li>
-                <li class="divider"></li>
-                <li><a href="{P}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{P}</span> 分页数</a></li>
-                <li><a href="{EXT}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{EXT}</span> 后缀</a></li>
-                <li class="divider"></li>
-                <li><a href="{PHP}" data-toggle="insertContent" data-target="#contentRule"><span class="label label-inverse">{PHP}</span> 动态程序</a></li>
-              </ul>
-            </div>
-          </div>
-          <span class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{ID}</span>或<span class="label label-important">{0xID}</span></span> </div>
-        <div id="urlRuleBatch">
-          <div class="input-append" style="margin-right: 70px;">
-            <input type="text" name="urlRule" class="span5" value=""/>
-            <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
-              <ul class="dropdown-menu">
-                <li><a href="{ID}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-important">{ID}</span> 标签ID</a></li>
-                <li><a href="{TKEY}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-important">{TKEY}</span> 标签标识</a></li>
-                <li><a href="{ZH_CN}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-important">{ZH_CN}</span> 标签名(中文)</a></li>
-                <li><a href="{NAME}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-important">{NAME}</span> 标签名</a></li>
-                <li class="divider"></li>
-                <li><a href="{TCID}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{TCID}</span> <?php echo $this->category_name;?>ID</a></li>
-                <li><a href="{TCDIR}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{TCDIR}</span> <?php echo $this->category_name;?>目录</a></li>
-                <li><a href="{CDIR}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{CDIR}</span> <?php echo $this->category_name;?>目录</a></li>
-                <li class="divider"></li>
-                <li><a href="{P}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{P}</span> 分页数</a></li>
-                <li><a href="{EXT}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{EXT}</span> 后缀</a></li>
-                <li class="divider"></li>
-                <li><a href="{PHP}" data-toggle="insertContent" data-target="#urlRule"><span class="label label-inverse">{PHP}</span> 动态程序</a></li>
-              </ul>
-            </div>
-          </div>
-          <span class="help-inline">用于标签等其它应用</span> </div>
-        <div id="indexTPLBatch">
-          <div class="input-append">
-            <input type="text" name="indexTPL" class="span3" id="indexTPL" value=""/>
-            <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=indexTPL" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
+        <div id="ruleBatch" style="width: 560px;height:260px;text-align: left;">
+          <?php include admincp::view('category.rule',$this->_view_tpl_dir);?>
+          <div class="clearfloat mb10"></div>
         </div>
-        <div id="listTPLBatch">
-          <div class="input-append">
-            <input type="text" name="listTPL" class="span3" id="listTPL" value="<?php echo $rs['listTPL'] ; ?>"/>
-            <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=listTPL" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
-        </div>
-        <div id="contentTPLBatch">
-          <div class="input-append">
-            <input type="text" name="contentTPL" class="span3" id="contentTPL" value="<?php echo $rs['contentTPL'] ; ?>"/>
-            <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=contentTPL" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
+        <div id="templateBatch" style="height:180px;">
+          <?php include admincp::view('category.template',$this->_view_tpl_dir);?>
+          <div class="clearfloat mb10"></div>
         </div>
       </div>
       <?php } ?>

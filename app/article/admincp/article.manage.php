@@ -295,7 +295,8 @@ $(function(){
                 ?>
                 <?php if($value['pid']){
                   propAdmincp::flag($value['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);
-                } ?></td>
+                } ?>
+              </td>
               <td><a href="<?php echo APP_DOURI; ?>&userid=<?php echo $value['userid'] ; ?>&<?php echo $uri ; ?>"><?php echo $value['editor'] ; ?></a><br /><?php echo $value['author'] ; ?></td>
               <td>
                 <a class="tip" href="javascript:;" title="

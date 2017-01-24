@@ -184,7 +184,7 @@ class categoryAdmincp extends category{
                 }else{
                     empty($url) && $dir = strtolower(iPinyin::get($_name));
                 }
-                $mode=="2" && $this->check_dir($dir,$appid,$url);
+                $mode=="2" && $this->check_dir($dir,$this->appid,$url);
                 $data['name']     = $_name;
                 $data['dir']      = $dir;
                 $data['userid']   = members::$userid;
@@ -195,7 +195,7 @@ class categoryAdmincp extends category{
                 $cid = iDB::insert('category',$data);
                 iDB::update('category', array('sortnum'=>$cid), array('cid'=>$cid));
                 $pid && iMap::add($pid,$cid);
-                $this->cahce_item($cid);
+                //$this->cahce_item($cid);
             }
             $msg = $this->category_name."添加完成!请记得更新缓存!";
         }else {
@@ -203,12 +203,11 @@ class categoryAdmincp extends category{
                 $dir = strtolower(iPinyin::get($name));
             }
             admincp::CP($cid,'e','alert');
-            $mode=="2" && $this->check_dir($dir,$appid,$url,$cid);
-
+            $mode=="2" && $this->check_dir($dir,$this->appid,$url,$cid);
             $data['dir'] = $dir;
             iDB::update('category', $data, array('cid'=>$cid));
             iMap::diff($pid,$_pid,$cid);
-            $this->cahce_item($cid);
+            //$this->cahce_item($cid);
             $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
         $hasbody && iCache::set('category/'.$cid.'.body',$body,0);
@@ -235,7 +234,7 @@ class categoryAdmincp extends category{
     	foreach((array)$_POST['name'] as $cid=>$name){
     		$name	= iSecurity::escapeStr($name);
 			iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name',`sortnum` = '".(int)$_POST['sortnum'][$cid]."' WHERE `cid` ='".(int)$cid."' LIMIT 1");
-	    	$this->cahce_item($cid);
+	    	//$this->cahce_item($cid);
     	}
     	iUI::success('更新完成');
     }
@@ -287,6 +286,7 @@ class categoryAdmincp extends category{
                 foreach($id_array as $k=>$cid){
                     $name = iSecurity::escapeStr($_POST['name'][$cid]);
                     $dir  = iPinyin::get($name);
+                    $this->check_dir($dir,$this->appid,null,$cid);
                     iDB::query("UPDATE `#iCMS@__category` SET `dir` = '$dir' WHERE `cid` ='".(int)$cid."' LIMIT 1");
                 }
                 iUI::success('更新完成!','js:1');
@@ -295,7 +295,7 @@ class categoryAdmincp extends category{
                 foreach($id_array as $k=>$cid){
                     $name   = iSecurity::escapeStr($_POST['name'][$cid]);
                     iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name' WHERE `cid` ='".(int)$cid."' LIMIT 1");
-                    $this->cahce_item($cid);
+                    //$this->cahce_item($cid);
                 }
                 iUI::success('更新完成!','js:1');
             break;
@@ -307,29 +307,15 @@ class categoryAdmincp extends category{
                 $val = (int)$_POST['mode'];
                 $sql ="`mode` = '$val'";
             break;
-            case 'categoryRule':
-                $val = iSecurity::escapeStr($_POST['categoryRule']);;
-                $sql ="`categoryRule` = '$val'";
+            case 'rule':
+                $rule = iSecurity::escapeStr($_POST['rule']);
+                $rule = addslashes(json_encode($rule));
+                $sql  ="`rule` = '$rule'";
             break;
-            case 'contentRule':
-                $val = iSecurity::escapeStr($_POST['contentRule']);;
-                $sql ="`contentRule` = '$val'";
-            break;
-            case 'urlRule':
-                $val = iSecurity::escapeStr($_POST['urlRule']);;
-                $sql ="`urlRule` = '$val'";
-            break;
-            case 'indexTPL':
-                $val = iSecurity::escapeStr($_POST['indexTPL']);;
-                $sql ="`indexTPL` = '$val'";
-            break;
-            case 'listTPL':
-                $val = iSecurity::escapeStr($_POST['listTPL']);;
-                $sql ="`listTPL` = '$val'";
-            break;
-            case 'contentTPL':
-                $val = iSecurity::escapeStr($_POST['contentTPL']);;
-                $sql ="`contentTPL` = '$val'";
+            case 'template':
+                $template = iSecurity::escapeStr($_POST['template']);
+                $template = addslashes(json_encode($template));
+                $sql  ="`template` = '$template'";
             break;
             case 'recount':
                 foreach($id_array as $k=>$cid){
@@ -338,11 +324,11 @@ class categoryAdmincp extends category{
                 iUI::success('操作成功!','js:1');
             break;
             case 'dels':
-                iUI::$break    = false;
+                iUI::$break = false;
                 foreach($id_array AS $cid){
                     admincp::CP($cid,'d','alert');
                     $this->do_del($cid,false);
-                    $this->cahce_item($cid);
+                    //$this->cahce_item($cid);
                 }
                 iUI::$break    = true;
                 iUI::success('全部删除完成!','js:1');
@@ -355,7 +341,7 @@ class categoryAdmincp extends category{
     public function do_updateorder(){
     	foreach((array)$_POST['sortnum'] as $sortnum=>$cid){
             iDB::query("UPDATE `#iCMS@__category` SET `sortnum` = '".intval($sortnum)."' WHERE `cid` ='".intval($cid)."' LIMIT 1");
-	    	$this->cahce_item($cid);
+	    	//$this->cahce_item($cid);
     	}
     }
     public function do_iCMS(){
@@ -524,7 +510,7 @@ class categoryAdmincp extends category{
         return $C;
     }
     public function tree($cid = 0,$expanded=false,$ret=false){
-        $html       = array();
+        $array      = array();
         $cid_array  = (array)$this->get_cid($cid);
         $cate_array = (array)$this->get($cid_array);
         foreach($cid_array AS $root=>$_cid) {
@@ -539,14 +525,13 @@ class categoryAdmincp extends category{
                     $a['hasChildren'] = true;
                 }
             }
-            $a && $html[] = $a;
+            $a && $array[] = $a;
         }
         if($ret||($expanded && $cid)){
-            return $html;
+            return $array;
         }
 
-        //var_dump($html);
-        return $html?json_encode($html):'[]';
+        return $array?json_encode($array):'[]';
     }
     // public function tree($cid = 0,$expanded=false,$ret=false){
     //     $tree = array();
@@ -634,8 +619,8 @@ class categoryAdmincp extends category{
     public static function del_app_data($appid=null){
         $appid===null && self::$appid=(int)$appid;
 
-        iDB::query("DELETE FROM `#iCMS@__category` WHERE `appid` = '".self::appid."'");
-        iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `appid` = '".self::appid."';");
+        iDB::query("DELETE FROM `#iCMS@__category` WHERE `appid` = '".self::$appid."'");
+        iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `appid` = '".self::$appid."';");
     }
     //接口
     public function del_content($cid){
@@ -664,15 +649,19 @@ class categoryAdmincp extends category{
     }
 
     public function batchbtn(){
-        return '<li><a data-toggle="batch" data-action="mode"><i class="fa fa-cogs"></i> 访问模式</a></li>
-                <li class="divider"></li>
-                <li><a data-toggle="batch" data-action="categoryRule"><i class="fa fa-link"></i> '.$this->category_name.'规则</a></li>
-                <li><a data-toggle="batch" data-action="contentRule"><i class="fa fa-link"></i> 内容规则</a></li>
-                <li><a data-toggle="batch" data-action="urlRule"><i class="fa fa-link"></i> 其它规则</a></li>
-                <li class="divider"></li>
-                <li><a data-toggle="batch" data-action="indexTPL"><i class="fa fa-columns"></i> 首页模板</a></li>
-                <li><a data-toggle="batch" data-action="listTPL"><i class="fa fa-columns"></i> 列表模板</a></li>
-                <li><a data-toggle="batch" data-action="contentTPL"><i class="fa fa-columns"></i> 内容模板</a></li>';
+        $ul = '<li><a data-toggle="batch" data-action="mode"><i class="fa fa-cogs"></i> 访问模式</a></li>';
+        $ul.='<li class="divider"></li>';
+        $ul.='<li><a data-toggle="batch" data-action="rule"><i class="fa fa-link"></i> URL规则</a></li>';
+        $ul.='<li><a data-toggle="batch" data-action="template"><i class="fa fa-columns"></i> 模板设置</a></li>';
+
+        // foreach ($this->category_rule as $key => $value) {
+        //     $ul.='<li><a data-toggle="batch" data-action="rule_'.$key.'"><i class="fa fa-link"></i> '.$value[0].'规则</a></li>';
+        // }
+        // $ul.='<li class="divider"></li>';
+        // foreach ($this->category_template as $key => $value) {
+        //     $ul.='<li><a data-toggle="batch" data-action="template_'.$key.'"><i class="fa fa-columns"></i> '.$value[0].'模板</a></li>';
+        // }
+        return $ul;
     }
     public function category_config($domain=null){
         if(empty($domain)){

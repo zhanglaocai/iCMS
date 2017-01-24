@@ -11,7 +11,8 @@
 
 class menuAdmincp{
     public function __construct() {
-    	// menu::get_array();
+    	// var_dump(menu::$menu_array['article']['children']);
+     //    exit;
     }
     public function do_add(){
     	$id	= $_GET['id'];
@@ -71,28 +72,31 @@ class menuAdmincp{
 
     public function do_ajaxtree(){
 		$expanded = $_GET['expanded']?true:false;
-	 	echo $this->tree($expanded);
+	 	echo $this->tree(null,$expanded);
     }
 
-    public function tree($expanded=false,$func='li'){
-    	$id=='source' && $id=0;
-        foreach((array)menu::menu_array AS $root=>$M) {
-        	$a			= array();
-        	$a['id']	= $M['id'];
-        	$a['text']	= $this->$func($M);
+    public function tree($id=null,$expanded=false,$menu_array = null){
+        $array      = array();
+        $menu_array === null && $menu_array = menu::$menu_array;
+        foreach($menu_array AS $key=>$M) {
+            $a = array('id'=>$M['id']?$M['id']:md5($M['href']),'data'=>$M);
+            unset($a['data']['children']);
             if($M['children']){
             	if($expanded){
                     $a['hasChildren'] = false;
                     $a['expanded']    = true;
-                    $a['children']    = $this->tree($expanded,$func);
+                    $a['children']    = $this->tree($key,$expanded,$M['children']);
             	}else{
                     $a['hasChildren'] = true;
             	}
             }
-            $tr[]=$a;
+            $a && $array[] = $a;
         }
-        if($expanded && $id!='source'){ return $tr; }
-        return $tr?json_encode($tr):'[]';
+        if($expanded && $id){
+            return $array;
+        }
+
+        return $array?json_encode($array):'[]';
     }
     public function li($M) {
     	if($M['-']){
