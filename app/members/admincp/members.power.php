@@ -27,11 +27,21 @@ defined('iPHP') OR exit('What are you doing?');
     <span class="add-on"><input type="checkbox" name="cpower[]" value="{{cid}}:cd" /> 删除</span>
 </div>
 </script>
+<script id="power_item" type="text/html">
+<div class="input-prepend input-append li2">
+  <span class="add-on"><input type="checkbox" name="power[]" value="{{id}}"></span>
+  {{if caption=='-'}}
+  <span class="add-on tip" title="分隔符权限,仅为UI美观">────────────</span>
+  {{else}}
+  <span class="add-on">{{caption}}</span>
+  {{/if}}
+</div>
+</script>
 <script type="text/javascript">
 $(function(){
   var power  = <?php echo $rs->power?$rs->power:'{}'?>,
   cpower = <?php echo $rs->cpower?$rs->cpower:'{}'?>;
-  get_tree('power');
+  get_tree('power','<?php echo __ADMINCP__;?>=menu&do=ajaxtree&expanded=1','power_item');
   get_tree('cpower','<?php echo __ADMINCP__;?>=category&do=ajaxtree&expanded=0','cpower_item');
   set_select(power,'<?php echo admincp::$APP_NAME; ?>-power');
   set_select(cpower,'<?php echo admincp::$APP_NAME; ?>-cpower');

@@ -183,10 +183,12 @@ class editorAdmincp{
         $F===false && exit(iFS::$ERROR);
 		$F['path'] && $url	= iFS::fp($F['path'],'+http');
     	iUI::json(array(
-			"url"      =>$url,
-			"fileType" =>$F["ext"],
-			"original" =>$F["oname"],
-			"state"    =>'SUCCESS'
+            "url"      =>$url,
+            "path"     =>$F["path"],
+            "fid"      =>$F["fid"],
+            "fileType" =>$F["ext"],
+            "original" =>$F["oname"],
+            "state"    =>'SUCCESS'
 		));
     }
     public function do_uploadvideo(){

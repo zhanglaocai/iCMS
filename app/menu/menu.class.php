@@ -32,7 +32,7 @@ class menu {
         }
         return $data;
     }
-    public static function mid($vars,&$sort){
+    public static function mid($vars,&$sort=0){
         foreach ($vars as $k => $v) {
             ++$sort;
             $key = $v['id']?$v['id']:$k;
@@ -179,7 +179,7 @@ class menu {
     public static function app_memu($app){
         $path  = iPHP_APP_DIR."/{$app}/etc/iMenu.main.php";
         $array = self::json_data($path);
-        $array = self::menu_id($array);
+        $array = self::mid($array);
         $key   = self::search_href();
         $array = $array[$key]['children'][$app]['children'];
 

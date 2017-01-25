@@ -116,6 +116,84 @@ class databaseAdmincp {
 		}
 		iUI::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
 	}
+	public function do_del() {
+		$this->bakdir OR iUI::alert('请选择要删除的备份卷');
+		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
+		if (iFS::rmdir($backupdir)) {
+			iUI::success('备份文件已删除!', 'js:parent.$("#' . md5($this->bakdir) . '").remove();');
+		}
+	}
+	public function do_download() {
+		$this->bakdir OR iUI::alert('请选择要下载的备份卷');
+		iPHP::import(iPHP_LIB . '/pclzip.class.php'); //加载zip操作类
+		$zipname = $this->bakdir . ".zip"; //压缩包的名称
+		$zipFile = iPHP_APP_CACHE . '/backup/' . $zipname; //压缩包所在路径
+		$zip = new PclZip($zipFile);
+		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
+		$fileArray = glob($backupdir . '/iCMS_*.sql');
+		$filelist = implode(',', $fileArray);
+		$v_list = $zip->create($filelist, PCLZIP_OPT_REMOVE_PATH, iPHP_APP_CACHE . '/backup/'); //将文件进行压缩
+		$v_list == 0 && iPHP::error_throw("压缩出错 : " . $zip->errorInfo(true)); //如果有误，提示错误信息。
+		ob_end_clean();
+		header("Content-Type: application/force-download");
+		header("Content-Transfer-Encoding: binary");
+		header('Content-Type: application/zip');
+		header('Content-Disposition: attachment; filename=' . $zipname);
+		header('Content-Length: ' . filesize($zipFile));
+		readfile($zipFile);
+		flush();
+		ob_flush();
+	}
+	public function do_recovery() {
+		$this->bakdir OR iUI::alert('请选择要恢复的备份卷');
+		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
+		$step = (int) $_GET['step'];
+		$count = (int) $_GET['count'];
+		if ($count == 0) {
+			$fileArray = glob($backupdir . '/iCMS_*.sql');
+			$count = count($fileArray);
+		}
+		$step OR $step = 1;
+		$this->bakindata($step);
+		$i = $step;
+		$step++;
+		if ($count > 1 && $step <= $count) {
+			$loopurl = APP_FURI . "&do=renew&step={$step}&count={$count}&dir={$this->bakdir}";
+			$moreBtn = array(
+				array("id" => "btn_stop", "text" => "停止", "url" => APP_URI . "&do=recover"),
+				array("id" => "btn_next", "text" => "继续", "src" => $loopurl, "next" => true),
+			);
+			$dtime = 1;
+			$msg = "正在导入第<span class='label label-success'>{$i}</span>卷备份文件，<hr />程序将自动导入余下备份文件...";
+		} else {
+			$msg = "success:#:check:#:导入成功!";
+			$moreBtn = array(
+				array("id" => "btn_next", "text" => "完成", "url" => APP_URI . "&do=recover"),
+			);
+			$dtime = 5;
+		}
+		$updateMsg = ($i == 1 ? false : true);
+		iUI::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
+	}
+	public function do_query() {
+		$field = $_POST["field"];
+		$pattern = $_POST["pattern"];
+		$replacement = $_POST["replacement"];
+		$where = $_POST["where"];
+		$pattern OR iUI::alert("查找项不能为空~!");
+		if ($field == "body") {
+			$rows_affected = iDB::query("UPDATE `#iCMS@__article_data` SET `body` = REPLACE(`body`, '$pattern', '$replacement') {$where}");
+		} else {
+			if ($field == "tkd") {
+				$rows_affected = iDB::query("UPDATE `#iCMS@__article` SET `title` = REPLACE(`title`, '$pattern', '$replacement'),
+		    	`keywords` = REPLACE(`keywords`, '$pattern', '$replacement'),
+		    	`description` = REPLACE(`description`, '$pattern', '$replacement'){$where}");
+			} else {
+				$rows_affected = iDB::query("UPDATE `#iCMS@__article` SET `$field` = REPLACE(`$field`, '$pattern', '$replacement'){$where}");
+			}
+		}
+		iUI::success($rows_affected . "条记录被替换<hr />操作完成!!");
+	}
 	public function bakuptable($tabledb) {
 		foreach ($tabledb as $table) {
 			$creattable .= "DROP TABLE IF EXISTS $table;\n";
@@ -216,66 +294,7 @@ class databaseAdmincp {
 		}
 		iUI::success($msg . "优化表完成");
 	}
-	public function do_del() {
-		$this->bakdir OR iUI::alert('请选择要删除的备份卷');
-		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
-		if (iFS::rmdir($backupdir)) {
-			iUI::success('备份文件已删除!', 'js:parent.$("#' . md5($this->bakdir) . '").remove();');
-		}
-	}
-	public function do_download() {
-		$this->bakdir OR iUI::alert('请选择要下载的备份卷');
-		iPHP::import(iPHP_LIB . '/pclzip.class.php'); //加载zip操作类
-		$zipname = $this->bakdir . ".zip"; //压缩包的名称
-		$zipFile = iPHP_APP_CACHE . '/backup/' . $zipname; //压缩包所在路径
-		$zip = new PclZip($zipFile);
-		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
-		$fileArray = glob($backupdir . '/iCMS_*.sql');
-		$filelist = implode(',', $fileArray);
-		$v_list = $zip->create($filelist, PCLZIP_OPT_REMOVE_PATH, iPHP_APP_CACHE . '/backup/'); //将文件进行压缩
-		$v_list == 0 && iPHP::error_throw("压缩出错 : " . $zip->errorInfo(true)); //如果有误，提示错误信息。
-		ob_end_clean();
-		header("Content-Type: application/force-download");
-		header("Content-Transfer-Encoding: binary");
-		header('Content-Type: application/zip');
-		header('Content-Disposition: attachment; filename=' . $zipname);
-		header('Content-Length: ' . filesize($zipFile));
-		readfile($zipFile);
-		flush();
-		ob_flush();
-	}
-	public function do_renew() {
-		iUI::alert('请使用 iCMS Tools 恢复');
-		$this->bakdir OR iUI::alert('请选择要恢复的备份卷');
-		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
-		$step = (int) $_GET['step'];
-		$count = (int) $_GET['count'];
-		if ($count == 0) {
-			$fileArray = glob($backupdir . '/iCMS_*.sql');
-			$count = count($fileArray);
-		}
-		$step OR $step = 1;
-		$this->bakindata($step);
-		$i = $step;
-		$step++;
-		if ($count > 1 && $step <= $count) {
-			$loopurl = APP_FURI . "&do=renew&step={$step}&count={$count}&dir={$this->bakdir}";
-			$moreBtn = array(
-				array("id" => "btn_stop", "text" => "停止", "url" => APP_URI . "&do=recover"),
-				array("id" => "btn_next", "text" => "继续", "src" => $loopurl, "next" => true),
-			);
-			$dtime = 1;
-			$msg = "正在导入第<span class='label label-success'>{$i}</span>卷备份文件，<hr />程序将自动导入余下备份文件...";
-		} else {
-			$msg = "success:#:check:#:导入成功!";
-			$moreBtn = array(
-				array("id" => "btn_next", "text" => "完成", "url" => APP_URI . "&do=recover"),
-			);
-			$dtime = 5;
-		}
-		$updateMsg = ($i == 1 ? false : true);
-		iUI::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
-	}
+
 	public function bakindata($num) {
 		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
 		$fileList = glob($backupdir . '/iCMS_*_' . $num . '.sql');
@@ -307,24 +326,5 @@ class databaseAdmincp {
 			}
 		}
 	}
-	public function do_query() {
-		$field = $_POST["field"];
-		$pattern = $_POST["pattern"];
-		$replacement = $_POST["replacement"];
-		$where = $_POST["where"];
-		$pattern OR iUI::alert("查找项不能为空~!");
-		if ($field == "body") {
-			$rows_affected = iDB::query("UPDATE `#iCMS@__article_data` SET `body` = REPLACE(`body`, '$pattern', '$replacement') {$where}");
-		} else {
-			if ($field == "tkd") {
-				$rows_affected = iDB::query("UPDATE `#iCMS@__article` SET `title` = REPLACE(`title`, '$pattern', '$replacement'),
-		    	`keywords` = REPLACE(`keywords`, '$pattern', '$replacement'),
-		    	`description` = REPLACE(`description`, '$pattern', '$replacement'){$where}");
-			} else {
-				$rows_affected = iDB::query("UPDATE `#iCMS@__article` SET `$field` = REPLACE(`$field`, '$pattern', '$replacement'){$where}");
-			}
-		}
-		iUI::success($rows_affected . "条记录被替换<hr />操作完成!!");
 
-	}
 }

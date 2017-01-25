@@ -72,12 +72,13 @@ class menuAdmincp{
 
     public function do_ajaxtree(){
 		$expanded = $_GET['expanded']?true:false;
-	 	echo $this->tree(null,$expanded);
+	 	echo $this->tree($_GET["root"],$expanded);
     }
 
     public function tree($id=null,$expanded=false,$menu_array = null){
         $array      = array();
         $menu_array === null && $menu_array = menu::$menu_array;
+        // $id && $menu_array = $menu_array[$id];
         foreach($menu_array AS $key=>$M) {
             $a = array('id'=>$M['id']?$M['id']:md5($M['href']),'data'=>$M);
             unset($a['data']['children']);
@@ -98,22 +99,7 @@ class menuAdmincp{
 
         return $array?json_encode($array):'[]';
     }
-    public function li($M) {
-    	if($M['-']){
-    		return '<span class="operation"><a href="'.APP_FURI.'&do=del&id='.$M['id'].'" class="btn btn-danger btn-small" onClick="return confirm(\'确定要删除此菜单?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a></span><div class="separator"><span class="sortnum" style="display:none;"><input type="text" data-id="'.$M['id'].'" name="sortnum['.$M['id'].']" value="'.$M['sortnum'].'"/></span> </div>';
-    	}
-        $M['rootid']==0 && $bold =' style="font-weight:bold"';
-        $tr='<div class="row-fluid">
-        <span class="sortnum" style="display:none;"><input type="text" data-id="'.$M['id'].'" name="sortnum['.$M['id'].']" value="'.$M['sortnum'].'" style="width:32px;"/></span>
-        <span class="name"'.$bold.'>'.$M['caption'].'</span><span class="operation">';
-        $tr.='
-        <a href="'.APP_URI.'&do=copy&id='.$M['id'].'" title="复制本菜单设置"  class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-copy"></i> 复制</a>
-        <a href="'.APP_URI.'&do=add&rootid='.$M['id'].'" class="btn btn-info btn-small"><i class="fa fa-plus-square"></i> 子菜单</a>
-        <a href="'.APP_FURI.'&do=addseparator&rootid='.$M['id'].'" class="btn btn-success btn-small" target="iPHP_FRAME"><i class="fa fa-minus-square"></i> 分隔符</a>
-        <a href="'.APP_URI.'&do=add&id='.$M['id'].'" title="编辑菜单设置"  class="btn btn-primary btn-small"><i class="fa fa-edit"></i> 编辑</a>
-        <a href="'.APP_FURI.'&do=del&id='.$M['id'].'" class="btn btn-danger btn-small" onClick="return confirm(\'确定要删除此菜单?\');" target="iPHP_FRAME"><i class="fa fa-trash-o"></i> 删除</a></span></div>';
-        return $tr;
-    }
+
     public function do_copy() {
         $id = $_GET['id'];
         $field = '`rootid`, `sortnum`, `app`, `name`, `title`, `href`, `icon`, `class`, `a_class`, `target`, `caret`, `data-toggle`, `data-meta`, `data-target`';
