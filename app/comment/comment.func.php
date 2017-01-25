@@ -172,6 +172,7 @@ function comment_list($vars){
 				$value['page']  = array('total'=>$multi->totalpage,'perpage'=>$multi->perpage);
 			}
 	        $value['param'] = array(
+				"sappid" => iCMS_APP_COMMENT,
 				"appid"  => $value['appid'],
 				"iid"    => $value['iid'],
 				"id"     => $value['id'],

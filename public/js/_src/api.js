@@ -5,7 +5,7 @@ define("api",{
         param: function(a) {
             var $a = $(a),$p = $a.parent();
             var _a = this.get_param($a),_b = this.get_param($p);
-            return $.extend(_a,_b);
+            return $.extend(_b,_a);
         },
         // params: function(a) {
         //     var $this = $(a),
