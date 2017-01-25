@@ -415,7 +415,6 @@ class iFS {
 	}
 
 	public static function upload($field, $udir = '', $FileName = '', $ext = '') {
-		list($RootPath, $FileDir) = self::mk_udir($udir); // 文件保存目录方式
 
 		if ($_FILES[$field]['name']) {
 			$tmp_file = $_FILES[$field]['tmp_name'];
@@ -440,6 +439,8 @@ class iFS {
 			if ($FileExt === false) {
 				return false;
 			}
+
+			list($RootPath, $FileDir) = self::mk_udir($udir); // 文件保存目录方式
 
 			if (self::$file_data) {
 				$fid = self::$file_data->id;
@@ -571,7 +572,6 @@ class iFS {
 	}
 //--------upload---end-------------------------------
 	public static function http($http, $ret = '', $times = 0) {
-		list($RootPath, $FileDir) = self::mk_udir($udir); // 文件保存目录方式
 		$frs = self::get_filedata('ofilename', $http);
 
 		if ($frs) {
@@ -587,6 +587,8 @@ class iFS {
 
 		$fdata = iHttp::remote($http);
 		if ($fdata) {
+			list($RootPath, $FileDir) = self::mk_udir($udir); // 文件保存目录方式
+
 			$file_md5 = md5($fdata);
 			$frs = self::get_filedata('filename', $file_md5);
 			if ($frs) {
