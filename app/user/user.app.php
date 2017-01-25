@@ -1070,11 +1070,13 @@ class userApp {
 	}
 	public function API_catchimage() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
+		//iCMS::$config['FS']['allow_ext'] = 'gif,jpg,jpeg,png';
 		$editorAdmincp = new editorAdmincp;
 		$editorAdmincp->do_catchimage();
 	}
 	public function API_uploadimage() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
+		//iCMS::$config['FS']['allow_ext'] = 'gif,jpg,jpeg,png';
 		$editorAdmincp = new editorAdmincp;
 		$editorAdmincp->do_uploadimage();
 	}
@@ -1085,6 +1087,7 @@ class userApp {
 	}
 	public function API_uploadpic() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
+		//iCMS::$config['FS']['allow_ext'] = 'gif,jpg,jpeg,png';
 		$F = iFS::upload('upfile');
 		// $F['path'] && $url = iFS::fp($F['path'], '+http');
 		iUI::js_callback(array(
@@ -1095,6 +1098,7 @@ class userApp {
 	//手机上传
 	public function API_mobileUp() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
+		//iCMS::$config['FS']['allow_ext'] = 'gif,jpg,jpeg,png';
 		$F = iFS::upload('upfile');
 		$F['path'] && $url = iFS::fp($F['path'], '+http');
 		iUI::js_callback(array(
