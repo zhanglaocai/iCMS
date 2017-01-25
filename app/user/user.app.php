@@ -187,6 +187,7 @@ class userApp {
 		$_ucid = (int) $_POST['_ucid'];
 		$mobile = (int) $_POST['mobile'];
 		$title = iSecurity::escapeStr($_POST['title']);
+		$pic = iSecurity::escapeStr($_POST['pic']);
 		$source = iSecurity::escapeStr($_POST['source']);
 		$keywords = iSecurity::escapeStr($_POST['keywords']);
 		$description = iSecurity::escapeStr($_POST['description']);
@@ -194,6 +195,13 @@ class userApp {
 		$userid = user::$userid;
 		$author = user::$nickname;
 		$editor = user::$nickname;
+
+		if(strpos($pic, '..') !== false){
+			iUI::alert('iCMS:file:invaild');
+		}
+		if(!iFS::check_ext($pic)){
+			iUI::alert('iCMS:file:failure');
+		}
 
 		if (iCMS::$config['user']['post']['seccode']) {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);

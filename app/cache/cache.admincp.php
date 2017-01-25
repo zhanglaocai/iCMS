@@ -53,7 +53,7 @@ class cacheAdmincp{
         $categoryAdmincp->do_cache($dialog);
     }
     public function do_tpl($dialog=true){
-    	iPHP::clear_tpl();
+    	iView::clear_tpl();
     	$dialog && iUI::success('清理完成');
     }
     public function do_article_count($dialog=true){

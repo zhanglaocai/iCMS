@@ -73,6 +73,10 @@ return array(
 		'empty'=>'请输入验证码！',
 		'error'=>'验证码不正确！请更换一张再试试。',
 	),
+	'file'=> array(
+		'invaild'=>'非法字符',
+		'failure'=>'不允许的文件类型',
+	),
 	//导航
 	'navTag'=>'»',
 );
