@@ -1,6 +1,8 @@
-<div id="field_edit" class="hide" style="width:600px;">
+<!-- 字段编辑器 -->
+<div id="field_edit" class="hide" style="width:500px;text-align: left;">
   <form id="field_form">
     <input type="hidden" name="id" id="iFormer-id"/>
+    <input type="hidden" name="type" id="iFormer-type"/>
     <input type="hidden" name="tag" id="iFormer-tag"/>
     <input type="hidden" name="field" id="iFormer-field"/>
     <div class="input-prepend">
@@ -14,21 +16,21 @@
     </div>
     <span class="help-inline">* 必填</span>
     <div class="clearfix"></div>
-    <div id="iFormer-value-text">
-      <div class="input-prepend">
-        <span class="add-on">默&nbsp;&nbsp;认&nbsp;值</span>
-        <input type="text" name="value" class="span3" id="iFormer-value" value=""/>
-      </div>
-      <span class="help-inline">选填</span>
+    <div class="input-prepend">
+      <span class="add-on">默&nbsp;&nbsp;认&nbsp;值</span>
+      <input type="text" name="default" class="span3" id="iFormer-default" value=""/>
     </div>
-    <div id="iFormer-value-select" class="hide">
+    <span class="help-inline">选填</span>
+    <div id="iFormer-option-wrap" class="hide">
       <div class="input-prepend">
         <span class="add-on">选项列表</span>
-        <textarea type="text" name="value" class="span3" disabled/></textarea>
+        <textarea type="text" name="option" class="span3" id="iFormer-option" disabled/></textarea>
       </div>
       <span class="help-inline">* 必填.<br />
         格式: 选项=值;<br />
-      例:电脑=pc</span>
+      例:电脑=pc;<br />
+      手机=phone;
+    </span>
     </div>
     <div class="clearfix"></div>
     <div class="input-prepend">
@@ -142,23 +144,3 @@
     </div>
   </form>
 </div>
-<script type="text/javascript">
-$(function(){
-  //{handle: ".widget-title"}
-  $( ".fields-container" ).draggable();
-  $("#iCMS-apps").submit(function(){
-    var name =$("#app_name").val();
-    if(name==''){
-      $("#app_name").focus();
-      iCMS.alert("应用名称不能为空");
-      return false;
-    }
-    var app =$("#app_app").val();
-    if(app==''){
-      $("#app_app").focus();
-      iCMS.alert("应用标识不能为空");
-      return false;
-    }
-  })
-})
-</script>

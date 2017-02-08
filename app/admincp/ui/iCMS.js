@@ -197,13 +197,15 @@
                 .replace(/<a[^>]+href=[" ]?([^"]+)[" ]?[^>]*>(.*?)<\/a>/ig, "[url=$1]$2[/url]")
                 .replace(/<img[^>]+src=[" ]?([^"]+)[" ]?[^>]*>/ig, "[img]$1[/img]")
                 .replace(/<embed/g, "\n<embed")
-                .replace(/<embed[^>]+class="edui-faked-video"[^"].+src=[" ]?([^"]+)[" ]+width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]?[^>]*>/ig, "[video=$2,$3]$1[/video]")
-                .replace(/<embed[^>]+class="edui-faked-music"[^"].+src=[" ]?([^"]+)[" ]+width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]?[^>]*>/ig, "[music=$2,$3]$1[/music]")
+                .replace(/<embed[^>]+class="edui-faked-video"[^"].+src=[" ]?([^"]+)[" ]+width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]?[^>]*>/ig, "[embed video=$2,$3]$1[/embed]")
+                .replace(/<embed[^>]+class="edui-faked-music"[^"].+src=[" ]?([^"]+)[" ]+width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]?[^>]*>/ig, "[embed music=$2,$3]$1[/embed]")
+                .replace(/<video[^>]*?width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]+src=[" ]?([^"]+)[" ]+?[^>]*>*<source src=[" ]?([^"]+)[" ]+type=[" ]?([^"]+)[" ]\/>*<\/video>/img, "[video=$1,$2 type=\"$5\"]$3[/video]")
                 .replace(/<b[^>]*>(.*?)<\/b>/ig, "[b]$1[/b]")
                 .replace(/<strong[^>]*>(.*?)<\/strong>/ig, "[b]$1[/b]")
                 .replace(/<p[^>]*?>/g, "\n\n")
                 .replace(/<br[^>]*?>/g, "\n")
                 .replace(/<[^>]*?>/g, "");
+                console.log(content);
             if(ubb){
                 content = content.replace(/\n+/g, "[iCMS.N]");
                 content = this.n2p(content,ubb);
@@ -221,8 +223,9 @@
                 .replace(/<p>\s*<p>/g, '<p>')
                 .replace(/<\/p>\s*<\/p>/g, '</p>')
                 .replace(/<p>\s*<\/p>/g, '')
-                .replace(/\[video=(\d+),(\d+)\](.*?)\[\/video\]/ig, '<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>')
-                .replace(/\[music=(\d+),(\d+)\](.*?)\[\/music\]/ig, '<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" align="none"/>')
+                .replace(/\[video=(\d+),(\d+)\stype="(.+?)"\](.*?)\[\/video\]/ig, '<video class="edui-upload-video  vjs-default-skin  video-js" controls="" preload="none" width="$1" height="$2" src="$4" data-setup="{}">'+'<source src="$4" type="$3"/>'+'</video>')
+                .replace(/\[embed\svideo=(\d+),(\d+)\](.*?)\[\/embed\]/ig, '<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>')
+                .replace(/\[embed\smusic=(\d+),(\d+)\](.*?)\[\/embed\]/ig, '<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" align="none"/>')
                 .replace(/<p><br\/><\/p>/g, '');
             return content;
         },

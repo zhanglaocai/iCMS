@@ -4,81 +4,191 @@
  */
 
 class apps_db {
-    public static function make_sql($vars=null){
-      $field    = $vars['field'];  //字段类型
-      $label    = $vars['label']; //字段名称
-      $name     = $vars['name'];  //字 段 名
-      $default  = $vars['default']; //默 认 值
-      $len      = $vars['len']; //数据长度
+    public static function json_field($json=null){
+        if(empty($json)) return array();
+
+        $json = stripcslashes($json);
+        $array = json_decode($json,true);
+        $field_array = array();
+        foreach ($array as $key => $value) {
+            $output = array();
+            parse_str($value,$output);
+            if(isset($output['UI:BR'])){
+            }else{
+                $a = array();
+                foreach ($output as $k => $v) {
+                    if(in_array($k, array('field','label','name','default','len'))){
+                        $a[$k] = $v;
+                    }
+                }
+                ksort($a);
+                $field_array[$key] = json_encode($a);
+            }
+        }
+        return $field_array;
+    }
+    public static function make_sql($vars=null,$alter=null,$origin=null){
+        if(!is_array($vars)){
+            $vars = json_decode($vars,true);
+        }
+        $field    = $vars['field'];  //字段类型
+        $label    = $vars['label']; //字段名称
+        $name     = $vars['name'];  //字 段 名
+        $default  = $vars['default']; //默 认 值
+        $len      = $vars['len']; //数据长度
 
       empty($name) && $name = iPinyin::get($label);
       $field = strtolower($field);
-      $DEFAULT = " DEFAULT '$default'";
       switch ($field) {
         case 'varchar':
         case 'multivarchar':
-          $data_type = 'varchar';
-          $data_len  = '('.$len.')';
+            $data_type = 'VARCHAR';
         break;
         case 'tinyint':
-          $data_type = 'tinyint';
-          $data_len  = '(1)';
-          $default   = (int)$default;
+            $len OR $len = '1';
+            $data_type = 'TINYINT';
+            $default   = (int)$default;
+            empty($default) && $default ='0';
         break;
         case 'int':
         case 'time':
-          $data_type = 'int';
-          $data_len  = '(10)';
-          $default   = (int)$default;
+            $len OR $len = '10';
+            $data_type = 'INT';
+            $default   = (int)$default;
+            empty($default) && $default ='0';
         break;
         case 'bigint':
-          $data_type = 'bigint';
-          $data_len  = '(20)';
-          $default   = (int)$default;
+            $len OR $len = '20';
+            $data_type = 'BIGINT';
+            $default   = (int)$default;
+            empty($default) && $default ='0';
         break;
         case 'radio':
         case 'select':
-          $data_type = 'smallint';
-          $data_len  = '(6)';
+            $len OR $len = '6';
+            $data_type = 'SMALLINT';
+            $default   = (int)$default;
+            empty($default) && $default ='0';
         break;
         case 'checkbox':
         case 'multiselect':
-          $data_type = 'varchar';
-          $data_len  = '(255)';
+            $len OR $len = '255';
+            $data_type = 'VARCHAR';
         break;
         case 'image':
         case 'file':
-          $data_type = 'varchar';
-          $data_len  = '(255)';
+            $len OR $len = '255';
+            $data_type = 'VARCHAR';
         break;
         case 'multiimage':
         case 'multifile':
-          $data_type = 'varchar';
-          $data_len  = '(10240)';
+            $len OR $len = '10240';
+            $data_type = 'VARCHAR';
         break;
         case 'text':
-          $data_type = 'text';
-          $DEFAULT   = '';
+            $data_type = 'TEXT';
+            $len = null;
+            $DEFAULT   = null;
         break;
         case 'mediumtext':
         case 'editor':
-          $data_type = 'mediumtext';
-          $DEFAULT   = '';
+            $data_type = 'MEDIUMTEXT';
+            $len = null;
+            $DEFAULT   = null;
+        break;
+        case 'decimal':
+            $data_type = 'DECIMAL';
+            $default   = '0.0';
         break;
         default:
-         $data_type = 'varchar';
-         $data_len  = '(255)';
+            $len OR $len = '255';
+            $data_type = 'VARCHAR';
         break;
       }
+      $len===null OR $data_len  = '('.$len.')';
+      $DEFAULT===null && $DEFAULT = " DEFAULT '$default'";
 
-      return "`$name` $data_type$data_len NOT NULL $DEFAULT COMMENT '$label'";
-      // return "ADD COLUMN `$name` $data_type$data_len DEFAULT '$default' NOT NULL  COMMENT '$label'";
+      $sql = self::idf_escape($name)." $data_type$data_len NOT NULL $DEFAULT COMMENT '$label'";
+
+      switch ($alter) {
+          case 'ADD':
+              $sql = 'ADD COLUMN '.$sql;
+            break;
+          case 'CHANGE':
+              $sql = 'CHANGE '.self::idf_escape($origin).' '.$sql;
+            break;
+          case 'DROP':
+              $sql = 'DROP COLUMN '.self::idf_escape($name);
+            break;
+      }
+
+      return $sql;
+    }
+    public static function make_alter_sql($N_fields,$O_fields,$field_origin){
+        //新字段
+        $N_field_array  = self::json_field($N_fields);
+        //旧的字段
+        $O_fields_array = self::json_field($O_fields);
+
+        print_r($O_fields_array);
+        print_r($N_field_array);
+
+        $diff = array_diff_values($N_field_array,$O_fields_array);
+        $sql_array = '';
+        //删除 或者更改过
+        if($diff['-'])foreach ($diff['-'] as $key => $value) {
+            if(isset($field_origin[$key])){
+              //新字段名
+              $nfield = $field_origin[$key];
+              //新数据json
+              $nvalue = $N_field_array[$nfield];
+              if($nvalue){
+                $sql_array[]= apps_db::make_sql($nvalue,'CHANGE',$key);
+                //将更改的字段从新增数据里移除
+                unset($diff['+'][$nfield]);
+              }
+            }else{
+              //删除字段
+              $sql_array[]= apps_db::make_sql($value,'DROP');
+            }
+        }
+        //新增
+        if($diff['+'])foreach ($diff['+'] as $key => $value) {
+            if(!isset($field_origin[$key])){
+              $sql_array[]= apps_db::make_sql($value,'ADD');
+            }
+        }
+        // print_r($diff);
+        // print_r($field_origin);
+        // print_r($sql_array);
+        // exit;
+        return $sql_array;
+    }
+    public static function alter_table($name,$sql=null){
+        if(empty($sql))return;
+
+        $alter_sql = "ALTER TABLE `#iCMS@__{$name}` ";
+        if(is_array($sql)){
+            $alter_sql.=implode(',', $sql);
+        }
+        $alter_sql.= ';';
+        // print_r($alter_sql);
+        iDB::query($alter_sql);
+    }
+    public static function base_fields_key(){
+        return array('id','cid','ucid','pid','sortnum',
+            'title','editor','userid','pubdate','postime','tpl','hits',
+            'hits_today','hits_yday','hits_week','hits_month',
+            'favorite','comments','good','bad','creative',
+            'weight','mobile','postype','status'
+        );
     }
     public static function base_fields(){
       $sql = self::CREATE_TABLE('test',null,true);
       preg_match_all("@`(.+)`\s(.+)\sDEFAULT\s'(.*?)'\sCOMMENT\s'(.+)',@", $sql, $matches);
       return $matches;
     }
+
     public static function create_table($name,$fields=null,$sql=false){
       $create_sql = "CREATE TABLE `#iCMS@__{$name}` (";
       $create_sql.= "
@@ -135,7 +245,8 @@ class apps_db {
      if($sql){
         return $create_sql;
      }
-     return iDB::query($create_sql);
+     iDB::query($create_sql);
+     return array($name,'id');
     }
     /** Filter length value including enums
     * @param string
@@ -354,7 +465,7 @@ class apps_db {
     * @param string
     * @return bool
     */
-    public static function alter_table($table, $name, $fields, /*$foreign,*/ $comment, $auto_increment, $engine='MyISAM', $collation='utf8_general_ci',$partitioning='') {
+    public static function alter_table2($table, $name, $fields, /*$foreign,*/ $comment, $auto_increment, $engine='MyISAM', $collation='utf8_general_ci',$partitioning='') {
         $alter = array();
         foreach ($fields as $field) {
             $alter[] = ($field[1]

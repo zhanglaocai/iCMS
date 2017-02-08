@@ -50,7 +50,7 @@ function hooks_item_clone(a,f,m) {
     event.preventDefault();
     var me = this;
     $(".H_field",hooks_item).html('<option value="">加载中....请稍候!</option>');
-      $.get("<?php echo APP_URI; ?>&do=hook_app_field_opt&_app="+this.value,
+      $.get("<?php echo APP_URI; ?>&do=hooks_app_field_opt&_app="+this.value,
         function(html){
           set_field(hooks_item,f,html);
         }
@@ -82,7 +82,7 @@ function hooks_item_clone(a,f,m) {
       </span>
     </div>
     <div class="widget-content">
-      <form action="<?php echo APP_FURI; ?>&do=save_hooks" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
+      <form action="<?php echo APP_FURI; ?>&do=hooks_save" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
             <div class="hooks_container"></div>
 <script>
 <?php

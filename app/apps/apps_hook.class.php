@@ -7,15 +7,25 @@
  */
 
 class apps_hook {
+    /**
+     * 获取带钩子APP
+     * @param  [type] $app [description]
+     * @return [type]      [description]
+     */
     public static function app_select($app=null) {
         foreach (apps::get_array(array("table"=>true)) as $key => $value) {
-            list($path,$obj_name)= apps::path($value['app'],'app',true);
+            list($path,$obj_name)= apps::get_path($value['app'],'app',true);
             if(is_file($path) && method_exists($obj_name,'hooked')){
                 $option[]='<option '.($app==$value['app']?' selected="selected"':'').' value="'.$value['app'].'">'.$value['app'].':'.$value['name'].'</option>';
             }
         }
         return implode('', (array)$option);
     }
+    /**
+     * 获取APP字段
+     * @param  [type] $app [description]
+     * @return [type]      [description]
+     */
     public static function app_fields($app=null) {
         $rs = apps::get($app,'app');
         if($rs['table'])foreach ($rs['table'] as $key => $table) {
@@ -32,11 +42,15 @@ class apps_hook {
         }
         return implode('', (array)$option);
     }
+    /**
+     * 获取APP 插件等可用钩子
+     * @return [type] [description]
+     */
     public static function app_method() {
         $option = '';
         foreach (apps::get_array(array("status"=>'1')) as $key => $value) {
             // $option.=self::app_hook_method($value['app']);
-            list($path,$obj_name)= apps::path($value['app'],'app',true);
+            list($path,$obj_name)= apps::get_path($value['app'],'app',true);
             if(@is_file($path)){
                 $option.= self::app_hook_method($obj_name);
             }
@@ -50,7 +64,11 @@ class apps_hook {
         }
         return $option;
     }
-
+    /**
+     * 获取app钩子
+     * @param  [type] $obj_name [description]
+     * @return [type]           [description]
+     */
     public static function app_hook_method($obj_name=null) {
         $class_methods = get_class_methods ($obj_name);
         foreach ($class_methods as $key => $method) {
@@ -66,6 +84,12 @@ class apps_hook {
         }
         return implode('', (array)$option);
     }
+    /**
+     * 获取注释
+     * @param  [type] $class  [description]
+     * @param  [type] $method [description]
+     * @return [type]         [description]
+     */
     public static function get_doc($class,$method) {
         $reflection = new ReflectionMethod($class,$method);
         $docblockr  = $reflection->getDocComment();
@@ -76,6 +100,11 @@ class apps_hook {
         }
         return $doc;
     }
+    /**
+     * 解析注释
+     * @param  [type] $line [description]
+     * @return [type]       [description]
+     */
     private static function parseLine($line) {
         // trim the whitespace from the line
         $line = trim ( $line );

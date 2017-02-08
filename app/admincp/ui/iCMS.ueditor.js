@@ -125,7 +125,7 @@
         container:[],
         multi:function(){
           var ed = this;
-          $(".iCMS-editor").each(function(n,a){
+          $(".iCMS-editor-wrap").each(function(n,a){
             var id = a.id,eid = id.replace('editor-','');
             ed.create(eid);
           });
@@ -139,10 +139,15 @@
             if(eid) this.id = eid;
             var ed  = UE.getEditor('iCMS-editor-'+this.id);
             this.container[this.id] = ed;
+            // ed.reset();
+
             return ed;
         },
         destroy:function(eid) {
-            UE.delEditor("iCMS-editor-"+eid);
+            setTimeout(function(){
+                UE.delEditor("iCMS-editor-"+eid);
+            },200);
+            this.container[eid] = null;
         },
         insPageBreak:function (argument) {
             var ed = this.container[this.id];

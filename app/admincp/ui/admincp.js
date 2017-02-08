@@ -349,7 +349,7 @@ function modal_icms(el,a){
                 defaults = {
                     move: function(){
                         var select  = $("#cid").clone().show()
-                            //.removeClass("chosen-select")
+                            .attr("class",'span6')
                             .attr("id",iCMS.random(3));
                         $("option:first",select).remove();
                         $("option:selected",select).attr("selected", false);
@@ -357,10 +357,9 @@ function modal_icms(el,a){
                     },
                     prop: function(){
                         var select  = $("#pid").clone().show()
-                            //.removeClass("chosen-select")
                             .attr("name",'pid[]')
                             .attr("multiple",'multiple')
-                            .attr("class",'span3')
+                            .attr("class",'span6')
                             .attr("id",iCMS.random(3));
                         $("option:first",select).remove()
                         $("option:selected",select).attr("selected", false);
@@ -389,7 +388,8 @@ function modal_icms(el,a){
                     return;
                 }
                 action.val(act).appendTo(im);
-                //console.log(box,typeof box);
+                // console.log(box,typeof box);
+                var is_chosen = false;
                 if(box==null){
                     //console.log(typeof options[act]);
                     if(typeof options[act]==="undefined"){
@@ -399,17 +399,31 @@ function modal_icms(el,a){
                         box = document.createElement("div");
                         $(box).html(options[act]());
                     }
+                }else{
+                    $("select",$(box)).chosen(chosen_config);
+                    var is_chosen = true;
                 }
 
-                window.batch_dialog = iCMS.dialog({id:'iCMS-batch',
-                    title:title,content:box,
-                    okValue: '确定',ok: function () {
+                window.batch_dialog = iCMS.dialog({
+                    id:'iCMS-batch',
+                    title:title,
+                    content:box,
+                    okValue: '确定',
+                    ok: function () {
                         if(typeof box=="object"){
                             batch_content.html($(box).clone(true));
                         }
+                        if(is_chosen){
+                            $("select", $(box)).chosen("destroy");
+                        }
+
                         im.submit();
                     },
-                    cancelValue: "取消",cancel: function(){
+                    cancelValue: "取消",
+                    cancel: function(){
+                        if(is_chosen){
+                            $("select", $(box)).chosen("destroy");
+                        }
                         action.val(0);
                         batch_content.empty();
                     }

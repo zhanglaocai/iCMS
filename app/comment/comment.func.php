@@ -7,10 +7,6 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-function comment_user_info($uid=0,$username=null,$facesize=null){
-	return user::info($uid,$username,$facesize);
-}
-
 function comment_array($vars){
 	$where_sql = " `status`='1'";
 	$is_multi = false;
@@ -28,15 +24,15 @@ function comment_array($vars){
 		$_count = count($rs);
         for ($i=0; $i < $_count; $i++) {
         	$data[$rs[$i]['id']] = $rs[$i];
-        	$data[$rs[$i]['id']]['user']= comment_user_info($rs[$i]['userid'],$rs[$i]['username'],$vars['facesize']);;
+        	$data[$rs[$i]['id']]['user']= user::info($rs[$i]['userid'],$rs[$i]['username'],$vars['facesize']);;
         }
 	}else{
 		$data = $rs[0];
-		$data['user'] = comment_user_info($data['userid'],$data['username'],$vars['facesize']);
+		$data['user'] = user::info($data['userid'],$data['username'],$vars['facesize']);
 	}
 	return $data;
 }
-function comment_list_display($vars){
+function __comment_list_display($vars){
 	$vars['do']          = 'list';
 	$vars['page_ajax']   = 1;
 	$vars['total_cahce'] = 1;
@@ -73,7 +69,7 @@ function comment_list($vars){
 		$vars  = array_merge($vars,$_vars);
 		$vars['iid']   OR iUI::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"iid"或"iid"值为空.');
 		$vars['appid'] OR iUI::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"appid"或"appid"值为空.');
-		return comment_list_display($vars);
+		return __comment_list_display($vars);
 	}
 
 	$where_sql = " `status`='1'";
@@ -160,8 +156,8 @@ function comment_list($vars){
 				$value['lou'] = $total-($key+$ln*$maxperpage);
 			}
 			$value['content'] = nl2br($value['content']);
-			$value['user']    = comment_user_info($value['userid'],$value['username'],$vars['facesize']);
-			$value['reply_uid'] && $value['reply'] = comment_user_info($value['reply_uid'],$value['reply_name'],$vars['facesize']);
+			$value['user']    = user::info($value['userid'],$value['username'],$vars['facesize']);
+			$value['reply_uid'] && $value['reply'] = user::info($value['reply_uid'],$value['reply_name'],$vars['facesize']);
 
 			$value['total'] = $total;
 			if($vars['reply'] && $reply_array){

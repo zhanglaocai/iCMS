@@ -186,7 +186,7 @@ class editorAdmincp{
             "url"      =>$url,
             "path"     =>$F["path"],
             "fid"      =>$F["fid"],
-            "fileType" =>$F["ext"],
+            "ext"      =>$F["ext"],
             "original" =>$F["oname"],
             "state"    =>'SUCCESS'
 		));

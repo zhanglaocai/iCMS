@@ -1,11 +1,14 @@
 @charset "utf-8";
+
 /* dialog样式 */
 .wrapper { zoom: 1; width: 630px; *width: 626px; height: 380px; margin: 0 auto; padding: 10px; position: relative; font-family: sans-serif; }
-/* tab样式框大小 */
+
+/*tab样式框大小*/
 .tabhead { float: left; }
 .tabbody { width: 100%; height: 346px; position: relative; clear: both; }
 .tabbody .panel { position: absolute; width: 0; height: 0; background: #fff; overflow: hidden; display: none; }
 .tabbody .panel.focus { width: 100%; height: 346px; display: block; }
+
 /* 图片对齐方式 */
 .alignBar { float: right; margin-top: 5px; position: relative; }
 .alignBar .algnLabel { float: left; height: 20px; line-height: 20px; }
@@ -19,6 +22,7 @@
 .alignBar #alignIcon .left-align.focus { background-position: -20px 0; }
 .alignBar #alignIcon .right-align.focus { background-position: -40px 0; }
 .alignBar #alignIcon .center-align.focus { background-position: -60px 0; }
+
 /* 远程图片样式 */
 #remote { z-index: 200; }
 #remote .top { width: 100%; margin-top: 25px; }
@@ -35,6 +39,7 @@
 #remote #lock { }
 #remote #lockicon { zoom: 1; _display: inline; display: inline-block; width: 20px; height: 20px; background: url("../../themes/default/images/lock.gif") -13px -13px no-repeat; vertical-align: middle; }
 #remote #preview { clear: both; width: 260px; height: 240px; z-index: 9999; margin-top: 10px; background-color: #eee; overflow: hidden; }
+
 /* 上传图片 */
 .tabbody #upload.panel { width: 0; height: 0; overflow: hidden; position: absolute !important; clip: rect(1px, 1px, 1px, 1px); background: #fff; display: block; }
 .tabbody #upload.panel.focus { width: 100%; height: 346px; display: block; clip: auto; }
@@ -94,6 +99,7 @@
 #upload .statusBar .btns .uploadBtn, #upload .statusBar .btns .uploadBtn.state-paused { background: #00b7ee; color: #fff; border-color: transparent; }
 #upload .statusBar .btns .uploadBtn:hover, #upload .statusBar .btns .uploadBtn.state-paused:hover { background: #00a2d4; }
 #upload .statusBar .btns .uploadBtn.disabled { pointer-events: none; filter: alpha(opacity=60); -moz-opacity: 0.6; -khtml-opacity: 0.6; opacity: 0.6; }
+
 /* 图片管理样式 */
 #online { width: 100%; height: 336px; padding: 0px; }
 #online #imageList { width: 100%; height: 100%; overflow-x: hidden; overflow-y: auto; position: relative; }
@@ -105,6 +111,7 @@
 #online li .icon:hover { width: 107px; height: 107px; border: 3px solid #1094fa; }
 #online li.selected .icon { background-image: url(images/success.png); background-image: url(images/success.gif)\9; background-position: 75px 75px; }
 #online li.selected .icon:hover { width: 107px; height: 107px; border: 3px solid #1094fa; background-position: 72px 72px; }
+
 /* 图片搜索样式 */
 #search .searchBar { width: 100%; height: 30px; margin: 10px 0 5px 0; padding: 0; }
 #search input.text { width: 150px; padding: 3px 6px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; border-radius: 4px; -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075); box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075); -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; }
@@ -126,7 +133,6 @@
 #search .searchList li a { color: #999; border-top: 1px solid #F2F2F2; background: #FAFAFA; text-align: center; display: block; padding: 0 5px; width: 105px; height: 32px; line-height: 32px; white-space: nowrap; text-overflow: ellipsis; text-decoration: none; overflow: hidden; word-break: break-all; }
 #search .searchList a:hover { text-decoration: underline; color: #333; }
 #search .searchList .clearFloat { clear: both; }
-
 /* Widgets */
 .widget-box { background: none repeat scroll 0 0 #F9F9F9; border-top: 1px solid #CDCDCD; border-left: 1px solid #CDCDCD; border-right: 1px solid #CDCDCD; clear: both; margin-top: 16px; /* margin-bottom: 16px;  */ position: relative; }
 .widget-box.widget-plain { background: transparent; border: none; margin-top: 0; margin-bottom: 0; }

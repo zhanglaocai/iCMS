@@ -74,16 +74,11 @@ class commentAdmincp{
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
     	$id OR iUI::alert('请选择要删除的评论!');
-    	$comment = iDB::row("SELECT * FROM `#iCMS@__comment` WHERE `id`='$id' LIMIT 1");
-
-        $table = apps::get_table($comment->appid);
-
-        iDB::query("UPDATE {$table['name']} SET comments = comments-1 WHERE `comments`>0 AND `{$table['primary']}`='{$comment->iid}' LIMIT 1;");
-        iDB::query("UPDATE `#iCMS@__user` SET comments = comments-1 WHERE `comments`>0 AND `uid`='{$comment->userid}' LIMIT 1;");
-		iDB::query("DELETE FROM `#iCMS@__comment` WHERE `id` = '$id';");
-
+    	$rs = $this->get($id);
+        $this->del($rs);
         $dialog && iUI::success('评论删除完成','js:parent.$("#id-'.$id.'").remove();');
     }
+
     public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iUI::alert("请选择要操作的评论");
@@ -106,5 +101,37 @@ class commentAdmincp{
             $data && iDB::update("comment",$data,array('id'=>$this->id));
             iUI::success('操作成功!','js:1');
         }
+    }
+    public static function get($id=0,$userid=null){
+        $sql = "`id`='".(int)$id."'";
+        $userid===null OR $sql.= " AND `userid` = '" . (int)$userid . "'";
+        return iDB::row("
+            SELECT *
+            FROM `#iCMS@__comment`
+            WHERE {$sql}
+        ");
+    }
+    public static function del($comment){
+        $app = apps::get_table($comment->appid);
+        if($app['table']&&$app['primary']){
+            iDB::query("
+                UPDATE ".$app['table']."
+                SET comments = comments-1
+                WHERE `comments`>0
+                AND `".$app['primary']."`='{$comment->iid}'
+                LIMIT 1;
+            ");
+        }
+        iDB::query("
+            UPDATE `#iCMS@__user`
+            SET comments = comments-1
+            WHERE `comments`>0
+            AND `uid`='{$comment->userid}'
+            LIMIT 1;
+        ");
+        iDB::query("
+            DELETE FROM `#iCMS@__comment`
+            WHERE `id` = '$comment->id';
+        ");
     }
 }

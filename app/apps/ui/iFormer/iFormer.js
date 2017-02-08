@@ -23,9 +23,8 @@ var iFormer = {
           return $('<'+t+'/>');
         }
     },
-    render: function(helper,obj,data) {
+    render: function(helper,obj,data,origin) {
         var $container = this.widget('div').addClass(this.ui.class)
-            $fdata     = this.widget('input').prop({'type':'hidden','name':'fields[]'}),
             $action    = this.widget('span').addClass('action'),
             $edit      = this.widget('a').addClass('fa fa-edit')
             $del       = this.widget('a').addClass('fa fa-trash-o');
@@ -94,7 +93,7 @@ var iFormer = {
                 default:var $elem = this.widget(obj['tag']);
             }
 
-            obj['type']  = obj['type']||'text';
+            var elem_type  = obj['type']||'text';
             obj['class'] = obj['class']||'span3';
 
             switch (obj['type']) {
@@ -118,7 +117,7 @@ var iFormer = {
                     if(obj['type']=='multiple'){
                         $elem.attr('multiple',true);
                     }
-                    obj['type']  = null;
+                    elem_type  = null;
                     if(obj['value']){
                         console.log(obj['value']);
                     }
@@ -130,31 +129,30 @@ var iFormer = {
                     if(obj['len']=="10"){
                         obj['class'] = 'span2';
                     }
-                    obj['type']  = 'text';
+                    elem_type  = 'text';
                 break;
-                case 'currency2':
+                case 'currency':
                 case 'percentage':
                     var handle2 = function () {
-                        var text = helper.attr('label-after');
                         var label2 = iFormer.widget('span').addClass('add-on');
-                        label2.append(text);
+                        label2.append(obj['label-after']);
                         $div.append(label2).addClass('input-append');
                     }
                     obj['class'] = 'span2';
-                    obj['type']  = 'text';
+                    elem_type  = 'text';
                 break;
                 case 'decimal':
                     obj['class'] = 'span2';
-                    obj['type']  = 'text';
+                    elem_type  = 'text';
                 break;
             }
 
             $elem.attr({
                 'id': obj['id'],
                 'name': obj['name'],
-                'type': obj['type'],
+                'type': elem_type,
                 'class': obj['class'],
-                'value': obj['value']|| '',
+                'value': obj['default']|| '',
             });
 
             $label.text(obj['label']);
@@ -171,6 +169,15 @@ var iFormer = {
             }
 
             $container.append($div,$action,$help);
+        }
+        var $fdata = this.widget('input').prop({'type':'hidden','name':'fields[]'});
+        if(origin){
+            var $origin = this.widget('input').prop({
+                'type':'hidden',
+                'name':'origin['+origin+']',
+                'value':obj['id']
+            });
+            $container.append($origin);
         }
         if(data){
             $fdata.val(data);
@@ -206,7 +213,7 @@ var iFormer = {
         for (var i in param) {
           var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);
           var q = this.urlEncode(param[i], k);
-          query.push(q);
+          if(q!=='') query.push(q);
         }
       }
       return query.join('&');
@@ -221,7 +228,8 @@ var iFormer = {
             var value = pairs[i].substring(pos + 1);
             value = decodeURIComponent(value);
 
-            if(argname.indexOf('[]')!=-1){
+            if(argname.indexOf('[')!=-1){
+              argname = argname.replace(/\[\d+\]/g, "[]");
               argname = argname.replace('[]', '');
               if(!args[argname]){
                 args[argname] = [];
@@ -249,23 +257,29 @@ var iFormer = {
         // a.reset();
         document.getElementById("field_form").reset();
         // $("#field_form",$(a))[0].reset();
-        $(".chosen-select", $(a)).trigger("chosen:updated");
+        // $(".chosen-select", $(a)).trigger("chosen:updated");
+        $(".chosen-select", $(a)).chosen("destroy");
     },
     edit: function($container) {
         // $container.dblclick(function(event) {
             event.preventDefault();
-            var me   = $(this);
-            var data = $("[name='fields[]']",$container).val();
-            var obj  = iFormer.urlDecode(data);
-            iFormer.edit_dialog(obj, function(param,qt) {
-                var render = iFormer.render($container,param,qt);
-                $container.replaceWith(render);
-            });
+            var me = $(this),
+            data   = $("[name='fields[]']",$container).val(),
+            origin  = $("[name^='origin']",$container).val(),
+            obj    = iFormer.urlDecode(data);
+            // console.log(origin,obj,data);
+            iFormer.edit_dialog(obj,
+                function(param,qt) {
+                    var render = iFormer.render($container,param,qt,origin);
+                    $container.replaceWith(render);
+                }
+            );
         // });
     },
-    edit_dialog: function(obj, func) {
+    edit_dialog: function(obj, callback) {
         var me = this;
         var fbox = document.getElementById("field_edit");
+        $("select",$(fbox)).chosen(chosen_config);
 
         for(var i in obj) {
             $("#iFormer-"+i, fbox).val(obj[i]);
@@ -273,17 +287,14 @@ var iFormer = {
                 $("#iFormer-"+i, fbox).trigger("chosen:updated");
             }
         }
-        var vs_tag = 'text';
-        var vh_tag = 'select';
-        if(obj['tag']=='select'){
-            var vs_tag = 'select';
-            var vh_tag = 'text';
+        console.log(obj);
+        if(obj['tag']=='select'||obj['type']=='radio'||obj['type']=='checkbox'||obj['type']=='select'||obj['type']=='multiple'){
+            $("#iFormer-option-wrap", fbox).show();
+            $("[name='option']").removeAttr('disabled');
+        }else{
+            $("#iFormer-option-wrap", fbox).hide();
+            $("[name='option']").attr("disabled",true);
         }
-        var vs = $("#iFormer-value-"+vs_tag, fbox).show();
-        $("[name='value']",vs).removeAttr('disabled').attr('id','iFormer-value');
-        var vh = $("#iFormer-value-"+vh_tag, fbox).hide();
-        $("[name='value']",vh).removeAttr('id').attr("disabled",true);
-
 
         return iCMS.dialog({
             id: 'apps-field-dialog',
@@ -296,10 +307,15 @@ var iFormer = {
                     'name': $("#iFormer-name", fbox).val(),
                     'class': $("#iFormer-class", fbox).val(),
                     'help': $("#iFormer-help", fbox).val(),
-                    'value': $("#iFormer-value", fbox).val()
+                    'default': $("#iFormer-default", fbox).val()
                 });
-
+                if(data['id']!= data['name']){
+                    data['id'] = data['name'];
+                    $("#iFormer-id", fbox).val(data['id']);
+                }
                 param = $("form", fbox).serialize();
+                // param = $("form", fbox).serializeArray();
+// console.log(param);
 
                 if(!data.label){
                   iCMS.alert("请填写字段名称!");
@@ -316,7 +332,7 @@ var iFormer = {
                         return false;
                     }
                 }
-                func(data,param);
+                callback(data,param);
                 me.freset(fbox);
                 return true;
             },
@@ -355,14 +371,17 @@ $(function() {
             field      = helper.attr('field'),
             type       = helper.attr('type'),
             label      = helper.attr('label'),
+            after      = helper.attr('label-after'),
             len        = helper.attr('len'),
             id         = iCMS.random(6, true);
             var html   = iFormer.render(helper,{
                 'id': id,
                 'label': (label || '表单') + id,
+                'label-after':after,
                 'field': field,
                 'name': id,
                 'tag': tag,
+                'default': '',
                 'type': type,
                 'len': len
             });

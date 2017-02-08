@@ -50,5 +50,5 @@
 #custom_field_list .row-fluid{height:35px;}
 #custom_field_list .row-fluid div{background-color:#efefef;}
 #custom_field_list .clearfloat{visibility:hidden;height:0px;border-left:0px;border-right:0px;}
-#custom_field_list .pagebreak{cursor:move;background-position:30% center;background-image:url(../.../../../../admincp/ui/ueditor/themes/pagebreak.gif);background-repeat:no-repeat;clear:both;display:block;width:99%;border-top:#999999 1px dotted;border-bottom:#999999 1px dotted;border-right:0px;margin:5px;border-left:0px;padding:0px;height:5px;_height:2px;-webkit-user-select:none;}
+#custom_field_list .pagebreak{cursor:move;background-position:30% center;background-image:url(../.../../../../admincp/ui/ueditor/themes/default/images/pagebreak.gif);background-repeat:no-repeat;clear:both;display:block;width:99%;border-top:#999999 1px dotted;border-bottom:#999999 1px dotted;border-right:0px;margin:5px;border-left:0px;padding:0px;height:5px;_height:2px;-webkit-user-select:none;}
 #custom_field_list .pagebreak .action{margin-top:5px;}

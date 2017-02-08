@@ -17,15 +17,15 @@ UE.I18N['en'] = {
         'splittocols':'SplitToCols', 'splittocells':'SplitToCells','deletecaption':'DeleteCaption','inserttitle':'InsertTitle',
         'mergecells':'MergeCells', 'deletetable':'DeleteTable', 'cleardoc':'Clear', 'insertparagraphbeforetable':"InsertParagraphBeforeTable",
         'fontfamily':'FontFamily', 'fontsize':'FontSize', 'paragraph':'Paragraph','simpleupload':'Single Image','insertimage':'Multi Image','edittable':'Edit Table', 'edittd':'Edit Td','link':'Link',
-        'emotion':'Emotion', 'spechars':'Spechars', 'searchreplace':'SearchReplace', 'map':'BaiduMap', 'gmap':'GoogleMap',
+        'spechars':'Spechars', 'searchreplace':'SearchReplace', 'map':'BaiduMap', 'gmap':'GoogleMap',
         'insertvideo':'Video', 'help':'Help', 'justifyleft':'JustifyLeft', 'justifyright':'JustifyRight', 'justifycenter':'JustifyCenter',
         'justifyjustify':'Justify', 'forecolor':'FontColor', 'backcolor':'BackColor', 'insertorderedlist':'OL',
         'insertunorderedlist':'UL', 'fullscreen':'FullScreen', 'directionalityltr':'EnterFromLeft', 'directionalityrtl':'EnterFromRight',
-        'rowspacingtop':'RowSpacingTop', 'rowspacingbottom':'RowSpacingBottom', 'pagebreak':'PageBreak', 'insertframe':'Iframe', 'imagenone':'Default',
+        'rowspacingtop':'RowSpacingTop', 'rowspacingbottom':'RowSpacingBottom', 'pagebreak':'PageBreak', 'imagenone':'Default',
         'imageleft':'ImageLeft', 'imageright':'ImageRight', 'attachment':'Attachment', 'imagecenter':'ImageCenter', 'wordimage':'WordImage',
         'lineheight':'LineHeight','edittip':'EditTip','customstyle':'CustomStyle', 'scrawl':'Scrawl', 'autotypeset':'AutoTypeset',
-        'webapp':'WebAPP', 'touppercase':'UpperCase', 'tolowercase':'LowerCase','template':'Template','background':'Background','inserttable':'InsertTable',
-        'music':'Music', 'charts': 'charts','drafts': 'Load from Drafts'
+        'touppercase':'UpperCase', 'tolowercase':'LowerCase','template':'Template','inserttable':'InsertTable',
+        'music':'Music', 'drafts': 'Load from Drafts'
     },
     'insertorderedlist':{
         'num':'1,2,3...',
@@ -235,23 +235,6 @@ UE.I18N['en'] = {
         'bdc2sb':'Full-width to Half-width',
         'tobdc':'Half-width to Full-width'
     },
-
-    'background':{
-        'static':{
-            'lang_background_normal':'Normal',
-            'lang_background_local':'Online',
-            'lang_background_set':'Background Set',
-            'lang_background_none':'No Background',
-            'lang_background_colored':'Colored Background',
-            'lang_background_color':'Color Set',
-            'lang_background_netimg':'Net-Image',
-            'lang_background_align':'Align Type',
-            'lang_background_position':'Position',
-            'repeatType':{'options':["Center", "Repeat-x", "Repeat-y", "Tile","Custom"]}
-        },
-        'noUploadImage':"No pictures has been uploaded！",
-        'toggleSelect':'Change the active state by click!\n Image Size: '
-    },
     //===============dialog i18N=======================
     'insertimage':{
         'static':{
@@ -426,12 +409,6 @@ UE.I18N['en'] = {
         'errorHttp':'Http Error',
         'errorServerUpload':'Server Result Error.'
     },
-    'webapp':{
-        'tip1':"This function provided by Baidu APP,please apply for baidu APPKey webmaster first!",
-        'tip2':"And then open the file ueditor.config.js to set it! ",
-        'applyFor':"APPLY FOR",
-        'anthorApi':"Baidu API"
-    },
     'template':{
         'static':{
             'lang_template_bkcolor':'Background Color',
@@ -476,48 +453,6 @@ UE.I18N['en'] = {
             'lang_input_anchorName':'Anchor Name:'
         }
     },
-    'charts':{
-        'static':{
-            'lang_data_source':'Data source:',
-            'lang_chart_format': 'Chart format:',
-            'lang_data_align': 'Align',
-            'lang_chart_align_same': 'Consistent with the X-axis Y-axis',
-            'lang_chart_align_reverse': 'X-axis Y-axis opposite',
-            'lang_chart_title': 'Title',
-            'lang_chart_main_title': 'main title:',
-            'lang_chart_sub_title': 'sub title:',
-            'lang_chart_x_title': 'X-axis title:',
-            'lang_chart_y_title': 'Y-axis title:',
-            'lang_chart_tip': 'Prompt',
-            'lang_cahrt_tip_prefix': 'prefix:',
-            'lang_cahrt_tip_description': '仅饼图有效， 当鼠标移动到饼图中相应的块上时，提示框内的文字的前缀',
-            'lang_chart_data_unit': 'Unit',
-            'lang_chart_data_unit_title': 'unit:',
-            'lang_chart_data_unit_description': '显示在每个数据点上的数据的单位， 比如： 温度的单位 ℃',
-            'lang_chart_type': 'Chart type:',
-            'lang_prev_btn': 'Previous',
-            'lang_next_btn': 'Next'
-        }
-    },
-    emotion:{
-        'static':{
-            'lang_input_choice':'Choice',
-            'lang_input_Tuzki':'Tuzki',
-            'lang_input_lvdouwa':'LvDouWa',
-            'lang_input_BOBO':'BOBO',
-            'lang_input_babyCat':'BabyCat',
-            'lang_input_bubble':'Bubble',
-            'lang_input_youa':'YouA'
-        }
-    },
-    gmap:{
-        'static':{
-            'lang_input_address':'Address:',
-            'lang_input_search':'Search',
-            'address':{value:"Beijing"}
-        },
-        searchError:'Unable to locate the address!'
-    },
     help:{
         'static':{
             'lang_input_about':'About',
@@ -537,18 +472,6 @@ UE.I18N['en'] = {
             'lang_Txt_visualEnter':'Submit',
             'lang_Txt_fullscreen':'Fullscreen'
         }
-    },
-    insertframe:{
-        'static':{
-            'lang_input_address':'Address：',
-            'lang_input_width':'Width：',
-            'lang_input_height':'height：',
-            'lang_input_isScroll':'Enable scrollbars：',
-            'lang_input_frameborder':'Show frame border：',
-            'lang_input_alignMode':'Alignment：',
-            'align':{title:"Alignment", options:["Default", "Left", "Right", "Center"]}
-        },
-        'enterAddress':'Please enter an address!'
     },
     link:{
         'static':{

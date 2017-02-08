@@ -5,6 +5,7 @@
  * 上传图片对话框逻辑代码,包括tab: 远程图片/上传图片/在线图片/搜索图片
  */
 
+
 (function () {
 
     var uploadFile,
@@ -77,8 +78,7 @@
                     list = onlineFile.getInsertList();
                     break;
             }
-
-            editor.execCommand('insertfile', list);
+            editor.execCommand('attachment', list);
         };
     }
 
@@ -439,8 +439,10 @@
             }
 
             uploader.on('fileQueued', function (file) {
-                fileCount++;
-                fileSize += file.size;
+                if (file.ext && acceptExtensions.indexOf(file.ext.toLowerCase()) != -1 && file.size <= fileMaxSize) {
+                    fileCount++;
+                    fileSize += file.size;
+                }
 
                 if (fileCount === 1) {
                     $placeHolder.addClass('element-invisible');
@@ -451,8 +453,10 @@
             });
 
             uploader.on('fileDequeued', function (file) {
-                fileCount--;
-                fileSize -= file.size;
+                if (file.ext && acceptExtensions.indexOf(file.ext.toLowerCase()) != -1 && file.size <= fileMaxSize) {
+                    fileCount--;
+                    fileSize -= file.size;
+                }
 
                 removeFile(file);
                 updateTotalProgress();
@@ -485,7 +489,9 @@
 
             uploader.on('uploadBeforeSend', function (file, data, header) {
                 //这里可以通过data对象添加POST参数
-                header['X_Requested_With'] = 'XMLHttpRequest';
+                if (actionUrl.toLowerCase().indexOf('jsp') != -1) {
+                    header['X_Requested_With'] = 'XMLHttpRequest';
+                }
             });
 
             uploader.on('uploadProgress', function (file, percentage) {
@@ -549,15 +555,25 @@
             return readyFile;
         },
         getInsertList: function () {
-            var i, link, data, list = [],
+            var i, data, list = [],
                 prefix = editor.getOpt('fileUrlPrefix');
             for (i = 0; i < this.fileList.length; i++) {
                 data = this.fileList[i];
-                link = data.url;
-                list.push({
-                    title: data.original || link.substr(link.lastIndexOf('/') + 1),
-                    url: prefix + link
-                });
+                var link = data.url;
+                data.title = data.original;
+                if(!data.title){
+                    data.title = link.substr(link.lastIndexOf('/') + 1);
+                }
+                list.push(data);
+
+                // var link = data.url,
+                // path = data.path||'',
+                // fid = data.fid||0,
+                // ext = data.fileType||'';
+                // list.push({
+                //     title: data.original || link.substr(link.lastIndexOf('/') + 1),
+                //     url: prefix + link,
+                // });
             }
             return list;
         }
@@ -649,8 +665,9 @@
                     });
                     $(".file",_this.container).on('click',function(event) {
                         event.preventDefault();
-                        var href = $(this).attr('href'),title = $(this).attr('title');
-                        editor.execCommand('insertfile',{
+                        var href = $(this).attr('href'),
+                        title = $(this).attr('title');
+                        editor.execCommand('attachment',{
                             url: href,
                             title: title,
                         });
@@ -665,7 +682,6 @@
         },
         // getFileData: function () {
         //     var _this = this;
-
         //     if(!_this.listEnd && !this.isLoadingData) {
         //         this.isLoadingData = true;
         //         ajax.request(editor.getActionUrl(editor.getOpt('fileManagerActionName')), {
@@ -702,6 +718,20 @@
         //         });
         //     }
         // },
+        // getInsertList: function () {
+        //     var i, lis = this.list.children, list = [];
+        //     for (i = 0; i < lis.length; i++) {
+        //         if (domUtils.hasClass(lis[i], 'selected')) {
+        //             var url = lis[i].getAttribute('data-url');
+        //             var title = lis[i].getAttribute('data-title') || url.substr(url.lastIndexOf('/') + 1);
+        //             list.push({
+        //                 title: title,
+        //                 url: url
+        //             });
+        //         }
+        //     }
+        //     return list;
+        // }
         /* 添加图片到列表界面上 */
         pushData: function (list) {
             var i, item, img, filetype, preview, icon, _this = this,

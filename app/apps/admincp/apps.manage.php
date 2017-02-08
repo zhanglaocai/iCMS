@@ -66,7 +66,7 @@ $("#<?php echo APP_FORMID;?>").batch();
             <tbody>
               <?php
               foreach ($rs as $key => $data) {
-              $table = json_decode($data['table']);
+              $table = apps::table_item($data['table']);
               $config = json_decode($data['config'],true);
               $installed = apps::installed($data['app'],$data['type']);
               // $admincp = __ADMINCP__.'='.$data['app'];
@@ -83,7 +83,7 @@ $("#<?php echo APP_FORMID;?>").batch();
               <tr id="tr<?php echo $data['id'] ; ?>">
                 <td><b><?php echo $data['id'] ; ?></b></td>
                 <td>
-                  <span class="label label-success"><?php echo $this->type_array[$data['type']] ; ?></span>
+                  <span class="label label-success"><?php echo apps::$type_array[$data['type']] ; ?></span>
                   <b><?php echo $data['app'] ; ?></b>
                 </td>
                 <td>
@@ -91,10 +91,28 @@ $("#<?php echo APP_FORMID;?>").batch();
                   <p class="app_list_desc"><?php echo $config['info'] ; ?></p>
                 </td>
                 <td>
-                  <?php
-                  if(is_array($table)) foreach ($table as $key => $value) {
-                    echo $value[2]."表[".$value[0].']<br />';
-                  }else{
+                  <?php if(is_array($table)){ ?>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <td>表名</td>
+                        <td>主键</td>
+                        <td>名称</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php
+                      foreach ((array)$table as $tkey => $tval) {
+                      ?>
+                      <tr>
+                        <td><?php echo $tval['name'] ; ?></td>
+                        <td><?php echo $tval['primary'] ; ?></td>
+                        <td><?php echo $tval['label'] ; ?></td>
+                      </tr>
+                      <?php } ?>
+                    </tbody>
+                  </table>
+                  <?php }else{
                     echo '<span class="label">无相关表</span>';
                   }
                   ?>
@@ -110,8 +128,9 @@ $("#<?php echo APP_FORMID;?>").batch();
                   }
                   ?>
                   <td>
+                      <a href="<?php echo APP_URI; ?>&do=app_add&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加内容</a>
+                      <a href="<?php echo APP_URI; ?>&do=edit&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                     <?php if ($installed) {?>
-                      <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                       <?php if($data['type']){?>
                         <?php if($data['status']){?>
                           <a href="<?php echo APP_URI; ?>&do=update&_args=status:0&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-warning" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>

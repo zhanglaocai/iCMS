@@ -31,7 +31,14 @@ class categoryApp{
     public function API_iCMS(){
         return $this->do_iCMS();
     }
-
+    /**
+     * [hooked 钩子]
+     * @param  [type] $data [description]
+     * @return [type]       [description]
+     */
+    public static function hooked($data){
+        return iPHP::hook('category',$data,iCMS::$config['hooks']['category']);
+    }
     public static function category($cid,$tpl='index') {
         $category = iCache::get(self::CACHE_CATEGORY_ID.$cid);
         if(empty($category) && $tpl){
@@ -59,6 +66,8 @@ class categoryApp{
             "title"  => $category['name'],
             "url"    => $category['url']
         );
+
+        $category = self::hooked($category);
 
         if($tpl) {
             $category['mode'] && iURL::page_url($iurl);

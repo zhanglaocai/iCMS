@@ -37,7 +37,6 @@ class iView {
             "resource" => array("iView","callback_path"),
             "output"   => array("iView","callback_output"),
             "app"      => array("iView","callback_appfunc"),
-            "app"      => array("iView","callback_appfunc"),
         );
         self::$handle->assign('GET', $_GET);
         self::$handle->assign('POST', $_POST);

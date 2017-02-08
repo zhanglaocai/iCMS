@@ -182,9 +182,9 @@ class tag {
 	    	if($idA){
 	    		$ids = iSQL::values($idA,null);
                 if($ids){
-                    $table = apps::table(self::$appid);
+                    $app = apps::get_table(self::$appid);
                     iDB::query("
-                        UPDATE `#iCMS@__$table`
+                        UPDATE `".$app['table']."`
                         SET `tags`= REPLACE(tags, '$tag->name,',''),
                         `tags`= REPLACE(tags, ',$tag->name','')
                         WHERE id IN($ids)

@@ -17,16 +17,11 @@ class appsAdmincp{
     public function __construct() {
       $this->appid = iCMS_APP_APPS;
     	$this->id = (int)$_GET['id'];
-      $this->type_array = array(
-        '0' => '系统组件',
-        '1' => '应用',
-        '2' => '插件',
-      );
     }
     public function do_hooks(){
         configAdmincp::app($this->appid,'hooks');
     }
-    public function do_save_hooks(){
+    public function do_hooks_save(){
         $hooks = array();
         foreach ((array)$_POST['hooks']['method'] as $key => $method) {
           $h_app   = $_POST['hooks']['app'][$key];
@@ -38,23 +33,8 @@ class appsAdmincp{
         $_POST['config'] = $hooks;
         configAdmincp::save($this->appid,'hooks');
     }
-    // public function do_hooks(){
-    //   include admincp::view("apps.hooks");
-    // }
-    public function app_type_select(){
-      $option = '';
-      foreach ($this->type_array as $key => $type) {
-        $option.='<option value="'.$key.'">'.$type.'[type=\''.$type.'\']</option>';
-      }
-      $option.= propAdmincp::get("type");
-      return $option;
-    }
-    public function do_hook_app_method_opt(){
-      $app = $_GET['_app'];
-      echo apps_hook::app_fields($app);
 
-    }
-    public function do_hook_app_field_opt(){
+    public function do_hooks_app_field_opt(){
       $app = $_GET['_app'];
       echo apps_hook::app_fields($app);
     }
@@ -90,16 +70,13 @@ class appsAdmincp{
       }
 
     }
-    public function get_app($id=null){
-      $id === null && $id = $this->id;
-      if($id){
-        $rs = iDB::row("SELECT * FROM `#iCMS@__apps` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
-        $rs['table'] && $rs['table'] = json_decode($rs['table'],true);
-        return $rs;
-      }
-    }
+
     public function do_uninstall(){
-      apps::uninstall($this->id);
+      if($this->id>99){
+        apps::uninstall($this->id);
+        iUI::alert('应用已经删除');
+      }
+
     }
     public function do_install(){
       $app = iSecurity::escapeStr($_GET['appname']);
@@ -108,7 +85,8 @@ class appsAdmincp{
       iFS::write($path,'1');
       iUI::success('安装完成!','url:'.APP_URI);
     }
-    public function do_add(){
+
+    public function do_edit(){
         $this->id && $rs = apps::get($this->id);
         $rs['table'] OR $base_fields = apps_db::base_fields();
         include admincp::view("apps.add");
@@ -140,13 +118,14 @@ class appsAdmincp{
         }
         $config = array_filter($config);
         $config = addslashes(json_encode($config));
-
+        $fields = '';
         if(is_array($fieldata)){
+          $field_array = array();
           foreach ($fieldata as $key => $value) {
             $output = array();
             parse_str($value,$output);
             if(isset($output['UI:BR'])){
-              $field_array['UI:BR'] = true;
+              $field_array[$key] = 'UI:BR';
             }else{
               $output['label'] OR iUI::alert('发现自定义字段中空字段名称!');
               $fname = $output['name'];
@@ -162,27 +141,18 @@ class appsAdmincp{
 
         if(empty($id)) {
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iUI::alert('该应用已经存在!');
-            if(empty($table)){
-              apps_db::create_table($array['name'],$fieldata);
-            }
+            //创建表
+            $table = apps_db::create_table($array['app'],$fieldata);
+            array_push ($table,$array['name']);
+            $array['table'] = addslashes(json_encode(array($array['app']=>$table)));
+
             iDB::insert('apps',$array);
             $msg = "应用创建完成!";
         }else {
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app' AND `id` !='$id'") && iUI::alert('该应用已经存在!');
-            // $_field = iDB::value("SELECT `fields` FROM `#iCMS@__apps` where `id` ='$id'");
-            // if($_field){
-            //   $_field_array = json_decode($_field);
-            //   $diff = array_diff_values($field_array,$_field_array);
-            //   if($diff['+']){
-            //     foreach ($diff['+'] as $key => $value) {
-            //       if($diff['-'][$key]){
-            //         $this->FIELD_CHANGE($value);
-            //       }else{
-            //         $this->FIELD_ADD_COLUMN($value);
-            //       }
-            //     }
-            //   }
-            // }
+            $_fields = iDB::value("SELECT `fields` FROM `#iCMS@__apps` where `id` ='$id'");
+            $sql_array = apps_db::make_alter_sql($fields,$_fields,$_POST['origin']);
+            $sql_array && apps_db::alter_table($array['app'],$sql_array);
 
             iDB::update('apps', $array, array('id'=>$id));
             $msg = "应用编辑完成!";
@@ -200,7 +170,7 @@ class appsAdmincp{
       if($_GET['keywords']) {
 		   $sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";
       }
-      $orderby    =$_GET['orderby']?$_GET['orderby']:"id ASC";
+      $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
       $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
       $total      = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__apps` {$sql}","G");
       iUI::pagenav($total,$maxperpage,"个应用");
@@ -208,11 +178,12 @@ class appsAdmincp{
       $_count = count($rs);
     	include admincp::view("apps.manage");
     }
-    public function do_manage(){
-      apps::scan('config/app.json');
-      $rs = apps::config('iApp.json');
-      include admincp::view("apps.json.manage");
-    }
+    // public function do_manage(){
+    //   apps::scan('config/app.json');
+    //   $rs = apps::config('iApp.json');
+    //   include admincp::view("apps.json.manage");
+    // }
+
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
   		$id OR iUI::alert('请选择要删除的应用!');
@@ -247,4 +218,5 @@ class appsAdmincp{
     public function cache(){
     	apps::cache();
     }
+
 }

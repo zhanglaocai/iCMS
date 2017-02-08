@@ -327,32 +327,9 @@ class userApp {
 		if ($act == "del") {
 			$id = (int) $_POST['id'];
 			$id OR iUI::code(0, 'iCMS:error', 0, 'json');
+			$comment = commentAdmincp::get($id,user::$userid);
+			commentAdmincp::del($comment);
 
-			$comment = iDB::row("
-                SELECT `appid`,`iid`
-                FROM `#iCMS@__comment`
-                WHERE `userid` = '" . user::$userid . "'
-                AND `id`='$id'
-            ");
-
-			$table = apps::get_table($comment->appid);
-
-			if($table['name']&&$table['primary']){
-				iDB::query("
-	                UPDATE {$table['name']}
-	                SET comments = comments-1
-	                WHERE `comments`>0
-	                AND `{$table['primary']}`='{$comment->iid}'
-	                LIMIT 1
-	            ");
-			}
-
-			iDB::query("
-                DELETE FROM `#iCMS@__comment`
-                WHERE `userid` = '" . user::$userid . "'
-                AND `id`='$id' LIMIT 1
-            ");
-			user::update_count(user::$userid, 1, 'comments', '-');
 			iUI::code(1, 0, 0, 'json');
 		}
 	}

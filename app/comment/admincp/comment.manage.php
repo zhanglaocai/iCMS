@@ -71,7 +71,7 @@ function update_popover(html,a){
     <div class="widget-title"> <span class="icon">
       <input type="checkbox" class="checkAll" data-target="#<?php echo APP_BOXID;?>" />
       </span>
-      <h5><?php if($appid){echo apps::get_label($appid,'title');}?>评论列表</h5>
+      <h5><?php if($appid){echo apps::get_label($appid);}?>评论列表</h5>
       <span title="总共<?php echo $total;?>条评论" class="badge badge-info tip-left"><?php echo $total;?></span>
     </div>
     <div class="widget-content nopadding">
@@ -84,7 +84,7 @@ function update_popover(html,a){
           // $C    = (array)$category_data[$value['cid']];
           $url  = commentApp::redirect_url($value);
           $user = user::info($value['userid'],$value['username']);
-          $app_label =apps::get_label($value['appid'],'title');
+          $app_label =apps::get_label($value['appid']);
           ?>
           <li id="id-<?php echo $value['id'] ; ?>">
             <div class="user-thumb">
