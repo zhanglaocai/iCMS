@@ -70,7 +70,7 @@ class apps {
             // 删除APP
             // iFS::rmdir($appdir);
         }
-        // $path = self::path($app['app'],);
+        // $path = self::get_path($app['app'],);
         iUI::success('应用删除完成!','js:1');
     }
     public static function installed($app,$r=false){
@@ -183,7 +183,7 @@ class apps {
     //     }
     //     return $array;
     // }
-    public function get_type_select(){
+    public static function get_type_select(){
       $option = '';
       foreach (self::$type_array as $key => $type) {
         $option.='<option value="'.$key.'">'.$type.'[type=\''.$type.'\']</option>';
@@ -291,7 +291,7 @@ class apps {
         iCache::set('app/array',$app_array,0);
 	}
     public static function get_func($app,$tag=false){
-        $path   = self::path($app,'func');
+        $path   = self::get_path($app,'func');
         if(file_exists($path)){
             $arr    =  get_defined_functions ();
             $array1 = $arr['user'];

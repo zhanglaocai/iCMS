@@ -1,34 +1,80 @@
-<script type="text/javascript" src="./app/admincp/ui/jquery/jquery-ui.min.js"></script>
-<script type="text/javascript" src="./app/apps/ui/iFormer/iFormer.js"></script>
-<link rel="stylesheet" href="./app/apps/ui/iFormer/iFormer.css" type="text/css" />
-
 <div class="fields-fluid">
-  <ul id="custom_field_list">
+  <ul id="custom_field_list" class="iFormer-layout">
 
   </ul>
   <div class="clearfloat mt10"></div>
 </div>
-<?php include admincp::view("apps.iFormer.fields");?>
 <div class="clearfloat mt10"></div>
 <div class="alert alert-info alert-block">
   <h5><i class="fa fa-support"></i> 注意事项</h5>
   <p><i class="fa fa-arrows-h"></i> 换行符 双击可删除</p>
   <p><i class="fa fa-arrows-h"></i> 换行符 属于占位符 最终界面上将以10px空白替换.效果请参考文章添加页</p>
   <p>本界面元素只作编辑用,最终界面展现效果请使用预览功能</p>
+  <p>基础字段可移动位置,不可编辑</p>
 </div>
+<link rel="stylesheet" href="./app/apps/ui/iFormer/iFormer.css" type="text/css" />
+<script type="text/javascript" src="./app/admincp/ui/jquery/jquery-ui.min.js"></script>
+<script type="text/javascript" src="./app/apps/ui/iFormer/iFormer.js"></script>
 <script type="text/javascript">
-var  html;
 <?php
-if($rs['fields'])foreach ($rs['fields'] as $key => $value) {
+if($rs['fields']){
+  foreach ($rs['fields'] as $key => $value) {
+    $readonly = 'false';
     if($value=='UI:BR'){
         $output = array('tag'=>'br');
     }else{
         parse_str($value,$output);
+        $readonly = apps_db::base_fields_key($output['name']);
     }
-    echo "
-        html = iFormer.render($('div'),".json_encode($output).",null,'".$output['id']."');
-        $('#custom_field_list').append(html);
-    ";
+    echo "iFormer.render($('div'),".json_encode($output).",null,'".$output['id']."',".$readonly.").appendTo('#custom_field_list');";
+  }
+  echo "$('#custom_field_list').append('<div class=\"clearfloat\"></div>');";
 }
 ?>
+
+$(function() {
+    $(".iFormer-layout").sortable({
+        placeholder: "ui-state-highlight",
+        cancel: ".clearfloat",
+        delay:300,
+        sort: function( event, ui ) {
+            var target = $(event.target);
+            $(".clearfloat",target).remove();
+            target.append('<div class="clearfloat"></div>');
+        },
+        receive: function(event, ui) {
+            var helper = ui.helper,
+            tag        = helper.attr('tag'),
+            field      = helper.attr('field'),
+            type       = helper.attr('type'),
+            label      = helper.attr('label'),
+            after      = helper.attr('label-after'),
+            len        = helper.attr('len'),
+            id         = iCMS.random(6, true);
+            var html   = iFormer.render(helper,{
+                'id': id,
+                'label': (label || '表单') + id,
+                'label-after':after,
+                'field': field,
+                'name': id,
+                'tag': tag,
+                'default': '',
+                'type': type,
+                'len': len
+            });
+            helper.replaceWith(html);
+        }
+    }).disableSelection();
+
+    $("[i='layout'],[i='field']",".iFormer-design").draggable({
+        placeholder: "ui-state-highlight",
+        connectToSortable: ".iFormer-layout",
+        helper: "clone",
+        revert: "invalid",
+    }).disableSelection();
+
+    $(".iFormer-design").draggable().disableSelection();
+});
 </script>
+<?php include admincp::view("apps.iFormer.design");?>
+<?php include admincp::view("apps.iFormer.editor");?>

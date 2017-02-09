@@ -1,6 +1,6 @@
 <!-- 字段编辑器 -->
-<div id="field_edit" class="hide" style="width:500px;text-align: left;">
-  <form id="field_form">
+<div id="iFormer-field-editor" class="hide" style="width:500px;text-align: left;">
+  <form id="iFormer-field-form">
     <input type="hidden" name="id" id="iFormer-id"/>
     <input type="hidden" name="type" id="iFormer-type"/>
     <input type="hidden" name="tag" id="iFormer-tag"/>
@@ -35,7 +35,7 @@
     <div class="clearfix"></div>
     <div class="input-prepend">
       <span class="add-on">字段说明</span>
-      <input type="text" name="help" class="span3" id="iFormer-help" value=""/>
+      <input type="text" name="comment" class="span3" id="iFormer-comment" value=""/>
     </div>
     <span class="help-inline">选填</span>
     <div class="input-prepend">
@@ -135,7 +135,7 @@
           <div class="input-prepend">
             <span class="add-on">数据优化</span>
             <select name="db[]" id="iFormer-db" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
-              <option value='index'>搜索项/索引</option>
+              <option value='index'>索引项</option>
             </select>
           </div>
           <span class="help-inline">选填</span>

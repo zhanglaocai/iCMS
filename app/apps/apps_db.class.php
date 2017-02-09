@@ -1,8 +1,4 @@
 <?php
-/**
- * 大部份方法移植自adminer
- */
-
 class apps_db {
     public static function json_field($json=null){
         if(empty($json)) return array();
@@ -17,7 +13,7 @@ class apps_db {
             }else{
                 $a = array();
                 foreach ($output as $k => $v) {
-                    if(in_array($k, array('field','label','name','default','len'))){
+                    if(in_array($k, array('field','label','name','default','len','comment'))){
                         $a[$k] = $v;
                     }
                 }
@@ -27,7 +23,7 @@ class apps_db {
         }
         return $field_array;
     }
-    public static function make_sql($vars=null,$alter=null,$origin=null){
+    public static function make_field_sql($vars=null,$alter=null,$origin=null){
         if(!is_array($vars)){
             $vars = json_decode($vars,true);
         }
@@ -143,19 +139,19 @@ class apps_db {
               //新数据json
               $nvalue = $N_field_array[$nfield];
               if($nvalue){
-                $sql_array[]= apps_db::make_sql($nvalue,'CHANGE',$key);
+                $sql_array[]= apps_db::make_field_sql($nvalue,'CHANGE',$key);
                 //将更改的字段从新增数据里移除
                 unset($diff['+'][$nfield]);
               }
             }else{
               //删除字段
-              $sql_array[]= apps_db::make_sql($value,'DROP');
+              $sql_array[]= apps_db::make_field_sql($value,'DROP');
             }
         }
         //新增
         if($diff['+'])foreach ($diff['+'] as $key => $value) {
             if(!isset($field_origin[$key])){
-              $sql_array[]= apps_db::make_sql($value,'ADD');
+              $sql_array[]= apps_db::make_field_sql($value,'ADD');
             }
         }
         // print_r($diff);
@@ -163,6 +159,62 @@ class apps_db {
         // print_r($sql_array);
         // exit;
         return $sql_array;
+    }
+
+    public static function base_fields_key($key=null){
+        $array = array('id','cid','ucid','pid','sortnum',
+            'title','editor','userid','pubdate','postime','tpl','hits',
+            'hits_today','hits_yday','hits_week','hits_month',
+            'favorite','comments','good','bad','creative',
+            'weight','mobile','postype','status'
+        );
+        if($key){
+            return in_array($key, $array);
+        }
+        return $array;
+    }
+    public static function base_fields_sql(){
+        return array(
+            'cid'        =>"`cid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '栏目id'",
+            'ucid'       =>"`ucid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户分类'",
+            'pid'        =>"`pid` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '属性'",
+            'sortnum'    =>"`sortnum` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序'",
+            'title'      =>"`title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题'",
+            'editor'     =>"`editor` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '编辑名或用户名'",
+            'userid'     =>"`userid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID'",
+            'pubdate'    =>"`pubdate` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发布时间'",
+            'postime'    =>"`postime` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '提交时间'",
+            'tpl'        =>"`tpl` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '模板'",
+            'hits'       =>"`hits` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总点击数'",
+            'hits_today' =>"`hits_today` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '当天点击数'",
+            'hits_yday'  =>"`hits_yday` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '昨天点击数'",
+            'hits_week'  =>"`hits_week` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '周点击'",
+            'hits_month' =>"`hits_month` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '月点击'",
+            'favorite'   =>"`favorite` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '收藏数'",
+            'comments'   =>"`comments` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '评论数'",
+            'good'       =>"`good` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '顶'",
+            'bad'        =>"`bad` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '踩'",
+            'weight'     =>"`weight` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '权重'",
+            'creative'   =>"`creative` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '内容类型 0:转载;1:原创'",
+            'mobile'     =>"`mobile` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发布设备 0:pc;1:手机'",
+            'postype'    =>"`postype` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发布类型 0:用户;1管理员'",
+            'status'     =>"`status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '状态 0:草稿;1:正常;2:回收;3:审核;4:不合格'",
+        );
+    }
+    public static function base_fields_index(){
+        return array(
+            'index_id'         =>'KEY `id` (`status`,`id`)',
+            'index_hits'       =>'KEY `hits` (`status`,`hits`)',
+            'index_pubdate'    =>'KEY `pubdate` (`status`,`pubdate`)',
+            'index_hits_week'  =>'KEY `hits_week` (`status`,`hits_week`)',
+            'index_hits_month' =>'KEY `hits_month` (`status`,`hits_month`)',
+            'index_cid_hits'   =>'KEY `cid_hits` (`status`,`cid`,`hits`)'
+        );
+    }
+    public static function base_fields_array(){
+      $sql = self::create_table('test',null,true);
+      preg_match_all("@`(.+)`\s(.+)\sDEFAULT\s'(.*?)'\sCOMMENT\s'(.+)',@", $sql, $matches);
+      return $matches;
     }
     public static function alter_table($name,$sql=null){
         if(empty($sql))return;
@@ -175,79 +227,36 @@ class apps_db {
         // print_r($alter_sql);
         iDB::query($alter_sql);
     }
-    public static function base_fields_key(){
-        return array('id','cid','ucid','pid','sortnum',
-            'title','editor','userid','pubdate','postime','tpl','hits',
-            'hits_today','hits_yday','hits_week','hits_month',
-            'favorite','comments','good','bad','creative',
-            'weight','mobile','postype','status'
-        );
-    }
-    public static function base_fields(){
-      $sql = self::CREATE_TABLE('test',null,true);
-      preg_match_all("@`(.+)`\s(.+)\sDEFAULT\s'(.*?)'\sCOMMENT\s'(.+)',@", $sql, $matches);
-      return $matches;
-    }
-
-    public static function create_table($name,$fields=null,$sql=false){
-      $create_sql = "CREATE TABLE `#iCMS@__{$name}` (";
-      $create_sql.= "
-        `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键 自增ID',
-        `cid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '栏目id',
-        `ucid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户分类',
-        `pid` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '属性',
-        `sortnum` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
-        `title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题',
-        `editor` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '编辑 用户名',
-        `userid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
-        `pubdate` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发布时间',
-        `postime` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '提交时间',
-        `tpl` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '模板',
-        `hits` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总点击数',
-        `hits_today` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '当天点击数',
-        `hits_yday` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '昨天点击数',
-        `hits_week` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '周点击',
-        `hits_month` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '月点击',
-        `favorite` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '收藏数',
-        `comments` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '评论数',
-        `good` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '顶',
-        `bad` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '踩',
-        `creative` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '内容类型 1:原创 0:转载',
-        `weight` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '权重',
-        `mobile` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '1:手机发布 0:pc',
-        `postype` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型 0用户 1管理员',
-        `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '状态 0:草稿,1:正常,2:回收,3:审核,4:不合格',
-      ";
-      if($fields){
-        $fsql_array = array();
-
-        foreach ($fields as $key => $_field) {
-          if(stripos($_field, 'UI:')===false){
-            $output = array();
-            parse_str($_field,$output);
-            $output && $fsql_array[] = self::make_sql($output);
-          }
+    public static function create_table($name,$fields=null,$ret=false,$base_fields=true){
+        $fields_sql = array();
+        $fields_sql['id']= "`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键 自增ID'";
+        $base_fields && $fields_sql= array_merge($fields_sql,self::base_fields_sql());
+        if($fields){
+            foreach ($fields as $key => $_field) {
+                if(stripos($_field, 'UI:')===false){
+                    $output = array();
+                    parse_str($_field,$output);
+                    $output && $fields_sql[$output['name']] = self::make_field_sql($output);
+                }
+            }
         }
-        $fsql_array && $create_sql.= implode(",\n", $fsql_array).',';
-      }
-      $create_sql.="
-        PRIMARY KEY (`id`),
-        KEY `id` (`status`,`id`),
-        KEY `hits` (`status`,`hits`),
-        KEY `pubdate` (`status`,`pubdate`),
-        KEY `hits_week` (`status`,`hits_week`),
-        KEY `hits_month` (`status`,`hits_month`),
-        KEY `cid_hits` (`status`,`cid`,`hits`)
-      ) ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
+        $fields_sql['primary_id']='PRIMARY KEY (`id`)';
+        $base_fields && $fields_sql = array_merge($fields_sql,self::base_fields_index());
 
-// print_r($create_sql);
-// exit;
-     if($sql){
-        return $create_sql;
-     }
-     iDB::query($create_sql);
-     return array($name,'id');
+        $sql= "CREATE TABLE `#iCMS@__{$name}` ("
+            .implode(",\n", $fields_sql).
+        ') ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;';
+
+         if($ret){
+            return $sql;
+         }
+         iDB::query($sql);
+         return array($name,'id');
     }
+/**
+ * 以下方法移植自adminer
+ */
+
     /** Filter length value including enums
     * @param string
     * @return string
@@ -610,7 +619,7 @@ class apps_db {
         $version = iDB::version();
         return !preg_match("~scheme|sequence|type|view_trigger" . ($version < 5.1 ? "|event|partitioning" . ($version < 5 ? "|routine|trigger|view" : "") : "") . "~", $feature);
     }
-    public static function init() {
+    public static function vars() {
         $types = array(); ///< @var array ($type => $maximum_unsigned_length, ...)
         $structured_types = array(); ///< @var array ($description => array($type, ...), ...)
         foreach (array(

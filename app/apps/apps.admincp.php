@@ -86,9 +86,13 @@ class appsAdmincp{
       iUI::success('安装完成!','url:'.APP_URI);
     }
 
-    public function do_edit(){
+    public function do_add(){
         $this->id && $rs = apps::get($this->id);
-        $rs['table'] OR $base_fields = apps_db::base_fields();
+        $rs['table'] OR $base_fields = apps_db::base_fields_array();
+        if(empty($rs['fields'])){
+          $fields_json = include iPHP_APP_DIR.'/apps/etc/fields.json.php';
+          $rs['fields'] = json_decode($fields_json,true);
+        }
         include admincp::view("apps.add");
     }
 
@@ -128,6 +132,7 @@ class appsAdmincp{
               $field_array[$key] = 'UI:BR';
             }else{
               $output['label'] OR iUI::alert('发现自定义字段中空字段名称!');
+              $output['comment'] = $output['label'].($output['comment']?':'.$output['comment']:'');
               $fname = $output['name'];
               $fname OR iUI::alert('发现自定义字段中有空字段名!');
               $field_array[$fname] = $value;
@@ -141,7 +146,7 @@ class appsAdmincp{
 
         if(empty($id)) {
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iUI::alert('该应用已经存在!');
-            //创建表
+            //创建基本表
             $table = apps_db::create_table($array['app'],$fieldata);
             array_push ($table,$array['name']);
             $array['table'] = addslashes(json_encode(array($array['app']=>$table)));

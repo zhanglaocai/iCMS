@@ -1,16 +1,16 @@
-<!-- 字段选择框 -->
-<div class="fields-container">
+<!-- 字段选择 -->
+<div class="iFormer-design">
   <div class="widget-title">
     <span class="icon"> <i class="fa fa-cog"></i> </span>
     <h5 class="brs">字段</h5>
     <ul class="nav nav-tabs" id="fields-tab">
-      <li class="active"><a href="#fields-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基础字段</a></li>
-      <li><a href="#fields-func" data-toggle="tab"><i class="fa fa-cog"></i> 功能字段</a></li>
-      <li><a href="#fields-addons" data-toggle="tab"><i class="fa fa-cog"></i> 附加字段</a></li>
+      <li class="active"><a href="#fields-tab-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 简易字段</a></li>
+      <li><a href="#fields-tab-func" data-toggle="tab"><i class="fa fa-cog"></i> 功能字段</a></li>
+      <li><a href="#fields-tab-addons" data-toggle="tab"><i class="fa fa-cog"></i> 附加字段</a></li>
     </ul>
   </div>
   <div id="fields-tab-content" class="tab-content">
-    <div id="fields-base" class="tab-pane active">
+    <div id="fields-tab-base" class="tab-pane active">
       <ul>
         <li i="layout" tag="br" class="br">
           <span class="fa fa-arrows-h"></span>
@@ -114,7 +114,7 @@
         </li> -->
       </ul>
     </div>
-    <div id="fields-func" class="tab-pane">
+    <div id="fields-tab-func" class="tab-pane">
       <ul>
         <li i="field" tag="dialog" field="VARCHAR" len="255" label="选择框">
           <span class="fb-icon fb-icon-deciton"></span>
@@ -146,7 +146,7 @@
         </li>
       </ul>
     </div>
-    <div id="fields-addons" class="tab-pane">
+    <div id="fields-tab-addons" class="tab-pane">
       <ul>
         <li i="field" tag="textarea" field="MEDIUMTEXT" label="超大文本">
           <span class="fb-icon fb-icon-textarea"></span>
@@ -160,8 +160,4 @@
     </div>
   </div>
 </div>
-<script type="text/javascript">
-$(function(){
-  $( ".fields-container" ).draggable();
-})
-</script>
+

@@ -129,7 +129,7 @@ $("#<?php echo APP_FORMID;?>").batch();
                   ?>
                   <td>
                       <a href="<?php echo APP_URI; ?>&do=app_add&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加内容</a>
-                      <a href="<?php echo APP_URI; ?>&do=edit&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
+                      <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                     <?php if ($installed) {?>
                       <?php if($data['type']){?>
                         <?php if($data['status']){?>

@@ -23,13 +23,17 @@ var iFormer = {
           return $('<'+t+'/>');
         }
     },
-    render: function(helper,obj,data,origin) {
-        var $container = this.widget('div').addClass(this.ui.class)
-            $action    = this.widget('span').addClass('action'),
-            $edit      = this.widget('a').addClass('fa fa-edit')
-            $del       = this.widget('a').addClass('fa fa-trash-o');
-
-        $action.append($edit,$del);
+    /**
+     * 生成HTML
+     * @param  {[type]} helper [表单]
+     * @param  {[type]} obj    [生成表单数组]
+     * @param  {[type]} data   [fields字符串]
+     * @param  {[type]} origin [原字段名]
+     * @param  {[type]} readonly [只读]
+     * @return {[type]}        [description]
+     */
+    render: function(helper,obj,data,origin,readonly) {
+        var $container = this.widget('div').addClass(this.ui.class);
 
         if (obj['tag'] == 'br') {
             data = 'UI:BR';
@@ -40,7 +44,7 @@ var iFormer = {
         }else{
             var $div  = this.widget('div').addClass('input-prepend'),
                 $label= this.widget('span').addClass('add-on'),
-                $help = this.widget('span').addClass('help-inline');
+                $comment = this.widget('span').addClass('help-inline');
 
             switch (obj['tag']) {
                 case 'multimage':
@@ -146,7 +150,9 @@ var iFormer = {
                     elem_type  = 'text';
                 break;
             }
-
+            /**
+             * 生成器字符样式展现
+             */
             $elem.attr({
                 'id': obj['id'],
                 'name': obj['name'],
@@ -156,7 +162,7 @@ var iFormer = {
             });
 
             $label.text(obj['label']);
-            $help.text(obj['help']);
+            $comment.text(obj['comment']);
 
             if(typeof(handle)==="function"){
                 handle();
@@ -168,9 +174,14 @@ var iFormer = {
                 handle2();
             }
 
-            $container.append($div,$action,$help);
+            $container.append($div,$comment);
+            if(readonly){
+                $container.addClass('iFormer-base-field');
+            }else{
+                iFormer.action_btn($container,$div);
+            }
         }
-        var $fdata = this.widget('input').prop({'type':'hidden','name':'fields[]'});
+
         if(origin){
             var $origin = this.widget('input').prop({
                 'type':'hidden',
@@ -179,14 +190,47 @@ var iFormer = {
             });
             $container.append($origin);
         }
-        if(data){
-            $fdata.val(data);
-        }else{
-            $fdata.val(this.urlEncode(obj));
-        }
+        data = data||this.urlEncode(obj);
 
-        $container.append($fdata);
+        iFormer.fields(data,$container);
+
         $(':checkbox,:radio',$container).uniform();
+
+
+        // $container.dblclick(function(event) {
+        //     iFormer.edit($container);
+        // });
+
+        return $container;
+    },
+    /**
+     * 字段数据
+     * @param  {[type]} obj  [数组]
+     * @param  {[type]} data [字符串]
+     * @param  {[type]} $container
+     * @return {[type]}      [description]
+     */
+    fields:function(data,$container) {
+        var $fields = this.widget('input').prop({'type':'hidden','name':'fields[]'});
+        // if(data){
+            $fields.val(data);
+        // }else{
+        //     $fields.val(this.urlEncode(obj));
+        // }
+        $container.append($fields);
+    },
+    /**
+     * 字段 编辑/删除 按钮
+     * @param  {[type]} $container [description]
+     * @param  {[type]} $div [description]
+     * @return {[type]}            [description]
+     */
+    action_btn:function($container,$div) {
+        var $action    = this.widget('span').addClass('action'),
+            $edit      = this.widget('a').addClass('fa fa-edit'),
+            $del       = this.widget('a').addClass('fa fa-trash-o');
+
+        $action.append($edit,$del);
 
         $edit.click(function(event) {
             iFormer.edit($container);
@@ -196,13 +240,9 @@ var iFormer = {
             $container.remove();
         }).attr('href','javascript:;');
 
-        // $container.dblclick(function(event) {
-        //     iFormer.edit($container);
-        // });
-
-        return $container;
+        $div.after($action);
+        // return $action;
     },
-
     urlEncode:function(param, key) {
       if(param==null) return '';
 
@@ -253,13 +293,20 @@ var iFormer = {
             UI.alert(msg);
         }
     },
+    /**
+     * 重置表单
+     * @param  {[type]} a [description]
+     * @return {[type]}   [description]
+     */
     freset: function(a) {
-        // a.reset();
-        document.getElementById("field_form").reset();
-        // $("#field_form",$(a))[0].reset();
-        // $(".chosen-select", $(a)).trigger("chosen:updated");
+        document.getElementById("iFormer-field-form").reset();
         $(".chosen-select", $(a)).chosen("destroy");
     },
+    /**
+     * 编辑字段
+     * @param  {[type]} $container [description]
+     * @return {[type]}            [description]
+     */
     edit: function($container) {
         // $container.dblclick(function(event) {
             event.preventDefault();
@@ -276,9 +323,15 @@ var iFormer = {
             );
         // });
     },
+    /**
+     * 字段编辑框
+     * @param  {[type]}   obj      [description]
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
     edit_dialog: function(obj, callback) {
         var me = this;
-        var fbox = document.getElementById("field_edit");
+        var fbox = document.getElementById("iFormer-field-editor");
         $("select",$(fbox)).chosen(chosen_config);
 
         for(var i in obj) {
@@ -287,6 +340,9 @@ var iFormer = {
                 $("#iFormer-"+i, fbox).trigger("chosen:updated");
             }
         }
+        // if(!obj['comment']){
+        //     $("#iFormer-comment", fbox).val(obj['label']);
+        // }
         console.log(obj);
         if(obj['tag']=='select'||obj['type']=='radio'||obj['type']=='checkbox'||obj['type']=='select'||obj['type']=='multiple'){
             $("#iFormer-option-wrap", fbox).show();
@@ -306,7 +362,7 @@ var iFormer = {
                     'label': $("#iFormer-label", fbox).val(),
                     'name': $("#iFormer-name", fbox).val(),
                     'class': $("#iFormer-class", fbox).val(),
-                    'help': $("#iFormer-help", fbox).val(),
+                    'comment': $("#iFormer-comment", fbox).val(),
                     'default': $("#iFormer-default", fbox).val()
                 });
                 if(data['id']!= data['name']){
@@ -344,55 +400,4 @@ var iFormer = {
         });
     }
 };
-$(function() {
-    $("#custom_field_list").sortable({
-        placeholder: "ui-state-highlight",
-        cancel: ".clearfloat",
-        delay:100,
-        // helper: "clone",
-        // start: function(event, ui) {
-        //     $(ui.item).show().css({
-        //         'opacity': 0.5
-        //     });
-        // },
-        // stop: function(event, ui) {
-        //     $(ui.item).css({
-        //         'opacity': 1
-        //     });
-        // },
-        sort: function( event, ui ) {
-            var target = $(event.target);
-            $(".clearfloat",target).remove();
-            target.append('<div class="clearfloat"></div>');
-        },
-        receive: function(event, ui) {
-            var helper = ui.helper,
-            tag        = helper.attr('tag'),
-            field      = helper.attr('field'),
-            type       = helper.attr('type'),
-            label      = helper.attr('label'),
-            after      = helper.attr('label-after'),
-            len        = helper.attr('len'),
-            id         = iCMS.random(6, true);
-            var html   = iFormer.render(helper,{
-                'id': id,
-                'label': (label || '表单') + id,
-                'label-after':after,
-                'field': field,
-                'name': id,
-                'tag': tag,
-                'default': '',
-                'type': type,
-                'len': len
-            });
-            helper.replaceWith(html);
-        }
-    });
-    $("[i='layout'],[i='field']").draggable({
-        placeholder: "ui-state-highlight",
-        connectToSortable: "#custom_field_list",
-        helper: "clone",
-        revert: "invalid",
-    });
-    $("#custom_field_list,.fields-container").disableSelection();
-});
+
