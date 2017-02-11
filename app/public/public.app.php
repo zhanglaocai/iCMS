@@ -42,4 +42,7 @@ class publicApp {
 		$url = iSecurity::escapeStr($_GET['url']);
 		iPHP::vendor('QRcode', $url);
 	}
+	public static function seccode() {
+		return iView::fetch('iCMS://public.seccode.htm');
+	}
 }

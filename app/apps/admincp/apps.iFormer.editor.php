@@ -3,7 +3,6 @@
   <form id="iFormer-field-form">
     <input type="hidden" name="id" id="iFormer-id"/>
     <input type="hidden" name="type" id="iFormer-type"/>
-    <input type="hidden" name="tag" id="iFormer-tag"/>
     <input type="hidden" name="field" id="iFormer-field"/>
     <div class="input-prepend">
       <span class="add-on">字段名称</span>
@@ -17,38 +16,53 @@
     <span class="help-inline">* 必填</span>
     <div class="clearfix"></div>
     <div class="input-prepend">
+      <span class="add-on">数据长度</span>
+      <input type="text" name="len" class="span3" id="iFormer-len" value=""/>
+    </div>
+    <span class="help-inline">* 必填</span>
+    <div class="clearfix"></div>
+    <div class="input-prepend">
       <span class="add-on">默&nbsp;&nbsp;认&nbsp;值</span>
       <input type="text" name="default" class="span3" id="iFormer-default" value=""/>
     </div>
     <span class="help-inline">选填</span>
+    <div class="input-prepend">
+      <span class="add-on">字段注释</span>
+      <input type="text" name="comment" class="span3" id="iFormer-comment" value=""/>
+    </div>
+    <span class="help-inline">选填,数据表的comment,不清楚的可不填</span>
+    <hr />
+    <div class="input-prepend">
+      <span class="add-on">字段说明</span>
+      <input type="text" name="help" class="span3" id="iFormer-help" value=""/>
+    </div>
+    <span class="help-inline">选填 </span>
     <div id="iFormer-option-wrap" class="hide">
       <div class="input-prepend">
         <span class="add-on">选项列表</span>
         <textarea type="text" name="option" class="span3" id="iFormer-option" disabled/></textarea>
       </div>
       <span class="help-inline">* 必填.<br />
-        格式: 选项=值;<br />
-      例:电脑=pc;<br />
-      手机=phone;
-    </span>
+          格式: 选项=值;<br />
+          例:电脑=pc;<br />
+          手机=phone;
+      </span>
     </div>
     <div class="clearfix"></div>
-    <div class="input-prepend">
-      <span class="add-on">字段说明</span>
-      <input type="text" name="comment" class="span3" id="iFormer-comment" value=""/>
-    </div>
-    <span class="help-inline">选填</span>
     <div class="input-prepend">
       <span class="add-on">字段样式</span>
       <input type="text" name="class" class="span3" id="iFormer-class" value=""/>
     </div>
     <span class="help-inline">选填</span>
-    <div class="input-prepend">
-      <span class="add-on">数据长度</span>
-      <input type="text" name="len" class="span3" id="iFormer-len" value=""/>
-    </div>
-    <span class="help-inline">选填</span>
     <div class="clearfix"></div>
+    <div id="iFormer-label-after-wrap" class="hide">
+      <div class="input-prepend">
+        <span class="add-on">扩展信息</span>
+        <input type="text" name="label-after" class="span3" id="iFormer-label-after" value=""/>
+      </div>
+      <span class="help-inline">选填</span>
+      <div class="clearfix"></div>
+    </div>
     <div class="field-tab-box">
       <ul class="nav nav-tabs" id="field-tab">
         <li class="active"><a href="#field-tab-1" data-toggle="tab"><i class="fa fa-check-square-o"></i> 验证</a></li>
@@ -126,6 +140,7 @@
             <span class="add-on">用户选项</span>
             <select name="user[]" id="iFormer-user" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
               <option value='show'>用户后台显示</option>
+              <option value='hide'>用户后台隐藏</option>
               <option value='fill'>用户后台可填写</option>
             </select>
           </div>

@@ -139,14 +139,15 @@ class propAdmincp{
         $app OR $app = admincp::$APP_NAME;
         $propArray = iCache::get("prop/{$app}/{$field}");
         $target OR $target = $field;
-        echo '<div class="btn-group">'.
+        $div = '<div class="btn-group">'.
         '<a class="btn dropdown-toggle iCMS-default" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>'.
         '<ul class="dropdown-menu">';
         if($propArray)foreach ((array)$propArray as $prop) {
-            echo '<li><a href="javascript:;" data-toggle="insert" data-target="#' . $target . '" data-value="' . $prop['val'] . '">' . $prop['name'] . '</a></li>';
+            $div.= '<li><a href="javascript:;" data-toggle="insert" data-target="#' . $target . '" data-value="' . $prop['val'] . '">' . $prop['name'] . '</a></li>';
         }
-        echo '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.$app.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
-        echo '</ul></div>';
+        $div.= '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.$app.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
+        $div.= '</ul></div>';
+        return $div;
     }
     public static function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$app = "") {
         $app OR $app = admincp::$APP_NAME;

@@ -18,6 +18,38 @@ class appsAdmincp{
       $this->appid = iCMS_APP_APPS;
     	$this->id = (int)$_GET['id'];
     }
+    public function do_app_save(){
+      print_r($_POST);
+    }
+    public function do_app_add(){
+      $appid = (int)$_GET['appid'];
+      $app   = apps::get($appid);
+      $rs    = apps_app::get_data($app,$this->id);
+      // $fields_json = include iPHP_APP_DIR.'/apps/etc/fields.json.php';
+      // $app['fields'] = json_decode($fields_json,true);
+
+      if($app['fields']){
+        iFormer::$default = array(
+          'userid'   => members::$userid,
+          'username' => members::$data->username?members::$data->username:members::$data->nickname,
+        );
+        iFormer::$app = $app;
+        iFormer::$gateway = 'admincp';
+
+        foreach ($app['fields'] as $key => $value) {
+          $output = array();
+          if($value=='UI:BR'){
+              $output = array('type'=>'br');
+          }else{
+              parse_str($value,$output);
+          }
+          $html.= iFormer::render($output,$rs[$output['name']]);
+        }
+      }
+
+      include admincp::view('app.add');
+    }
+
     public function do_hooks(){
         configAdmincp::app($this->appid,'hooks');
     }

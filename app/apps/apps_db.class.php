@@ -102,7 +102,7 @@ class apps_db {
         break;
       }
       $len===null OR $data_len  = '('.$len.')';
-      $DEFAULT===null && $DEFAULT = " DEFAULT '$default'";
+      $DEFAULT===null OR $DEFAULT = " DEFAULT '$default'";
 
       $sql = self::idf_escape($name)." $data_type$data_len NOT NULL $DEFAULT COMMENT '$label'";
 

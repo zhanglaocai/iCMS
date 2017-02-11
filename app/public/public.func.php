@@ -11,7 +11,7 @@ function public_ui($vars=null){
 	echo iView::render("iCMS://{$dir}public.ui.htm");
 }
 function public_seccode($vars=null){
-	echo iView::render('iCMS://public.seccode.htm');
+	echo publicApp::seccode();
 }
 function public_crontab(){
 	echo '<img src="'.iCMS_API.'?app=public&do=crontab&'.$_SERVER['REQUEST_TIME'].'" id="iCMS_public_crontab"/>';

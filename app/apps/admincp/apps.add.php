@@ -169,4 +169,5 @@ $(function(){
     </div>
   </div>
 </div>
+<?php include admincp::view("apps.iFormer.editor");?>
 <?php admincp::foot();?>

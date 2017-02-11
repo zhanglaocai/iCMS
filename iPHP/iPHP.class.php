@@ -71,7 +71,11 @@ class iPHP {
 			$GLOBALS['iPHP_REQ'][$key] = true;
 			require_once $path;
 		} else {
-			self::error_throw("Unable to load class '$name'", 0020);
+			if (iPHP_DEBUG) {
+				self::error_throw("Unable to load class '$name',file path '$path'", 0020);
+			}else{
+				self::error_throw("Unable to load class '$name'", 0020);
+			}
 		}
 	}
 	public static function config() {

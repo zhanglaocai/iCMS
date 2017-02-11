@@ -31,7 +31,13 @@ $unid = uniqid();
 <script type="text/javascript">
 $(function(){
     window.modal_<?php echo $callback;?> = function(el,a){
-        $("#<?php echo $callback;?>").val(a.value);
+        var e = $("#<?php echo $callback;?>");
+        var name = e.get(0).tagName;
+        if(name=='TEXTAREA'){
+            e.append(a.value+"\n");
+        }else{
+            e.val(a.value);
+        }
         window.iCMS_MODAL.destroy();
     }
     $(".modal_photo_<?php echo $unid;?>").on("click",function(){

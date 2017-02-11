@@ -167,6 +167,9 @@ class iView {
         self::$handle->display($tpl);
     }
     public static function fetch($tpl) {
+        if(empty(self::$handle)){
+            self::init();
+        }
         return self::$handle->fetch($tpl);
     }
     public static function render($tpl, $p = 'index') {

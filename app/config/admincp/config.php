@@ -161,9 +161,9 @@ function modal_tplfile(el,a){
             <span class="help-inline">如果栏目不是动态访问模式,且网站首页有分页 请开启此项</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">首页模板</span>
-              <input type="text" name="config[template][index][tpl]" class="span3" id="index_tpl" value="<?php echo $config['template']['index']['tpl'] ; ?>"/>
+              <input type="text" name="config[template][index][tpl]" class="span3" id="template_index_tpl" value="<?php echo $config['template']['index']['tpl'] ; ?>"/>
               <input type="hidden" name="config[template][index][name]" class="span3" id="index_name" value="<?php echo $config['template']['index']['name']?$config['template']['index']['name']:'index' ; ?>"/>
-              <?php filesAdmincp::modal_btn('模板','file','template_index','tplfile');?></div>
+              <?php echo filesAdmincp::modal_btn('模板','file','template_index_tpl','tplfile');?></div>
             <span class="help-inline">首页默认模板，注：最好使用<span class="label label-inverse">{iTPL}</span>代替模板目录,程序将会自行切换PC端或者移动端</span>
             <div class="clearfloat mb10 solid"></div>
             <div class="input-prepend"> <span class="add-on">桌面端域名</span>
@@ -173,7 +173,7 @@ function modal_tplfile(el,a){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">桌面端模板</span>
               <input type="text" name="config[template][desktop][tpl]" class="span3" id="template_desktop_tpl" value="<?php echo $config['template']['desktop']['tpl'] ; ?>"/>
-              <?php filesAdmincp::modal_btn('模板','dir','template_desktop_tpl');?></div>
+              <?php echo filesAdmincp::modal_btn('模板','dir','template_desktop_tpl');?></div>
             <span class="help-inline">网站桌面端模板默认模板</span>
             <div class="clearfloat mb10 solid"></div>
             <div class="input-prepend"> <span class="add-on">移动端识别</span>
@@ -188,7 +188,7 @@ function modal_tplfile(el,a){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">移动端模板</span>
               <input type="text" name="config[template][mobile][tpl]" class="span3" id="template_mobile_tpl" value="<?php echo $config['template']['mobile']['tpl'] ; ?>"/>
-              <?php filesAdmincp::modal_btn('模板','dir','template_mobile_tpl');?></div>
+              <?php echo filesAdmincp::modal_btn('模板','dir','template_mobile_tpl');?></div>
             <span class="help-inline">网站移动端模板默认模板,如果不想让程序自行切换请留空</span>
             <div class="clearfloat mb10"></div>
             <table class="table table-hover">
@@ -219,7 +219,7 @@ function modal_tplfile(el,a){
                     <div class="clearfloat mb10"></div>
                     <div class="input-prepend input-append"> <span class="add-on">设备模板</span>
                       <input type="text" name="config[template][device][<?php echo $key;?>][tpl]" class="span3" id="device_tpl_<?php echo $key;?>" value="<?php echo $device['tpl'];?>"/>
-                      <?php filesAdmincp::modal_btn('模板','dir','device_tpl_'.$key);?>
+                      <?php echo filesAdmincp::modal_btn('模板','dir','device_tpl_'.$key);?>
                     </div>
                     <span class="help-inline">识别到的设备会使用这个模板设置</span>
                   </td>
@@ -247,7 +247,7 @@ function modal_tplfile(el,a){
                   <div class="clearfloat mb10"></div>
                   <div class="input-prepend input-append"> <span class="add-on">设备模板</span>
                     <input type="text" name="config[template][device][{key}][tpl]" class="span3" id="device_tpl_{key}" value="" disabled="disabled"/>
-                    <?php filesAdmincp::modal_btn('模板','dir','device_tpl_{key}');?>
+                    <?php echo filesAdmincp::modal_btn('模板','dir','device_tpl_{key}');?>
                   </div>
                   <span class="help-inline">识别到的设备会使用这个模板设置</span>
                 </td>
@@ -398,54 +398,80 @@ function modal_tplfile(el,a){
             </div>
             <span class="help-inline">默认保留本地资源,权当备份用</span>
             <div class="clearfloat mb10"></div>
-            <h3 class="title">七牛云存储</h3>
-            <span class="help-inline">申请地址:<a href="https://portal.qiniu.com/signup?from=iCMS" target="_blank">https://portal.qiniu.com/signup</a></span>
-            <div class="clearfloat"></div>
-            <div class="input-prepend"> <span class="add-on">域名</span>
-              <input type="text" name="config[FS][cloud][sdk][QiNiuYun][domain]" class="span4" id="cloud_QiNiuYun_domain" value="<?php echo $config['FS']['cloud']['sdk']['QiNiuYun']['domain'] ; ?>"/>
+<!--             <div id="AliYunOSS">
+              <h3 class="title">阿里云OSS</h3>
+              <span class="help-inline">申请地址:<a href="https://www.aliyun.com/product/oss?spm=iCMS" target="_blank">https://www.aliyun.com/product/oss</a></span>
+              <div class="clearfloat"></div>
+              <div class="input-prepend"> <span class="add-on">域名</span>
+                <input type="text" name="config[FS][cloud][sdk][AliYunOSS][domain]" class="span4" id="cloud_AliYunOSS_domain" value="<?php echo $config['FS']['cloud']['sdk']['AliYunOSS']['domain'] ; ?>"/>
+              </div>
+              <span class="help-inline">OSS外网域名</span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">Bucket</span>
+                <input type="text" name="config[FS][cloud][sdk][AliYunOSS][Bucket]" class="span4" id="cloud_AliYunOSS_Bucket" value="<?php echo $config['FS']['cloud']['sdk']['AliYunOSS']['Bucket'] ; ?>"/>
+              </div>
+              <span class="help-inline">空间名称</span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">AccessKey</span>
+                <input type="text" name="config[FS][cloud][sdk][AliYunOSS][AccessKey]" class="span4" id="cloud_AliYunOSS_AccessKey" value="<?php echo $config['FS']['cloud']['sdk']['AliYunOSS']['AccessKey'] ; ?>"/>
+              </div>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">SecretKey</span>
+                <input type="text" name="config[FS][cloud][sdk][AliYunOSS][SecretKey]" class="span4" id="cloud_AliYunOSS_SecretKey" value="<?php echo $config['FS']['cloud']['sdk']['AliYunOSS']['SecretKey'] ; ?>"/>
+              </div>
+              <div class="clearfloat mb10"></div>
+            </div> -->
+            <div id="QiNiuYun">
+              <h3 class="title">七牛云存储</h3>
+              <span class="help-inline">申请地址:<a href="https://portal.qiniu.com/signup?from=iCMS" target="_blank">https://portal.qiniu.com/signup</a></span>
+              <div class="clearfloat"></div>
+              <div class="input-prepend"> <span class="add-on">域名</span>
+                <input type="text" name="config[FS][cloud][sdk][QiNiuYun][domain]" class="span4" id="cloud_QiNiuYun_domain" value="<?php echo $config['FS']['cloud']['sdk']['QiNiuYun']['domain'] ; ?>"/>
+              </div>
+              <span class="help-inline">云存储访问域名</span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">Bucket</span>
+                <input type="text" name="config[FS][cloud][sdk][QiNiuYun][Bucket]" class="span4" id="cloud_QiNiuYun_Bucket" value="<?php echo $config['FS']['cloud']['sdk']['QiNiuYun']['Bucket'] ; ?>"/>
+              </div>
+              <span class="help-inline">空间名称</span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">AccessKey</span>
+                <input type="text" name="config[FS][cloud][sdk][QiNiuYun][AccessKey]" class="span4" id="cloud_QiNiuYun_AccessKey" value="<?php echo $config['FS']['cloud']['sdk']['QiNiuYun']['AccessKey'] ; ?>"/>
+              </div>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">SecretKey</span>
+                <input type="text" name="config[FS][cloud][sdk][QiNiuYun][SecretKey]" class="span4" id="cloud_QiNiuYun_SecretKey" value="<?php echo $config['FS']['cloud']['sdk']['QiNiuYun']['SecretKey'] ; ?>"/>
+              </div>
+              <div class="clearfloat mb10"></div>
             </div>
-            <span class="help-inline">云存储访问域名</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">Bucket</span>
-              <input type="text" name="config[FS][cloud][sdk][QiNiuYun][Bucket]" class="span4" id="cloud_QiNiuYun_Bucket" value="<?php echo $config['FS']['cloud']['sdk']['QiNiuYun']['Bucket'] ; ?>"/>
+            <div id="TencentYun">
+              <h3 class="title">腾讯云万象图片</h3>
+              <span class="help-inline">申请地址:<a href="http://www.qcloud.com/product/ci.html?from=iCMS" target="_blank">http://www.qcloud.com/product/ci.html</a></span>
+              <div class="clearfloat"></div>
+              <div class="input-prepend"> <span class="add-on">域名</span>
+                <input type="text" name="config[FS][cloud][sdk][TencentYun][domain]" class="span4" id="cloud_TencentYun_domain" value="<?php echo $config['FS']['cloud']['sdk']['TencentYun']['domain'] ; ?>"/>
+              </div>
+              <span class="help-inline">云存储访问域名</span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">APPID</span>
+                <input type="text" name="config[FS][cloud][sdk][TencentYun][AppId]" class="span4" id="cloud_TencentYun_AppId" value="<?php echo $config['FS']['cloud']['sdk']['TencentYun']['AppId'] ; ?>"/>
+              </div>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">Bucket</span>
+                <input type="text" name="config[FS][cloud][sdk][TencentYun][Bucket]" class="span4" id="cloud_TencentYun_Bucket" value="<?php echo $config['FS']['cloud']['sdk']['TencentYun']['Bucket'] ; ?>"/>
+              </div>
+              <span class="help-inline">空间名称</span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">AccessKey</span>
+                <input type="text" name="config[FS][cloud][sdk][TencentYun][AccessKey]" class="span4" id="cloud_TencentYun_AccessKey" value="<?php echo $config['FS']['cloud']['sdk']['TencentYun']['AccessKey'] ; ?>"/>
+              </div>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">SecretKey</span>
+                <input type="text" name="config[FS][cloud][sdk][TencentYun][SecretKey]" class="span4" id="cloud_TencentYun_SecretKey" value="<?php echo $config['FS']['cloud']['sdk']['TencentYun']['SecretKey'] ; ?>"/>
+              </div>
+              <div class="clearfloat mb10"></div>
             </div>
-            <span class="help-inline">空间名称</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">AccessKey</span>
-              <input type="text" name="config[FS][cloud][sdk][QiNiuYun][AccessKey]" class="span4" id="cloud_QiNiuYun_AccessKey" value="<?php echo $config['FS']['cloud']['sdk']['QiNiuYun']['AccessKey'] ; ?>"/>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">SecretKey</span>
-              <input type="text" name="config[FS][cloud][sdk][QiNiuYun][SecretKey]" class="span4" id="cloud_QiNiuYun_SecretKey" value="<?php echo $config['FS']['cloud']['sdk']['QiNiuYun']['SecretKey'] ; ?>"/>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <h3 class="title">腾讯云万象图片</h3>
-            <span class="help-inline">申请地址:<a href="http://www.qcloud.com/product/ci.html?from=iCMS" target="_blank">http://www.qcloud.com/product/ci.html</a></span>
-            <div class="clearfloat"></div>
-            <div class="input-prepend"> <span class="add-on">域名</span>
-              <input type="text" name="config[FS][cloud][sdk][TencentYun][domain]" class="span4" id="cloud_TencentYun_domain" value="<?php echo $config['FS']['cloud']['sdk']['TencentYun']['domain'] ; ?>"/>
-            </div>
-            <span class="help-inline">云存储访问域名</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">APPID</span>
-              <input type="text" name="config[FS][cloud][sdk][TencentYun][AppId]" class="span4" id="cloud_TencentYun_AppId" value="<?php echo $config['FS']['cloud']['sdk']['TencentYun']['AppId'] ; ?>"/>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">Bucket</span>
-              <input type="text" name="config[FS][cloud][sdk][TencentYun][Bucket]" class="span4" id="cloud_TencentYun_Bucket" value="<?php echo $config['FS']['cloud']['sdk']['TencentYun']['Bucket'] ; ?>"/>
-            </div>
-            <span class="help-inline">空间名称</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">AccessKey</span>
-              <input type="text" name="config[FS][cloud][sdk][TencentYun][AccessKey]" class="span4" id="cloud_TencentYun_AccessKey" value="<?php echo $config['FS']['cloud']['sdk']['TencentYun']['AccessKey'] ; ?>"/>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">SecretKey</span>
-              <input type="text" name="config[FS][cloud][sdk][TencentYun][SecretKey]" class="span4" id="cloud_TencentYun_SecretKey" value="<?php echo $config['FS']['cloud']['sdk']['TencentYun']['SecretKey'] ; ?>"/>
-            </div>
-            <div class="clearfloat mb10"></div>
           </div>
-
           <div id="config-thumb" class="tab-pane hide">
 <!--             <div class="input-prepend"> <span class="add-on">缩略图</span>
               <div class="switch">

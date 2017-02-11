@@ -4,21 +4,24 @@ var iFormer = {
         fbox:null
     },
     widget: function(t) {
-        var tags = {
+        var element = {
             input: '<input/>',
             textarea: '<textarea/>',
-            btngroup: function (text) {
+            btngroup: function (text,$type) {
                 var btngroup = iFormer.widget('div').addClass('btn-group btn-group-vertical');
-                btngroup.append('<a class="btn dropdown-toggle">'+
-                    ' <span class="caret"></span> '+text+'</a>');
+                if($type){
+                    btngroup.append('<a class="btn"><i class="fa fa-'+$type+'"></i> '+text+'</a>');
+                }else{
+                    btngroup.append('<a class="btn dropdown-toggle"><span class="caret"></span> '+text+'</a>');
+                }
                 return btngroup;
             }
         };
-        if(typeof(tags[t])==="function"){
-            return tags[t];
+        if(typeof(element[t])==="function"){
+            return element[t];
         }
-        if(tags[t]){
-          return $(tags[t]);
+        if(element[t]){
+          return $(element[t]);
         }else{
           return $('<'+t+'/>');
         }
@@ -33,9 +36,10 @@ var iFormer = {
      * @return {[type]}        [description]
      */
     render: function(helper,obj,data,origin,readonly) {
+        var me = this;
         var $container = this.widget('div').addClass(this.ui.class);
 
-        if (obj['tag'] == 'br') {
+        if (obj['type'] == 'br') {
             data = 'UI:BR';
             $container.addClass('pagebreak');
             $container.dblclick(function(event) {
@@ -44,33 +48,50 @@ var iFormer = {
         }else{
             var $div  = this.widget('div').addClass('input-prepend'),
                 $label= this.widget('span').addClass('add-on'),
-                $comment = this.widget('span').addClass('help-inline');
+                $help = this.widget('span').addClass('help-inline');
+                // $comment = this.widget('span').addClass('help-inline');
 
-            switch (obj['tag']) {
+
+            var $elem = this.widget('input'),
+            elem_type = 'text';
+            // elem_class = obj['class'];
+
+            switch (obj['type']) {
+                case 'tpldir':
+                case 'tplfile':
+                    var div_after = function () {
+                        var btngroup = iFormer.widget('btngroup');
+                        $div.addClass('input-append');
+                        $div.append(btngroup('选择','search'));
+                    }
+                break;
                 case 'multimage':
                 case 'multifile':
-                    var $elem = this.widget('textarea');
+                    $elem = this.widget('textarea');
+                    elem_type = null;
+                case 'prop':
                 case 'file':
                 case 'image':
-                case 'prop':
-                    var tagText = {
+                    var eText = {
                         prop:'选择属性',
                         image:'图片上传',
                         multimage:'多图上传',
                         file:'文件上传',
                         multifile:'批量上传',
                     }
-                    var $elem = $elem||this.widget('input');
-                    var handle2 = function () {
+                    if(obj['type']!='prop'){
+                        obj['class'] = obj['class']||"span6";
+                    }
+                    var div_after = function () {
                         var btngroup = iFormer.widget('btngroup');
                         $div.addClass('input-append');
-                        $div.append(btngroup(tagText[obj['tag']]));
+                        $div.append(btngroup(eText[obj['type']]));
                     }
+
                 break;
                 case 'seccode':
-                    var $elem = iFormer.widget('input').addClass('seccode');
-                    $elem.attr('maxlength',"4");
-                    var handle2 = function () {
+                    $elem.addClass('seccode').attr('maxlength',"4");
+                    var div_after = function () {
                         var span = iFormer.widget('span').addClass('add-on');
                         span.append('<img src="'+iCMS.config.API+'?do=seccode" alt="验证码" class="seccode-img r3">'+
                             '<a href="javascript:;" class="seccode-text">换一张</a>'
@@ -78,103 +99,157 @@ var iFormer = {
                         $div.addClass('input-append');
                         $div.append(span);
                     }
-
                 break;
+                case 'multitext':
+                    obj['class'] = obj['class']||"span12";
                 case 'textarea':
-                    var $elem = this.widget('textarea');
-                    obj['class'] = "span6";
+                    $elem = this.widget('textarea');
+                    obj['class'] = obj['class']||"span6";
                     $elem.css('height','300px');
+                    elem_type = null;
                 break;
                 case 'editor':
-                    var $elem = this.widget('textarea').hide();
-                    var handle2 = function () {
+                    $elem = this.widget('textarea').hide();
+                    var div_after = function () {
                         var img = iFormer.widget('img');
                         img.prop('src', './app/apps/ui/iFormer/img/editor.png');
                         $div.append(img);
                     }
-
+                    elem_type = null;
                 break;
-                default:var $elem = this.widget(obj['tag']);
-            }
-
-            var elem_type  = obj['type']||'text';
-            obj['class'] = obj['class']||'span3';
-
-            switch (obj['type']) {
+                case 'PRIMARY':
+                case 'userid':
+                case 'hidden':
+                    var div_after = function () {
+                        var parent = iFormer.widget('span').addClass('add-on');
+                        var info = iFormer.widget('span').addClass('label label-info').text('隐藏字段');
+                        if(obj['type']=="PRIMARY"){
+                            var PRIMARY = iFormer.widget('span').addClass('label label-important').text('主键 自增ID');
+                            parent.append(PRIMARY);
+                        }
+                        parent.append(info);
+                        $elem.hide();
+                        $div.append(parent);
+                        $div.addClass('input-append');
+                    }
                 case 'text':
                     if(obj['len']=="5120"){
-                        obj['class'] = 'span6';
+                        obj['class'] = obj['class']||'span12';
                     }
                 break;
+                case 'switch':
                 case 'radio':
                 case 'checkbox':
-                    obj['class'] = 'checkbox';
-                    var handle = function () {
-                        var parent = iFormer.widget('span').addClass('add-on')
+                    obj['class'] = obj['class']||obj['type'];
+                    elem_type = obj['type'];
+                    if(obj['type']=='switch'){
+                        obj['class'] = 'radio';
+                        elem_type = 'radio';
+                    }
+                    //改变$div内容
+                    var _div = function () {
+                        var parent = iFormer.widget('span').addClass('add-on');
+                        var field_option = function () {
+                            var optionText = obj['option'].replace(/(\n)+|(\r\n)+/g, "");
+                            optionArray = optionText.split(";");
+                            $.each(optionArray, function(index, val) {
+                                if(val){
+                                    var ov = val.split("=");
+                                    var aa = me.widget('input').attr('type', elem_type);
+                                    parent.append(ov[0],aa,' ');
+                                }
+                            });
+                        };
+                        if(obj['option']){
+                            field_option();
+                            $elem.hide();
+                        }
                         parent.append($elem);
+                        $div.addClass('input-append');
                         $div.append($label,parent);
                     }
                 break;
+                case 'multiprop':
+                case 'multicategory':
+                case 'category':
                 case 'multiple':
                 case 'select':
-                    obj['class'] = 'chosen-select';
-                    if(obj['type']=='multiple'){
+                    $elem = this.widget('select');
+                    obj['class'] = obj['class']||'chosen-select';
+                    if(obj['type'].indexOf("multi")!='-1'){
                         $elem.attr('multiple',true);
                     }
-                    elem_type  = null;
-                    if(obj['value']){
-                        console.log(obj['value']);
+
+                    var field_option = function () {
+                        console.log(obj['option']);
+                        var optionText = obj['option'].replace(/(\n)+|(\r\n)+/g, "");
+                        optionArray = optionText.split(";");
+                        $.each(optionArray, function(index, val) {
+                            if(val){
+                                var ov = val.split("=");
+                                $elem.append('<option value="'+ov[1]+'">'+ov[0]+'</option>');
+                            }
+                        });
+                    };
+                    if(obj['option']){
+                        field_option();
                     }
+
+                    elem_type = null;
                 break;
                 case 'number':
                     if(obj['len']=="1"){
-                        obj['class'] = 'span1';
+                        obj['class'] = obj['class']||'span2';
                     }
                     if(obj['len']=="10"){
-                        obj['class'] = 'span2';
+                        // obj['class'] = obj['class']||'span3';
                     }
-                    elem_type  = 'text';
                 break;
                 case 'currency':
                 case 'percentage':
-                    var handle2 = function () {
+                    //追加$div内容
+                    var div_after = function () {
                         var label2 = iFormer.widget('span').addClass('add-on');
                         label2.append(obj['label-after']);
                         $div.append(label2).addClass('input-append');
                     }
-                    obj['class'] = 'span2';
-                    elem_type  = 'text';
                 break;
                 case 'decimal':
-                    obj['class'] = 'span2';
-                    elem_type  = 'text';
                 break;
             }
+            obj['class'] = obj['class']||'span3';
+
+
+            // elem_type = elem_type||obj['type'];
             /**
-             * 生成器字符样式展现
+             * 生成器字段样式展现
              */
             $elem.attr({
-                'id': obj['id'],
-                'name': obj['name'],
-                'type': elem_type,
+                'id': '_field_'+obj['id'],
+                'name': '_field_'+obj['name'],
                 'class': obj['class'],
                 'value': obj['default']|| '',
             });
 
-            $label.text(obj['label']);
-            $comment.text(obj['comment']);
+            if(elem_type){
+                $elem.attr({'type': elem_type,});
+            }
 
-            if(typeof(handle)==="function"){
-                handle();
+            $label.text(obj['label']);
+            $help.text(obj['help']);
+            // $comment.text(obj['comment']);
+
+            if(typeof(_div)==="function"){
+                _div();
             }else{
                 $div.append($label,$elem);
             }
 
-            if(typeof(handle2)==="function"){
-                handle2();
+            if(typeof(div_after)==="function"){
+                div_after();
             }
 
-            $container.append($div,$comment);
+            $container.append($div,$help);
             if(readonly){
                 $container.addClass('iFormer-base-field');
             }else{
@@ -299,6 +374,7 @@ var iFormer = {
      * @return {[type]}   [description]
      */
     freset: function(a) {
+        //form嵌套下出错
         document.getElementById("iFormer-field-form").reset();
         $(".chosen-select", $(a)).chosen("destroy");
     },
@@ -330,7 +406,7 @@ var iFormer = {
      * @return {[type]}            [description]
      */
     edit_dialog: function(obj, callback) {
-        var me = this;
+        var me = this,_id = obj['id'];
         var fbox = document.getElementById("iFormer-field-editor");
         $("select",$(fbox)).chosen(chosen_config);
 
@@ -340,11 +416,13 @@ var iFormer = {
                 $("#iFormer-"+i, fbox).trigger("chosen:updated");
             }
         }
-        // if(!obj['comment']){
-        //     $("#iFormer-comment", fbox).val(obj['label']);
-        // }
-        console.log(obj);
-        if(obj['tag']=='select'||obj['type']=='radio'||obj['type']=='checkbox'||obj['type']=='select'||obj['type']=='multiple'){
+        $("#iFormer-label-after-wrap", fbox).hide();
+
+        if(obj['label-after']){
+            $("#iFormer-label-after-wrap", fbox).show();
+        }
+
+        if(obj['type']=='radio'||obj['type']=='checkbox'||obj['type']=='select'||obj['type']=='multiple'){
             $("#iFormer-option-wrap", fbox).show();
             $("[name='option']").removeAttr('disabled');
         }else{
@@ -358,20 +436,22 @@ var iFormer = {
             content: fbox,
             okValue: '确定',
             ok: function() {
+                //更新字段展现
                 var data = $.extend(obj,{
                     'label': $("#iFormer-label", fbox).val(),
                     'name': $("#iFormer-name", fbox).val(),
                     'class': $("#iFormer-class", fbox).val(),
                     'comment': $("#iFormer-comment", fbox).val(),
+                    'option': $("#iFormer-option", fbox).val(),
+                    'help': $("#iFormer-help", fbox).val(),
+                    'label-after': $("#iFormer-label-after", fbox).val(),
                     'default': $("#iFormer-default", fbox).val()
                 });
+
                 if(data['id']!= data['name']){
                     data['id'] = data['name'];
                     $("#iFormer-id", fbox).val(data['id']);
                 }
-                param = $("form", fbox).serialize();
-                // param = $("form", fbox).serializeArray();
-// console.log(param);
 
                 if(!data.label){
                   iCMS.alert("请填写字段名称!");
@@ -381,13 +461,16 @@ var iFormer = {
                   iCMS.alert("请填写字段名!");
                   return false;
                 }
-                if(obj['type']!='radio' &&obj['type']!='checkbox'){
-                    var dname = $('[name="'+data.name+'"]',"#custom_field_list").not('#'+obj.id);
-                    if(dname.length){
-                        iCMS.alert("该字段名已经存在,请重新填写");
-                        return false;
-                    }
+                // console.log(obj);
+                var dname = $('[name="_field_'+data.name+'"]','.iFormer-layout').not('[name="_field_'+_id+'"]');
+
+                if(dname.length){
+                    iCMS.alert("该字段名已经存在,请重新填写");
+                    return false;
                 }
+
+                //更新 fields[]
+                param = $("form", fbox).serialize();
                 callback(data,param);
                 me.freset(fbox);
                 return true;

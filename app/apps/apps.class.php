@@ -23,14 +23,6 @@ class apps {
     //     $path = self::$etc."/install.lock.php";
     //     return self::get_file($app,$path);
     // }
-    public static function get_path($app,$type='app',$arr=false){
-        $path = iPHP_APP_DIR . '/' . $app . '/' . $app.'.'.$type.'.php';
-        if($arr){
-            $obj  = $app.ucfirst($type);
-            return array($path,$obj);
-        }
-        return $path;
-    }
 
     public static function uninstall($appid){
         $data = self::get($appid);
@@ -186,7 +178,7 @@ class apps {
     public static function get_type_select(){
       $option = '';
       foreach (self::$type_array as $key => $type) {
-        $option.='<option value="'.$key.'">'.$type.'[type=\''.$type.'\']</option>';
+        $option.='<option value="'.$key.'">'.$type.'[type=\''.$key.'\']</option>';
       }
       $option.= propAdmincp::get("type");
       return $option;
@@ -290,6 +282,14 @@ class apps {
         iCache::set('app/idarray',  $appid_array,0);
         iCache::set('app/array',$app_array,0);
 	}
+    public static function get_path($app,$type='app',$arr=false){
+        $path = iPHP_APP_DIR . '/' . $app . '/' . $app.'.'.$type.'.php';
+        if($arr){
+            $obj  = $app.ucfirst($type);
+            return array($path,$obj);
+        }
+        return $path;
+    }
     public static function get_func($app,$tag=false){
         $path   = self::get_path($app,'func');
         if(file_exists($path)){

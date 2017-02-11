@@ -292,9 +292,9 @@ class filesAdmincp{
         $href = __ADMINCP__."=files&do={$do}&from={$from}&click={$click}&target={$target}&callback={$callback}";
         $_title=$title.'文件';
         $click=='dir' && $_title=$title.'目录';
-        echo '<a href="'.$href.'" class="btn files_modal" data-toggle="modal" title="选择'.$_title.'"><i class="fa fa-search"></i> 选择</a>';
+        return '<a href="'.$href.'" class="btn files_modal" data-toggle="modal" title="选择'.$_title.'"><i class="fa fa-search"></i> 选择</a>';
     }
-    public static function pic_btn($callback, $indexid = 0, $type = 'pic',$ret=false) {
+    public static function pic_btn($callback, $indexid = 0, $ret=false) {
         $ret && ob_start();
         include admincp::view("files.picbtn","files");
         if ($ret) {

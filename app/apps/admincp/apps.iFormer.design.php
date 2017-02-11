@@ -12,23 +12,23 @@
   <div id="fields-tab-content" class="tab-content">
     <div id="fields-tab-base" class="tab-pane active">
       <ul>
-        <li i="layout" tag="br" class="br">
+        <li i="layout" tag="br" type="br" class="br">
           <span class="fa fa-arrows-h"></span>
           <p>换行符</p>
         </li>
-        <li i="field" tag="input" field="VARCHAR" len="255">
+        <li i="field" tag="input" type="text" field="VARCHAR" len="255">
           <span class="fb-icon fb-icon-input"></span>
           <p>单行</p>
         </li>
-        <li i="field" tag="input" field="VARCHAR" len="5120">
+        <li i="field" tag="input" type="text" field="VARCHAR" len="5120">
           <span class="fb-icon fb-icon-input"></span>
           <p>单行长文本</p>
         </li>
-        <li i="field" tag="textarea" field="TEXT">
+        <li i="field" tag="textarea" type="textarea" field="TEXT">
           <span class="fb-icon fb-icon-textarea"></span>
           <p>多行</p>
         </li>
-        <li i="field" tag="input" field="VARCHAR" len="255" label="邮箱">
+        <li i="field" tag="input" type="text" field="VARCHAR" len="255" label="邮箱">
           <span class="fb-icon fb-icon-mail"></span>
           <p>邮箱</p>
         </li>
@@ -80,7 +80,7 @@
           <span class="fb-icon fb-icon-currency"></span>
           <p>货币</p>
         </li>
-        <li i="field" tag="input" field="VARCHAR" len="255" label="链接">
+        <li i="field" tag="input" type="text" field="VARCHAR" len="255" label="链接">
           <span class="fb-icon fb-icon-url"></span>
           <p>Url</p>
         </li>
@@ -116,31 +116,55 @@
     </div>
     <div id="fields-tab-func" class="tab-pane">
       <ul>
-        <li i="field" tag="dialog" field="VARCHAR" len="255" label="选择框">
+        <li i="field" tag="dialog" type="dialog" field="VARCHAR" len="255" label="选择框">
           <span class="fb-icon fb-icon-deciton"></span>
           <p>选择框</p>
         </li>
-        <li i="field" tag="image" field="VARCHAR" len="255" label="图片">
+        <li i="field" tag="tpldir" type="tpldir" field="VARCHAR" len="255" label="模板目录">
+          <span class="fb-icon fb-icon-template"></span>
+          <p>选择框-模板目录</p>
+        </li>
+        <li i="field" tag="tplfile" type="tplfile" field="VARCHAR" len="255" label="模板文件">
+          <span class="fb-icon fb-icon-template"></span>
+          <p>选择框-模板文件</p>
+        </li>
+        <li i="field" tag="category" type="category" field="INT" len="10" label="栏目">
+          <span class="multiselect fb-icon fb-icon-multiselect"></span>
+          <p>栏目</p>
+        </li>
+        <li i="field" tag="multicategory" type="multicategory" field="VARCHAR" len="255" label="多选栏目">
+          <span class="multiselect fb-icon fb-icon-multiselect"></span>
+          <p>栏目(多选)</p>
+        </li>
+        <li i="field" tag="image" type="image" field="VARCHAR" len="255" label="图片">
           <span class="fb-icon fb-icon-image"></span>
           <p>图片上传</p>
         </li>
-        <li i="field" tag="multimage" field="TEXT" label="多图">
+        <li i="field" tag="multimage" type="multimage" field="TEXT" label="多图">
           <span class="fb-icon fb-icon-image"></span>
           <p>多图上传</p>
         </li>
-        <li i="field" tag="file" field="VARCHAR" len="255" label="上传">
+        <li i="field" tag="file" type="file" field="VARCHAR" len="255" label="上传">
           <span class="fb-icon fb-icon-fileupload"></span>
           <p>上传文件</p>
         </li>
-        <li i="field" tag="multifile" field="TEXT" label="批量上传">
+        <li i="field" tag="multifile" type="multifile" field="TEXT" label="批量上传">
           <span class="fb-icon fb-icon-fileupload"></span>
           <p>批量上传</p>
         </li>
-        <li i="field" tag="prop" field="VARCHAR" len="255" label="属性">
+        <li i="field" tag="prop" type="prop" field="VARCHAR" len="255" label="属性">
           <span class="fb-icon fb-icon-prop"></span>
           <p>属性</p>
         </li>
-        <li i="field" tag="seccode" label="验证码">
+        <li i="field" tag="username" type="username" field="VARCHAR" len="255" label="用户名">
+          <span class="fb-icon fb-icon-username"></span>
+          <p>用户名</p>
+        </li>
+        <li i="field" tag="userid" type="userid" field="INT" len="10" label="用户ID">
+          <span class="fb-icon fb-icon-userid"></span>
+          <p>用户ID</p>
+        </li>
+        <li i="field" tag="seccode" type="seccode" label="验证码">
           <span class="fb-icon fb-icon-url"></span>
           <p>验证码</p>
         </li>
@@ -148,11 +172,11 @@
     </div>
     <div id="fields-tab-addons" class="tab-pane">
       <ul>
-        <li i="field" tag="textarea" field="MEDIUMTEXT" label="超大文本">
+        <li i="field" tag="textarea" type="multitext" field="MEDIUMTEXT" label="超大文本">
           <span class="fb-icon fb-icon-textarea"></span>
           <p>超大文本</p>
         </li>
-        <li i="field" tag="editor" field="MEDIUMTEXT" label="编辑器">
+        <li i="field" tag="editor" type="editor" field="MEDIUMTEXT" label="编辑器">
           <span class="fb-icon fb-icon-richtext"></span>
           <p>编辑器</p>
         </li>
