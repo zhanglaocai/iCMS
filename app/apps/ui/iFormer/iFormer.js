@@ -171,17 +171,18 @@ var iFormer = {
                 break;
                 case 'multiprop':
                 case 'multicategory':
-                case 'category':
                 case 'multiple':
+                case 'category':
                 case 'select':
                     $elem = this.widget('select');
                     obj['class'] = obj['class']||'chosen-select';
                     if(obj['type'].indexOf("multi")!='-1'){
+                        obj['multiple'] = true;
                         $elem.attr('multiple',true);
                     }
 
                     var field_option = function () {
-                        console.log(obj['option']);
+                        // console.log(obj['option']);
                         var optionText = obj['option'].replace(/(\n)+|(\r\n)+/g, "");
                         optionArray = optionText.split(";");
                         $.each(optionArray, function(index, val) {
@@ -390,7 +391,7 @@ var iFormer = {
             data   = $("[name='fields[]']",$container).val(),
             origin  = $("[name^='origin']",$container).val(),
             obj    = iFormer.urlDecode(data);
-            // console.log(origin,obj,data);
+            // console.log(obj);
             iFormer.edit_dialog(obj,
                 function(param,qt) {
                     var render = iFormer.render($container,param,qt,origin);
@@ -412,9 +413,20 @@ var iFormer = {
 
         for(var i in obj) {
             $("#iFormer-"+i, fbox).val(obj[i]);
+            console.log(i,obj[i],typeof(obj[i]));
             if(typeof(obj[i])==='object'){
                 $("#iFormer-"+i, fbox).trigger("chosen:updated");
             }
+        }
+        if(obj['validate']){
+            $.each(obj['validate'], function(i, v) {
+                if ($("#iFormer-validate-"+v).length > 0 ) {
+                    $("#iFormer-validate-"+v).show();
+                    $.each(obj[v], function(index, val) {
+                        $('[name="'+v+'['+index+']"]').val(val);
+                    });
+                }
+            });
         }
         $("#iFormer-label-after-wrap", fbox).hide();
 

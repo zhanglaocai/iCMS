@@ -19,7 +19,49 @@ class appsAdmincp{
     	$this->id = (int)$_GET['id'];
     }
     public function do_app_save(){
-      print_r($_POST);
+      $appid = (int)$_POST['appid'];
+      $data  = $_POST['data'];
+      $app   = apps::get($appid);
+
+      foreach ($app['fields'] as $key => $value) {
+        $output = array();
+        if($value!='UI:BR'){
+            parse_str($value,$output);
+            $field_data[$key] = $output;
+        }
+      }
+
+      foreach ($data as $key => $value) {
+        print_r($field_data[$key]);
+        $field = $field_data[$key]['field'];
+        $type  = $field_data[$key]['type'];
+        if(in_array($field, array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
+          $data[$key] = (int)$value;
+        }elseif(in_array($type, array('date','datetime'))){
+          $data[$key] = str2time($value);
+        }elseif($type=='editor'){
+          $data[$key] = $value;
+        }elseif(isset($field_data[$key]['multiple'])){
+          $data[$key] = implode(',', (array)$value);
+        }else{
+          $data[$key] = iSecurity::escapeStr($value);
+        }
+      }
+      print_r($data);
+      $table = reset($app['table']);
+      $id    = $data[$table['primary']];
+      foreach ($data as $key => $value) {
+          if($key[0]=='_'){
+            unset($data[$key]);
+          }
+      }
+      if(empty($id)) {
+          // iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='$keyword'") && iUI::alert('该关键词已经存在!');
+          iDB::insert($table['name'],$data);
+      }else {
+          // iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='$keyword' AND `id` !='$id'") && iUI::alert('该关键词已经存在!');
+          iDB::update($table['name'], $data, array('id'=>$id));
+      }
     }
     public function do_app_add(){
       $appid = (int)$_GET['appid'];
@@ -44,6 +86,8 @@ class appsAdmincp{
               parse_str($value,$output);
           }
           $html.= iFormer::render($output,$rs[$output['name']]);
+          $submit.= iFormer::validate($output);
+          $script.= iFormer::script($output['javascript']);
         }
       }
 
@@ -194,7 +238,8 @@ class appsAdmincp{
             iDB::update('apps', $array, array('id'=>$id));
             $msg = "应用编辑完成!";
         }
-        iUI::success($msg,'url:'.APP_URI);
+        // iUI::success($msg,'url:'.APP_URI);
+        iUI::success($msg,'js:1');
     }
     public function do_update(){
         if($this->id){

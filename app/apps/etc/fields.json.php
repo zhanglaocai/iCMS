@@ -20,7 +20,7 @@ return '{
     "17": "UI:BR",
     "sortnum": "id=sortnum&label=排序&field=INT&name=sortnum&default=&type=number&len=10&class=span3",
     "19": "UI:BR",
-    "tpl": "id=tpl&label=模板&field=VARCHAR&name=tpl&type=tplfile&default=&len=255&class=span3",
+    "tpl": "id=tpl&label=模板&field=VARCHAR&name=tpl&type=tplfile&default=&len=255&class=span6",
     "21": "UI:BR",
     "hits": "id=hits&label=总点击数&field=INT&name=hits&default=&type=number&len=10&class=span2",
     "hits_today": "id=hits_today&label=当天点击数&field=INT&name=hits_today&default=&type=number&len=10&class=span2",
@@ -34,11 +34,11 @@ return '{
     "good": "id=good&label=顶&field=INT&name=good&default=&type=number&len=10&class=span2",
     "bad": "id=bad&label=踩&field=INT&name=bad&default=&type=number&len=10&class=span2",
     "33": "UI:BR",
-    "creative": "id=creative&label=内容类型&comment=0:转载;1:原创&field=TINYINT&name=creative&option=转载=0;原创=1;&default=0&type=radio&len=1&class=checkbox",
+    "creative": "id=creative&label=内容类型&comment=0:转载;1:原创&field=TINYINT&name=creative&option=转载=0;原创=1;&default=0&type=radio&len=1&class=radio",
     "35": "UI:BR",
-    "mobile": "id=mobile&label=发布设备&comment=0:pc;1:手机&field=TINYINT&name=mobile&default=&type=hidden&len=1&class=span2",
+    "mobile": "id=mobile&label=发布设备&comment=0:pc;1:手机&field=TINYINT&name=mobile&default=0&type=hidden&len=1&class=span2",
     "37": "UI:BR",
-    "postype": "id=postype&label=发布类型&comment=0:用户;1:管理员&field=TINYINT&name=postype&default=&type=hidden&len=1&class=span2",
+    "postype": "id=postype&label=发布类型&comment=0:用户;1:管理员&field=TINYINT&name=postype&default=1&type=hidden&len=1&class=span2",
     "39": "UI:BR",
-    "status": "id=status&label=状态&comment=0:草稿;1:正常;2:回收;3:审核;4:不合格&option=草稿=0;正常=1;回收=2;审核=3;不合格=4;&field=TINYINT&name=status&default=&type=select&len=1&class=chosen-select span3"
+    "status": "id=status&label=状态&comment=0:草稿;1:正常;2:回收;3:审核;4:不合格&option=草稿=0;正常=1;回收=2;审核=3;不合格=4;&field=TINYINT&name=status&default=1&type=select&len=1&class=chosen-select span3"
 }';
