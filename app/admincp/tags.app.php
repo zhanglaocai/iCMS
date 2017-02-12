@@ -75,10 +75,23 @@ class tagsApp{
         iPHP::pagenav($total,$maxperpage,"个标签");
         $limit  = 'LIMIT '.iPHP::$offset.','.$maxperpage;
         if($map_sql||iPHP::$offset){
+            if(iPHP::$offset > 1000 && $total > 2000 && iPHP::$offset > $total/2) {
+                $_offset = $total-iPHP::$offset-$maxperpage;
+                if($_offset < 0) {
+                    $maxperpage += $_offset;
+                    $_offset = 0;
+                }
+                $orderby = "id ASC";
+                $limit = 'LIMIT '.$_offset.','.$maxperpage;
+            }
             $ids_array = iDB::all("
                 SELECT `id` FROM `#iCMS@__tags` {$sql}
                 ORDER BY {$orderby} {$limit}
             ");
+            if(isset($_offset)){
+                $ids_array = array_reverse($ids_array, TRUE);
+                $orderby   = "id DESC";
+            }
             //iDB::debug(1);
             $ids   = iCMS::get_ids($ids_array);
             $ids   = $ids?$ids:'0';

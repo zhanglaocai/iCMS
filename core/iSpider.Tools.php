@@ -268,7 +268,6 @@ class spiderTools extends spider{
         if (spider::$dataTest || spider::$ruleTest) {
             echo '<b>规则设置编码:</b>'.$encode . '<br />';
         }
-
         $encode == 'auto' && $encode = null;
         /**
          * 检测http返回的编码
@@ -280,13 +279,14 @@ class spiderTools extends spider{
             }else if(strtoupper($encode)!=strtoupper($content_charset)){
                 $encode = $content_charset;
             }
+            if (spider::$dataTest || spider::$ruleTest) {
+                echo '<b>检测HTTP编码:</b>'.$encode . '<br />';
+            }
             if(strtoupper($encode)==$out){
-                if (spider::$dataTest || spider::$ruleTest) {
-                    echo '<b>检测页面编码:</b>'.$encode . '<br />';
-                }
                 return $html;
             }
         }
+
         /**
          * 检测页面编码
          */
@@ -296,6 +296,7 @@ class spiderTools extends spider{
         }
         if(function_exists('mb_detect_encoding') && empty($encode)) {
             $encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
+            echo '<b>检测文本编码:</b>'.$encode . '<br />';
         }
 
         if (spider::$dataTest || spider::$ruleTest) {
@@ -305,10 +306,10 @@ class spiderTools extends spider{
             return $html;
         }
         $html = preg_replace('/(<meta[^>]*?charset=(["\']?))[a-z\d_\-]*(\2[^>]*?>)/is', "\\1$out\\3", $html,1);
-        if (function_exists('mb_convert_encoding')) {
+        if (function_exists('iconv')) {
+            return iconv($encode,$out."//TRANSLIT", $html);
+        } elseif (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($html,$out,$encode);
-        } elseif (function_exists('iconv')) {
-            return iconv($encode,$out, $html);
         } else {
             iPHP::throwException('charsetTrans failed, no function');
         }

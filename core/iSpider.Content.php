@@ -12,7 +12,7 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class spiderContent extends spider{
-
+    public static $hash = array();
     /**
      * 抓取资源
      * @param  [string] $html      [抓取结果]
@@ -30,6 +30,7 @@ class spiderContent extends spider{
             print_r('<b>['.$name.']规则:</b>'.iS::escapeStr($data['rule']));
             echo "<hr />";
         }
+
         /**
          * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
          */
@@ -41,6 +42,7 @@ class spiderContent extends spider{
                 $data['rule'] = $content;
             }
         }
+
         /**
          * 在数据项里调用之前采集的数据RULE@规则id@url
          */
@@ -62,168 +64,60 @@ class spiderContent extends spider{
             list($length,$numeric) = explode(',', $random);
             return random($length, empty($numeric)?0:1);
         }
-        $contentArray       = array();
-        $contentHash        = array();
-        $_content           = null;
-        $_content           = spiderContent::match($html,$data,$rule);
-        $cmd5               = md5($_content);
-        $contentArray[]     = $_content;
-        $contentHash[$cmd5] = true;
-
-        if ($data['page']) {
-            if(empty($rule['page_url'])){
-                $rule['page_url'] = $rule['list_url'];
-            }
-            if (empty(spider::$allHtml)) {
-                $page_url_array = array();
-                $page_area_rule = trim($rule['page_area_rule']);
-                if($page_area_rule){
-                    if(strpos($page_area_rule, 'DOM::')!==false){
-                        iPHP::import(iPHP_LIB.'/phpQuery.php');
-                        $doc      = phpQuery::newDocumentHTML($html,'UTF-8');
-                        $pq_dom   = str_replace('DOM::','', $page_area_rule);
-                        $pq_array = phpQuery::pq($pq_dom);
-                        foreach ($pq_array as $pn => $pq_val) {
-                            $href = phpQuery::pq($pq_val)->attr('href');
-                            if($href){
-                                if($rule['page_url_rule']){
-                                    if(strpos($rule['page_url_rule'], '<%')!==false){
-                                        $page_url_rule = spiderTools::pregTag($rule['page_url_rule']);
-                                        if (!preg_match('|' . $page_url_rule . '|is', $href)){
-                                            continue;
-                                        }
-                                    }else{
-                                        $cleanhref = spiderTools::dataClean($rule['page_url_rule'],$href);
-                                        if($cleanhref){
-                                            $href = $cleanhref;
-                                            unset($cleanhref);
-                                        }else{
-                                            continue;
-                                        }
-                                    }
-                                }
-                                $href = str_replace('<%url%>',$href, $rule['page_url']);
-                                $page_url_array[$pn] = spiderTools::url_complement($rule['__url__'],$href);
-                            }
-                        }
-                        phpQuery::unloadDocuments($doc->getDocumentID());
-                    }else{
-                        $page_area_rule = spiderTools::pregTag($page_area_rule);
-                        if ($page_area_rule) {
-                            preg_match('|' . $page_area_rule . '|is', $html, $matches, $PREG_SET_ORDER);
-                            $page_area = $matches['content'];
-                        } else {
-                            $page_area = $html;
-                        }
-                        if($rule['page_url_rule']){
-                            $page_url_rule = spiderTools::pregTag($rule['page_url_rule']);
-                            preg_match_all('|' .$page_url_rule. '|is', $page_area, $page_url_matches, PREG_SET_ORDER);
-                            foreach ($page_url_matches AS $pn => $row) {
-                                $href = str_replace('<%url%>', $row['url'], $rule['page_url']);
-                                $page_url_array[$pn] = spiderTools::url_complement($rule['__url__'],$href);
-                                gc_collect_cycles();
-                            }
-                        }
-                        unset($page_area);
-                    }
-                }else{ // 逻辑方式
-                    if($rule['page_url_parse']=='<%url%>'){
-                        $page_url = str_replace('<%url%>',$rule['__url__'],$rule['page_url']);
-                    }else{
-                        $page_url_rule = spiderTools::pregTag($rule['page_url_parse']);
-                        preg_match('|' . $page_url_rule . '|is', $rule['__url__'], $matches, $PREG_SET_ORDER);
-                        $page_url = str_replace('<%url%>', $matches['url'], $rule['page_url']);
-                    }
-                    if (stripos($page_url,'<%step%>') !== false){
-                        for ($pn = $rule['page_no_start']; $pn <= $rule['page_no_end']; $pn = $pn + $rule['page_no_step']) {
-                            $pno = $pn;
-                            if($rule['page_no_fill']){
-                                $pno = sprintf("%0".$rule['page_no_fill']."s",$pn);
-                            }
-                            $page_url_array[$pn] = str_replace('<%step%>', $pno, $page_url);
-                            gc_collect_cycles();
-                        }
-                    }
-                }
-                //URL去重清理
-                if($page_url_array){
-                    $page_url_array = array_filter($page_url_array);
-                    $page_url_array = array_unique($page_url_array);
-                    $puk = array_search($rule['__url__'],$page_url_array);
-                    if($puk!==false){
-                        unset($page_url_array[$puk]);
-                    }
-                }
-
-                if (spider::$dataTest) {
-                    echo "<b>内容页网址:</b>".$rule['__url__'] . "<br />";
-                    echo "<b>分页:</b>".$rule['page_url'] . "<br />";
-                    echo iS::escapeStr($page_url_rule);
-                    echo "<hr />";
-                }
-                if(spider::$dataTest){
-                    echo "<b>分页列表:</b><pre>";
-                    print_r($page_url_array);
-                    echo "</pre><hr />";
-                }
-
-                spider::$content_right_code = trim($rule['page_url_right']);
-                spider::$content_error_code = trim($rule['page_url_error']);
-                spider::$curl_proxy = $rule['proxy'];
-
-                $pageurl = array();
-
-                foreach ($page_url_array AS $pukey => $purl) {
-                    //usleep(100);
-                    $phtml = spiderTools::remote($purl);
-                    if (empty($phtml)) {
-                        break;
-                    }
-                    $md5 = md5($phtml);
-                    if($pageurl[$md5]){
-                        break;
-                    }
-                    $check_content = spiderTools::check_content_code($phtml);
-                    if ($check_content === false) {
-                        unset($check_content,$phtml);
-                        break;
-                    }
-
-                    $_content = spiderContent::match($phtml,$data,$rule);
-                    $cmd5     = md5($_content);
-                    if($contentHash[$cmd5]){
-                        break;
-                    }
-                    $contentArray[]  = $_content;
-                    $contentHash[$cmd5]    = true;
-                    $pageurl[$md5]         = $purl;
-                    spider::$allHtml[$md5] = $phtml;
-                }
-                gc_collect_cycles();
-                unset($check_content,$phtml);
-
-                if (spider::$dataTest) {
-                    echo "<b>最终分页列表:</b><pre>";
-                    print_r($pageurl);
-                    echo "</pre><hr />";
-                }
-            }else{
-                foreach ((array)spider::$allHtml as $ahkey => $phtml) {
-                    $contentArray[] = spiderContent::match($phtml,$data,$rule);
-                }
-            }
+        if(is_array($html)){
+            $content = $html;
+        }else{
+            $contentArray       = array();
+            self::$hash         = array();
+            $_content           = spiderContent::match($html,$data,$rule);
+            $cmd5               = md5($_content);
+            $contentArray[]     = $_content;
+            self::$hash[$cmd5] = true;
+            $data['page'] && self::page_data($html,$data,$rule,$contentArray);
+            $content = implode('#--iCMS.PageBreak--#', $contentArray);
+            unset($contentArray,$_content);
         }
-        $content = implode('#--iCMS.PageBreak--#', $contentArray);
-        $html    = null;
-        unset($html,$contentArray,$contentHash,$_content);
+        unset($html);
+        //遍历 例:FOREACH@<p><img src="[KEY@source]" />[KEY@add_intro]</p>
+        //
+        if(strpos($data['rule'], 'FOREACH@')!==false){
+            $data_rule = str_replace('FOREACH@', '', $data['rule']);
+            preg_match_all('!.*?\[KEY@([\w-_]+)\].*?!ism', $data_rule,$matchs);
+            $variable = array();
+            foreach ((array)$content as $key => $value) {
+                foreach ((array)$matchs[1] as $i => $k) {
+                    if(isset($value[$k])){
+                        $variable[$key][$k] = $value[$k];
+                    }
+                }
+            }
+            foreach ((array)$matchs[1] as $i => $k) {
+                $search[] = '[KEY@'.$k.']';
+            }
+            $contentArray = array();
+            foreach ($variable as $key => $value) {
+                $contentArray[] = str_replace($search, $value, $data_rule);
+            }
+            $content = implode('#--iCMS.PageBreak--#', $contentArray);
+            unset($contentArray,$variable);
+        }
+
         if (spider::$dataTest) {
             print_r('<b>['.$name.']匹配结果:</b>'.htmlspecialchars($content));
             echo "<hr />";
         }
+
         if ($data['cleanbefor']) {
             $content = spiderTools::dataClean($data['cleanbefor'], $content);
         }
-        $content = stripslashes($content);
+
+        if ($data['json_decode']) {
+            $content = json_decode($content,true);
+        }
+
+        if(!is_array($content)){
+            $content = stripslashes($content);
+        }
 
         if ($data['cleanhtml']) {
             $content = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $content);
@@ -293,9 +187,7 @@ class spiderContent extends spider{
                 iPHP::alert($emptyMsg);
             }
         }
-        if ($data['json_decode']) {
-            $content = json_decode($content,true);
-        }
+
         if (spider::$callback['content'] && is_callable(spider::$callback['content'])) {
             $content = call_user_func_array(spider::$callback['content'],array($content));
         }
@@ -309,11 +201,155 @@ class spiderContent extends spider{
 
         return $content;
     }
+    public static function page_data($html,$data,$rule,&$contentArray){
+        if(empty($rule['page_url'])){
+            $rule['page_url'] = $rule['list_url'];
+        }
+        if (empty(spider::$allHtml)) {
+            $page_url_array = array();
+            $page_area_rule = trim($rule['page_area_rule']);
+            if($page_area_rule){
+                if(strpos($page_area_rule, 'DOM::')!==false){
+                    iPHP::import(iPHP_LIB.'/phpQuery.php');
+                    $doc      = phpQuery::newDocumentHTML($html,'UTF-8');
+                    $pq_dom   = str_replace('DOM::','', $page_area_rule);
+                    $pq_array = phpQuery::pq($pq_dom);
+                    foreach ($pq_array as $pn => $pq_val) {
+                        $href = phpQuery::pq($pq_val)->attr('href');
+                        if($href){
+                            if($rule['page_url_rule']){
+                                if(strpos($rule['page_url_rule'], '<%')!==false){
+                                    $page_url_rule = spiderTools::pregTag($rule['page_url_rule']);
+                                    if (!preg_match('|' . $page_url_rule . '|is', $href)){
+                                        continue;
+                                    }
+                                }else{
+                                    $cleanhref = spiderTools::dataClean($rule['page_url_rule'],$href);
+                                    if($cleanhref){
+                                        $href = $cleanhref;
+                                        unset($cleanhref);
+                                    }else{
+                                        continue;
+                                    }
+                                }
+                            }
+                            $href = str_replace('<%url%>',$href, $rule['page_url']);
+                            $page_url_array[$pn] = spiderTools::url_complement($rule['__url__'],$href);
+                        }
+                    }
+                    phpQuery::unloadDocuments($doc->getDocumentID());
+                }else{
+                    $page_area_rule = spiderTools::pregTag($page_area_rule);
+                    if ($page_area_rule) {
+                        preg_match('|' . $page_area_rule . '|is', $html, $matches, $PREG_SET_ORDER);
+                        $page_area = $matches['content'];
+                    } else {
+                        $page_area = $html;
+                    }
+                    if($rule['page_url_rule']){
+                        $page_url_rule = spiderTools::pregTag($rule['page_url_rule']);
+                        preg_match_all('|' .$page_url_rule. '|is', $page_area, $page_url_matches, PREG_SET_ORDER);
+                        foreach ($page_url_matches AS $pn => $row) {
+                            $href = str_replace('<%url%>', $row['url'], $rule['page_url']);
+                            $page_url_array[$pn] = spiderTools::url_complement($rule['__url__'],$href);
+                            gc_collect_cycles();
+                        }
+                    }
+                    unset($page_area);
+                }
+            }else{ // 逻辑方式
+                if($rule['page_url_parse']=='<%url%>'){
+                    $page_url = str_replace('<%url%>',$rule['__url__'],$rule['page_url']);
+                }else{
+                    $page_url_rule = spiderTools::pregTag($rule['page_url_parse']);
+                    preg_match('|' . $page_url_rule . '|is', $rule['__url__'], $matches, $PREG_SET_ORDER);
+                    $page_url = str_replace('<%url%>', $matches['url'], $rule['page_url']);
+                }
+                if (stripos($page_url,'<%step%>') !== false){
+                    for ($pn = $rule['page_no_start']; $pn <= $rule['page_no_end']; $pn = $pn + $rule['page_no_step']) {
+                        $pno = $pn;
+                        if($rule['page_no_fill']){
+                            $pno = sprintf("%0".$rule['page_no_fill']."s",$pn);
+                        }
+                        $page_url_array[$pn] = str_replace('<%step%>', $pno, $page_url);
+                        gc_collect_cycles();
+                    }
+                }
+            }
+            //URL去重清理
+            if($page_url_array){
+                $page_url_array = array_filter($page_url_array);
+                $page_url_array = array_unique($page_url_array);
+                $puk = array_search($rule['__url__'],$page_url_array);
+                if($puk!==false){
+                    unset($page_url_array[$puk]);
+                }
+            }
+
+            if (spider::$dataTest) {
+                echo "<b>内容页网址:</b>".$rule['__url__'] . "<br />";
+                echo "<b>分页:</b>".$rule['page_url'] . "<br />";
+                echo iS::escapeStr($page_url_rule);
+                echo "<hr />";
+            }
+            if(spider::$dataTest){
+                echo "<b>分页列表:</b><pre>";
+                print_r($page_url_array);
+                echo "</pre><hr />";
+            }
+
+            spider::$content_right_code = trim($rule['page_url_right']);
+            spider::$content_error_code = trim($rule['page_url_error']);
+            spider::$curl_proxy = $rule['proxy'];
+
+            $pageurl = array();
+
+            foreach ($page_url_array AS $pukey => $purl) {
+                //usleep(100);
+                $phtml = spiderTools::remote($purl);
+                if (empty($phtml)) {
+                    break;
+                }
+                $md5 = md5($phtml);
+                if($pageurl[$md5]){
+                    break;
+                }
+                $check_content = spiderTools::check_content_code($phtml);
+                if ($check_content === false) {
+                    unset($check_content,$phtml);
+                    break;
+                }
+
+                $_content = spiderContent::match($phtml,$data,$rule);
+                $cmd5     = md5($_content);
+                if(self::$hash[$cmd5]){
+                    break;
+                }
+                $contentArray[]        = $_content;
+                $pageurl[$md5]         = $purl;
+                self::$hash[$cmd5]     = true;
+                spider::$allHtml[$md5] = $phtml;
+            }
+            gc_collect_cycles();
+            unset($check_content,$phtml);
+
+            if (spider::$dataTest) {
+                echo "<b>最终分页列表:</b><pre>";
+                print_r($pageurl);
+                echo "</pre><hr />";
+            }
+        }else{
+            foreach ((array)spider::$allHtml as $ahkey => $phtml) {
+                $contentArray[] = spiderContent::match($phtml,$data,$rule);
+            }
+        }
+    }
     public static function match($html,$data,$rule){
         $match_hash = array();
         if($data['dom']){
             iPHP::import(iPHP_LIB.'/phpQuery.php');
             spider::$dataTest && $_GET['pq_debug'] && phpQuery::$debug =1;
+            $html = preg_replace(array('/<script.+?<\/script>/is'),'',$html);
             $doc = phpQuery::newDocumentHTML($html,'UTF-8');
             if(strpos($data['rule'], '@')!==false){
                 list($content_dom,$content_attr) = explode("@", $data['rule']);

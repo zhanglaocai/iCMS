@@ -80,11 +80,11 @@ class spiderData extends spider{
         $responses['__title__'] = $title;
         foreach ((array)$dataArray AS $key => $data) {
 
-            $content_html = $html;
+            $_html = $html;
             $dname = $data['name'];
             /**
-             * [UNSET:name]
-             * 注销[name]
+             * 数据项名称 UNSET:name
+             * 注销name数据
              * @var string
              */
             if (strpos($dname,'UNSET:')!== false){
@@ -93,31 +93,32 @@ class spiderData extends spider{
                 continue;
             }
             /**
-             * [DATA:name]
-             * 把之前[name]处理完的数据当作原始数据
+             * 数据项名称 DATA:name
+             * 获取name数据当作原始数据
              * 如果之前有数据会叠加
              * 用于数据多次处理
-             * @var string
+             *
              */
             if (strpos($dname,'DATA:')!== false){
                 $_dname = str_replace('DATA:', '', $dname);
-                $content_html = $responses[$_dname];
+                $_html = $responses[$_dname];
                 unset($responses[$dname]);
             }
             /**
-             * [PRE:name]
-             * 把PRE:name采集到的数据 当做原始数据
+             * 数据项名称 PRE:name
+             * 获取PRE:name 数据 当做原始数据
              * 一般用于下载内容
              * @var string
              */
             $pre_dname = 'PRE:'.$dname;
+
             if(isset($responses[$pre_dname])){
-                $content_html = $responses[$pre_dname];
+                $_html = $responses[$pre_dname];
                 unset($responses[$pre_dname]);
             }
             /**
-             * [EMPTY:name]
-             * 如果[name]之前抓取结果数据为空使用这个数据项替换
+             * 数据项名称 EMPTY:name
+             * 如果name之前抓取结果数据为空使用这个数据项替换
              * @var string
              */
             if (strpos($dname,'EMPTY:')!== false){
@@ -129,15 +130,39 @@ class spiderData extends spider{
                     continue;
                 }
             }
-            $content = spiderContent::crawl($content_html,$data,$rule,$responses);
 
-            unset($content_html);
+            $content = spiderContent::crawl($_html,$data,$rule,$responses);
+            unset($_html);
 
+            // if (strpos($dname,'FOREACH:')!== false){
+            //     $_dname = str_replace('FOREACH:', '', $dname);
+            //     preg_match_all('!.*?\[KEY@([\w-_]+)\].*?!ism', $data['rule'],$matchs);
+            //     $variable = array();
+            //     foreach ((array)$responses[$_dname] as $key => $value) {
+            //         foreach ((array)$matchs[1] as $i => $k) {
+            //             if(isset($value[$k])){
+            //                 $variable[$key][$k] = $value[$k];
+            //             }
+            //         }
+            //     }
+            //     foreach ((array)$matchs[1] as $i => $k) {
+            //         $search[] = '[KEY@'.$k.']';
+            //     }
+            //     $_content = '';
+            //     foreach ($variable as $key => $value) {
+            //         $_content.= str_replace($search, $value, $data['rule']);
+            //     }
+            //     $dname = $_dname;
+            //     $content = $_content;
+            //     unset($_content);
+            // }
+
+            /**
+             * 对name为二维数组时进行处理
+             * 转成 二维KEY 数组
+             */
             if (strpos($dname,'ARRAY:')!== false){
-                // if(strpos($data['rule'], 'RULE@')!==false){
                 $dname = str_replace('ARRAY:', '', $dname);
-                // $contentArray = $responses[$dname];
-                // // $contentArray = $responses[$dname];
                 $cArray = array();
 
                 foreach ((array)$content as $k => $value) {
@@ -152,7 +177,7 @@ class spiderData extends spider{
             }
 
             /**
-             * [name.xxx]
+             * 数据项名称 name.xxx
              * 采集内容做为数组
              */
             if (strpos($dname,'.')!== false){
@@ -160,7 +185,7 @@ class spiderData extends spider{
                 $s_key = substr(strrchr($dname, "."), 1);
                 if(isset($responses[$f_key][$s_key])){
                     if(is_array($responses[$f_key][$s_key])){
-                        $responses[$f_key][$s_key] = array_merge($responses[$f_key][$s_key],$content);
+                        $responses[$f_key][$s_key] = array_merge((array)$responses[$f_key][$s_key],(array)$content);
                     }else{
                         $responses[$f_key][$s_key].= $content;
                     }
@@ -173,7 +198,7 @@ class spiderData extends spider{
                  */
                 if(isset($responses[$dname])){
                     if(is_array($responses[$dname])){
-                        $responses[$dname] = array_merge($responses[$dname],$content);
+                        $responses[$dname] = array_merge((array)$responses[$dname],(array)$content);
                     }else{
                         $responses[$dname].= $content;
                     }
@@ -201,7 +226,11 @@ class spiderData extends spider{
 
             gc_collect_cycles();
         }
-
+        foreach ($responses as $key => $value) {
+            if(strpos($key, ':')!==false){
+                unset($responses[$key]);
+            }
+        }
         if(isset($responses['title']) && empty($responses['title'])){
             $responses['title'] = $responses['__title__'];
         }

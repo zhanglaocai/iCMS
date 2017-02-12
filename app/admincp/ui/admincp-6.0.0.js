@@ -358,6 +358,9 @@ function modal_icms(el,a){
                 box   = document.getElementById(_act+'Batch'),
                 title = a.text();
 
+
+
+
                 if(dia==="no"){
                     options[act](checkbox);
                     return;
