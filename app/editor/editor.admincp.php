@@ -222,4 +222,14 @@ class editorAdmincp{
 			));
 		}
     }
+    public static function ueditor_script($id){
+        return '
+            <script type="text/javascript">
+            window.catchRemoteImageEnable = '.(iCMS::$config['catch_remote']=="1"?'true':'false').';
+            </script>
+            <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.ueditor.js"></script>
+            <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/ueditor/ueditor.all.min.js"></script>
+            <script>$(function(){ iCMS.editor.create("'.$id.'"); })</script>
+        ';
+    }
 }

@@ -205,7 +205,7 @@
                 .replace(/<p[^>]*?>/g, "\n\n")
                 .replace(/<br[^>]*?>/g, "\n")
                 .replace(/<[^>]*?>/g, "");
-                console.log(content);
+                // console.log(content);
             if(ubb){
                 content = content.replace(/\n+/g, "[iCMS.N]");
                 content = this.n2p(content,ubb);

@@ -14,17 +14,17 @@
       <ul>
         <li i="layout" tag="br" type="br" class="br">
           <span class="fa fa-arrows-h"></span>
-          <p>换行符</p>
+          <p style="vertical-align: text-top;">换行符</p>
         </li>
-        <li i="field" tag="input" type="text" field="VARCHAR" len="255">
+        <li i="field" tag="input" type="text" field="VARCHAR" len="255" label="单行">
           <span class="fb-icon fb-icon-input"></span>
           <p>单行</p>
         </li>
-        <li i="field" tag="input" type="text" field="VARCHAR" len="5120">
+        <li i="field" tag="input" type="text" field="VARCHAR" len="5120" label="长文本">
           <span class="fb-icon fb-icon-input"></span>
           <p>单行长文本</p>
         </li>
-        <li i="field" tag="textarea" type="textarea" field="TEXT">
+        <li i="field" tag="textarea" type="textarea" field="TEXT" label="多行">
           <span class="fb-icon fb-icon-textarea"></span>
           <p>多行</p>
         </li>
@@ -40,15 +40,15 @@
           <span class="timeIcon fb-icon fb-icon-datetime"></span>
           <p>日期时间</p>
         </li>
-        <li i="field" tag="input" type="radio" field="TINYINT" len="1" label="单选">
+        <li i="field" tag="input" type="radio" field="VARCHAR" len="255" label="单选">
           <span class="fb-icon fb-icon-radio"></span>
           <p>单选框</p>
         </li>
-        <li i="field" tag="input" type="checkbox" field="TINYINT" len="1" label="复选">
+        <li i="field" tag="input" type="checkbox" field="VARCHAR" len="255" label="复选">
           <span class="fb-icon fb-icon-checkbox"></span>
           <p>复选框</p>
         </li>
-        <li i="field" tag="select" type="select" field="TINYINT" len="1" label="列表">
+        <li i="field" tag="select" type="select" field="VARCHAR" len="255" label="列表">
           <span class="fb-icon fb-icon-dropdown"></span>
           <p>下拉列表</p>
         </li>
@@ -60,11 +60,11 @@
           <span class="fb-icon fb-icon-number"></span>
           <p>数字</p>
         </li>
-        <li i="field" tag="input" type="number" field="INT" len="10" label="数字">
+        <li i="field" tag="input" type="number" field="INT" len="10" label="大数字">
           <span class="fb-icon fb-icon-number"></span>
           <p>大数字</p>
         </li>
-        <li i="field" tag="input" type="number" field="BIGINT" len="20" label="数字">
+        <li i="field" tag="input" type="number" field="BIGINT" len="20" label="超大数字">
           <span class="fb-icon fb-icon-number"></span>
           <p>超大数字</p>
         </li>
@@ -113,6 +113,7 @@
           <p class="lookupConent">用户</p>
         </li> -->
       </ul>
+      <div class="clearfix"></div>
     </div>
     <div id="fields-tab-func" class="tab-pane">
       <ul>
@@ -132,7 +133,7 @@
           <span class="multiselect fb-icon fb-icon-multiselect"></span>
           <p>栏目</p>
         </li>
-        <li i="field" tag="multicategory" type="multicategory" field="VARCHAR" len="255" label="多选栏目">
+        <li i="field" tag="multi_category" type="multi_category" field="VARCHAR" len="255" label="多选栏目">
           <span class="multiselect fb-icon fb-icon-multiselect"></span>
           <p>栏目(多选)</p>
         </li>
@@ -140,7 +141,7 @@
           <span class="fb-icon fb-icon-image"></span>
           <p>图片上传</p>
         </li>
-        <li i="field" tag="multimage" type="multimage" field="TEXT" label="多图">
+        <li i="field" tag="multi_image" type="multi_image" field="TEXT" label="多图">
           <span class="fb-icon fb-icon-image"></span>
           <p>多图上传</p>
         </li>
@@ -148,13 +149,17 @@
           <span class="fb-icon fb-icon-fileupload"></span>
           <p>上传文件</p>
         </li>
-        <li i="field" tag="multifile" type="multifile" field="TEXT" label="批量上传">
+        <li i="field" tag="multi_file" type="multi_file" field="TEXT" label="批量上传">
           <span class="fb-icon fb-icon-fileupload"></span>
           <p>批量上传</p>
         </li>
-        <li i="field" tag="prop" type="prop" field="VARCHAR" len="255" label="属性">
+        <li i="field" tag="prop" type="prop" field="INT" len="10" label="属性">
           <span class="fb-icon fb-icon-prop"></span>
           <p>属性</p>
+        </li>
+        <li i="field" tag="multi_prop" type="multi_prop" field="VARCHAR" len="255" label="多选属性">
+          <span class="fb-icon fb-icon-prop"></span>
+          <p>属性(多选)</p>
         </li>
         <li i="field" tag="username" type="username" field="VARCHAR" len="255" label="用户名">
           <span class="fb-icon fb-icon-username"></span>
@@ -169,6 +174,7 @@
           <p>验证码</p>
         </li>
       </ul>
+      <div class="clearfix"></div>
     </div>
     <div id="fields-tab-addons" class="tab-pane">
       <ul>
@@ -181,7 +187,9 @@
           <p>编辑器</p>
         </li>
       </ul>
+      <div class="clearfix"></div>
     </div>
   </div>
+  <div class="clearfix"></div>
 </div>
 

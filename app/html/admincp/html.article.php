@@ -33,9 +33,9 @@ admincp::head();
           </div>
           <hr>
           <div class="input-prepend input-append"><span class="add-on">按时间</span> <span class="add-on"><i class="fa fa-calendar"></i></span>
-            <input type="text" class="span2 ui-datepicker" name="startime" value="<?php echo $_GET['startime'] ; ?>" placeholder="开始时间" />
+            <input type="text" class="ui-datepicker" name="startime" value="<?php echo $_GET['startime'] ; ?>" placeholder="开始时间" />
             <span class="add-on"><i class="fa fa-minus"></i></span>
-            <input type="text" class="span2 ui-datepicker" name="endtime" value="<?php echo $_GET['endtime'] ; ?>" placeholder="结束时间" />
+            <input type="text" class="ui-datepicker" name="endtime" value="<?php echo $_GET['endtime'] ; ?>" placeholder="结束时间" />
             <span class="add-on"><i class="fa fa-calendar"></i></span> </div>
           <hr>
           <div class="input-prepend input-append"><span class="add-on">按文章ID</span> <span class="add-on">起始ID</span>

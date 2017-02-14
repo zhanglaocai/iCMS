@@ -55,8 +55,13 @@ var iFormer = {
             var $elem = this.widget('input'),
             elem_type = 'text';
             // elem_class = obj['class'];
-
-            switch (obj['type']) {
+            var obj_type = obj['type'],type_addons;
+            if(obj_type.indexOf(':')!="-1"){
+                var typeArray = obj_type.split(':');
+                obj_type  = typeArray[0];
+                type_addons = typeArray[1];
+            }
+            switch (obj_type) {
                 case 'tpldir':
                 case 'tplfile':
                     var div_after = function () {
@@ -65,8 +70,8 @@ var iFormer = {
                         $div.append(btngroup('选择','search'));
                     }
                 break;
-                case 'multimage':
-                case 'multifile':
+                case 'multi_image':
+                case 'multi_file':
                     $elem = this.widget('textarea');
                     elem_type = null;
                 case 'prop':
@@ -75,17 +80,17 @@ var iFormer = {
                     var eText = {
                         prop:'选择属性',
                         image:'图片上传',
-                        multimage:'多图上传',
+                        multi_image:'多图上传',
                         file:'文件上传',
-                        multifile:'批量上传',
+                        multi_file:'批量上传',
                     }
-                    if(obj['type']!='prop'){
+                    if(obj_type!='prop'){
                         obj['class'] = obj['class']||"span6";
                     }
                     var div_after = function () {
                         var btngroup = iFormer.widget('btngroup');
                         $div.addClass('input-append');
-                        $div.append(btngroup(eText[obj['type']]));
+                        $div.append(btngroup(eText[obj_type]));
                     }
 
                 break;
@@ -118,19 +123,15 @@ var iFormer = {
                     elem_type = null;
                 break;
                 case 'PRIMARY':
+                case 'user_category':
                 case 'userid':
                 case 'hidden':
                     var div_after = function () {
-                        var parent = iFormer.widget('span').addClass('add-on');
-                        var info = iFormer.widget('span').addClass('label label-info').text('隐藏字段');
-                        if(obj['type']=="PRIMARY"){
-                            var PRIMARY = iFormer.widget('span').addClass('label label-important').text('主键 自增ID');
-                            parent.append(PRIMARY);
+                        var $span;
+                        if(obj_type=="PRIMARY"){
+                            $span = iFormer.widget('span').addClass('label label-important').text('主键 自增ID');
                         }
-                        parent.append(info);
-                        $elem.hide();
-                        $div.append(parent);
-                        $div.addClass('input-append');
+                        me.hidden($elem,$div,$span);
                     }
                 case 'text':
                     if(obj['len']=="5120"){
@@ -140,9 +141,9 @@ var iFormer = {
                 case 'switch':
                 case 'radio':
                 case 'checkbox':
-                    obj['class'] = obj['class']||obj['type'];
-                    elem_type = obj['type'];
-                    if(obj['type']=='switch'){
+                    obj['class'] = obj['class']||obj_type;
+                    elem_type = obj_type;
+                    if(obj_type=='switch'){
                         obj['class'] = 'radio';
                         elem_type = 'radio';
                     }
@@ -169,14 +170,14 @@ var iFormer = {
                         $div.append($label,parent);
                     }
                 break;
-                case 'multiprop':
-                case 'multicategory':
+                case 'multi_prop':
+                case 'multi_category':
                 case 'multiple':
                 case 'category':
                 case 'select':
                     $elem = this.widget('select');
                     obj['class'] = obj['class']||'chosen-select';
-                    if(obj['type'].indexOf("multi")!='-1'){
+                    if(obj_type.indexOf("multi")!='-1'){
                         obj['multiple'] = true;
                         $elem.attr('multiple',true);
                     }
@@ -218,10 +219,14 @@ var iFormer = {
                 case 'decimal':
                 break;
             }
+            if(type_addons=='hidden'){
+                var div_after = function () {
+                    me.hidden($elem,$div);
+                }
+            }
             obj['class'] = obj['class']||'span3';
 
 
-            // elem_type = elem_type||obj['type'];
             /**
              * 生成器字段样式展现
              */
@@ -318,6 +323,17 @@ var iFormer = {
 
         $div.after($action);
         // return $action;
+    },
+    hidden:function ($elem,$div,$span) {
+        var parent = iFormer.widget('span').addClass('add-on');
+        var info = iFormer.widget('span').addClass('label label-info').text('隐藏字段');
+        if($span){
+            parent.append($span);
+        }
+        parent.append(info);
+        $elem.hide();
+        $div.append(parent);
+        $div.addClass('input-append');
     },
     urlEncode:function(param, key) {
       if(param==null) return '';

@@ -1,3 +1,5 @@
+<button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
+<div class="clearfloat"></div>
 <div class="fields-fluid">
   <ul id="custom_field_list" class="iFormer-layout">
 
@@ -26,15 +28,10 @@
 <script type="text/javascript">
 <?php
 if($rs['fields']){
-  foreach ($rs['fields'] as $key => $value) {
-    $readonly = false;
-    if($value=='UI:BR'){
-        $output = array('type'=>'br');
-    }else{
-        parse_str($value,$output);
-        $readonly = apps_db::base_fields_key($output['name']);
-    }
-    echo "iFormer.render($('div'),".json_encode($output).",null,'".$output['id']."',".($readonly?'true':'false').").appendTo('#custom_field_list');";
+  $field_array = apps_app::get_field_array($rs['fields'],true);
+  foreach ($field_array as $key => $value) {
+    $readonly = apps_db::base_fields_key($value['name']);
+    echo "iFormer.render($('div'),".json_encode($value).",null,'".$value['id']."',".($readonly?'true':'false').").appendTo('#custom_field_list');";
   }
   echo "$('#custom_field_list').append('<div class=\"clearfloat\"></div>');";
 }

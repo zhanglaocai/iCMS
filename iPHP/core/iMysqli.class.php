@@ -86,6 +86,9 @@ class iDB {
     public static function quote($string) {
         return "'" . self::$link->real_escape_string($string) . "'";
     }
+    public static function table($name) {
+        return self::$config['PREFIX'].str_replace(self::$config['PREFIX_TAG'],'', trim($name));
+    }
     //  Basic Query - see docs for more detail
     public static function query($query,$QT=NULL) {
         if(empty($query)){

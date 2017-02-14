@@ -243,7 +243,7 @@ $(function(){
             <a class="btn btn-inverse" href="javascript:deleteEditor();"><i class="fa fa-times"></i> 关闭编辑器</a>
             <div class="clearfix mt10"></div>
             <input name="hasbody" id="hasbody" type="hidden" value="<?php echo $rs['hasbody'] ; ?>" />
-            <textarea type="text/plain" id="iCMS-editor-1" name="body"><?php echo $rs['body'] ; ?></textarea>
+            <textarea type="text/plain" id="editor-body" name="body"><?php echo $rs['body'] ; ?></textarea>
             <div class="clearfix mt10"></div>
             <div class="alert alert-block">
               <h4>注意事项</h4>
@@ -253,21 +253,20 @@ $(function(){
             </div>
             <script type="text/javascript">
             <?php if($rs['hasbody']=="1"){ ?>
-            iCMS.editor.create();
+            iCMS.editor.create('editor-body');
             <?php } ?>
             function deleteEditor() {
-                ed = iCMS.editor.get(1);
-                ed.destroy();
+                iCMS.editor.destroy();
                 $("#hasbody").val('2');
             }
             function createEditor() {
-                iCMS.editor.create();
+                iCMS.editor.create('editor-body');
                 $("#hasbody").val('0');
             }
             </script>
             <?php if($rs['hasbody']=="2"){ ?>
             <style>
-              #iCMS-editor-1 {height: 600px;width: 98%;}
+              #editor-body {height: 600px;width: 98%;}
             </style>
             <?php } ?>
           </div>

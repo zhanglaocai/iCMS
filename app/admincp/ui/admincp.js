@@ -14,14 +14,17 @@ $(function() {
     var _iCMS = {
         select: function(el, v) {
             var va = v.split(',');
-            $.each(va, function(i,val){
-               $("#"+el).val(val).trigger("chosen:updated");
-              // $("#" + el+" option[value='"+val+"']").attr("selected", true);
-            });
-            // $("#"+el).trigger("chosen:updated");
+            $("#"+el).val(va).trigger("chosen:updated");
         },
-        checked: function(el){
-            $(el).prop("checked",true).closest('.checker > span').addClass('checked');
+        checked: function(el,v){
+            if(v){
+                var va = v.split(',');
+                $.each(va, function(i,val){
+                    $(el+'[value="'+val+'"]').prop("checked", true).uniform();
+                })
+            }else{
+                $(el).prop("checked",true).uniform();
+            }
         },
     };
     iCMS = $.extend(iCMS,_iCMS);//扩展 or 替换 iCMS属性
@@ -47,7 +50,7 @@ $(function() {
 
     $(':checkbox[data-type!=switch],:radio[data-type!=switch]').uniform();
     $(".chosen-select").chosen(chosen_config);
-    $('.ui-datepicker').datepicker({format: 'yyyy-mm-dd'});
+    $('.ui-datepicker').datepicker({format: 'yyyy-mm-dd hh:ii:ss'});
 
     $('[data-toggle="popover"]').popover({html:true});
     $('.tip').tooltip({html:true});

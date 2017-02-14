@@ -108,7 +108,11 @@ class apps {
                 $table && $rs['table']  = self::table_item($table);
             }
             $rs['config']&& $rs['config'] = json_decode($rs['config'],true);
-            $rs['fields']&& $rs['fields'] = json_decode($rs['fields'],true);
+
+            if($rs['fields']){
+                // $rs['_fields'] = $rs['fields'];
+                $rs['fields']  = json_decode($rs['fields'],true);
+            }
         }
         return $rs;
     }
@@ -257,12 +261,22 @@ class apps {
         is_array($variable) OR $variable = json_decode($variable,true);
         if($variable){
             foreach ($variable as $key => $value) {
-                $table[$value[0]]=array(
-                    'table'   => iPHP_DB_PREFIX.$value[0],
-                    'name'    => $value[0],
-                    'primary' => $value[1],
-                    'label'   => $value[2],
-                );
+                if(count($value)>3){
+                    $table[$value[0]]=array(
+                            'table'   => iPHP_DB_PREFIX.$value[0],
+                            'name'    => $value[0],
+                            'primary' => $value[1],
+                            'union'   => $value[2],
+                            'label'   => $value[3],
+                        );
+                }else{
+                    $table[$value[0]]=array(
+                        'table'   => iPHP_DB_PREFIX.$value[0],
+                        'name'    => $value[0],
+                        'primary' => $value[1],
+                        'label'   => $value[2],
+                    );
+                }
             }
             return $table;
         }

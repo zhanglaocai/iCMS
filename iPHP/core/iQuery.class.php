@@ -221,7 +221,7 @@ class iQuery {
             $this->context = str_replace('{attr}', $attr, $this->context);
             //给textarea 赋值
             if($this->selector=='textarea' && isset($attribute['value'])){
-                $this->val($array['value']);
+                $this->val($attribute['value']);
             }
         }
         return $this;
@@ -245,7 +245,11 @@ class iQuery {
                 $this->attr('value',$value);
             }
         }elseif ($this->selector=='textarea') {
-            $this->html($value);
+            if($value===null){
+                return $this->html();
+            }else{
+                $this->html($value);
+            }
         }
         return $this;
     }

@@ -15,9 +15,6 @@ defined('iPHP') OR exit('What are you doing?');
       <img src="./app/admincp/ui/iCMS.logo.mini.png" />
     </a>
       <div class="nav-collapse collapse">
-        <ul class="nav iMenu-nav" id="iCMS-menu">
-          <?php echo menu::nav(); ?>
-        </ul>
         <ul class="nav pull-right">
           <li><a href="<?php echo iCMS_URL;?>" target="_blank" title="网站首页"><i class="fa fa-home fa-lg"></i></a></li>
           <li class="divider-vertical"></li>
@@ -31,6 +28,9 @@ defined('iPHP') OR exit('What are you doing?');
               <li><a href="<?php echo iPHP_SELF; ?>?do=logout&frame=iPHP" target="iPHP_FRAME"><i class="fa fa-sign-out"></i> 注销</a></li>
             </ul>
           </li>
+        </ul>
+        <ul class="nav iMenu-nav" id="iCMS-menu">
+          <?php echo menu::nav(); ?>
         </ul>
       </div>
   </div>

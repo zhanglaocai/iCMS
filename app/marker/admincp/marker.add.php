@@ -58,7 +58,7 @@ iCMS.select('pid',"<?php echo $rs['pid']?$rs['pid']:0 ; ?>");
             <a id="createEditor-btn" class="btn btn-success" href="javascript:createEditor();"><i class="fa fa-check"></i> 使用编辑器</a>
             <a id="deleteEditor-btn" class="btn btn-inverse hide" href="javascript:deleteEditor();"><i class="fa fa-times"></i> 关闭编辑器</a>
             <div class="clearfix mt10"></div>
-            <textarea type="text/plain" id="iCMS-editor-1" name="data"><?php echo $rs['data'] ; ?></textarea>
+            <textarea type="text/plain" id="editor-body" name="data"><?php echo $rs['data'] ; ?></textarea>
             <div class="clearfix mt10"></div>
             <div class="alert alert-block">
               <h4>注意事项</h4>
@@ -68,21 +68,20 @@ iCMS.select('pid',"<?php echo $rs['pid']?$rs['pid']:0 ; ?>");
             </div>
             <script type="text/javascript">
             function deleteEditor() {
-                ed = iCMS.editor.get(1);
-                ed.destroy();
+                iCMS.editor.destroy();
                 $("#cleanupEditor-btn").hide();
                 $("#createEditor-btn").show();
                 $("#deleteEditor-btn").hide();
             }
             function createEditor() {
-                iCMS.editor.create();
+                iCMS.editor.create('editor-body');
                 $("#cleanupEditor-btn").show();
                 $("#createEditor-btn").hide();
                 $("#deleteEditor-btn").show();
             }
             </script>
             <style>
-              #iCMS-editor-1 {height: 600px;width: 98%;}
+              #editor-body {height: 600px;width: 98%;}
             </style>
         </div>
         <div class="form-actions">

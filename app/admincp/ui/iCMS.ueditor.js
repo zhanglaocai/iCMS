@@ -3,7 +3,7 @@
     window.UEDITOR_CONFIG = {
         UEDITOR_HOME_URL: URL
         ,iCMS_PUBLIC_URL:window.iCMS.config.PUBLIC
-        ,catchRemoteImageEnable:window.iCMS.config.catchRemoteImageEnable||false //远程图片本地化
+        ,catchRemoteImageEnable:window.catchRemoteImageEnable||false //远程图片本地化
         ,serverUrl: window.iCMS.config.API + '?app=editor'
         ,toolbars: [
         [
@@ -119,57 +119,47 @@
     };
 })();
 
-(function($) {
-    iCMS.editor = {
-        id:1,
-        container:[],
-        multi:function(){
-          var ed = this;
-          $(".iCMS-editor-wrap").each(function(n,a){
-            var id = a.id,eid = id.replace('editor-','');
-            ed.create(eid);
-          });
-        },
-        get:function(eid) {
-            var ed  = this.container[eid]||UE.getEditor('iCMS-editor-'+eid);
-            //this.container[this.id] = ed;
-            return ed;
-        },
-        create:function(eid) {
-            if(eid) this.id = eid;
-            var ed  = UE.getEditor('iCMS-editor-'+this.id);
-            this.container[this.id] = ed;
-            // ed.reset();
+iCMS.editor = {
+    eid:'ueditor',
+    container:[],
+    get:function(eid) {
+        if(eid) this.eid = eid;
+        var ed  = this.container[this.eid]||this.create();
+        return ed;
+    },
+    create:function(eid) {
+        if(eid) this.eid = eid;
+        var ed = UE.getEditor(this.eid);
+        this.container[this.eid] = ed;
+        return ed;
+    },
+    destroy:function(eid) {
+        eid = eid||this.eid;
+        setTimeout(function(){
+            UE.delEditor(eid);
+        },200);
+        this.container[eid] = null;
+    },
+    insPageBreak:function (argument) {
+        var ed = this.get();
+        ed.execCommand('pagebreak');
+        ed.focus();
+    },
+    delPageBreakflag:function() {
+        var ed = this.get(), html = ed.getContent();
+        html = html.replace(/#--iCMS.PageBreak--#/g, '');
+        ed.setContent(html);
+        ed.focus();
+    },
+    cleanup:function() {
+        if($.isEmptyObject(this.container)){
+            iCMS.UI.alert("没找到可用编辑器");
+        }else{
+            var ed = this.get(), html = ed.getContent();
+            html = iCMS.format(html);
+            ed.setContent(html);
+            ed.focus();
+        }
+    }
+};
 
-            return ed;
-        },
-        destroy:function(eid) {
-            setTimeout(function(){
-                UE.delEditor("iCMS-editor-"+eid);
-            },200);
-            this.container[eid] = null;
-        },
-        insPageBreak:function (argument) {
-            var ed = this.container[this.id];
-            ed.execCommand('pagebreak');
-            ed.focus();
-        },
-        delPageBreakflag:function() {
-            var ed = this.container[this.id], html = ed.getContent();
-            html = html.replace(/#--iCMS.PageBreak--#/g, '');
-            ed.setContent(html);
-            ed.focus();
-        },
-        cleanup:function(eid) {
-            if(eid){
-                var ed = UE.getEditor('iCMS-editor-'+eid);
-            }else{
-                var ed = this.container[this.id];
-            }
-            var html = iCMS.format(ed.getContent());
-            ed.setContent(html);
-            //ed.execCommand("autoTypeset");
-            ed.focus();
-        },
-    };
-})(jQuery);

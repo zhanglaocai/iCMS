@@ -3,110 +3,126 @@ class apps_db {
     public static function json_field($json=null){
         if(empty($json)) return array();
 
-        $json = stripcslashes($json);
-        $array = json_decode($json,true);
-        $field_array = array();
-        foreach ($array as $key => $value) {
-            $output = array();
-            parse_str($value,$output);
-            if(isset($output['UI:BR'])){
-            }else{
-                $a = array();
-                foreach ($output as $k => $v) {
-                    if(in_array($k, array('field','label','name','default','len','comment'))){
-                        $a[$k] = $v;
-                    }
+        $fieldata    = json_decode(stripcslashes($json),true);
+        //QS转数组
+        $field_array = apps_app::get_field_array($fieldata);
+
+        $json_array  = array();
+        foreach ($field_array as $key => $value) {
+            $a = array();
+            foreach ($value as $k => $v) {
+                if(in_array($k, array('field','label','name','default','len','comment'))){
+                    $a[$k] = $v;
                 }
-                ksort($a);
-                $field_array[$key] = json_encode($a);
             }
+            ksort($a);
+            $json_array[$key] = json_encode($a);
         }
-        return $field_array;
+
+        // $json_array  = array_map('json_encode', $field_array);
+
+        // $json_array = array();
+        // foreach ($array as $key => $value) {
+        //     $json_array[$key] = json_encode($value);
+        // }
+
+        return $json_array;
     }
     public static function make_field_sql($vars=null,$alter=null,$origin=null){
-        if(!is_array($vars)){
-            $vars = json_decode($vars,true);
+        is_array($vars) OR $vars = json_decode($vars,true);
+
+        $field   = $vars['field'];  //字段类型
+        $label   = $vars['label']; //字段名称
+        $name    = $vars['name'];  //字 段 名
+        $default = $vars['default']; //默 认 值
+        $len     = $vars['len']; //数据长度
+        $comment = $vars['comment']?$vars['comment']:$label;
+
+        empty($name) && $name = iPinyin::get($label);
+        $field = strtolower($field);
+        switch ($field) {
+            case 'varchar':
+            case 'multivarchar':
+                $data_type = 'VARCHAR';
+            break;
+            case 'tinyint':
+                $len OR $len = '1';
+                $data_type = 'TINYINT';
+                $default   = (int)$default;
+                empty($default) && $default ='0';
+            break;
+            case 'primary':
+            case 'int':
+            case 'time':
+                $len OR $len = '10';
+                $data_type = 'INT';
+                $default   = (int)$default;
+                empty($default) && $default ='0';
+            break;
+            case 'bigint':
+                $len OR $len = '20';
+                $data_type = 'BIGINT';
+                $default   = (int)$default;
+                empty($default) && $default ='0';
+            break;
+            case 'radio':
+            case 'select':
+                $len OR $len = '6';
+                $data_type = 'SMALLINT';
+                $default   = (int)$default;
+                empty($default) && $default ='0';
+            break;
+            case 'checkbox':
+            case 'multiselect':
+                $len OR $len = '255';
+                $data_type = 'VARCHAR';
+            break;
+            case 'image':
+            case 'file':
+                $len OR $len = '255';
+                $data_type = 'VARCHAR';
+            break;
+            case 'multiimage':
+            case 'multifile':
+                $len OR $len = '10240';
+                $data_type = 'VARCHAR';
+            break;
+            case 'text':
+                $data_type = 'TEXT';
+                $len = null;
+                $data_default   = null;
+            break;
+            case 'mediumtext':
+            case 'editor':
+                $data_type = 'MEDIUMTEXT';
+                $len = null;
+                $data_default   = null;
+            break;
+            case 'decimal':
+                $data_type = 'DECIMAL';
+                $default   = '0.0';
+            break;
+            default:
+                $len OR $len = '255';
+                $data_type = 'VARCHAR';
+            break;
         }
-        $field    = $vars['field'];  //字段类型
-        $label    = $vars['label']; //字段名称
-        $name     = $vars['name'];  //字 段 名
-        $default  = $vars['default']; //默 认 值
-        $len      = $vars['len']; //数据长度
+        $len===null OR $data_len  = '('.$len.')';
 
-      empty($name) && $name = iPinyin::get($label);
-      $field = strtolower($field);
-      switch ($field) {
-        case 'varchar':
-        case 'multivarchar':
-            $data_type = 'VARCHAR';
-        break;
-        case 'tinyint':
-            $len OR $len = '1';
-            $data_type = 'TINYINT';
-            $default   = (int)$default;
-            empty($default) && $default ='0';
-        break;
-        case 'int':
-        case 'time':
-            $len OR $len = '10';
-            $data_type = 'INT';
-            $default   = (int)$default;
-            empty($default) && $default ='0';
-        break;
-        case 'bigint':
-            $len OR $len = '20';
-            $data_type = 'BIGINT';
-            $default   = (int)$default;
-            empty($default) && $default ='0';
-        break;
-        case 'radio':
-        case 'select':
-            $len OR $len = '6';
-            $data_type = 'SMALLINT';
-            $default   = (int)$default;
-            empty($default) && $default ='0';
-        break;
-        case 'checkbox':
-        case 'multiselect':
-            $len OR $len = '255';
-            $data_type = 'VARCHAR';
-        break;
-        case 'image':
-        case 'file':
-            $len OR $len = '255';
-            $data_type = 'VARCHAR';
-        break;
-        case 'multiimage':
-        case 'multifile':
-            $len OR $len = '10240';
-            $data_type = 'VARCHAR';
-        break;
-        case 'text':
-            $data_type = 'TEXT';
-            $len = null;
-            $DEFAULT   = null;
-        break;
-        case 'mediumtext':
-        case 'editor':
-            $data_type = 'MEDIUMTEXT';
-            $len = null;
-            $DEFAULT   = null;
-        break;
-        case 'decimal':
-            $data_type = 'DECIMAL';
-            $default   = '0.0';
-        break;
-        default:
-            $len OR $len = '255';
-            $data_type = 'VARCHAR';
-        break;
-      }
-      $len===null OR $data_len  = '('.$len.')';
-      $DEFAULT===null OR $DEFAULT = " DEFAULT '$default'";
+        if(in_array($data_type, array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
+            $data_len.=' UNSIGNED';
+        }
 
-      $sql = self::idf_escape($name)." $data_type$data_len NOT NULL $DEFAULT COMMENT '$label'";
+        if($data_default!==null){
+            $data_default = " DEFAULT '$default'";
+        }
+        if($field=='primary'){
+            $data_default = 'AUTO_INCREMENT';
+        }
 
-      switch ($alter) {
+        $sql = self::idf_escape($name)." $data_type$data_len NOT NULL $data_default COMMENT '$comment'";
+
+        switch ($alter) {
           case 'ADD':
               $sql = 'ADD COLUMN '.$sql;
             break;
@@ -116,21 +132,27 @@ class apps_db {
           case 'DROP':
               $sql = 'DROP COLUMN '.self::idf_escape($name);
             break;
-      }
+        }
 
-      return $sql;
+        return $sql;
     }
     public static function make_alter_sql($N_fields,$O_fields,$field_origin){
-        //新字段
-        $N_field_array  = self::json_field($N_fields);
-        //旧的字段
-        $O_fields_array = self::json_field($O_fields);
+        // //新字段
+        // $N_field_array  = self::json_field($N_fields);
+        // //旧的字段
+        // $O_fields_array = self::json_field($O_fields);
 
-        print_r($O_fields_array);
-        print_r($N_field_array);
+        //新字段
+        $N_field_array  = $N_fields;
+        //旧的字段
+        $O_fields_array = $O_fields;
+
+
+        // print_r($O_fields_array);
+        // print_r($N_field_array);
 
         $diff = array_diff_values($N_field_array,$O_fields_array);
-        $sql_array = '';
+        $sql_array = array();
         //删除 或者更改过
         if($diff['-'])foreach ($diff['-'] as $key => $value) {
             if(isset($field_origin[$key])){
@@ -178,7 +200,6 @@ class apps_db {
             'cid'        =>"`cid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '栏目id'",
             'ucid'       =>"`ucid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户分类'",
             'pid'        =>"`pid` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '属性'",
-            'sortnum'    =>"`sortnum` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序'",
             'title'      =>"`title` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '标题'",
             'editor'     =>"`editor` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '编辑名或用户名'",
             'userid'     =>"`userid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID'",
@@ -194,6 +215,7 @@ class apps_db {
             'comments'   =>"`comments` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '评论数'",
             'good'       =>"`good` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '顶'",
             'bad'        =>"`bad` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '踩'",
+            'sortnum'    =>"`sortnum` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序'",
             'weight'     =>"`weight` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '权重'",
             'creative'   =>"`creative` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '内容类型 0:转载;1:原创'",
             'mobile'     =>"`mobile` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发布设备 0:pc;1:手机'",
@@ -212,7 +234,7 @@ class apps_db {
         );
     }
     public static function base_fields_array(){
-      $sql = self::create_table('test',null,true);
+      $sql = implode(",\n", self::base_fields_sql());
       preg_match_all("@`(.+)`\s(.+)\sDEFAULT\s'(.*?)'\sCOMMENT\s'(.+)',@", $sql, $matches);
       return $matches;
     }
@@ -224,25 +246,19 @@ class apps_db {
             $alter_sql.=implode(',', $sql);
         }
         $alter_sql.= ';';
-        // print_r($alter_sql);
         iDB::query($alter_sql);
     }
-    public static function create_table($name,$fields=null,$ret=false,$base_fields=true){
+    public static function create_table($name,$fields=null,$base_fields=true,$PRIMARY='id',$index=null,$ret=false){
         $fields_sql = array();
-        $fields_sql['id']= "`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键 自增ID'";
+        $fields_sql[$PRIMARY]= "`{$PRIMARY}` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键 自增ID'";
+        // $index && $fields_sql['union_addons']= "`iid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '内容ID 关联基础表'";
         $base_fields && $fields_sql= array_merge($fields_sql,self::base_fields_sql());
-        if($fields){
-            foreach ($fields as $key => $_field) {
-                if(stripos($_field, 'UI:')===false){
-                    $output = array();
-                    parse_str($_field,$output);
-                    $output && $fields_sql[$output['name']] = self::make_field_sql($output);
-                }
-            }
+        if(is_array($fields))foreach ($fields as $key => $arr) {
+            $arr && $fields_sql[$arr['name']] = self::make_field_sql($arr);
         }
-        $fields_sql['primary_id']='PRIMARY KEY (`id`)';
+        $fields_sql['primary_'.$PRIMARY] = 'PRIMARY KEY (`'.$PRIMARY.'`)';
+        // $index && $fields_sql['index_union_addons'] = 'KEY `iid` (`iid`)';
         $base_fields && $fields_sql = array_merge($fields_sql,self::base_fields_index());
-
         $sql= "CREATE TABLE `#iCMS@__{$name}` ("
             .implode(",\n", $fields_sql).
         ') ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;';
@@ -251,7 +267,7 @@ class apps_db {
             return $sql;
          }
          iDB::query($sql);
-         return array($name,'id');
+         return array($name,$PRIMARY);
     }
 /**
  * 以下方法移植自adminer

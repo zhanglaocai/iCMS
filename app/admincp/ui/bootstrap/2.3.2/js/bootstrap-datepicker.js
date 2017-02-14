@@ -1,5 +1,5 @@
  /* =========================================================
- * bootstrap-datepicker.js 
+ * bootstrap-datepicker.js
  * http://www.eyecon.ro/bootstrap-datepicker
  * =========================================================
  * Copyright 2012 Stefan Petre
@@ -20,7 +20,7 @@
 !function($) {
 
     // Picker object
-    
+
     var Datepicker = function(element, options) {
         this.element = $(element);
         this.format = DPGlobal.parseFormat(options.format || this.element.data('date-format') || 'mm/dd/yyyy');
@@ -32,7 +32,7 @@
         });
         this.isInput = this.element.is('input');
         this.component = this.element.is('.date') ? this.element.find('.add-on') : false;
-        
+
         if (this.isInput) {
             this.element.on({
                 focus: $.proxy(this.show, this),
@@ -46,7 +46,7 @@
                 this.element.on('click', $.proxy(this.show, this));
             }
         }
-        
+
         this.minViewMode = options.minViewMode || this.element.data('date-minviewmode') || 0;
         if (typeof this.minViewMode === 'string') {
             switch (this.minViewMode) {
@@ -84,10 +84,10 @@
         this.update();
         this.showMode();
     };
-    
+
     Datepicker.prototype = {
         constructor: Datepicker,
-        
+
         show: function(e) {
             this.picker.show();
             this.height = this.component ? this.component.outerHeight() : this.element.outerHeight();
@@ -110,7 +110,7 @@
                 date: this.date
             });
         },
-        
+
         hide: function() {
             this.picker.hide();
             $(window).off('resize', this.place);
@@ -125,7 +125,7 @@
                 date: this.date
             });
         },
-        
+
         set: function() {
             var formated = DPGlobal.formatDate(this.date, this.format);
             if (!this.isInput) {
@@ -137,7 +137,7 @@
                 this.element.prop('value', formated);
             }
         },
-        
+
         setValue: function(newDate) {
             if (typeof newDate === 'string') {
                 this.date = DPGlobal.parseDate(newDate, this.format);
@@ -148,7 +148,7 @@
             this.viewDate = new Date(this.date.getFullYear(), this.date.getMonth(), 1, 0, 0, 0, 0);
             this.fill();
         },
-        
+
         place: function() {
             var offset = this.component ? this.component.offset() : this.element.offset();
             this.picker.css({
@@ -156,16 +156,22 @@
                 left: offset.left
             });
         },
-        
+
         update: function(newDate) {
             this.date = DPGlobal.parseDate(
-            typeof newDate === 'string' ? newDate : (this.isInput ? this.element.prop('value') : this.element.data('date')), 
+            typeof newDate === 'string' ? newDate : (this.isInput ? this.element.prop('value') : this.element.data('date')),
             this.format
             );
-            this.viewDate = new Date(this.date.getFullYear(), this.date.getMonth(), 1, 0, 0, 0, 0);
+
+            this.viewDate = new Date(
+                this.date.getFullYear(),
+                this.date.getMonth(), 1,
+                this.date.getHours(),
+                this.date.getMinutes(),
+                this.date.getSeconds(), 0);
             this.fill();
         },
-        
+
         fillDow: function() {
             var dowCnt = this.weekStart;
             var html = '<tr>';
@@ -175,7 +181,7 @@
             html += '</tr>';
             this.picker.find('.datepicker-days thead').append(html);
         },
-        
+
         fillMonths: function() {
             var html = '';
             var i = 0
@@ -184,15 +190,15 @@
             }
             this.picker.find('.datepicker-months td').append(html);
         },
-        
+
         fill: function() {
-            var d = new Date(this.viewDate), 
-            year = d.getFullYear(), 
-            month = d.getMonth(), 
+            var d = new Date(this.viewDate),
+            year = d.getFullYear(),
+            month = d.getMonth(),
             currentDate = this.date.valueOf();
             this.picker.find('.datepicker-days th:eq(1)')
             .text(DPGlobal.dates.months[month] + ' ' + year);
-            var prevMonth = new Date(year, month - 1, 28, 0, 0, 0, 0), 
+            var prevMonth = new Date(year, month - 1, 28, 0, 0, 0, 0),
             day = DPGlobal.getDaysInMonth(prevMonth.getFullYear(), prevMonth.getMonth());
             prevMonth.setDate(day);
             prevMonth.setDate(day - (prevMonth.getDay() - this.weekStart + 7) % 7);
@@ -200,8 +206,8 @@
             nextMonth.setDate(nextMonth.getDate() + 42);
             nextMonth = nextMonth.valueOf();
             var html = [];
-            var clsName, 
-            prevY, 
+            var clsName,
+            prevY,
             prevM;
             while (prevMonth.valueOf() < nextMonth) {
                 if (prevMonth.getDay() === this.weekStart) {
@@ -224,9 +230,26 @@
                 }
                 prevMonth.setDate(prevMonth.getDate() + 1);
             }
+            html.push('<tr><th colspan="7">');
+            html.push('<span class="_h"></span>:');
+            html.push('<span class="_i"></span>:');
+            html.push('<span class="_s"></span>');
+            html.push('</th></tr>');
+
             this.picker.find('.datepicker-days tbody').empty().append(html.join(''));
+
+            setInterval(function(){
+                var now = new Date();
+                var nh= now.getHours(),ni=now.getMinutes(),ns=now.getSeconds();
+                ns = (ns < 10 ? '0' : '') + ns;
+                ni = (ni < 10 ? '0' : '') + ni;
+                nh = (nh < 10 ? '0' : '') + nh;
+                $("._h",this.picker).text(nh);
+                $("._i",this.picker).text(ni);
+                $("._s",this.picker).text(ns);
+            },1000);
             var currentYear = this.date.getFullYear();
-            
+
             var months = this.picker.find('.datepicker-months')
             .find('th:eq(1)')
             .text(year)
@@ -235,7 +258,7 @@
             if (currentYear === year) {
                 months.eq(this.date.getMonth()).addClass('active');
             }
-            
+
             html = '';
             year = parseInt(year / 10, 10) * 10;
             var yearCont = this.picker.find('.datepicker-years')
@@ -250,7 +273,7 @@
             }
             yearCont.html(html);
         },
-        
+
         click: function(e) {
             e.stopPropagation();
             e.preventDefault();
@@ -265,8 +288,8 @@
                             case 'prev':
                             case 'next':
                                 this.viewDate['set' + DPGlobal.modes[this.viewMode].navFnc].call(
-                                this.viewDate, 
-                                this.viewDate['get' + DPGlobal.modes[this.viewMode].navFnc].call(this.viewDate) + 
+                                this.viewDate,
+                                this.viewDate['get' + DPGlobal.modes[this.viewMode].navFnc].call(this.viewDate) +
                                 DPGlobal.modes[this.viewMode].navStep * (target[0].className === 'prev' ? -1 : 1)
                                 );
                                 this.fill();
@@ -303,9 +326,12 @@
                             } else if (target.is('.new')) {
                                 month += 1;
                             }
-                            var year = this.viewDate.getFullYear();
-                            this.date = new Date(year, month, day, 0, 0, 0, 0);
-                            this.viewDate = new Date(year, month, Math.min(28, day), 0, 0, 0, 0);
+                            var year = this.viewDate.getFullYear(),
+                                hour = this.viewDate.getHours(),
+                                minute = this.viewDate.getMinutes(),
+                                second = this.viewDate.getSeconds();
+                            this.date = new Date(year, month, day, hour, minute, second, 0);
+                            this.viewDate = new Date(year, month, Math.min(28, day), hour, minute, second, 0);
                             this.fill();
                             this.set();
                             this.element.trigger({
@@ -318,12 +344,12 @@
                 }
             }
         },
-        
+
         mousedown: function(e) {
             e.stopPropagation();
             e.preventDefault();
         },
-        
+
         showMode: function(dir) {
             if (dir) {
                 this.viewMode = Math.max(this.minViewMode, Math.min(2, this.viewMode + dir));
@@ -331,11 +357,11 @@
             this.picker.find('>div').hide().filter('.datepicker-' + DPGlobal.modes[this.viewMode].clsName).show();
         }
     };
-    
+
     $.fn.datepicker = function(option, val) {
         return this.each(function() {
-            var $this = $(this), 
-            data = $this.data('datepicker'), 
+            var $this = $(this),
+            data = $this.data('datepicker'),
             options = typeof option === 'object' && option;
             if (!data) {
                 $this.data('datepicker', (data = new Datepicker(this, $.extend({}, $.fn.datepicker.defaults, options))));
@@ -344,26 +370,26 @@
                 data[option](val);
         });
     };
-    
+
     $.fn.datepicker.defaults = {
         onRender: function(date) {
             return '';
         }
     };
     $.fn.datepicker.Constructor = Datepicker;
-    
+
     var DPGlobal = {
         modes: [
             {
                 clsName: 'days',
                 navFnc: 'Month',
                 navStep: 1
-            }, 
+            },
             {
                 clsName: 'months',
                 navFnc: 'FullYear',
                 navStep: 1
-            }, 
+            },
             {
                 clsName: 'years',
                 navFnc: 'FullYear',
@@ -383,7 +409,7 @@
             return [31, (DPGlobal.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month]
         },
         parseFormat: function(format) {
-            var separator = format.match(/[.\/\-\s].*?/), 
+            var separator = format.match(/[.\/\-\s].*?/),
             parts = format.split(/\W+/);
             if (!separator || !parts || parts.length === 0) {
                 throw new Error("Invalid date format.");
@@ -391,18 +417,39 @@
             return {separator: separator,parts: parts};
         },
         parseDate: function(date, format) {
-            var parts = date.split(format.separator), 
-            date = new Date(), 
-            val;
-            date.setHours(0);
-            date.setMinutes(0);
-            date.setSeconds(0);
-            date.setMilliseconds(0);
+            var parts = date.split(format.separator),date = new Date(),val;
+
+            // date.setHours(0);
+            // date.setMinutes(0);
+            // date.setSeconds(0);
+            // date.setMilliseconds(0);
             if (parts.length === format.parts.length) {
-                var year = date.getFullYear(), day = date.getDate(), month = date.getMonth();
+                var year = date.getFullYear(),
+                day = date.getDate()
+                month = date.getMonth();
+
+                var hour = date.getHours(),
+                minute = date.getMinutes(),
+                second = date.getSeconds();
+
                 for (var i = 0, cnt = format.parts.length; i < cnt; i++) {
                     val = parseInt(parts[i], 10) || 1;
                     switch (format.parts[i]) {
+                        case 's':
+                        case 'ss':
+                            second = val;
+                            date.setSeconds(val);
+                        break;
+                        case 'i':
+                        case 'ii':
+                            minute = val;
+                            date.getMinutes(val);
+                        break;
+                        case 'h':
+                        case 'hh':
+                            hour = val;
+                            date.setHours(val);
+                        break;
                         case 'dd':
                         case 'd':
                             day = val;
@@ -423,53 +470,64 @@
                             break;
                     }
                 }
-                date = new Date(year, month, day, 0, 0, 0);
+                date = new Date(year, month, day, hour, minute, second);
+                // date = new Date(year, month, day, 0, 0, 0);
             }
             return date;
         },
         formatDate: function(date, format) {
             var val = {
+                s: date.getSeconds(),
+                i: date.getMinutes(),
+                h: date.getHours(),
                 d: date.getDate(),
                 m: date.getMonth() + 1,
                 yy: date.getFullYear().toString().substring(2),
                 yyyy: date.getFullYear()
             };
+            val.ss = (val.s < 10 ? '0' : '') + val.s;
+            val.ii = (val.i < 10 ? '0' : '') + val.i;
+            val.hh = (val.h < 10 ? '0' : '') + val.h;
             val.dd = (val.d < 10 ? '0' : '') + val.d;
             val.mm = (val.m < 10 ? '0' : '') + val.m;
-            var date = [];
+            var date = format.separator.input;
+
             for (var i = 0, cnt = format.parts.length; i < cnt; i++) {
-                date.push(val[format.parts[i]]);
+                date = date.replace(format.parts[i], val[format.parts[i]]);
+                // console.log(format.parts[i]);
+                // date.push(val[format.parts[i]]);
             }
-            return date.join(format.separator);
+            return date;
+            // return date.join(format.separator);
         },
-        headTemplate: '<thead>' + 
-        '<tr>' + 
-        '<th class="prev">&lsaquo;</th>' + 
-        '<th colspan="5" class="switch"></th>' + 
-        '<th class="next">&rsaquo;</th>' + 
-        '</tr>' + 
+        headTemplate: '<thead>' +
+        '<tr>' +
+        '<th class="prev">&lsaquo;</th>' +
+        '<th colspan="5" class="switch"></th>' +
+        '<th class="next">&rsaquo;</th>' +
+        '</tr>' +
         '</thead>',
         contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>'
     };
-    DPGlobal.template = '<div class="datepicker dropdown-menu">' + 
-    '<div class="datepicker-days">' + 
-    '<table class=" table-condensed">' + 
-    DPGlobal.headTemplate + 
-    '<tbody></tbody>' + 
-    '</table>' + 
-    '</div>' + 
-    '<div class="datepicker-months">' + 
-    '<table class="table-condensed">' + 
-    DPGlobal.headTemplate + 
-    DPGlobal.contTemplate + 
-    '</table>' + 
-    '</div>' + 
-    '<div class="datepicker-years">' + 
-    '<table class="table-condensed">' + 
-    DPGlobal.headTemplate + 
-    DPGlobal.contTemplate + 
-    '</table>' + 
-    '</div>' + 
+    DPGlobal.template = '<div class="datepicker dropdown-menu">' +
+    '<div class="datepicker-days">' +
+    '<table class=" table-condensed">' +
+    DPGlobal.headTemplate +
+    '<tbody></tbody>' +
+    '</table>' +
+    '</div>' +
+    '<div class="datepicker-months">' +
+    '<table class="table-condensed">' +
+    DPGlobal.headTemplate +
+    DPGlobal.contTemplate +
+    '</table>' +
+    '</div>' +
+    '<div class="datepicker-years">' +
+    '<table class="table-condensed">' +
+    DPGlobal.headTemplate +
+    DPGlobal.contTemplate +
+    '</table>' +
+    '</div>' +
     '</div>';
 
 }(window.jQuery);

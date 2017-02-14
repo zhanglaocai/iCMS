@@ -79,9 +79,9 @@ $(function(){
         </div>
         <div class="clearfix mb10"></div>
         <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i> 发布时间</span>
-          <input type="text" style="width:120px;" class="ui-datepicker" name="starttime" value="<?php echo $_GET['starttime'] ; ?>" placeholder="开始时间" />
+          <input type="text" class="ui-datepicker" name="starttime" value="<?php echo $_GET['starttime'] ; ?>" placeholder="开始时间" />
           <span class="add-on">-</span>
-          <input type="text" style="width:120px;" class="ui-datepicker" name="endtime" value="<?php echo $_GET['endtime'] ; ?>" placeholder="结束时间" />
+          <input type="text" class="ui-datepicker" name="endtime" value="<?php echo $_GET['endtime'] ; ?>" placeholder="结束时间" />
           <span class="add-on"><i class="fa fa-calendar"></i></span>
         </div>
         <div class="input-prepend input-append"><span class="add-on">自动执行</span>

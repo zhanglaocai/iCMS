@@ -45,6 +45,7 @@ $(function(){
   get_tree('cpower','<?php echo __ADMINCP__;?>=category&do=ajaxtree&expanded=0','cpower_item');
   set_select(power,'<?php echo admincp::$APP_NAME; ?>-power');
   set_select(cpower,'<?php echo admincp::$APP_NAME; ?>-cpower');
+
 });
 function get_tree(e,url,tpl){
   return $("#"+e+"_tree").treeview({

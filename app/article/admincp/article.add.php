@@ -8,18 +8,19 @@ defined('iPHP') OR exit('What are you doing?');
 admincp::head();
 ?>
 <script type="text/javascript">
-window.iCMS.config.catchRemoteImageEnable = <?php echo self::$config['catch_remote']=="1"?'true':'false';?>;
+window.catchRemoteImageEnable = <?php echo self::$config['catch_remote']=="1"?'true':'false';?>;
 </script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.ueditor.js"></script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/ueditor/ueditor.all.min.js"></script>
 <script type="text/javascript">
 $(function(){
-  iCMS.editor.create();
+  iCMS.editor.create('editor-body-1');
+
   $("#title").focus();
 	$(".editor-page").change(function(){
-		$(".iCMS-editor-wrap").hide();
-		$("#editor-"+this.value).show();
-    iCMS.editor.create(this.value).focus();
+		$(".editor-container").hide();
+		$("#editor-wrap-"+this.value).show();
+    iCMS.editor.create('editor-body-'+this.value).focus();
 		$(".editor-page").val(this.value).trigger("chosen:updated");
 	});
   iCMS.select('pid',"<?php echo $rs['pid']?trim($rs['pid']):0 ; ?>");
@@ -34,41 +35,10 @@ $(function(){
     }
   })
 
-  // $('#cid_chosen').click(function(event){
-  //   event.preventDefault();
-  //       iCMS.UI.dialog({
-  //           follow:document.getElementById('cid_chosen'),
-  //           content: document.getElementById('category_select'),
-  //           quickClose: false,title: null,width:"auto",height:"auto",
-  //           okValue: '选择',
-  //           ok: function() {
-  //           }
-  //       });
-  // });
-  //
-	// $("#cid").change(function() {
- //    var cid = this.value;
-	// 	$.getJSON("<?php echo APP_URI; ?>",{'do':'getmeta','cid':cid},function(prop){
- //      var metahtml='';
- //      $.each(prop,function(n,v){
- //        var mdId='md_'+cid+'_'+n;
- //        if($("#"+mdId).length==0){
- //          metahtml+='<div class="MD_Box" id="'+mdId+'">'+
- //                        '<div class="input-prepend input-append">'+
- //                          '<span class="add-on">'+v+'</span>'+
- //                          '<textarea  id="md_'+n+'" name="metadata['+n+']" class="metadata span6" style="height: 100px;"></textarea>'+
- //                          '<a class="btn btn-small delMD"><i class="fa fa-trash-o"></i> 删除</a>'+
- //                        '</div>'+
- //                        '<div class="clearfloat mb10"></div>'+
- //                      '</div>';
- //        }
- //      });
- //      $("#article-add-metadata").html(metahtml);
-	// 	});
-	// });
   $("#article-add-metadata").on("click",".delMD",function(){
       $(this).parent().parent().remove();
   });
+
   $('#ischapter').click(function(){
     var checkedStatus = $(this).prop("checked"),chapter = $("input[name=chapter]").val();
     subtitleToggle (checkedStatus);
@@ -89,11 +59,11 @@ $(function(){
 			return false;
 		}
 		if($("#url").val()==''){
-			var n=$(".editor-page:eq(0) option:first").val(),ed = iCMS.editor.get(n);
+			var n=$(".editor-page:eq(0) option:first").val(),ed = iCMS.editor.get('editor-body-'+n);
 			if(!ed.hasContents()){
         ed.focus();
 				iCMS.alert("第"+n+"页内容不能为空!");
-				$('#editor-'+n).show();
+				$('#editor-wrap-'+n).show();
 				$(".editor-page").val(n).trigger("chosen:updated");
 				return false;
 			}
@@ -108,8 +78,8 @@ $(function(){
 });
 function mergeEditorPage(){
   var html = [];
-  $(".iCMS-editor-wrap").each(function(n,a){
-    var id = a.id,eid = id.replace('editor-','');
+  $(".editor-container").each(function(n,a){
+    var eid = a.id.replace('editor-wrap-','editor-body-');
     if(iCMS.editor.container[eid]){
         iCMS.editor.container[eid].destroy();
     }
@@ -120,10 +90,10 @@ function mergeEditorPage(){
     }
   });
 
-  $(".iCMS-editor-wrap").show();
+  $(".editor-container").show();
   var allHtml = html.join('#--iCMS.PageBreak--#'),
-  ned = $("textarea",".iCMS-editor-wrap"),
-  neid = $(".iCMS-editor-wrap").attr('id').replace('editor-','');
+  ned = $("textarea",".editor-container"),
+  neid = $(".editor-container").attr('id').replace('editor-wrap-','editor-body-');
   ned.val(allHtml).css({
     width: "100%",
     height: '500px'
@@ -135,9 +105,9 @@ function mergeEditorPage(){
 function addEditorPage(){
 	//iCMSed.cleanup(iCMSed.id);
 	var index	= parseInt($(".editor-page option:last").val()),n	= index+1;
-	$(".iCMS-editor-wrap").hide();
-	$("#editor-"+index).after(
-    '<div class="iCMS-editor-wrap" id="editor-'+n+'">'+
+	$(".editor-container").hide();
+	$("#editor-wrap-"+index).after(
+    '<div id="editor-wrap-'+n+'" class="editor-container">'+
       '<div class="chapter-title hide">'+
         '<input name="adid[]" id="adid-'+n+'" type="hidden" value="" />'+
         '<div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>'+
@@ -145,11 +115,11 @@ function addEditorPage(){
         '</div>'+
         '<div class="clearfloat mb10"></div>'+
       '</div>'+
-      '<textarea type="text/plain" id="iCMS-editor-'+n+'" name="body[]"></textarea>'+
+      '<textarea type="text/plain" id="editor-body-'+n+'" name="body[]"></textarea>'+
     '</div>'
   );
 	$(".editor-page").append('<option value="'+n+'">第 '+n+' 页</option>').val(n).trigger("chosen:updated");
-	iCMS.editor.create(n).focus();
+	iCMS.editor.create('editor-body-'+n).focus();
   var checkedStatus = $('#ischapter').prop("checked");
   subtitleToggle (checkedStatus);
 }
@@ -177,21 +147,19 @@ function delEditorPage(){
     var index = p.val();
 	}
   s.remove();
-  iCMS.editor.destroy(i);
-  $("#iCMS-editor-"+i).remove();
-  $("#editor-"+i).remove();
+  iCMS.editor.destroy('editor-body-'+i);
+  $("#editor-body-"+i).remove();
+  $("#editor-wrap-"+i).remove();
 
 	$(".editor-page").val(index).trigger("chosen:updated");
-	$("#editor-"+index).show();
-	iCMS.editor.id	= index;
-	iCMS.editor.get(index).focus();
+	$("#editor-wrap-"+index).show();
+	iCMS.editor.eid	= 'editor-body-'+index;
+	iCMS.editor.get('editor-body-'+index).focus();
 }
 function modal_picture(el,a){
   if(!a.checked) return;
-
-  var i       = iCMS.editor.id,
-  ed          = iCMS.editor.get(i),
-  url         = $(a).attr("url");
+  var ed = iCMS.editor.get(),
+  url = $(a).attr("url");
   // if(a.checked){
   var imgObj  = {};
   imgObj.src  = url;
@@ -216,7 +184,7 @@ function modal_sweditor(el){
   fileType = e.attr('_fileType'),
   original = e.attr('_original'),
   url      = e.attr('url'),
-  ed       = iCMS.editor.get(iCMS.editor.id);
+  ed       = iCMS.editor.get();
 
   if(url=='undefined') return;
   var html = '<p class="attachment icon_'+fileType+'"><a href="'+url+'" target="_blank">' + original + '</a></p>';
@@ -370,11 +338,10 @@ function _modal_dialog(cancel_text){
               <div class="clearfloat mb10"></div>
             </div>
             <?php } ?>
-            <div class="input-prepend input-append">
-              <div class="btn-group">
-                <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
-                <div class="input-prepend"> <span class="add-on"><i class="fa fa-building-o"></i> 内容</span>
-                  <select class="editor-page chosen-select">
+              <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
+              <div class="input-prepend">
+                <span class="add-on"><i class="fa fa-building-o"></i> 内容</span>
+                <select class="editor-page chosen-select">
                 <?php
                   $option ='';
                   for($i=0;$i<$bodyCount;$i++){
@@ -383,20 +350,22 @@ function _modal_dialog(cancel_text){
                   }
                   echo $option;
                 ?>
-                  </select>
+                </select>
+              </div>
+              <div class="input-prepend">
+                <div class="btn-group">
+                  <button type="button" class="btn" onclick="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</button>
+                  <button type="button" class="btn" onclick="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</button>
+                  <button type="button" class="btn" onclick="javascript:mergeEditorPage();"><i class="fa fa-align-justify"></i> 合并编辑</button>
+                  <button type="button" class="btn" onclick="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</button>
+                  <button type="button" class="btn" onclick="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</button>
+                  <button type="button" class="btn" onclick="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</button>
                 </div>
-                <button type="button" class="btn" onclick="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</button>
-                <button type="button" class="btn" onclick="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</button>
-                <button type="button" class="btn" onclick="javascript:mergeEditorPage();"><i class="fa fa-align-justify"></i> 合并编辑</button>
-                <button type="button" class="btn" onclick="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</button>
-                <button type="button" class="btn" onclick="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</button>
-                <button type="button" class="btn" onclick="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</button>
               </div>
               <!--div class="btn-group">
                 <button type="button" class="btn" href="<?php echo __ADMINCP__; ?>=files&do=multi&from=modal&callback=sweditor" data-toggle="modal" title="批量上传"><i class="fa fa-upload"></i> 批量上传</button>
                 <button type="button" class="btn" href="<?php echo __ADMINCP__; ?>=files&do=picture&from=modal&click=file&callback=picture" data-toggle="modal" title="从网站选择图片"><i class="fa fa-picture-o"></i> 从网站选择</button>
               </div-->
-            </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append">
               <span class="add-on wauto">
@@ -424,24 +393,26 @@ function _modal_dialog(cancel_text){
             <?php for($i=0;$i<$bodyCount;$i++){
                 $idNum  = $i+1;
             ?>
-            <div class="iCMS-editor-wrap<?php if($i){ echo ' hide';}?>" id="editor-<?php echo $idNum;?>">
+            <div id="editor-wrap-<?php echo $idNum;?>" class="editor-container<?php if($i){ echo ' hide';}?>">
               <div class="chapter-title <?php if(!$rs['chapter']){ echo ' hide';}?>">
                 <input name="adid[]" id="adid-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> type="hidden" value="<?php echo $adIdArray[$i] ; ?>" />
-                <div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>
-                    <input type="text" id="chapter-title-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> name="chaptertitle[]" class="span6" value="<?php echo $cTitArray[$i] ; ?>" />
+                <div class="input-prepend">
+                  <span class="add-on" style="width:60px;">章节标题</span>
+                  <input type="text" id="chapter-title-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> name="chaptertitle[]" class="span6" value="<?php echo $cTitArray[$i] ; ?>" />
                 </div>
                 <div class="clearfloat mb10"></div>
               </div>
-              <textarea type="text/plain" id="iCMS-editor-<?php echo $idNum;?>" name="body[]"><?php echo $bodyArray[$i];?></textarea>
+              <textarea type="text/plain" id="editor-body-<?php echo $idNum;?>" name="body[]"><?php echo $bodyArray[$i];?></textarea>
             </div>
             <?php }?>
+
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on"><i class="fa fa-building-o"></i> 内容</span>
               <select class="editor-page chosen-select">
               <?php echo $option;?>
               </select>
             </div>
-            <div class="input-prepend input-append">
+            <div class="input-prepend">
               <div class="btn-group">
                 <button type="button" class="btn" onclick="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</button>
                 <button type="button" class="btn" onclick="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</button>
