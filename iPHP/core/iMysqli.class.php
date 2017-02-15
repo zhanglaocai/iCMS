@@ -15,6 +15,7 @@ define('ARRAY_N', 'ARRAY_N');
 defined('iPHP_DB_PORT') OR define('iPHP_DB_PORT', '3306');
 
 class iDB {
+    public static $print_sql = false;
     public static $show_trace = false;
     public static $show_errors = false;
     public static $show_explain = false;
@@ -98,7 +99,12 @@ class iDB {
                 return false;
             }
         }
-
+        if(self::$print_sql){
+            echo '<pre>';
+            print_r($query);
+            echo '</pre>';
+            return;
+        }
         self::$link OR self::connect();
 
         // filter the query, if filters are available

@@ -18,16 +18,35 @@ class apps_app {
         }
         return $addons_json_field;
     }
-    public static function create_data_table($fieldata,$name) {
+    public static function data_base_fields($name) {
+      $union_id = $name.'_id';
+      $a['data_id'] = "id=data_id&label=附加表id&comment=主键%20自增ID&field=PRIMARY&name=data_id&default=&type=PRIMARY&len=10&";
+      $a[$union_id] = "id=".$union_id."&label=内容ID&comment=内容ID%20关联".$name."表&field=INT&name=".$union_id."&default=&type=union&len=10";
+      return $a;
+    }
+    /**
+     * 创建xxx_data附加表
+     * @param  [type] $fieldata [description]
+     * @param  [type] $name     [description]
+     * @return [type]           [description]
+     */
+    public static function data_create_table($fieldata,$name,$union_id) {
         $table = apps_db::create_table(
           $name,
           apps_app::get_field_array($fieldata),//获取字段数组
           false,'data_id',true
         );
-        array_push ($table,'iid');
-        array_push ($table,'正文');
-        // $table_array[$name]= $table;
-        return $table;
+        array_push ($table,$union_id,'正文');
+        return array($name=>$table);
+    }
+    public static function data_create_table2($fieldata,$name,$union_id) {
+        $table = apps_db::create_table2(
+          $name,
+          apps_app::get_field_array($fieldata),//获取字段数组
+          'data_id'
+        );
+        array_push ($table,$union_id,'正文');
+        return array($name=>$table);
     }
     /**
      * 将由查询字符串(query string)组成的数组转换成二维数组

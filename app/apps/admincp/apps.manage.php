@@ -44,14 +44,16 @@ $("#<?php echo APP_FORMID;?>").batch();
       <input type="checkbox" class="checkAll" data-target="#<?php echo APP_BOXID;?>" />
     </span>
     <ul class="nav nav-tabs" id="category-tab">
-      <li class="active"><a href="#apps-system" data-toggle="tab"><i class="fa fa-cubes"></i> 系统应用</a></li>
-      <li><a href="#apps-user" data-toggle="tab"><i class="fa fa-cubes"></i> 其它应用</a></li>
+      <?php foreach (apps::$type_array as $key => $value) {?>
+      <li class="apps-type-<?php echo $key;?>"><a href="#apps-type-<?php echo $key;?>" data-toggle="tab"><i class="fa fa-cubes"></i> <?php echo $value;?></a></li>
+      <?php }?>
     </ul>
   </div>
   <div class="widget-content nopadding">
     <form action="<?php echo APP_FURI; ?>&do=batch" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
       <div class="tab-content">
-        <div id="apps-system" class="tab-pane active">
+        <?php foreach (apps::$type_array as $type_key => $type_value) {?>
+        <div id="apps-type-<?php echo $type_key;?>" class="tab-pane apps-type-<?php echo $type_key;?>">
           <table class="table table-bordered table-condensed table-hover">
             <thead>
               <tr>
@@ -65,10 +67,10 @@ $("#<?php echo APP_FORMID;?>").batch();
             </thead>
             <tbody>
               <?php
-              foreach ($rs as $key => $data) {
-              $table = apps::table_item($data['table']);
-              $config = json_decode($data['config'],true);
-              $installed = apps::installed($data['app'],$data['type']);
+              foreach ((array)$apps_type_group[$type_key] as $key => $data) {
+                $table = apps::table_item($data['table']);
+                $config = json_decode($data['config'],true);
+                $installed = apps::installed($data['app'],$data['type']);
               // $admincp = __ADMINCP__.'='.$data['app'];
               // if($data['admincp']){
               //   $admincp = __ADMINCP__.'='.$data['admincp'];
@@ -89,6 +91,9 @@ $("#<?php echo APP_FORMID;?>").batch();
                 <td>
                   <?php echo $data['name'] ; ?>
                   <p class="app_list_desc"><?php echo $config['info'] ; ?></p>
+                  <?php if($config['iFormer']){ ?>
+                    <span class="label label-info">可自定义</span>
+                  <?php }?>
                 </td>
                 <td>
                   <?php if(is_array($table)){ ?>
@@ -97,6 +102,7 @@ $("#<?php echo APP_FORMID;?>").batch();
                       <tr>
                         <td>表名</td>
                         <td>主键</td>
+                        <td>关联</td>
                         <td>名称</td>
                       </tr>
                     </thead>
@@ -107,6 +113,7 @@ $("#<?php echo APP_FORMID;?>").batch();
                       <tr>
                         <td><?php echo $tval['name'] ; ?></td>
                         <td><?php echo $tval['primary'] ; ?></td>
+                        <td><?php echo $tval['union'] ; ?></td>
                         <td><?php echo $tval['label'] ; ?></td>
                       </tr>
                       <?php } ?>
@@ -127,30 +134,34 @@ $("#<?php echo APP_FORMID;?>").batch();
                     echo '<span class="label">无相关标签</span>';
                   }
                   ?>
-                  <td>
-                      <a href="<?php echo APP_URI; ?>&do=app_add&appid=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加内容</a>
-                      <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                    <?php if ($installed) {?>
-                      <?php if($data['type']){?>
-                        <?php if($data['status']){?>
-                          <a href="<?php echo APP_URI; ?>&do=update&_args=status:0&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-warning" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
-                        <?php }else{?>
-                          <a href="<?php echo APP_URI; ?>&do=update&_args=status:1&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-success"><i class="fa fa-check"></i> 启用</a>
-                        <?php }?>
-                      <?php }?>
-                      <?php if($admincp){ ?>
-                        <a href="<?php echo $admincp; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> <?php echo $data['title'] ; ?></a>
-                      <?php }?>
-                      <?php if($data['type']){?>
-                        <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
-                      <?php }?>
-                    <?php } else {?>
-                      <?php if($data['type']){?>
-                        <a href="<?php echo APP_FURI; ?>&do=install&id=<?php echo $data['id'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-primary" title='安装' /><i class="fa fa-plug"></i> 安装应用</a>
-                        <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $data['id'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='删除' /><i class="fa fa-add"></i> 删除应用</a>
-                      <?php }?>
-                    <?php }?>
                   </td>
+                  <td>
+                    <?php if($data['type']){?>
+                      <?php if($data['apptype']){?>
+                        <a href="<?php echo APP_URI; ?>&do=app_add&appid=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加内容</a>
+                      <?php }?>
+                      <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
+                      <?php if($data['status']){?>
+                        <a href="<?php echo APP_URI; ?>&do=update&_args=status:0&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-warning" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
+                      <?php }else{?>
+                        <a href="<?php echo APP_URI; ?>&do=update&_args=status:1&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-success"><i class="fa fa-check"></i> 启用</a>
+                      <?php }?>
+                      <?php if($data['apptype']){?>
+                        <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
+                      <?php }else{?>
+                      <?php }?>
+
+                          <?php if ($installed) {?>
+                            <?php if($admincp){ ?>
+                              <a href="<?php echo $admincp; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> <?php echo $data['title'] ; ?></a>
+                            <?php }?>
+                          <?php } else {?>
+                            <?php if($data['type']){?>
+                              <a href="<?php echo APP_FURI; ?>&do=install&id=<?php echo $data['id'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-primary" title='安装' /><i class="fa fa-plug"></i> 安装应用</a>
+                            <?php }?>
+                          <?php }?>
+                    <?php }  ?>
+                    </td>
                 </tr>
                 <?php }  ?>
               </tbody>
@@ -173,11 +184,13 @@ $("#<?php echo APP_FORMID;?>").batch();
               </tr>
             </table>
           </div>
-          <div id="apps-user" class="tab-pane">
-          </div>
+          <?php }?>
         </div>
       </form>
     </div>
   </div>
 </div>
+<script>
+$(".apps-type-1").addClass('active');
+</script>
 <?php admincp::foot();?>

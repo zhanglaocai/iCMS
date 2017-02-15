@@ -71,20 +71,35 @@ class appsAdmincp{
       foreach ($variable as $table_name => $data) {
         $table   = $table_array[$table_name];
         $primary = $table['primary'];
-        if($table['union']){
-          $union  =  reset(compact ($table['union']));
-          $union && $data[$table['union']] = $union;
+        /**
+         * 关联字符 && 关联数据
+         */
+        if($table['union'] && $uDATA){
+          $data[$table['union']] = $uDATA[$table['union']];
         }
+
+        $union_key = null;
+        //查找下个数据表名
+        $next_table_name = next($keys);
+        if($next_table_name){
+          $next_table = $table_array[$next_table_name];
+          //有设置关联字段
+          $next_table['union'] && $union_key = $next_table['union'];
+        }
+
         //union
         if(empty($data[$primary])){ //主键值为空
           unset($data[$primary]);
-          $iid = iDB::insert($table_name,$data);
+          $id = iDB::insert($table_name,$data);
+          if($union_key){
+            $uDATA = array_combine(array($union_key),array($id));
+          }
         }else{
+          //主键不更新
           $id = $data[$primary];
           unset($data[$primary]);
           iDB::update($table_name, $data, array($primary=>$id));
         }
-        print_r($iid);
       }
       // print_r($app['table']);
       exit;
@@ -194,11 +209,16 @@ class appsAdmincp{
 
     public function do_add(){
         $this->id && $rs = apps::get($this->id);
-        $rs['table'] OR $base_fields = apps_db::base_fields_array();
-        // $_fields = $rs['_fields'];
-        if(empty($rs['fields'])){
+        if(empty($rs)){
+          $base_fields = apps_db::base_fields_array();
           $_fields = include iPHP_APP_DIR.'/apps/etc/fields.json.php';
           $rs['fields'] = json_decode($_fields,true);
+          $rs['config']['iFormer'] = '1';
+          $rs['apptype']="2";
+        }else{
+          if($rs['apptype']=="2"){
+            $rs['config']['iFormer'] = '1';
+          }
         }
         include admincp::view("apps.add");
     }
@@ -257,8 +277,12 @@ class appsAdmincp{
         $array    = compact(array('app','name','table','config','fields','addtimes','type','status'));
 
         if(empty($id)) {
+
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iUI::alert('该应用已经存在!');
             apps_db::check_table(iDB::table($array['app'])) && iUI::alert('['.$array['app'].']数据表已经存在!');
+
+            // iDB::$print_sql = true;
+
             if($addons_fieldata){
               $addons_name = $array['app'].'_data';
               apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
@@ -269,22 +293,15 @@ class appsAdmincp{
               $array['app'],
               apps_app::get_field_array($fieldata)//获取字段数组
             );
-            array_push ($tb,'master');
-            array_push ($tb,$array['name']);
+            array_push ($tb,null,$array['name']);
             $table_array = array();
             $table_array[$array['app']]= $tb;
 
             //有MEDIUMTEXT类型字段就创建xxx_data附加表
             if($addons_fieldata){
-              $addons_name = $array['app'].'_data';
-              $btb = apps_db::create_table(
-                $addons_name,
-                apps_app::get_field_array($addons_fieldata),//获取字段数组
-                false,'data_id',true
-              );
-              array_push ($btb,'iid');
-              array_push ($btb,'正文');
-              $table_array[$addons_name]= $btb;
+              $union_id = $array['app'].'_id';
+              $addons_fieldata = apps_app::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
+              $table_array += apps_app::data_create_table2($addons_fieldata,$addons_name,$union_id);
             }
 
             $array['table'] = addslashes(json_encode($table_array));
@@ -296,34 +313,13 @@ class appsAdmincp{
             $_fields     = iDB::value("SELECT `fields` FROM `#iCMS@__apps` where `id` ='$id'");//json
             $_json_field = apps_db::json_field($_fields);//旧数据
             $json_field  = apps_db::json_field($fields); //新数据
-
-            // print_r($_json_field);
-            // print_r($json_field);
-
             /**
              * 找出字段数据中的 MEDIUMTEXT类型字段
-             * @var array
+             * PS:函数内会unset(json_field[key]) 所以要在 基本表make_alter_sql前执行
              */
-            $_addons_json_field = array();
-            foreach ($_json_field as $key => $value) {
-                $a = json_decode($value,true);
-                if(strtoupper($a['field'])=="MEDIUMTEXT"){
-                  $_addons_json_field[$key] = $value;
-                  unset($_json_field[$key]);//不参与基本表比较
-                }
-            }
-            /**
-             * 找出字段数据中的 MEDIUMTEXT类型字段
-             * @var array
-             */
-            $addons_json_field = array();
-            foreach ($json_field as $key => $value) {
-                $a = json_decode($value,true);
-                if(strtoupper($a['field'])=="MEDIUMTEXT"){
-                  $addons_json_field[$key] = $value;
-                  unset($json_field[$key]);//不参与基本表比较
-                }
-            }
+            $_addons_json_field = apps_app::find_MEDIUMTEXT($_json_field);
+            $addons_json_field = apps_app::find_MEDIUMTEXT($json_field);
+
             // print_r($_addons_json_field);
             // print_r($addons_json_field);
 
@@ -334,7 +330,6 @@ class appsAdmincp{
             //MEDIUMTEXT类型字段 新旧数据计算交差集 origin 为旧字段名
             $addons_sql_array = apps_db::make_alter_sql($addons_json_field,$_addons_json_field,$_POST['origin']);
 
-
             if($addons_sql_array){
               //附加表名
               $addons_name = $array['app'].'_data';
@@ -343,18 +338,14 @@ class appsAdmincp{
                 //表存在执行 alter
                 apps_db::alter_table($addons_name,$addons_sql_array);
               }else{
-                // 不存在 用新数据创建
+                // 不存在 创建
                 if($addons_fieldata){
                   apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
                   //有MEDIUMTEXT类型字段创建xxx_data附加表
-                  $btb = apps_db::create_table(
-                    $addons_name,
-                    apps_app::get_field_array($addons_fieldata),//获取字段数组
-                    false,'data_id',true
-                  );
-                  array_push ($btb,'iid');
-                  array_push ($btb,'大数据表');
-                  $table_array[$addons_name]= $btb;
+                  $union_id = $array['app'].'_id';
+                  $addons_fieldata = apps_app::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
+                  $table_array += apps_app::data_create_table2($addons_fieldata,$addons_name,$union_id);
+
                   $array['table'] = addslashes(json_encode($table_array));
                 }
 
@@ -364,7 +355,7 @@ class appsAdmincp{
             iDB::update('apps', $array, array('id'=>$id));
             $msg = "应用编辑完成!";
         }
-        iUI::success($msg,'url:'.APP_URI);
+        // iUI::success($msg,'url:'.APP_URI);
     }
     public function do_update(){
         if($this->id){
@@ -375,7 +366,7 @@ class appsAdmincp{
     }
     public function do_iCMS(){
       if($_GET['keywords']) {
-		   $sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";
+		    $sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";
       }
       $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
       $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
@@ -383,6 +374,9 @@ class appsAdmincp{
       iUI::pagenav($total,$maxperpage,"个应用");
       $rs     = iDB::all("SELECT * FROM `#iCMS@__apps` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
       $_count = count($rs);
+      foreach ($rs as $key => $value) {
+        $apps_type_group[$value['type']][$key] = $value;
+      }
     	include admincp::view("apps.manage");
     }
     // public function do_manage(){

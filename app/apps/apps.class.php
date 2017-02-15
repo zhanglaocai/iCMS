@@ -13,9 +13,9 @@ class apps {
     public static $etc     = 'etc';
     public static $array   = array();
     public static $type_array = array(
-        '0' => '系统组件',
         '1' => '应用',
         '2' => '插件',
+        '0' => '系统组件',
       );
     // public static $app_paths   = array();
     //

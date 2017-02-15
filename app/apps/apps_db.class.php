@@ -269,6 +269,23 @@ class apps_db {
          iDB::query($sql);
          return array($name,$PRIMARY);
     }
+    public static function create_table2($name,$fields=null,$PRIMARY='id',$ret=false){
+        $fields_sql = array();
+        if(is_array($fields))foreach ($fields as $key => $arr) {
+            $arr && $fields_sql[$arr['name']] = self::make_field_sql($arr);
+        }
+        $fields_sql['primary_'.$PRIMARY] = 'PRIMARY KEY (`'.$PRIMARY.'`)';
+        $base_fields && $fields_sql = array_merge($fields_sql,self::base_fields_index());
+        $sql= "CREATE TABLE `#iCMS@__{$name}` ("
+            .implode(",\n", $fields_sql).
+        ') ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;';
+
+         if($ret){
+            return $sql;
+         }
+         iDB::query($sql);
+         return array($name,$PRIMARY);
+    }
 /**
  * 以下方法移植自adminer
  */

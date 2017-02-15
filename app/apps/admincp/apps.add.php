@@ -39,17 +39,20 @@ $(function(){
         <li class="active"><a href="#apps-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
         <?php if($rs['table'])foreach ($rs['table'] as $key => $tval) {?>
         <li><a href="#apps-add-<?php echo $key; ?>-field" data-toggle="tab"><i class="fa fa-database"></i> <?php echo $tval['label']?$tval['label']:$tval['name']; ?>表字段</a></li>
-        <?php }else if($rs['table']!='0'){?>
-        <li><a href="#apps-add-field" data-toggle="tab"><i class="fa fa-cog"></i> 基础字段</a></li>
         <?php }?>
-        <?php if($rs['table']!='0'){?>
-        <li><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 自定义字段</a></li>
+        <?php if($rs['config']['iFormer']){?>
+          <?php if(!$rs['table']){?>
+          <li><a href="#apps-add-field" data-toggle="tab"><i class="fa fa-cog"></i> 基础字段</a></li>
+          <?php }?>
+          <li><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 自定义字段</a></li>
         <?php }?>
       </ul>
     </div>
     <div class="widget-content nopadding">
       <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-apps" target="iPHP_FRAME">
         <input name="_id" type="hidden" value="<?php echo $this->id; ?>" />
+        <input name="apptype" type="hidden" value="<?php echo $rs['apptype']; ?>" />
+        <input name="config[iFormer]" type="hidden" value="<?php echo $rs['config']['iFormer']; ?>" />
         <div id="apps-add" class="tab-content">
           <div id="apps-add-base" class="tab-pane active">
             <div class="input-prepend">
@@ -125,23 +128,23 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
             <?php if($rs['table']){?>
-            <h3 class="title" style="width:350px;">数据表</h3>
-            <table class="table table-bordered bordered" style="width:360px;">
+            <h3 class="title" style="width:450px;">数据表</h3>
+            <table class="table table-bordered bordered" style="width:460px;">
               <thead>
                 <tr>
                   <th style="width:120px;">表名</th>
                   <th>主键</th>
+                  <th>关联</th>
                   <th>名称</th>
                 </tr>
               </thead>
               <tbody>
-                <?php
-                foreach ((array)$rs['table'] as $tkey => $tval) {
-                ?>
+                <?php foreach ((array)$rs['table'] as $tkey => $tval) {?>
                 <tr>
                   <td><input type="hidden" name="table[<?php echo $tkey; ?>][0]" value="<?php echo $tval['name'] ; ?>"/> <?php echo $tval['name'] ; ?></td>
                   <td><input type="hidden" name="table[<?php echo $tkey; ?>][1]" value="<?php echo $tval['primary'] ; ?>"/> <?php echo $tval['primary'] ; ?></td>
-                  <td><input type="text" name="table[<?php echo $tkey; ?>][2]" class="span2" id="table_<?php echo $tkey; ?>_2" value="<?php echo $tval['label'] ; ?>"/></td>
+                  <td><input type="hidden" name="table[<?php echo $tkey; ?>][2]" value="<?php echo $tval['union'] ; ?>"/> <?php echo $tval['union'] ; ?></td>
+                  <td><input type="text" name="table[<?php echo $tkey; ?>][3]" class="span2" id="table_<?php echo $tkey; ?>_2" value="<?php echo $tval['label'] ; ?>"/></td>
                 </tr>
                 <?php } ?>
               </tbody>
@@ -153,6 +156,7 @@ $(function(){
           </div>
           <!-- 数据表字段 -->
           <?php include admincp::view("apps.table");?>
+          <?php if($rs['config']['iFormer']){?>
           <div id="apps-add-field" class="tab-pane">
             <!-- 基础字段 -->
             <?php include admincp::view("apps.base");?>
@@ -160,9 +164,12 @@ $(function(){
           <div id="apps-add-custom" class="tab-pane">
             <?php include admincp::view("apps.iFormer.build");?>
           </div>
+          <?php } ?>
           <div class="clearfloat"></div>
           <div class="form-actions">
             <button class="btn btn-primary btn-large" type="submit"><i class="fa fa-check"></i> 提交</button>
+            <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $rs['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
+
           </div>
         </form>
       </div>
