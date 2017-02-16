@@ -7,6 +7,12 @@
  */
 
 class apps_app {
+    public static function drop_table($addons_fieldata,&$table_array,$addons_name) {
+      if(empty($addons_fieldata) && $table_array[$addons_name] && apps_db::check_table(iDB::table($addons_name))){
+        apps_db::drop_tables(array(iPHP_DB_PREFIX.$addons_name));
+        unset($table_array[$addons_name]);
+      }
+    }
     public static function find_MEDIUMTEXT(&$json_field) {
         $addons_json_field = array();
         foreach ($json_field as $key => $value) {

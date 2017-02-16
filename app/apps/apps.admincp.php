@@ -26,54 +26,19 @@ class appsAdmincp{
       $field_array = apps_app::get_field_array($app['fields']);
       $table_array = $app['table'];
 
-      foreach ($post as $key => $value) {
-        $field = $field_array[$key]['field'];
-
-        list($type,$type2) = explode(':', $field_array[$key]['type']);
-
-        if(in_array($type, array('date','datetime'))){
-          $value = str2time($value);
-        }
-
-        if(isset($field_array[$key]['multiple'])||in_array($type, array('checkbox'))){
-          $value = implode(',', (array)$value);
-        }
-
-        if(in_array($field, array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
-          $value = (int)$value;
-        }
-
-
-        if($type=='editor'){
-          // $post[$key] = $value;
-        }else{
-          $value = iSecurity::escapeStr($value);
-        }
-
-        $post[$key] = $value;
-
-        if(strpos($key,'_orig_')!==false){
-          $orig_post[$key] = $value;
-          unset($post[$key]);
-        }
-        if($field=='MEDIUMTEXT'){
-          $addons_post[$key] = $value;
-          unset($post[$key]);
-        }
+      list($variable,$keys,$orig_post) = iFormer::post($post,$field_array,$table_array);
+      if(!$variable){
+        iCMS::alert("表单数据处理出错!");
       }
-      print_r($post);
-
-      $keys     = array_keys($table_array);//返回所有表名
-      $values   = compact ('post','addons_post'); //将表单数据存入数组
-      //创建一个数组，用一个表名数组的值作为其键名，表单数据的值作为其值
-      $variable = array_combine($keys,$values);
 
       foreach ($variable as $table_name => $data) {
+        if(empty($data)){
+          continue;
+        }
         $table   = $table_array[$table_name];
         $primary = $table['primary'];
-        /**
-         * 关联字符 && 关联数据
-         */
+
+        //关联字符 && 关联数据
         if($table['union'] && $uDATA){
           $data[$table['union']] = $uDATA[$table['union']];
         }
@@ -131,7 +96,7 @@ class appsAdmincp{
         $fields = apps_app::get_field_array($app['fields'],true);
         foreach ($fields as $key => $value) {
           $html.= iFormer::html($value,$rs[$value['name']]);
-          $submit.= iFormer::validate($value);
+          $onubmit.= iFormer::validate($value);
           $script.= iFormer::script($value['javascript']);
         }
       }
@@ -224,11 +189,12 @@ class appsAdmincp{
     }
 
     public function do_save(){
-        $id       = (int)$_POST['_id'];
-        $name     = iSecurity::escapeStr($_POST['_name']);
-        $app      = iSecurity::escapeStr($_POST['_app']);
-        $type     = (int)$_POST['type'];
-        $status   = (int)$_POST['status'];
+        $id      = (int)$_POST['_id'];
+        $name    = iSecurity::escapeStr($_POST['_name']);
+        $app     = iSecurity::escapeStr($_POST['_app']);
+        $apptype = (int)$_POST['apptype'];
+        $type    = (int)$_POST['type'];
+        $status  = (int)$_POST['status'];
 
         $fieldata = $_POST['fields'];
         $config_array = $_POST['config'];
@@ -274,7 +240,7 @@ class appsAdmincp{
         }
 
         $addtimes = time();
-        $array    = compact(array('app','name','table','config','fields','addtimes','type','status'));
+        $array    = compact(array('app','name','table','config','fields','addtimes','apptype','type','status'));
 
         if(empty($id)) {
 
@@ -330,27 +296,35 @@ class appsAdmincp{
             //MEDIUMTEXT类型字段 新旧数据计算交差集 origin 为旧字段名
             $addons_sql_array = apps_db::make_alter_sql($addons_json_field,$_addons_json_field,$_POST['origin']);
 
-            if($addons_sql_array){
-              //附加表名
-              $addons_name = $array['app'].'_data';
-              //检测附加表是否存在
-              if($table_array[$addons_name] && apps_db::check_table(iDB::table($addons_name))){
-                //表存在执行 alter
-                apps_db::alter_table($addons_name,$addons_sql_array);
-              }else{
-                // 不存在 创建
-                if($addons_fieldata){
-                  apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
-                  //有MEDIUMTEXT类型字段创建xxx_data附加表
-                  $union_id = $array['app'].'_id';
-                  $addons_fieldata = apps_app::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
-                  $table_array += apps_app::data_create_table2($addons_fieldata,$addons_name,$union_id);
-
-                  $array['table'] = addslashes(json_encode($table_array));
+            $addons_name = $array['app'].'_data';
+            //存在附加表数据
+            if($addons_fieldata){
+              if($addons_sql_array){
+                //附加表名
+                //检测附加表是否存在
+                if($table_array[$addons_name] && apps_db::check_table(iDB::table($addons_name))){
+                  //表存在执行 alter
+                  apps_db::alter_table($addons_name,$addons_sql_array);
+                }else{
+                  // 不存在 创建
+                  if($addons_fieldata){
+                    apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
+                    //有MEDIUMTEXT类型字段创建xxx_data附加表
+                    $union_id = $array['app'].'_id';
+                    $addons_fieldata = apps_app::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
+                    $table_array += apps_app::data_create_table2($addons_fieldata,$addons_name,$union_id);
+                    $array['table'] = addslashes(json_encode($table_array));
+                  }
                 }
-
+              }
+            }else{
+              if($apptype=="2"){ //只删除自定义应用的表
+                //不存在附加表数据 直接删除附加表 返回 table的json值 $table_array为引用参数
+                apps_app::drop_table($addons_fieldata,$table_array,$addons_name);
+                $array['table'] = addslashes(json_encode($table_array));
               }
             }
+
             // exit;
             iDB::update('apps', $array, array('id'=>$id));
             $msg = "应用编辑完成!";

@@ -118,7 +118,7 @@
           <div class="clearfix mt5"></div>
           <div class="input-prepend">
             <span class="add-on">数据处理</span>
-            <select name="fun[]" id="iFormer-fun" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
+            <select name="func[]" id="iFormer-func" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
               <optgroup label="保存数据时">
                 <option value='repeat'>检查重复</option>
                 <option value='pinyin'>转成拼音</option>
@@ -127,6 +127,8 @@
                 <option value='strtolower'>小写字母</option>
                 <option value='strtoupper'>大写字母</option>
                 <option value='firstword'>获取头字母大写</option>
+                <option value='implode-n'>数组转字符串(换行符)</option>
+                <option value='implode-c'>数组转字符串(,)</option>
               </optgroup>
               <optgroup label="通用">
                 <option value='explode-n'>分割(换行符)成数组</option>
@@ -152,7 +154,6 @@
           </div>
         </div>
         <div id="field-tab-3" class="tab-pane">
-          <span class="help-inline">支持bootstrap v2.3.2样式 或者请先定义css在填写样式名</span>
           <div class="clearfix"></div>
           <div class="input-prepend">
             <span class="add-on">默认提示</span>
@@ -166,11 +167,15 @@
         </div>
         <div id="field-tab-4" class="tab-pane">
           <div class="input-prepend">
-            <span class="add-on">用户选项</span>
-            <select name="user[]" id="iFormer-user" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
-              <option value='list'>列表显示</option>
-              <option value='fill'>用户可填写</option>
-              <option value='show'>用户后台显示</option>
+            <span class="add-on">UI选项</span>
+            <select name="ui[]" id="iFormer-ui" class="chosen-select" style="width:360px;" data-placeholder="请选择..." multiple="multiple">
+              <optgroup label="管理员">
+                <option value='admincp-list'>列表显示</option>
+              </optgroup>
+              <optgroup label="用户">
+                <option value='usercp-list'>列表显示</option>
+                <option value='usercp-input'>可填写</option>
+              </optgroup>
             </select>
           </div>
           <span class="help-inline">选填</span>
@@ -178,7 +183,7 @@
         <div id="field-tab-5" class="tab-pane">
           <div class="input-prepend">
             <span class="add-on">数据优化</span>
-            <select name="db[]" id="iFormer-db" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
+            <select name="db[]" id="iFormer-db" class="chosen-select" style="width:360px;" data-placeholder="请选择..." multiple="multiple">
               <option value='index'>索引项</option>
             </select>
           </div>

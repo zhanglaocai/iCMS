@@ -110,6 +110,14 @@ $(function(){
             <span class="help-inline">应用的后台管理入口</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
+              <span class="add-on">用户中心</span>
+              <div class="switch" data-on-label="启用" data-off-label="禁用">
+                <input type="checkbox" data-type="switch" name="usercp" id="usercp" <?php echo $rs['config']['usercp']?'checked':''; ?>/>
+              </div>
+              <span class="help-inline">启用后,用户中心将显示此应用并根据字段设计</span>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend">
               <span class="add-on">应用类型</span>
               <select name="type" id="type" class="chosen-select span3" data-placeholder="请选择应用类型...">
                 <?php echo apps::get_type_select() ; ?>
@@ -123,8 +131,6 @@ $(function(){
                 <input type="checkbox" data-type="switch" name="status" id="status" <?php echo $rs['status']?'checked':''; ?>/>
               </div>
               <span class="help-inline"></span>
-              <div class="clearfloat mb10"></div>
-
             </div>
             <div class="clearfloat mb10"></div>
             <?php if($rs['table']){?>

@@ -558,7 +558,7 @@ class apps_db {
     * @return bool
     */
     public static function drop_tables($tables) {
-        return iDB::query("DROP TABLE " . implode(", ", array_map('table', $tables)));
+        return iDB::query("DROP TABLE " . implode(", ", array_map(array(self,'table'), $tables)));
     }
     /** Move tables to other schema
     * @param array

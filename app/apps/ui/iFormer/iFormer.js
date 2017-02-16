@@ -476,10 +476,6 @@ var iFormer = {
                     'default': $("#iFormer-default", fbox).val()
                 });
 
-                if(data['id']!= data['name']){
-                    data['id'] = data['name'];
-                    $("#iFormer-id", fbox).val(data['id']);
-                }
 
                 if(!data.label){
                   iCMS.alert("请填写字段名称!");
@@ -489,13 +485,23 @@ var iFormer = {
                   iCMS.alert("请填写字段名!");
                   return false;
                 }
-                // console.log(obj);
-                var dname = $('[name="_field_'+data.name+'"]','.iFormer-layout').not('[name="_field_'+_id+'"]');
+                if(data['id']!= data['name']){
+                    data['id'] = data['name'];
+                    $("#iFormer-id", fbox).val(data['id']);
+                }
+                var $apptype = $('[name="apptype"]').val();
+                if($apptype=="2"){
+                    var dname = $('[name="_field_'+data.name+'"]','.iFormer-layout').not('[name="_field_'+_id+'"]');
+                }else{
+                    var dname = $('td[field="'+data.name+'"]','.app-table-list').not('td[field="'+_id+'"]');
+                }
 
                 if(dname.length){
                     iCMS.alert("该字段名已经存在,请重新填写");
                     return false;
                 }
+
+                $('td[field="'+_id+'"]').attr('field', data.name).text(data.name);
 
                 //更新 fields[]
                 param = $("form", fbox).serialize();

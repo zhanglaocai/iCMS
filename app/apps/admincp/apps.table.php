@@ -6,7 +6,7 @@ if($rs['table'])foreach ($rs['table'] as $key => $tval) {
     continue;
   }
 ?>
-<div id="apps-add-<?php echo $key; ?>-field" class="tab-pane">
+<div id="apps-add-<?php echo $key; ?>-field" class="app-table-list tab-pane">
   <table class="table table-hover table-bordered">
     <thead>
       <tr>
@@ -27,7 +27,7 @@ if($rs['table'])foreach ($rs['table'] as $key => $tval) {
       foreach ((array)$orig_fields as $field => $value) {
       ?>
       <tr>
-        <td><b><?php echo $field; ?></b></td>
+        <td field="<?php echo $field; ?>"><b><?php echo $field; ?></b></td>
         <td><?php echo $value['type']; ?></td>
         <td><?php echo $value['length']; ?></td>
         <td><?php if($value['primary']){?>
