@@ -20,13 +20,10 @@ class appsAdmincp{
     }
     public function do_app_save(){
       $appid = (int)$_POST['appid'];
-      $post  = $_POST[iFormer::$prefix];
       $app   = apps::get($appid);
 
-      $field_array = apps_app::get_field_array($app['fields']);
-      $table_array = $app['table'];
+      list($variable,$keys,$orig_post) = iFormer::post($app);
 
-      list($variable,$keys,$orig_post) = iFormer::post($post,$field_array,$table_array);
       if(!$variable){
         iCMS::alert("表单数据处理出错!");
       }
@@ -35,7 +32,9 @@ class appsAdmincp{
         if(empty($data)){
           continue;
         }
-        $table   = $table_array[$table_name];
+        //当表数据
+        $table   = $app['table'][$table_name];
+        //当前表主键
         $primary = $table['primary'];
 
         //关联字符 && 关联数据
@@ -47,7 +46,7 @@ class appsAdmincp{
         //查找下个数据表名
         $next_table_name = next($keys);
         if($next_table_name){
-          $next_table = $table_array[$next_table_name];
+          $next_table = $app['table'][$next_table_name];
           //有设置关联字段
           $next_table['union'] && $union_key = $next_table['union'];
         }
@@ -66,40 +65,14 @@ class appsAdmincp{
           iDB::update($table_name, $data, array($primary=>$id));
         }
       }
-      // print_r($app['table']);
-      exit;
-
-
-      // if(empty($id)) {
-      //     // iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='$keyword'") && iUI::alert('该关键词已经存在!');
-      //     iDB::insert($table['name'],$data);
-      // }else {
-      //     // iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='$keyword' AND `id` !='$id'") && iUI::alert('该关键词已经存在!');
-      //     iDB::update($table['name'], $data, array('id'=>$id));
-      // }
     }
+
     public function do_app_add(){
       $appid = (int)$_GET['appid'];
-      $app   = apps::get($appid);
       $rs    = apps_app::get_data($app,$this->id);
-      // $fields_json = include iPHP_APP_DIR.'/apps/etc/fields.json.php';
-      // $app['fields'] = json_decode($fields_json,true);
+      $app   = apps::get($appid);
 
-      if($app['fields']){
-        iFormer::$default = array(
-          'userid'   => members::$userid,
-          'username' => members::$data->username?members::$data->username:members::$data->nickname,
-        );
-        iFormer::$config  = $app;
-        iFormer::$gateway = 'admincp';
-
-        $fields = apps_app::get_field_array($app['fields'],true);
-        foreach ($fields as $key => $value) {
-          $html.= iFormer::html($value,$rs[$value['name']]);
-          $onubmit.= iFormer::validate($value);
-          $script.= iFormer::script($value['javascript']);
-        }
-      }
+      apps::former_create($appid,$rs);
 
       include admincp::view('app.add');
     }

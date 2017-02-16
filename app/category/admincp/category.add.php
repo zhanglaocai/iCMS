@@ -70,8 +70,7 @@ $(function(){
         <li><a href="#category-add-url" data-toggle="tab"><i class="fa fa-link"></i> URL规则设置</a></li>
         <li><a href="#category-add-tpl" data-toggle="tab"><i class="fa fa-columns"></i> 模版设置</a></li>
         <li><a href="#category-add-user" data-toggle="tab"><i class="fa fa-user"></i> 用户设置</a></li>
-        <li><a href="#category-add-prop" data-toggle="tab"><i class="fa fa-wrench"></i> <?php echo $this->category_name;?>附加属性</a></li>
-        <li><a href="#category-add-body" data-toggle="tab"><i class="fa fa-wrench"></i> HTML</a></li>
+        <li><a href="#category-add-custom" data-toggle="tab"><i class="fa fa-wrench"></i> 自定义</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -206,69 +205,8 @@ $(function(){
               </div>
             </div>
           </div>
-          <div id="category-add-prop" class="tab-pane hide">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>名称<span>(只能由英文字母、数字或_-组成(不支持中文))<span></th>
-                  <th>值</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php if($rs['metadata'])foreach((array)$rs['metadata'] AS $mKey=>$mvalue){?>
-                <tr>
-                  <td><input name="metadata[key][]" type="text" value="<?php echo $mKey;?>" class="span3" /></td>
-                  <td><input name="metadata[value][]" type="text" value="<?php echo $mvalue;?>" class="span6" />
-                    <a class="btn delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
-                </tr>
-                <?php }?>
-              </tbody>
-              <tfoot>
-                <tr class="hide aclone">
-                  <td><input name="metadata[key][]" type="text" disabled="disabled" class="span3" value=""/></td>
-                  <td><input name="metadata[value][]" type="text" disabled="disabled" class="span6" value="" />
-                    <a class="btn delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
-                </tr>
-                <tr>
-                  <td colspan="2"><a href="#category-add-prop" class="btn addprop"/>增加附加属性</a></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          <div id="category-add-body" class="tab-pane hide">
-            <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.ueditor.js"></script>
-            <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/ueditor/ueditor.all.min.js"></script>
-            <a class="btn btn-inverse" href="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</a>
-            <a class="btn btn-success" href="javascript:createEditor();"><i class="fa fa-times"></i> 使用编辑器</a>
-            <a class="btn btn-inverse" href="javascript:deleteEditor();"><i class="fa fa-times"></i> 关闭编辑器</a>
-            <div class="clearfix mt10"></div>
-            <input name="hasbody" id="hasbody" type="hidden" value="<?php echo $rs['hasbody'] ; ?>" />
-            <textarea type="text/plain" id="editor-body" name="body"><?php echo $rs['body'] ; ?></textarea>
-            <div class="clearfix mt10"></div>
-            <div class="alert alert-block">
-              <h4>注意事项</h4>
-              大文本段,支持HTML,至于干嘛用,我也不知道...你爱怎么用就怎么用!!
-              <br />
-              注:编辑器会把div转换成p
-            </div>
-            <script type="text/javascript">
-            <?php if($rs['hasbody']=="1"){ ?>
-            iCMS.editor.create('editor-body');
-            <?php } ?>
-            function deleteEditor() {
-                iCMS.editor.destroy();
-                $("#hasbody").val('2');
-            }
-            function createEditor() {
-                iCMS.editor.create('editor-body');
-                $("#hasbody").val('0');
-            }
-            </script>
-            <?php if($rs['hasbody']=="2"){ ?>
-            <style>
-              #editor-body {height: 600px;width: 98%;}
-            </style>
-            <?php } ?>
+          <div id="category-add-custom" class="tab-pane hide">
+              <?php echo iFormer::$html;?>
           </div>
         </div>
         <div class="form-actions">
@@ -278,4 +216,13 @@ $(function(){
     </div>
   </div>
 </div>
+<script>
+$(function(){
+  $("#<?php echo APP_FORMID;?>").submit(function(){
+      <?php echo iFormer::$validate;?>
+
+  });
+  <?php echo iFormer::$script;?>
+})
+</script>
 <?php admincp::foot();?>

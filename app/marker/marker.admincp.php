@@ -9,11 +9,15 @@
 * @version 6.0.0
 */
 class markerAdmincp{
+    public static $appid = null;
     public function __construct() {
+        self::$appid = iPHP::appid(__CLASS__);
+
         $this->categoryAdmincp = new categoryAdmincp();
-        $this->id         = (int)$_GET['id'];
+        $this->id = (int)$_GET['id'];
     }
     public function do_add(){
+
         $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__marker` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
         if($_GET['act']=="copy"){
             $this->id   = 0;
@@ -23,6 +27,9 @@ class markerAdmincp{
         if(empty($rs)){
             $rs['status'] = '1';
         }
+
+        apps::former_create(self::$appid,$rs);
+
         include admincp::view("marker.add");
     }
     public function do_save(){
@@ -41,6 +48,8 @@ class markerAdmincp{
 
         $fields = array('cid','pid','name','key','data','status');
         $data   = compact ($fields);
+
+        apps::former_data(self::$appid,$data,'marker');
 
 		if($id){
             iDB::update('marker', $data, array('id'=>$id));

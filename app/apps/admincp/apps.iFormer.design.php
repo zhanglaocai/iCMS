@@ -16,6 +16,10 @@
           <span class="fa fa-arrows-h"></span>
           <p style="vertical-align: text-top;">换行符</p>
         </li>
+        <li i="field" tag="input" type="hidden" field="VARCHAR" len="255" label="隐藏字段">
+          <span class="fb-icon fb-icon-input"></span>
+          <p>隐藏字段</p>
+        </li>
         <li i="field" tag="input" type="text" field="VARCHAR" len="255" label="单行">
           <span class="fb-icon fb-icon-input"></span>
           <p>单行</p>
@@ -117,10 +121,6 @@
     </div>
     <div id="fields-tab-func" class="tab-pane">
       <ul>
-        <li i="field" tag="dialog" type="dialog" field="VARCHAR" len="255" label="选择框">
-          <span class="fb-icon fb-icon-deciton"></span>
-          <p>选择框</p>
-        </li>
         <li i="field" tag="tpldir" type="tpldir" field="VARCHAR" len="255" label="模板目录">
           <span class="fb-icon fb-icon-template"></span>
           <p>选择框-模板目录</p>
@@ -164,6 +164,10 @@
         <li i="field" tag="username" type="username" field="VARCHAR" len="255" label="用户名">
           <span class="fb-icon fb-icon-username"></span>
           <p>用户名</p>
+        </li>
+        <li i="field" tag="nickname" type="nickname" field="VARCHAR" len="255" label="用户昵称">
+          <span class="fb-icon fb-icon-username"></span>
+          <p>用户昵称</p>
         </li>
         <li i="field" tag="userid" type="userid" field="INT" len="10" label="用户ID">
           <span class="fb-icon fb-icon-userid"></span>

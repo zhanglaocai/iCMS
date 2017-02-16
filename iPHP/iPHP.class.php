@@ -292,6 +292,12 @@ class iPHP {
 	}
 
 	public static function appid($app=null,$trans=false) {
+		if(strpos($app,'App') !== false) {
+			$app  = substr($app,0,-3);
+		}else if(strpos($app,'Admincp') !== false) {
+			$app  = substr($app,0,-7);
+		}
+
 		$array = self::$apps;
 		$trans && $array = array_flip($array);
         if($array[$app]){

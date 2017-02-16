@@ -24,6 +24,30 @@ class apps {
     //     return self::get_file($app,$path);
     // }
 
+    public static function former_create($appid,$rs){
+        $app = apps::get($appid);
+        if($app['fields']){
+            iFormer::$config['app']     = $app;
+            iFormer::$config['gateway'] = 'admincp';
+            iFormer::$config['value']   = array(
+                'userid'   => members::$userid,
+                'username' => members::$data->username,
+                'nickname' => members::$data->nickname
+            );
+            iFormer::render($app,$rs);
+        }
+    }
+    public static function former_data($appid,&$data,$table){
+        $app = apps::get($appid);
+        if($app['fields']){
+          list($variable,$keys,$orig_post) = iFormer::post($app);
+          foreach ($variable as $table_name => $_data) {
+            if($table_name==$table){
+                $data = array_merge($data,$_data);
+            }
+          }
+        }
+    }
     public static function uninstall($appid){
         $data = self::get($appid);
         if($data){

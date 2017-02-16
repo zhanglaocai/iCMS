@@ -43,6 +43,8 @@ class userAdmincp{
                 $userdata = iDB::row("SELECT * FROM `#iCMS@__user_data` WHERE `uid`='$this->uid' LIMIT 1;");
             }
         }
+        apps::former_create($this->appid,$rs);
+
         include admincp::view("user.add");
     }
     public function do_login(){
@@ -119,6 +121,8 @@ class userAdmincp{
         $user['regdate']       = str2time($user['regdate']);
         $user['lastlogintime'] = str2time($user['lastlogintime']);
         $user['pid']           = $pid;
+
+        apps::former_data($this->appid,$user,'user');
 
        if(empty($uid)) {
             $password OR iUI::alert('密码不能为空');

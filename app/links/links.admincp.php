@@ -9,8 +9,10 @@
 * @version 6.0.0
 */
 class linksAdmincp{
+    public static $appid = null;
     public function __construct() {
-    	$this->id	= (int)$_GET['id'];
+        self::$appid = iPHP::appid(__CLASS__);
+        $this->id    = (int)$_GET['id'];
     }
     public function do_add(){
         if($this->id) {
@@ -19,6 +21,8 @@ class linksAdmincp{
             $rs['keyword'] = $_GET['keyword'];
             $rs['url']     = $_GET['url'];
         }
+        apps::former_create(self::$appid,$rs);
+
         include admincp::view("links.add");
     }
     public function do_save(){
@@ -34,6 +38,9 @@ class linksAdmincp{
         $url 	OR iUI::alert('链接不能为空!');
         $fields = array('cid', 'name', 'logo', 'url', 'desc', 'sortnum');
         $data   = compact ($fields);
+
+        apps::former_data(self::$appid,$data,'links');
+
         if(empty($id)) {
             iDB::value("SELECT `id` FROM `#iCMS@__links` where `name` ='$name'") && iUI::alert('该网站已经存在!');
             iDB::insert('links',$data);

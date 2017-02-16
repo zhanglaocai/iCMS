@@ -25,10 +25,11 @@ $(function(){
     <div class="widget-title"> <span class="icon"> <i class="fa fa-user"></i> </span>
       <h5 class="brs"><?php echo empty($this->uid)?'添加':'修改' ; ?>用户</h5>
       <ul class="nav nav-tabs" id="user-tab">
-        <li class="active"><a href="#user-info" data-toggle="tab"><b>基本信息</b></a></li>
+        <li class="active"><a href="#user-info" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
         <?php if($this->uid){;?>
-        <li><a href="#user-data" data-toggle="tab"><b>用户资料</b></a></li>
+        <li><a href="#user-data" data-toggle="tab"><i class="fa fa-users"></i> 用户资料</a></li>
         <?php };?>
+        <li><a href="#user-custom" data-toggle="tab"><i class="fa fa-wrench"></i> 自定义</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -241,6 +242,9 @@ $(function(){
               <input type="text" name="userdata[coverpic]" id="coverpic" class="span3" value="<?php echo $userdata->coverpic ; ?>" />
             </div>
           </div>
+          <div id="user-custom" class="tab-pane">
+            <?php echo iFormer::$html;?>
+          </div>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
@@ -249,4 +253,12 @@ $(function(){
     </div>
   </div>
 </div>
+<script>
+$(function(){
+  $("#<?php echo APP_FORMID;?>").submit(function(){
+    <?php echo iFormer::$validate;?>
+  });
+  <?php echo iFormer::$script;?>
+})
+</script>
 <?php admincp::foot();?>

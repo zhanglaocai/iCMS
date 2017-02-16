@@ -13,11 +13,32 @@
 class iFormer {
     public static $line = true;
 
-    public static $prefix  = 'iDATA';
-    public static $html    = null;
-    public static $gateway = null;
-    public static $config  = array();
-    public static $default = array();
+    public static $html     = null;
+    public static $validate = null;
+    public static $script   = null;
+
+    public static $prefix   = 'iDATA';
+    public static $config   = array();
+
+    /**
+     * 将由查询字符串(query string)组成的数组转换成二维数组
+     * @param  [type]  $data [查询字符串 数组]
+     * @param  boolean $ui   [是否把UI标识返回数组]
+     * @return [type]        [description]
+     */
+    public static function fields($data,$ui=false) {
+        $array = array();
+        foreach ($data as $key => $value) {
+          $output = array();
+          if($value=='UI:BR'){
+              $ui && $output = array('type'=>'br');
+          }else{
+              parse_str($value,$output);
+          }
+          $output && $array[$key] = $output;
+        }
+        return $array;
+    }
 
     public static function widget($name,$attr=null) {
         $widget = new iQuery($name);
@@ -25,13 +46,17 @@ class iFormer {
         return $widget;
     }
 
-    public static function render() {
-
+    public static function render($app,$rs) {
+        $fields = iFormer::fields($app['fields'],true);
+        foreach ($fields as $key => $value) {
+          iFormer::html($value,$rs[$value['name']]);
+          iFormer::validate($value);
+        }
     }
     public static function html($field,$value=null) {
         if($field['type']=='br'){
             self::$line = true;
-            return self::widget("div")->addClass("clearfloat mt10");
+            $div = self::widget("div")->addClass("clearfloat mt10");
         }else{
             $id      = $field['id'];
             $name    = $field['name'];
@@ -91,7 +116,7 @@ class iFormer {
                 case 'prop':
                     $div_class.=' input-append';
                     $input->attr('type','text');
-                    $prop = propAdmincp::btn_group($name,self::$config['app'],$attr['id']);
+                    $prop = propAdmincp::btn_group($name,self::$config['app']['app'],$attr['id']);
                     $html = $input.$prop;
                 break;
                 case 'multi_prop':
@@ -100,8 +125,8 @@ class iFormer {
                     $attr['class']   .= ' chosen-select';
                     $attr['multiple'] = 'true';
                     $select = self::widget('select',$attr);
-                    $option='<option value="0">普通'.self::$config['name'].'[pid=\'0\']</option>';
-                    $option.= propAdmincp::get($name,null,'option',null,self::$config['app']);
+                    $option='<option value="0">普通'.self::$config['app']['name'].'[pid=\'0\']</option>';
+                    $option.= propAdmincp::get($name,null,'option',null,self::$config['app']['app']);
                     $_input = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
                     $html = $select->html($option).$_input;
                     $script = self::script('iCMS.select("'.$attr['id'].'","'.($value?trim($value):0).'");',true);
@@ -120,7 +145,7 @@ class iFormer {
                     $html = $input;
                 break;
                 case 'user_category':
-                    if(self::$gateway=='admincp'){
+                    if(self::$config['gateway']=='admincp'){
                         $div_class.=' hide';
                         $html = $input->attr('type','hidden');
                     }
@@ -132,12 +157,13 @@ class iFormer {
                 break;
                 case 'userid':
                     $div_class.=' hide';
-                    $value OR $value = self::$default['userid'];
+                    $value OR $value = self::$config['value']['userid'];
                     $input->attr('type','text');
                     $html = $input->val($value);
                 break;
+                case 'nickname':
                 case 'username':
-                    $value OR $value = self::$default['username'];
+                    $value OR $value = self::$config['value'][$type];
                     $input->attr('type','text');
                     $html = $input->val($value);
                 break;
@@ -153,7 +179,7 @@ class iFormer {
                     $html = $input.$seccode;
                 break;
                 case 'editor':
-                    if(self::$gateway=='admincp'){
+                    if(self::$config['gateway']=='admincp'){
                         $label         = null;
                         $attr['class'] = '';
                         $attr['type']  = 'text/plain';
@@ -221,7 +247,7 @@ class iFormer {
                         $attr['class'].= ' chosen-select';
                     }
                     $select = self::widget('select',$attr);
-                    $categoryAdmincp = new categoryAdmincp(self::$config['id']);
+                    $categoryAdmincp = new categoryAdmincp(self::$config['app']['id']);
                     $option = $categoryAdmincp->select('ca',$value);
                     $html = $select->html($option).$orig;
                 break;
@@ -271,6 +297,7 @@ class iFormer {
             // $div.= self::script($field['javascript']);
             self::$line = false;
         }
+        self::$html.= $div;
         // var_dump($field);
         // var_dump($script);
         // echo $div;
@@ -284,7 +311,7 @@ class iFormer {
             return $script?'<script>'.$code.'</script>':$code;
         }
     }
-    public static function test_js($id,$label,$msg,$pattern) {
+    public static function js_test($id,$label,$msg,$pattern) {
         $script = '
             var '.$id.'_msg = "'.$msg.'";
             var pattern    = "'.$pattern.'";
@@ -419,32 +446,37 @@ class iFormer {
                     preg_match($pattern, $value) OR iUI::alert($msg);
                 }
             }else{
-                $script = 'var '.$id.' = $("#'.$id.'"),'.$id.'_value = '.$id.'.val(),'.$id.'_error="'.$error.'";';
+                $javascript = 'var '.$id.' = $("#'.$id.'"),'.$id.'_value = '.$id.'.val(),'.$id.'_error="'.$error.'";';
                 if($type=='editor'){
                     // $script = 'var '.$id.' = iCMS.editor.get("editor-body-'.$id.'"),'.$id.'_value = '.$id.'.hasContents()';
-                    $script = 'var '.$id.' = iCMS.editor.get("editor-body-'.$id.'"),'.$id.'_value = '.$id.'.getContent()';
+                    $javascript = 'var '.$id.' = iCMS.editor.get("editor-body-'.$id.'"),'.$id.'_value = '.$id.'.getContent()';
                 }
                 if(empty($code)){
-                    $code = self::test_js($id,$label,$msg,$pattern);
+                    $code = self::js_test($id,$label,$msg,$pattern);
                 }
-                $script.= $code;
+                $javascript.= $code;
             }
         }
+        self::$validate.= $javascript;
+        self::$script.= self::script($field_array['javascript']);
 
-        return $script;
+        return $javascript;
     }
     /**
      * 处理表单数据
-     * @param  [type] $post        [表单POST数组]
-     * @param  [type] $field_array [字段数组]
-     * @param  [type] $table_array [字段表]
-     * @return [array]              [description]
+     * @param  [type] $app [app数据]
+     * @param  [type] $post[表单POST数组]
+     * @return [array]     [description]
      */
-    public static function post($post,$field_array,$table_array) {
+    public static function post($app,$post=null) {
+        if($post===null) $post = $_POST[iFormer::$prefix];
+
         if(empty($post)) return array(false,false,false);
 
         $orig_post   = array();
         $addons_post = array();
+
+        $field_array = iFormer::fields($app['fields']);
 
         foreach ($post as $key => $value) {
             //字段数据类型
@@ -487,12 +519,18 @@ class iFormer {
               unset($post[$key]);
             }
         }
-        $keys = array_keys($table_array);//返回所有表名
-        $values   = compact('post','addons_post'); //将表单数据存入数组
+        $keys = array_keys($app['table']);//返回所有表名
+        switch (count($keys)) {
+            case '1':
+                $values = compact('post'); //将表单数据存入数组
+            break;
+            case '2':
+                $values = compact('post','addons_post'); //将表单数据存入数组
+            break;
+        }
         //创建一个数组，用一个表名数组的值作为其键名，表单数据的值作为其值
-
         $variable = array_combine($keys,$values);
-        print_r($variable);
+
         /**
          * array(表单数据,表名,_orig_字段数据用于比较);
          */

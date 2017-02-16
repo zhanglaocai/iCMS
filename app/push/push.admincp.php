@@ -9,6 +9,7 @@
 * @version 6.0.0
 */
 class pushAdmincp{
+    public static $appid = null;
     public $callback = array();
     public function __construct() {
         $this->appid       = iCMS_APP_PUSH;
@@ -40,6 +41,9 @@ class pushAdmincp{
         empty($rs['userid']) && $rs['userid']=members::$userid;
         $strpos 	= strpos(iPHP_REFERER,'?');
         $REFERER 	= $strpos===false?'':substr(iPHP_REFERER,$strpos);
+
+        apps::former_create($this->appid,$rs);
+
     	include admincp::view("push.add");
     }
 
@@ -139,6 +143,8 @@ class pushAdmincp{
         $status	= 1;
         $fields = array('cid', 'rootid', 'pid', 'haspic', 'editor', 'userid', 'title', 'pic', 'url', 'description', 'title2', 'pic2', 'url2', 'description2', 'title3', 'pic3', 'url3', 'description3', 'sortnum', 'metadata', 'addtime','hits', 'status');
         $data   = compact ($fields);
+
+        apps::former_data($this->appid,$data,'push');
 
         if(empty($id)) {
             iDB::insert('push',$data);

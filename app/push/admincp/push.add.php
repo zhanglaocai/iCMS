@@ -48,7 +48,7 @@ $(function(){
               <?php }  ?>
             </select>
           </div>
-		  <div class="clearfloat mb10"></div>
+		      <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">属性</span>
             <select name="pid" id="pid" class="chosen-select span3">
               <option value="0">普通推送[pid='0']</option>
@@ -127,6 +127,8 @@ $(function(){
               <textarea name="description3" id="description3" class="span6" style="height: 150px;"><?php echo $rs['description3'] ; ?></textarea>
             </div>
           </fieldset>
+           <div class="clearfloat mb10"></div>
+          <?php echo iFormer::$html;?>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
@@ -135,4 +137,12 @@ $(function(){
     </div>
   </div>
 </div>
+<script>
+$(function(){
+  $("#<?php echo APP_FORMID;?>").submit(function(){
+    <?php echo iFormer::$validate;?>
+  });
+  <?php echo iFormer::$script;?>
+})
+</script>
 <?php admincp::foot();?>

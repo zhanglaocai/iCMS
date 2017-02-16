@@ -40,8 +40,10 @@ class categoryAdmincp extends category{
     protected $_app_cid     = 'cid';
     protected $_view_add    = 'category.add';
     protected $_view_manage = 'category.manage';
+    public static $sappid = null;
 
     public function __construct($appid = null,$dir=null) {
+        self::$sappid    = iPHP::appid(__CLASS__);
         $this->cid       = (int)$_GET['cid'];
         $this->appid     = null;
         $appid          && $this->appid = $appid;
@@ -84,6 +86,9 @@ class categoryAdmincp extends category{
                 $rs['template'] = json_decode($rootRs['template'],true);
 	        }
         }
+
+        apps::former_create(self::$sappid,$rs);
+
         include admincp::view($this->_view_add,$this->_view_tpl_dir);
     }
     public function do_save(){
@@ -114,7 +119,7 @@ class categoryAdmincp extends category{
         $description  = iSecurity::escapeStr($_POST['description']);
         $rule         = iSecurity::escapeStr($_POST['rule']);
         $template     = iSecurity::escapeStr($_POST['template']);
-        $metadata     = iSecurity::escapeStr($_POST['metadata']);
+        // $metadata     = iSecurity::escapeStr($_POST['metadata']);
         $body         = $_POST['body'];
         $hasbody      = (int)$_POST['hasbody'];
         $hasbody OR $hasbody = $body?1:0;
@@ -130,18 +135,18 @@ class categoryAdmincp extends category{
         // }
         ($cid && $cid==$rootid) && iUI::alert('不能以自身做为上级'.$this->category_name);
         empty($name) && iUI::alert($this->category_name.'名称不能为空!');
-		if($metadata){
-	        $md	= array();
-            if(is_array($metadata['key'])){
-    			foreach($metadata['key'] AS $_mk=>$_mval){
-    				!preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iUI::alert($this->category_name.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
-    				$md[$_mval] = $metadata['value'][$_mk];
-    			}
-            }else if(is_array($metadata)){
-                $md = $metadata;
-            }
-            $metadata = addslashes(json_encode($md));
-		}
+		// if($metadata){
+	 //        $md	= array();
+  //           if(is_array($metadata['key'])){
+  //   			foreach($metadata['key'] AS $_mk=>$_mval){
+  //   				!preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iUI::alert($this->category_name.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
+  //   				$md[$_mval] = $metadata['value'][$_mk];
+  //   			}
+  //           }else if(is_array($metadata)){
+  //               $md = $metadata;
+  //           }
+  //           $metadata = addslashes(json_encode($md));
+		// }
         if($mode=="2"){
             foreach ($rule as $key => $value) {
                 $CR = $this->category_rule[$key];
@@ -168,6 +173,8 @@ class categoryAdmincp extends category{
             'rule','template','metadata',
             'hasbody','isexamine','issend','isucshow','status');
         $data   = compact ($fields);
+
+        apps::former_data(self::$sappid,$data,'category');
 
         if(empty($cid)) {
             admincp::CP($rootid,'a','alert');
@@ -210,7 +217,7 @@ class categoryAdmincp extends category{
             //$this->cahce_item($cid);
             $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
-        $hasbody && iCache::set('category/'.$cid.'.body',$body,0);
+        // $hasbody && iCache::set('category/'.$cid.'.body',$body,0);
 
         // $this->category_config();
 

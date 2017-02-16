@@ -9,7 +9,7 @@ $preview = isset($_GET['preview']);
 admincp::head(!$preview);
 ?>
 <div class="iCMS-container">
-  <div class="widget-box">
+  <div class="widget-box" id="<?php echo APP_BOXID;?>">
     <div class="widget-title">
       <span class="icon"> <i class="fa fa-pencil"></i> </span>
       <?php if($preview){?>
@@ -22,13 +22,12 @@ admincp::head(!$preview);
       </ul>
     </div>
     <div class="widget-content nopadding">
-      <form action="<?php echo APP_FURI; ?>&do=app_save" method="post" class="form-inline" id="iCMS-<?php echo $app['app'];?>" target="iPHP_FRAME">
+      <form action="<?php echo APP_FURI; ?>&do=app_save" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <input id="appid" name="appid" type="hidden"  value="<?php echo $appid;?>" />
-        <div id="-add" class="tab-content">
+        <div class="tab-content">
           <div id="-add-base" class="tab-pane active">
-            <?php echo $html;?>
+            <?php echo iFormer::$html;?>
           </div>
-
         </div>
         <?php if($preview){?>
         <?php }else{ ?>
@@ -37,16 +36,16 @@ admincp::head(!$preview);
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
         </div>
       </form>
-      <script>
-      $(function(){
-        $("#iCMS-<?php echo $app['app'];?>").submit(function(){
-            <?php echo $onubmit;?>
-
-        });
-        <?php echo $script;?>
-      })
-      </script>
     </div>
   </div>
 </div>
+<script>
+$(function(){
+  $("#<?php echo APP_FORMID;?>").submit(function(){
+      <?php echo iFormer::$validate;?>
+
+  });
+  <?php echo iFormer::$script;?>
+})
+</script>
 <?php admincp::foot();?>

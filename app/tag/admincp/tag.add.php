@@ -45,7 +45,7 @@ $(function(){
       <h5 class="brs"><?php echo ($id?'添加':'修改'); ?>标签</h5>
       <ul class="nav nav-tabs" id="tag-add-tab">
         <li class="active"><a href="#tag-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
-        <li><a href="#tag-add-metadata" data-toggle="tab"><i class="fa fa-cog"></i> 扩展属性</a></li>
+        <li><a href="#tag-add-custom" data-toggle="tab"><i class="fa fa-wrench"></i> 自定义</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -160,40 +160,24 @@ $(function(){
               </div>
             </div>
           </div>
-          <div id="tag-add-metadata" class="tab-pane hide">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>名称<span>(只能由英文字母、数字或_-组成(不支持中文))<span></th>
-                  <th>值</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php if($rs['metadata'])foreach((array)$rs['metadata'] AS $mKey=>$mvalue){?>
-                <tr>
-                  <td><input name="metadata[key][]" type="text" value="<?php echo $mKey;?>" class="span3 tip" title="tag.meta.<?php echo $mKey;?>"/></td>
-                  <td><input name="metadata[value][]" type="text" value="<?php echo $mvalue;?>" class="span6" />
-                <a class="btn delAttr"><i class="fa fa-trash-o"></i> 删除</a></td>
-              </tr>
-              <?php }?>
-            </tbody>
-            <tfoot>
-            <tr class="hide aclone">
-              <td><input name="metadata[key][]" type="text" disabled="disabled" class="span3" value=""/></td>
-              <td><input name="metadata[value][]" type="text" disabled="disabled" class="span6" value="" />
-            <a class="btn delprop"><i class="fa fa-trash-o"></i> 删除</a></td>
-          </tr>
-          <tr>
-            <td colspan="2"><a href="#tag-add-metadata" class="btn addprop"/>增加加附加属性</a></td>
-          </tr>
-          </tfoot>
-        </table>
-      </div>
+          <div id="tag-add-custom" class="tab-pane hide">
+            <?php echo iFormer::$html;?>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
+        </div>
+      </form>
     </div>
-    <div class="form-actions">
-      <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
-    </div>
-  </form>
+  </div>
 </div>
-</div>
-</div>
+<script>
+$(function(){
+  $("#<?php echo APP_FORMID;?>").submit(function(){
+      <?php echo iFormer::$validate;?>
+
+  });
+  <?php echo iFormer::$script;?>
+})
+</script>
+<?php admincp::foot();?>

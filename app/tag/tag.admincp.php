@@ -11,6 +11,7 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class tagAdmincp{
+    public static $appid = null;
     public $callback = array();
     public function __construct() {
         $this->appid       = iCMS_APP_TAG;
@@ -29,7 +30,7 @@ class tagAdmincp{
 
     public function do_add(){
         $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
-        $rs['metadata'] && $rs['metadata']=json_decode($rs['metadata']);
+        apps::former_create($this->appid,$rs);
         include admincp::view('tag.add');
     }
     public function do_update(){
@@ -207,18 +208,18 @@ class tagAdmincp{
         $name OR iUI::alert('标签名称不能为空！');
         // $cid OR iUI::alert('请选择标签所属栏目！');
 
-        if($metadata){
-            if($metadata['key']){
-                $md = array();
-                foreach($metadata['key'] AS $_mk=>$_mval){
-                    !preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iUI::alert($this->name_text.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
-                    $md[$_mval] = $metadata['value'][$_mk];
-                }
-            }else{
-                $md = $metadata;
-            }
-            $metadata = addslashes(json_encode($md));
-        }
+        // if($metadata){
+        //     if($metadata['key']){
+        //         $md = array();
+        //         foreach($metadata['key'] AS $_mk=>$_mval){
+        //             !preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iUI::alert($this->name_text.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
+        //             $md[$_mval] = $metadata['value'][$_mk];
+        //         }
+        //     }else{
+        //         $md = $metadata;
+        //     }
+        //     $metadata = addslashes(json_encode($md));
+        // }
 
 		if(empty($id)) {
             $hasNameId = iDB::value("SELECT `id` FROM `#iCMS@__tags` where `name` = '$name'");
@@ -254,6 +255,8 @@ class tagAdmincp{
         $fields = array('uid','rootid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic','bpic','mpic','spic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'status');
         $data   = compact ($fields);
 
+        apps::former_data($this->appid,$data,'tags');
+
 		if(empty($id)){
             $this->check_tkey($tkey);
             $data['tkey']     = $tkey;
@@ -272,20 +275,7 @@ class tagAdmincp{
 
             $msg ='标签添加完成';
 		}else{
-            if(isset($_POST['spider_update'])){
-                // $data = array();
-                $hasTag = iDB::row("SELECT * FROM `#iCMS@__tags` where `id` = '$id'",ARRAY_A);
-                $this->check_spider_data($data,$hasTag,'subtitle',$subtitle);
-                $this->check_spider_data($data,$hasTag,'description',$description);
-                $this->check_spider_data($data,$hasTag,'seotitle',$seotitle);
-                $this->check_spider_data($data,$hasTag,'keywords',$keywords);
-                $this->check_spider_data($data,$hasTag,'related',$related);
 
-                ($hasTag['cid'] && $cid)    && $data['cid']=$cid;   $_cid = $hasTag['cid'];
-                ($hasTag['tcid'] && $tcid)  && $data['tcid']=$tcid; $_tcid = $hasTag['tcid'];
-                ($hasTag['pid'] && $pid)    && $data['pid']=$pid;   $_pid = $hasTag['pid'];
-
-            }
             $this->check_tkey($tkey,$id);
             $data['tkey'] = $tkey;
 
