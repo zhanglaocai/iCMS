@@ -63,10 +63,9 @@ $(function(){
           </thead>
           <tbody>
         <?php
-        $cidArray = iSQL::values($rs,'cid','array',null);
-        $cidArray && $category_data = (array) category::get($cidArray);
+        $categoryArray = category::multi_get($rs,'cid');
         for($i=0;$i<$_count;$i++){
-          $C = (array)$category_data[$rs[$i]['cid']];
+          $C = (array)$categoryArray[$rs[$i]['cid']];
         ?>
             <tr id="tr<?php echo $rs[$i]['pid'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['pid'] ; ?>" /></td>

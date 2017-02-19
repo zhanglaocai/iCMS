@@ -95,6 +95,20 @@ class iSQL {
         $sql = ' AND ' . $sql;
         return $sql;
     }
+    public static function explode_var($ids,$delimiter=',') {
+      $array = array();
+      foreach ($ids as $key => $value) {
+        if(strpos($value, $delimiter) !== false){
+          $a = explode($delimiter, $value);
+          foreach ($a as $k => $v) {
+              $array[] = $v;
+          }
+        }else{
+          $array[] = $value;
+        }
+      }
+      return $array;
+    }
     public static function multi_var($ids,$only=false) {
         $is_multi = false;
         if(is_array($ids)){
@@ -109,6 +123,15 @@ class iSQL {
         }
         return array($ids,$is_multi);
     }
+    /**
+     * 返回数组中指定的一列
+     * @param  [type] $rs    [description]
+     * @param  string $field [description]
+     * @param  string $ret   [description]
+     * @param  string $quote [description]
+     * @param  [type] $key   [description]
+     * @return [type]        [description]
+     */
     public static function values($rs, $field = 'id',$ret='string',$quote="'",$key=null) {
         if (empty($rs)) {
             return false;

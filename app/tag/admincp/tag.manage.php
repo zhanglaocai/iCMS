@@ -158,19 +158,12 @@ $(function(){
         </thead>
         <tbody>
           <?php
-          $cidArray = iSQL::values($rs,'cid','array',null);
-          $cidArray && $category_data = (array) category::get($cidArray);
-
-          $tcidArray = iSQL::values($rs,'tcid','array',null);
-
-          if($tcidArray){
-            category::set_appid($this->appid);
-            $tcategory_data = (array) category::get($tcidArray);
-          }
+          $categoryArray  = category::multi_get($rs,'cid');
+          $tcategoryArray = category::multi_get($rs,'tcid',$this->appid);
 
           for($i=0;$i<$_count;$i++){
-              $C             = (array)$category_data[$rs[$i]['cid']];
-              $TC            = (array)$tcategory_data[$rs[$i]['tcid']];
+              $C             = (array)$categoryArray[$rs[$i]['cid']];
+              $TC            = (array)$tcategoryArray[$rs[$i]['tcid']];
               $iurl          = iURL::get('tag',array($rs[$i],$C,$TC));
               $rs[$i]['url'] = $iurl->href;
     	   ?>

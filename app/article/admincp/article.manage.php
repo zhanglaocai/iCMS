@@ -195,7 +195,7 @@ $(function(){
     <div class="widget-title"> <span class="icon">
       <input type="checkbox" class="checkAll" data-target="#<?php echo APP_BOXID;?>" title="点击全选/反选"/>
       </span>
-      <h5><?php if($cid){echo ' <span class="label label-info">'.$this->category($cid)->name.'</span>';}?>文章列表</h5>
+      <h5><?php if($cid){echo ' <span class="label label-info">'.category::get($cid)->name.'</span>';}?>文章列表</h5>
       <span title="总共<?php echo $total;?>篇文章" class="badge badge-info tip-left"><?php echo $total;?></span>
     </div>
     <div class="widget-content nopadding">
@@ -215,12 +215,11 @@ $(function(){
           </thead>
           <tbody>
             <?php
-                $cidArray = iSQL::values($rs,'cid','array',null);
-                $cidArray && $category_data = (array) category::get($cidArray);
-
+                $categoryArray  = category::multi_get($rs,'cid');
+                $scategoryArray = category::multi_get($rs,'scid');
                 if($rs)foreach ($rs as $key => $value) {
                   $ourl = $value['url'];
-                  $C    = (array)$category_data[$value['cid']];
+                  $C    = (array)$categoryArray[$value['cid']];
                   $iurl = iURL::get('article',array($value,$C));
                   empty($ourl) && $htmlurl = $iurl->path;
                   $value['url'] = $iurl->href;
@@ -285,17 +284,15 @@ $(function(){
                 <?php
                  if($value['scid']){
                    $scid_array = explode(',', $value['scid']);
-                   $sc_data = (array) category::get($scid_array);
-                   foreach ($sc_data as $scid => $sc_va) {
-                    if($scid!=$value['cid']){
-                      echo '<a href="'.APP_DOURI.'&cid='.$scid.'&'.$uri.'">'.$sc_va->name.'</a><br />';
-                    }
+                   foreach ($scid_array as $scidk => $scid) {
+                      $scva = $scategoryArray[$scid];
+                      if($scid!=$value['cid']){
+                        echo '<a href="'.APP_DOURI.'&cid='.$scid.'&'.$uri.'">'.$scva->name.'</a><br />';
+                      }
                    }
                  }
                 ?>
-                <?php if($value['pid']){
-                  propAdmincp::flag($value['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);
-                } ?>
+                <?php $value['pid'] && propAdmincp::flag($value['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?>
               </td>
               <td><a href="<?php echo APP_DOURI; ?>&userid=<?php echo $value['userid'] ; ?>&<?php echo $uri ; ?>"><?php echo $value['editor'] ; ?></a><br /><?php echo $value['author'] ; ?></td>
               <td>

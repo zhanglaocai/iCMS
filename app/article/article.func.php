@@ -322,9 +322,7 @@ function article_array($vars, $variable) {
         }
         if($vars['tags']){
             $tagArray = iSQL::values($variable,'tags','array',null,'id');
-            if($tagArray){
-				$tags_data = (array)tagApp::multi_tag($tagArray);
-            }
+			$tagArray && $tags_data = (array)tagApp::multi_tag($tagArray);
             unset($tagArray);
         }
 		foreach ($variable as $key => $value) {

@@ -56,7 +56,16 @@ class category {
         }
         return $data;
     }
-
+    public static function multi_get($rs,$field,$appid=null) {
+        $cids = iSQL::values($rs,$field,'array',null);
+        $data = array();
+        if($cids){
+          $cids = iSQL::explode_var($cids);
+          $appid && self::set_appid($appid);
+          $data = (array) self::get($cids);
+        }
+        return $data;
+    }
     public static function get($cids,$callback=null,$appid=null) {
         if(empty($cids)) return array();
 

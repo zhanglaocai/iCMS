@@ -214,7 +214,7 @@ class articleAdmincp{
         $id===null && $id=$this->id;
         $id OR iUI::alert('请选择要推送的文章!');
         $rs   = article::row($id);
-        $C    = $this->category($rs['cid']);
+        $C    = category::get($rs['cid']);
         $iurl = iURL::get('article',array($rs,$C));
         $url  = $iurl->href;
         $res  = baidu_ping($url);
@@ -538,7 +538,7 @@ class articleAdmincp{
         if(empty($aid) && self::$config['repeatitle']) {
             article::check_title($title) && iUI::alert('该标题的文章已经存在!请检查是否重复');
         }
-        $category = $this->category($cid);
+        $category = category::get($cid);
         if(strstr($category->rule->article,'{LINK}')!==false){
             if(empty($clink)){
                 $clink = iPinyin::get($title);
@@ -675,9 +675,7 @@ class articleAdmincp{
         iUI::$dialog['lock'] = true;
         iUI::dialog($msg,'js:1');
     }
-    public function category($cid){
-        return category::get($cid);
-    }
+
     public static function del_msg($str){
         return iUI::msg('success:#:check:#:'.$str.'<hr />',true);
     }
