@@ -1,0 +1,188 @@
+<?php
+/**
+* iCMS - i Content Management System
+* Copyright (c) 2007-2012 idreamsoft.com iiimon Inc. All rights reserved.
+*
+* @author coolmoo <idreamsoft@qq.com>
+* @site http://www.idreamsoft.com
+* @licence http://www.idreamsoft.com/license.php
+* @version 6.0.0
+*/
+class appAdmincp{
+    public $appid = null;
+    public $app = null;
+    public $callback = array();
+
+    public function __construct($app) {
+        $this->app        = $app;
+        $this->appid      = $app['id'];
+        $this->id         = (int)$_GET['id'];
+        $this->categoryAdmincp = new categoryAdmincp($this->appid);
+        $this->_postype    = '1';
+        $this->_status     = '1';
+
+    }
+    public function do_add(){
+      $rs = apps_app::get_data($this->app,$this->id);
+      apps::former_create($this->appid,$rs);
+      include admincp::view('app.add');
+    }
+
+    public function do_iCMS(){
+    	admincp::$APP_METHOD="domanage";
+    	$this->do_manage();
+    }
+    public function do_inbox(){
+        $this->do_manage("inbox");
+    }
+    public function do_trash(){
+        $this->_postype = 'all';
+        $this->do_manage("trash");
+    }
+    public function do_user(){
+        $this->_postype = 0;
+        $this->do_manage();
+    }
+    public function do_examine(){
+        $this->_postype = 0;
+        $this->do_manage("examine");
+    }
+    public function do_off(){
+        $this->_postype = 0;
+        $this->do_manage("off");
+    }
+    public function do_manage($stype='normal') {
+        $table_array = apps::get_table($this->app);
+        $table       = $table_array['table'];
+        $primary     = $table_array['primary'];
+
+        $cid = (int)$_GET['cid'];
+        $stype_map = array(
+            'inbox'   =>'0',//草稿
+            'normal'  =>'1',//正常
+            'trash'   =>'2',//回收站
+            'examine' =>'3',//待审核
+            'off'     =>'4',//未通过
+        );
+        //status:[0:草稿][1:正常][2:回收][3:待审核][4:不合格]
+        //postype: [0:用户][1:管理员]
+        $stype && $this->_status = $stype_map[$stype];
+        if(isset($_GET['pt']) && $_GET['pt']!=''){
+            $this->_postype = (int)$_GET['pt'];
+        }
+        if(isset($_GET['status'])){
+            $this->_status = (int)$_GET['status'];
+        }
+        $sql = "WHERE `status`='{$this->_status}'";
+
+        $this->_postype==='all' OR $sql.= " AND `postype`='{$this->_postype}'";
+
+        if($_GET['keywords']) {
+			$sql.=" AND title REGEXP '{$_GET['keywords']}'";
+        }
+
+        $sql.= categoryAdmincp::search_sql($cid);
+
+        isset($_GET['nopic'])&& $sql.=" AND `haspic` ='0'";
+        $_GET['starttime']   && $sql.=" and `pubdate`>=UNIX_TIMESTAMP('".$_GET['starttime']."')";
+        $_GET['endtime']     && $sql.=" and `pubdate`<=UNIX_TIMESTAMP('".$_GET['endtime']."')";
+
+
+        isset($_GET['userid']) && $uri.='&userid='.(int)$_GET['userid'];
+        isset($_GET['keyword'])&& $uri.='&keyword='.$_GET['keyword'];
+        isset($_GET['pid'])    && $uri.='&pid='.$_GET['pid'];
+        isset($_GET['cid'])    && $uri.='&cid='.$_GET['cid'];
+        (isset($_GET['pid']) && $_GET['pid']!='-1') && $uri.='&pid='.$_GET['at'];
+
+        $orderby    =$_GET['orderby']?$_GET['orderby']:"{$primary} DESC";
+        $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
+
+        $total      = iCMS::page_total_cache("SELECT count(*) FROM `{$table}` {$sql}","G");
+        iUI::pagenav($total,$maxperpage,"条记录");
+
+        $rs = iDB::all("SELECT * FROM `{$table}` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
+        $_count = count($rs);
+
+        if($this->app['fields']){
+            $fields = iFormer::fields($this->app['fields']);
+        }
+        $list_fields = array('title','cid','pubdate');
+
+        include admincp::view('app.manage');
+    }
+    public function do_save(){
+
+      list($variable,$keys,$orig_post) = iFormer::post($this->app);
+
+      if(!$variable){
+        iCMS::alert("表单数据处理出错!");
+      }
+
+      foreach ($variable as $table_name => $data) {
+        if(empty($data)){
+          continue;
+        }
+        //当表数据
+        $table   = $this->app['table'][$table_name];
+        //当前表主键
+        $primary = $table['primary'];
+
+        //关联字符 && 关联数据
+        if($table['union'] && $uDATA){
+          $data[$table['union']] = $uDATA[$table['union']];
+        }
+
+        $union_key = null;
+        //查找下个数据表名
+        $next_table_name = next($keys);
+        if($next_table_name){
+          $next_table = $this->app['table'][$next_table_name];
+          //有设置关联字段
+          $next_table['union'] && $union_key = $next_table['union'];
+        }
+
+        //union
+        if(empty($data[$primary])){ //主键值为空
+          unset($data[$primary]);
+          $id = iDB::insert($table_name,$data);
+          if($union_key){
+            $uDATA = array_combine(array($union_key),array($id));
+          }
+        }else{
+          //主键不更新
+          $id = $data[$primary];
+          unset($data[$primary]);
+          iDB::update($table_name, $data, array($primary=>$id));
+        }
+      }
+    }
+
+    public function do_del($id = null,$dialog=true){
+    	$id===null && $id=$this->id;
+		$id OR iUI::alert("请选择要删除的{$this->app['name']}");
+
+        $table_array = apps::get_table($this->app);
+        $table       = $table_array['table'];
+        $primary     = $table_array['primary'];
+
+		iDB::query("DELETE FROM `{$table}` WHERE `{$primary}` = '$id'");
+		$dialog && iUI::success("{$this->app['name']}删除完成",'js:parent.$("#tr'.$id.'").remove();');
+    }
+    public function do_batch(){
+        $idArray = (array)$_POST['id'];
+        $idArray OR iUI::alert("请选择要删除的{$this->app['name']}");
+        $ids     = implode(',',$idArray);
+        $batch   = $_POST['batch'];
+    	switch($batch){
+    		case 'dels':
+				iUI::$break	= false;
+	    		foreach($idArray AS $id){
+	    			$this->do_del($id,false);
+	    		}
+	    		iUI::$break	= true;
+				iUI::success('全部删除完成!','js:1');
+    		break;
+		}
+	}
+
+}
