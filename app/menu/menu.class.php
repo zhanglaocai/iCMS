@@ -16,8 +16,8 @@ class menu {
     public static $history_key = null;
 
 	public static function init() {
-        self::get_cache();
-        // self::get_array(true);
+        // self::get_cache();
+        self::get_array(true);
 	}
     public static function json_data($path){
         $json  = file_get_contents($path);
@@ -55,6 +55,10 @@ class menu {
                 $array = self::mid($array,$sort);
                 $variable[] = $array;
             }
+        }
+        if(self::$callback['array'] && is_callable(self::$callback['array'])){
+           $variable2 = call_user_func_array(self::$callback['array'],array(__CLASS__));
+            $variable2 && $variable = array_merge($variable,$variable2);
         }
 
         if($variable){
@@ -195,9 +199,8 @@ class menu {
         foreach((array)$menu_array AS $array) {
             $nav.= self::li('sidebar',$array,0);
         }
-        if(self::$callback['sidebar']){
-            $callback = self::$callback['sidebar'];
-            $nav.= call_user_func_array($callback[0], array($key,$menu_array));
+        if(self::$callback['sidebar'] && is_callable(self::$callback['sidebar'])){
+            $nav.= call_user_func_array(self::$callback['sidebar'], array(__CLASS__));
         }
         return $nav;
 	}

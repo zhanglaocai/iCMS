@@ -82,9 +82,9 @@ function update_popover(html,a){
                 // $cidArray && $category_data = (array) $this->categoryAdmincp->get($cidArray);
           foreach ($rs as $key => $value) {
           // $C    = (array)$category_data[$value['cid']];
-          $url  = commentApp::redirect_url($value);
-          $user = user::info($value['userid'],$value['username']);
-          $app_label =apps::get_label($value['appid']);
+            $url       = commentApp::redirect_url($value);
+            $user      = user::info($value['userid'],$value['username']);
+            $app_label = apps::get_label($value['appid']);
           ?>
           <li id="id-<?php echo $value['id'] ; ?>">
             <div class="user-thumb">

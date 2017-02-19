@@ -98,24 +98,28 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
-              <span class="add-on">应用菜单</span>
-              <input type="text" name="config[menu]" class="span3" id="config_menu" value="<?php echo $rs['config']['menu'] ; ?>"/>
-            </div>
-            <span class="help-inline">应用的菜单</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend">
               <span class="add-on">管理入口</span>
               <input type="text" name="config[admincp]" class="span3" id="config_admincp" value="<?php echo $rs['config']['admincp'] ; ?>"/>
             </div>
             <span class="help-inline">应用的后台管理入口</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
-              <span class="add-on">用户中心</span>
-              <div class="switch" data-on-label="启用" data-off-label="禁用">
-                <input type="checkbox" data-type="switch" name="usercp" id="usercp" <?php echo $rs['config']['usercp']?'checked':''; ?>/>
-              </div>
-              <span class="help-inline">启用后,用户中心将显示此应用并根据字段设计</span>
+              <span class="add-on">应用菜单</span>
+              <select name="config[menu]" id="config_menu" class="chosen-select span3" data-placeholder="请选择应用类型...">
+                <option value="0">无菜单</option>
+                <option value="main">主菜单[main]</option>
+                <?php
+                  foreach (menu::$menu_array as $key => $value) {
+                    if($value['caption']=='-'||$key==$rs['app']){
+                      continue;
+                    }
+                ?>
+                  <option value="<?php echo $key?>"><?php echo $value['caption']?>菜单[<?php echo $key?>]</option>
+                <?php }?>
+              </select>
             </div>
+            <script>$(function(){iCMS.select('config_menu',"<?php echo $rs['config']['menu']?$rs['config']['menu']:'0'; ?>");})</script>
+            <span class="help-inline">应用的菜单</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">应用类型</span>
@@ -124,6 +128,14 @@ $(function(){
               </select>
             </div>
             <script>$(function(){iCMS.select('type',"<?php echo $rs['type']?$rs['type']:'1'; ?>");})</script>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend">
+              <span class="add-on">用户中心</span>
+              <div class="switch" data-on-label="启用" data-off-label="禁用">
+                <input type="checkbox" data-type="switch" name="usercp" id="usercp" <?php echo $rs['config']['usercp']?'checked':''; ?>/>
+              </div>
+              <span class="help-inline">启用后,用户中心将显示此应用并根据字段设计</span>
+            </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">应用状态</span>

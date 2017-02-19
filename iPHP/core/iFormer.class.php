@@ -462,6 +462,54 @@ class iFormer {
 
         return $javascript;
     }
+    public static function de_value($value,$fields) {
+        //字段数据类型
+        $field = $fields['field'];
+
+        //字段类型
+        list($type,$type2) = explode(':', $fields['type']);
+
+        //时间转换
+        if(in_array($type, array('date','datetime'))){
+          $value = get_date($value,'Y-m-d H:i:s');
+        }
+        if(in_array($type, array('category','multi_category'))){
+          // $value = get_date($value,'Y-m-d H:i:s');
+        }
+        //多选字段转换
+        if(isset($fields['multiple'])||in_array($type, array('checkbox'))){
+          $value = explode(',',$value);
+        }
+
+        return $value;
+    }
+    public static function value($value,$fields) {
+        //字段数据类型
+        $field = $fields['field'];
+
+        //字段类型
+        list($type,$type2) = explode(':', $fields['type']);
+
+        //时间转换
+        if(in_array($type, array('date','datetime'))){
+          $value = str2time($value);
+        }
+        //多选字段转换
+        if(isset($fields['multiple'])||in_array($type, array('checkbox'))){
+          is_array($value) && $value = implode(',',$value);
+        }
+        //数字转换
+        if(in_array($field, array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
+          $value = (int)$value;
+        }
+        //编辑器不处理
+        if($type=='editor'){
+          // $post[$key] = $value;
+        }else{
+          $value = iSecurity::escapeStr($value);
+        }
+        return $value;
+    }
     /**
      * 处理表单数据
      * @param  [type] $app [app数据]
@@ -474,38 +522,18 @@ class iFormer {
         if(empty($post)) return array(false,false,false);
 
         $orig_post   = array();
-        $addons_post = array();
+        $medium_post = array();
 
         $field_array = iFormer::fields($app['fields']);
 
         foreach ($post as $key => $value) {
-            //字段数据类型
-            $field = $field_array[$key]['field'];
-            //字段类型
-            list($type,$type2) = explode(':', $field_array[$key]['type']);
+            $fields = $field_array[$key];
+            //字段绑定的函数处理
+            $fields['func'] && $value = iFormer::func($fields['func'],$value);
             //字段数据处理
-            if($func  = $field_array[$key]['func']){
-                $value = iFormer::func($func,$value);
-            }
-            //时间转换
-            if(in_array($type, array('date','datetime'))){
-              $value = str2time($value);
-            }
-            //多选字段转换
-            if(isset($field_array[$key]['multiple'])||in_array($type, array('checkbox'))){
-              is_array($value) && $value = implode(',',$value);
-            }
-            //数字转换
-            if(in_array($field, array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
-              $value = (int)$value;
-            }
-            //编辑器不处理
-            if($type=='editor'){
-              // $post[$key] = $value;
-            }else{
-              $value = iSecurity::escapeStr($value);
-            }
-            iFormer::validate($field_array[$key],'php',$value);
+            $value = iFormer::value($value,$fields);
+
+            iFormer::validate($fields,'php',$value);
 
             $post[$key] = $value;
             //找查原始数据 并移除当前POST
@@ -514,8 +542,8 @@ class iFormer {
               unset($post[$key]);
             }
             //找查MEDIUMTEXT字段 并移除当前POST
-            if($field=='MEDIUMTEXT'){
-              $addons_post[$key] = $value;
+            if($fields['field']=='MEDIUMTEXT'){
+              $medium_post[$key] = $value;
               unset($post[$key]);
             }
         }
@@ -525,7 +553,7 @@ class iFormer {
                 $values = compact('post'); //将表单数据存入数组
             break;
             case '2':
-                $values = compact('post','addons_post'); //将表单数据存入数组
+                $values = compact('post','medium_post'); //将表单数据存入数组
             break;
         }
         //创建一个数组，用一个表名数组的值作为其键名，表单数据的值作为其值

@@ -120,9 +120,9 @@ class categoryAdmincp extends category{
         $rule         = iSecurity::escapeStr($_POST['rule']);
         $template     = iSecurity::escapeStr($_POST['template']);
         // $metadata     = iSecurity::escapeStr($_POST['metadata']);
-        $body         = $_POST['body'];
-        $hasbody      = (int)$_POST['hasbody'];
-        $hasbody OR $hasbody = $body?1:0;
+        // $body         = $_POST['body'];
+        // $hasbody      = (int)$_POST['hasbody'];
+        // $hasbody OR $hasbody = $body?1:0;
 
         // if($_rootid_hash){
         //     $_rootid = authcode($_rootid_hash);
@@ -231,12 +231,7 @@ class categoryAdmincp extends category{
 
         iUI::success($msg,'url:'.$this->category_uri);
     }
-    // public static function data_insert($data){
-    //     return iDB::insert('category_data',$data);
-    // }
-    // public static function data_update($data,$where){
-    //     return iDB::update('category_data',$data,$where);
-    // }
+
     public function do_update(){
     	foreach((array)$_POST['name'] as $cid=>$name){
     		$name	= iSecurity::escapeStr($name);

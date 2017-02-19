@@ -13,6 +13,7 @@ class commentAdmincp{
     public function __construct($appid=null) {
         $this->appid = iCMS_APP_COMMENT;
         $appid && $this->appid = $appid;
+        // $_GET['appid'] && $this->appid = (int)$_GET['appid'];
         $this->id    = (int)$_GET['id'];
     }
     public function do_config(){
@@ -22,14 +23,13 @@ class commentAdmincp{
         configAdmincp::save($this->appid);
     }
     public function do_iCMS($appid=0){
-        $this->categoryAdmincp = new categoryAdmincp($this->appid);
-        $this->category    = $this->categoryAdmincp->category;
+        $_GET['appid'] && $appid = (int)$_GET['appid'];
+
+        $this->categoryAdmincp = new categoryAdmincp($appid);
+        $this->category        = $this->categoryAdmincp->category;
 
         $sql = "WHERE 1=1";
-		if($appid ||$_GET['appid']){
-			$_GET['appid'] && $appid=(int)$_GET['appid'];
-			$sql.= " AND `appid`='$appid'";
-		}
+        $appid && $sql.= " AND `appid`='$appid'";
         $_GET['iid']          && $sql.= " AND `iid`='".(int)$_GET['iid']."'";
         isset($_GET['status']) && $sql.= " AND `status`='".$_GET['status']."'";
 		if($_GET['cid']){

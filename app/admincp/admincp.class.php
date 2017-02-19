@@ -18,6 +18,7 @@ define('ACP_HOST', (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://" . $_S
 
 class admincp {
 	public static $apps       = NULL;
+	public static $callback   = NULL;
 	public static $APP_OBJ    = NULL;
 	public static $APP_NAME   = NULL;
 	public static $APP_DO     = NULL;
@@ -40,13 +41,23 @@ class admincp {
 		members::$AUTH        = 'ADMIN_AUTH';
 		members::$AJAX        = iPHP::PG('ajax');
 		members::check_login(); //用户登陆验证
-		menu::init(); //菜单
-		self::MP('ADMINCP', 'page'); //检查是否有后台权限
-		self::MP('__MID__', 'page'); //检查菜单ID
+
 		iFile::init(array(
 			'userid'    => members::$userid,
 			'watermark' => iCMS::$config['watermark']
 		));
+
+        menu::$callback = array(
+            "array" => array("apps","menu") //自定义APP 后台菜单
+        );
+		menu::init(); //菜单
+
+
+        self::$callback = array(
+            "history" => array("menu","history")
+        );
+		self::MP('ADMINCP', 'page'); //检查是否有后台权限
+		self::MP('__MID__', 'page'); //检查菜单ID
 	}
 
 	public static function get_seccode() {
@@ -85,6 +96,7 @@ class admincp {
 
 		$obj_name = self::$APP_NAME . 'App';
 
+		//app_category.admincp.php
 		if(!is_file(self::$APP_FILE)){
 			$app_file = $app . '.admincp.php';
 			$obj_name = $app.'Admincp';
@@ -95,7 +107,22 @@ class admincp {
 			self::$APP_TPL  = self::$APP_PATH . '/admincp';
 			self::$APP_FILE = self::$APP_PATH . '/'.$app_file;
 		}
-		is_file(self::$APP_FILE) OR iPHP::error_throw('Unable to find admincp file <b>' .self::$APP_NAME. '.admincp.php</b>', 1002);
+		//自定义APP
+		if(!is_file(self::$APP_FILE)){
+			$appData = apps::get_app($app);
+			if($appData){
+				$sapp && $sapp_name = '_'.$sapp;
+				$app_file = 'app'.$sapp_name.'.admincp.php';
+				$obj_name = 'app'.$sapp_name.'Admincp';
+				self::$APP_PATH = iPHP_APP_DIR . '/app';
+				self::$APP_TPL  = self::$APP_PATH . '/admincp';
+				self::$APP_FILE = self::$APP_PATH . '/'.$app_file;
+			}else{
+
+			}
+		}
+
+		is_file(self::$APP_FILE) OR iPHP::error_throw('Unable to find admincp file <b>' .self::$APP_NAME. '.admincp.php</b>('.self::$APP_FILE.')', 1002);
 
 		define('APP_URI', __ADMINCP__ . '=' . self::$APP_NAME);
 		// define('APP_FURI', APP_URI . '&frame=iPHP');
@@ -104,12 +131,12 @@ class admincp {
 		define('APP_BOXID', self::$APP_NAME . '-box');
 		define('APP_FORMID', 'iCMS-' . APP_BOXID);
 
-		self::$APP_OBJ = new $obj_name();
-		$app_methods = get_class_methods(self::$APP_OBJ);
+		self::$APP_OBJ = new $obj_name($appData?$appData:null);
+		$app_methods   = get_class_methods(self::$APP_OBJ);
 		in_array(self::$APP_METHOD, $app_methods) OR iPHP::error_throw('Call to undefined method <b>' . $obj_name . '::' . self::$APP_METHOD . '</b>', 1003);
-		menu::history(APP_DOURI);
 
-		// iPHP::callback(array('menu','history'),APP_DOURI);
+		//访问记录
+		iPHP::callback(self::$callback['history'],APP_DOURI);
 
 		$method = self::$APP_METHOD;
 		$args === null && $args = self::$APP_ARGS;
@@ -124,9 +151,6 @@ class admincp {
 		}
 	}
 
-	// public static function set_app_tpl($app){
-	// 	self::$APP_TPL = iPHP_APP_DIR.'/'.$app.'/admincp';
-	// }
 	public static function view($p = NULL, $app=null) {
 		if ($p === NULL && self::$APP_NAME) {
 			$p = self::$APP_NAME;

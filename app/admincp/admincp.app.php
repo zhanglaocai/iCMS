@@ -10,11 +10,9 @@
 */
 class admincpApp{
     public function __construct() {
-        menu::$callback['sidebar'] = array(
-            array('admincpApp','__sidebar__')
-        );
+        menu::$callback['sidebar'] = array(__CLASS__,'__sidebar');
     }
-    public static function __sidebar__(){
+    public static function __sidebar($menu){
         $history   = menu::history(null,true);
         $caption   = menu::get_caption();
         foreach ($history as $key => $url) {

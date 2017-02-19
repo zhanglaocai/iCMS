@@ -9,7 +9,8 @@ defined('iPHP') OR exit('What are you doing?');
 <?php if($this->category_rule)foreach ($this->category_rule as $key => $value) {
     $rule_id = 'rule_'.$key;
 ?>
-<div class="input-prepend input-append"> <span class="add-on"><?php echo $value[0];?>规则</span>
+<div class="input-prepend input-append">
+  <span class="add-on"><?php echo $value[0];?>规则</span>
   <input type="text" name="rule[<?php echo $key;?>]" class="span5" id="<?php echo $rule_id;?>" value="<?php echo $rs['rule'][$key]?$rs['rule'][$key]:$value[1]; ?>"/>
   <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
     <ul class="dropdown-menu category_rule">
@@ -43,4 +44,5 @@ defined('iPHP') OR exit('What are you doing?');
   </div>
 </div>
 <span class="help-inline">伪静态模式时规则一定要包含<?php echo str_replace(',', '或者', $value[2]);?></span>
+<div class="clearfloat mb10"></div>
 <?php }?>

@@ -18,6 +18,40 @@ class appsAdmincp{
       $this->appid = iCMS_APP_APPS;
     	$this->id = (int)$_GET['id'];
     }
+    public function do_app_manage(){
+
+
+      $appid = (int)$_GET['appid'];
+      $app   = apps::get($appid);
+
+      $table_array = $app['table'][$app['app']];
+      $table   = $table_array['table'];
+      $primary = $table_array['primary'];
+
+      $sql      = " where 1=1";
+
+      // $_GET['pid'] && $sql.=" AND `pid`='".$_GET['pid']."'";
+      // $_GET['pid'] && $uri.='&pid='.$_GET['pid'];
+
+      // $_GET['cid']  && $sql.=" AND `cid`='".$_GET['cid']."'";
+      // $_GET['cid']  && $uri.='&cid='.$_GET['cid'];
+
+      $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
+      $total    = iCMS::page_total_cache("SELECT count(*) FROM `{$table}` {$sql}","G");
+      iUI::pagenav($total,$maxperpage,"条记录");
+
+      $rs     = iDB::all("SELECT * FROM `{$table}` {$sql} order by {$primary} DESC LIMIT ".iUI::$offset." , {$maxperpage}");
+      $_count = count($rs);
+
+      if($app['fields']){
+        $fields = iFormer::fields($app['fields']);
+      }
+      $list_fields = array('title','cid','pubdate');
+
+      $categoryAdmincp = new categoryAdmincp($appid);
+
+      include admincp::view('app.manage');
+    }
     public function do_app_save(){
       $appid = (int)$_POST['appid'];
       $app   = apps::get($appid);
@@ -149,7 +183,7 @@ class appsAdmincp{
         $this->id && $rs = apps::get($this->id);
         if(empty($rs)){
           $base_fields = apps_db::base_fields_array();
-          $_fields = include iPHP_APP_DIR.'/apps/etc/fields.json.php';
+          $_fields = include iPHP_APP_DIR.'/apps/etc/app.fields.json.php';
           $rs['fields'] = json_decode($_fields,true);
           $rs['config']['iFormer'] = '1';
           $rs['apptype']="2";

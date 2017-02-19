@@ -23,7 +23,34 @@ class apps {
     //     $path = self::$etc."/install.lock.php";
     //     return self::get_file($app,$path);
     // }
+    public static function menu($menu){
+        $path = iPHP_APP_DIR.'/apps/etc/app.menu.json.php';
+        $json  = file_get_contents($path);
+        $json  = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
+        $variable = array();
+        foreach (apps::get_array(array("apptype"=>'2')) as $key => $value) {
+            if($value['config']['menu']){
+                $sort = 200000+$key;
 
+                $json = str_replace(
+                    array('{appid}','{app}','{name}','{sort}'),
+                    array($value['id'],$value['app'],$value['name'],$sort), $json);
+
+                if($value['config']['menu']!='main'){
+                    $json = '[{"id": "'.$value['config']['menu'].'","children":[{"caption": "-"},'.$json.']}]';
+                }else{
+                    $json = '['.$json.']';
+                }
+
+                $array  = json_decode($json,ture);
+                if($array){
+                    $array = $menu::mid($array,$sort);
+                    $variable[] = $array;
+                }
+            }
+        }
+        return $variable;
+    }
     public static function former_create($appid,$rs){
         $app = apps::get($appid);
         if($app['fields']){
@@ -150,9 +177,10 @@ class apps {
     }
     public static function get_array($vars){
         $sql = '1=1';
-        $vars['type'] && $sql.=" AND `type`='".(int)$vars['type']."'";
+        $vars['type']   && $sql.=" AND `type`='".(int)$vars['type']."'";
         $vars['status'] && $sql.=" AND `status`='".(int)$vars['status']."'";
-        $vars['table'] && $sql.=" AND `table`!='0'";
+        $vars['table']  && $sql.=" AND `table`!='0'";
+        $vars['apptype']&& $sql.=" AND `apptype`='".(int)$vars['apptype']."'";
         $rs  = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);
         $_count = count($rs);
         for ($i=0; $i < $_count; $i++) {
@@ -367,8 +395,12 @@ class apps {
 
 		return iCMS_URL.'/'.$rs['app'].'.php?'.$key.'='.$primary;
 	}
-	public static function get_table($appid=1,$master=true){
-		$rs	= self::get_app($appid);
+	public static function get_table($app=1,$master=true){
+		if(is_array($app)){
+            $rs = $app;
+        }else{
+            $rs = self::get_app($app);
+        }
         $table = $rs['table'];
         $master && $table = reset($rs['table']);
        	return $table;
