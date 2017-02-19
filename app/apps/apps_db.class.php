@@ -248,31 +248,36 @@ class apps_db {
         $alter_sql.= ';';
         iDB::query($alter_sql);
     }
-    public static function create_table($name,$fields=null,$base_fields=true,$PRIMARY='id',$index=null,$ret=false){
-        $fields_sql = array();
-        $fields_sql[$PRIMARY]= "`{$PRIMARY}` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键 自增ID'";
-        // $index && $fields_sql['union_addons']= "`iid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '内容ID 关联基础表'";
-        $base_fields && $fields_sql= array_merge($fields_sql,self::base_fields_sql());
-        if(is_array($fields))foreach ($fields as $key => $arr) {
-            $arr && $fields_sql[$arr['name']] = self::make_field_sql($arr);
-        }
-        $fields_sql['primary_'.$PRIMARY] = 'PRIMARY KEY (`'.$PRIMARY.'`)';
-        // $index && $fields_sql['index_union_addons'] = 'KEY `iid` (`iid`)';
-        $base_fields && $fields_sql = array_merge($fields_sql,self::base_fields_index());
-        $sql= "CREATE TABLE `#iCMS@__{$name}` ("
-            .implode(",\n", $fields_sql).
-        ') ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;';
+    // public static function create_table($name,$fields=null,$base_fields=true,$PRIMARY='id',$index=null,$ret=false){
+    //     $fields_sql = array();
+    //     $fields_sql[$PRIMARY]= "`{$PRIMARY}` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键 自增ID'";
+    //     // $index && $fields_sql['union_addons']= "`iid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '内容ID 关联基础表'";
+    //     $base_fields && $fields_sql= array_merge($fields_sql,self::base_fields_sql());
+    //     if(is_array($fields))foreach ($fields as $key => $arr) {
+    //         $arr && $fields_sql[$arr['name']] = self::make_field_sql($arr);
+    //     }
+    //     $fields_sql['primary_'.$PRIMARY] = 'PRIMARY KEY (`'.$PRIMARY.'`)';
+    //     // $index && $fields_sql['index_union_addons'] = 'KEY `iid` (`iid`)';
+    //     $base_fields && $fields_sql = array_merge($fields_sql,self::base_fields_index());
+    //     $sql= "CREATE TABLE `#iCMS@__{$name}` ("
+    //         .implode(",\n", $fields_sql).
+    //     ') ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;';
 
-         if($ret){
-            return $sql;
-         }
-         iDB::query($sql);
-         return array($name,$PRIMARY);
-    }
-    public static function create_table2($name,$fields=null,$PRIMARY='id',$ret=false){
+    //      if($ret){
+    //         return $sql;
+    //      }
+    //      iDB::query($sql);
+    //      return array($name,$PRIMARY);
+    // }
+    public static function create_table($name,$fields=null,$ret=false){
         $fields_sql = array();
         if(is_array($fields))foreach ($fields as $key => $arr) {
-            $arr && $fields_sql[$arr['name']] = self::make_field_sql($arr);
+            if($arr){
+                $fields_sql[$arr['name']] = self::make_field_sql($arr);
+                if($arr['field']=='PRIMARY'){
+                    $PRIMARY = $arr['name'];
+                }
+            }
         }
         $fields_sql['primary_'.$PRIMARY] = 'PRIMARY KEY (`'.$PRIMARY.'`)';
         $base_fields && $fields_sql = array_merge($fields_sql,self::base_fields_index());

@@ -10,7 +10,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-class categoryAdmincp extends category{
+class categoryAdmincp {
     public $callback         = array();
     protected $category_uri  = APP_URI;
     protected $category_furi = APP_FURI;
@@ -48,8 +48,9 @@ class categoryAdmincp extends category{
         $this->appid     = null;
         $appid          && $this->appid = $appid;
         $_GET['appid']  && $this->appid = (int)$_GET['appid'];
-        parent::__construct($this->appid);
         $this->_view_tpl_dir = $dir;
+
+        self::set_appid($this->appid);
     }
 
     public function do_add(){
@@ -491,14 +492,6 @@ class categoryAdmincp extends category{
             return $url;
         }
     }
-    public static function search_sql($cid,$field='cid'){
-        if($cid){
-            $cids  = (array)$cid;
-            $_GET['sub'] && $cids+=categoryApp::get_ids($cid,true);
-            $sql= iSQL::in($cids,$field);
-        }
-        return $sql;
-    }
 
     public static function tree_unset($C){
         unset(
@@ -513,12 +506,12 @@ class categoryAdmincp extends category{
     }
     public function tree($cid = 0,$expanded=false,$ret=false){
         $array      = array();
-        $cid_array  = (array)$this->get_cid($cid);
-        $cate_array = (array)$this->get($cid_array);
+        $cid_array  = (array)category::get_cid($cid);
+        $cate_array = (array)category::get($cid_array);
         foreach($cid_array AS $root=>$_cid) {
             $C = (array)$cate_array[$_cid];
             $a = array('id'=>$C['cid'],'data'=>$C);
-            if($this->get_cid($C['cid'])){
+            if(category::get_cid($C['cid'])){
                 if($expanded){
                     $a['hasChildren'] = false;
                     $a['expanded']    = true;
@@ -583,41 +576,6 @@ class categoryAdmincp extends category{
         // iDB::value($sql) && empty($url) && iUI::alert('该'.$this->category_name.'静态目录已经存在!<br />请重新填写(URL规则设置->静态目录)');
     }
 
-    public function select_lite($permission='',$scid="0",$cid="0",$level = 1,$url=false,$where=null) {
-        $cid_array  = (array)$this->get_cid($cid,$where);
-        $cate_array = (array)$this->get($cid_array);
-        $root_array = (array)$this->rootid($cid_array);
-        foreach($cid_array AS $root=>$_cid) {
-            $C = (array)$cate_array[$_cid];
-            if(admincp::CP($_cid,$permission) && $C['status']) {
-                $tag      = ($level=='1'?"":"├ ");
-                $selected = ($scid==$_cid)?"selected":"";
-                $text     = str_repeat("│　", $level-1).$tag.$C['name']."[cid:{$_cid}]".($C['url']?"[∞]":"");
-                ($C['url'] && !$url) && $selected ='disabled';
-                $option.="<option value='{$_cid}' $selected>{$text}</option>";
-            }
-            $root_array[$_cid] && $option.=$this->select_lite($permission,$scid,$C['cid'],$level+1,$url);
-        }
-        return $option;
-    }
-    public function select($permission='',$scid="0",$cid="0",$level = 1,$url=false,$where=null) {
-        $cc = iDB::value("SELECT count(*) FROM `#iCMS@__category`");
-        if($cc<=500){
-            return $this->select_lite($permission,$scid,$cid,$level,$url,$where);
-        }else{
-            $array = iCache::get('category/cookie');
-            foreach((array)$array AS $root=>$_cid) {
-                $C = $this->cache_get($_cid);
-                if($C['status']) {
-                    $selected = ($scid==$_cid)?"selected":"";
-                    $text     = $C['name']."[cid:{$_cid}][pid:{$C['pid']}]";
-                    $option  .= "<option value='{$_cid}' $selected>{$text}</option>";
-                }
-            }
-            return $option;
-        }
-    }
-
     public static function del_app_data($appid=null){
         iDB::query("DELETE FROM `#iCMS@__category` WHERE `appid` = '".$appid."'");
         iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `appid` = '".$appid."';");
@@ -643,7 +601,7 @@ class categoryAdmincp extends category{
         iDB::query("UPDATE `#iCMS@__category` SET `count` ='$cc' WHERE `cid` ='$cid'");
     }
 
-    public function update_count_one($cid,$math='+'){
+    public static function update_count_one($cid,$math='+'){
         $math=='-' && $sql = " AND `count`>0";
         iDB::query("UPDATE `#iCMS@__category` SET `count` = count".$math."1 WHERE `cid` ='$cid' {$sql}");
     }
@@ -663,7 +621,7 @@ class categoryAdmincp extends category{
         // }
         return $ul;
     }
-    public function category_config($domain=null){
+    public static function category_config($domain=null){
         if(empty($domain)){
             $rs  = iDB::all("
                 SELECT `cid`,`domain`
@@ -679,4 +637,10 @@ class categoryAdmincp extends category{
 
         configAdmincp::cache();
     }
+
+    public static function set_appid($appid){
+        category::$appid = $appid;
+    }
+
 }
+

@@ -7,6 +7,9 @@
  */
 
 class apps_store {
+    const STORE_URL = "http://store.idreamsoft.com";
+    const STORE_DIR = 'cache/iCMS/store/';
+
     public static function app_select($app=null) {
         foreach (apps::get_array(array("table"=>true)) as $key => $value) {
             list($path,$obj_name)= apps::get_path($value['app'],'app',true);

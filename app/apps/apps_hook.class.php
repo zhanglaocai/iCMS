@@ -7,6 +7,7 @@
  */
 
 class apps_hook {
+
     /**
      * 获取带钩子APP
      * @param  [type] $app [description]

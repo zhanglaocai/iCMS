@@ -108,7 +108,7 @@ $(function(){
         <div class="input-prepend input-append"> <span class="add-on">栏目</span>
           <select name="cid" id="cid" class="chosen-select" style="width: 230px;">
             <option value="0">所有栏目</option>
-            <?php echo $category_select = self::$categoryAdmincp->select('cs') ; ?>
+            <?php echo $category_select = category::select('cs') ; ?>
           </select>
           <span class="add-on tip" title="选中查询所有关联到此栏目的文章">
           <input type="checkbox" name="scid" id="search_scid"/>
@@ -216,7 +216,7 @@ $(function(){
           <tbody>
             <?php
                 $cidArray = iSQL::values($rs,'cid','array',null);
-                $cidArray && $category_data = (array) self::$categoryAdmincp->get($cidArray);
+                $cidArray && $category_data = (array) category::get($cidArray);
 
                 if($rs)foreach ($rs as $key => $value) {
                   $ourl = $value['url'];
@@ -285,7 +285,7 @@ $(function(){
                 <?php
                  if($value['scid']){
                    $scid_array = explode(',', $value['scid']);
-                   $sc_data = (array) self::$categoryAdmincp->get($scid_array);
+                   $sc_data = (array) category::get($scid_array);
                    foreach ($sc_data as $scid => $sc_va) {
                     if($scid!=$value['cid']){
                       echo '<a href="'.APP_DOURI.'&cid='.$scid.'&'.$uri.'">'.$sc_va->name.'</a><br />';

@@ -12,8 +12,6 @@ class markerAdmincp{
     public static $appid = null;
     public function __construct() {
         self::$appid = iPHP::appid(__CLASS__);
-
-        $this->categoryAdmincp = new categoryAdmincp();
         $this->id = (int)$_GET['id'];
     }
     public function do_add(){

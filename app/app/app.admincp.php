@@ -14,13 +14,13 @@ class appAdmincp{
     public $callback = array();
 
     public function __construct($app) {
-        $this->app        = $app;
-        $this->appid      = $app['id'];
-        $this->id         = (int)$_GET['id'];
-        $this->categoryAdmincp = new categoryAdmincp($this->appid);
-        $this->_postype    = '1';
-        $this->_status     = '1';
+        $this->app       = $app;
+        $this->appid     = $app['id'];
+        $this->id        = (int)$_GET['id'];
+        $this->_postype  = '1';
+        $this->_status   = '1';
 
+        category::$appid = $this->appid;
     }
     public function do_add(){
       $rs = apps_app::get_data($this->app,$this->id);
@@ -81,7 +81,7 @@ class appAdmincp{
 			$sql.=" AND title REGEXP '{$_GET['keywords']}'";
         }
 
-        $sql.= categoryAdmincp::search_sql($cid);
+        $sql.= category::search_sql($cid);
 
         isset($_GET['nopic'])&& $sql.=" AND `haspic` ='0'";
         $_GET['starttime']   && $sql.=" and `pubdate`>=UNIX_TIMESTAMP('".$_GET['starttime']."')";
@@ -89,12 +89,12 @@ class appAdmincp{
 
 
         isset($_GET['userid']) && $uri.='&userid='.(int)$_GET['userid'];
-        isset($_GET['keyword'])&& $uri.='&keyword='.$_GET['keyword'];
+        isset($_GET['keywords'])&& $uri.='&keyword='.$_GET['keywords'];
         isset($_GET['pid'])    && $uri.='&pid='.$_GET['pid'];
         isset($_GET['cid'])    && $uri.='&cid='.$_GET['cid'];
         (isset($_GET['pid']) && $_GET['pid']!='-1') && $uri.='&pid='.$_GET['at'];
 
-        $orderby    =$_GET['orderby']?$_GET['orderby']:"{$primary} DESC";
+        $orderby    = $_GET['orderby']?$_GET['orderby']:"{$primary} DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
 
         $total      = iCMS::page_total_cache("SELECT count(*) FROM `{$table}` {$sql}","G");

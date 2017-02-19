@@ -116,6 +116,7 @@
           <span class="usersIcon fb-icon fb-icon-name" style="margin-top:1px;"></span>
           <p class="lookupConent">用户</p>
         </li> -->
+        <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
     </div>
@@ -177,6 +178,7 @@
           <span class="fb-icon fb-icon-url"></span>
           <p>验证码</p>
         </li>
+        <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
     </div>
@@ -190,10 +192,10 @@
           <span class="fb-icon fb-icon-richtext"></span>
           <p>编辑器</p>
         </li>
+        <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
     </div>
   </div>
   <div class="clearfix"></div>
 </div>
-

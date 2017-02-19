@@ -102,7 +102,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
           <select name="rootid" id="rootid" class="chosen-select" style="width: 230px;">
             <option value="-1">所有<?php echo $this->category_name;?></option>
             <option value="0">=====顶级<?php echo $this->category_name;?>=====</option>
-            <?php echo $category_select = $this->select('s',0,0,1,true) ; ?>
+            <?php echo $category_select = category::select('s',0,0,1,true) ; ?>
           </select></div>
         <div class="input-prepend input-append"> <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>

@@ -11,104 +11,22 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class appsAdmincp{
-    const STORE_URL = "http://store.idreamsoft.com";
-    const STORE_DIR = 'cache/iCMS/store/';
 
     public function __construct() {
       $this->appid = iCMS_APP_APPS;
     	$this->id = (int)$_GET['id'];
     }
-    public function do_app_manage(){
-
-
-      $appid = (int)$_GET['appid'];
-      $app   = apps::get($appid);
-
-      $table_array = $app['table'][$app['app']];
-      $table   = $table_array['table'];
-      $primary = $table_array['primary'];
-
-      $sql      = " where 1=1";
-
-      // $_GET['pid'] && $sql.=" AND `pid`='".$_GET['pid']."'";
-      // $_GET['pid'] && $uri.='&pid='.$_GET['pid'];
-
-      // $_GET['cid']  && $sql.=" AND `cid`='".$_GET['cid']."'";
-      // $_GET['cid']  && $uri.='&cid='.$_GET['cid'];
-
-      $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-      $total    = iCMS::page_total_cache("SELECT count(*) FROM `{$table}` {$sql}","G");
-      iUI::pagenav($total,$maxperpage,"条记录");
-
-      $rs     = iDB::all("SELECT * FROM `{$table}` {$sql} order by {$primary} DESC LIMIT ".iUI::$offset." , {$maxperpage}");
-      $_count = count($rs);
-
-      if($app['fields']){
-        $fields = iFormer::fields($app['fields']);
-      }
-      $list_fields = array('title','cid','pubdate');
-
-      $categoryAdmincp = new categoryAdmincp($appid);
-
-      include admincp::view('app.manage');
-    }
-    public function do_app_save(){
-      $appid = (int)$_POST['appid'];
-      $app   = apps::get($appid);
-
-      list($variable,$keys,$orig_post) = iFormer::post($app);
-
-      if(!$variable){
-        iCMS::alert("表单数据处理出错!");
-      }
-
-      foreach ($variable as $table_name => $data) {
-        if(empty($data)){
-          continue;
-        }
-        //当表数据
-        $table   = $app['table'][$table_name];
-        //当前表主键
-        $primary = $table['primary'];
-
-        //关联字符 && 关联数据
-        if($table['union'] && $uDATA){
-          $data[$table['union']] = $uDATA[$table['union']];
-        }
-
-        $union_key = null;
-        //查找下个数据表名
-        $next_table_name = next($keys);
-        if($next_table_name){
-          $next_table = $app['table'][$next_table_name];
-          //有设置关联字段
-          $next_table['union'] && $union_key = $next_table['union'];
-        }
-
-        //union
-        if(empty($data[$primary])){ //主键值为空
-          unset($data[$primary]);
-          $id = iDB::insert($table_name,$data);
-          if($union_key){
-            $uDATA = array_combine(array($union_key),array($id));
-          }
-        }else{
-          //主键不更新
-          $id = $data[$primary];
-          unset($data[$primary]);
-          iDB::update($table_name, $data, array($primary=>$id));
-        }
-      }
-    }
-
     public function do_app_add(){
       $appid = (int)$_GET['appid'];
-      $rs    = apps_app::get_data($app,$this->id);
-      $app   = apps::get($appid);
-
-      apps::former_create($appid,$rs);
-
-      include admincp::view('app.add');
+      $app   = apps::get_app($appid);
+      $appAdmincp = new appAdmincp($app);
+      $appAdmincp->do_add();
+    }
+    public function do_app_manage(){
+      $appid = (int)$_GET['appid'];
+      $app   = apps::get_app($appid);
+      $appAdmincp = new appAdmincp($app);
+      $appAdmincp->do_manage();
     }
 
     public function do_hooks(){
@@ -135,14 +53,14 @@ class appsAdmincp{
       include admincp::view("apps.store");
     }
     public function do_store_json(){
-      $url  = self::STORE_URL.'/store.json.php';
+      $url  = apps_store::STORE_URL.'/store.json.php';
       $json = iHttp::remote($url);
       echo $json;
     }
     public function do_store_install(){
       $sid  = $_GET['sid'];
       $key  = md5(iPHP_KEY.iPHP_SELF.time());
-      $url  = self::STORE_URL.'/store.get.php?sid='.$sid.'&key='.$key;
+      $url  = apps_store::STORE_URL.'/store.get.php?sid='.$sid.'&key='.$key;
       $json = iHttp::remote($url);
       if($json){
         $array = json_decode($json);
@@ -319,7 +237,7 @@ class appsAdmincp{
                     //有MEDIUMTEXT类型字段创建xxx_data附加表
                     $union_id = $array['app'].'_id';
                     $addons_fieldata = apps_app::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
-                    $table_array += apps_app::data_create_table2($addons_fieldata,$addons_name,$union_id);
+                    $table_array += apps_app::data_create_table($addons_fieldata,$addons_name,$union_id);
                     $array['table'] = addslashes(json_encode($table_array));
                   }
                 }
@@ -336,8 +254,9 @@ class appsAdmincp{
             iDB::update('apps', $array, array('id'=>$id));
             $msg = "应用编辑完成!";
         }
-        // iUI::success($msg,'url:'.APP_URI);
+        iUI::success($msg,'url:'.APP_URI);
     }
+
     public function do_update(){
         if($this->id){
             $args = admincp::update_args($_GET['_args']);
@@ -355,6 +274,8 @@ class appsAdmincp{
       iUI::pagenav($total,$maxperpage,"个应用");
       $rs     = iDB::all("SELECT * FROM `#iCMS@__apps` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
       $_count = count($rs);
+
+      //分组
       foreach ($rs as $key => $value) {
         $apps_type_group[$value['type']][$key] = $value;
       }

@@ -25,8 +25,7 @@ class commentAdmincp{
     public function do_iCMS($appid=0){
         $_GET['appid'] && $appid = (int)$_GET['appid'];
 
-        $this->categoryAdmincp = new categoryAdmincp($appid);
-        $this->category        = $this->categoryAdmincp->category;
+        category::set_appid($appid);
 
         $sql = "WHERE 1=1";
         $appid && $sql.= " AND `appid`='$appid'";

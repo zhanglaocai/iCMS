@@ -28,7 +28,7 @@ admincp::head();
             <select name="cid[]" multiple="multiple" class="span3" size="15">
               <option value="all">所 有 栏 目</option>
               <optgroup label="======================================"></optgroup>
-              <?php echo $this->categoryAdmincp->select('cs');?>
+              <?php echo category::select('cs');?>
             </select>
           </div>
           <hr>

@@ -247,8 +247,8 @@ class iFormer {
                         $attr['class'].= ' chosen-select';
                     }
                     $select = self::widget('select',$attr);
-                    $categoryAdmincp = new categoryAdmincp(self::$config['app']['id']);
-                    $option = $categoryAdmincp->select('ca',$value);
+                    category::$appid = self::$config['app']['id'];
+                    $option = category::select('ca',$value);
                     $html = $select->html($option).$orig;
                 break;
                 case 'multiple':
@@ -435,7 +435,9 @@ class iFormer {
                         ';
                     }
 
-
+                break;
+                case 'defined':
+                    $field_array['defined'] && $code = $field_array['defined'];
                 break;
                 default:
                     # code...

@@ -82,8 +82,6 @@ class spiderAdmincp {
 		iUI::success('删除完成', 'js:1');
 	}
 	public function do_manage($doType = null) {
-		$categoryAdmincp = new categoryAdmincp(iCMS_APP_ARTICLE);
-
 		$sql = " WHERE 1=1";
 		$_GET['keywords'] && $sql .= "  AND `title` REGEXP '{$_GET['keywords']}'";
 		$doType == "inbox" && $sql .= " AND `publish` ='0'";
@@ -92,7 +90,7 @@ class spiderAdmincp {
 		$_GET['starttime'] && $sql .= " AND `addtime`>=UNIX_TIMESTAMP('" . $_GET['starttime'] . " 00:00:00')";
 		$_GET['endtime'] && $sql .= " AND `addtime`<=UNIX_TIMESTAMP('" . $_GET['endtime'] . " 23:59:59')";
 
-		$sql .= $categoryAdmincp->search_sql($this->cid);
+		$sql .= category::search_sql($this->cid);
 
 		$ruleArray = $this->rule_opt(0, 'array');
 		$postArray = $this->post_opt(0, 'array');
@@ -407,13 +405,12 @@ class spiderAdmincp {
 	}
 
 	public function do_project() {
-		$categoryAdmincp = new categoryAdmincp(iCMS_APP_ARTICLE);
 
 		$sql = "where 1=1";
 		if ($_GET['keywords']) {
 			$sql .= " and `name` REGEXP '{$_GET['keywords']}'";
 		}
-		$sql .= $categoryAdmincp->search_sql($this->cid);
+		$sql .= category::search_sql($this->cid);
 
 		if ($_GET['rid']) {
 			$sql .= " AND `rid` ='" . (int) $_GET['rid'] . "'";
@@ -446,9 +443,7 @@ class spiderAdmincp {
 		$this->pid && $rs = spider::project($this->pid);
 		$cid = empty($rs['cid']) ? $this->cid : $rs['cid'];
 
-		$categoryAdmincp = new categoryAdmincp(iCMS_APP_ARTICLE);
-
-		$cata_option = $categoryAdmincp->select(false, $cid);
+		$cata_option = category::select(false, $cid);
 		$rule_option = $this->rule_opt($rs['rid']);
 		$post_option = $this->post_opt($rs['poid']);
 

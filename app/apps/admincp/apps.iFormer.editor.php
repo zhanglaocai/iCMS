@@ -68,7 +68,7 @@
         <li class="active"><a href="#field-tab-1" data-toggle="tab"><i class="fa fa-check-square-o"></i> 验证</a></li>
         <li><a href="#field-tab-2" data-toggle="tab"><i class="fa fa-cog"></i> 数据处理</a></li>
         <li><a href="#field-tab-3" data-toggle="tab"><i class="fa fa-info-circle"></i> 提示</a></li>
-        <li><a href="#field-tab-4" data-toggle="tab"><i class="fa fa-user"></i> 用户</a></li>
+        <li><a href="#field-tab-4" data-toggle="tab"><i class="fa fa-user"></i> UI</a></li>
         <li><a href="#field-tab-5" data-toggle="tab"><i class="fa fa-cog"></i> 优化</a></li>
         <li><a href="#field-tab-6" data-toggle="tab"><i class="fa fa-code"></i> 脚本</a></li>
       </ul>
@@ -91,26 +91,39 @@
               <option value='telphone'>联系电话</option>
               <option value='idcard'>身份证</option>
               <option value='zipcode'>邮政编码</option>
+              <option value='defined'>自定义</option>
             </select>
           </div>
           <span class="help-inline">选填</span>
           <div class="clearfix"></div>
-          <div id="iFormer-validate-minmax" class="input-prepend input-append hide">
-            <span class="add-on">验证范围</span>
-            <span class="add-on">最小值</span>
-            <input type="text" name="minmax[0]" class="span1" id="iFormer-minmax_0" value=""/>
-            <span class="add-on">-</span>
-            <input type="text" name="minmax[1]" class="span1" id="iFormer-minmax_1" value=""/>
-            <span class="add-on">最大值</span>
+          <div id="iFormer-validate-minmax" class="hide">
+            <div class="input-prepend input-append">
+              <span class="add-on">验证范围</span>
+              <span class="add-on">最小值</span>
+              <input type="text" name="minmax[0]" class="span1" id="iFormer-minmax_0" value=""/>
+              <span class="add-on">-</span>
+              <input type="text" name="minmax[1]" class="span1" id="iFormer-minmax_1" value=""/>
+              <span class="add-on">最大值</span>
+            </div>
+            <div class="clearfix mt5"></div>
           </div>
-          <div class="clearfix"></div>
-          <div id="iFormer-validate-count" class="input-prepend input-append hide">
-            <span class="add-on">字数检测</span>
-            <span class="add-on">最小字数</span>
-            <input type="text" name="count[0]" class="span1" id="iFormer-count_0" value=""/>
-            <span class="add-on">-</span>
-            <input type="text" name="count[1]" class="span1" id="iFormer-count_1" value=""/>
-            <span class="add-on">最大字数</span>
+          <div id="iFormer-validate-count" class="hide">
+            <div class="input-prepend input-append">
+              <span class="add-on">字数检测</span>
+              <span class="add-on">最小字数</span>
+              <input type="text" name="count[0]" class="span1" id="iFormer-count_0" value=""/>
+              <span class="add-on">-</span>
+              <input type="text" name="count[1]" class="span1" id="iFormer-count_1" value=""/>
+              <span class="add-on">最大字数</span>
+            </div>
+            <div class="clearfix mt5"></div>
+          </div>
+          <div id="iFormer-validate-defined" class="hide">
+            <div class="input-prepend">
+              <span class="add-on">代码</span>
+              <textarea name="defined" id="iFormer-defined" class="span6" style="height:60px;"></textarea>
+            </div>
+            <span class="help-inline">可以自己填写提交时数据验证代码(javascript)</span>
           </div>
         </div>
         <div id="field-tab-2" class="tab-pane">
@@ -194,7 +207,7 @@
             <span class="add-on">代码</span>
             <textarea name="javascript" id="iFormer-javascript" class="span6" style="height:60px;"></textarea>
           </div>
-          <span class="help-inline">可填写javascript代码,不懂的不要乱填</span>
+          <span class="help-inline">可填写javascript代码</span>
         </div>
       </div>
     </div>
@@ -205,7 +218,8 @@ $(function(){
   $("#iFormer-validate").chosen().change(function(event) {
     $(".v_selected").removeClass('v_selected');
     $("option:selected","#iFormer-validate").each(function(){
-      if(this.value=='minmax'||this.value=='count'){
+      // if(this.value=='minmax'||this.value=='count'||this.value=='count'){
+      if($("#iFormer-validate-"+this.value).length > 0 ) {
         $("#iFormer-validate-"+this.value).show().addClass('v_selected');
       }
     });

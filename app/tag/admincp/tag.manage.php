@@ -70,7 +70,7 @@ $(function(){
         <div class="input-prepend input-append"> <span class="add-on">栏目</span>
           <select name="cid" id="cid" class="span3 chosen-select">
             <option value="0">所有栏目</option>
-            <?php echo $cid_select = $this->categoryAdmincp->select('cs') ; ?>
+            <?php echo $cid_select = category::select('cs') ; ?>
           </select>
           <span class="add-on">
           <input type="checkbox" name="sub" id="sub"/>
@@ -78,7 +78,10 @@ $(function(){
         <div class="input-prepend input-append"> <span class="add-on">分类</span>
           <select name="tcid" id="tcid" class="chosen-select">
             <option value="0">所有分类</option>
-            <?php echo $tcid_select = $this->tag_categoryAdmincp->select('cs') ; ?>
+            <?php
+              category::set_appid($this->appid);
+              echo $tcid_select = category::select('cs') ;
+            ?>
           </select>
           <span class="add-on">
           <input type="checkbox" name="tfsub" id="tfsub"/>
@@ -156,10 +159,14 @@ $(function(){
         <tbody>
           <?php
           $cidArray = iSQL::values($rs,'cid','array',null);
-          $cidArray && $category_data = (array) $this->categoryAdmincp->get($cidArray);
+          $cidArray && $category_data = (array) category::get($cidArray);
 
           $tcidArray = iSQL::values($rs,'tcid','array',null);
-          $tcidArray && $tcategory_data = (array) $this->tag_categoryAdmincp->get($tcidArray);
+
+          if($tcidArray){
+            category::set_appid($this->appid);
+            $tcategory_data = (array) category::get($tcidArray);
+          }
 
           for($i=0;$i<$_count;$i++){
               $C             = (array)$category_data[$rs[$i]['cid']];

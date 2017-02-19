@@ -40,7 +40,7 @@
 
 /*.ui-state-highlight{border:1px dotted black;display: block;width: 100%;}*/
 .ui-state-highlight { background-color: #fcf8e3; border: 1px solid #fbeed5; display: inline-block; float: left; width: 360px; height: 30px; }
-.iFormer-design { margin-top: 10px; position: absolute; top: 150px; left: 50%; width: 400px; height: 300px; border: 1px solid #ddd; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.26); background-color: white; border-radius: 5px; padding: 0px; }
+.iFormer-design { margin-top: 10px; position: absolute; top: 150px; left: 50%; width: 400px; height: 350px; border: 1px solid #ddd; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.26); background-color: white; border-radius: 5px; padding: 0px; }
 .iFormer-design .fa { speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-size: 20px; }
 .iFormer-design .br { line-height: 14px !important; }
 .iFormer-design .tab-content { padding: 0px; }

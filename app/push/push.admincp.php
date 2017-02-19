@@ -14,7 +14,7 @@ class pushAdmincp{
     public function __construct() {
         $this->appid       = iCMS_APP_PUSH;
         $this->id          = (int)$_GET['id'];
-        $this->categoryAdmincp = new categoryAdmincp($this->appid);
+        category::$appid = $this->appid;
     }
     public function do_add(){
         $id = (int)$_GET['id'];
@@ -36,7 +36,7 @@ class pushAdmincp{
         empty($rs['userid']) && $rs['userid']=members::$userid;
         $rs['addtime']	= $id?get_date(0,"Y-m-d H:i:s"):get_date($rs['addtime'],'Y-m-d H:i:s');
         $cid			= empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
-        $cata_option	= $this->categoryAdmincp->select('ca',$cid);
+        $cata_option	= category::select('ca',$cid);
 
         empty($rs['userid']) && $rs['userid']=members::$userid;
         $strpos 	= strpos(iPHP_REFERER,'?');
@@ -76,14 +76,14 @@ class pushAdmincp{
         	break;
        		default:
 	       		$sql.=" `status` ='1'";
-		       	$cid && $position=$this->categoryAdmincp->get($cid)->name;
+		       	$cid && $position=category::get($cid)->name;
 		}
 
         if($_GET['keywords']) {
 			$sql.=" AND CONCAT(title,title2,title3) REGEXP '{$_GET['keywords']}'";
         }
 
-        $sql.=categoryAdmincp::search_sql($cid);
+        $sql.=category::search_sql($cid);
 
         isset($_GET['nopic'])&& $sql.=" AND `haspic` ='0'";
         $_GET['starttime']   && $sql.=" and `addtime`>=UNIX_TIMESTAMP('".$_GET['starttime']." 00:00:00')";

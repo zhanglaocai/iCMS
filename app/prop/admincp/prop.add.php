@@ -24,7 +24,7 @@ iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
           <div class="input-prepend"> <span class="add-on">所属栏目</span>
             <select name="cid" id="cid" class="span3 chosen-select">
               <option value="0"> ==== 暂无所属栏目 ==== </option>
-              <?php echo $this->categoryAdmincp->select('ca',$rs['cid'],0,1,true);?>
+              <?php echo category::select('ca',$rs['cid'],0,1,true);?>
             </select>
           </div>
           <span class="help-inline">本属性所属的栏目</span>

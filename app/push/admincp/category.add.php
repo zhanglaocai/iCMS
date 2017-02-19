@@ -27,7 +27,7 @@ $(function(){
             <?php if(admincp::CP($rootid) || empty($rootid)) {   ?>
             <select name="rootid" class="chosen-select">
               <option value="0">======顶级版块=====</option>
-              <?php echo $this->select('ca',$rootid,0,1,true);?>
+              <?php echo category::select('ca',$rootid,0,1,true);?>
             </select>
             <?php }else {  ?>
             <input name="rootid" id="rootid" type="hidden" value="<?php echo $rootid ; ?>" />

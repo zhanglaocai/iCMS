@@ -25,7 +25,7 @@ $("#<?php echo APP_FORMID;?>").batch();
           <span class="add-on">栏目</span>
           <select name="cid" id="cid" class="chosen-select" style="width: 230px;">
             <option value="0">所有栏目</option>
-            <?php echo $category_select = $this->categoryAdmincp->select('cs') ; ?>
+            <?php echo $category_select = category::select('cs') ; ?>
           </select>
           <span class="add-on">
             <input type="checkbox" name="sub" id="sub"/> 子栏目
@@ -67,7 +67,9 @@ $("#<?php echo APP_FORMID;?>").batch();
           <tbody>
           <?php
             $cidArray = iSQL::values($rs,'cid','array',null);
-            $cidArray && $category_data = (array) $this->categoryAdmincp->get($cidArray);
+
+            $cidArray && $category_data = (array) category::get($cidArray);
+
             for($i=0;$i<$_count;$i++){
               $id       = $rs[$i][$primary];
               $category = (array)$category_data[$rs[$i]['cid']];

@@ -83,7 +83,7 @@ $(function(){
               <?php if(admincp::CP($rootid) || empty($rootid)) {   ?>
               <select name="rootid" class="span6 chosen-select">
                 <option value="0">======顶级<?php echo $this->category_name;?>=====</option>
-                <?php echo $this->select('a',$rootid,0,1,true);?>
+                <?php echo category::select('a',$rootid,0,1,true);?>
               </select>
               <span class="add-on" title="继承"><input type="checkbox" name="extends" /> 继承</span>
               <?php }else { ?>
