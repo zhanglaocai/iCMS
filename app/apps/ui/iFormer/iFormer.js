@@ -7,7 +7,7 @@ var iFormer = {
         'number':['BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT']
     },
     editor_callback:{
-        validate:function(evt, params) {
+        validate:function(e, p) {
           $(".v_selected").removeClass('v_selected');
           $("option:selected","#iFormer-validate").each(function(){
             var value_el = $("#iFormer-validate-"+this.value);
@@ -23,10 +23,31 @@ var iFormer = {
           });
         }
     },
-    option_selected: function(e, v) {
+    sort_option: function(e, v) {
         var option = e.find('option[value="' + v + '"]').clone();
         option.attr('selected', 'selected');
         return option;
+    },
+    sort_value: function(a,e,p) {
+        var s_name = a.id.replace('iFormer-',''),select = $("#sort-"+s_name);
+        if(p['selected']){
+          select.append(iFormer.sort_option($(a),p['selected']));
+        }
+        if(p['deselected']){
+          select.find('option[value="' + p['deselected'] + '"]').remove();
+        }
+        if(typeof(iFormer.editor_callback[s_name])==='function'){
+          iFormer.editor_callback[s_name](e, p);
+        }
+    },
+    sort_select: function($fbox) {
+        $('.chosen-select[multiple="multiple"]',$fbox).each(function(index, select) {
+            var name = this.id.replace('iFormer-', '');
+            $("#sort-"+name, $fbox).html('');
+            $(this).on('change', function(e, p) {
+                iFormer.sort_value(this,e,p);
+            });
+        });
     },
     widget: function(t) {
         var element = {
@@ -428,7 +449,7 @@ var iFormer = {
     freset: function(a) {
         //form嵌套下出错
         document.getElementById("iFormer-field-form").reset();
-        $(".chosen-select", $(a)).chosen("destroy");
+        $(".chosen-select", $(a)).chosen("destroy").find('option').removeAttr('selected')
         $.uniform.restore('.uniform');
     },
     /**
@@ -462,42 +483,46 @@ var iFormer = {
     edit_dialog: function(obj, callback) {
         var me = this,_id = obj['id'];
         var fbox = document.getElementById("iFormer-field-editor");
-        $(".chosen-select",$(fbox)).chosen(chosen_config);
-        $('.uniform',$(fbox)).uniform();
+        var $fbox = $(fbox);
+        $(".chosen-select",$fbox).chosen(chosen_config);
+        $('.uniform',$fbox).uniform();
+
+        iFormer.sort_select($fbox);
 
         for(var name in obj) {
+            console.log(name);
             // if(i=='func'){
             //     continue;
             // }
-            var nnnn = $("#iFormer-"+name, fbox);
+            var ifn = $("#iFormer-"+name, $fbox);
             // console.log(i,obj[name],typeof(obj[name]));
             // if(typeof(obj[name])==='object'){
-            if(nnnn.hasClass('chosen-select')){
-                // nnnn.trigger("chosen:updated");
+            if(ifn.hasClass('chosen-select')){
+                // ifn.trigger("chosen:updated");
                 // 多选排序
-                if(nnnn.attr('multiple')){
-                    nnnn.setSelectionOrder(obj[name], true);
-
-                    if ($("#sort-"+name, fbox).length > 0 ) {
-                        var sort_sel = $("#sort-"+name, fbox);
-
-                        $.each(obj[name], function(ii, v) {
-                            sort_sel.append(iFormer.option_selected(nnnn,v));
-                        });
-                    }
+                console.log(ifn);
+                if(ifn.attr('multiple')){
+                    ifn.setSelectionOrder(obj[name], true);
                 }else{
-                    nnnn.val(obj[name]).trigger("chosen:updated");
+                    ifn.val(obj[name]).trigger("chosen:updated");
+                }
+                if ($("#sort-"+name, $fbox).length > 0 ) {
+                    $.each(obj[name], function(ii, v) {
+                        $("#sort-"+name, $fbox).append(iFormer.sort_option(ifn,v));
+                    });
                 }
             }else{
-                if (nnnn.length > 0 ) {
-                    nnnn.val(obj[name]);
+                if (ifn.length > 0 ) {
+                    ifn.val(obj[name]);
                 }
             }
         }
+
+
         //整数类型 显示unsigned
         if($.inArray(obj['field'], iFormer.FieldType['number'])>0){
-            $('.unsigned-wrap', fbox).show();
-            $('[name="unsigned"][value="'+obj['unsigned']+'"]', fbox).prop("checked", true);
+            $('.unsigned-wrap', $fbox).show();
+            $('[name="unsigned"][value="'+obj['unsigned']+'"]', $fbox).prop("checked", true);
             $.uniform.update('[name="unsigned"]');
         }
 
@@ -511,16 +536,16 @@ var iFormer = {
                 }
             });
         }
-        $("#iFormer-label-after-wrap", fbox).hide();
+        $("#iFormer-label-after-wrap", $fbox).hide();
 
         if(obj['label-after']){
-            $("#iFormer-label-after-wrap", fbox).show();
+            $("#iFormer-label-after-wrap", $fbox).show();
         }
         if(obj['type']=='radio'||obj['type']=='checkbox'||obj['type']=='select'||obj['type']=='multiple'){
-            $("#iFormer-option-wrap", fbox).show();
+            $("#iFormer-option-wrap", $fbox).show();
             $("[name='option']").removeAttr('disabled');
         }else{
-            $("#iFormer-option-wrap", fbox).hide();
+            $("#iFormer-option-wrap", $fbox).hide();
             $("[name='option']").attr("disabled",true);
         }
 
@@ -532,14 +557,14 @@ var iFormer = {
             ok: function() {
                 //更新字段展现
                 var data = $.extend(obj,{
-                    'label': $("#iFormer-label", fbox).val(),
-                    'name': $("#iFormer-name", fbox).val(),
-                    'class': $("#iFormer-class", fbox).val(),
-                    'comment': $("#iFormer-comment", fbox).val(),
-                    'option': $("#iFormer-option", fbox).val(),
-                    'help': $("#iFormer-help", fbox).val(),
-                    'label-after': $("#iFormer-label-after", fbox).val(),
-                    'default': $("#iFormer-default", fbox).val()
+                    'label': $("#iFormer-label", $fbox).val(),
+                    'name': $("#iFormer-name", $fbox).val(),
+                    'class': $("#iFormer-class", $fbox).val(),
+                    'comment': $("#iFormer-comment", $fbox).val(),
+                    'option': $("#iFormer-option", $fbox).val(),
+                    'help': $("#iFormer-help", $fbox).val(),
+                    'label-after': $("#iFormer-label-after", $fbox).val(),
+                    'default': $("#iFormer-default", $fbox).val()
                 });
 
 
@@ -553,7 +578,7 @@ var iFormer = {
                 }
                 if(data['id']!= data['name']){
                     data['id'] = data['name'];
-                    $("#iFormer-id", fbox).val(data['id']);
+                    $("#iFormer-id", $fbox).val(data['id']);
                 }
                 var $apptype = $('[name="apptype"]').val();
                 if($apptype=="2"){
@@ -570,7 +595,7 @@ var iFormer = {
                 $('td[field="'+_id+'"]').attr('field', data.name).text(data.name);
 
                 //更新 fields[]
-                param = $("form", fbox).serialize();
+                param = $("form", $fbox).serialize();
                 callback(data,param);
                 me.freset(fbox);
                 return true;

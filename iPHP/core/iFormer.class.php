@@ -335,14 +335,12 @@ class iFormer {
     }
     public static function js_test($id,$label,$msg,$pattern) {
         $script = '
-            var '.$id.'_msg = "'.$msg.'";
-            var pattern    = "'.$pattern.'";
+            var '.$id.'_msg = "'.$msg.'",pattern = '.$pattern.';
             if(!pattern.test('.$id.'_value)){
                 iCMS.UI.alert('.$id.'_error||"['.$label.'],"+'.$id.'_msg+",请重新填写!");
                 '.$id.'.focus();
                 return false;
-            }
-        ';
+            }';
         return $script;
     }
     public static function validate($field_array,$lang='js',$value='') {
@@ -354,7 +352,16 @@ class iFormer {
         $type  = $field_array['type'];
         $error = $field_array['error'];
 
+        if($lang=='js'){
+            $javascript = 'var '.$id.' = $("#'.$id.'"),'.$id.'_value = '.$id.'.val(),'.$id.'_error="'.$error.'";';
+            if($type=='editor'){
+                // $script = 'var '.$id.' = iCMS.editor.get("editor-body-'.$id.'"),'.$id.'_value = '.$id.'.hasContents()';
+                $javascript = 'var '.$id.' = iCMS.editor.get("editor-body-'.$id.'"),'.$id.'_value = '.$id.'.getContent()';
+            }
+        }
+
         foreach ($field_array['validate'] as $key => $vd) {
+            $code = null;
             switch ($vd) {
                 case 'zipcode':
                     $msg = "邮政编码有误";
@@ -387,6 +394,9 @@ class iFormer {
                 case 'hanzi':
                     $msg = "只能输入汉字";
                     $pattern = "/^[\u4e00-\u9fa5]*$/";
+                    if($lang=='php'){
+                        $pattern = "/^[\x{4e00}-\x{9fa5}]*$/u";
+                    }
                 break;
                 case 'character':
                     $msg = "只能输入字母";
@@ -470,11 +480,6 @@ class iFormer {
                     preg_match($pattern, $value) OR iUI::alert($msg);
                 }
             }else{
-                $javascript = 'var '.$id.' = $("#'.$id.'"),'.$id.'_value = '.$id.'.val(),'.$id.'_error="'.$error.'";';
-                if($type=='editor'){
-                    // $script = 'var '.$id.' = iCMS.editor.get("editor-body-'.$id.'"),'.$id.'_value = '.$id.'.hasContents()';
-                    $javascript = 'var '.$id.' = iCMS.editor.get("editor-body-'.$id.'"),'.$id.'_value = '.$id.'.getContent()';
-                }
                 if(empty($code)){
                     $code = self::js_test($id,$label,$msg,$pattern);
                 }
@@ -523,9 +528,6 @@ class iFormer {
           is_array($value) && $value = implode(',',$value);
         }
 
-print_r($fields);
-var_dump($value);
-
         //数字转换
         if(in_array($field, array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
           $value = (int)$value;
@@ -536,6 +538,8 @@ var_dump($value);
         }else{
           $value = iSecurity::escapeStr($value);
         }
+print_r($fields);
+var_dump($value);
         return $value;
     }
     /**
@@ -599,6 +603,6 @@ var_dump($value);
      * @return [type]        [description]
      */
     public static function func($func,$value) {
-
+        return $value;
     }
 }

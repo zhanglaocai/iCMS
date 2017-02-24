@@ -116,7 +116,7 @@
           <div class="clearfix"></div>
           <div class="input-prepend">
             <span class="add-on">UI选项</span>
-            <select name="ui[]" id="iFormer-ui" class="chosen-select" style="width:360px;" data-placeholder="请选择..." multiple="multiple">
+            <select id="iFormer-ui" class="chosen-select" style="width:360px;" data-placeholder="请选择..." multiple="multiple">
               <optgroup label="管理员">
                 <option value='admincp-list'>列表显示</option>
               </optgroup>
@@ -125,6 +125,7 @@
                 <option value='usercp-input'>可填写</option>
               </optgroup>
             </select>
+            <select multiple="multiple" class="hide" name="ui[]" id="sort-ui"></select>
           </div>
           <span class="help-inline">选填</span>
         </div>
@@ -133,7 +134,7 @@
           <div class="clearfix mt5"></div>
           <div class="input-prepend">
             <span class="add-on">数据验证</span>
-            <select name="validate[]" id="iFormer-validate" class="chosen-select" style="width:360px;" data-placeholder="请选择数据验证方式..." multiple="multiple">
+            <select id="iFormer-validate" class="chosen-select" style="width:360px;" data-placeholder="请选择数据验证方式..." multiple="multiple">
               <option value='empty'>不能为空</option>
               <option value='number'>只能输入数字</option>
               <option value='hanzi'>只能输入汉字</option>
@@ -148,6 +149,7 @@
               <option value='zipcode'>邮政编码</option>
               <option value='defined'>自定义</option>
             </select>
+            <select multiple="multiple" class="hide" name="validate[]" id="sort-validate"></select>
           </div>
           <span class="help-inline">选填</span>
           <div class="clearfix"></div>
@@ -186,7 +188,7 @@
           <div class="clearfix mt5"></div>
           <div class="input-prepend">
             <span class="add-on">数据处理</span>
-            <select name="func[]" id="iFormer-func" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
+            <select id="iFormer-func" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
               <optgroup label="保存数据时">
                 <option value='repeat'>检查重复</option>
                 <option value='pinyin'>转成拼音</option>
@@ -214,6 +216,7 @@
                 <option value='redirect'>网址跳转</option>
               </optgroup>
             </select>
+            <select multiple="multiple" class="hide" name="func[]" id="sort-func"></select>
           </div>
           <span class="help-inline">选填</span>
           <div class="input-prepend hide">
@@ -236,9 +239,10 @@
         <div id="field-tab-5" class="tab-pane">
           <div class="input-prepend">
             <span class="add-on">数据优化</span>
-            <select name="db[]" id="iFormer-db" class="chosen-select" style="width:360px;" data-placeholder="请选择..." multiple="multiple">
+            <select id="iFormer-db" class="chosen-select" style="width:360px;" data-placeholder="请选择..." multiple="multiple">
               <option value='index'>索引项</option>
             </select>
+            <select multiple="multiple" class="hide" name="db[]" id="sort-db"></select>
           </div>
           <span class="help-inline">选填</span>
         </div>
@@ -253,30 +257,3 @@
     </div>
   </form>
 </div>
-<script>
-$(function(){
-  $('select[multiple="multiple"]',"#iFormer-field-editor").each(function(index, select) {
-      var me = $(this);
-      var name = me.attr('name'),id=name.replace('[]', '');
-      var sort_select = $('<select multiple="multiple"></select>');
-      sort_select.attr({
-        name: name,
-        id: 'sort-'+id
-      }).hide();
-      me.after(sort_select);
-      me.removeAttr('name');
-
-      me.on('change', function(evt, p) {
-        if(p['selected']){
-          sort_select.append(iFormer.option_selected(me,p['selected']));
-        }
-        if(p['deselected']){
-          sort_select.find('option[value="' + p['deselected'] + '"]').remove();
-        }
-        if(typeof(iFormer.editor_callback[id])==='function'){
-          iFormer.editor_callback[id](evt, p);
-        }
-      });
-  });
-})
-</script>
