@@ -115,8 +115,7 @@ class articleApp {
 		if ($tpl) {
 			$article_tpl = empty($article['tpl']) ? $article['category']['template']['article'] : $article['tpl'];
 			strstr($tpl, '.htm') && $article_tpl = $tpl;
-			iView::assign('category', $article['category']);
-			unset($article['category']);
+			iView::assign('category', $article['category']);unset($article['category']);
 			iView::assign('article', $article);
 			$html = iView::render($article_tpl, 'article');
 			if (iView::$gateway == "html") {
@@ -146,7 +145,7 @@ class articleApp {
 			return false;
 		}
 
-		if (iView::$gateway == "html" && $tpl && (strstr($category['contentRule'], '{PHP}') || $category['outurl'] || $category['mode'] == "0")) {
+		if (iView::$gateway == "html" && $tpl && (strstr($category['rule']['article'], '{PHP}') || $category['outurl'] || $category['mode'] == "0")) {
 			return false;
 		}
 

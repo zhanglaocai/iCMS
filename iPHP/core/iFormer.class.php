@@ -20,6 +20,23 @@ class iFormer {
     public static $prefix   = 'iDATA';
     public static $config   = array();
 
+    public static $callback   = array();
+
+    public static function multi_value($rs,$fieldArray) {
+        $array = array();
+        foreach ($fieldArray as $key => $field) {
+            if(in_array($field['type'], array('category','multi_category','prop','multi_prop'))){
+                $value = iSQL::values($rs,$field['name'],'array',null);
+                $value = iSQL::explode_var($value);
+                var_dump($field['type']);
+                $call = self::$callback[$field['type']];
+                if($call && is_callable($call)){
+                    $array[$field['name']] = call_user_func_array($call, array($value));
+                }
+            }
+        }
+        return $array;
+    }
     /**
      * 将由查询字符串(query string)组成的数组转换成二维数组
      * @param  [type]  $data [查询字符串 数组]
@@ -93,9 +110,10 @@ class iFormer {
                 case 'multi_file':
                     unset($attr['type']);
                     $div_class.=' input-append';
-                    $input  = self::widget('textarea',$attr);
+                    $input  = self::widget('textarea',$attr)->css('height','150px');
                     $picbtn = filesAdmincp::pic_btn($attr['id'],null,true);
                     $html   = $input.$picbtn;
+                    $script = self::script('$("#'.$attr['id'].'").autoTextarea({maxHeight:300});',true);
                 break;
                 case 'image':
                 case 'file':
@@ -122,10 +140,9 @@ class iFormer {
                 case 'multi_prop':
                     unset($attr['type']);
                     $attr['name']     = $attr['name'].'[]';
-                    $attr['class']   .= ' chosen-select';
                     $attr['multiple'] = 'true';
-                    $select = self::widget('select',$attr);
-                    $option='<option value="0">普通'.self::$config['app']['name'].'[pid=\'0\']</option>';
+                    $select = self::widget('select',$attr)->addClass('chosen-select');
+                    $option='<option value="0">默认'.$field['label'].'['.$name.'=\'0\']</option>';
                     $option.= propAdmincp::get($name,null,'option',null,self::$config['app']['app']);
                     $_input = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
                     $html = $select->html($option).$_input;
@@ -204,7 +221,8 @@ class iFormer {
                 case 'checkbox':
                     $span = self::widget('span',array('class'=>'add-on'));
                     if($type=='checkbox'){
-                        $attr['name'] = $attr['name'].'[]';
+                        $attr['name']     = $attr['name'].'[]';
+                        $attr['multiple'] = 'true';
                     }
                     if($field['option']){
                         $div_class  .=' input-append';
@@ -243,24 +261,22 @@ class iFormer {
                         $attr['data-placeholder']= '请选择'.$field['label'].'(可多选)...';
                         $orig = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
                     }
-                    if(strpos($attr['class'],'chosen-select')===false){
-                        $attr['class'].= ' chosen-select';
-                    }
-                    $select = self::widget('select',$attr);
+                    $select = self::widget('select',$attr)->addClass('chosen-select');
                     category::$appid = self::$config['app']['id'];
-                    $option = category::select('ca',$value);
+                    $option = category::select('cs');
+                    $script = self::script('iCMS.select("'.$attr['id'].'","'.trim($value).'");',true);
                     $html = $select->html($option).$orig;
                 break;
                 case 'multiple':
                 case 'select':
-                    $attr['class'] = $field['class']?$field['class']:'chosen-select';
+                    $attr['class'] = $field['class'];
                     if(strpos($type,'multi')!==false){
                         unset($attr['type']);
                         $attr['multiple'] = 'true';
                         $attr['name']     = $attr['name'].'[]';
                         $_input = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
                     }
-                    $html = self::widget('select',$attr);
+                    $html = self::widget('select',$attr)->addClass('chosen-select');
                     if($field['option']){
                         $optionText = str_replace(array("\r","\n"), '', $field['option']);
                         $optionArray = explode(";", $optionText);
@@ -272,9 +288,15 @@ class iFormer {
                             }
                         }
                         $html = $html->html($option);
-                        $script= self::script('iCMS.select("'.$attr['id'].'","'.($value?trim($value):0).'");',true);
+                        $script = self::script('iCMS.select("'.$attr['id'].'","'.trim($value).'");',true);
                     }
                     $html.= $_input;
+                break;
+                case 'device':
+                    $value = iPHP::$mobile?'1':'0';
+                break;
+                case 'postype':
+                    $value = self::$config['gateway']=='admincp'?'1':'0';
                 break;
                 default:
                     $input->attr('type','text');
@@ -464,7 +486,7 @@ class iFormer {
 
         return $javascript;
     }
-    public static function de_value($value,$fields) {
+    public static function de_value($value,$fields,$vArray=null) {
         //字段数据类型
         $field = $fields['field'];
 
@@ -476,10 +498,10 @@ class iFormer {
           $value = get_date($value,'Y-m-d H:i:s');
         }
         if(in_array($type, array('category','multi_category'))){
-          // $value = get_date($value,'Y-m-d H:i:s');
+
         }
         //多选字段转换
-        if(isset($fields['multiple'])||in_array($type, array('checkbox'))){
+        if(isset($fields['multiple'])){
           $value = explode(',',$value);
         }
 
@@ -497,9 +519,13 @@ class iFormer {
           $value = str2time($value);
         }
         //多选字段转换
-        if(isset($fields['multiple'])||in_array($type, array('checkbox'))){
+        if(isset($fields['multiple'])){
           is_array($value) && $value = implode(',',$value);
         }
+
+print_r($fields);
+var_dump($value);
+
         //数字转换
         if(in_array($field, array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
           $value = (int)$value;
@@ -534,7 +560,7 @@ class iFormer {
             $fields['func'] && $value = iFormer::func($fields['func'],$value);
             //字段数据处理
             $value = iFormer::value($value,$fields);
-
+            //数据验证
             iFormer::validate($fields,'php',$value);
 
             $post[$key] = $value;

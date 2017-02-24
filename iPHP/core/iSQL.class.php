@@ -97,7 +97,7 @@ class iSQL {
     }
     public static function explode_var($ids,$delimiter=',') {
       $array = array();
-      foreach ($ids as $key => $value) {
+      foreach ((array)$ids as $key => $value) {
         if(strpos($value, $delimiter) !== false){
           $a = explode($delimiter, $value);
           foreach ($a as $k => $v) {

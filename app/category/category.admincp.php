@@ -50,7 +50,7 @@ class categoryAdmincp {
         $_GET['appid']  && $this->appid = (int)$_GET['appid'];
         $this->_view_tpl_dir = $dir;
 
-        self::set_appid($this->appid);
+        category::set_appid($this->appid);
     }
 
     public function do_add(){
@@ -636,10 +636,6 @@ class categoryAdmincp {
         ),'category',0,false);
 
         configAdmincp::cache();
-    }
-
-    public static function set_appid($appid){
-        category::$appid = $appid;
     }
 
 }

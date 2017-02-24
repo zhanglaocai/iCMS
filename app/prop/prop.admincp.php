@@ -125,6 +125,8 @@ class propAdmincp{
             $type_field_id[$row['app'].'/'.$row['field']][$row['pid']] =
             $type_field_val[$row['app']][$row['field']][$row['val']]   = $row;
     	}
+        // var_dump($type_field_id);
+        // var_dump($type_field_val);
         // prop/article/author
         foreach((array)$type_field_id AS $key=>$a){
             iCache::set('prop/'.$key,$a,0);

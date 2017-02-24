@@ -279,8 +279,11 @@ class iQuery {
         return $this;
     }
     public function addClass($class) {
-        $class = trim($this->attr('class').' '.$class);
-        $this->attr('class',$class);
+        $class  = $this->attr('class').' '.$class;
+        $class  = explode(' ', $class);
+        $pieces = array_unique($class);
+        $pieces = array_map("trim" , $pieces);
+        $this->attr('class',implode(' ', $pieces));
         return $this;
     }
     public function append($html) {

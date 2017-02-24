@@ -138,8 +138,8 @@ $("#<?php echo APP_FORMID;?>").batch();
                   <td>
                     <?php if($data['type']){?>
                       <?php if($data['apptype']){?>
-                        <a href="<?php echo APP_URI; ?>&do=app_manage&appid=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-dashboard"></i> 管理</a>
-                        <a href="<?php echo APP_URI; ?>&do=app_add&appid=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加</a>
+                        <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>&do=manage&appid=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-dashboard"></i> 管理</a>
+                        <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>&do=add&appid=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加</a>
                         <div class="clearfix mt5"></div>
                       <?php }?>
                       <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>

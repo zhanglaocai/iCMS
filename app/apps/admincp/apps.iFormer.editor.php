@@ -32,11 +32,6 @@
     </div>
     <span class="help-inline">选填,数据表的comment,不清楚的可不填</span>
     <hr />
-    <div class="input-prepend">
-      <span class="add-on">字段说明</span>
-      <input type="text" name="help" class="span3" id="iFormer-help" value=""/>
-    </div>
-    <span class="help-inline">选填 </span>
     <div id="iFormer-option-wrap" class="hide">
       <div class="input-prepend">
         <span class="add-on">选项列表</span>
@@ -47,33 +42,55 @@
           例:电脑=pc;<br />
           手机=phone;
       </span>
-    </div>
-    <div class="clearfix"></div>
-    <div class="input-prepend">
-      <span class="add-on">字段样式</span>
-      <input type="text" name="class" class="span3" id="iFormer-class" value=""/>
-    </div>
-    <span class="help-inline">选填</span>
-    <div class="clearfix"></div>
-    <div id="iFormer-label-after-wrap" class="hide">
-      <div class="input-prepend">
-        <span class="add-on">扩展信息</span>
-        <input type="text" name="label-after" class="span3" id="iFormer-label-after" value=""/>
-      </div>
-      <span class="help-inline">选填</span>
+      <hr />
       <div class="clearfix"></div>
     </div>
     <div class="field-tab-box">
       <ul class="nav nav-tabs" id="field-tab">
-        <li class="active"><a href="#field-tab-1" data-toggle="tab"><i class="fa fa-check-square-o"></i> 验证</a></li>
+        <li class="active"><a href="#field-tab-0" data-toggle="tab"><i class="fa fa-dashboard"></i> UI</a></li>
+        <li><a href="#field-tab-1" data-toggle="tab"><i class="fa fa-check-square-o"></i> 验证</a></li>
         <li><a href="#field-tab-2" data-toggle="tab"><i class="fa fa-cog"></i> 数据处理</a></li>
         <li><a href="#field-tab-3" data-toggle="tab"><i class="fa fa-info-circle"></i> 提示</a></li>
-        <li><a href="#field-tab-4" data-toggle="tab"><i class="fa fa-user"></i> UI</a></li>
         <li><a href="#field-tab-5" data-toggle="tab"><i class="fa fa-cog"></i> 优化</a></li>
         <li><a href="#field-tab-6" data-toggle="tab"><i class="fa fa-code"></i> 脚本</a></li>
       </ul>
       <div class="tab-content">
-        <div id="field-tab-1" class="tab-pane active">
+        <div id="field-tab-0" class="tab-pane active">
+          <div class="input-prepend">
+            <span class="add-on">字段说明</span>
+            <input type="text" name="help" class="span3" id="iFormer-help" value=""/>
+          </div>
+          <span class="help-inline">选填 </span>
+          <div class="input-prepend">
+            <span class="add-on">字段样式</span>
+            <input type="text" name="class" class="span3" id="iFormer-class" value=""/>
+          </div>
+          <span class="help-inline">选填</span>
+          <div class="clearfix"></div>
+          <div id="iFormer-label-after-wrap" class="hide">
+            <div class="input-prepend">
+              <span class="add-on">扩展信息</span>
+              <input type="text" name="label-after" class="span3" id="iFormer-label-after" value=""/>
+            </div>
+            <span class="help-inline">选填</span>
+            <div class="clearfix"></div>
+          </div>
+          <div class="clearfix"></div>
+          <div class="input-prepend">
+            <span class="add-on">UI选项</span>
+            <select name="ui[]" id="iFormer-ui" class="chosen-select" style="width:360px;" data-placeholder="请选择..." multiple="multiple">
+              <optgroup label="管理员">
+                <option value='admincp-list'>列表显示</option>
+              </optgroup>
+              <optgroup label="用户">
+                <option value='usercp-list'>列表显示</option>
+                <option value='usercp-input'>可填写</option>
+              </optgroup>
+            </select>
+          </div>
+          <span class="help-inline">选填</span>
+        </div>
+        <div id="field-tab-1" class="tab-pane">
           <span class="help-inline">可多选按顺序验证</span>
           <div class="clearfix mt5"></div>
           <div class="input-prepend">
@@ -131,7 +148,7 @@
           <div class="clearfix mt5"></div>
           <div class="input-prepend">
             <span class="add-on">数据处理</span>
-            <select name="func[]" id="iFormer-func" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
+            <select id="iFormer-func" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
               <optgroup label="保存数据时">
                 <option value='repeat'>检查重复</option>
                 <option value='pinyin'>转成拼音</option>
@@ -159,6 +176,8 @@
                 <option value='redirect'>网址跳转</option>
               </optgroup>
             </select>
+            <select name="func[]" id="sort-func" multiple="multiple">
+            </select>
           </div>
           <span class="help-inline">选填</span>
           <div class="input-prepend hide">
@@ -177,21 +196,6 @@
             <span class="add-on">错误提示</span>
             <input type="text" name="error" class="span3" id="iFormer-error" value=""/>
           </div>
-        </div>
-        <div id="field-tab-4" class="tab-pane">
-          <div class="input-prepend">
-            <span class="add-on">UI选项</span>
-            <select name="ui[]" id="iFormer-ui" class="chosen-select" style="width:360px;" data-placeholder="请选择..." multiple="multiple">
-              <optgroup label="管理员">
-                <option value='admincp-list'>列表显示</option>
-              </optgroup>
-              <optgroup label="用户">
-                <option value='usercp-list'>列表显示</option>
-                <option value='usercp-input'>可填写</option>
-              </optgroup>
-            </select>
-          </div>
-          <span class="help-inline">选填</span>
         </div>
         <div id="field-tab-5" class="tab-pane">
           <div class="input-prepend">
@@ -215,10 +219,11 @@
 </div>
 <script>
 $(function(){
-  $("#iFormer-validate").chosen().change(function(event) {
+  $("#iFormer-validate").on('change', function(evt, params) {
     $(".v_selected").removeClass('v_selected');
     $("option:selected","#iFormer-validate").each(function(){
       // if(this.value=='minmax'||this.value=='count'||this.value=='count'){
+      // console.log($("#iFormer-validate-"+this.value).length);
       if($("#iFormer-validate-"+this.value).length > 0 ) {
         $("#iFormer-validate-"+this.value).show().addClass('v_selected');
       }
@@ -229,6 +234,18 @@ $(function(){
         $("input",this).val('');
       }
     });
+  });
+
+  $("#iFormer-func").on('change', function(evt, p) {
+    var sortId = $("#sort-func");
+    if(p['selected']){
+      var clone = $("#iFormer-func").find('option[value="' + p['selected'] + '"]').clone();
+      clone.attr('selected', 'selected');
+      sortId.append(clone);
+    }
+    if(p['deselected']){
+      sortId.find('option[value="' + p['deselected'] + '"]').remove();
+    }
   });
 })
 </script>

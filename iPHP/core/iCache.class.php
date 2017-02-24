@@ -109,7 +109,6 @@ class iCache {
 			self::$handle->delete($keys);
 		}
 		self::$handle->add($keys, $res, ($cachetime != "-1" ? $cachetime : self::$config['time']));
-		return $this;
 	}
 	public static function delete($key = '', $time = 0) {
 		$key = self::prefix($key, self::$config['prefix']);

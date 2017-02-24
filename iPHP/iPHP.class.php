@@ -138,7 +138,7 @@ class iPHP {
 		}
 	}
 	public static function run($app = NULL, $do = NULL, $args = NULL, $prefix = "do_") {
-		//empty($app) && $app   = $_GET['app']; //单一入口
+		empty($app) && $app = iSecurity::escapeStr($_GET['app']); //单一入口
 		if (empty($app)) {
 			$fi = iFS::name(iPHP_SELF);
 			$app = $fi['name'];
@@ -149,7 +149,18 @@ class iPHP {
 		}
 		self::$app_path = iPHP_APP_DIR . '/' . $app;
 		self::$app_file = self::$app_path . '/' . $app . '.app.php';
+		//自定义APP
+		if(!is_file(self::$app_file)){
+			$appData = apps::get_app($app);
+			if($appData){
+				self::$app_path = iPHP_APP_DIR . '/app';
+				self::$app_file = self::$app_path . '/app.app.php';
+			}else{
+				iPHP::error_404('Unable to find custom application <b>' . $app . '.app.php</b>', '0003');
+			}
+		}
 		is_file(self::$app_file) OR iPHP::error_404('Unable to find application <b>' . $app . '.app.php</b>', '0002');
+
 		if ($do === NULL) {
 			$do = iPHP_APP;
 			$_GET['do'] && $do = iSecurity::escapeStr($_GET['do']);
@@ -162,7 +173,7 @@ class iPHP {
 		self::$app_name = $app;
 		self::$app_do = $do;
 		self::$app_method = $prefix . $do;
-		self::$app_tpl = iPHP_APP_DIR . '/' . $app . '/template';
+		// self::$app_tpl = iPHP_APP_DIR . '/' . $app . '/template';
 		$app_vars = array(
 			"MOBILE" => iPHP::$mobile,
 			'COOKIE_PRE' => iPHP_COOKIE_PRE,
@@ -176,8 +187,12 @@ class iPHP {
 		iView::$handle->_iVARS['SAPI'] .= self::$app_name;
 		iView::$handle->_iVARS += $app_vars;
 
-		$obj_name = $app.'App';
-		self::$app = new $obj_name();
+		if($appData){ //自定义APP
+			self::$app = new appApp($appData);
+		}else{
+			$obj_name = $app.'App';
+			self::$app = new $obj_name();
+		}
 
 		if (self::$app_do && self::$app->methods) {
 			in_array(self::$app_do, self::$app->methods) OR iPHP::error_404('Call to undefined method <b>' . self::$app_name . '::'.self::$app_method.'</b>', '0003');
@@ -439,7 +454,7 @@ class iPHP {
 		}
 	}
 	public static function error_throw($msg, $code) {
-		trigger_error($msg, E_USER_ERROR);
+		trigger_error($msg.($code?"($code)":null), E_USER_ERROR);
 	}
 	public static function error_404($msg = "", $code = "") {
 		iPHP_DEBUG && self::error_throw($msg, $code);

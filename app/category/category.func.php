@@ -10,15 +10,15 @@ function category_array($vars){
 	return categoryApp::category($cid,false);
 }
 function category_list($vars){
-	$appid      = isset($vars['appid'])?(int)$vars['appid']:iCMS_APP_ARTICLE;
 	$row        = isset($vars['row'])?(int)$vars['row']:"100";
 	$cache_time = isset($vars['time'])?(int)$vars['time']:"-1";
 	$status     = isset($vars['status'])?(int)$vars['status']:"1";
 	$maxperpage	= isset($vars['row'])?(int)$vars['row']:"10";
-	$where_sql  =" WHERE `appid`='$appid' AND `status`='$status'";
+	$where_sql  =" WHERE `status`='$status'";
 	$resource   = array();
 
-	isset($vars['mode']) && $where_sql.=" AND `mode` = '{$vars['mode']}'";
+	isset($vars['appid']) && $where_sql.= iSQL::in($vars['appid'],'appid');
+	isset($vars['mode']) && $where_sql.= iSQL::in($vars['mode'],'mode');
 	isset($vars['cid']) && !isset($vars['stype']) && $where_sql.= iSQL::in($vars['cid'],'cid');
 	isset($vars['cid!']) && $where_sql.= iSQL::in($vars['cid!'],'cid','not');
 	switch ($vars['stype']) {
@@ -35,6 +35,7 @@ function category_list($vars){
 		break;
 		case "self":
 			$parentid = iCache::get(categoryApp::CACHE_CATEGORY_PARENT,$vars['cid']);
+
 			$where_sql.=" AND `rootid`='$parentid'";
 		break;
 	}

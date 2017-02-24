@@ -189,7 +189,7 @@ class apps {
         return $data;
     }
     public static function get_router(){
-        return array(
+        $array = array(
             'http'     => array('rule'=>'0','primary'=>''),
             'index'    => array('rule'=>'0','primary'=>''),
             'category' => array('rule'=>'1','primary'=>'cid'),
@@ -197,6 +197,14 @@ class apps {
             'software' => array('rule'=>'2','primary'=>'id'),
             'tag'      => array('rule'=>'3','primary'=>'id'),
         );
+        $rs = apps::get_array(array('status'=>'1'));
+        foreach ($rs as $key => $value) {;
+            if($value['table'] && $value['config']['router']){
+                $table = self::get_table($value);
+                $array[$value['app']] = array('rule'=>'4','primary'=>$table['primary'],'page'=>'p');
+            }
+        }
+        return $array;
     }
     public static function get_apps($app=null,$trans=false){
         $rs = apps::get_array(array('status'=>'1'));
@@ -342,12 +350,18 @@ class apps {
 			$appid_array[$a['id']] = $a;
 			$app_array[$a['app']]  = $a;
 
-			iCache::set('app/'.$a['id'],$a,0);
-			iCache::set('app/'.$a['app'],$a,0);
+            self::set_app_cache($a);
         }
         iCache::set('app/idarray',  $appid_array,0);
         iCache::set('app/array',$app_array,0);
 	}
+    public static function set_app_cache($a){
+        if(!is_array($a)){
+            $a = self::get($a);
+        }
+        iCache::set('app/'.$a['id'],$a,0);
+        iCache::set('app/'.$a['app'],$a,0);
+    }
     public static function get_path($app,$type='app',$arr=false){
         $path = iPHP_APP_DIR . '/' . $app . '/' . $app.'.'.$type.'.php';
         if($arr){
@@ -382,7 +396,7 @@ class apps {
     }
 	public static function get_app($appid=1){
 		$rs	= iCache::get('app/'.$appid);
-       	$rs OR iPHP::error_throw('app no exist', '0005');
+       	$rs OR iPHP::error_throw('application no exist', '0005');
        	return $rs;
 	}
 	public static function get_url($appid=1,$primary=''){

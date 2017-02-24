@@ -76,7 +76,7 @@
           <span class="fb-icon fb-icon-decimal"></span>
           <p>小数</p>
         </li>
-        <li i="field" tag="input" type="percentage" field="DECIMAL" len="3,2" label="百分比" label-after="%">
+        <li i="field" tag="input" type="percentage" field="DECIMAL" len="4,2" label="百分比" label-after="%">
           <span class="fb-icon fb-icon-percentage"></span>
           <p>百分比</p>
         </li>
@@ -154,7 +154,7 @@
           <span class="fb-icon fb-icon-fileupload"></span>
           <p>批量上传</p>
         </li>
-        <li i="field" tag="prop" type="prop" field="INT" len="10" label="属性">
+        <li i="field" tag="prop" type="prop" field="VARCHAR" len="255" label="属性">
           <span class="fb-icon fb-icon-prop"></span>
           <p>属性</p>
         </li>

@@ -16,6 +16,8 @@ class appAdmincp{
     public function __construct($app) {
         $this->app       = $app;
         $this->appid     = $app['id'];
+        $_GET['appid'] && $this->appid = (int)$_GET['appid'];
+
         $this->id        = (int)$_GET['id'];
         $this->_postype  = '1';
         $this->_status   = '1';

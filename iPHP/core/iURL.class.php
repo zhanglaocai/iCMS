@@ -122,19 +122,19 @@ class iURL {
             case '0':
                 $i->href = $array['url'];
                 $url     = $array['rule'];
-                break;
+            break;
             case '1'://分类
                 $category = $array;
                 $i->href  = $category['url'];
                 $url      = self::rule_data($category,'index');
                 // $purl     = self::rule_data($category,'list');
-                break;
+            break;
             case '2'://内容
                 $array    = (array)$a[0];
                 $category = (array)$a[1];
                 $i->href  = $array['url'];
                 $url      = self::rule_data($category,$uri);
-                break;
+            break;
             case '3'://标签
                 $array     = (array)$a[0];
                 $category  = (array)$a[1];
@@ -145,21 +145,30 @@ class iURL {
                 if($_category['rule'][$uri]){
                     $url = self::rule_data($_category,$uri);
                 }
-                break;
-             default:
-                $url = $array['rule'];
+            break;
+            case '4'://自定义
+                $array    = (array)$a[0];
+                $category = (array)$a[1];
+                $i->href  = $array['url'];
+                $url      = self::rule_data($category,$uri);
+                $href     = 'index.php?app='.$uri.'&';
+            break;
+            default:
+                $url = '{PHP}';
+                var_dump($app_conf);
+            break;
         }
 
         $default  = self::$CONFIG[$uri];
         if($default){
             $router_dir = $default['dir'];
-            $router_url     = $default['url'];
+            $router_url = $default['url'];
             empty($url) && $url = $default['rule'];
         }
 
         if($url=='{PHP}'){
-            $href = $uri.'.php?';
             $primary = $app_conf['primary'];
+            empty($href) && $href = $uri.'.php?';
             $href.= $primary.'='.$array[$primary];
             if($app_conf['page']){
                 $i->pageurl = $href.'&'.$app_conf['page'].'='.iPHP_PAGE_SIGN;

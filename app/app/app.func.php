@@ -5,7 +5,7 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
-function push_list($vars){
+function app_list($vars){
 	$maxperpage = isset($vars['row'])?(int)$vars['row']:"100";
 	$cache_time	= isset($vars['time'])?(int)$vars['time']:"-1";
 

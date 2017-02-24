@@ -67,34 +67,37 @@ $(function(){
             </div>
             <span class="help-inline">应用唯一标识</span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend" style="width:100%;">
+            <div class="input-prepend">
               <span class="add-on">应用简介</span>
               <textarea name="config[info]" id="config_info" class="span6" style="height: 150px;"><?php echo $rs['config']['info'] ; ?></textarea>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend" style="width:100%;">
-              <span class="add-on">应用路径</span>
-              <input type="text" name="config[path]" class="span6" id="config_path" value="<?php echo $rs['config']['path'] ; ?>"/>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend" style="width:100%;">
+            <div class="input-prepend">
               <span class="add-on">模板标签</span>
               <textarea name="config[template]" id="config_template" class="span6" style="height: 150px;" readonly><?php
-              // $template = $rs['config']['template'];
-              // $template OR
               if($rs['app']){
-                $template = (array)apps::get_func($rs['app'],true);
-                list($path,$obj_name)= apps::get_path($rs['app'],'app',true);
+                $_app = $rs['app'];
+                if($rs['config']['iFormer']){
+                  $_app = 'app';
+                }
+                $template = (array)apps::get_func($_app,true);
+                list($path,$obj_name)= apps::get_path($_app,'app',true);
                 if(@is_file($path)){
                     //判断是否有APP同名方法存在 如果有 $appname 模板标签可用
                     $class_methods = get_class_methods ($obj_name);
-                    if(array_search ($rs['app'] ,  $class_methods )!==FALSE){
+                    if(array_search ($_app ,  $class_methods )!==FALSE){
                       array_push ($template,'$'.$rs['app']);
+                      $rs['config']['router'] = '1';
                     }
                 }
               }
-              echo implode("\n", (array)$template);
-              ?></textarea>
+              $template = implode("\n", (array)$template);
+              if($rs['config']['iFormer']){
+                $template = str_replace(array(':app:','$app'), array(':'.$rs['app'].':','$'.$rs['app']), $template);
+              }
+              echo $template;
+            ?></textarea>
+              <input name="config[router]" type="hidden" value="<?php echo $rs['config']['router']; ?>" />
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">

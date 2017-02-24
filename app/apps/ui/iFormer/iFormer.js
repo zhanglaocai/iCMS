@@ -147,6 +147,9 @@ var iFormer = {
                         obj['class'] = 'radio';
                         elem_type = 'radio';
                     }
+                    if(obj_type=='checkbox'){
+                        obj['multiple'] = true;
+                    }
                     //改变$div内容
                     var _div = function () {
                         var parent = iFormer.widget('span').addClass('add-on');
@@ -176,10 +179,12 @@ var iFormer = {
                 case 'category':
                 case 'select':
                     $elem = this.widget('select');
-                    obj['class'] = obj['class']||'chosen-select';
                     if(obj_type.indexOf("multi")!='-1'){
                         obj['multiple'] = true;
                         $elem.attr('multiple',true);
+                        obj['class'] = obj['class']||'span3 chosen-select';
+                    }else{
+                        obj['class'] = obj['class']||'span6 chosen-select';
                     }
 
                     var field_option = function () {
@@ -201,7 +206,7 @@ var iFormer = {
                 break;
                 case 'number':
                     if(obj['len']=="1"){
-                        obj['class'] = obj['class']||'span2';
+                        obj['class'] = obj['class']||'span3';
                     }
                     if(obj['len']=="10"){
                         // obj['class'] = obj['class']||'span3';
@@ -425,13 +430,31 @@ var iFormer = {
     edit_dialog: function(obj, callback) {
         var me = this,_id = obj['id'];
         var fbox = document.getElementById("iFormer-field-editor");
-        $("select",$(fbox)).chosen(chosen_config);
+        $(".chosen-select",$(fbox)).chosen(chosen_config);
 
-        for(var i in obj) {
-            $("#iFormer-"+i, fbox).val(obj[i]);
-            console.log(i,obj[i],typeof(obj[i]));
-            if(typeof(obj[i])==='object'){
-                $("#iFormer-"+i, fbox).trigger("chosen:updated");
+        for(var name in obj) {
+            // if(i=='func'){
+            //     continue;
+            // }
+            var iFormer = $("#iFormer-"+name, fbox);
+            // console.log(i,obj[name],typeof(obj[name]));
+            // if(typeof(obj[name])==='object'){
+            if(iFormer.hasClass('chosen-select')){
+                // iFormer.trigger("chosen:updated");
+                iFormer.setSelectionOrder(obj[name], true);
+
+                console.log($("#sort-"+name, fbox).length);
+                if ($("#sort-"+name, fbox).length > 0 ) {
+                    var sortId = $("#sort-"+name, fbox);
+
+                    $.each(obj[name], function(ii, v) {
+                        var option = iFormer.find('option[value="' + v + '"]').clone();
+                        option.attr('selected', 'selected');
+                        sortId.append(option);
+                    });
+                }
+            }else{
+                iFormer.val(obj[name]);
             }
         }
         if(obj['validate']){
@@ -444,6 +467,7 @@ var iFormer = {
                 }
             });
         }
+
         $("#iFormer-label-after-wrap", fbox).hide();
 
         if(obj['label-after']){

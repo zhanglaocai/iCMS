@@ -197,7 +197,7 @@ class appsAdmincp{
 
             $array['table'] = addslashes(json_encode($table_array));
 
-            iDB::insert('apps',$array);
+            $id = iDB::insert('apps',$array);
             $msg = "应用创建完成!";
         }else {
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app' AND `id` !='$id'") && iUI::alert('该应用已经存在!');
@@ -254,6 +254,7 @@ class appsAdmincp{
             iDB::update('apps', $array, array('id'=>$id));
             $msg = "应用编辑完成!";
         }
+        apps::set_app_cache($id);
         iUI::success($msg,'url:'.APP_URI);
     }
 

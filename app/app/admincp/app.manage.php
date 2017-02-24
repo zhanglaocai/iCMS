@@ -66,22 +66,30 @@ $("#<?php echo APP_FORMID;?>").batch();
           </thead>
           <tbody>
           <?php
-            $categoryArray  = category::multi_get($rs,'cid');
-            for($i=0;$i<$_count;$i++){
-              $id       = $rs[$i][$primary];
-              $category = (array)$categoryArray[$rs[$i]['cid']];
+
+            iFormer::$callback['category'] = array('category','get');
+            // iFormer::$callback['multi_prop'] = array('category','get');
+
+            $multiArray = iFormer::multi_value($rs,$fields);
+            $categoryArray = $multiArray['cid'];
+            foreach ((array)$rs as $key => $value) {
+              $id            = $value[$primary];
+              $category      = (array)$categoryArray[$value['cid']];
+              $iurl          = iURL::get($this->app['app'],array($value,$category));
+              // $value['ourl'] = $value['url'];
+              $value['url']  = $iurl->href;
           ?>
             <tr id="tr<?php echo $id; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $id ; ?>" /></td>
-              <td><?php echo $id ; ?></td>
+              <td> <a href="<?php echo $value['url'] ; ?>" target="_blank"/> <?php echo $id ; ?></a></td>
               <?php foreach ($list_fields as $fi => $fkey) {?>
-              <td><?php echo iFormer::de_value($rs[$i][$fkey],$fields[$fkey]); ?></td>
+              <td><?php echo iFormer::de_value($value[$fkey],$fields[$fkey]); ?></td>
               <?php }?>
               <td>
-                <?php if($rs[$i]['status']=="1"){ ?>
+                <?php if($value['status']=="1"){ ?>
                 <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $id ; ?>&_args=status:0" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-power-off"></i> 禁用</a>
                 <?php } ?>
-                <?php if($rs[$i]['status']=="0"){ ?>
+                <?php if($value['status']=="0"){ ?>
                 <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $id ; ?>&_args=status:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-play-circle"></i> 启用</a>
                 <?php } ?>
                 <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $id ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>

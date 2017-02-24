@@ -25,6 +25,7 @@
 <link rel="stylesheet" href="./app/apps/ui/iFormer/iFormer.css" type="text/css" />
 <script type="text/javascript" src="./app/admincp/ui/jquery/jquery-ui.min.js"></script>
 <script type="text/javascript" src="./app/apps/ui/iFormer/iFormer.js"></script>
+<script type="text/javascript" src="./app/apps/ui/iFormer/chosen.order.min.js"></script>
 <script type="text/javascript">
 <?php
 if($rs['fields']){
