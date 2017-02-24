@@ -20,12 +20,13 @@ $(function() {
             // if(v){
                 var va = v.split(',');
                 $.each(va, function(i,val){
-                    $(el+'[value="'+val+'"]').prop("checked", true).uniform();
+                    $(el+'[value="'+val+'"]').prop("checked", true);
                 })
             // }
             // else{
             //     $(el).prop("checked",true).uniform();
             // }
+            $.uniform.update(el);
         },
     };
     iCMS = $.extend(iCMS,_iCMS);//扩展 or 替换 iCMS属性

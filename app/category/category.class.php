@@ -105,8 +105,8 @@ class category {
         $category->CP_ADD   = admincp::CP($category->cid,'a')?true:false;
         $category->CP_EDIT  = admincp::CP($category->cid,'e')?true:false;
         $category->CP_DEL   = admincp::CP($C->cid,'d')?true:false;
-        $category->rule     = json_decode($category->rule);
-        $category->template = json_decode($category->template);
+        $category->rule     = json_decode($category->rule,true);
+        $category->template = json_decode($category->template,true);
 
         if($callback){
            $category = call_user_func_array($callback,array($category));

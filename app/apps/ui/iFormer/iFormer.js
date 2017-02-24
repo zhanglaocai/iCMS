@@ -3,6 +3,31 @@ var iFormer = {
         class:'iFormer-ui',
         fbox:null
     },
+    FieldType:{
+        'number':['BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT']
+    },
+    editor_callback:{
+        validate:function(evt, params) {
+          $(".v_selected").removeClass('v_selected');
+          $("option:selected","#iFormer-validate").each(function(){
+            var value_el = $("#iFormer-validate-"+this.value);
+            if(value_el.length > 0 ) {
+              value_el.show().addClass('v_selected');
+            }
+          });
+          $("[id^='iFormer-validate-']").each(function(index, el) {
+            if(!$(this).hasClass('v_selected')){
+              $(this).hide();
+              $("input",this).val('');
+            }
+          });
+        }
+    },
+    option_selected: function(e, v) {
+        var option = e.find('option[value="' + v + '"]').clone();
+        option.attr('selected', 'selected');
+        return option;
+    },
     widget: function(t) {
         var element = {
             input: '<input/>',
@@ -231,7 +256,12 @@ var iFormer = {
             }
             obj['class'] = obj['class']||'span3';
 
-
+            //整数类型 默认无符号
+            if($.inArray(obj['field'], iFormer.FieldType['number'])>0){
+                if(typeof(obj['unsigned'])=="undefined"){
+                    obj['unsigned'] = '1'
+                }
+            }
             /**
              * 生成器字段样式展现
              */
@@ -399,6 +429,7 @@ var iFormer = {
         //form嵌套下出错
         document.getElementById("iFormer-field-form").reset();
         $(".chosen-select", $(a)).chosen("destroy");
+        $.uniform.restore('.uniform');
     },
     /**
      * 编辑字段
@@ -421,6 +452,7 @@ var iFormer = {
             );
         // });
     },
+
     /**
      * 字段编辑框
      * @param  {[type]}   obj      [description]
@@ -431,32 +463,44 @@ var iFormer = {
         var me = this,_id = obj['id'];
         var fbox = document.getElementById("iFormer-field-editor");
         $(".chosen-select",$(fbox)).chosen(chosen_config);
+        $('.uniform',$(fbox)).uniform();
 
         for(var name in obj) {
             // if(i=='func'){
             //     continue;
             // }
-            var iFormer = $("#iFormer-"+name, fbox);
+            var nnnn = $("#iFormer-"+name, fbox);
             // console.log(i,obj[name],typeof(obj[name]));
             // if(typeof(obj[name])==='object'){
-            if(iFormer.hasClass('chosen-select')){
-                // iFormer.trigger("chosen:updated");
-                iFormer.setSelectionOrder(obj[name], true);
+            if(nnnn.hasClass('chosen-select')){
+                // nnnn.trigger("chosen:updated");
+                // 多选排序
+                if(nnnn.attr('multiple')){
+                    nnnn.setSelectionOrder(obj[name], true);
 
-                console.log($("#sort-"+name, fbox).length);
-                if ($("#sort-"+name, fbox).length > 0 ) {
-                    var sortId = $("#sort-"+name, fbox);
+                    if ($("#sort-"+name, fbox).length > 0 ) {
+                        var sort_sel = $("#sort-"+name, fbox);
 
-                    $.each(obj[name], function(ii, v) {
-                        var option = iFormer.find('option[value="' + v + '"]').clone();
-                        option.attr('selected', 'selected');
-                        sortId.append(option);
-                    });
+                        $.each(obj[name], function(ii, v) {
+                            sort_sel.append(iFormer.option_selected(nnnn,v));
+                        });
+                    }
+                }else{
+                    nnnn.val(obj[name]).trigger("chosen:updated");
                 }
             }else{
-                iFormer.val(obj[name]);
+                if (nnnn.length > 0 ) {
+                    nnnn.val(obj[name]);
+                }
             }
         }
+        //整数类型 显示unsigned
+        if($.inArray(obj['field'], iFormer.FieldType['number'])>0){
+            $('.unsigned-wrap', fbox).show();
+            $('[name="unsigned"][value="'+obj['unsigned']+'"]', fbox).prop("checked", true);
+            $.uniform.update('[name="unsigned"]');
+        }
+
         if(obj['validate']){
             $.each(obj['validate'], function(i, v) {
                 if ($("#iFormer-validate-"+v).length > 0 ) {
@@ -467,13 +511,11 @@ var iFormer = {
                 }
             });
         }
-
         $("#iFormer-label-after-wrap", fbox).hide();
 
         if(obj['label-after']){
             $("#iFormer-label-after-wrap", fbox).show();
         }
-
         if(obj['type']=='radio'||obj['type']=='checkbox'||obj['type']=='select'||obj['type']=='multiple'){
             $("#iFormer-option-wrap", fbox).show();
             $("[name='option']").removeAttr('disabled');

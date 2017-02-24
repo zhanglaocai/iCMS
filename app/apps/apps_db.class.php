@@ -11,7 +11,7 @@ class apps_db {
         foreach ($field_array as $key => $value) {
             $a = array();
             foreach ($value as $k => $v) {
-                if(in_array($k, array('field','label','name','default','len','comment'))){
+                if(in_array($k, array('field','label','name','default','len','comment','unsigned'))){
                     $a[$k] = $v;
                 }
             }
@@ -37,6 +37,7 @@ class apps_db {
         $default = $vars['default']; //默 认 值
         $len     = $vars['len']; //数据长度
         $comment = $vars['comment']?$vars['comment']:$label;
+        $unsigned= $vars['unsigned']; //无符号
 
         empty($name) && $name = iPinyin::get($label);
         $field = strtolower($field);
@@ -98,8 +99,10 @@ class apps_db {
                 $len = null;
                 $data_default   = null;
             break;
+            case 'float':
+            case 'double':
             case 'decimal':
-                $data_type = 'DECIMAL';
+                $data_type = strtoupper($field);
                 $default   = '0.0';
             break;
             default:
@@ -110,7 +113,7 @@ class apps_db {
         $len===null OR $data_len  = '('.$len.')';
 
         if(in_array($data_type, array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
-            $data_len.=' UNSIGNED';
+            $unsigned && $data_len.=' UNSIGNED';
         }
 
         if($data_default!==null){

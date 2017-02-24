@@ -218,10 +218,8 @@ $(function(){
                 $categoryArray  = category::multi_get($rs,'cid');
                 $scategoryArray = category::multi_get($rs,'scid');
                 if($rs)foreach ($rs as $key => $value) {
-                  $ourl = $value['url'];
                   $C    = (array)$categoryArray[$value['cid']];
                   $iurl = iURL::get('article',array($value,$C));
-                  empty($ourl) && $htmlurl = $iurl->path;
                   $value['url'] = $iurl->href;
             ?>
             <tr id="id<?php echo $value['id'] ; ?>">

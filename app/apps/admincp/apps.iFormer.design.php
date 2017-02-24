@@ -184,14 +184,15 @@
     </div>
     <div id="fields-tab-addons" class="tab-pane">
       <ul>
-        <li i="field" tag="textarea" type="multitext" field="MEDIUMTEXT" label="超大文本">
+        <li i="field" tag="textarea" type="multitext" field="MEDIUMTEXT" label="大文本">
           <span class="fb-icon fb-icon-textarea"></span>
-          <p>超大文本</p>
+          <p>大文本</p>
         </li>
         <li i="field" tag="editor" type="editor" field="MEDIUMTEXT" label="编辑器">
           <span class="fb-icon fb-icon-richtext"></span>
           <p>编辑器</p>
         </li>
+        <span class="help-inline">* 此标签下的字段会独立创建data表</span>
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>

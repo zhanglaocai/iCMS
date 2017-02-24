@@ -3,7 +3,7 @@
   <form id="iFormer-field-form">
     <input type="hidden" name="id" id="iFormer-id"/>
     <input type="hidden" name="type" id="iFormer-type"/>
-    <input type="hidden" name="field" id="iFormer-field"/>
+
     <div class="input-prepend">
       <span class="add-on">字段名称</span>
       <input type="text" name="label" class="span3" id="iFormer-label" value=""/>
@@ -15,6 +15,44 @@
     </div>
     <span class="help-inline">* 必填</span>
     <div class="clearfix"></div>
+    <div class="input-prepend">
+      <span class="add-on">数据类型</span>
+      <select name="field" id="iFormer-field" class="chosen-select" style="width:230px;" data-placeholder="请选择...">
+        <optgroup label="字符类型">
+          <option value='VARCHAR'>字符串(VARCHAR)</option>
+          <option value='TEXT'>文本(TEXT)</option>
+          <option value='MEDIUMTEXT'>大文本(MEDIUMTEXT)</option>
+          <option value='LONGTEXT'>超大文本(LONGTEXT)</option>
+        </optgroup>
+        <optgroup label="整数类型">
+          <option value='TINYINT'>小整数(TINYINT)</option>
+          <option value='SMALLINT'>大整数(SMALLINT)</option>
+          <option value='MEDIUMINT'>大整数(MEDIUMINT)</option>
+          <option value='INT'>大整数(INT)</option>
+          <option value='BIGINT'>极大整数(BIGINT)</option>
+        </optgroup>
+        <optgroup label="浮点数类型">
+          <option value='DECIMAL'>小数值(DECIMAL)</option>
+          <option value='FLOAT'>单精度(FLOAT)</option>
+          <option value='DOUBLE'>双精度(DOUBLE)</option>
+        </optgroup>
+      </select>
+    </div>
+    <span class="help-inline">* 必填</span>
+    <div class="clearfix"></div>
+    <div class="unsigned-wrap hide">
+      <div class="input-prepend input-append">
+        <span class="add-on">整数类型</span>
+        <span class="add-on">无符号
+          <input type="radio" name="unsigned" class="uniform" id="iFormer-unsigned-1" value="1"/>
+        </span>
+        <span class="add-on">有符号
+          <input type="radio" name="unsigned" class="uniform" id="iFormer-unsigned-0" value="0"/>
+        </span>
+      </div>
+      <span class="help-inline">* 必填</span>
+      <div class="clearfix"></div>
+    </div>
     <div class="input-prepend">
       <span class="add-on">数据长度</span>
       <input type="text" name="len" class="span3" id="iFormer-len" value=""/>
@@ -148,7 +186,7 @@
           <div class="clearfix mt5"></div>
           <div class="input-prepend">
             <span class="add-on">数据处理</span>
-            <select id="iFormer-func" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
+            <select name="func[]" id="iFormer-func" class="chosen-select" style="width:360px;" data-placeholder="请选择数据处理方式..." multiple="multiple">
               <optgroup label="保存数据时">
                 <option value='repeat'>检查重复</option>
                 <option value='pinyin'>转成拼音</option>
@@ -175,8 +213,6 @@
               <optgroup label="展示时">
                 <option value='redirect'>网址跳转</option>
               </optgroup>
-            </select>
-            <select name="func[]" id="sort-func" multiple="multiple">
             </select>
           </div>
           <span class="help-inline">选填</span>
@@ -219,33 +255,28 @@
 </div>
 <script>
 $(function(){
-  $("#iFormer-validate").on('change', function(evt, params) {
-    $(".v_selected").removeClass('v_selected');
-    $("option:selected","#iFormer-validate").each(function(){
-      // if(this.value=='minmax'||this.value=='count'||this.value=='count'){
-      // console.log($("#iFormer-validate-"+this.value).length);
-      if($("#iFormer-validate-"+this.value).length > 0 ) {
-        $("#iFormer-validate-"+this.value).show().addClass('v_selected');
-      }
-    });
-    $("[id^='iFormer-validate-']").each(function(index, el) {
-      if(!$(this).hasClass('v_selected')){
-        $(this).hide();
-        $("input",this).val('');
-      }
-    });
-  });
+  $('select[multiple="multiple"]',"#iFormer-field-editor").each(function(index, select) {
+      var me = $(this);
+      var name = me.attr('name'),id=name.replace('[]', '');
+      var sort_select = $('<select multiple="multiple"></select>');
+      sort_select.attr({
+        name: name,
+        id: 'sort-'+id
+      }).hide();
+      me.after(sort_select);
+      me.removeAttr('name');
 
-  $("#iFormer-func").on('change', function(evt, p) {
-    var sortId = $("#sort-func");
-    if(p['selected']){
-      var clone = $("#iFormer-func").find('option[value="' + p['selected'] + '"]').clone();
-      clone.attr('selected', 'selected');
-      sortId.append(clone);
-    }
-    if(p['deselected']){
-      sortId.find('option[value="' + p['deselected'] + '"]').remove();
-    }
+      me.on('change', function(evt, p) {
+        if(p['selected']){
+          sort_select.append(iFormer.option_selected(me,p['selected']));
+        }
+        if(p['deselected']){
+          sort_select.find('option[value="' + p['deselected'] + '"]').remove();
+        }
+        if(typeof(iFormer.editor_callback[id])==='function'){
+          iFormer.editor_callback[id](evt, p);
+        }
+      });
   });
 })
 </script>
