@@ -294,10 +294,6 @@ class spiderTools extends spider{
             preg_match('/<meta[^>]*?charset=(["\']?)([a-zA-z0-9\-\_]+)(\1)[^>]*?>/is', $html, $charset);
             $encode = str_replace(array('"',"'"),'', trim($charset[2]));
         }
-        if(function_exists('mb_detect_encoding') && empty($encode)) {
-            $encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
-            echo '<b>检测文本编码:</b>'.$encode . '<br />';
-        }
 
         if (spider::$dataTest || spider::$ruleTest) {
             echo '<b>检测页面编码:</b>'.$encode . '<br />';
@@ -305,11 +301,20 @@ class spiderTools extends spider{
         if(strtoupper($encode)==$out){
             return $html;
         }
+        if(function_exists('mb_detect_encoding')) {
+            $encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
+            if (spider::$dataTest || spider::$ruleTest) {
+                echo '<b>检测文本编码:</b>'.$encode . '<br />';
+            }
+        }
+        if(strtoupper($encode)=='GB2312'){
+            $encode = 'GBK';
+        }
         $html = preg_replace('/(<meta[^>]*?charset=(["\']?))[a-z\d_\-]*(\2[^>]*?>)/is', "\\1$out\\3", $html,1);
-        if (function_exists('iconv')) {
-            return iconv($encode,$out."//TRANSLIT", $html);
-        } elseif (function_exists('mb_convert_encoding')) {
+        if (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($html,$out,$encode);
+        } elseif (function_exists('iconv')) {
+            return iconv($encode,$out,$html);
         } else {
             iPHP::throwException('charsetTrans failed, no function');
         }

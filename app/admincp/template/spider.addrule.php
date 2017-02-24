@@ -139,29 +139,34 @@ $(function(){
 
             <div class="input-prepend input-append"> <span class="add-on">网页编码</span><span class="add-on">
               <label class="radio">
-                <input type="radio" name="rule[charset]" id="charset1" value="utf-8"<?php if($rule['charset']=="utf-8"){ echo ' checked="true"';};?>>
+                <input type="radio" name="rule[charset]" value="utf-8"<?php if($rule['charset']=="utf-8"){ echo ' checked="true"';};?>>
                 UTF-8 </label>
               </span><span class="add-on">
               <label class="radio">
-                <input type="radio" name="rule[charset]" id="charset2" value="gbk"<?php if($rule['charset']=="gbk"){ echo ' checked="true"';};?>>
+                <input type="radio" name="rule[charset]" value="gbk"<?php if($rule['charset']=="gbk"){ echo ' checked="true"';};?>>
                 GBK </label>
               </span><span class="add-on">
               <label class="radio">
-                <input type="radio" name="rule[charset]" id="charset3" value="auto"<?php if($rule['charset']=="auto"){ echo ' checked="true"';};?>>
+                <input type="radio" name="rule[charset]" value="gb2312"<?php if($rule['charset']=="gb2312"){ echo ' checked="true"';};?>>
+                gb2312 </label>
+              </span>
+              <span class="add-on">
+              <label class="radio">
+                <input type="radio" name="rule[charset]" value="auto"<?php if($rule['charset']=="auto"){ echo ' checked="true"';};?>>
                 自动识别 </label>
               </span> </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">采集顺序</span><span class="add-on">
               <label class="radio">
-                <input type="radio" name="rule[sort]" id="charset1" value="1"<?php if($rule['sort']=="1"){ echo ' checked="true"';};?>>
+                <input type="radio" name="rule[sort]" value="1"<?php if($rule['sort']=="1"){ echo ' checked="true"';};?>>
                 自下向上 </label>
               </span><span class="add-on">
               <label class="radio">
-                <input type="radio" name="rule[sort]" id="charset2" value="2"<?php if($rule['sort']=="2"){ echo ' checked="true"';};?>>
+                <input type="radio" name="rule[sort]" value="2"<?php if($rule['sort']=="2"){ echo ' checked="true"';};?>>
                 自上向下 </label>
               </span><span class="add-on">
               <label class="radio">
-                <input type="radio" name="rule[sort]" id="charset3" value="3"<?php if($rule['sort']=="3"){ echo ' checked="true"';};?>>
+                <input type="radio" name="rule[sort]" value="3"<?php if($rule['sort']=="3"){ echo ' checked="true"';};?>>
                 随机乱序 </label>
               </span></div>
             <div class="clearfloat mb10"></div>
