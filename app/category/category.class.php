@@ -259,9 +259,9 @@ class category {
         return $dir;
     }
     public static function data_pic($C){
-        $C['pic']  = is_array($C['pic'])?$C['pic']:get_pic($C['pic']);
-        $C['mpic'] = is_array($C['mpic'])?$C['mpic']:get_pic($C['mpic']);
-        $C['spic'] = is_array($C['spic'])?$C['spic']:get_pic($C['spic']);
+        $C['pic']  = is_array($C['pic'])?$C['pic']:filesApp::get_pic($C['pic']);
+        $C['mpic'] = is_array($C['mpic'])?$C['mpic']:filesApp::get_pic($C['mpic']);
+        $C['spic'] = is_array($C['spic'])?$C['spic']:filesApp::get_pic($C['spic']);
         return $C;
     }
     public static function data_parent($C){

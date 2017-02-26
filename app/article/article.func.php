@@ -303,7 +303,7 @@ function article_next($vars) {
 			$category = iCache::get(categoryApp::CACHE_CATEGORY_ID.$rs->cid);
 			$array = array(
 				'title' => $rs->title,
-				'pic' => get_pic($rs->pic),
+				'pic' => filesApp::get_pic($rs->pic),
 				'url' => iURL::get('article', array((array) $rs, $category))->href,
 			);
 		}

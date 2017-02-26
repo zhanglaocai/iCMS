@@ -101,10 +101,10 @@ class tagApp {
         $tag['metadata'] && $tag['meta'] = json_decode($tag['metadata']);
         $tag['related']  && $tag['relArray'] = explode(',', $tag['related']);
         $tag['appid'] = iCMS_APP_TAG;
-        $tag['pic']  = get_pic($tag['pic']);
-        $tag['bpic'] = get_pic($tag['bpic']);
-        $tag['mpic'] = get_pic($tag['mpic']);
-        $tag['spic'] = get_pic($tag['spic']);
+        $tag['pic']  = filesApp::get_pic($tag['pic']);
+        $tag['bpic'] = filesApp::get_pic($tag['bpic']);
+        $tag['mpic'] = filesApp::get_pic($tag['mpic']);
+        $tag['spic'] = filesApp::get_pic($tag['spic']);
         return $tag;
     }
     public function get_array($tags) {

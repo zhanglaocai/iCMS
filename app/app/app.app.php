@@ -128,29 +128,67 @@ var_dump($rs);
         if($this->app['fields']){
             $fields = iFormer::fields($this->app['fields']);
         }
-        foreach ($fields as $key => $value) {
-            var_dump($value);
-            $var = $rs[$key];
-            switch ($value['type']) {
+        foreach ($fields as $key => $field) {
+            $value  = $rs[$key];
+            $values = array();
+            $nkey   = null;
+            switch ($field['type']) {
                 case 'multi_image':
-                    $imageArray = explode("\n", $var);
+                    $imageArray = explode("\n", $value);
                     $pic = array();
                     foreach ($imageArray as $ik => $iv) {
-                        $iv && $pic[]= get_pic(trim($iv));
+                        $iv && $pic[]= filesApp::get_pic(trim($iv));
                     }
-                    $nkey = $key.'_array';
-                    $rs[$nkey] = $pic;
+                    $nkey   = $key.'_array';
+                    $values = $pic;
                 break;
                 case 'image':
-                    $nkey = $key.'_array';
-                    $rs[$nkey] = get_pic($var);
+                    $nkey   = $key.'_array';
+                    $values = filesApp::get_pic($value);
                 break;
+                case 'file':
+                    $nkey = $key.'_file';
+                    $pi   = pathinfo($value);
+                    $values   = array(
+                        'name' => $pi['filename'],
+                        'ext'  => $pi['extension'],
+                        'dir'  => $pi['dirname'],
+                        'url'  => filesApp::get_url($pi['filename'],'download')
+                    );
 
+                break;
+                case 'category':
+                    $category = iCache::get(categoryApp::CACHE_CATEGORY_ID.$value);
+                    $values   = categoryApp::get_lite($category);
+                break;
+                case 'multi_category':
+                    $nkey   = $key.'_category';
+                    $cidsArray = explode(",", $value);
+                    foreach ($cidsArray as $i => $_cid) {
+                        $category   = iCache::get(categoryApp::CACHE_CATEGORY_ID.$_cid);
+                        $values[$i] = categoryApp::get_lite($category);
+                    }
+                break;
                 default:
-                    # code...
-                    break;
+                    // $values = $value;
+                break;
             }
-           // $rs[$key] = iFormer::de_value($rs[$key],$value);
+            if($field['option']){
+                $optionArray = explode(";", $field['option']);
+                foreach ($optionArray as $ok => $val) {
+                    $val = trim($val,"\r\n");
+                    if($val){
+                        list($opt_text,$opt_value) = explode("=", $val);
+                        $values[$opt_value] = $opt_text;
+                    }
+                }
+                $nkey = $key.'_option';
+            }
+            $nkey && $rs[$nkey] = $values;
+
+            var_dump($field,$value,$values);
+            echo "<hr />";
+           // $rs[$key] = iFormer::de_value($rs[$key],$field);
         }
         return $rs;
     }

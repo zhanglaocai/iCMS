@@ -225,14 +225,12 @@ var iFormer = {
                 case 'category':
                 case 'select':
                     $elem = this.widget('select');
+
                     if(obj_type.indexOf("multi")!='-1'){
                         obj['multiple'] = true;
                         $elem.attr('multiple',true);
-                        obj['class'] = obj['class']||'span3 chosen-select';
-                    }else{
-                        obj['class'] = obj['class']||'span6 chosen-select';
                     }
-
+                    obj['class'] = obj['class']||'span6 chosen-select';
                     var field_option = function () {
                         // console.log(obj['option']);
                         var optionText = obj['option'].replace(/(\n)+|(\r\n)+/g, "");
@@ -247,7 +245,7 @@ var iFormer = {
                     if(obj['option']){
                         field_option();
                     }
-
+                    // console.log(obj);
                     elem_type = null;
                 break;
                 case 'number':

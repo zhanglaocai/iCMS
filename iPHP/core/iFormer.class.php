@@ -226,8 +226,7 @@ class iFormer {
                     }
                     if($field['option']){
                         $div_class  .=' input-append';
-                        $optionText  = str_replace(array("\r","\n"), '', $field['option']);
-                        $optionArray = explode(";", $optionText);
+                        $optionArray = explode(";", $field['option']);
                         foreach ($optionArray as $ok => $val) {
                             $val = trim($val,"\r\n");
                             if($val){
@@ -278,8 +277,7 @@ class iFormer {
                     }
                     $html = self::widget('select',$attr)->addClass('chosen-select');
                     if($field['option']){
-                        $optionText = str_replace(array("\r","\n"), '', $field['option']);
-                        $optionArray = explode(";", $optionText);
+                        $optionArray = explode(";", $field['option']);
                         foreach ($optionArray as $ok => $val) {
                             $val = trim($val,"\r\n");
                             if($val){
