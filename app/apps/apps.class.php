@@ -24,11 +24,12 @@ class apps {
     //     return self::get_file($app,$path);
     // }
     public static function menu($menu){
-        $path = iPHP_APP_DIR.'/apps/etc/app.menu.json.php';
-        $json  = file_get_contents($path);
-        $json  = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
+        $path     = iPHP_APP_DIR.'/apps/etc/app.menu.json.php';
+        $json     = file_get_contents($path);
+        $json     = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
         $variable = array();
-        foreach (apps::get_array(array("apptype"=>'2')) as $key => $value) {
+        $array    = apps::get_array(array("apptype"=>'2'));
+        if($array)foreach ($array as $key => $value) {
             if($value['config']['menu']){
                 $sort = 200000+$key;
 
