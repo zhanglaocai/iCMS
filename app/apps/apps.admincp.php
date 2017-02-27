@@ -250,7 +250,6 @@ class appsAdmincp{
               }
             }
 
-            // exit;
             iDB::update('apps', $array, array('id'=>$id));
             $msg = "应用编辑完成!";
         }

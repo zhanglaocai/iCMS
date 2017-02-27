@@ -157,6 +157,8 @@ class apps {
             $rs = (array)$rs;
             if($rs['table']){
                 $table = json_decode($rs['table'],true);
+                var_dump($table);
+
                 $table && $rs['table']  = self::table_item($table);
             }
             $rs['config']&& $rs['config'] = json_decode($rs['config'],true);
@@ -380,6 +382,7 @@ class apps {
             $arr    = get_defined_functions ();
             $array2 = $arr['user'];
             $result = array_diff ( $array2 ,  $array1);
+
             if($result){
                 if($tag){
                     $tag_array = array();

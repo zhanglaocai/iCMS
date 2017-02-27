@@ -77,7 +77,7 @@ $(function(){
               <textarea name="config[template]" id="config_template" class="span6" style="height: 150px;" readonly><?php
               if($rs['app']){
                 $_app = $rs['app'];
-                if($rs['config']['iFormer']){
+                if($rs['config']['iFormer'] && $rs['apptype']=="2"){
                   $_app = 'app';
                 }
                 $template = (array)apps::get_func($_app,true);
@@ -92,7 +92,7 @@ $(function(){
                 }
               }
               $template = implode("\n", (array)$template);
-              if($rs['config']['iFormer']){
+              if($rs['config']['iFormer'] && $rs['apptype']=="2"){
                 $template = str_replace(array(':app:','$app'), array(':'.$rs['app'].':','$'.$rs['app']), $template);
               }
               echo $template;
