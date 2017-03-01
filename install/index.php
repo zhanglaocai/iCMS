@@ -33,11 +33,11 @@ $lock_file = iPATH.'cache/install.lock';
 		<link href="../app/admincp/ui/bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
 		<link href="../app/admincp/ui/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" rel="stylesheet"/>
 		<link href="../app/admincp/ui/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet"/>
-		<link href="../app/admincp/ui/artDialog/6.0.3/ui-dialog.css" type="text/css" rel="stylesheet"/>
+		<link href="../app/admincp/ui/artDialog/ui-dialog.css" type="text/css" rel="stylesheet"/>
 		<link href="../app/admincp/ui/iCMS.css" type="text/css" rel="stylesheet"/>
 		<script src="../app/admincp/ui/jquery-1.11.0.min.js"></script>
 		<script src="../app/admincp/ui/bootstrap/2.3.2/js/bootstrap.min.js"></script>
-		<script src="../app/admincp/ui/artDialog/6.0.3/dialog-plus-min.js"></script>
+		<script src="../app/admincp/ui/artDialog/dialog-plus-min.js"></script>
 		<script src="../app/admincp/ui/iCMS.js"></script>
 
 		<link href="./install.css" type="text/css" rel="stylesheet"/>
