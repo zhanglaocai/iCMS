@@ -101,7 +101,7 @@ if($_POST['action']=='install'){
 //配置程序
     define('iPHP_APP_CONFIG', iFS::path(iPHP_CONF_DIR . '/' . iPHP_APP . '/config.php')); //网站配置文件
 
-    $config = configAdmincp::get();
+    $config = configAdmincp::get(0);
     $config['router']['url']    = $router_url;
     $config['router']['public'] = $router_url.'/public';
     $config['router']['user']   = $router_url.'/user';

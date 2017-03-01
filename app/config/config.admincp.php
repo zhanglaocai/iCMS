@@ -121,13 +121,18 @@ class configAdmincp{
         $cache && iCache::set('config/' . $name, $value, 0);
         // is_array($value) && $value = addslashes(serialize($value));
         is_array($value) && $value = addslashes(json_encode($value));
-        $check  = iDB::value("SELECT `name` FROM `#iCMS@__config` WHERE `appid` ='$appid' AND `name` ='$name'");
+        $sql = "`name` ='$name'";
+        $appid === null OR $sql.="`appid` ='$appid'";
+
+        $check  = iDB::value("SELECT `name` FROM `#iCMS@__config` WHERE {$sql}");
         $fields = array('appid','name','value');
         $data   = compact ($fields);
         if($check===null){
             iDB::insert('config',$data);
         }else{
-            iDB::update('config', $data, array('appid'=>$appid,'name'=>$name));
+            $where = array('name'=>$name);
+            $appid === null OR $where['appid'] = $appid;
+            iDB::update('config', $data, $where);
         }
     }
     public static function del($name, $appid) {
