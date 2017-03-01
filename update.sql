@@ -61,3 +61,7 @@ ALTER TABLE `icms_prop`
 
 ALTER TABLE `icms_article`
   DROP COLUMN `metadata`;
+
+ALTER TABLE `icms_category`
+  DROP COLUMN `metadata`,
+  DROP COLUMN `hasbody`;

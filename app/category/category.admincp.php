@@ -60,10 +60,6 @@ class categoryAdmincp {
             $rootid	= $rs['rootid'];
             $rs['rule']     = json_decode($rs['rule'],true);
             $rs['template'] = json_decode($rs['template'],true);
-            $rs['metadata'] = json_decode($rs['metadata'],true);
-            $rs['body'] = iCache::get('category/'.$this->cid.'.body');
-            $rs['body'] && $rs['body'] = stripslashes($rs['body']);
-
         }else {
             $rootid = (int)$_GET['rootid'];
             $rootid && admincp::CP($rootid,'a','page');
@@ -74,11 +70,9 @@ class categoryAdmincp {
                 'status'    => '1',
                 'isexamine' => '1',
                 'issend'    => '1',
-                'hasbody'   => '2',
                 'sortnum'  => '0',
                 'mode'      => '0',
                 'htmlext'   => iCMS::$config['router']['ext'],
-                'metadata'  => ''
             );
 	        if($rootid){
                 $rootRs = iDB::row("SELECT * FROM `#iCMS@__category` WHERE `cid`='".$rootid."' LIMIT 1;",ARRAY_A);
@@ -120,10 +114,6 @@ class categoryAdmincp {
         $description  = iSecurity::escapeStr($_POST['description']);
         $rule         = iSecurity::escapeStr($_POST['rule']);
         $template     = iSecurity::escapeStr($_POST['template']);
-        // $metadata     = iSecurity::escapeStr($_POST['metadata']);
-        // $body         = $_POST['body'];
-        // $hasbody      = (int)$_POST['hasbody'];
-        // $hasbody OR $hasbody = $body?1:0;
 
         // if($_rootid_hash){
         //     $_rootid = authcode($_rootid_hash);
@@ -136,18 +126,7 @@ class categoryAdmincp {
         // }
         ($cid && $cid==$rootid) && iUI::alert('不能以自身做为上级'.$this->category_name);
         empty($name) && iUI::alert($this->category_name.'名称不能为空!');
-		// if($metadata){
-	 //        $md	= array();
-  //           if(is_array($metadata['key'])){
-  //   			foreach($metadata['key'] AS $_mk=>$_mval){
-  //   				!preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iUI::alert($this->category_name.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
-  //   				$md[$_mval] = $metadata['value'][$_mk];
-  //   			}
-  //           }else if(is_array($metadata)){
-  //               $md = $metadata;
-  //           }
-  //           $metadata = addslashes(json_encode($md));
-		// }
+
         if($mode=="2"){
             foreach ($rule as $key => $value) {
                 $CR = $this->category_rule[$key];
@@ -171,8 +150,8 @@ class categoryAdmincp {
             'rootid','pid','appid','sortnum','name','subname','password',
             'title','keywords','description','dir',
             'mode','domain','url','pic','mpic','spic','htmlext',
-            'rule','template','metadata',
-            'hasbody','isexamine','issend','isucshow','status');
+            'rule','template',
+            'isexamine','issend','isucshow','status');
         $data   = compact ($fields);
 
         apps::former_data(self::$sappid,$data,'category');
@@ -218,7 +197,6 @@ class categoryAdmincp {
             //$this->cahce_item($cid);
             $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
-        // $hasbody && iCache::set('category/'.$cid.'.body',$body,0);
 
         // $this->category_config();
 
@@ -390,14 +368,14 @@ class categoryAdmincp {
                `rootid`, `pid`, `appid`, `userid`, `creator`,
                `subname`, `sortnum`, `password`, `title`, `keywords`, `description`,
                `url`, `pic`, `mpic`, `spic`, `count`, `mode`, `domain`, `htmlext`,
-               `rule`, `template`, `metadata`, `hasbody`, `comments`, `isexamine`, `issend`,
+               `rule`, `template`, `comments`, `isexamine`, `issend`,
                `isucshow`, `status`, `pubdate`
             ) SELECT
                 CONCAT(`name`,'副本'),CONCAT(`dir`,'fuben'),
                 `rootid`, `pid`, `appid`, `userid`, `creator`,
                 `subname`, `sortnum`, `password`, `title`, `keywords`, `description`,
                 `url`, `pic`, `mpic`, `spic`, `count`, `mode`, `domain`, `htmlext`,
-                `rule`, `template`, `metadata`, `hasbody`, `comments`, `isexamine`, `issend`,
+                `rule`, `template`, `comments`, `isexamine`, `issend`,
                 `isucshow`, `status`, `pubdate`
             FROM `#iCMS@__category`
             WHERE cid = '$this->cid'");
@@ -496,10 +474,10 @@ class categoryAdmincp {
     public static function tree_unset($C){
         unset(
             $C->rule,$C->template,
-            $C->description,$C->keywords,$C->metadata,
+            $C->description,$C->keywords,
             $C->password,$C->mpic,$C->spic,
             $C->title,$C->subname,$C->iurl,$C->dir,
-            $C->hasbody,$C->htmlext,
+            $C->htmlext,
             $C->isexamine,$C->issend,$C->isucshow,$C->comments
         );
         return $C;

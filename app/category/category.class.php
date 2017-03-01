@@ -248,7 +248,6 @@ class category {
 
         is_string($C['rule'])    && $C['rule']     = json_decode($C['rule'],true);
         is_string($C['template'])&& $C['template'] = json_decode($C['template'],true);
-	    is_string($C['metadata'])&& $C['metadata'] = metadata($C['metadata']);
 
 		return $C;
     }

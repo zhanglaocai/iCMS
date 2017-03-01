@@ -52,11 +52,6 @@ class categoryApp{
             $category['mode']=='1' && iCMS::redirect_html($iurl['path'],$iurl['href']);
         }
 
-        if($category['hasbody']){
-           $category['body'] = iCache::get(self::CACHE_CATEGORY_ID.$category['cid'].'.body');
-           $category['body'] && $category['body'] = stripslashes($category['body']);
-        }
-
         $category['param'] = array(
             "sappid" => $category['sappid'],
             "appid"  => $category['appid'],
