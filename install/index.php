@@ -129,7 +129,11 @@ $lock_file = iPATH.'cache/install.lock';
 					return false;
 		        }
 				$(this).button('loading');
+				$("#install_btn_reset").show();
 				$("#install_form").submit();
+		    	window.setTimeout(function(){
+		    		$("#install_btn").button('reset');
+		    	},10000);
 			});
 
 		})
@@ -475,6 +479,7 @@ $lock_file = iPATH.'cache/install.lock';
 					</div>
 					<div class="form-actions">
 						<button type="button" class="btn btn-large btn-primary" id="install_btn" data-loading-text="安装中，请稍候...">下一步</button>
+						<a href="javascript:;" id="install_btn_reset" class="hide">重置</a>
 					</div>
 				</form>
 			</div>
