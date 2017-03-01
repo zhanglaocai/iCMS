@@ -68,3 +68,6 @@ ALTER TABLE `icms_category`
 
 ALTER TABLE `icms_tags`
   DROP COLUMN `metadata`;
+
+ALTER TABLE `icms_push`
+  DROP COLUMN `metadata`;

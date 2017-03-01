@@ -48,7 +48,6 @@ function push_list($vars){
             $value['pic']     && $value['pic']  = iFS::fp($value['pic'],'+http');
             $value['pic2']    && $value['pic2'] = iFS::fp($value['pic2'],'+http');
             $value['pic2']    && $value['pic2'] = iFS::fp($value['pic2'],'+http');
-            $value['metadata']&& $value['metadata'] = unserialize($value['metadata']);
             $resource[$key] = $value;
         }
 		$vars['cache'] && iCache::set($cache_name,$resource,$cache_time);

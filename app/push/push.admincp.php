@@ -131,9 +131,6 @@ class pushAdmincp{
         $description3= iSecurity::escapeStr($_POST['description3']);
         $url3		= iSecurity::escapeStr($_POST['url3']);
 
-        $metadata	= iSecurity::escapeStr($_POST['metadata']);
-        $metadata	= $metadata?addslashes(serialize($metadata)):'';
-
 		empty($userid) && $userid=members::$userid;
         empty($title) && iUI::alert('1.标题必填');
         empty($cid) && iUI::alert('请选择所属栏目');
@@ -141,7 +138,12 @@ class pushAdmincp{
         $haspic	= empty($pic)?0:1;
 
         $status	= 1;
-        $fields = array('cid', 'rootid', 'pid', 'haspic', 'editor', 'userid', 'title', 'pic', 'url', 'description', 'title2', 'pic2', 'url2', 'description2', 'title3', 'pic3', 'url3', 'description3', 'sortnum', 'metadata', 'addtime','hits', 'status');
+        $fields = array('cid', 'rootid', 'pid', 'haspic', 'editor', 'userid',
+            'title', 'pic', 'url', 'description',
+            'title2', 'pic2', 'url2', 'description2',
+            'title3', 'pic3', 'url3', 'description3',
+            'sortnum', 'addtime','hits', 'status');
+
         $data   = compact ($fields);
 
         apps::former_data($this->appid,$data,'push');
