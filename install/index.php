@@ -34,7 +34,7 @@ $lock_file = iPATH.'cache/install.lock';
 		<link href="../app/admincp/ui/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" rel="stylesheet"/>
 		<link href="../app/admincp/ui/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet"/>
 		<link href="../app/admincp/ui/artDialog/6.0.3/ui-dialog.css" type="text/css" rel="stylesheet"/>
-		<link href="../app/admincp/ui/iCMS-6.0.0.css" type="text/css" rel="stylesheet"/>
+		<link href="../app/admincp/ui/iCMS.css" type="text/css" rel="stylesheet"/>
 		<script src="../app/admincp/ui/jquery-1.11.0.min.js"></script>
 		<script src="../app/admincp/ui/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 		<script src="../app/admincp/ui/artDialog/6.0.3/dialog-plus-min.js"></script>
@@ -413,8 +413,9 @@ $lock_file = iPATH.'cache/install.lock';
 					<div class="control-group">
 						<label class="control-label" for="DB_HOST">服务器地址</label>
 						<div class="controls">
-							<input type="text" class="span4" id="DB_HOST" name="DB_HOST" value="localhost">
-							<span class="help-block">数据库服务器名或服务器ip，一般为localhost</span>
+							<input type="text" class="span3" id="DB_HOST" name="DB_HOST" value="localhost">:
+							<input type="text" class="span1" id="DB_PORT" name="DB_PORT" value="3306">
+							<span class="help-block">数据库服务器名或服务器ip和数据库端口,一般为localhost:3306</span>
 						</div>
 					</div>
 					<div class="control-group">
