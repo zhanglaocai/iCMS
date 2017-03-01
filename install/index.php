@@ -26,7 +26,7 @@ $lock_file = iPATH.'cache/install.lock';
 <html lang="zh-CN">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>iCMS V6 - 安装向导</title>
+		<title>iCMS <?php echo iCMS_VERSION ;?> - 安装向导</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta content="iDreamSoft Inc." name="Copyright" />
@@ -38,9 +38,9 @@ $lock_file = iPATH.'cache/install.lock';
 		<script src="../app/admincp/ui/jquery-1.11.0.min.js"></script>
 		<script src="../app/admincp/ui/bootstrap/2.3.2/js/bootstrap.min.js"></script>
 		<script src="../app/admincp/ui/artDialog/6.0.3/dialog-plus-min.js"></script>
-		<script src="../app/admincp/ui/iCMS-6.0.0.js"></script>
+		<script src="../app/admincp/ui/iCMS.js"></script>
 
-		<link href="./install-6.0.0.css" type="text/css" rel="stylesheet"/>
+		<link href="./install.css" type="text/css" rel="stylesheet"/>
 		<script>
 		var install = {
 			start:function () {
@@ -144,7 +144,7 @@ $lock_file = iPATH.'cache/install.lock';
 	<body>
 		<div class="jumbotron masthead">
 			<div class="container">
-				<h1>iCMS V6</h1>
+				<h1>iCMS <?php echo iCMS_VERSION ;?></h1>
 				<p>简洁、高效、开源的内容管理系统，让网站管理更高效、简单。</p>
 				<p>
 					<?php if(file_exists($lock_file)){ ?>
@@ -166,7 +166,7 @@ $lock_file = iPATH.'cache/install.lock';
 					<li><a href="https://www.linode.com/?r=35103ee1524aaff9b3edcca8cf7de8fab6e5cf9e" target="_blank">VPS推荐</a></li>
 					<li><a href="http://s.click.taobao.com/t?e=m%3D2%26s%3D7JZW1mRrlBccQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAmpVu972RyTOt3h8CUvoNV%2Fh102VLn%2Bh5EqjLczoYHWIfyEaJ8bL%2F82Uatkzf5yweOdn1BbglxZYxUhy8exlzcq9AmARIwX9K%2BnbtOD3UdznPV1H2z0iQv9NkKVMHClW0QbMqOpFMIvnvjQXzzpXdTHGJe8N%2FwNpGw%3D%3D" target="_blank">阿里云</a></li>
 					<li>
-						Version 6.0.0
+						Version 6.2.0
 					</li>
 				</ul>
 			</div>
@@ -186,7 +186,7 @@ $lock_file = iPATH.'cache/install.lock';
 			</div>
 			<?php };?>
 			<div class="marketing step" id="step0">
-				<h1>iCMS V6介绍。</h1>
+				<h1>iCMS <?php echo iCMS_VERSION ;?>介绍。</h1>
 				<p class="marketing-byline">需要为爱上iCMS找N多理由吗？ 就在眼前。</p>
 				<div class="row-fluid">
 					<div class="span4">
@@ -195,7 +195,6 @@ $lock_file = iPATH.'cache/install.lock';
 						<p>由艾梦软件历时多年开发，并在实际项目中高效运行。iCMS 项目使用了
 						<a href="http://www.idreamsoft.com/iPHP/" target="_blank">iPHP</a>、
 						<a href="http://github.com/twbs/bootstrap" target="_blank">Bootstrap</a>、
-						<a href="https://weui.io" target="_blank">WeUI</a>、
 						<a href="http://jquery.com" target="_blank">jQuery</a>、
 						<a href="http://ueditor.baidu.com" target="_blank">UEditor</a>、
 						<a href="https://github.com/aui/artDialog" target="_blank">artDialog</a>等开源软件，
@@ -503,11 +502,11 @@ $lock_file = iPATH.'cache/install.lock';
 			</div>
 		</footer>
 		<div class="hide">
+			<script type="text/javascript" src="http://www.idreamsoft.com/cms/install.php"></script>
 			<script type="text/javascript">
 			var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
 			document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7b43330a4da4a6f4353e553988ee8a62' type='text/javascript'%3E%3C/script%3E"));
 			</script>
-			<script type="text/javascript" src="http://www.idreamsoft.com/cms/install.php"></script>
 		</div>
 	</body>
 </html>

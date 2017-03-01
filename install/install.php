@@ -8,6 +8,9 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
+ini_set('display_errors', 'ON');
+error_reporting(E_ALL & ~E_NOTICE);
+
 define('iPHP',TRUE);
 define('iPHP_APP','iCMS'); //应用名
 define('iPATH',dirname(strtr(__FILE__,'\\','/'))."/../");
@@ -64,8 +67,8 @@ if($_POST['action']=='install'){
     iDB::pre_set();
     iDB::select_db(true) OR iUI::alert("不能链接到数据库".iPHP_DB_NAME,'js:top.callback("#DB_NAME");');
 
-	$config  = iPATH.'config.php';
-	$content = iFS::read($config,false);
+	$config_file  = iPATH.'config.php';
+	$content = iFS::read($config_file,false);
 	$content = preg_replace("/define\(\'iPHP_DB_HOST\',\'.*?\'\)/is", 		"define('iPHP_DB_HOST','".iPHP_DB_HOST."')",     $content);
 	$content = preg_replace("/define\(\'iPHP_DB_USER\',\'.*?\'\)/is", 		"define('iPHP_DB_USER','".iPHP_DB_USER."')", 	 $content);
 	$content = preg_replace("/define\(\'iPHP_DB_PASSWORD\',\'.*?\'\)/is", 	"define('iPHP_DB_PASSWORD','".iPHP_DB_PASSWORD."')", $content);
@@ -73,16 +76,10 @@ if($_POST['action']=='install'){
 	$content = preg_replace("/define\(\'iPHP_DB_PREFIX\',\'.*?\'\)/is", 	"define('iPHP_DB_PREFIX','".iPHP_DB_PREFIX."')",   $content);
 	$content = preg_replace("/define\(\'iPHP_KEY\',\'.*?\'\)/is", 			"define('iPHP_KEY','".random(32)."')",$content);
 
-	$parse_url     = parse_url($router_url);
-	$host          = $parse_url['host'];
-	$COOKIE_DOMAIN = '.'.LtDomainParser::getRootDomain($host);
-    preg_match("/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/",$host) && $COOKIE_DOMAIN = '';
-	$content = preg_replace("/define\(\'iPHP_COOKIE_DOMAIN\',\s*\'.*?\'\)/is","define('iPHP_COOKIE_DOMAIN','$COOKIE_DOMAIN')",$content);
-
-	iFS::write($config,$content,false);
+	iFS::write($config_file,$content,false);
 //开始安装 数据库
 
-	$sql_file = dirname(strtr(__FILE__,'\\','/')).'/iCMS.V6.sql';
+	$sql_file = dirname(strtr(__FILE__,'\\','/')).'/iCMS.sql';
 	is_readable($sql_file) OR iUI::alert('数据库文件不存在或者读取失败','js:top.callback();');
 	//require_once ($config);
 
@@ -101,35 +98,23 @@ if($_POST['action']=='install'){
 	");
 
 //配置程序
-	$result = iDB::all("SELECT * FROM `#iCMS@__config` WHERE `appid`='0'");
 
-    foreach ($result as $key => $c) {
-        $value = $c['value'];
-        strstr($c['value'], 'a:') && $value = unserialize($c['value']);
-        $config[$c['name']] = $value;
+    $config     = configAdmincp::get();
+    $router_url = iSecurity::escapeStr($router_url);
+
+    $config['router']['url']    = $router_url;
+    $config['router']['public'] = $router_url.'/public';
+    $config['router']['user']   = $router_url.'/user';
+    $config['router']['404']    = $router_url.'/public/404.htm';
+    $config['FS']['url']        = $router_url.'/res/';
+    $config['tag']['url']       = $router_url;
+	$config['template']['mobile']['domain'] = $router_url;
+
+    foreach($config AS $n=>$v){
+        configAdmincp::set($v,$n,0);
     }
+    configAdmincp::cache();
 
-
-    $config['router']['url']        = $router_url;
-    $config['router']['public']     = $router_url.'/public';
-    $config['router']['user']       = $router_url.'/usercp';
-    $config['router']['404']        = $router_url.'/public/404.htm';
-    $config['router']['tag']['url'] = $router_url;
-
-	$config['FS']['url']            = $router_url.'/res/';
-
-	$config['template']['mobile']['domain']     = $router_url;
-	$config['template']['device'][0]['domain']  = $router_url;
-
-	foreach($config AS $n=>$v){
-        is_array($v) && $v = addslashes(serialize($v));
-        iDB::query("UPDATE `#iCMS@__config` SET `value` = '$v' WHERE `appid` ='0' AND `name` ='$n'");
-	}
-
- 	$output = "<?php\ndefined('iPHP') OR exit('Access Denied');\nreturn ";
-	$output.= var_export($config,true);
-	$output.= ';';
-	iFS::write(iPATH.'conf/iCMS/config.php',$output,false);
 //写入数据库配置<hr />开始安装数据库<hr />数据库安装完成<hr />设置超级管理员<hr />更新网站缓存<hr />
 	iFS::write($lock_file,'iCMS.'.time(),false);
 	iFS::rmdir(iPATH.'install');
@@ -152,112 +137,5 @@ function run_query($sql) {
     foreach($resource as $key=>$query) {
         $query  = trim($query);
         $query && iDB::query($query);
-    }
-}
-
-/**
- * from https://github.com/qinjx/lotusphp/blob/master/runtime/DomainParser/DomainParser.php
- */
-class LtDomainParser {
-    protected static $TLD = array(
-        "aero" => 1, "asia" => 1, "biz" => 1, "cat" => 1, "com" => 1, "coop" => 1, "edu" => 1, "gov" => 1, "local" => 1,
-        "info" => 1, "int" => 1, "jobs" => 1, "mil" => 1, "mobi" => 1, "name" => 1, "net" => 1, "org" => 1, "post" => 1,
-        "pro" => 1, "tel" => 1, "xxx" => 1
-    );
-    /**
-     * ccTLD
-     * @var array
-     * ccTLD list: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
-     * Reserved ccSLD: http://mxr.mozilla.org/mozilla-central/source/netwerk/dns/effective_tld_names.dat?raw=1
-     */
-    protected static $ccTLD = array(
-        "cn" => array(
-            "sh"  => 1,
-            "com" => 1,
-        ),
-        "hk" => array(
-            "com" => 1,
-        ),
-        "ch" => 1,
-    );
-    /**
-     * 从URL中的主机名解析出网站根域名
-     * @param string $hostname URL中的主机名
-     * @return bool|string 网站根域名
-     */
-    public static function getRootDomain($hostname) {
-        if (is_string($hostname) && $Last3Tokens = self::getValidLast3DomainLabels($hostname)) {
-            $sld = $Last3Tokens[1] . "." . $Last3Tokens[0];
-            if (3 <= strlen($Last3Tokens[0])) {//gTLD
-                if (isset(self::$TLD[$Last3Tokens[0]])) {
-                    return $sld;
-                }
-            } else {//ccTLD
-                if (isset(self::$ccTLD[$Last3Tokens[0]])) {//ccTLD
-                    if (isset(self::$ccTLD[$Last3Tokens[0]][$Last3Tokens[1]])) {//Reserved ccSLD
-                        if (isset($Last3Tokens[2])) {
-                            return $Last3Tokens[2] . "." . $sld;
-                        }
-                    } else {
-                        return $sld;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-    /**
-     * 获取主机名最后三段，如果只有两段，返回两段
-     * @param $hostname
-     * @return array|null
-     */
-    protected static function getValidLast3DomainLabels($hostname) {
-        if ("." !== substr($hostname, 0, 1) && "." !== substr($hostname, -1) && 253 > strlen($hostname)) {
-            $labels = explode(".", $hostname);
-            $labelsNum = count($labels);
-            if (2 <= $labelsNum && 127 >= $labelsNum) {
-                $Last3Tokens = array();
-                for ($i = $labelsNum-1; $i >= 0; $i --) {
-                    if (true === self::isValidDomainLabel($labels[$i])) {
-                        if ($i >= $labelsNum - 3) {
-                            $Last3Tokens[$labelsNum - $i - 1] = $labels[$i];
-                        }
-                    } else {
-                        return null;
-                    }
-                }
-                return $Last3Tokens;
-            }
-        }
-        return null;
-    }
-    /**
-     * 判断是否合法的域名，主要条件：最长63字节，不可包含非法字符
-     * @param $label
-     * @return bool
-     */
-    protected static function isValidDomainLabel($label) {
-        $labelLen = strlen($label);
-        if (63 >= $labelLen && 1 <= $labelLen) {
-            for($i = 0; $i < $labelLen; $i ++) {
-                $ascii = ord($label[$i]);
-                if (
-                    $ascii >= 65 && $ascii <= 90 //A-Z
-                    or
-                    $ascii >= 97 && $ascii <= 122//a-z
-                    or
-                    $ascii >= 48 && $ascii <= 57 //0-9
-                    or
-                    $ascii == 45//-
-                ) {
-                    // it is valid
-                } else {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
     }
 }
