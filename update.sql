@@ -58,3 +58,6 @@ ALTER TABLE `icms_prop`
     CHANGE `sortnum` `sortnum` int(10) unsigned   NOT NULL DEFAULT 0 after `app` ,
     DROP COLUMN `type` ,
     DROP KEY `type`, ADD KEY `type`(`app`) ;
+
+ALTER TABLE `icms_article`
+  DROP COLUMN `metadata`;

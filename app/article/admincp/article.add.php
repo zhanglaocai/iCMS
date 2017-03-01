@@ -35,10 +35,6 @@ $(function(){
     }
   })
 
-  $("#article-add-metadata").on("click",".delMD",function(){
-      $(this).parent().parent().remove();
-  });
-
   $('#ischapter').click(function(){
     var checkedStatus = $(this).prop("checked"),chapter = $("input[name=chapter]").val();
     subtitleToggle (checkedStatus);

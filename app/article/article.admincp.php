@@ -61,9 +61,7 @@ class articleAdmincp{
         $cid         = empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
         $cata_option = category::select('ca',$cid);
 
-        //$metadata          = array_merge((array)$contentprop,(array)$rs['metadata']);
         $rs['pubdate']       = get_date($rs['pubdate'],'Y-m-d H:i:s');
-        $rs['metadata'] && $rs['metadata'] = unserialize($rs['metadata']);
         $rs['markdown'] &&  self::$config['markdown'] = "1";
         if(empty($this->id)){
             $rs['status']  = "1";
@@ -501,8 +499,6 @@ class articleAdmincp{
         $clink       = iSecurity::escapeStr($_POST['clink']);
         $url         = iSecurity::escapeStr($_POST['url']);
         $tpl         = iSecurity::escapeStr($_POST['tpl']);
-        $metadata    = iSecurity::escapeStr($_POST['metadata']);
-        $metadata    = $metadata?addslashes(serialize($metadata)):'';
         $body        = (array)$_POST['body'];
         $creative    = (int)$_POST['creative'];
         $markdown    = (int)$_POST['markdown'];

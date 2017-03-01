@@ -200,12 +200,6 @@ class articleApp {
 			unset($multi_tag, $tags_fname);
 		}
 
-		if ($vars['meta']) {
-			if ($article['metadata']) {
-				$article['meta'] = unserialize($article['metadata']);
-				unset($article['metadata']);
-			}
-		}
 		if ($vars['user']) {
 			if ($article['postype']) {
 				$article['user'] = user::empty_info($article['userid'], '#' . $article['editor']);

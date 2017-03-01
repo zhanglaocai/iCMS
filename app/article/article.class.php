@@ -18,7 +18,7 @@ class article {
             'title', 'stitle','keywords', 'tags', 'description','source',
             'author', 'editor', 'userid',
             'haspic','pic','mpic','spic', 'picdata',
-            'related', 'metadata', 'pubdate', 'chapter', 'url','clink',
+            'related', 'pubdate', 'chapter', 'url','clink',
             'hits','hits_today','hits_yday','hits_week','hits_month','favorite','comments', 'good', 'bad',
             'sortnum','weight', 'postype', 'creative','markdown','tpl','status');
 
