@@ -37,7 +37,7 @@ admincp::head(false);
             <a href="<?php echo APP_FURI; ?>&do=git_show&commit_id=<?php echo $commit_id; ?>&git=true" class="btn btn-info btn-small"
               data-toggle="modal" data-target="#iCMS-MODAL" data-meta="{&quot;width&quot;:&quot;85%&quot;,&quot;height&quot;:&quot;450px&quot;}"
               title="查看<?php echo substr($commit_id, 0,16) ; ?>详细信息"><i class="fa fa-eye"></i> 查看</a>
-            <a href="<?php echo APP_FURI; ?>&do=git_update&commit_id=<?php echo $commit_id; ?>&release=<?php echo date('Ymd',$value['info'][2]); ?>&git=true" class="btn btn-success btn-small" target="iPHP_FRAME" title="更新到这个版本"><i class="fa fa-check"></i> 更新</a>
+            <a href="<?php echo APP_FURI; ?>&do=git_download&commit_id=<?php echo $commit_id; ?>&release=<?php echo date('Ymd',$value['info'][2]); ?>&git=true" class="btn btn-success btn-small" target="_blank" title="更新到这个版本"><i class="fa fa-check"></i> 更新</a>
           </td>
         </tr>
         <?php }?>

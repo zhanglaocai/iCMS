@@ -42,7 +42,7 @@ class patchAdmincp{
 	    		case "2"://不自动下载更新,有更新时提示
 		    		$json	= array(
 						'code' => "2",
-						'url'  => __ADMINCP__.'=patch&do=update',
+						'url'  => __ADMINCP__.'=patch&do=download',
 						'msg'  => "发现iCMS最新版本<br /><span class='label label-warning'>iCMS ".$this->patch[0]." [".$this->patch[1]."]</span><br />".$this->patch[3]."<hr />您当前使用的版本<br /><span class='label label-info'>iCMS ".iCMS_VERSION." [".iCMS_RELEASE."]</span><br /><br />请马上更新您的iCMS!!!",
 		    		);
 	    		break;
@@ -57,15 +57,15 @@ class patchAdmincp{
     		iUI::dialog('success:#:check:#:'.$json['msg'],0,30,$moreBtn);
 		}
     }
+    public function do_download(){
+		$this->msg	= patch::download();//下载文件包
+		include admincp::view("patch");
+    }
     public function do_install(){
 		$this->msg.= patch::update();//更新文件
 		if(patch::$next){
 			$this->msg.= patch::run();//数据库升级
 		}
-		include admincp::view("patch");
-    }
-    public function do_update(){
-		$this->msg	= patch::download();//下载文件包
 		include admincp::view("patch");
     }
     //===================git=========
@@ -74,6 +74,19 @@ class patchAdmincp{
     	$log =  patchAdmincp::git('log');
     	include admincp::view("git.log");
     }
+
+    public function do_git_download(){
+    	$zip_url = patchAdmincp::git('zip','url');
+		$release = $_GET['release'];
+		$zipName = str_replace(patch::PATCH_URL.'/', '', $zip_url);
+
+		// patch::$release = $release;
+		// patch::$zipName = $zipName;
+		// $this->do_download();
+		iPHP::redirect(APP_URI.'&do=download&release='.$release.'&zipname='.$zipName.'&git=true');
+    }
+
+
     public function do_git_show(){
     	// $show =  patchAdmincp::git('show','json');
     	// print_r($show);
@@ -85,13 +98,6 @@ class patchAdmincp{
         );
     	include admincp::view("git.show");
     }
-    public function do_git_update(){
-    	$zip_url = patchAdmincp::git('zip','url');
-		$release = $_GET['release'];
-		$zipName = str_replace(patch::PATCH_URL.'/', '', $zip_url);
-		iPHP::redirect(APP_URI.'&do=update&release='.$release.'&zipname='.$zipName.'&git=true');
-    }
-
 	public static function git($do,$type='array') {
 		require iPHP_APP_CORE.'/git.version.php';
 		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=' .GIT_COMMIT. '&t=' . time();

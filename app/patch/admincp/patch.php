@@ -13,8 +13,14 @@ admincp::head();
 <div class="iCMS-container">
   <div class="well iCMS-well iCMS-patch">
     <div id="log"></div>
-    <?php if($_GET['do']=="update"){?>
-    <div class="form-actions"> <a class="btn btn-large" href="<?php echo APP_URI; ?>&do=install"><i class="fa fa-wrench"></i> 开始升级</a> </div>
+    <?php if($_GET['do']=="download"){?>
+        <div class="form-actions">
+        <?php if(isset($_GET['git'])){?>
+            <a class="btn btn-success btn-large" href="<?php echo APP_URI; ?>&do=install&release=<?php echo patch::$release; ?>&zipname=<?php echo $_GET['zipname']; ?>&git=true"><i class="fa fa-wrench"></i> 开始升级</a>
+        <?php }else{ ?>
+            <a class="btn btn-success btn-large" href="<?php echo APP_URI; ?>&do=install"><i class="fa fa-wrench"></i> 开始升级</a>
+        <?php } ?>
+        </div>
     <?php } ?>
   </div>
 </div>
