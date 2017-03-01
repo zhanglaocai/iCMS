@@ -17,7 +17,7 @@ class patchAdmincp{
 		if(isset($_GET['git'])){
 			patch::$release = $_GET['release'];
 			patch::$zipName = $_GET['zipname'];
-			patch::$test = true;
+			// patch::$test = true;
 		}else{
 			$this->patch = patch::init(isset($_GET['force'])?true:false);
 		}
@@ -101,8 +101,8 @@ class patchAdmincp{
 	public static function git($do,$type='array') {
 		require iPHP_APP_CORE.'/git.version.php';
 		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=' .GIT_COMMIT. '&t=' . time();
-		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=7e54fae6d0625f32&t=' . time();
-var_dump($url);
+// 		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=7e54fae6d0625f32&t=' . time();
+// var_dump($url);
 		$data = iHttp::remote($url);
 		if($type=='array'){
 			if($data){
