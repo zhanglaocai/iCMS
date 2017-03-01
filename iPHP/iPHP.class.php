@@ -61,7 +61,7 @@ class iPHP {
 			$map[$name] && $name = $map[$name];
 			$core===null && $core = iPHP_CORE;
 			$path = $core.'/'.$name.'.class.php';
-		}else if(iPHP::$apps[$name]){
+		}else if(iPHP::$apps[$name]||in_array($name, array('apps','app')) ){
 			//app.class.php
 			$file OR $file = $name.'.class';
 			$path = iPHP_APP_DIR . '/' . $name . '/' . $file . '.php';
@@ -500,7 +500,7 @@ class iPHP {
 		$html = str_replace('\\', '/', $html);
 		$html = str_replace(iPATH, 'iPHP://', $html);
 	    if(iPHP_SHELL){
-	        $html = str_replace(array("<b>", "</b>", "<pre>", "</pre>"), array("\033[31m","\033[0m",''), $html);
+	        $html = str_replace(array("<b>", "</b>", "<pre style='font-size: 14px;'>", "</pre>"), array("\033[31m","\033[0m",''), $html);
 	        echo $html."\n";
 	        exit;
 	    }
@@ -515,7 +515,7 @@ class iPHP {
 	            $array = array('code'=>'0','msg'=>$html);
 	            echo json_encode($array);
 	        }else{
-	            $html = str_replace(array("\r", "\\", "\"", "\n", "<b>", "</b>", "<pre>", "</pre>"), array(' ', "\\\\", "\\\"", '\n', ''), $html);
+	            $html = str_replace(array("\r", "\\", "\"", "\n", "<b>", "</b>", "<pre style='font-size: 14px;'>", "</pre>"), array(' ', "\\\\", "\\\"", '\n', ''), $html);
 	            echo '<script>top.alert("' . $html . '")</script>';
 	        }
 	        exit;

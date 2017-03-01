@@ -80,12 +80,12 @@ admincp::head();
           <td>
             <a href="<?php echo __ADMINCP__;?>=patch&do=check&force=1&frame=iPHP" target="iPHP_FRAME" id="home_patch">最新版本</a>
             /
-            <a href="<?php echo __ADMINCP__;?>=patch&do=git_check&git=true" data-toggle="modal" data-target="#iCMS-MODAL" data-meta="{&quot;width&quot;:&quot;85%&quot;,&quot;height&quot;:&quot;640px&quot;}" title="开发版本信息">开发版本</a>
+            <a href="<?php echo __ADMINCP__;?>=patch&do=git_check&git=true" data-toggle="modal" data-target="#iCMS-MODAL" data-meta="{&quot;width&quot;:&quot;85%&quot;,&quot;height&quot;:&quot;640px&quot;}" title="开发版信息">开发版</a>
           </td>
           <td>
             <span id="iCMS_RELEASE"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span>
             /
-            <span id="GIT_COMMIT_ID"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span>
+            <span id="GIT_COMMIT_TIME"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span>
           </td>
         </tr>
         <tr>
@@ -253,7 +253,7 @@ $(function(){
 		$.getJSON("http://www.idreamsoft.com/cms/version.php?VERSION=<?php echo iCMS_VERSION ; ?>&RELEASE=<?php echo iCMS_RELEASE ; ?>&callback=?",
 		    function(o){
             $('#iCMS_RELEASE').text(o.release);
-            $('#GIT_COMMIT_ID').text(o.commit);
+            $('#GIT_COMMIT_TIME').text(o.commit_time);
 		    }
 		);
 	},1000);

@@ -18,12 +18,12 @@ class weixinAdmincp{
         weixin::$config = $this->config;
     }
     public function do_config(){
-        weixin::init();
-        // $a = weixin::mediaList('news');
-        $a = weixin::qrcode_create('GwKA9BTkSixf_nsyg1jROoJtBv8ey59xP3bALbwYS7E');
-        var_dump($a);
+        // weixin::init();
+        // // $a = weixin::mediaList('news');
+        // $a = weixin::qrcode_create('GwKA9BTkSixf_nsyg1jROoJtBv8ey59xP3bALbwYS7E');
+        // var_dump($a);
 
-        exit;
+        // exit;
         configAdmincp::app($this->appid);
     }
     public function do_save_config(){

@@ -72,7 +72,6 @@ class articleAdmincp{
 
         $strpos   = strpos(iPHP_REFERER,'?');
         $REFERER  = $strpos===false?'':substr(iPHP_REFERER,$strpos);
-        $defArray = iCache::get('defaults');
         if(self::$config['markdown']){
             include admincp::view("article.markdown");
         }else{

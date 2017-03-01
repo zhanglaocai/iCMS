@@ -19,7 +19,7 @@ function pay_notify (key,sid,d) {
   var timer = window.setInterval(function(){
     console.log(key,sid);
     $.getJSON(
-      "<?php echo self::STORE_URL;?>/store.pay.notify.php?callback=?",{key,sid},
+      "<?php echo apps_store::STORE_URL;?>/store.pay.notify.php?callback=?",{key,sid},
       function(o){
           console.log(o);
           d.close().remove();

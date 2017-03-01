@@ -157,7 +157,7 @@ class apps {
             $rs = (array)$rs;
             if($rs['table']){
                 $table = json_decode($rs['table'],true);
-                var_dump($table);
+                // var_dump($table);
 
                 $table && $rs['table']  = self::table_item($table);
             }

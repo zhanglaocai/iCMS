@@ -198,7 +198,7 @@ class categoryAdmincp {
             $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
 
-        // $this->category_config();
+        // $this->config();
 
         admincp::callback($cid,$this);
         if($this->callback['code']){
@@ -406,7 +406,7 @@ class categoryAdmincp {
 	 	echo $this->tree((int)$_GET["root"],$expanded);
     }
     public function do_cache($dialog=true){
-        $this->category_config();
+        $this->config();
         $_count = $this->cache(true,$this->appid);
         // if($_count>1000){
         //     $this->do_cacheall($_count);
@@ -599,7 +599,7 @@ class categoryAdmincp {
         // }
         return $ul;
     }
-    public static function category_config($domain=null){
+    public static function config($domain=null){
         if(empty($domain)){
             $rs  = iDB::all("
                 SELECT `cid`,`domain`
@@ -611,7 +611,7 @@ class categoryAdmincp {
         }
         configAdmincp::set(array(
             'domain'=>$domain
-        ),'category',0,false);
+        ),'category',self::$sappid,false);
 
         configAdmincp::cache();
     }

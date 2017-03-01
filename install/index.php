@@ -464,14 +464,6 @@ $lock_file = iPATH.'cache/install.lock';
 						</div>
 					</div>
 					<h2>网站配置</h2>
-					<p>一般不用修改，向导自动获取</p>
-					<div class="control-group">
-						<label class="control-label" for="ROUTER_DIR">安装目录</label>
-						<div class="controls">
-							<input type="text" name="ROUTER_DIR" class="span4" id="ROUTER_DIR" value="<?php echo $_DIR ; ?>">
-							<span class="help-block">iCMS安装目录，如：http://www.idreamsoft.com/iCMS/ 则安装目录为:iCMS/ 根目录请输入/</span>
-						</div>
-					</div>
 					<div class="control-group">
 						<label class="control-label" for="ROUTER_URL">网站URL</label>
 						<div class="controls">
