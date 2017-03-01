@@ -101,7 +101,7 @@ if($_POST['action']=='install'){
 //配置程序
     define('iPHP_APP_CONFIG', iFS::path(iPHP_CONF_DIR . '/' . iPHP_APP . '/config.php')); //网站配置文件
 
-    $config = configAdmincp::get(0);
+    $config = configAdmincp::get();
     $config['router']['url']    = $router_url;
     $config['router']['public'] = $router_url.'/public';
     $config['router']['user']   = $router_url.'/user';
@@ -111,7 +111,7 @@ if($_POST['action']=='install'){
 	$config['template']['mobile']['domain'] = $router_url;
 
     foreach($config AS $n=>$v){
-        configAdmincp::set($v,$n,0);
+        config_set($v,$n);
     }
     configAdmincp::cache();
 
@@ -120,6 +120,19 @@ if($_POST['action']=='install'){
 	iFS::rmdir(iPATH.'install');
 	iUI::success("安装完成",'js:top.install.step4();');
 }
+function config_set($value, $name) {
+    is_array($value) && $value = addslashes(json_encode($value));
+    $sql = "`name` ='$name'";
+    $check  = iDB::value("SELECT `name` FROM `#iCMS@__config` WHERE {$sql}");
+    $fields = array('name','value');
+    $data   = compact ($fields);
+    if($check===null){
+        iDB::insert('config',$data);
+    }else{
+        iDB::update('config', $data, array('name'=>$name));
+    }
+}
+
 function run_query($sql) {
 	$sql      = str_replace("\r", "\n", $sql);
 	$resource = array();
