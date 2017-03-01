@@ -98,7 +98,6 @@ class tagApp {
         if($category['mode'] && stripos($tag['url'], '.php?')===false){
             iURL::page_url($tag['iurl']);
         }
-        $tag['metadata'] && $tag['meta'] = json_decode($tag['metadata']);
         $tag['related']  && $tag['relArray'] = explode(',', $tag['related']);
         $tag['appid'] = iCMS_APP_TAG;
         $tag['pic']  = filesApp::get_pic($tag['pic']);

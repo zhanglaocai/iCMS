@@ -126,7 +126,11 @@ class tagAdmincp{
                 }
             }
             if($contents){
-                $fields   = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'status');
+                $fields   = array('uid', 'cid', 'tcid', 'pid', 'tkey',
+                    'name', 'seotitle', 'subtitle', 'keywords', 'description',
+                    'haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl',
+                    'sortnum', 'pubdate', 'status'
+                );
                 $cid      = implode(',', (array)$_POST['cid']);
                 $tcid     = implode(',', (array)$_POST['tcid']);
                 $pid      = implode(',', (array)$_POST['pid']);
@@ -193,7 +197,6 @@ class tagAdmincp{
         $status      = (int)$_POST['status'];
         $haspic      = $pic?'1':'0';
         $pubdate     = time();
-        $metadata    = $_POST['metadata'];
 
         $uid OR $uid= members::$userid;
 
@@ -205,19 +208,6 @@ class tagAdmincp{
         }
         $name OR iUI::alert('标签名称不能为空！');
         // $cid OR iUI::alert('请选择标签所属栏目！');
-
-        // if($metadata){
-        //     if($metadata['key']){
-        //         $md = array();
-        //         foreach($metadata['key'] AS $_mk=>$_mval){
-        //             !preg_match("/[a-zA-Z0-9_\-]/",$_mval) && iUI::alert($this->name_text.'附加属性名称只能由英文字母、数字或_-组成(不支持中文)');
-        //             $md[$_mval] = $metadata['value'][$_mk];
-        //         }
-        //     }else{
-        //         $md = $metadata;
-        //     }
-        //     $metadata = addslashes(json_encode($md));
-        // }
 
 		if(empty($id)) {
             $hasNameId = iDB::value("SELECT `id` FROM `#iCMS@__tags` where `name` = '$name'");
@@ -250,7 +240,12 @@ class tagAdmincp{
         iFS::checkHttp($mpic)&& $mpic = iFS::http($mpic);
         iFS::checkHttp($spic)&& $spic = iFS::http($spic);
 
-        $fields = array('uid','rootid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'metadata','haspic', 'pic','bpic','mpic','spic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'status');
+        $fields = array('uid','rootid', 'cid', 'tcid', 'pid',
+            'tkey', 'name', 'seotitle', 'subtitle', 'keywords',
+            'description', 'haspic', 'pic','bpic','mpic','spic', 'url',
+            'related', 'count', 'weight', 'tpl',
+            'sortnum', 'pubdate', 'status'
+        );
         $data   = compact ($fields);
 
         apps::former_data($this->appid,$data,'tags');

@@ -65,3 +65,6 @@ ALTER TABLE `icms_article`
 ALTER TABLE `icms_category`
   DROP COLUMN `metadata`,
   DROP COLUMN `hasbody`;
+
+ALTER TABLE `icms_tags`
+  DROP COLUMN `metadata`;
