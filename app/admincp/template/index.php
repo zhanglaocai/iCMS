@@ -77,14 +77,28 @@ admincp::head();
         <tr>
           <td>当前程序版本</td>
           <td>iCMS <?php echo iCMS_VERSION ; ?>[<?php echo iCMS_RELEASE ; ?>]</td>
-          <td><a href="<?php echo __ADMINCP__;?>=patch&do=check&force=1&frame=iPHP" target="iPHP_FRAME" id="home_patch">最新版本</a></td>
-          <td><span id="newversion"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span></td>
+          <td>
+            <a href="<?php echo __ADMINCP__;?>=patch&do=check&force=1&frame=iPHP" target="iPHP_FRAME" id="home_patch">最新版本</a>
+            /
+            <a href="<?php echo __ADMINCP__;?>=patch&do=git_check&git=true" data-toggle="modal" data-target="#iCMS-MODAL" data-meta="{&quot;width&quot;:&quot;85%&quot;,&quot;height&quot;:&quot;640px&quot;}" title="开发版本信息">开发版本</a>
+          </td>
+          <td>
+            <span id="iCMS_RELEASE"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span>
+            /
+            <span id="GIT_COMMIT_ID"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span>
+          </td>
         </tr>
         <tr>
           <td>服务器操作系统</td>
           <td><?php $os = explode(" ", php_uname()); echo $os[0];?> &nbsp;内核版本：<?php if('/'==DIRECTORY_SEPARATOR){echo $os[2];}else{echo $os[1];} ?></td>
+          <td>WEB服务器版本</td>
+          <td><?php echo $_SERVER['SERVER_SOFTWARE'] ; ?></td>
+        </tr>
+        <tr>
           <td>服务器端口</td>
           <td><?php echo getenv(SERVER_PORT) ; ?></td>
+          <td>服务器时间</td>
+          <td><?php echo date("Y-m-d H:i:s"); ?></td>
         </tr>
         <tr>
           <td>服务器总空间</td>
@@ -97,12 +111,6 @@ admincp::head();
             $df = round(@disk_free_space(".")/(1024*1024*1024),3);
             echo $df?$df:'∞'
            ?>G</td>
-        </tr>
-        <tr>
-          <td>WEB服务器版本</td>
-          <td><?php echo $_SERVER['SERVER_SOFTWARE'] ; ?></td>
-          <td>服务器时间</td>
-          <td><?php echo date("Y-m-d H:i:s"); ?></td>
         </tr>
         <tr>
           <td>PHP版本</td>
@@ -242,9 +250,10 @@ admincp::head();
 <script type="text/javascript">
 $(function(){
 	window.setTimeout(function(){
-		$.getJSON("http://www.idreamsoft.com/cms/version.php?callback=?",
+		$.getJSON("http://www.idreamsoft.com/cms/version.php?VERSION=<?php echo iCMS_VERSION ; ?>&RELEASE=<?php echo iCMS_RELEASE ; ?>&callback=?",
 		    function(o){
-		        $('#newversion').text(o.version);
+            $('#iCMS_RELEASE').text(o.release);
+            $('#GIT_COMMIT_ID').text(o.commit);
 		    }
 		);
 	},1000);

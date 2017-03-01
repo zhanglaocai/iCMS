@@ -13,8 +13,14 @@ defined('iPHP') OR exit('What are you doing?');
 class patchAdmincp{
 
 	public function __construct() {
-		$this->msg		= "";
-		$this->patch	= patch::init(isset($_GET['force'])?true:false);
+		$this->msg   = "";
+		if(isset($_GET['git'])){
+			patch::$release = $_GET['release'];
+			patch::$zipName = $_GET['zipname'];
+			patch::$test = true;
+		}else{
+			$this->patch = patch::init(isset($_GET['force'])?true:false);
+		}
 	}
     public function do_check(){
 		if(empty($this->patch)){
@@ -62,4 +68,48 @@ class patchAdmincp{
 		$this->msg	= patch::download();//下载文件包
 		include admincp::view("patch");
     }
+    //===================git=========
+    //
+    public function do_git_check(){
+    	$log =  patchAdmincp::git('log');
+    	include admincp::view("git.log");
+    }
+    public function do_git_show(){
+    	// $show =  patchAdmincp::git('show','json');
+    	// print_r($show);
+    	$log =  patchAdmincp::git('show');
+        $type_map = array(
+          'D'=>'删除',
+          'A'=>'增加',
+          'M'=>'更改'
+        );
+    	include admincp::view("git.show");
+    }
+    public function do_git_update(){
+    	$zip_url = patchAdmincp::git('zip','url');
+		$release = $_GET['release'];
+		$zipName = str_replace(patch::PATCH_URL.'/', '', $zip_url);
+		iPHP::redirect(APP_URI.'&do=update&release='.$release.'&zipname='.$zipName.'&git=true');
+    }
+
+	public static function git($do,$type='array') {
+		require iPHP_APP_CORE.'/git.version.php';
+		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=' .GIT_COMMIT. '&t=' . time();
+		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=7e54fae6d0625f32&t=' . time();
+var_dump($url);
+		$data = iHttp::remote($url);
+		if($type=='array'){
+			if($data){
+				return json_decode($data,true);
+			}
+			return array();
+		}else{
+			if($data){
+				return $data;
+			}
+			if($type=='json'){
+				return '[]';
+			}
+		}
+	}
 }

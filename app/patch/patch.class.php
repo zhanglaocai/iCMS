@@ -21,6 +21,7 @@ class patch {
 	public static $release = '';
 	public static $zipName = '';
 	public static $next = false;
+	public static $test = false;
 
 	public static function init($force = false) {
 		$info = self::getVersion($force);
@@ -103,11 +104,11 @@ class patch {
 			$msg .= '权限测试无法完成<iCMS>';
 			$msg .= '请设置好上面提示的文件写权限<iCMS>';
 			$msg .= '然后重新更新<iCMS>';
-			iPatch::$next = false;
+			self::$next = false;
 			return $msg;
 		}
 		//测试通过！
-		iPatch::$next = true;
+		self::$next = true;
 		iFS::mkdir($bakDir);
 		$msg .= '权限测试通过<iCMS>';
 		$msg .= '备份目录创建完成<iCMS>';
@@ -129,7 +130,7 @@ class patch {
 					@rename($fp, $bfp); //备份旧文件
 				}
 				$msg .= '更新 [' . $fp . '] 文件<iCMS>';
-				iFS::write($fp, $file['content']);
+				self::$test OR iFS::write($fp, $file['content']);
 				$msg .= '[' . $fp . '] 更新完成!<iCMS>';
 			}
 		}
@@ -142,9 +143,13 @@ class patch {
 		$updateFile = iPATH . 'update.' . self::$release . '.php';
 		if (iFS::ex($updateFile)) {
 			require $updateFile;
-			$msg = '执行升级程序<iCMS>';
-			$msg .= updatePatch();
-			$msg .= '升级顺利完成!<iCMS>删除升级程序!';
+			if(function_exists('updatePatch')){
+				$msg = '执行升级程序<iCMS>';
+				self::$test OR $msg .= updatePatch();
+				$msg .= '升级顺利完成!<iCMS>删除升级程序!';
+			}else{
+				$msg = '执行升级出错!<iCMS>找不到升级程序';
+			}
 			iFS::del($updateFile);
 		} else {
 			$msg = '升级顺利完成!';
