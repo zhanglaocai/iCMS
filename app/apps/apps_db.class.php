@@ -5,7 +5,7 @@ class apps_db {
 
         $fieldata    = json_decode(stripcslashes($json),true);
         //QS转数组
-        $field_array = apps_app::get_field_array($fieldata);
+        $field_array = apps_mod::get_field_array($fieldata);
 
         $json_array  = array();
         foreach ($field_array as $key => $value) {

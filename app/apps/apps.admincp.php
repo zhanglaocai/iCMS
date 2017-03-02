@@ -189,7 +189,7 @@ class appsAdmincp{
             //创建基本表
             $tb = apps_db::create_table(
               $array['app'],
-              apps_app::get_field_array($fieldata)//获取字段数组
+              apps_mod::get_field_array($fieldata)//获取字段数组
             );
             array_push ($tb,null,$array['name']);
             $table_array = array();
@@ -198,8 +198,8 @@ class appsAdmincp{
             //有MEDIUMTEXT类型字段就创建xxx_data附加表
             if($addons_fieldata){
               $union_id = $array['app'].'_id';
-              $addons_fieldata = apps_app::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
-              $table_array += apps_app::data_create_table2($addons_fieldata,$addons_name,$union_id);
+              $addons_fieldata = apps_mod::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
+              $table_array += apps_mod::data_create_table2($addons_fieldata,$addons_name,$union_id);
             }
 
             $array['table'] = addslashes(json_encode($table_array));
@@ -215,8 +215,8 @@ class appsAdmincp{
              * 找出字段数据中的 MEDIUMTEXT类型字段
              * PS:函数内会unset(json_field[key]) 所以要在 基本表make_alter_sql前执行
              */
-            $_addons_json_field = apps_app::find_MEDIUMTEXT($_json_field);
-            $addons_json_field = apps_app::find_MEDIUMTEXT($json_field);
+            $_addons_json_field = apps_mod::find_MEDIUMTEXT($_json_field);
+            $addons_json_field = apps_mod::find_MEDIUMTEXT($json_field);
 
             // print_r($_addons_json_field);
             // print_r($addons_json_field);
@@ -243,8 +243,8 @@ class appsAdmincp{
                     apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
                     //有MEDIUMTEXT类型字段创建xxx_data附加表
                     $union_id = $array['app'].'_id';
-                    $addons_fieldata = apps_app::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
-                    $table_array += apps_app::data_create_table($addons_fieldata,$addons_name,$union_id);
+                    $addons_fieldata = apps_mod::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
+                    $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
                     $array['table'] = addslashes(json_encode($table_array));
                   }
                 }
@@ -252,7 +252,7 @@ class appsAdmincp{
             }else{
               if($apptype=="2"){ //只删除自定义应用的表
                 //不存在附加表数据 直接删除附加表 返回 table的json值 $table_array为引用参数
-                apps_app::drop_table($addons_fieldata,$table_array,$addons_name);
+                apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
                 $array['table'] = addslashes(json_encode($table_array));
               }
             }

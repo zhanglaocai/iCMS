@@ -6,7 +6,7 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 
-class apps_app {
+class apps_mod {
     public static function drop_table($addons_fieldata,&$table_array,$addons_name) {
       if(empty($addons_fieldata) && $table_array[$addons_name] && apps_db::check_table(iDB::table($addons_name))){
         apps_db::drop_tables(array(iPHP_DB_PREFIX.$addons_name));
@@ -39,7 +39,7 @@ class apps_app {
     // public static function data_create_table($fieldata,$name,$union_id) {
     //     $table = apps_db::create_table(
     //       $name,
-    //       apps_app::get_field_array($fieldata),//获取字段数组
+    //       apps_mod::get_field_array($fieldata),//获取字段数组
     //       false,'data_id',true
     //     );
     //     array_push ($table,$union_id,'正文');
@@ -48,7 +48,7 @@ class apps_app {
     public static function data_create_table($fieldata,$name,$union_id) {
         $table = apps_db::create_table(
           $name,
-          apps_app::get_field_array($fieldata)//获取字段数组
+          apps_mod::get_field_array($fieldata)//获取字段数组
         );
         array_push ($table,$union_id,'正文');
         return array($name=>$table);

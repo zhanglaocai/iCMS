@@ -12,15 +12,14 @@ class appApp {
     public $app     = null;
     public $table   = null;
 
-    public function __construct($app) {
-        $this->app       = $app;
-        $this->appid     = $app['id'];
-        $this->_app      = $app['app'];
-
-        $this->table   = apps::get_table($app);
+    public function __construct($data) {
+        $this->data    = $data;
+        $this->appid   = $data['id'];
+        $this->app     = $data['app'];
+        $this->table   = apps::get_table($data);
         $this->primary = $this->table['primary'];
         $this->id      = (int)$_GET[$this->primary];
-        unset($app);
+        unset($data);
     }
     public function API_iCMS(){
         return $this->do_iCMS();
@@ -29,11 +28,11 @@ class appApp {
         return $this->app($this->id, isset($_GET['p']) ? (int) $_GET['p'] : 1);;
     }
     public function hooked($data){
-        return iPHP::hook($this->_app,$data,iCMS::$config['hooks'][$this->_app]);
+        return iPHP::hook($this->app,$data,iCMS::$config['hooks'][$this->app]);
     }
     public function app($id, $page = 1, $tpl = true) {
-        $rs = apps_app::get_data($this->app,$id);
-        $rs OR iPHP::error_404('找不到'.$this->app['name'].': <b>'.$this->primary.':' . $id . '</b>', 10001);
+        $rs = apps_mod::get_data($this->data,$id);
+        $rs OR iPHP::error_404('找不到'.$this->data['name'].': <b>'.$this->primary.':' . $id . '</b>', 10001);
         if ($rs['url']) {
             if (iView::$gateway == "html") {
                 return false;
@@ -58,11 +57,11 @@ class appApp {
         //
 var_dump($rs);
         if ($tpl) {
-            $app_tpl = empty($rs['tpl']) ? $rs['category']['template'][$this->_app] : $rs['tpl'];
+            $app_tpl = empty($rs['tpl']) ? $rs['category']['template'][$this->app] : $rs['tpl'];
             strstr($tpl, '.htm') && $app_tpl = $tpl;
             iView::assign('category', $rs['category']);unset($rs['category']);
-            iView::assign($this->_app, $rs);
-            $html = iView::render($app_tpl, $this->_app);
+            iView::assign($this->app, $rs);
+            $html = iView::render($app_tpl, $this->app);
             if (iView::$gateway == "html") {
                 return array($html, $rs);
             }
@@ -75,7 +74,7 @@ var_dump($rs);
         $category = categoryApp::category($rs['cid'],false);
 
         if ($tpl) {
-            $category OR iPHP::error_404('找不到该'.$this->app['name'].'的栏目缓存<b>cid:' . $rs['cid'] . '</b> 请更新栏目缓存或者确认栏目是否存在', 10002);
+            $category OR iPHP::error_404('找不到该'.$this->data['name'].'的栏目缓存<b>cid:' . $rs['cid'] . '</b> 请更新栏目缓存或者确认栏目是否存在', 10002);
         } else {
             if (empty($category)) {
                 return false;
@@ -87,15 +86,15 @@ var_dump($rs);
             return false;
         }
 
-        if (iView::$gateway == "html" && $tpl && (strstr($category['rule'][$this->_app], '{PHP}') || $category['outurl'] || $category['mode'] == "0")) {
+        if (iView::$gateway == "html" && $tpl && (strstr($category['rule'][$this->app], '{PHP}') || $category['outurl'] || $category['mode'] == "0")) {
             return false;
         }
 
         $rs['category'] = categoryApp::get_lite($category);
 
-        $rs['iurl'] = iURL::get($this->_app, array($rs, $category));
+        $rs['iurl'] = iURL::get($this->app, array($rs, $category));
         $rs['url'] OR $rs['url'] = $rs['iurl']->href;
-        $rs['link'] = '<a href="'.$rs['url'].'" class="'.$this->_app.'">'.$rs['title'].'</a>';
+        $rs['link'] = '<a href="'.$rs['url'].'" class="'.$this->app.'">'.$rs['title'].'</a>';
 
         ($tpl && $category['mode'] == '1') && iCMS::redirect_html($rs['iurl']->path, $rs['iurl']->href);
 
@@ -104,7 +103,7 @@ var_dump($rs);
         }
 
         $rs['hits'] = array(
-            'script' => iCMS_API . '?app='.$this->_app.'&do=hits&cid=' . $rs['cid'] . '&id=' . $rs[$this->primary],
+            'script' => iCMS_API . '?app='.$this->app.'&do=hits&cid=' . $rs['cid'] . '&id=' . $rs[$this->primary],
             'count'  => $rs['hits'],
             'today'  => $rs['hits_today'],
             'yday'   => $rs['hits_yday'],
@@ -112,7 +111,7 @@ var_dump($rs);
             'month'  => $rs['hits_month'],
         );
         $rs['comment'] = array(
-            'url'   => iCMS_API . '?app='.$this->_app.'&do=comment&appid='.$rs['appid'].'&iid='.$rs[$this->primary].'&cid='.$rs['cid'].'',
+            'url'   => iCMS_API . '?app='.$this->app.'&do=comment&appid='.$rs['appid'].'&iid='.$rs[$this->primary].'&cid='.$rs['cid'].'',
             'count' => $rs['comments'],
         );
         $rs['param'] = array(
@@ -125,8 +124,8 @@ var_dump($rs);
         );
 
         $fields = array();
-        if($this->app['fields']){
-            $fields = iFormer::fields($this->app['fields']);
+        if($this->data['fields']){
+            $fields = iFormer::fields($this->data['fields']);
         }
         foreach ($fields as $key => $field) {
             $value  = $rs[$key];

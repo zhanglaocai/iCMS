@@ -28,7 +28,7 @@
 <script type="text/javascript">
 <?php
 if($rs['fields']){
-  $field_array = apps_app::get_field_array($rs['fields'],true);
+  $field_array = apps_mod::get_field_array($rs['fields'],true);
   foreach ($field_array as $key => $value) {
     $readonly = apps_db::base_fields_key($value['name']);
     echo "iFormer.render($('div'),".json_encode($value).",null,'".$value['id']."',".($readonly?'true':'false').").appendTo('#custom_field_list');";

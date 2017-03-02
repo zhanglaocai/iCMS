@@ -25,7 +25,7 @@ class appAdmincp{
         category::$appid = $this->appid;
     }
     public function do_add(){
-      $rs = apps_app::get_data($this->app,$this->id);
+      $rs = apps_mod::get_data($this->app,$this->id);
       apps::former_create($this->appid,$rs);
       include admincp::view('app.add');
     }

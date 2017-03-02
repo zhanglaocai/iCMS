@@ -4,8 +4,6 @@
     "caption": "{name}",
     "icon": "pencil-square-o",
     "children": [{
-        "caption": "-"
-    }, {
         "caption": "栏目管理",
         "href": "{app}_category",
         "icon": "list-alt"
