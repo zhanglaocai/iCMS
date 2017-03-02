@@ -4,10 +4,6 @@
     "caption": "{name}",
     "icon": "pencil-square-o",
     "children": [{
-        "caption": "{name}系统配置",
-        "href": "{app}&do=config",
-        "icon": "cog"
-    },{
         "caption": "-"
     }, {
         "caption": "栏目管理",
