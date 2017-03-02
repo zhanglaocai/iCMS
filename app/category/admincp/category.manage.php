@@ -168,7 +168,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
           <tbody>
             <?php
               $rootidArray = iSQL::values($rs,'rootid','array',null);
-              $rootidArray && $root_data = (array) $this->get($rootidArray);
+              $rootidArray && $root_data = (array) category::get($rootidArray);
               for($i=0;$i<$_count;$i++){
                 $root = $root_data[$rs[$i]['rootid']];
             ?>

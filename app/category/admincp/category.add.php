@@ -88,7 +88,7 @@ $(function(){
               <span class="add-on" title="继承"><input type="checkbox" name="extends" /> 继承</span>
               <?php }else { ?>
               <input name="rootid" id="rootid" type="hidden" value="<?php echo $rootid ; ?>" />
-              <input readonly="true" value="<?php echo $this->get($rootid)->name ; ?>" type="text" class="txt" />
+              <input readonly="true" value="<?php echo category::get($rootid)->name ; ?>" type="text" class="txt" />
               <?php } ?>
             </div>
             <span class="help-inline">本<?php echo $this->category_name;?>的上级<?php echo $this->category_name;?>或<?php echo $this->category_name;?></span>

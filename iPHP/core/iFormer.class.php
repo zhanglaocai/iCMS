@@ -28,7 +28,7 @@ class iFormer {
             if(in_array($field['type'], array('category','multi_category','prop','multi_prop'))){
                 $value = iSQL::values($rs,$field['name'],'array',null);
                 $value = iSQL::explode_var($value);
-                var_dump($field['type']);
+                // var_dump($field['type']);
                 $call = self::$callback[$field['type']];
                 if($call && is_callable($call)){
                     $array[$field['name']] = call_user_func_array($call, array($value));

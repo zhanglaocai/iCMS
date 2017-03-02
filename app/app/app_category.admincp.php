@@ -23,8 +23,10 @@ class app_categoryAdmincp extends categoryAdmincp {
         /**
          *  模板
          */
-        $this->category_template+=array(
-            $app['app'] => array($app['name'],'{iTPL}/'.$app['app'].'.htm')
+        $this->category_template = array(
+            'index'     => array('首页','{iTPL}/app.category.index.htm'),
+            'list'      => array('列表','{iTPL}/app.category.list.htm'),
+            $app['app'] => array($app['name'],'{iTPL}/app.content.htm')
         );
 
         /**

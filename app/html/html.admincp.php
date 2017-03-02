@@ -90,7 +90,7 @@ class htmlAdmincp{
 		if(empty($category)){
 			iUI::alert('请选择需要生成静态的栏目!');
 		}
-		$category[0]=='all' && $category = $this->get_category(iCMS_APP_ARTICLE);
+		$category[0]=='all' && $category = category::get_cid();
 
 		$k===0 && iCache::set('html/category',$category,0);
 
@@ -179,8 +179,10 @@ class htmlAdmincp{
 			$title	= self::Article($aid);
 			iUI::success($title.'<hr />生成静态完成!');
 		}
-
-		$category[0]=='all' && $category = $this->get_category(iCMS_APP_ARTICLE);
+        if($category[0]=='all'){
+            category::set_appid(iCMS_APP_ARTICLE);
+            $category = category::get_cid();
+        }
 
 		if($category){
 			$cids	= implode(',',(array)$category);
@@ -260,9 +262,5 @@ class htmlAdmincp{
 		    return $url;
 			//iPHP::redirect($url);
     	}
-    }
-    public function get_category($appid){
-		$category = new category($appid);
-        return $category->get_cid();
     }
 }
