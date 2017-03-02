@@ -74,7 +74,7 @@ class iPHP {
 			if (iPHP_DEBUG) {
 				self::error_throw("Unable to load class '$name',file path '$path'", 0020);
 			}else{
-				self::error_throw("Unable to load class '$name'", 0020);
+				return false;
 			}
 		}
 	}

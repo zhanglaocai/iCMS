@@ -47,9 +47,6 @@ class admincp {
 			'watermark' => iCMS::$config['watermark']
 		));
 
-        menu::$callback = array(
-            "array" => array("apps","menu") //自定义APP 后台菜单
-        );
 		menu::init(); //菜单
 
 

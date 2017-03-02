@@ -480,7 +480,6 @@ div.dataTables_wrapper .ui-widget-header{border-right:medium none;border-top:1px
 
 .nopadding .table-bordered tr > td:first-child{border-left:0;}
 .nopadding .table-bordered thead:first-child tr:first-child>th:first-child{-webkit-border-top-left-radius:0px;border-top-left-radius:0px;-moz-border-radius-topleft:0px;border-left:none;width:20px;}
-.line{background:url("img/line.png") repeat-x scroll 0 0 transparent;display:block;height:8px;}
 .modal-backdrop{z-index:999!important;}
 .modal-header{height:auto;padding:8px 15px 5px;}
 .modal-header h3{font-size:12px;text-shadow:0 1px 0 #ffffff;}

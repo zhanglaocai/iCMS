@@ -85,6 +85,7 @@ class appsAdmincp{
     public function do_uninstall(){
       if($this->id>99){
         apps::uninstall($this->id);
+        apps::cache();
         iUI::alert('应用已经删除');
       }
 
@@ -104,7 +105,11 @@ class appsAdmincp{
           $_fields = include iPHP_APP_DIR.'/apps/etc/app.fields.json.php';
           $rs['fields'] = json_decode($_fields,true);
           $rs['config']['iFormer'] = '1';
-          $rs['apptype']="2";
+          $rs['apptype'] = "2";
+
+          $menujson   = iPHP_APP_DIR.'/apps/etc/app.menu.json.php';
+          $rs['menu'] = get_json_file($menujson);
+
         }else{
           if($rs['apptype']=="2"){
             $rs['config']['iFormer'] = '1';
@@ -253,7 +258,7 @@ class appsAdmincp{
             iDB::update('apps', $array, array('id'=>$id));
             $msg = "应用编辑完成!";
         }
-        apps::set_app_cache($id);
+        apps::cache();
         iUI::success($msg,'url:'.APP_URI);
     }
 
@@ -261,6 +266,7 @@ class appsAdmincp{
         if($this->id){
             $args = admincp::update_args($_GET['_args']);
             $args && iDB::update("apps",$args,array('id'=>$this->id));
+            apps::cache();
             iUI::success('操作成功!','js:1');
         }
     }
@@ -295,7 +301,7 @@ class appsAdmincp{
       iDB::query("DROP TABLE `#iCMS@__{$name}`; ");
 
   		iDB::query("DELETE FROM `#iCMS@__apps` WHERE `id` = '$id'");
-  		$this->cache();
+  		apps::cache();
   		$dialog && iUI::success('应用已经删除','js:parent.$("#tr'.$id.'").remove();');
     }
     public function do_batch(){
@@ -305,21 +311,18 @@ class appsAdmincp{
         $batch   = $_POST['batch'];
       	switch($batch){
       		case 'dels':
-  				iUI::$break	= false;
+  				  iUI::$break	= false;
   	    		foreach($idArray AS $id){
   	    			$this->do_del($id,false);
   	    		}
   	    		iUI::$break	= true;
-  				iUI::success('应用全部删除完成!','js:1');
+  				  iUI::success('应用全部删除完成!','js:1');
       		break;
   		  }
+
 	  }
     public function do_cache(){
-      $this->cache();
+      apps::cache();
       iUI::success('更新完成');
     }
-    public function cache(){
-    	apps::cache();
-    }
-
 }

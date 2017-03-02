@@ -84,13 +84,13 @@ class category {
             if($is_multi){
                 $_count = count($rs);
                 for ($i=0; $i < $_count; $i++) {
-                    $data[$rs[$i]->cid]= self::item($rs[$i],$callback);
+                    $data[$rs[$i]->cid]= category::item($rs[$i],$callback);
                 }
             }else{
                 if(isset($callback['field'])){
                     return $rs[0];
                 }else{
-                    $data = self::item($rs[0],$callback);
+                    $data = category::item($rs[0],$callback);
                 }
             }
         }

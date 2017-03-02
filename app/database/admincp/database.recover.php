@@ -14,6 +14,7 @@ admincp::head();
     <ul class="nav nav-tabs iMenu-tabs">
       <?php echo menu::app_memu(admincp::$APP_NAME); ?>
     </ul>
+    <script>$(".iMenu-tabs").find('a[href="<?php echo menu::$url; ?>"]').parent().addClass('active');</script>
   </div>
   <div class="widget-content nopadding">
     <form action="<?php echo APP_FURI; ?>&do=batch" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">

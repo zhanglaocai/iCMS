@@ -37,7 +37,7 @@ class configAdmincp{
     	foreach($config AS $n=>$v){
     		$this->set($v,$n,0);
     	}
-    	$this->cache();
+    	configAdmincp::cache();
     	iUI::success('更新完成','js:1');
     }
 
@@ -83,7 +83,7 @@ class configAdmincp{
         if (is_callable($handler)) {
             call_user_func_array($handler, array($config));
         }
-        self::cache();
+        configAdmincp::cache();
         iUI::success('配置更新完成','js:1');
     }
     /**
@@ -152,9 +152,9 @@ class configAdmincp{
      * @param  [type] $k [description]
      * @return [type]    [description]
      */
-    public static function update($k){
-        self::set(iCMS::$config[$k],$k,0);
-        self::cache();
+    public static function update($k,$appid=0){
+        self::set(iCMS::$config[$k],$k,$appid);
+        configAdmincp::cache();
     }
     public static function view(){
         include admincp::view('config',null,true);

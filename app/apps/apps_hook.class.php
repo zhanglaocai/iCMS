@@ -14,7 +14,7 @@ class apps_hook {
      * @return [type]      [description]
      */
     public static function app_select($app=null) {
-        foreach (apps::get_array(array("table"=>true)) as $key => $value) {
+        foreach (apps::get_array(array("!table"=>0)) as $key => $value) {
             list($path,$obj_name)= apps::get_path($value['app'],'app',true);
             if(is_file($path) && method_exists($obj_name,'hooked')){
                 $option[]='<option '.($app==$value['app']?' selected="selected"':'').' value="'.$value['app'].'">'.$value['app'].':'.$value['name'].'</option>';
@@ -50,18 +50,18 @@ class apps_hook {
     public static function app_method() {
         $option = '';
         foreach (apps::get_array(array("status"=>'1')) as $key => $value) {
-            // $option.=self::app_hook_method($value['app']);
             list($path,$obj_name)= apps::get_path($value['app'],'app',true);
             if(@is_file($path)){
                 $option.= self::app_hook_method($obj_name);
             }
         }
         //plugins
-        foreach (glob(iPHP_APP_DIR."/plugin/plugin_*.class.php") as $filename) {
-            $parts = pathinfo($filename);
-            $path = str_replace(iPHP_APP_DIR.'/','',$filename);
+        $plugin = apps::get('plugin','app');
+        if($plugin['status'])foreach (glob(iPHP_APP_DIR."/plugin/plugin_*.class.php") as $filename) {
+            $parts    = pathinfo($filename);
+            $path     = str_replace(iPHP_APP_DIR.'/','',$filename);
             $obj_name = substr($parts['filename'],0,-6);
-            $option.= self::app_hook_method($obj_name);
+            $option  .= self::app_hook_method($obj_name);
         }
         return $option;
     }

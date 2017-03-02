@@ -186,5 +186,33 @@ class appAdmincp{
     		break;
 		}
 	}
+    // public static function menu($menu){
+    //     $path     = iPHP_APP_DIR.'/apps/etc/app.menu.json.php';
+    //     $json     = file_get_contents($path);
+    //     $json     = str_replace("<?php defined('iPHP') OR exit('What are you doing?');? >\n", '', $json);
+    //     $variable = array();
+    //     $array    = apps::get_array(array("apptype"=>'2'));
+    //     if($array)foreach ($array as $key => $value) {
+    //         if($value['config']['menu']){
+    //             $sort = 200000+$key;
 
+    //             $json = str_replace(
+    //                 array('{appid}','{app}','{name}','{sort}'),
+    //                 array($value['id'],$value['app'],$value['name'],$sort), $json);
+
+    //             if($value['config']['menu']!='main'){
+    //                 $json = '[{"id": "'.$value['config']['menu'].'","children":[{"caption": "-"},'.$json.']}]';
+    //             }else{
+    //                 $json = '['.$json.']';
+    //             }
+
+    //             $array  = json_decode($json,ture);
+    //             if($array){
+    //                 $array = $menu::mid($array,$sort);
+    //                 $variable[] = $array;
+    //             }
+    //         }
+    //     }
+    //     return $variable;
+    // }
 }

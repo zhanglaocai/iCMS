@@ -23,35 +23,7 @@ class apps {
     //     $path = self::$etc."/install.lock.php";
     //     return self::get_file($app,$path);
     // }
-    public static function menu($menu){
-        $path     = iPHP_APP_DIR.'/apps/etc/app.menu.json.php';
-        $json     = file_get_contents($path);
-        $json     = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
-        $variable = array();
-        $array    = apps::get_array(array("apptype"=>'2'));
-        if($array)foreach ($array as $key => $value) {
-            if($value['config']['menu']){
-                $sort = 200000+$key;
 
-                $json = str_replace(
-                    array('{appid}','{app}','{name}','{sort}'),
-                    array($value['id'],$value['app'],$value['name'],$sort), $json);
-
-                if($value['config']['menu']!='main'){
-                    $json = '[{"id": "'.$value['config']['menu'].'","children":[{"caption": "-"},'.$json.']}]';
-                }else{
-                    $json = '['.$json.']';
-                }
-
-                $array  = json_decode($json,ture);
-                if($array){
-                    $array = $menu::mid($array,$sort);
-                    $variable[] = $array;
-                }
-            }
-        }
-        return $variable;
-    }
     public static function former_create($appid,$rs){
         $app = apps::get($appid);
         if($app['fields']){
@@ -140,10 +112,10 @@ class apps {
             if($is_multi){
                 $_count = count($rs);
                 for ($i=0; $i < $_count; $i++) {
-                    $data[$rs[$i]->$field]= self::item($rs[$i]);
+                    $data[$rs[$i]->$field]= apps::item($rs[$i]);
                 }
             }else{
-                $data = self::item($rs[0]);
+                $data = apps::item($rs[0]);
             }
         }
         if(empty($data)){
@@ -151,22 +123,39 @@ class apps {
         }
         return $data;
     }
+    public static function menu($rs){
+        $rs['menu'] = str_replace(
+                array('{appid}','{app}','{name}','{sort}'),
+                array($rs['id'],$rs['app'],$rs['name'],$sort), $rs['menu']);
 
+        if($rs['config']['menu']){
+            if($rs['config']['menu']!='main'){
+                //清除[]
+                $rs['menu'] = substr($rs['menu'], 1);
+                $rs['menu'] = substr($rs['menu'], 0,-1);
+
+                $rs['menu'] = '[{"id": "'.$rs['config']['menu'].'","children":[{"caption": "-"},'.$rs['menu'].']}]';
+            }
+        }
+        $rs['menu'] = json_decode($rs['menu'],true);
+        return $rs['menu'];
+    }
     public static function item($rs){
         if($rs){
             $rs = (array)$rs;
             if($rs['table']){
                 $table = json_decode($rs['table'],true);
-                // var_dump($table);
-
-                $table && $rs['table']  = self::table_item($table);
+                $table && $rs['table']  = apps::table_item($table);
             }
-            $rs['config']&& $rs['config'] = json_decode($rs['config'],true);
-
-            if($rs['fields']){
-                // $rs['_fields'] = $rs['fields'];
-                $rs['fields']  = json_decode($rs['fields'],true);
+            $rs['config'] && $rs['config'] = json_decode($rs['config'],true);
+            if($rs['menu']){
+                if($rs['config']['menu']===null){
+                    $rs['menu'] = array();
+                }else{
+                    $rs['menu'] = apps::menu($rs);
+                }
             }
+            $rs['fields']   && $rs['fields']    = json_decode($rs['fields'],true);
         }
         return $rs;
     }
@@ -178,16 +167,13 @@ class apps {
             $value['table'] && iDB::query("DROP TABLE IF EXISTS `".$value['table']."`");
         }
     }
-    public static function get_array($vars){
-        $sql = '1=1';
-        $vars['type']   && $sql.=" AND `type`='".(int)$vars['type']."'";
-        $vars['status'] && $sql.=" AND `status`='".(int)$vars['status']."'";
-        $vars['table']  && $sql.=" AND `table`!='0'";
-        $vars['apptype']&& $sql.=" AND `apptype`='".(int)$vars['apptype']."'";
-        $rs  = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);
+    public static function get_array($vars,$field="*",$orderby=''){
+        $sql = iSQL::where($vars,false);
+        $orderby && $sql.= 'order by '.$orderby;
+        $rs  = iDB::all("SELECT {$field} FROM `#iCMS@__apps` where {$sql}",OBJECT);
         $_count = count($rs);
         for ($i=0; $i < $_count; $i++) {
-            $data[$rs[$i]->id]= self::item($rs[$i]);
+            $data[$rs[$i]->id]= apps::item($rs[$i]);
         }
         return $data;
     }
@@ -219,12 +205,7 @@ class apps {
         if($app){
             return $array[$app];
         }
-        // asort($array);
-        // $appArray = apps::scan('*.app','*',true);
-        // $acpArray = apps::scan('*.admincp','*',true);
-        // $array    = array_merge((array)$appArray,(array)$acpArray);
-        // $array    = array_filter($array);
-        // $array    = array_keys($array);
+
         return $array;
     }
     // public static function get_hooks(){
@@ -349,7 +330,7 @@ class apps {
         $rs = iDB::all("SELECT * FROM `#iCMS@__apps`");
 
         foreach((array)$rs AS $a) {
-            $a = self::item($a);
+            $a = apps::item($a);
 			$appid_array[$a['id']] = $a;
 			$app_array[$a['app']]  = $a;
 
@@ -357,6 +338,7 @@ class apps {
         }
         iCache::set('app/idarray',  $appid_array,0);
         iCache::set('app/array',$app_array,0);
+        configAdmincp::cache();
 	}
     public static function set_app_cache($a){
         if(!is_array($a)){

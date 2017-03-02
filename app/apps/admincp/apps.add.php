@@ -46,6 +46,7 @@ $(function(){
           <?php }?>
           <li><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 自定义字段</a></li>
         <?php }?>
+        <li><a href="#apps-add-menu" data-toggle="tab"><i class="fa fa-bars"></i> 菜单配置</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -186,11 +187,17 @@ $(function(){
             <?php include admincp::view("apps.iFormer.build");?>
           </div>
           <?php } ?>
+          <div id="apps-add-menu" class="tab-pane">
+            <script src="./app/admincp/ui/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
+            <link href="./app/admincp/ui/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css" type="text/css" rel="stylesheet" />
+            <script type="text/javascript">SyntaxHighlighter.all();</script>
+            <textarea name="menu" id="menu" class="span12 brush:js;toolbar:false" style="height:600px;"><?php echo jsonFormat($rs['menu']) ; ?></textarea>
+            <div class="clearfloat mb10"></div>
+          </div>
           <div class="clearfloat"></div>
           <div class="form-actions">
             <button class="btn btn-primary btn-large" type="submit"><i class="fa fa-check"></i> 提交</button>
             <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $rs['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
-
           </div>
         </form>
       </div>

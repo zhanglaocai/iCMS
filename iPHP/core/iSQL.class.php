@@ -57,7 +57,12 @@ class iSQL {
     public static function where($where,$and=false) {
         if ( is_array( $where ) ){
             foreach ( $where as $c => $v ){
-                $wheres[] = "`$c` = '" . addslashes( $v ) . "'";
+                if($c[0]=='!'){
+                    $c = str_replace('!', '', $c);
+                    $wheres[] = "`$c` != '" . addslashes( $v ) . "'";
+                }else{
+                    $wheres[] = "`$c` = '" . addslashes( $v ) . "'";
+                }
             }
             return ($and?' AND ':'').implode(' AND ', $wheres);
         }
