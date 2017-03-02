@@ -15,27 +15,27 @@ class menuAdmincp{
      //    exit;
     }
     public function do_add(){
-    	$id	= $_GET['id'];
-        if($id) {
-            $rs		= iDB::row("SELECT * FROM `#iCMS@__menu` WHERE `id`='$id' LIMIT 1;",ARRAY_A);
-            $rootid	= $rs['rootid'];
-        }else{
-        	$rootid	= $_GET['rootid'];
-        }
-        include admincp::view("menu.add");
+    	// $id	= $_GET['id'];
+     //    if($id) {
+     //        $rs		= iDB::row("SELECT * FROM `#iCMS@__menu` WHERE `id`='$id' LIMIT 1;",ARRAY_A);
+     //        $rootid	= $rs['rootid'];
+     //    }else{
+     //    	$rootid	= $_GET['rootid'];
+     //    }
+     //    include admincp::view("menu.add");
     }
     public function do_addseparator(){
-    	$rootid	= $_GET['rootid'];
-    	$class	= $rootid?'divider':'divider-vertical';
-    	iDB::query("INSERT INTO `#iCMS@__menu` (`rootid`,`app`,`class`) VALUES($rootid,'separator','$class');");
-    	menu::cache();
-    	iUI::success('添加完成');
+    	// $rootid	= $_GET['rootid'];
+    	// $class	= $rootid?'divider':'divider-vertical';
+    	// iDB::query("INSERT INTO `#iCMS@__menu` (`rootid`,`app`,`class`) VALUES($rootid,'separator','$class');");
+    	// menu::cache();
+    	// iUI::success('添加完成');
     }
     public function do_updateorder(){
-    	foreach((array)$_POST['sortnum'] as $sortnum=>$id){
-            iDB::query("UPDATE `#iCMS@__menu` SET `sortnum` = '".intval($sortnum)."' WHERE `id` ='".intval($id)."' LIMIT 1");
-    	}
-		menu::cache();
+  //   	foreach((array)$_POST['sortnum'] as $sortnum=>$id){
+  //           iDB::query("UPDATE `#iCMS@__menu` SET `sortnum` = '".intval($sortnum)."' WHERE `id` ='".intval($id)."' LIMIT 1");
+  //   	}
+		// menu::cache();
     }
     public function do_iCMS(){
     	admincp::$APP_METHOD="domanage";

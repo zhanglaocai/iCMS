@@ -16,22 +16,10 @@ class menu {
     public static $history_key = null;
 
 	public static function init() {
-        self::get_cache();
-        // self::get_array(true);
+        // self::get_cache();
+        self::get_array(true);
 	}
-    public static function json_data($path){
-        $json  = file_get_contents($path);
-        $json  = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
-        $data  = json_decode($json,ture);
-        $error = json_last_error();
-        if($error!==JSON_ERROR_NONE){
-            $data = array(
-                'id' => $path,
-                'caption' => json_last_error_msg()
-            );
-        }
-        return $data;
-    }
+
     public static function mid($vars,&$sort=0){
         foreach ($vars as $k => $v) {
             ++$sort;
@@ -49,17 +37,18 @@ class menu {
     public static function get_array($cache=false){
         $variable = array();
         $sort     = 100000;
-        foreach (glob(iPHP_APP_DIR."/*/etc/iMenu.*.php") as $index=> $filename) {
-            $array = self::json_data($filename);
+        $rs = apps::get_array(array('!menu'=>'','status'=>'1'),'id,app,name,config,menu','app ASC');
+        foreach ($rs as $appid=> $app) {
+            $array = $app['menu'];
             if($array){
                 $array = self::mid($array,$sort);
                 $variable[] = $array;
             }
         }
-        if(self::$callback['array'] && is_callable(self::$callback['array'])){
-           $variable2 = call_user_func_array(self::$callback['array'],array(__CLASS__));
-            $variable2 && $variable = array_merge($variable,$variable2);
-        }
+        // if(self::$callback['array'] && is_callable(self::$callback['array'])){
+        //    $variable2 = call_user_func_array(self::$callback['array'],array(__CLASS__));
+        //     $variable2 && $variable = array_merge($variable,$variable2);
+        // }
 
         if($variable){
             $variable = call_user_func_array('array_merge_recursive',$variable);
@@ -181,8 +170,8 @@ class menu {
         }
     }
     public static function app_memu($app){
-        $path  = iPHP_APP_DIR."/{$app}/etc/iMenu.main.php";
-        $array = self::json_data($path);
+        $rs = apps::get($app,'app');
+        $array = $rs['menu'];
         $array = self::mid($array);
         $key   = self::search_href();
         $array = $array[$key]['children'][$app]['children'];
