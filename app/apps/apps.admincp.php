@@ -101,14 +101,15 @@ class appsAdmincp{
     public function do_add(){
         $this->id && $rs = apps::get($this->id);
         if(empty($rs)){
-          $base_fields = apps_db::base_fields_array();
-          $_fields = include iPHP_APP_DIR.'/apps/etc/app.fields.json.php';
-          $rs['fields'] = json_decode($_fields,true);
           $rs['config']['iFormer'] = '1';
           $rs['apptype'] = "2";
+          $base_fields = apps_db::base_fields_array();
 
-          $menujson   = iPHP_APP_DIR.'/apps/etc/app.menu.json.php';
-          $rs['menu'] = get_json_file($menujson);
+          $fieldjson    = get_json_file(iPHP_APP_DIR.'/apps/etc/app.fields.json.php');
+          $rs['fields'] = json_decode($fieldjson,true);
+
+          $menujson     = get_json_file(iPHP_APP_DIR.'/apps/etc/app.menu.json.php');
+          $rs['menu']   = json_decode($menujson,true);
 
         }else{
           if($rs['apptype']=="2"){
@@ -129,6 +130,7 @@ class appsAdmincp{
         $fieldata = $_POST['fields'];
         $config_array = $_POST['config'];
         $table_array  = $_POST['table'];
+        $menu = $_POST['menu'];
 
         $name OR iUI::alert('应用名称不能为空!');
         empty($app) && $app = iPinyin::get($name);
@@ -170,7 +172,7 @@ class appsAdmincp{
         }
 
         $addtimes = time();
-        $array    = compact(array('app','name','table','config','fields','addtimes','apptype','type','status'));
+        $array    = compact(array('app','name','menu','table','config','fields','addtimes','apptype','type','status'));
 
         if(empty($id)) {
 

@@ -37,6 +37,7 @@ $(function(){
       <h5 class="brs"><?php echo empty($this->id)?'添加':'修改' ; ?>应用</h5>
       <ul class="nav nav-tabs" id="apps-add-tab">
         <li class="active"><a href="#apps-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
+        <li><a href="#apps-add-menu" data-toggle="tab"><i class="fa fa-bars"></i> 菜单配置</a></li>
         <?php if($rs['table'])foreach ($rs['table'] as $key => $tval) {?>
         <li><a href="#apps-add-<?php echo $key; ?>-field" data-toggle="tab"><i class="fa fa-database"></i> <?php echo $tval['label']?$tval['label']:$tval['name']; ?>表字段</a></li>
         <?php }?>
@@ -46,7 +47,6 @@ $(function(){
           <?php }?>
           <li><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 自定义字段</a></li>
         <?php }?>
-        <li><a href="#apps-add-menu" data-toggle="tab"><i class="fa fa-bars"></i> 菜单配置</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -190,9 +190,12 @@ $(function(){
           <div id="apps-add-menu" class="tab-pane">
             <script src="./app/admincp/ui/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
             <link href="./app/admincp/ui/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css" type="text/css" rel="stylesheet" />
-            <script type="text/javascript">SyntaxHighlighter.all();</script>
-            <textarea name="menu" id="menu" class="span12 brush:js;toolbar:false" style="height:600px;"><?php echo jsonFormat($rs['menu']) ; ?></textarea>
+            <textarea name="menu" id="menu" class="span12 brush:js;toolbar:false" style="height:300px;"><?php echo $rs['menu']?jsonFormat($rs['menu']):'' ; ?></textarea>
             <div class="clearfloat mb10"></div>
+            <script type="text/javascript">
+            SyntaxHighlighter.all();
+            $("#menu").autoTextarea({maxHeight:600});
+            </script>
           </div>
           <div class="clearfloat"></div>
           <div class="form-actions">

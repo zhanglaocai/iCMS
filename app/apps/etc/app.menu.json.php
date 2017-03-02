@@ -1,5 +1,5 @@
 <?php defined('iPHP') OR exit('What are you doing?');?>
-{
+[{
     "id": "{app}",
     "caption": "{name}",
     "icon": "pencil-square-o",
@@ -56,4 +56,4 @@
         "href": "comment&appname={app}&appid={appid}",
         "icon": "comments"
     }]
-}
+}]
