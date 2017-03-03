@@ -143,7 +143,7 @@ class iTemplateLite {
 	function clear_compiled_tpl($file = null){
 		$this->_destroy_dir($file);
 	}
-	function template_callback($key,$value){
+	function callback($key,$value){
 		if ($this->template_callback[$key]){
 			$callback = $this->template_callback[$key];
 			if(is_array($callback)){
@@ -195,7 +195,7 @@ class iTemplateLite {
 	function _get_resource($file){
 		if(strpos($file, 'debug.tpl')!==false) return 'debug.tpl';
 
-		$file = $this->template_callback('resource',array($file,$this));
+		$file = $this->callback('resource',array($file,$this));
 
 		$this->template_dir = $this->_get_dir($this->template_dir);
 		$RootPath           = $this->template_dir.$file;
@@ -268,7 +268,7 @@ class iTemplateLite {
 			$iTC->_iVARS                = &$this->_iVARS;
 			$iTC->default_modifiers         = &$this->default_modifiers;
 			$output                         = $iTC->_compile_file($template_file);
-			$output = $this->template_callback('output',array($output,$file));
+			$output = $this->callback('output',array($output,$file));
 			file_put_contents($compile_file,$output);
 		}
 		if($ret==='file') return $compile_file;
@@ -278,7 +278,7 @@ class iTemplateLite {
 		if ($ret) {
 			$output = ob_get_contents();
 			ob_end_clean();
-//			$output = $this->template_callback('output',array($file,$output));
+//			$output = $this->callback('output',array($file,$output));
 			return $output;
 		}
 	}
@@ -523,7 +523,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 		unset($this->_require_stack);
 
 		// remove unnecessary close/open tags
-		$compiled_text = preg_replace('!\?>\n?<\?php!', '', $compiled_text);
+		$compiled_text = preg_replace('!\?>\n?<\?php!', "\n", $compiled_text);
 
 //2007-7-29 21:15 error_reporting/function_exists
 		$compiled_text = $this->_error_reporting.$compiled_text;
@@ -578,19 +578,20 @@ class iTemplateLite_Compiler extends iTemplateLite {
 					$arg_list[] = "'$key' => $value";
 				}
 
-				$code = '<?php $this->template_callback("app",array(array('.implode(',', (array)$arg_list).'),$this)); ?>';
+				$code = '<?php $this->callback("app",array(array('.implode(',', (array)$arg_list).'),$this)); ?>';
 
 				if($app && isset($_args['loop'])){
 					$this->_iPHP_stack[count($this->_iPHP_stack)-1] = true;
-					$_app	= $this->_dequote($_args['app']);
-					$_args['method'] && $_app.='_'.$this->_dequote($_args['method']);
-					$_args['as'] 	 && $_app = $this->_dequote($_args['as']);
-					$arguments = 'app=$'.$_app;
+					$app_args = $this->_dequote($app);
+					$_args['method'] && $app_args.='_'.$this->_dequote($_args['method']);
+					$_args['as'] 	 && $app_args = $this->_dequote($_args['as']);
+
+					$arguments = 'app=$'.$app_args;
 					isset($_args['start'])	&& $arguments.=" start={$_args['start']} ";
 					isset($_args['step'])	&& $arguments.=" step={$_args['step']} ";
 					isset($_args['max'])	&& $arguments.=" max={$_args['max']} ";
 					$this->internal('compile_iPHP');
-					$compile_iPHP	= compile_iPHP($arguments, $this);
+					$compile_iPHP = compile_iPHP($arguments, $this);
 				}
 
 				if(isset($_args['if'])){

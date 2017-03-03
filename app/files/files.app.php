@@ -52,7 +52,7 @@ class filesApp {
         }
         return $data;
     }
-    function get_twh($width=null,$height=null){
+    public static function get_twh($width=null,$height=null){
         $ret    = array();
         $width  ===null OR $ret['width'] = $width;
         $height ===null OR $ret['height'] = $height;

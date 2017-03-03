@@ -53,9 +53,6 @@ class contentApp {
             iView::assign('app', $this->app_lite());
             iView::assign($this->app, $rs);
             iView::assign('content', $rs);
-            iView::assign('func_list', 'iCMS:test:list');
-            iView::assign('func_app', $this->app);
-
             $html = iView::render($app_tpl, $this->app);
             if (iView::$gateway == "html") {
                 return array($html, $rs);

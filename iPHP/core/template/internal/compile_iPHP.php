@@ -11,9 +11,9 @@
 function compile_iPHP($arguments, &$object){
 	$attrs   = $object->_parse_arguments($arguments);
 	$hash    = substr(md5(uniqid(true).rand(1,1000)), -4);
-	$props   = "\$_iPHP_{$hash}";
-	$props_a = "\$_iPHP_{$hash}_a";
-	$output  = "<?php if (isset($props)){unset($props);}\n$props = array();\n";
+	$props   = "\$_i{$hash}";
+	$props_a = "\$_i{$hash}_a";
+	$output  = "\n<?php $props = array();\n";
 	foreach ($attrs as $attr_name => $attr_value){
 		switch ($attr_name){
 			case 'app':
@@ -53,7 +53,7 @@ function compile_iPHP($arguments, &$object){
 		$output .= "{$props}['total'] = min(ceil(({$props}['step'] > 0 ? {$props}['total'] - {$props}['start'] : {$props}['start']+1)/abs({$props}['step'])), {$props}['max']);\n";
 	}
 
-	$output .= "if({$props}['max']){";
+	$output .= "if({$props}['max']){\n";
 	$output .= "for ({$props}['index'] = {$props}['start'], {$props}['rownum'] = 1;{$props}['rownum'] <= {$props}['total'];{$props}['index'] += {$props}['step'], {$props}['rownum']++){\n";
 	$output .= "{$props}['prev'] = {$props}['index'] - {$props}['step'];\n";
 	$output .= "{$props}['next'] = {$props}['index'] + {$props}['step'];\n";

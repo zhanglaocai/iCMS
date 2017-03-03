@@ -44,7 +44,7 @@ class iView {
         iPHP_TPL_DEBUG && self::$handle->clear_compiled_tpl();
     }
     public static function callback_appfunc($args,$tpl) {
-        $keys = isset($args['as'])?$args['as']:$args['app'].'_'.$args['method'];
+        $keys = isset($args['as'])?$args['as']:$args['app'].($args['method']?'_'.$args['method']:'');
         if($args['method']){
             $callback = array($args['app'].'Func',$args['app'].'_'.$args['method']);
             //自定义APP模板调用
@@ -56,7 +56,7 @@ class iView {
                 iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
             }
         }else{
-            $callback   = iPHP_APP.'_' . $args['app'];
+            $callback = iPHP_APP.'_' . $args['app'];
             function_exists($callback) OR require_once(iPHP_TPL_FUN."/".iPHP_APP.".".$args['app'].".php");
         }
         if(isset($args['vars'])){
