@@ -6,7 +6,7 @@
 * @author coolmoo <idreamsoft@qq.com>
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
-* @version 6.0.0
+* @version 6.2.0
 */
 class linksAdmincp{
     public static $appid = null;

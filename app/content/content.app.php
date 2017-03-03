@@ -25,12 +25,12 @@ class contentApp {
         return $this->do_iCMS();
     }
     public function do_iCMS($a = null) {
-        return $this->app($this->id, isset($_GET['p']) ? (int) $_GET['p'] : 1);;
+        return $this->content($this->id, isset($_GET['p']) ? (int) $_GET['p'] : 1);;
     }
     public function hooked($data){
         return iPHP::hook($this->app,$data,iCMS::$config['hooks'][$this->app]);
     }
-    public function app($id, $page = 1, $tpl = true) {
+    public function content($id, $page = 1, $tpl = true) {
         $rs = apps_mod::get_data($this->data,$id);
         $rs OR iPHP::error_404('找不到'.$this->data['name'].': <b>'.$this->primary.':' . $id . '</b>', 10001);
         if ($rs['url']) {
@@ -64,9 +64,7 @@ class contentApp {
             return $rs;
         }
     }
-    public static function func($data=null) {
-        var_dump($data);
-    }
+
     public function app_lite($data=null) {
         $data===null && $data = $this->data;
         unset($data['table'],$data['config'],$data['fields'],$data['menu']);

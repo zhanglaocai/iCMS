@@ -3,7 +3,6 @@
 * @copyright 2007-2010, iDreamSoft
 * @license http://www.idreamsoft.com iDreamSoft
 * @author coolmoo <idreamsoft@qq.com>
-* @$Id: event.add.php 2365 2014-02-23 16:26:27Z coolmoo $
 */
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();

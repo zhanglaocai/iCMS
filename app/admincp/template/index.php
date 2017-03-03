@@ -84,8 +84,7 @@ admincp::head();
           </td>
           <td>
             <span id="iCMS_RELEASE"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span>
-            /
-            <span id="GIT_COMMIT_TIME"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span>
+            <span id="GIT_COMMIT_TIME" class="hide"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span>
           </td>
         </tr>
         <tr>
@@ -253,7 +252,7 @@ $(function(){
 		$.getJSON("http://www.idreamsoft.com/cms/version.php?VERSION=<?php echo iCMS_VERSION ; ?>&RELEASE=<?php echo iCMS_RELEASE ; ?>&callback=?",
 		    function(o){
             $('#iCMS_RELEASE').text(o.release);
-            $('#GIT_COMMIT_TIME').text(o.commit_time);
+            // $('#GIT_COMMIT_TIME').text(o.commit_time);
 		    }
 		);
 	},1000);

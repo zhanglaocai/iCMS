@@ -6,7 +6,7 @@
 * @author coolmoo <idreamsoft@qq.com>
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
-* @version 6.0.0
+* @version 6.2.0
 */
 ini_set('display_errors', 'ON');
 error_reporting(E_ALL & ~E_NOTICE);

@@ -32,7 +32,7 @@ class commentFunc{
 		}
 		return $data;
 	}
-	public static function __comment_list_display($vars){
+	private static function list_display($vars){
 		$vars['do']          = 'list';
 		$vars['page_ajax']   = 1;
 		$vars['total_cahce'] = 1;
@@ -69,7 +69,7 @@ class commentFunc{
 			$vars  = array_merge($vars,$_vars);
 			$vars['iid']   OR iUI::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"iid"或"iid"值为空.');
 			$vars['appid'] OR iUI::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"appid"或"appid"值为空.');
-			return commentFunc::__comment_list_display($vars);
+			return commentFunc::list_display($vars);
 		}
 
 		$where_sql = " `status`='1'";

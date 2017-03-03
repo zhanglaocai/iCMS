@@ -7,15 +7,23 @@
  */
 
 class contentFunc {
+    public static $app = null;
+    public static $table = null;
+    public static $primary = null;
+    private static function data($vars){
+        self::$app     = apps::get_app($vars['app']);
+        self::$table   = apps::get_table($data);
+        self::$primary = self::$table['primary'];
+    }
     public static function content_list($vars){
-        var_dump($vars);
+        self::data($vars);
 
     	$maxperpage = isset($vars['row'])?(int)$vars['row']:"100";
     	$cache_time	= isset($vars['time'])?(int)$vars['time']:"-1";
 
         $where_sql	= "WHERE `status`='1'";
 
-        isset($vars['userid'])    &&     $where_sql.=" AND `userid`='{$vars['userid']}'";
+        isset($vars['userid']) && $where_sql.=" AND `userid`='{$vars['userid']}'";
 
         if(isset($vars['cid!'])){
             $ncids    = explode(',',$vars['cid!']);
@@ -28,22 +36,20 @@ class contentFunc {
             $where_sql.= iSQL::in($cid,'cid');
         }
 
-        isset($vars['pid']) 	&& $where_sql.= " AND `type` ='{$vars['pid']}'";
-        isset($vars['pic']) 	&& $where_sql.= " AND `haspic`='1'";
-        isset($vars['nopic']) 	&& $where_sql.= " AND `haspic`='0'";
+        isset($vars['pid']) 	&& $where_sql.= " AND `pid` ='{$vars['pid']}'";
 
-    	isset($vars['startdate'])    && $where_sql.=" AND `addtime`>='".strtotime($vars['startdate'])."'";
-    	isset($vars['enddate'])     && $where_sql.=" AND `addtime`<='".strtotime($vars['enddate'])."'";
+    	isset($vars['startdate'])    && $where_sql.=" AND `pubdate`>='".strtotime($vars['startdate'])."'";
+    	isset($vars['enddate'])     && $where_sql.=" AND `pubdate`<='".strtotime($vars['enddate'])."'";
 
     	$by=$vars['by']=="ASC"?"ASC":"DESC";
         switch ($vars['orderby']) {
             case "id":		$order_sql=" ORDER BY `id` $by";			break;
-            case "addtime":	$order_sql=" ORDER BY `addtime` $by";    break;
-            case "sort":$order_sql=" ORDER BY `sortnum` $by";    break;
+            case "pubdate":	$order_sql=" ORDER BY `pubdate` $by";    break;
+            case "sort":    $order_sql=" ORDER BY `sortnum` $by";    break;
             default:        $order_sql=" ORDER BY `id` DESC";
         }
     	if($vars['cache']){
-            $cache_name = iPHP_DEVICE.'/push/'.md5($where_sql);
+            $cache_name = iPHP_DEVICE.'/'.self::$app['app'].'/'.md5($where_sql);
             $resource   = iCache::get($cache_name);
     	}
     	if(empty($resource)){

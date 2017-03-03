@@ -6,7 +6,7 @@
 * @author coolmoo <idreamsoft@qq.com>
 * @site http://www.idreamsoft.com
 * @licence http://www.idreamsoft.com/license.php
-* @version 6.0.0
+* @version 6.2.0
 */
 class user_msg{
 	//type: 0 系统 1 用户对话 2 @ 3留言

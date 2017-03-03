@@ -3,7 +3,6 @@
  * @copyright 2007-2010, iDreamSoft
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
- * @$Id: push.manage.php 2371 2014-03-16 05:33:13Z coolmoo $
  */
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();

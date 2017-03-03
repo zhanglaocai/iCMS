@@ -79,7 +79,7 @@ $(function(){
               if($rs['app']){
                 $_app = $rs['app'];
                 if($rs['config']['iFormer'] && $rs['apptype']=="2"){
-                  $_app = 'app';
+                  $_app = 'content';
                 }
                 $template = (array)apps::get_func($_app,true);
                 list($path,$obj_name)= apps::get_path($_app,'app',true);
@@ -88,14 +88,14 @@ $(function(){
                     //判断是否有APP同名方法存在 如果有 $appname 模板标签可用
                     $class_methods = get_class_methods ($obj_name);
                     if(array_search ($_app ,  $class_methods )!==FALSE){
-                      array_push ($template,'$'.$rs['app']);
+                      array_push ($template,'$'.$_app);
                       $rs['config']['router'] = '1';
                     }
                 }
               }
               $template = implode("\n", (array)$template);
               if($rs['config']['iFormer'] && $rs['apptype']=="2"){
-                $template = str_replace(array(':app:','$app'), array(':'.$rs['app'].':','$'.$rs['app']), $template);
+                // $template = str_replace(array(':content:','$content'), array(':'.$rs['app'].':','$'.$rs['app']), $template);
               }
               echo $template;
             ?></textarea>
