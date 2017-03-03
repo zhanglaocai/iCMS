@@ -6,7 +6,7 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
-class appApp {
+class contentApp {
     public $methods = array('iCMS', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
     public $appid   = null;
     public $app     = null;
@@ -45,22 +45,17 @@ class appApp {
         $rs = $this->value($rs,$page,$tpl);
         $rs = $this->hooked($rs);
 
-        // $rs['param'] = array(
-        //     "appid" => $this->appid,
-        //     "iid"   => $rs[$this->primary],
-        //     "cid"   => $rs['cid'],
-        //     "suid"  => $rs['uid'],
-        //     "title" => $rs['name'],
-        //     "url"   => $rs['url']
-        // );
-        //
-        //
-var_dump($rs);
         if ($tpl) {
+            iView::clear_tpl();
             $app_tpl = empty($rs['tpl']) ? $rs['category']['template'][$this->app] : $rs['tpl'];
             strstr($tpl, '.htm') && $app_tpl = $tpl;
             iView::assign('category', $rs['category']);unset($rs['category']);
+            iView::assign('app', $this->app_lite());
             iView::assign($this->app, $rs);
+            iView::assign('content', $rs);
+            iView::assign('func_list', 'iCMS:test:list');
+            iView::assign('func_app', $this->app);
+
             $html = iView::render($app_tpl, $this->app);
             if (iView::$gateway == "html") {
                 return array($html, $rs);
@@ -68,6 +63,14 @@ var_dump($rs);
         } else {
             return $rs;
         }
+    }
+    public static function func($data=null) {
+        var_dump($data);
+    }
+    public function app_lite($data=null) {
+        $data===null && $data = $this->data;
+        unset($data['table'],$data['config'],$data['fields'],$data['menu']);
+        return $data;
     }
     public function value($rs, $page = 1, $tpl = false) {
         $rs['appid'] = $this->appid;
@@ -101,7 +104,11 @@ var_dump($rs);
         if($category['mode'] && stripos($rs['url'], '.php?')===false){
             iURL::page_url($rs['iurl']);
         }
-
+        if ($rs['postype']) {
+            $rs['user'] = user::empty_info($rs['userid'], '#' . $rs['editor']);
+        } else {
+            $rs['user'] = user::info($rs['userid'], $rs['editor']);
+        }
         $rs['hits'] = array(
             'script' => iCMS_API . '?app='.$this->app.'&do=hits&cid=' . $rs['cid'] . '&id=' . $rs[$this->primary],
             'count'  => $rs['hits'],
@@ -133,13 +140,11 @@ var_dump($rs);
             $nkey   = null;
             switch ($field['type']) {
                 case 'multi_image':
-                    $imageArray = explode("\n", $value);
-                    $pic = array();
-                    foreach ($imageArray as $ik => $iv) {
-                        $iv && $pic[]= filesApp::get_pic(trim($iv));
+                    $nkey     = $key.'_array';
+                    $valArray = explode("\n", $value);
+                    foreach ($valArray as $i => $val) {
+                        $val && $values[$i]= filesApp::get_pic(trim($val));
                     }
-                    $nkey   = $key.'_array';
-                    $values = $pic;
                 break;
                 case 'image':
                     $nkey   = $key.'_array';
@@ -154,18 +159,58 @@ var_dump($rs);
                         'dir'  => $pi['dirname'],
                         'url'  => filesApp::get_url($pi['filename'],'download')
                     );
-
+                break;
+                case 'multi_file':
+                    $nkey = $key.'_file';
+                    $valArray = explode("\n", $value);
+                    foreach ($valArray as $i => $val) {
+                        if($val){
+                            $pi   = pathinfo($val);
+                            $values[$i]   = array(
+                                'name' => $pi['filename'],
+                                'ext'  => $pi['extension'],
+                                'dir'  => $pi['dirname'],
+                                'url'  => filesApp::get_url($pi['filename'],'download')
+                            );
+                        }
+                    }
                 break;
                 case 'category':
+                    if($key=='cid'){
+                        continue;
+                    }
+                    $nkey     = $key.'_category';
                     $category = iCache::get(categoryApp::CACHE_CATEGORY_ID.$value);
                     $values   = categoryApp::get_lite($category);
                 break;
                 case 'multi_category':
                     $nkey   = $key.'_category';
-                    $cidsArray = explode(",", $value);
-                    foreach ($cidsArray as $i => $_cid) {
-                        $category   = iCache::get(categoryApp::CACHE_CATEGORY_ID.$_cid);
+                    $valArray = explode(",", $value);
+                    foreach ($valArray as $i => $val) {
+                        $category   = iCache::get(categoryApp::CACHE_CATEGORY_ID.$val);
                         $values[$i] = categoryApp::get_lite($category);
+                    }
+                break;
+                case 'userid':
+                    $nkey   = $key.'_user';
+                    if ($rs['postype']) {
+                        // $values = user::empty_info($value);
+                    } else {
+                        $values = user::info($value);
+                    }
+                break;
+                case 'multi_prop':
+                case 'prop':
+                    if($key=='pid'){
+                        continue;
+                    }
+                    $nkey   = $key.'_prop';
+                    $values['prop'] = propApp::value($this->app,$key);
+                    $valArray = explode(",", $value);
+                    if($values['prop'])foreach ($values['prop'] as $i => $val) {
+                        if(in_array($val['val'], $valArray)){
+                            $values['value'][$val['val']] = $val;
+                        }
                     }
                 break;
                 default:
@@ -173,21 +218,21 @@ var_dump($rs);
                 break;
             }
             if($field['option']){
+                $nkey = $key.'_array';
                 $optionArray = explode(";", $field['option']);
+                $valArray = explode(",", $value);
                 foreach ($optionArray as $ok => $val) {
                     $val = trim($val,"\r\n");
                     if($val){
                         list($opt_text,$opt_value) = explode("=", $val);
-                        $values[$opt_value] = $opt_text;
+                        $values['option'][$opt_value] = $opt_text;
+                        if(in_array($opt_value, $valArray)){
+                            $values['value'][$opt_value] = $opt_text;
+                        }
                     }
                 }
-                $nkey = $key.'_option';
             }
             $nkey && $rs[$nkey] = $values;
-
-            var_dump($field,$value,$values);
-            echo "<hr />";
-           // $rs[$key] = iFormer::de_value($rs[$key],$field);
         }
         return $rs;
     }

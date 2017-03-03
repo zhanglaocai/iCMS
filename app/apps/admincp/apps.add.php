@@ -188,6 +188,9 @@ $(function(){
           </div>
           <?php } ?>
           <div id="apps-add-menu" class="tab-pane">
+            <div class="alert alert-error alert-block">
+              <p>菜单配置属于重要数据,如果不熟悉请勿修改.敬请等待官方推出相关编辑器</p>
+            </div>
             <script src="./app/admincp/ui/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
             <link href="./app/admincp/ui/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css" type="text/css" rel="stylesheet" />
             <textarea name="menu" id="menu" class="span12 brush:js;toolbar:false" style="height:300px;"><?php echo $rs['menu']?jsonFormat($rs['menu']):'' ; ?></textarea>

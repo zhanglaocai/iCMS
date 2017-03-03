@@ -104,14 +104,14 @@ class admincp {
 			self::$APP_TPL  = self::$APP_PATH . '/admincp';
 			self::$APP_FILE = self::$APP_PATH . '/'.$app_file;
 		}
-		//自定义APP
+		//自定义APP内容管理
 		if(!is_file(self::$APP_FILE)){
 			$appData = apps::get_app($app);
 			if($appData){
 				$sapp && $sapp_name = '_'.$sapp;
-				$app_file = 'app'.$sapp_name.'.admincp.php';
-				$obj_name = 'app'.$sapp_name.'Admincp';
-				self::$APP_PATH = iPHP_APP_DIR . '/app';
+				$app_file = 'content'.$sapp_name.'.admincp.php';
+				$obj_name = 'content'.$sapp_name.'Admincp';
+				self::$APP_PATH = iPHP_APP_DIR . '/content';
 				self::$APP_TPL  = self::$APP_PATH . '/admincp';
 				self::$APP_FILE = self::$APP_PATH . '/'.$app_file;
 			}else{

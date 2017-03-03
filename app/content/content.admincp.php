@@ -8,7 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.0.0
 */
-class appAdmincp{
+class contentAdmincp{
     public $appid = null;
     public $app = null;
     public $callback = array();
@@ -27,7 +27,7 @@ class appAdmincp{
     public function do_add(){
       $rs = apps_mod::get_data($this->app,$this->id);
       apps::former_create($this->appid,$rs);
-      include admincp::view('app.add');
+      include admincp::view('content.add');
     }
 
     public function do_iCMS(){
@@ -110,7 +110,7 @@ class appAdmincp{
         }
         $list_fields = array('title','cid','pubdate');
 
-        include admincp::view('app.manage');
+        include admincp::view('content.manage');
     }
     public function do_save(){
 
@@ -187,7 +187,7 @@ class appAdmincp{
 		}
 	}
     // public static function menu($menu){
-    //     $path     = iPHP_APP_DIR.'/apps/etc/app.menu.json.php';
+    //     $path     = iPHP_APP_DIR.'/apps/etc/content.menu.json.php';
     //     $json     = file_get_contents($path);
     //     $json     = str_replace("<?php defined('iPHP') OR exit('What are you doing?');? >\n", '', $json);
     //     $variable = array();

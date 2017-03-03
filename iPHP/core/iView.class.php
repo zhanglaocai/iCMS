@@ -9,8 +9,9 @@
  * @version 2.0.0
  */
 class iView {
-    public static $handle       = NULL;
-    public static $gateway      = null;
+    public static $handle  = NULL;
+    public static $gateway = null;
+    public static $apps    = array();
 
     public static function init() {
         self::$handle = new iTemplateLite();
@@ -43,22 +44,39 @@ class iView {
         iPHP_TPL_DEBUG && self::$handle->clear_compiled_tpl();
     }
     public static function callback_appfunc($args,$tpl) {
-        $keys = isset($args['as'])?$args['as']:$args['app'];
+        $keys = isset($args['as'])?$args['as']:$args['app'].'_'.$args['method'];
         if($args['method']){
             $callback   = $args['app'].'_'.$args['method'];
-            function_exists($callback) OR require_once(iPHP_APP_DIR."/".$args['app']."/".$args['app'].".func.php");
-            isset($args['as']) OR $keys.= '_'.$args['method'];
+            if(!function_exists($callback)){
+                $path = iPHP_APP_DIR."/".$args['app']."/".$args['app'].".func.php";
+                if(is_file($path)){
+                    require_once($path);
+                }else{
+                    //自定义APP模板调用
+                    if(self::$apps[$args['app']]){
+                        $callback = array($args['_app'].'Func','FUNC_'.$args['method']);
+                        if(!is_callable($callback)){
+                            iPHP::error_throw("Unable to load class '$callback',file path '$path'");
+                        }
+                    }else{
+                        iPHP::error_throw("Unable to load function '$callback',file path '$path'");
+                    }
+                }
+            }
+
         }else{
             $callback   = iPHP_APP.'_' . $args['app'];
             function_exists($callback) OR require_once(iPHP_TPL_FUN."/".iPHP_APP.".".$args['app'].".php");
         }
         if(isset($args['vars'])){
-            $vars = $args['vars'];
-            unset($args['vars']);
+            $vars = $args['vars'];unset($args['vars']);
             $args = array_merge($args,$vars);
         }
-
-        $tpl->assign($keys,$callback($args));
+        if(is_array($callback)){
+            $tpl->assign($keys,call_user_func_array($callback, array($args)));
+        }else{
+            $tpl->assign($keys,$callback($args));
+        }
     }
     public static function block_cache($vars, $content, $tpl) {
         $vars['id'] OR iUI::warning('cache 标签出错! 缺少"id"属性或"id"值为空.');

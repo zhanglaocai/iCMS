@@ -10,7 +10,7 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 
-class app_categoryAdmincp extends categoryAdmincp {
+class content_categoryAdmincp extends categoryAdmincp {
     public function __construct($app) {
         $table = apps::get_table($app);
         parent::__construct($app['id'],'category');
@@ -24,9 +24,9 @@ class app_categoryAdmincp extends categoryAdmincp {
          *  模板
          */
         $this->category_template = array(
-            'index'     => array('首页','{iTPL}/app.category.index.htm'),
-            'list'      => array('列表','{iTPL}/app.category.list.htm'),
-            $app['app'] => array($app['name'],'{iTPL}/app.content.htm')
+            'index'     => array('首页','{iTPL}/content.index.htm'),
+            'list'      => array('列表','{iTPL}/content.list.htm'),
+            $app['app'] => array($app['name'],'{iTPL}/content.htm')
         );
 
         /**

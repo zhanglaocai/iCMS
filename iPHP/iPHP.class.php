@@ -43,6 +43,10 @@ class iPHP {
 			$app  = substr($name,0,-3);
 			$file = $app.'.app';
 			$path = iPHP_APP_DIR . '/' . $app . '/' . $file . '.php';
+		}else if(strpos($name,'Func') !== false) {
+			$app  = substr($name,0,-4);
+			$file = $app.'.func';
+			$path = iPHP_APP_DIR . '/' . $app . '/' . $file . '.php';
 		}else if(strpos($name,'Admincp') !== false) {
 			//app.admincp.php
 			$app  = substr($name,0,-7);
@@ -61,7 +65,7 @@ class iPHP {
 			$map[$name] && $name = $map[$name];
 			$core===null && $core = iPHP_CORE;
 			$path = $core.'/'.$name.'.class.php';
-		}else if(iPHP::$apps[$name]||in_array($name, array('apps','app')) ){
+		}else if(iPHP::$apps[$name]||in_array($name, array('apps','content')) ){
 			//app.class.php
 			$file OR $file = $name.'.class';
 			$path = iPHP_APP_DIR . '/' . $name . '/' . $file . '.php';
@@ -149,12 +153,12 @@ class iPHP {
 		}
 		self::$app_path = iPHP_APP_DIR . '/' . $app;
 		self::$app_file = self::$app_path . '/' . $app . '.app.php';
-		//自定义APP
+		//自定义APP调用
 		if(!is_file(self::$app_file)){
 			$appData = apps::get_app($app);
 			if($appData){
-				self::$app_path = iPHP_APP_DIR . '/app';
-				self::$app_file = self::$app_path . '/app.app.php';
+				self::$app_path = iPHP_APP_DIR . '/content';
+				self::$app_file = self::$app_path . '/content.app.php';
 			}else{
 				iPHP::error_404('Unable to find custom application <b>' . $app . '.app.php</b>', '0003');
 			}
@@ -187,8 +191,8 @@ class iPHP {
 		iView::$handle->_iVARS['SAPI'] .= self::$app_name;
 		iView::$handle->_iVARS += $app_vars;
 
-		if($appData){ //自定义APP
-			self::$app = new appApp($appData);
+		if($appData){ //自定义APP调用
+			self::$app = new contentApp($appData);
 		}else{
 			$obj_name = $app.'App';
 			self::$app = new $obj_name();
@@ -453,7 +457,7 @@ class iPHP {
 			$ECODE && header("X-iPHP-ECODE:" . $ECODE);
 		}
 	}
-	public static function error_throw($msg, $code) {
+	public static function error_throw($msg, $code=null) {
 		trigger_error($msg.($code?"($code)":null), E_USER_ERROR);
 	}
 	public static function error_404($msg = "", $code = "") {

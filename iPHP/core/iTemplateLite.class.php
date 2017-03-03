@@ -560,13 +560,24 @@ class iTemplateLite_Compiler extends iTemplateLite {
 				return $include_file = str_replace($this->_error_reporting, '', compile_include($arguments, $this));
 				break;
 			case $this->reserved_template_varname:
-				$arguments.=' app="'.$app.'"';
-				$method && $arguments.=' method="'.$method.'"';
 				$_args = $this->_parse_arguments($arguments);
+				if(isset($_args['app'])){
+					//原app
+					$_args['_app'] = '"'.$app.'"';
+				}else{
+					$_args['app'] = '"'.$app.'"';
+				}
+
+				if($method && !isset($_args['method'])){
+					$_args['method'] = '"'.$method.'"';
+				}
+
 				isset($_args['app']) OR $this->trigger_error("missing 'app' attribute in '".$this->reserved_template_varname."'", E_USER_ERROR, __FILE__, __LINE__);
+
 				foreach ($_args as $key => $value){
 					$arg_list[] = "'$key' => $value";
 				}
+
 				$code = '<?php $this->template_callback("app",array(array('.implode(',', (array)$arg_list).'),$this)); ?>';
 
 				if($app && isset($_args['loop'])){

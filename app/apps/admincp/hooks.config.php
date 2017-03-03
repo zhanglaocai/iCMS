@@ -26,6 +26,10 @@ admincp::head();
     </select>
     <span class="add-on"><a class="del_hooks" href="javascript:;"><i class="fa fa-times"></i></a></span>
   </div>
+  <div class="alert alert-error alert-block">
+    <p>钩子配置管理加载比较慢,请等待加载完成后在修改</p>
+    <p>不影响使用效率</p>
+  </div>
   <div class="clearfloat mb10"></div>
 </div>
 

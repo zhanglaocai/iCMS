@@ -16,18 +16,6 @@ class appsAdmincp{
       $this->appid = iCMS_APP_APPS;
     	$this->id = (int)$_GET['id'];
     }
-    public function do_app_add(){
-      $appid = (int)$_GET['appid'];
-      $app   = apps::get_app($appid);
-      $appAdmincp = new appAdmincp($app);
-      $appAdmincp->do_add();
-    }
-    public function do_app_manage(){
-      $appid = (int)$_GET['appid'];
-      $app   = apps::get_app($appid);
-      $appAdmincp = new appAdmincp($app);
-      $appAdmincp->do_manage();
-    }
 
     public function do_hooks(){
         configAdmincp::app($this->appid,'hooks');

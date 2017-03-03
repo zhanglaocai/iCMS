@@ -5,7 +5,13 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
-function app_list($vars){
+
+class contentFunc {
+    public static function FUNC_list($vars){
+        var_dump($vars);
+    }
+}
+function content_list($vars){
 	$maxperpage = isset($vars['row'])?(int)$vars['row']:"100";
 	$cache_time	= isset($vars['time'])?(int)$vars['time']:"-1";
 
