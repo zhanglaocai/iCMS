@@ -99,8 +99,11 @@ class patchAdmincp{
     	include admincp::view("git.show");
     }
 	public static function git($do,$type='array') {
-		require iPHP_APP_CORE.'/git.version.php';
-		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=' .GIT_COMMIT. '&t=' . time();
+		require_once iPHP_APP_CORE.'/git.version.php';
+        $commit_id = GIT_COMMIT;
+        $_GET['commit_id'] && $commit_id = $_GET['commit_id'];
+
+		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=' .$commit_id. '&t=' . time();
 // 		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=7e54fae6d0625f32&t=' . time();
 // var_dump($url);
 		$data = iHttp::remote($url);
