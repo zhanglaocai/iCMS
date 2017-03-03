@@ -30,15 +30,13 @@ class commentApp {
 		$_GET['_display'] = $_GET['display'];
 		$_GET['display'] = 'default';
 		$_GET = iSecurity::escapeStr($_GET);
-		iPHP::app('comment.func');
-		return comment_list($_GET);
+		return commentFunc::comment_list($_GET);
 	}
 	public function API_form() {
 		$_GET['_display'] = $_GET['display'];
 		$_GET['display'] = 'default';
 		$_GET = iSecurity::escapeStr($_GET);
-		iPHP::app('comment.func');
-		return comment_form($_GET);
+		return commentFunc::comment_form($_GET);
 	}
 
 	public function API_like() {

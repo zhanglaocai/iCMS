@@ -41,7 +41,7 @@ class iCMS {
     public static function run($app = NULL,$do = NULL,$args = NULL,$prefix="do_") {
         iDevice::init(self::$config);
         iView::init();
-        iView::$apps = self::$config['apps'];
+        iView::$func = self::$config['apps'];
         iView::$handle->_iVARS = array(
             'VERSION' => iCMS_VERSION,
             'API'     => iCMS_API,

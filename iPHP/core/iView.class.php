@@ -11,7 +11,7 @@
 class iView {
     public static $handle  = NULL;
     public static $gateway = null;
-    public static $apps    = array();
+    public static $func    = array();
 
     public static function init() {
         self::$handle = new iTemplateLite();
@@ -46,24 +46,12 @@ class iView {
     public static function callback_appfunc($args,$tpl) {
         $keys = isset($args['as'])?$args['as']:$args['app'].'_'.$args['method'];
         if($args['method']){
-            $callback   = $args['app'].'_'.$args['method'];
-            if(!function_exists($callback)){
-                $path = iPHP_APP_DIR."/".$args['app']."/".$args['app'].".func.php";
-                if(is_file($path)){
-                    require_once($path);
-                }else{
-                    //自定义APP模板调用
-                    if(self::$apps[$args['app']]){
-                        $callback = array($args['_app'].'Func','FUNC_'.$args['method']);
-                        if(!is_callable($callback)){
-                            iPHP::error_throw("Unable to load class '$callback',file path '$path'");
-                        }
-                    }else{
-                        iPHP::error_throw("Unable to load function '$callback',file path '$path'");
-                    }
-                }
+            $callback = array($args['app'].'Func',$args['app'].'_'.$args['method']);
+            //自定义APP模板调用
+            $args['_app'] && $callback[0] = $args['_app'].'Func';
+            if(!is_callable($callback)){
+                iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
             }
-
         }else{
             $callback   = iPHP_APP.'_' . $args['app'];
             function_exists($callback) OR require_once(iPHP_TPL_FUN."/".iPHP_APP.".".$args['app'].".php");
