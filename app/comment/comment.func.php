@@ -66,7 +66,7 @@ class commentFunc{
 
 		if ($vars['display'] && empty($vars['loop'])) {
 			$_vars = iView::app_vars(true);
-			$vars  = array_merge($vars,$_vars);
+			$vars  = array_merge($vars,(array)$_vars);
 			$vars['iid']   OR iUI::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"iid"或"iid"值为空.');
 			$vars['appid'] OR iUI::warning('iCMS&#x3a;comment&#x3a;list 标签出错! 缺少参数"appid"或"appid"值为空.');
 			return commentFunc::list_display($vars);

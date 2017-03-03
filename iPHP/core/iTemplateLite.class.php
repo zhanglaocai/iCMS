@@ -578,7 +578,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 					$arg_list[] = "'$key' => $value";
 				}
 
-				$code = '<?php $this->callback("app",array(array('.implode(',', (array)$arg_list).'),$this)); ?>';
+				$code = '<?php $this->callback("func",array(array('.implode(',', (array)$arg_list).'),$this)); ?>';
 
 				if($app && isset($_args['loop'])){
 					$this->_iPHP_stack[count($this->_iPHP_stack)-1] = true;

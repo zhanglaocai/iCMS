@@ -374,6 +374,14 @@ class apps {
        	$rs OR iPHP::error_throw('application no exist', '0005');
        	return $rs;
 	}
+
+    public static function get_app_lite($data=null) {
+        if(!is_array($data)){
+            $data = apps::get_app($data);
+        }
+        unset($data['table'],$data['config'],$data['fields'],$data['menu']);
+        return $data;
+    }
 	public static function get_url($appid=1,$primary=''){
         $rs    = self::get_app($appid);
         if($rs['table']){

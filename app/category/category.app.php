@@ -14,9 +14,9 @@ class categoryApp{
 
 	public $methods	= array('iCMS','category');
     public function __construct($appid = iCMS_APP_ARTICLE) {
-    	$this->appid = iCMS_APP_ARTICLE;
-    	$appid && $this->appid = $appid;
-    	$_GET['appid'] && $this->appid	= (int)$_GET['appid'];
+    	// $this->appid = iCMS_APP_ARTICLE;
+    	// $appid && $this->appid = $appid;
+    	// $_GET['appid'] && $this->appid	= (int)$_GET['appid'];
     }
     public function do_iCMS($tpl = 'index') {
         $cid = (int)$_GET['cid'];
@@ -66,7 +66,7 @@ class categoryApp{
 
         if($tpl) {
             $category['mode'] && iURL::page_url($iurl);
-
+            iView::assign('app', apps::get_app_lite($category['appid']));
             iView::assign('category',$category);
             if(isset($_GET['tpl'])){
                 $tpl = iSecurity::escapeStr($_GET['tpl']);

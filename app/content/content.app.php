@@ -50,7 +50,7 @@ class contentApp {
             $app_tpl = empty($rs['tpl']) ? $rs['category']['template'][$this->app] : $rs['tpl'];
             strstr($tpl, '.htm') && $app_tpl = $tpl;
             iView::assign('category', $rs['category']);unset($rs['category']);
-            iView::assign('app', $this->app_lite());
+            iView::assign('app', apps::get_app_lite($this->data));
             iView::assign($this->app, $rs);
             iView::assign('content', $rs);
             $html = iView::render($app_tpl, $this->app);
@@ -62,11 +62,6 @@ class contentApp {
         }
     }
 
-    public function app_lite($data=null) {
-        $data===null && $data = $this->data;
-        unset($data['table'],$data['config'],$data['fields'],$data['menu']);
-        return $data;
-    }
     public function value($rs, $page = 1, $tpl = false) {
         $rs['appid'] = $this->appid;
         $category = categoryApp::category($rs['cid'],false);

@@ -11,7 +11,8 @@
 class iView {
     public static $handle  = NULL;
     public static $gateway = null;
-    public static $func    = array();
+    public static $apps  = array();
+    public static $func  = array();
 
     public static function init() {
         self::$handle = new iTemplateLite();
@@ -37,17 +38,25 @@ class iView {
         self::$handle->template_callback = array(
             "resource" => array("iView","callback_path"),
             "output"   => array("iView","callback_output"),
-            "app"      => array("iView","callback_appfunc"),
+            "func"     => array("iView","callback_func"),
         );
         self::$handle->assign('GET', $_GET);
         self::$handle->assign('POST', $_POST);
         iPHP_TPL_DEBUG && self::$handle->clear_compiled_tpl();
     }
-    public static function callback_appfunc($args,$tpl) {
+    public static function check_func($app) {
+        $path = iPHP_APP_DIR . '/' . $app . '/' . $app . '.func.php';
+        return is_file($path);
+    }
+    public static function callback_func($args,$tpl) {
         $keys = isset($args['as'])?$args['as']:$args['app'].($args['method']?'_'.$args['method']:'');
         if($args['method']){
             $callback = array($args['app'].'Func',$args['app'].'_'.$args['method']);
-            //自定义APP模板调用
+            //自定义APP模板调用 iCMS:test:list 调用 contentFunc
+            if(!self::check_func($args['app']) && self::$apps[$args['app']]){
+                $callback = array(iView::$func.'Func',iView::$func.'_'.$args['method']);
+            }
+            //自定义APP模板调用 iCMS:content:list app="$app.app"
             if($args['_app']){
                 $keys     = isset($args['as'])?$args['as']:$args['_app'].'_'.$args['method'];
                 $callback = array($args['_app'].'Func',$args['_app'].'_'.$args['method']);
