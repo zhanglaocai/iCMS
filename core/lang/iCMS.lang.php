@@ -6,8 +6,7 @@
 * @author coolmoo <iiiphp@qq.com>
 * @site http://www.iiiphp.com
 * @licence http://www.iiiphp.com/license
-* @version 1.0.1
-* $Id: define.php 2393 2014-04-09 13:14:23Z coolmoo $
+* @version 6.2.0
 */
 defined('iPHP') OR exit('What are you doing?');
 
