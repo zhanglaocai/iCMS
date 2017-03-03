@@ -356,29 +356,13 @@ class apps {
         return $path;
     }
     public static function get_func($app,$tag=false){
-        $path   = self::get_path($app,'func');
-        if(file_exists($path)){
-            $arr    =  get_defined_functions ();
-            $array1 = $arr['user'];
-            include $path;
-            $arr    = get_defined_functions ();
-            $array2 = $arr['user'];
-            $result = array_diff ( $array2 ,  $array1);
-
-            if($result){
-                if($tag){
-                    $tag_array = array();
-                    foreach ($result as $key => $value) {
-                        if(substr($value,0,strlen($app))==$app){
-                            $tag_array[]= iPHP_APP.':'.str_replace('_', ':', $value);
-                        }
-                    }
-                    return $tag_array;
-                }else{
-                    return $result;
-                }
+        $class_methods = get_class_methods($app.'Func');
+        foreach ($class_methods as $key => $value) {
+            if(substr($value,0,strlen($app))==$app){
+                $tag_array[]= iPHP_APP.':'.str_replace('_', ':', $value);
             }
         }
+        return $tag_array;
     }
 	public static function get_app($appid=1){
 		$rs	= iCache::get('app/'.$appid);

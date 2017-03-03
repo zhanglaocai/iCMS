@@ -8,6 +8,8 @@
 
 class contentFunc {
     public static function content_list($vars){
+        var_dump($vars);
+
     	$maxperpage = isset($vars['row'])?(int)$vars['row']:"100";
     	$cache_time	= isset($vars['time'])?(int)$vars['time']:"-1";
 

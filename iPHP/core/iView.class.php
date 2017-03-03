@@ -48,7 +48,10 @@ class iView {
         if($args['method']){
             $callback = array($args['app'].'Func',$args['app'].'_'.$args['method']);
             //自定义APP模板调用
-            $args['_app'] && $callback[0] = $args['_app'].'Func';
+            if($args['_app']){
+                $keys     = isset($args['as'])?$args['as']:$args['_app'].'_'.$args['method'];
+                $callback = array($args['_app'].'Func',$args['_app'].'_'.$args['method']);
+            }
             if(!is_callable($callback)){
                 iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
             }
@@ -60,6 +63,7 @@ class iView {
             $vars = $args['vars'];unset($args['vars']);
             $args = array_merge($args,$vars);
         }
+
         if(is_array($callback)){
             $tpl->assign($keys,call_user_func_array($callback, array($args)));
         }else{

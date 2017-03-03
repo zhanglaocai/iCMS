@@ -13,9 +13,9 @@ class contentAdmincp{
     public $app = null;
     public $callback = array();
 
-    public function __construct($app) {
-        $this->app       = $app;
-        $this->appid     = $app['id'];
+    public function __construct($data) {
+        $this->app       = $data;
+        $this->appid     = $data['id'];
         $_GET['appid'] && $this->appid = (int)$_GET['appid'];
 
         $this->id        = (int)$_GET['id'];
