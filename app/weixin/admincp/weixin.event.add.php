@@ -15,7 +15,7 @@ $(function(){
   $("#msgtype").bind('chosen:updated change',function(event) {
     msgtype_change (this);
   });
-  public function eventype_change (a) {
+  function eventype_change (a) {
     var data_type = $('option:selected',a).parent().attr('data-type');
     $("#operator_input").hide();
     if(data_type=="keyword"){
@@ -36,7 +36,7 @@ $(function(){
       }
     }
   }
-  public function msgtype_change (a) {
+  function msgtype_change (a) {
     var select = $('option:selected',a).val();
     var clone = $('#msg-'+select).clone(true).show();
     $('#msg').html(clone);
