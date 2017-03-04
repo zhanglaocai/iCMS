@@ -26,22 +26,22 @@ admincp::head();
     </select>
     <span class="add-on"><a class="del_hooks" href="javascript:;"><i class="fa fa-times"></i></a></span>
   </div>
-  <div class="alert alert-error alert-block">
-    <p>钩子配置管理加载比较慢,请等待加载完成后在修改</p>
-    <p>不影响使用效率</p>
-  </div>
   <div class="clearfloat mb10"></div>
+</div>
+<div class="app_fields_select hide">
+  <?php echo apps_hook::app_fields_select();?>
 </div>
 
 <script type="text/javascript">
 $(function(){
-$("#<?php echo APP_FORMID;?>").batch();
+  $("#<?php echo APP_FORMID;?>").batch();
 });
 </script>
 
 <script>
 function hooks_item_clone(a,f,m) {
   var set_field = function  (hooks_item,f,html) {
+      $(".H_field",hooks_item).html('');
       $(".H_field",hooks_item).html(html);
       if(f){
         $(".H_field",hooks_item).val(f)
@@ -52,13 +52,16 @@ function hooks_item_clone(a,f,m) {
   hooks_item.removeClass('hide hooks_item');
   hooks_item.on('chosen:updated change', '.H_app', function(event) {
     event.preventDefault();
-    var me = this;
+    var me = this,app = this.value;
     $(".H_field",hooks_item).html('<option value="">加载中....请稍候!</option>');
-      $.get("<?php echo APP_URI; ?>&do=hooks_app_field_opt&_app="+this.value,
-        function(html){
-          set_field(hooks_item,f,html);
-        }
-      );
+    var option = $("#app_"+app+"_select").html();
+
+    set_field(hooks_item,f,option);
+    // $.get("<?php echo APP_URI; ?>&do=hooks_app_field_opt&_app="+app,
+    //   function(html){
+    //     set_field(hooks_item,f,html,app);
+    //   }
+    // );
   }).on('click', '.del_hooks', function(event) {
     event.preventDefault();
     var ppp = $(this).parent().parent().parent();
@@ -82,7 +85,7 @@ function hooks_item_clone(a,f,m) {
         <i class="fa fa-bank"></i> <span>应用钩子管理</span>
       </span>
       <span class="icon">
-        <a class="add_hooks" href="javascript:;" title="添加钩子"><i class="fa fa-plus-square"></i></a>
+        <a class="add_hooks" href="javascript:;" title="添加钩子"><i class="fa fa-plus-square"></i> 添加钩子</a>
       </span>
     </div>
     <div class="widget-content">
@@ -105,6 +108,7 @@ $(function(){
   });
 })
 </script>
+<div class="clearfloat mb10"></div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
         </div>

@@ -23,26 +23,31 @@ class apps_hook {
         return implode('', (array)$option);
     }
     /**
-     * 获取APP字段
-     * @param  [type] $app [description]
-     * @return [type]      [description]
+     * 获取钩子APP字段 select
      */
-    public static function app_fields($app=null) {
-        $rs = apps::get($app,'app');
-        if($rs['table'])foreach ($rs['table'] as $key => $table) {
-            $tbn = $table['table'];
-            if(apps_db::check_table($tbn)){
-                $option[] = '<optgroup label="'.$table['label'].'表">';
-                $orig_fields  = apps_db::fields($tbn);
-                foreach ((array)$orig_fields as $field => $value) {
-                    $option[]='<option value="'.$field.'">'.($value['comment']?$value['comment'].' ('.$field.')':$field).'</option>';
+    public static function app_fields_select() {
+        foreach (apps::get_array(array("!table"=>0)) as $a => $app) {
+            $option = array();
+            list($path,$obj_name)= apps::get_path($app['app'],'app',true);
+            if($app['table'] && is_file($path) && method_exists($obj_name,'hooked')){
+                foreach ($app['table'] as $key => $table) {
+                    $tbn = $table['table'];
+                    if(apps_db::check_table($tbn)){
+                        $option[] = '<optgroup label="'.$table['label'].'表">';
+                        $orig_fields  = apps_db::fields($tbn);
+                        foreach ((array)$orig_fields as $field => $value) {
+                            $option[]='<option value="'.$field.'">'.($value['comment']?$value['comment'].' ('.$field.')':$field).'</option>';
+                        }
+                        $option[] = '</optgroup>';
+                    }
                 }
-                $option[] = '</optgroup>';
+                if($option){
+                    echo '<select id="app_'.$app['app'].'_select" class="hide">'.implode('', (array)$option).'</select>';
+                }
             }
-
         }
-        return implode('', (array)$option);
     }
+
     /**
      * 获取APP 插件等可用钩子
      * @return [type] [description]

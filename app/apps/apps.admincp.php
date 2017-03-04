@@ -33,10 +33,6 @@ class appsAdmincp{
         configAdmincp::save($this->appid,'hooks');
     }
 
-    public function do_hooks_app_field_opt(){
-      $app = $_GET['_app'];
-      echo apps_hook::app_fields($app);
-    }
     public function do_store(){
       include admincp::view("apps.store");
     }
