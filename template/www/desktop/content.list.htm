@@ -56,28 +56,28 @@
                                 <!--{/iCMS}-->
                             </div>
                             <ul class="media-list">
-                                <!--{iCMS:article:list loop="true" page="true" tags="true" sub="all" row="12" cid="$category.cid"}-->
+                                <!--{iCMS:content:list app="$app.app" loop="true" page="true" tags="true" sub="all" row="12" cid="$category.cid"}-->
                                 <li class="media">
-                                    <!--{if $article_list.pic.url}-->
-                                    <a class="media-object" href="<!--{$article_list.url}-->">
-                                            <img class="r5 lazy" data-src="<!--{$article_list.pic.url}-->" src="<!--{$site.urls.tpl}-->/static/img/loading.gif">
+                                    <!--{if $content_list.pic.url}-->
+                                    <a class="media-object" href="<!--{$content_list.url}-->">
+                                            <img class="r5 lazy" data-src="<!--{$content_list.pic.url}-->" src="<!--{$site.urls.tpl}-->/static/img/loading.gif">
                                         </a>
                                     <!--{/if}-->
                                     <div class="media-body">
                                         <h4 class="media-heading">
-                                            <a href="<!--{$article_list.url}-->" target="_blank"><!--{$article_list.title}--></a>
+                                            <a href="<!--{$content_list.url}-->" target="_blank"><!--{$content_list.title}--></a>
                                         </h4>
-                                        <!--{if $article_list.description}-->
+                                        <!--{if $content_list.description}-->
                                         <p class="media-text">
-                                            <!--{$article_list.description|cut:110:'...'}-->
-                                            <a href="<!--{$article_list.url}-->" target="_blank" class="blue">[详细]</a>
+                                            <!--{$content_list.description|cut:110:'...'}-->
+                                            <a href="<!--{$content_list.url}-->" target="_blank" class="blue">[详细]</a>
                                         </p>
                                         <!--{/if}-->
                                         <div class="media-info">
-                                            <span class="date"><!--{$article_list.pubdate|date:'Y-m-d H:i'}--></span>
-                                            <span class="category">分类：<!--{$article_list.category.link}--></span>
-                                            <!--{if $article_list.tags_link}-->
-                                            <span class="tags"><!--{$article_list.tags_link}--></span>
+                                            <span class="date"><!--{$content_list.pubdate|date:'Y-m-d H:i'}--></span>
+                                            <span class="category">分类：<!--{$content_list.category.link}--></span>
+                                            <!--{if $content_list.tags_link}-->
+                                            <span class="tags"><!--{$content_list.tags_link}--></span>
                                             <!--{/if}-->
                                         </div>
                                     </div>
@@ -103,21 +103,21 @@
                     </div>
                     <div class="mod-content">
                         <ul class="rank-list" id="rank-week">
-                            <!--{iCMS:article:list loop="true" row="10" sub="all" orderby="week" cid="$category.cid"}-->
+                            <!--{iCMS:content:list app="$app.app" loop="true" row="10" sub="all" orderby="week" cid="$category.cid"}-->
                             <li>
-                                <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
-                                <a href="<!--{$article_list.url}-->" target="_blank">
-                                    <!--{$article_list.title}-->
+                                <em class="no<!--{$content_list.rownum}-->"><!--{$content_list.rownum}--></em>
+                                <a href="<!--{$content_list.url}-->" target="_blank">
+                                    <!--{$content_list.title}-->
                                 </a>
                             </li>
                             <!--{/iCMS}-->
                         </ul>
                         <ul class="rank-list hide" id="rank-momth">
-                            <!--{iCMS:article:list loop="true" row="10" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
+                            <!--{iCMS:content:list app="$app.app" loop="true" row="10" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
                             <li>
-                                <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
-                                <a href="<!--{$article_list.url}-->" target="_blank">
-                                    <!--{$article_list.title}-->
+                                <em class="no<!--{$content_list.rownum}-->"><!--{$content_list.rownum}--></em>
+                                <a href="<!--{$content_list.url}-->" target="_blank">
+                                    <!--{$content_list.title}-->
                                 </a>
                             </li>
                             <!--{/iCMS}-->
@@ -151,14 +151,14 @@
                         </div>
                     </div>
                     <div class="mod-content">
-                        <!--{iCMS:article:list loop="true" pic="true" sub="all" row="8" cid="$category.cid"}-->
+                        <!--{iCMS:content:list app="$app.app" loop="true" pic="true" sub="all" row="8" cid="$category.cid"}-->
                         <div class="pictxt-list <!--{cycle values='fl,fr'}-->">
-                            <a href="<!--{$article_list.url}-->" target="_blank">
+                            <a href="<!--{$content_list.url}-->" target="_blank">
                                 <span class="pictxt-img">
-                                        <img src="<!--{$article_list.pic.url}-->" alt="<!--{$article_list.title}-->">
+                                        <img src="<!--{$content_list.pic.url}-->" alt="<!--{$content_list.title}-->">
                                     </span>
                                 <p class="pictxt-text">
-                                    <!--{$article_list.title}-->
+                                    <!--{$content_list.title}-->
                                 </p>
                             </a>
                         </div>

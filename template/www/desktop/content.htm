@@ -85,12 +85,12 @@
                         </script>
                     </div>
                     <div class="article-like" data-param='<!--{$content.param|json_encode}-->'>
-                        <a i="vote:article:good" class="like-btn">
+                        <a i="vote:<!--{$app.app}-->:good" class="like-btn">
                             <i class="like-icon up"></i>
                             <span i="vote_good_num" class="like-num"><!--{$content.good}--></span>
                             <span class="like-txt">赞</span>
                         </a>
-                        <a i="vote:article:bad" class="like-btn">
+                        <a i="vote:<!--{$app.app}-->:bad" class="like-btn">
                             <i class="like-icon down"></i>
                             <span i="vote_bad_num" class="like-num"><!--{$content.bad}--></span>
                             <span class="like-txt">踩</span>

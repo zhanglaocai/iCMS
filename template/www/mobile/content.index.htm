@@ -21,13 +21,13 @@
     <div class="clearfix mb10"></div>
     <div class="body">
       <!--{if $category.rootid}-->
-        <section class="bg-white" id="article-list">
+        <section class="bg-white" id="content-list">
           <div class="u-ttl">
             <h2><!--{$category.name}--></h2>
           </div>
           <ul class="list-wrap">
-            <!--{iCMS:article:list loop="true" page="true" row="10" sub="true" cid="$category.cid"}-->
-            <!--{include file="./article.item.htm" import="true"}-->
+            <!--{iCMS:content:list app="$app.app" loop="true" page="true" row="10" sub="true" cid="$category.cid"}-->
+            <!--{include file="./content.item.htm" import="true"}-->
             <!--{/iCMS}-->
             <div id="pages_nav" class="hide">
               <!--{$iCMS.PAGES|method:'show(10)'}-->
@@ -42,7 +42,7 @@
           <!--{$iCMS.PAGE.NEXT}-->
         </div>
         <script>
-        scrollLoad("#article-list", ".list-wrap", "#pages_next", "<!--{$iCMS.PAGE.TOTAL}-->",
+        scrollLoad("#content-list", ".list-wrap", "#pages_next", "<!--{$iCMS.PAGE.TOTAL}-->",
           function(e){
               var pages_nav = $("#pages_nav",e).html();
               $("#pages_nav",e).remove();
@@ -56,8 +56,8 @@
             <h2>热门<!--{$category.name}--></h2>
           </div>
           <ul class="list-wrap">
-            <!--{iCMS:article:list loop="true" row="6" sub="true" orderby="week" cid="$category.cid"}-->
-            <!--{include file="./article.item.htm" import="true"}-->
+            <!--{iCMS:content:list app="$app.app" loop="true" row="6" sub="true" orderby="week" cid="$category.cid"}-->
+            <!--{include file="./content.item.htm" import="true"}-->
             <!--{/iCMS}-->
           </ul>
         </section>
@@ -68,8 +68,8 @@
             <h2><!--{$category_list.name}--></h2>
           </div>
           <ul class="list-wrap">
-            <!--{iCMS:article:list loop="true" sub="true" row="6" cid="$category_list.cid"}-->
-            <!--{include file="./article.item.htm" import="true"}-->
+            <!--{iCMS:content:list app="$app.app" loop="true" sub="true" row="6" cid="$category_list.cid"}-->
+            <!--{include file="./content.item.htm" import="true"}-->
             <!--{/iCMS}-->
           </ul>
           <a class="u-more" href="<!--{$category_list.url}-->">查看全部</a>
