@@ -16,8 +16,8 @@ class menu {
     public static $history_key = null;
 
 	public static function init() {
-        // self::get_cache();
-        self::get_array(true);
+        self::get_cache();
+        // self::get_array(true);
 	}
 
     public static function mid($vars,&$sort=0){
