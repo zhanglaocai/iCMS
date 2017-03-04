@@ -38,7 +38,7 @@
         </optgroup>
       </select>
     </div>
-    <span class="help-inline">* 必填</span>
+    <span class="help-inline">* 必填 不熟悉的请勿修改</span>
     <div class="clearfix"></div>
     <div class="unsigned-wrap hide">
       <div class="input-prepend input-append">
@@ -68,7 +68,7 @@
       <span class="add-on">字段注释</span>
       <input type="text" name="comment" class="span3" id="iFormer-comment" value=""/>
     </div>
-    <span class="help-inline">选填,数据表的comment,不清楚的可不填</span>
+    <span class="help-inline">选填,数据表的comment,不熟悉的可不填</span>
     <hr />
     <div id="iFormer-option-wrap" class="hide">
       <div class="input-prepend">
