@@ -78,17 +78,16 @@ if($_POST['action']=='install'){
 	$content = preg_replace("/define\('iPHP_KEY',\s*'.*?'\)/is", 			"define('iPHP_KEY','".random(64)."')",$content);
 
 	iFS::write($config_file,$content,false);
-//开始安装 数据库
-
+//开始安装 数据库 结构
 	$sql_file = dirname(strtr(__FILE__,'\\','/')).'/iCMS.sql';
 	is_readable($sql_file) OR iUI::alert('数据库文件不存在或者读取失败','js:top.callback();');
-	//require_once ($config);
-
 	$sql = iFS::read($sql_file);
-	// $sql = str_replace('#iCMS@__',$db_prefix,$sql);
-    //
-    //
 	run_query($sql);
+//导入默认数据
+    $data_sql_file = dirname(strtr(__FILE__,'\\','/')).'/iCMS-data.sql';
+    is_readable($data_sql_file) OR iUI::alert('数据库文件不存在或者读取失败','js:top.callback();');
+    $data_sql = iFS::read($data_sql_file);
+    run_query($data_sql);
 
 //设置超级管理员
 	$admin_password = md5($admin_password);
@@ -148,7 +147,8 @@ function run_query($sql) {
     unset($sql);
 
     foreach($resource as $key=>$query) {
-        $query  = trim($query);
+        $query = trim($query);
+        $query = str_replace('`icms_', '`#iCMS@__', $query);
         $query && iDB::query($query);
     }
 }
