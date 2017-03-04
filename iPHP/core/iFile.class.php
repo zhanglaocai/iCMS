@@ -41,7 +41,7 @@ class iFile {
     public static $TABLE_DATA       = null;
     public static $TABLE_MAP        = null;
     public static $check_data       = true;
-    public static $userid           = 0;
+    public static $userid           = false;
     public static $watermark        = true;
     public static $watermark_config = null;
     public static $cloud_enable     = true;
@@ -50,18 +50,17 @@ class iFile {
     private static $_map_table      = null;
 
     public static function config($table = array()) {
+        empty($table) && $table = array('file_data','file_map');
+
         list(self::$TABLE_DATA,self::$TABLE_MAP) = $table;
         self::$_data_table = iPHP_DB_PREFIX . self::$TABLE_DATA;
         self::$_map_table  = iPHP_DB_PREFIX . self::$TABLE_MAP;
     }
 
     public static function init($vars=null){
-        empty(iFS::$config['table']) && iFS::$config['table'] = array('file_data','file_map');
         iFile::config(iFS::$config['table']);
 
         isset($vars['userid']) && iFile::$userid = $vars['userid'];
-
-
 
         iFS::$CALLABLE = array(
             'insert' => array('iFile','insert'),
@@ -185,6 +184,7 @@ class iFile {
         if (!self::$check_data) {
             return;
         }
+
         $sql = self::$userid === false ? '' : " AND `userid`='" . self::$userid . "'";
         $rs = iDB::row("SELECT {$s} FROM " . self::$_data_table. " WHERE `$f`='$v' {$sql} LIMIT 1");
 
