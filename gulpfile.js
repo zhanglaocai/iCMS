@@ -1,7 +1,8 @@
 /**
  * 初始化
+ * npm install --global gulp
  * npm install --save-dev gulp
- * npm install --save-dev gulp-livereload gulp-ruby-sass gulp-autoprefixer gulp-jshint gulp-util gulp-imagemin gulp-sass gulp-clean-css gulp-uglify gulp-rename gulp-concat gulp-clean gulp-clean tiny-lr
+ * npm install --save-dev gulp-livereload gulp-ruby-sass gulp-autoprefixer gulp-jshint gulp-util gulp-imagemin gulp-sass gulp-clean-css gulp-uglify gulp-rename gulp-concat gulp-clean gulp-clean tiny-lr gulp-minify-css
  * gulp
  */
 // 引入 gulp及组件
@@ -100,7 +101,7 @@ gulp.task( 'public', function ( ) {
         publicDst = './public/js/';
 
     function fetchScripts( ) {
-        var sources = fs.readFileSync( "public/iCMS.js" );
+        var sources = fs.readFileSync( publicDst+"iCMS.js" );
         sources = /\[([^\]]+\.js'[^\]]+)\]/.exec( sources );
         sources = sources[ 1 ].replace( /\/\/.*[\n\r]/g, '\n' ).replace( /'|"|\n|\t|\s/g, '' );
         sources = sources.split( "," );
