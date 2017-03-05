@@ -55,6 +55,7 @@ class patch {
 		}
 		$FileData = iHttp::remote($zipHttp);
 		if ($FileData) {
+			iFS::mkdir(PATCH_DIR);
 			iFS::write($zipFile, $FileData); //下载更新包
 			return $msg;
 		}

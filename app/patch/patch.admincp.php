@@ -76,7 +76,7 @@ class patchAdmincp{
     }
 
     public function do_git_download(){
-    	$zip_url = patchAdmincp::git('zip','url');
+    	$zip_url = patchAdmincp::git('zip',null,'url');
 		$release = $_GET['release'];
 		$zipName = str_replace(patch::PATCH_URL.'/', '', $zip_url);
 
@@ -88,9 +88,7 @@ class patchAdmincp{
 
 
     public function do_git_show(){
-    	// $show =  patchAdmincp::git('show','json');
-    	// print_r($show);
-    	$log =  patchAdmincp::git('show');
+    	$log =  patchAdmincp::git('show',$_GET['commit_id']);
         $type_map = array(
           'D'=>'删除',
           'A'=>'增加',
@@ -98,14 +96,15 @@ class patchAdmincp{
         );
     	include admincp::view("git.show");
     }
-	public static function git($do,$type='array') {
+	public static function git($do,$commit_id=null,$type='array') {
 		require_once iPHP_APP_CORE.'/git.version.php';
-        $commit_id = GIT_COMMIT;
-        $_GET['commit_id'] && $commit_id = $_GET['commit_id'];
+        $commit_id===null && $commit_id = GIT_COMMIT;
+        $last_commit_id = $_GET['last_commit_id'];
 
-		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=' .$commit_id. '&t=' . time();
+		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=' .$commit_id.'&last_commit_id=' .$last_commit_id. '&t=' . time();
 // 		$url = patch::PATCH_URL . '/git?do='.$do.'&commit_id=7e54fae6d0625f32&t=' . time();
 // var_dump($url);
+// exit;
 		$data = iHttp::remote($url);
 		if($type=='array'){
 			if($data){
