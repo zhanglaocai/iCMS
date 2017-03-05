@@ -1,7 +1,7 @@
 <?php
 class TB {
-	public $appid  = 21181857;
-	public $appkey = '4ec6477b9129b78db88d6107b4cbd39f';
+	public $appid  = '';
+	public $appkey = '';
 	public $scope  = "promotion,item,usergrade";
 	public $openid = '';
 	public $url    = "";
