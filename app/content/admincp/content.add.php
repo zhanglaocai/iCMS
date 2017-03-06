@@ -24,6 +24,7 @@ admincp::head(!$preview);
     <div class="widget-content nopadding">
       <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <input id="appid" name="appid" type="hidden"  value="<?php echo $appid;?>" />
+        <input name="REFERER" type="hidden" value="<?php echo iPHP_REFERER ; ?>" />
         <div class="tab-content">
           <div id="-add-base" class="tab-pane active">
             <?php echo iFormer::$html;?>

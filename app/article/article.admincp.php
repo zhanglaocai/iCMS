@@ -70,8 +70,6 @@ class articleAdmincp{
             $rs['userid']  = members::$userid;
 		}
 
-        $strpos   = strpos(iPHP_REFERER,'?');
-        $REFERER  = $strpos===false?'':substr(iPHP_REFERER,$strpos);
         if(self::$config['markdown']){
             include admincp::view("article.markdown");
         }else{
@@ -555,9 +553,9 @@ class articleAdmincp{
 
         $haspic   = empty($pic)?0:1;
 
-        $SELFURL = iPHP_SELF.$_POST['REFERER'];
-        if(empty($_POST['REFERER'])||strstr($_POST['REFERER'], '=save')){
-        	$SELFURL= iPHP_SELF.'?app=article&do=manage';
+        $REFERER_URL = $_POST['REFERER'];
+        if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
+        	$REFERER_URL= APP_URI.'&do=manage';
         }
 
         $editor OR	$editor	= empty(members::$data->nickname)?members::$data->username:members::$data->nickname;
@@ -618,17 +616,17 @@ class articleAdmincp{
                     "code"    => '1001',
                     'indexid' => $aid
                 ));
-                exit;
+                return;
             }
             $moreBtn = array(
                     array("text" =>"查看该文章","target"=>'_blank',"url"=>$article_url,"close"=>false),
                     array("text" =>"编辑该文章","url"=>APP_URI."&do=add&id=".$aid),
                     array("text" =>"继续添加文章","url"=>APP_URI."&do=add&cid=".$cid),
-                    array("text" =>"返回文章列表","url"=>$SELFURL),
+                    array("text" =>"返回文章列表","url"=>$REFERER_URL),
                     array("text" =>"查看网站首页","url"=>iCMS_URL,"target"=>'_blank')
             );
             iUI::$dialog['lock']	= true;
-            iUI::dialog('success:#:check:#:文章添加完成!<br />10秒后返回文章列表','url:'.$SELFURL,10,$moreBtn);
+            iUI::dialog('success:#:check:#:文章添加完成!<br />10秒后返回文章列表','url:'.$REFERER_URL,10,$moreBtn);
         }else{
             isset($_POST['ischapter']) OR $chapter = 0;
 			if($tags){
@@ -660,7 +658,7 @@ class articleAdmincp{
                 );
             }
 
-            iUI::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$SELFURL);
+            iUI::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$REFERER_URL);
         }
     }
     public function do_del(){

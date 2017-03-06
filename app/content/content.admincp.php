@@ -113,50 +113,57 @@ class contentAdmincp{
         include admincp::view('content.manage');
     }
     public function do_save(){
+        list($variable,$keys,$orig_post) = iFormer::post($this->app);
 
-      list($variable,$keys,$orig_post) = iFormer::post($this->app);
-
-      if(!$variable){
-        iCMS::alert("表单数据处理出错!");
-      }
-
-      foreach ($variable as $table_name => $data) {
-        if(empty($data)){
-          continue;
+        if(!$variable){
+            iCMS::alert("表单数据处理出错!");
         }
-        //当表数据
-        $table   = $this->app['table'][$table_name];
-        //当前表主键
-        $primary = $table['primary'];
+        $update = false;
+        foreach ($variable as $table_name => $data) {
+            if(empty($data)){
+              continue;
+            }
+            //当表数据
+            $table   = $this->app['table'][$table_name];
+            //当前表主键
+            $primary = $table['primary'];
 
-        //关联字符 && 关联数据
-        if($table['union'] && $uDATA){
-          $data[$table['union']] = $uDATA[$table['union']];
+            //关联字符 && 关联数据
+            if($table['union'] && $uDATA){
+              $data[$table['union']] = $uDATA[$table['union']];
+            }
+
+            $union_key = null;
+            //查找下个数据表名
+            $next_table_name = next($keys);
+            if($next_table_name){
+              $next_table = $this->app['table'][$next_table_name];
+              //有设置关联字段
+              $next_table['union'] && $union_key = $next_table['union'];
+            }
+
+            //union
+            if(empty($data[$primary])){ //主键值为空
+                unset($data[$primary]);
+                $id = iDB::insert($table_name,$data);
+                $union_key && $uDATA = array_combine(array($union_key),array($id));
+            }else{
+                $update = true;
+                //主键不更新
+                $id = $data[$primary];
+                unset($data[$primary]);
+                iDB::update($table_name, $data, array($primary=>$id));
+            }
         }
-
-        $union_key = null;
-        //查找下个数据表名
-        $next_table_name = next($keys);
-        if($next_table_name){
-          $next_table = $this->app['table'][$next_table_name];
-          //有设置关联字段
-          $next_table['union'] && $union_key = $next_table['union'];
+        $REFERER_URL = $_POST['REFERER'];
+        if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
+            $REFERER_URL= APP_URI.'&do=manage';
         }
-
-        //union
-        if(empty($data[$primary])){ //主键值为空
-          unset($data[$primary]);
-          $id = iDB::insert($table_name,$data);
-          if($union_key){
-            $uDATA = array_combine(array($union_key),array($id));
-          }
+        if($update){
+            iUI::success($this->app['name'].'编辑完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
         }else{
-          //主键不更新
-          $id = $data[$primary];
-          unset($data[$primary]);
-          iDB::update($table_name, $data, array($primary=>$id));
+            iUI::success($this->app['name'].'添加完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
         }
-      }
     }
 
     public function do_del($id = null,$dialog=true){
