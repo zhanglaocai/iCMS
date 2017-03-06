@@ -17,89 +17,31 @@ class appsAdmincp{
     	$this->id = (int)$_GET['id'];
     }
 
-    public function do_hooks(){
-        configAdmincp::app($this->appid,'hooks');
-    }
-    public function do_hooks_save(){
-        $hooks = array();
-        foreach ((array)$_POST['hooks']['method'] as $key => $method) {
-          $h_app   = $_POST['hooks']['app'][$key];
-          $h_field = $_POST['hooks']['field'][$key];
-          if($method && $h_app && $h_field){
-            $hooks[$h_app][$h_field][]= explode("::", $method);
-          }
-        }
-        $_POST['config'] = $hooks;
-        configAdmincp::save($this->appid,'hooks');
-    }
-
-    public function do_store(){
-      include admincp::view("apps.store");
-    }
-    public function do_store_json(){
-      $url  = apps_store::STORE_URL.'/store.json.php';
-      $json = iHttp::remote($url);
-      echo $json;
-    }
-    public function do_store_install(){
-      $sid  = $_GET['sid'];
-      $key  = md5(iPHP_KEY.iPHP_SELF.time());
-      $url  = apps_store::STORE_URL.'/store.get.php?sid='.$sid.'&key='.$key;
-      $json = iHttp::remote($url);
-      if($json){
-        $array = json_decode($json);
-        if($array->premium){
-          iUI::$break            = false;
-          iUI::$dialog['ok']     = true;
-          iUI::$dialog['cancel'] = true;
-          iUI::dialog('
-            此应用为付费版,请先付费后安装!<br />
-            请使用微信扫描下面二维码<br />
-            <img alt="模式一扫码支付" src="http://paysdk.weixin.qq.com/example/qrcode.php?data='.$array->pay.'"/>
-          ','js:1',1000000);
-          echo '<script type="text/javascript">
-            top.pay_notify("'.$key.'","'.$sid.'",d);
-          </script>';
-          exit;
-        }
-      }
-
-    }
-
-    public function do_uninstall(){
-      if($this->id>99){
-        apps::uninstall($this->id);
-        apps::cache();
-        iUI::alert('应用已经删除');
-      }
-
-    }
-    public function do_install(){
-      $app = iSecurity::escapeStr($_GET['appname']);
-      strstr($app,'..')!==false  && iUI::alert('您的应用有问题!');
-      $path = apps::installed($app,'path');
-      iFS::write($path,'1');
-      iUI::success('安装完成!','url:'.APP_URI);
-    }
-
     public function do_add(){
         $this->id && $rs = apps::get($this->id);
         if(empty($rs)){
           $rs['config']['iFormer'] = '1';
           $rs['apptype'] = "2";
-          $base_fields = apps_db::base_fields_array();
+          $rs['type']    = "2";
+          $base_fields   = apps_mod::base_fields_array();
 
-          $fieldjson    = get_json_file(iPHP_APP_DIR.'/apps/etc/app.fields.json.php');
-          $rs['fields'] = json_decode($fieldjson,true);
+          $rs['fields'] = get_json_file(iPHP_APP_DIR.'/apps/etc/app.fields.json.php');
+          $rs['fields'] = json_decode($rs['fields'],true);
 
-          $menujson     = get_json_file(iPHP_APP_DIR.'/apps/etc/app.menu.json.php');
-          $rs['menu']   = json_decode($menujson,true);
+          $rs['menu']   = get_json_file(iPHP_APP_DIR.'/apps/etc/app.menu.json.php');
+          $rs['menu']   = json_decode($rs['menu'],true);
 
         }else{
           if($rs['apptype']=="2"){
             $rs['config']['iFormer'] = '1';
           }
         }
+
+        $rs['config']['template'] = apps_mod::get_template_tag($rs);
+        if(empty($rs['config']['router'])){
+          $rs['config']['router'] = apps_mod::get_router($rs);
+        }
+
         include admincp::view("apps.add");
     }
 
@@ -127,6 +69,9 @@ class appsAdmincp{
         if($config_array['template']){
           $config_array['template'] = explode("\n", $config_array['template']);
           $config_array['template'] = array_map('trim', $config_array['template']);
+        }
+        if($config_array['router']){
+          $config_array['router'] = json_decode(stripcslashes($config_array['router']),true);
         }
         $config_array = array_filter($config_array);
         $config = addslashes(json_encode($config_array));
@@ -173,7 +118,8 @@ class appsAdmincp{
             //创建基本表
             $tb = apps_db::create_table(
               $array['app'],
-              apps_mod::get_field_array($fieldata)//获取字段数组
+              apps_mod::get_field_array($fieldata),//获取字段数组
+              apps_mod::base_fields_index()//索引
             );
             array_push ($tb,null,$array['name']);
             $table_array = array();
@@ -182,19 +128,34 @@ class appsAdmincp{
             //有MEDIUMTEXT类型字段就创建xxx_data附加表
             if($addons_fieldata){
               $union_id = $array['app'].'_id';
-              $addons_fieldata = apps_mod::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
-              $table_array += apps_mod::data_create_table2($addons_fieldata,$addons_name,$union_id);
+              $addons_fieldata = apps_mod::base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
+              $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
             }
+            $array['table']  = $table_array;
+            $array['config'] = $config_array;
+
+            $config_array['template'] = apps_mod::get_template_tag($array,'array');
+            $config_array['router']   = apps_mod::get_router($array);
 
             $array['table'] = addslashes(json_encode($table_array));
+            $array['config'] = addslashes(json_encode($config_array));
 
             $id = iDB::insert('apps',$array);
+            if(stripos($array['menu'], '{app}') !== false){
+              $menu = str_replace(
+                  array('{appid}','{app}','{name}','{sort}'),
+                  array($array['id'],$array['app'],$array['name'],$id*1000),
+                  $array['menu']
+              );
+              iDB::update('apps', array('menu'=>$menu), array('id'=>$id));
+            }
+
             $msg = "应用创建完成!";
         }else {
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app' AND `id` !='$id'") && iUI::alert('该应用已经存在!');
             $_fields     = iDB::value("SELECT `fields` FROM `#iCMS@__apps` where `id` ='$id'");//json
-            $_json_field = apps_db::json_field($_fields);//旧数据
-            $json_field  = apps_db::json_field($fields); //新数据
+            $_json_field = apps_mod::json_field($_fields);//旧数据
+            $json_field  = apps_mod::json_field($fields); //新数据
             /**
              * 找出字段数据中的 MEDIUMTEXT类型字段
              * PS:函数内会unset(json_field[key]) 所以要在 基本表make_alter_sql前执行
@@ -227,7 +188,7 @@ class appsAdmincp{
                     apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
                     //有MEDIUMTEXT类型字段创建xxx_data附加表
                     $union_id = $array['app'].'_id';
-                    $addons_fieldata = apps_mod::data_base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
+                    $addons_fieldata = apps_mod::base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
                     $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
                     $array['table'] = addslashes(json_encode($table_array));
                   }
@@ -310,5 +271,72 @@ class appsAdmincp{
     public function do_cache(){
       apps::cache();
       iUI::success('更新完成');
+    }
+
+    public function do_hooks(){
+        configAdmincp::app($this->appid,'hooks');
+    }
+    public function do_hooks_save(){
+        $hooks = array();
+        foreach ((array)$_POST['hooks']['method'] as $key => $method) {
+          $h_app   = $_POST['hooks']['app'][$key];
+          $h_field = $_POST['hooks']['field'][$key];
+          if($method && $h_app && $h_field){
+            $hooks[$h_app][$h_field][]= explode("::", $method);
+          }
+        }
+        $_POST['config'] = $hooks;
+        configAdmincp::save($this->appid,'hooks');
+    }
+
+    public function do_store(){
+      include admincp::view("apps.store");
+    }
+    public function do_store_json(){
+      $url  = apps_store::STORE_URL.'/store.json.php';
+      $json = iHttp::remote($url);
+      echo $json;
+    }
+    public function do_store_install(){
+      $sid  = $_GET['sid'];
+      $key  = md5(iPHP_KEY.iPHP_SELF.time());
+      $url  = apps_store::STORE_URL.'/store.get.php?sid='.$sid.'&key='.$key;
+      $json = iHttp::remote($url);
+      if($json){
+        $array = json_decode($json);
+        if($array->premium){
+          iUI::$break            = false;
+          iUI::$dialog['ok']     = true;
+          iUI::$dialog['cancel'] = true;
+          iUI::dialog('
+            此应用为付费版,请先付费后安装!<br />
+            请使用微信扫描下面二维码<br />
+            <img alt="模式一扫码支付" src="http://paysdk.weixin.qq.com/example/qrcode.php?data='.$array->pay.'"/>
+          ','js:1',1000000);
+          echo '<script type="text/javascript">
+            top.pay_notify("'.$key.'","'.$sid.'",d);
+          </script>';
+          exit;
+        }
+      }
+
+    }
+
+    public function do_uninstall(){
+      $app = apps::get($this->id);
+      if($app['type'] && $app['apptype']){
+        apps::uninstall($this->id);
+        apps::cache();
+        iUI::alert('应用已经删除');
+      }else{
+        iUI::alert('应用已被禁止删除');
+      }
+    }
+    public function do_install(){
+      $app = iSecurity::escapeStr($_GET['appname']);
+      strstr($app,'..')!==false  && iUI::alert('您的应用有问题!');
+      $path = apps::installed($app,'path');
+      iFS::write($path,'1');
+      iUI::success('安装完成!','url:'.APP_URI);
     }
 }

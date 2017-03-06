@@ -294,4 +294,15 @@ class iSecurity {
 			}
 		}
 	}
+    public static function encoding($string,$code='UTF-8') {
+        $encode = mb_detect_encoding($string, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
+        if(strtoupper($encode)!=$code){
+            if (function_exists('mb_convert_encoding')) {
+                $string = mb_convert_encoding($string,$code,$encode);
+            } elseif (function_exists('iconv')) {
+                $string = iconv($encode,$code, $string);
+            }
+        }
+        return $string;
+    }
 }

@@ -69,8 +69,7 @@ class commentApp {
 	public function pm($a) {
 		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');
 		$data = compact($fields);
-		user_msg::send($data, 1);
-
+		message::send($data, 1);
 	}
 	public static function redirect_url($var) {
 		$url = iCMS_API.'?app=comment&do=redirect&iid='.$var['iid'].'&appid='.$var['appid'].'&cid='.$var['cid'];

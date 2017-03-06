@@ -75,38 +75,8 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">模板标签</span>
-              <textarea name="config[template]" id="config_template" class="span6" style="height: 150px;" readonly><?php
-              if($rs['app']){
-                $_app = $rs['app'];
-                if($rs['config']['iFormer'] && $rs['apptype']=="2"){
-                  $_app = 'content';
-                }
-                $template = (array)apps::get_func($_app,true);
-                list($path,$obj_name)= apps::get_path($_app,'app',true);
-
-                if(@is_file($path)){
-                    //判断是否有APP同名方法存在 如果有 $appname 模板标签可用
-                    $class_methods = get_class_methods ($obj_name);
-                    if(array_search ($_app ,  $class_methods )!==FALSE){
-                      array_push ($template,'$'.$_app);
-                      $rs['config']['router'] = '1';
-                    }
-                }
-              }
-              $template = implode("\n", (array)$template);
-              if($rs['config']['iFormer'] && $rs['apptype']=="2"){
-                // $template = str_replace(array(':content:','$content'), array(':'.$rs['app'].':','$'.$rs['app']), $template);
-              }
-              echo $template;
-            ?></textarea>
-              <input name="config[router]" type="hidden" value="<?php echo $rs['config']['router']; ?>" />
+              <textarea name="config[template]" id="config_template" class="span6" style="height: 150px;" readonly><?php echo $rs['config']['template'] ; ?></textarea>
             </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend">
-              <span class="add-on">管理入口</span>
-              <input type="text" name="config[admincp]" class="span3" id="config_admincp" value="<?php echo $rs['config']['admincp'] ; ?>"/>
-            </div>
-            <span class="help-inline">应用的后台管理入口</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">应用菜单</span>
@@ -124,15 +94,19 @@ $(function(){
               </select>
             </div>
             <script>$(function(){iCMS.select('config_menu',"<?php echo $rs['config']['menu']?$rs['config']['menu']:'0'; ?>");})</script>
-            <span class="help-inline">应用的菜单</span>
+            <span class="help-inline">应用的菜单,无菜单后台将不显示入口</span>
             <div class="clearfloat mb10"></div>
+            <?php if($rs['type']){?>
             <div class="input-prepend">
               <span class="add-on">应用类型</span>
               <select name="type" id="type" class="chosen-select span3" data-placeholder="请选择应用类型...">
                 <?php echo apps::get_type_select() ; ?>
               </select>
             </div>
-            <script>$(function(){iCMS.select('type',"<?php echo $rs['type']?$rs['type']:'1'; ?>");})</script>
+            <script>$(function(){iCMS.select('type',"<?php echo $rs['type']; ?>");})</script>
+            <?php }else{ ?>
+              <input name="type" type="hidden" value="<?php echo $rs['type']; ?>" />
+            <?php } ?>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">用户中心</span>
@@ -178,28 +152,26 @@ $(function(){
             <div class="clearfloat mb10"></div>
           </div>
           <!-- 数据表字段 -->
-          <?php include admincp::view("apps.table");?>
+          <?php include admincp::view("apps.table","apps");?>
           <?php if($rs['config']['iFormer']){?>
           <div id="apps-add-field" class="tab-pane">
             <!-- 基础字段 -->
-            <?php include admincp::view("apps.base");?>
+            <?php include admincp::view("apps.base","apps");?>
           </div>
           <div id="apps-add-custom" class="tab-pane">
-            <?php include admincp::view("apps.iFormer.build");?>
+            <?php include admincp::view("apps.iFormer.build","apps");?>
           </div>
           <?php } ?>
           <div id="apps-add-menu" class="tab-pane">
             <div class="alert alert-error alert-block">
               <p>菜单配置属于重要数据,如果不熟悉请勿修改.敬请等待官方推出相关编辑器</p>
             </div>
-            <script src="./app/admincp/ui/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
-            <link href="./app/admincp/ui/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css" type="text/css" rel="stylesheet" />
-            <textarea name="menu" id="menu" class="span12 brush:js;toolbar:false" style="height:300px;"><?php echo $rs['menu']?jsonFormat($rs['menu']):'' ; ?></textarea>
+            <textarea name="menu" id="menu" class="span8" style="height:450px;"><?php echo $rs['menu']?jsonFormat($rs['menu']):'' ; ?></textarea>
             <div class="clearfloat mb10"></div>
-            <script type="text/javascript">
-            SyntaxHighlighter.all();
-            $("#menu").autoTextarea({maxHeight:600});
-            </script>
+            <div class="input-prepend">
+              <span class="add-on">应用路由</span>
+              <textarea name="config[router]" id="config_router" class="span6" style="height:120px;"><?php echo $rs['config']['router']?jsonFormat($rs['config']['router']):'' ; ?></textarea>
+            </div>
           </div>
           <div class="clearfloat"></div>
           <div class="form-actions">
@@ -211,5 +183,5 @@ $(function(){
     </div>
   </div>
 </div>
-<?php include admincp::view("apps.iFormer.editor");?>
+<?php include admincp::view("apps.iFormer.editor","apps");?>
 <?php admincp::foot();?>

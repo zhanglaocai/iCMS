@@ -30,7 +30,7 @@
 if($rs['fields']){
   $field_array = apps_mod::get_field_array($rs['fields'],true);
   foreach ($field_array as $key => $value) {
-    $readonly = apps_db::base_fields_key($value['name']);
+    $readonly = apps_mod::base_fields_key($value['name']);
     echo "iFormer.render($('div'),".json_encode($value).",null,'".$value['id']."',".($readonly?'true':'false').").appendTo('#custom_field_list');";
   }
   echo "$('#custom_field_list').append('<div class=\"clearfloat\"></div>');";
@@ -80,4 +80,4 @@ $(function() {
     $(".iFormer-design").draggable().disableSelection();
 });
 </script>
-<?php include admincp::view("apps.iFormer.design");?>
+<?php include admincp::view("apps.iFormer.design","apps");?>

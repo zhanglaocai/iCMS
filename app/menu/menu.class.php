@@ -16,8 +16,8 @@ class menu {
     public static $history_key = null;
 
 	public static function init() {
-        self::get_cache();
-        // self::get_array(true);
+        // self::get_cache();
+        self::get_array(true);
 	}
 
     public static function mid($vars,&$sort=0){
@@ -37,12 +37,12 @@ class menu {
     public static function get_array($cache=false){
         $variable = array();
         $sort     = 100000;
-        $rs = apps::get_array(array('!menu'=>'','status'=>'1'),'id,app,name,config,menu','app ASC');
+        $rs = apps::get_array(array('!menu'=>'','status'=>'1'),'id,config,menu','app ASC');
         foreach ($rs as $appid=> $app) {
-            $array = $app['menu'];
-            if($array){
-                $array = self::mid($array,$sort);
-                $variable[] = $array;
+            $menuArray = apps::menu($app);
+            if($menuArray){
+                $menuArray = self::mid($menuArray,$sort);
+                $variable[] = $menuArray;
             }
         }
         // if(self::$callback['array'] && is_callable(self::$callback['array'])){
@@ -245,8 +245,13 @@ class menu {
 		if($a['data-toggle']=='modal'){
 			$link.= ' data-toggle="modal"';
 			$link.= ' data-target="#iCMS-MODAL"';
-			$a['data-meta']  && $link.= " data-meta='".$a['data-meta']."'";
-
+            if($a['data-meta']){
+                if(is_array($a['data-meta'])){
+                    $link.= " data-meta='".json_encode($a['data-meta'])."'";
+                }else{
+                    $link.= " data-meta='".$a['data-meta']."'";
+                }
+            }
 		}elseif($mType=='nav'){
 			$children && $link.= ' data-toggle="dropdown"';
 		}elseif($mType=='tab'){

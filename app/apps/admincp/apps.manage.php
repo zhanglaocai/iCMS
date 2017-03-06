@@ -13,7 +13,7 @@ admincp::head();
 </style>
 <script type="text/javascript">
 $(function(){
-$("#<?php echo APP_FORMID;?>").batch();
+  $("#<?php echo APP_FORMID;?>").batch();
 });
 </script>
 <div class="iCMS-container">
@@ -43,7 +43,7 @@ $("#<?php echo APP_FORMID;?>").batch();
     <div class="widget-title"> <span class="icon">
       <input type="checkbox" class="checkAll" data-target="#<?php echo APP_BOXID;?>" />
     </span>
-    <ul class="nav nav-tabs" id="category-tab">
+    <ul class="nav nav-tabs" id="apps-tab">
       <?php foreach (apps::$type_array as $key => $value) {?>
       <li class="apps-type-<?php echo $key;?>"><a href="#apps-type-<?php echo $key;?>" data-toggle="tab"><i class="fa fa-cubes"></i> <?php echo $value;?></a></li>
       <?php }?>
@@ -68,19 +68,8 @@ $("#<?php echo APP_FORMID;?>").batch();
             <tbody>
               <?php
               foreach ((array)$apps_type_group[$type_key] as $key => $data) {
-                $table = apps::table_item($data['table']);
+                $table  = apps::table_item($data['table']);
                 $config = json_decode($data['config'],true);
-                $installed = apps::installed($data['app'],$data['type']);
-              // $admincp = __ADMINCP__.'='.$data['app'];
-              // if($data['admincp']){
-              //   $admincp = __ADMINCP__.'='.$data['admincp'];
-              //   if($data['admincp']=='iPHP_SELF'){
-              //     $admincp = iPHP_SELF;
-              //   }
-              //   if($data['admincp']=='null'){
-              //     $admincp = null;
-              //   }
-              // }
               ?>
               <tr id="tr<?php echo $data['id'] ; ?>">
                 <td><b><?php echo $data['id'] ; ?></b></td>
@@ -137,32 +126,22 @@ $("#<?php echo APP_FORMID;?>").batch();
                   </td>
                   <td>
                     <?php if($data['type']){?>
-                      <?php if($data['apptype']){?>
+                      <?php if($data['apptype']=="2"){?>
                         <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>&do=manage&appid=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 内容管理</a>
                         <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>&do=add&appid=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-edit"></i> 添加内容</a>
                         <div class="clearfix mt5"></div>
                       <?php }?>
                       <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                      <?php if($data['status']){?>
-                        <a href="<?php echo APP_URI; ?>&do=update&_args=status:0&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-warning" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
-                      <?php }else{?>
-                        <a href="<?php echo APP_URI; ?>&do=update&_args=status:1&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-success"><i class="fa fa-check"></i> 启用</a>
-                      <?php }?>
                       <?php if($data['apptype']){?>
+                        <?php if($data['status']){?>
+                          <a href="<?php echo APP_URI; ?>&do=update&_args=status:0&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-warning" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
+                        <?php }else{?>
+                          <a href="<?php echo APP_URI; ?>&do=update&_args=status:1&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-success"><i class="fa fa-check"></i> 启用</a>
+                        <?php }?>
                         <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
                       <?php }else{?>
                       <?php }?>
-
-                          <?php if ($installed) {?>
-                            <?php if($admincp){ ?>
-                              <a href="<?php echo $admincp; ?>" class="btn btn-small" target="_blank"><i class="fa fa-list-alt"></i> <?php echo $data['title'] ; ?></a>
-                            <?php }?>
-                          <?php } else {?>
-                            <?php if($data['type']){?>
-                              <a href="<?php echo APP_FURI; ?>&do=install&id=<?php echo $data['id'] ; ?>&appname=<?php echo $data['app'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-primary" title='安装' /><i class="fa fa-plug"></i> 安装应用</a>
-                            <?php }?>
-                          <?php }?>
-                    <?php }  ?>
+                    <?php }?>
                     </td>
                 </tr>
                 <?php }  ?>
@@ -193,6 +172,19 @@ $("#<?php echo APP_FORMID;?>").batch();
   </div>
 </div>
 <script>
-$(".apps-type-1").addClass('active');
+$("li","#apps-tab").click(function(event) {
+  // console.log($(this).attr('class'));
+  iCMS.setcookie('apps_tab',$(this).attr('class'));
+});
+var appstab = iCMS.getcookie('apps_tab');
+  // console.log(appstab);
+if(appstab){
+  $('.'+appstab).addClass('active');
+  $('#'+appstab).addClass('active');
+}else{
+  $("#apps-tab li:eq(0)").addClass('active');
+  $(".tab-content div:eq(0)").addClass('active');
+}
+
 </script>
 <?php admincp::foot();?>

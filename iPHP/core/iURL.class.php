@@ -154,8 +154,8 @@ class iURL {
                 $href     = 'index.php?app='.$uri.'&';
             break;
             default:
-                $url = '{PHP}';
-                var_dump($app_conf);
+                $url  = '{PHP}';
+                $href = 'index.php?app='.$uri.'&';
             break;
         }
 

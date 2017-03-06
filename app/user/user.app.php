@@ -860,7 +860,7 @@ class userApp {
 
 		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');
 		$data = compact($fields);
-		user_msg::send($data, 1);
+		message::send($data, 1);
 		iUI::code(1, 'iCMS:pm:success', $id, 'json');
 	}
 	public function ACTION_follow() {

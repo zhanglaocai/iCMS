@@ -115,16 +115,7 @@ class tagAdmincp{
         $path = $F['RootPath'];
         if($path){
             $contents = file_get_contents($path);
-            $encode   = mb_detect_encoding($contents, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
-            if(strtoupper($encode)!='UTF-8'){
-                if (function_exists('mb_convert_encoding')) {
-                    $contents = mb_convert_encoding($contents,'UTF-8',$encode);
-                } elseif (function_exists('iconv')) {
-                    $contents = iconv($encode,'UTF-8', $contents);
-                }else{
-                    iUI::alert('请把文件编码转换成UTF-8！');
-                }
-            }
+            $contents = iSecurity::encoding($contents);
             if($contents){
                 $fields   = array('uid', 'cid', 'tcid', 'pid', 'tkey',
                     'name', 'seotitle', 'subtitle', 'keywords', 'description',

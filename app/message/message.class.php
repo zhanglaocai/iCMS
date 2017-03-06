@@ -8,7 +8,13 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.2.0
 */
-class user_msg{
+class message{
+    public static $type_map = array(
+        '0'=>'系统信息',
+        '1'=>'私信',
+        '2'=>'提醒',
+        '3'=>'留言',
+    );
 	//type: 0 系统 1 用户对话 2 @ 3留言
 	public static function send($a = array(
 			"send_uid"    => 0,"send_name"   => NULL,

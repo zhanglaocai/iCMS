@@ -13,8 +13,9 @@ class apps {
     public static $etc     = 'etc';
     public static $array   = array();
     public static $type_array = array(
-        '1' => '应用',
-        '2' => '插件',
+        '2' => '自定义应用',
+        '3' => '第三方应用',
+        '1' => '系统应用',
         '0' => '系统组件',
       );
     // public static $app_paths   = array();
@@ -67,7 +68,7 @@ class apps {
         }
         // return false;
     }
-    public static function __uninstall($app){
+    private  static function __uninstall($app){
         //删除分类
         categoryAdmincp::del_app_data($app['id']);
         //删除属性
@@ -96,7 +97,40 @@ class apps {
         }
         return file_exists($path);
     }
+    public static function del_app_data($id){
+        $id && iDB::query("DELETE FROM `#iCMS@__apps` WHERE `id` = '{$id}'; ");
+    }
+    public static function drop_app_table($table){
+        if($table)foreach ((array)$table as $key => $value) {
+            $value['table'] && iDB::query("DROP TABLE IF EXISTS `".$value['table']."`");
+        }
+    }
 
+    public static function menu($app){
+        $array = $app['menu'];
+        if($app['config']['menu']){
+            if($app['config']['menu']!='main'){
+                $json = '[{"id": "'.$app['config']['menu'].'","children":[]}]';
+                $_array = json_decode($json,true);
+                $_array[0]['children'][]=$array[0];
+                $array = $_array;
+            }
+        }
+        return $array;
+    }
+    public static function item($rs){
+        if($rs){
+            $rs = (array)$rs;
+            if($rs['table']){
+                $table = json_decode($rs['table'],true);
+                $table && $rs['table']  = apps::table_item($table);
+            }
+            $rs['config']&& $rs['config']  = json_decode($rs['config'],true);
+            $rs['menu']  && $rs['menu']    = json_decode($rs['menu'],true);
+            $rs['fields']&& $rs['fields']  = json_decode($rs['fields'],true);
+        }
+        return $rs;
+    }
     public static function get($vars=0,$field='id'){
         if(empty($vars)) return array();
         if($vars=='all'){
@@ -123,50 +157,6 @@ class apps {
         }
         return $data;
     }
-    public static function menu($rs){
-        $rs['menu'] = str_replace(
-                array('{appid}','{app}','{name}','{sort}'),
-                array($rs['id'],$rs['app'],$rs['name'],$sort), $rs['menu']);
-
-        if($rs['config']['menu']){
-            if($rs['config']['menu']!='main'){
-                //清除[]
-                $rs['menu'] = substr($rs['menu'], 1);
-                $rs['menu'] = substr($rs['menu'], 0,-1);
-
-                $rs['menu'] = '[{"id": "'.$rs['config']['menu'].'","children":[{"caption": "-"},'.$rs['menu'].']}]';
-            }
-        }
-        $rs['menu'] = json_decode($rs['menu'],true);
-        return $rs['menu'];
-    }
-    public static function item($rs){
-        if($rs){
-            $rs = (array)$rs;
-            if($rs['table']){
-                $table = json_decode($rs['table'],true);
-                $table && $rs['table']  = apps::table_item($table);
-            }
-            $rs['config'] && $rs['config'] = json_decode($rs['config'],true);
-            if($rs['menu']){
-                if($rs['config']['menu']===null){
-                    $rs['menu'] = array();
-                }else{
-                    $rs['menu'] = apps::menu($rs);
-                }
-            }
-            $rs['fields']   && $rs['fields']    = json_decode($rs['fields'],true);
-        }
-        return $rs;
-    }
-    public static function del_app_data($id){
-        $id && iDB::query("DELETE FROM `#iCMS@__apps` WHERE `id` = '{$id}'; ");
-    }
-    public static function drop_app_table($table){
-        if($table)foreach ((array)$table as $key => $value) {
-            $value['table'] && iDB::query("DROP TABLE IF EXISTS `".$value['table']."`");
-        }
-    }
     public static function get_array($vars,$field="*",$orderby=''){
         $sql = iSQL::where($vars,false);
         $orderby && $sql.= 'order by '.$orderby;
@@ -178,24 +168,13 @@ class apps {
         return $data;
     }
     public static function get_router(){
-        $array = array(
-            'http'     => array('rule'=>'0','primary'=>''),
-            'index'    => array('rule'=>'0','primary'=>''),
-            'category' => array('rule'=>'1','primary'=>'cid'),
-            'article'  => array('rule'=>'2','primary'=>'id','page'=>'p'),
-            'software' => array('rule'=>'2','primary'=>'id'),
-            'tag'      => array('rule'=>'3','primary'=>'id'),
-        );
         $rs = apps::get_array(array('status'=>'1'));
-        foreach ($rs as $key => $value) {;
-            if($value['table'] && $value['config']['router']){
-                $table = self::get_table($value);
-                $array[$value['app']] = array('rule'=>'4','primary'=>$table['primary'],'page'=>'p');
-            }
+        foreach ($rs as $key => $value) {
+            $array[$value['app']] = apps_mod::get_router($value);
         }
         return $array;
     }
-    public static function get_apps($app=null,$trans=false){
+    public static function get_appsid($app=null,$trans=false){
         $rs = apps::get_array(array('status'=>'1'));
         foreach ($rs as $key => $value) {
             $array[$value['app']] = $value['id'];
@@ -412,4 +391,5 @@ class apps {
             return $rs['name'];
         }
 	}
+
 }

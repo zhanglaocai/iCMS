@@ -15,14 +15,7 @@ class searchApp {
     // }
     public function search($tpl=false) {
         $q  = htmlspecialchars(rawurldecode($_GET['q']));
-        $encode = mb_detect_encoding($q, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
-        if(strtoupper($encode)!='UTF-8'){
-            if (function_exists('iconv')) {
-                $q  = iconv($encode,'UTF-8//IGNORE', $q);
-            } elseif (function_exists('mb_convert_encoding')) {
-                $q  = mb_convert_encoding($q,'UTF-8//IGNORE',$encode);
-            }
-        }
+        $q  = iSecurity::encoding($q);
         $q  = iSecurity::escapeStr($q);
 
         $fwd = iPHP::callback(array("filterApp","run"),array(&$q));

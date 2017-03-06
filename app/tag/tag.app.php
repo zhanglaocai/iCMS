@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package iCMS
  * @copyright 2007-2017, iDreamSoft
@@ -14,15 +13,7 @@ class tagApp {
     }
     public function do_iCMS($a = null) {
         if ($_GET['name']) {
-            $name   = $_GET['name'];
-            $encode = mb_detect_encoding($name, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
-            if(strtoupper($encode)!='UTF-8'){
-                if (function_exists('iconv')) {
-                    $name  = iconv($encode,'UTF-8//IGNORE', $name);
-                } elseif (function_exists('mb_convert_encoding')) {
-                    $name  = mb_convert_encoding($name,'UTF-8//IGNORE',$encode);
-                }
-            }
+            $name  = iSecurity::encoding($_GET['name']);
             $val   = iSecurity::escapeStr($name);
             $field = 'name';
         } elseif ($_GET['tkey']) {

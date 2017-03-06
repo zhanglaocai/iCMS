@@ -6,7 +6,7 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 class publicApp {
-	public $methods = array('weixin', 'sitemapindex', 'sitemap', 'seccode', 'agreement', 'crontab', 'time', 'qrcode');
+	public $methods = array('sitemapindex', 'sitemap', 'seccode', 'agreement', 'crontab', 'time', 'qrcode');
 	public function API_agreement() {
 		iView::render('{iTPL}/user/agreement.htm');
 	}
@@ -18,12 +18,6 @@ class publicApp {
 		header("Content-type:text/xml");
 		iView::assign('cid', (int) $_GET['cid']);
 		iView::render('/tools/sitemap.baidu.htm');
-	}
-	/**
-	 * [API_weixin 向下兼容]
-	 */
-	public function API_weixin() {
-		weixinApp::API_interface();
 	}
 	public function API_crontab() {
 		$sql = iSQL::update_hits(false,0);

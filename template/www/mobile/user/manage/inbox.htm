@@ -7,55 +7,55 @@
 <div class="manage-pm">
     <table class="table table-striped">
         <tbody>
-            <!--{iCMS:user:inbox loop="true"}-->
-            <tr id="id-<!--{$user_inbox.id}-->">
+            <!--{iCMS:message:list loop="true"}-->
+            <tr id="id-<!--{$message_list.id}-->">
                 <td class="avatar_35">
-                    <a i="ucard:<!--{$user_inbox.user.uid}-->" href="<!--{$user_inbox.user.url}-->">
-                    <img class="avatar_35" src="<!--{$user_inbox.user.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a>
+                    <a i="ucard:<!--{$message_list.user.uid}-->" href="<!--{$message_list.user.url}-->">
+                    <img class="avatar_35" src="<!--{$message_list.user.avatar}-->" onerror="iUSER.NOAVATAR(this);"> </a>
                 </td>
                 <td>
-                    <!--{if $user_inbox.type=="0"}-->
-                    <!--{$user_inbox.sender.link}-->
+                    <!--{if $message_list.type=="0"}-->
+                    <!--{$message_list.sender.link}-->
                     <!--{/if}-->
-                    <!--{if $user_inbox.type=="1"}-->
+                    <!--{if $message_list.type=="1"}-->
                     <span class="label label-success">私信</span>
-                    <!--{if $user_inbox.is_sender}-->
+                    <!--{if $message_list.is_sender}-->
                     我发送给
                     <!--{/if}-->
-                    <!--{$user_inbox.user.link}-->
+                    <!--{$message_list.user.link}-->
                     <!--{/if}-->
                     ：
-                    <div class="inbox_content"><!--{$user_inbox.content}-->
-                    	<span>[<!--{$user_inbox.sendtime|format_date}-->]</span>
+                    <div class="inbox_content"><!--{$message_list.content}-->
+                    	<span>[<!--{$message_list.sendtime|format_date}-->]</span>
                     </div>
                     <div class="clearfix mt10"></div>
                     <div class="info">
                         <!--{if $msg_count}-->
-                        <a class="btn btn-xs btn-info" href="<!--{$user_inbox.url}-->"><!--{$user_inbox.msg_count}--> 条对话</a>
+                        <a class="btn btn-xs btn-info" href="<!--{$message_list.url}-->"><!--{$message_list.msg_count}--> 条对话</a>
                         <!--{/if}-->
-                        <!--{if $user_inbox.type}-->
+                        <!--{if $message_list.type}-->
                         <a href="javascript:;" class="btn btn-xs btn-primary"
-                            i="pm:<!--{$user_inbox.user.uid}-->:<!--{$user_inbox.user.name}-->:<!--{$user_inbox.id|authcode:'ENCODE'}-->">
+                            i="pm:<!--{$message_list.user.uid}-->:<!--{$message_list.user.name}-->:<!--{$message_list.id|authcode:'ENCODE'}-->">
                             <i class="fa fa-reply"></i> 回复
                         </a>
                         <!--{/if}-->
-                        <!--{if $user_inbox.type && $msg_count}-->
+                        <!--{if $message_list.type && $msg_count}-->
                         <a href="javascript:;" class="btn btn-xs btn-warning"
                             i="report"
-                            data-param='{"appid":"6","iid":"<!--{$user_inbox.id}-->","userid":"<!--{$user_inbox.send_uid}-->"}' title="举报私信骚扰">
+                            data-param='{"appid":"6","iid":"<!--{$message_list.id}-->","userid":"<!--{$message_list.send_uid}-->"}' title="举报私信骚扰">
                             <i class="fa fa-flag"></i> 举报
                         </a>
                         <!--{/if}-->
                         <!--{if $msg_count}-->
                         <a href="javascript:;" class="btn btn-xs btn-danger"
-                            data-id="<!--{$user_inbox.id}-->"
-                            data-user="<!--{$user_inbox.user.uid}-->"
+                            data-id="<!--{$message_list.id}-->"
+                            data-user="<!--{$message_list.user.uid}-->"
                             data-action="del">
                             <i class="fa fa-trash-o"></i> 删除
                         </a>
                         <!--{else}-->
                         <a href="javascript:;" class="btn btn-xs btn-danger"
-                            data-id="<!--{$user_inbox.id}-->"
+                            data-id="<!--{$message_list.id}-->"
                             data-action="del">
                             <i class="fa fa-trash-o"></i> 删除
                         </a>

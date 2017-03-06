@@ -6,7 +6,7 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 class indexApp {
-	public $methods	= array('iCMS','index');
+	public $methods	= array('iCMS');
     public function __construct() {}
     public function do_iCMS($a = null) {
         if(iView::$gateway!="html"){
@@ -18,7 +18,7 @@ class indexApp {
     public function API_iCMS(){
         return $this->do_iCMS();
     }
-    public function index($a = null){
+    private function index($a = null){
         $index_name = $a[1]?$a[1]:iCMS::$config['template']['index']['name'];
         $index_tpl  = $a[0]?$a[0]:iCMS::$config['template']['index']['tpl'];
         $index_name OR $index_name = 'index';
