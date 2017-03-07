@@ -20,6 +20,9 @@
             'icms.js',
         ],
         baseURL = './public/js/_src/';
+        if(window.location.href.indexOf('/public/')!="-1"){
+            baseURL = './js/_src/';
+        }
     for (var i=0,pi;pi = paths[i++];) {
         document.write('<script type="text/javascript" src="'+ baseURL + pi +'"></script>');
     }

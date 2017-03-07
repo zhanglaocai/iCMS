@@ -170,14 +170,14 @@ class contentApp {
                         continue;
                     }
                     $nkey     = $key.'_category';
-                    $category = iCache::get(categoryApp::CACHE_CATEGORY_ID.$value);
+                    $category = categoryApp::get_cahce_cid($value);
                     $values   = categoryApp::get_lite($category);
                 break;
                 case 'multi_category':
                     $nkey   = $key.'_category';
                     $valArray = explode(",", $value);
                     foreach ($valArray as $i => $val) {
-                        $category   = iCache::get(categoryApp::CACHE_CATEGORY_ID.$val);
+                        $category   = categoryApp::get_cahce_cid($val);
                         $values[$i] = categoryApp::get_lite($category);
                     }
                 break;

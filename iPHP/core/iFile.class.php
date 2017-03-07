@@ -30,7 +30,7 @@
  * `fileid` int(10) unsigned NOT NULL,
  * `appid` int(10) NOT NULL,
  * `indexid` int(10) NOT NULL,
- * `addtimes` int(10) NOT NULL,
+ * `addtime` int(10) NOT NULL,
  * PRIMARY KEY (`fileid`),
  * UNIQUE KEY `unique` (`fileid`,`appid`,`indexid`)
  * ) ENGINE=MyISAM DEFAULT CHARSET=utf8
@@ -215,9 +215,9 @@ class iFile {
         }
 
         if($fileid){
-            $userid   = self::$userid;
-            $addtimes = time();
-            $data     = compact('fileid','userid','appid','indexid','addtimes');
+            $userid  = self::$userid;
+            $addtime = time();
+            $data    = compact('fileid','userid','appid','indexid','addtime');
             self::idb_map($data);
         }
     }

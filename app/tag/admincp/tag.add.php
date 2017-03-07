@@ -70,10 +70,7 @@ $(function(){
             <div class="input-prepend"> <span class="add-on">标签分类</span>
               <select name="tcid[]" id="tcid" class="chosen-select span6" multiple="multiple" data-placeholder="请选择标签分类(可多选)...">
                 <option value="0"> ==== 默认分类 ==== </option>
-                <?php
-                  category::set_appid($this->appid);
-                  echo category::select('ca',$rs['tcid'],0,1,true);
-                ?>
+                <?php echo category::appid($this->appid)->select('ca',$rs['tcid'],0,1,true);?>
               </select>
             </div>
             <span class="help-inline">本标签所属的标签分类</span>

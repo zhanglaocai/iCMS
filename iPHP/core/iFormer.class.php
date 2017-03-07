@@ -261,8 +261,7 @@ class iFormer {
                         $orig = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
                     }
                     $select = self::widget('select',$attr)->addClass('chosen-select');
-                    category::$appid = self::$config['app']['id'];
-                    $option = category::select('cs');
+                    $option = category::appid(self::$config['app']['id'])->select('cs');
                     $script = self::script('iCMS.select("'.$attr['id'].'","'.trim($value).'");',true);
                     $html = $select->html($option).$orig;
                 break;

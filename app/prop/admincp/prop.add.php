@@ -10,6 +10,7 @@ admincp::head();
 <script type="text/javascript">
 $(function(){
 iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
+iCMS.select('prop-app',"<?php echo $rs['app'] ; ?>");
 });
 </script>
 <div class="iCMS-container">
@@ -20,6 +21,7 @@ iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
     <div class="widget-content nopadding">
       <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-prop" target="iPHP_FRAME">
         <input name="pid" type="hidden" value="<?php echo $this->pid ; ?>" />
+        <input name="appid" type="hidden" id="appid" value="<?php echo $rs['appid'];?>"/>
         <div id="<?php echo APP_BOXID;?>" class="tab-content">
           <div class="input-prepend"> <span class="add-on">所属栏目</span>
             <select name="cid" id="cid" class="span3 chosen-select">
@@ -29,28 +31,18 @@ iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
           </div>
           <span class="help-inline">本属性所属的栏目</span>
           <div class="clearfloat mb10"></div>
-          <div class="input-prepend input-append"> <span class="add-on">所属应用</span>
-            <input type="text" name="app" class="span4" id="app" value="<?php echo $rs['app'];?>"/>
-            <input type="hidden" name="appid" class="span4" id="appid" value="<?php echo $rs['appid'];?>"/>
-            <div class="btn-group">
-              <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>
-              <ul class="dropdown-menu">
-                <?php foreach (apps::get_array(array("!table"=>0)) as $key => $value) {?>
-                <li><a href="javascript:;" appid="<?php echo $key;?>" app='<?php echo $value['app'];?>'><?php echo $value['app'];?>:<?php echo $value['name'];?></a></li>
-                <?php }?>
-              </ul>
-            </div>
+          <div class="input-prepend"> <span class="add-on">所属应用</span>
+            <select name="app" id="prop-app" class="span3 chosen-select">
+              <option value=""> ==== 暂无所属应用 ==== </option>
+              <?php foreach (apps::get_array(array("!table"=>0)) as $key => $value) {?>
+              <option value="<?php echo $value['app'];?>" appid="<?php echo $key;?>"><?php echo $value['app'];?>:<?php echo $value['name'];?></option>
+              <?php }?>
+            </select>
           </div>
           <script>
-            $('li a[app]').click(function() {
-                var a = $(this),
-                appid = a.attr('appid'),
-                app = a.attr('app');
-                $("#app").val(app);
-                $("#appid").val(appid);
-                a.parent().parent().parent().removeClass("open");
-                //console.log();
-                return false;
+            $("#prop-app").on('change', function(evt, params) {
+              var appid = $(this).find('option[value="' + params['selected'] + '"]').attr('appid');
+              $("#appid","#iCMS-prop").val(appid);
             });
           </script>
           <span class="help-inline">article:文章 push:推送 category:栏目</span>

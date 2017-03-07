@@ -196,11 +196,9 @@ class userApp {
 		$author = user::$nickname;
 		$editor = user::$nickname;
 
-		if(strpos($pic, '..') !== false){
-			iUI::alert('iCMS:file:invaild');
-		}
-		if(!iFS::check_ext($pic)){
-			iUI::alert('iCMS:file:failure');
+		if($pic){
+			strpos($pic, '..') !== false && iUI::alert('iCMS:file:invaild');
+			iFS::check_ext($pic) OR iUI::alert('iCMS:file:failure');
 		}
 
 		if (iCMS::$config['user']['post']['seccode']) {
@@ -243,8 +241,8 @@ class userApp {
 		$pubdate = time();
 		$postype = "0";
 
-		$category = iCache::get('category/' . $cid);
-		$status = $category['isexamine'] ? 3 : 1;
+		$category = categoryApp::get_cahce_cid($cid);
+		$status = $category['config']['examine'] ? 3 : 1;
 
 		$fields = article::fields($aid);
 		$data_fields = article::data_fields($aid);
@@ -1123,14 +1121,14 @@ class userApp {
 	}
 
 	public function category($permission = '', $_cid = "0", $cid = "0", $level = 1) {
-		$rootid = iCache::get('category/rootid');
+		$rootid = categoryApp::get_cahce('rootid');
 		foreach ((array) $rootid[$cid] AS $root => $_cid) {
-			$C = category::cache_get($_cid);
-			if ($C['status'] && $C['isucshow'] && $C['issend'] && empty($C['outurl'])) {
+			$C = categoryApp::get_cahce_cid($_cid);
+			if ($C['status'] && $C['config']['ucshow'] && $C['config']['send'] && empty($C['outurl'])) {
 				$tag = ($level == '1' ? "" : "├ ");
 				$selected = ($_cid == $C['cid']) ? "selected" : "";
 				$text = str_repeat("│　", $level - 1) . $tag . $C['name'] . "[cid:{$C['cid']}]" . ($C['outurl'] ? "[∞]" : "");
-				$C['isexamine'] && $text .= '[审核]';
+				$C['config']['examine'] && $text .= '[审核]';
 				$option .= "<option value='{$C['cid']}' $selected>{$text}</option>";
 			}
 			$rootid[$C['cid']] && $option .= $this->category($permission, $_cid, $C['cid'], $level + 1, $url);

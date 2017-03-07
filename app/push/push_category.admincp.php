@@ -42,8 +42,8 @@ class push_categoryAdmincp extends categoryAdmincp {
        //      ),
        //  );
     }
-    public function do_add(){
+    public function do_add($default=null){
         $this->_view_tpl_dir = $this->_app;
-        parent::do_add();
+        parent::do_add(array('status'=> '2'));
     }
 }

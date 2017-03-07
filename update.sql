@@ -71,3 +71,10 @@ ALTER TABLE `icms_tags`
 
 ALTER TABLE `icms_push`
   DROP COLUMN `metadata`;
+
+ALTER TABLE `icms_category`
+  DROP COLUMN `isexamine`,
+  DROP COLUMN `issend`,
+  DROP COLUMN `isucshow`,
+  ADD COLUMN `config` TEXT NOT NULL AFTER `template`,
+  CHANGE `count` `count` INT(10) UNSIGNED DEFAULT 0  NOT NULL  AFTER `config`;

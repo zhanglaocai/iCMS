@@ -24,8 +24,7 @@ class commentAdmincp{
     }
     public function do_iCMS($appid=0){
         $_GET['appid'] && $appid = (int)$_GET['appid'];
-
-        category::set_appid($appid);
+        category::$appid = $appid;
 
         $sql = "WHERE 1=1";
         $appid && $sql.= " AND `appid`='$appid'";

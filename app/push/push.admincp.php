@@ -9,7 +9,7 @@
 * @version 6.2.0
 */
 class pushAdmincp{
-    public static $appid = null;
+    public $appid = null;
     public $callback = array();
     public function __construct() {
         $this->appid       = iCMS_APP_PUSH;

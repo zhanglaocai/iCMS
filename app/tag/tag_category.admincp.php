@@ -48,5 +48,7 @@ class tag_categoryAdmincp extends categoryAdmincp {
             ),
         );
     }
-
+    public function do_add($default=null){
+        parent::do_add(array('status'=> '2'));
+    }
 }

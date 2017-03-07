@@ -9,10 +9,11 @@ class propFunc{
 	public static function prop_array($vars){
 		$app	= $vars['sapp'];
 		$field	= $vars['field'];
-		$cid	= $vars['cid'];
-		$pkey	= $app.'.'.$field;
-		$cid &&	$pkey	= 'c'.$cid.'.'.$app.'.'.$field;
-		$propArray 	= iCache::get("prop/{$pkey}");
+        $app && $pieces[] = $app;
+        $field && $pieces[] = $field;
+        $keys = implode('/', $pieces);
+
+		$propArray 	= iCache::get("prop/{$keys}");
 		$propArray && sort($propArray);
 		$offset		= $vars['start']?$vars['start']:0;
 		$vars['row'] && $propArray = array_slice($propArray, 0, $vars['row']);

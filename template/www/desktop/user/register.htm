@@ -92,7 +92,7 @@
                                 ret.msg = 'error';
                                 return tip(ret);
                             }
-                            // if (length > 20) {
+                            if (length > 20) {
                                 ret.msg = 'error';
                                 return tip(ret);
                             }
@@ -103,7 +103,7 @@
                                 ret.msg = 'error';
                             }
                             return tip(ret);
-                            break;
+                        break;
                         case 'rstpassword':
                             var pwd = $("input[name='password']").val();
                             if (pwd.length < 6) {

@@ -23,6 +23,7 @@ class appsAdmincp{
           $rs['config']['iFormer'] = '1';
           $rs['apptype'] = "2";
           $rs['type']    = "2";
+          $rs['status']  = "1";
           $base_fields   = apps_mod::base_fields_array();
 
           $rs['fields'] = get_json_file(iPHP_APP_DIR.'/apps/etc/app.fields.json.php');
@@ -100,8 +101,8 @@ class appsAdmincp{
           $fields = addslashes(json_encode($field_array));
         }
 
-        $addtimes = time();
-        $array    = compact(array('app','name','menu','table','config','fields','addtimes','apptype','type','status'));
+        $addtime = time();
+        $array   = compact(array('app','name','menu','table','config','fields','addtime','apptype','type','status'));
 
         if(empty($id)) {
 

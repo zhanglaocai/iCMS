@@ -77,7 +77,7 @@ class htmlAdmincp{
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
     public function do_category(){
-        category::set_appid(iCMS_APP_ARTICLE);
+        category::$appid = iCMS_APP_ARTICLE;
     	include admincp::view("html.category");
     }
     public function do_createCategory($cid=0,$p=1,$loop=1){
@@ -161,7 +161,7 @@ class htmlAdmincp{
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
     }
     public function do_article(){
-        category::set_appid(iCMS_APP_ARTICLE);
+        category::$appid = iCMS_APP_ARTICLE;
     	include admincp::view("html.article");
     }
     public function do_createArticle($aid=null){
@@ -180,7 +180,7 @@ class htmlAdmincp{
 			iUI::success($title.'<hr />生成静态完成!');
 		}
         if($category[0]=='all'){
-            category::set_appid(iCMS_APP_ARTICLE);
+            category::$appid = iCMS_APP_ARTICLE;
             $category = category::get_cid();
         }
 
