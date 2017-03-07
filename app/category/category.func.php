@@ -18,6 +18,8 @@ class categoryFunc{
 		$where_sql  =" WHERE `status`='$status'";
 		$resource   = array();
 
+		// isset($vars['appid']) OR $vars['appid'] = iCMS_APP_ARTICLE;
+
 		isset($vars['appid']) && $where_sql.= iSQL::in($vars['appid'],'appid');
 		isset($vars['mode']) && $where_sql.= iSQL::in($vars['mode'],'mode');
 		isset($vars['cid']) && !isset($vars['stype']) && $where_sql.= iSQL::in($vars['cid'],'cid');
@@ -35,8 +37,7 @@ class categoryFunc{
 				$where_sql.= iSQL::in($cids,'cid');
 			break;
 			case "self":
-				$parentid = iCache::get(categoryApp::CACHE_CATEGORY_PARENT,$vars['cid']);
-
+				$parentid = categoryApp::get_cahce('parent',$vars['cid']);
 				$where_sql.=" AND `rootid`='$parentid'";
 			break;
 		}
@@ -87,7 +88,7 @@ class categoryFunc{
 		$resource = iDB::all("SELECT `cid` FROM `#iCMS@__category` {$where_sql} {$order_sql} {$limit}");
 		if($resource){
 			foreach ($resource as $key => $value) {
-				$cate = iCache::get(categoryApp::CACHE_CATEGORY_ID.$value['cid']);
+				$cate = categoryApp::get_cahce_cid($value['cid']);
 				$cate && $resource[$key] = categoryApp::get_lite($cate);
 			}
 		}

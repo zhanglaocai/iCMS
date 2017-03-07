@@ -6,12 +6,6 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 class categoryApp{
-
-    const CACHE_CATEGORY_ID      = 'category/C';
-    const CACHE_CATEGORY_DIR2CID = 'category/dir2cid';
-    const CACHE_CATEGORY_ROOTID  = 'category/rootid';
-    const CACHE_CATEGORY_PARENT  = 'category/parent';
-
 	public $methods	= array('iCMS','category');
     public function __construct($appid = iCMS_APP_ARTICLE) {
     	// $this->appid = iCMS_APP_ARTICLE;
@@ -22,7 +16,7 @@ class categoryApp{
         $cid = (int)$_GET['cid'];
         $dir = iSecurity::escapeStr($_GET['dir']);
 		if(empty($cid) && $dir){
-			$cid = iCache::get(self::CACHE_CATEGORY_DIR2CID,$dir);
+			$cid = categoryApp::get_cahce('dir2cid',$dir);
             $cid OR iPHP::error_404('找不到该栏目<b>dir:'.$dir.'</b> 请更新栏目缓存或者确认栏目是否存在', 20002);
 		}
     	return $this->category($cid,$tpl);
@@ -40,14 +34,17 @@ class categoryApp{
         return iPHP::hook('category',$data,iCMS::$config['hooks']['category']);
     }
     public static function category($cid,$tpl='index') {
-        $category = iCache::get(self::CACHE_CATEGORY_ID.$cid);
+        $category = categoryApp::get_cahce_cid($cid);
         if(empty($category) && $tpl){
             iPHP::error_404('找不到该栏目<b>cid:'. $cid.'</b> 请更新栏目缓存或者确认栏目是否存在', 20001);
         }
         if($category['status']==0) return false;
         $iurl = $category['iurl'];
         if($tpl){
-            if(iView::$gateway=="html" && (strstr($category['rule']['index'],'{PHP}')||$category['outurl']||!$category['mode']) ) return false;
+            if(iView::$gateway=="html"){
+                if(strpos($category['rule']['index'], '{PHP}') !== false||
+                    $category['outurl']||!$category['mode']) return false;
+            }
             $category['outurl'] && iPHP::redirect($category['outurl']);
             $category['mode']=='1' && iCMS::redirect_html($iurl['path'],$iurl['href']);
         }
@@ -80,18 +77,19 @@ class categoryApp{
             	return iView::render($tpl,'category');
             }
             $GLOBALS['page']>1 && $tpl='list';
-            $html = iView::render($category['template'][$tpl],'category.'.$tpl);
+
+            if($category['template']){
+                $html = iView::render($category['template'][$tpl],'category.'.$tpl);
+            }else{
+                iPHP::error_404('找不到该栏目的模板配置,请设置栏目'.$tpl.'模板', 20002);
+            }
             if(iView::$gateway=="html") return array($html,$category);
         }else{
         	return $category;
         }
     }
     public static function get_lite($category){
-        $keyArray = array(
-            'sortnum','password','mode','domain',
-            'isexamine','issend','isucshow',
-            'pubdate'
-        );
+        $keyArray = array('sortnum','password','mode','domain','config','addtime');
         foreach ($keyArray as $i => $key) {
             if(is_array($category[$key])){
                 $category[$key] = self::get_lite($category[$key]);
@@ -102,7 +100,7 @@ class categoryApp{
         return $category;
     }
     public static function get_cids($cid = "0",$all=true,$root_array=null) {
-        $root_array OR $root_array = iCache::get(self::CACHE_CATEGORY_ROOTID);
+        $root_array OR $root_array = categoryApp::get_cahce("rootid");
         $cids = array();
         is_array($cid) OR $cid = explode(',', $cid);
         foreach($cid AS $_id) {
@@ -118,6 +116,15 @@ class categoryApp{
 
         return $cids;
     }
+    public static function get_cahce_cid($cid="0") {
+        return iCache::get('category/C'.$cid);;
+    }
+    public static function get_cahce($key=null,$value=null){
+        if($value){
+            return iCache::get('category/'.$key,$value);
+        }
+        return iCache::get('category/'.$key);
+    }
     //绑定域名 iURL 回调函数
     public static function domain($i,$cid,$base_url) {
         $domain_array = (array)iCMS::$config['category']['domain'];
@@ -125,7 +132,7 @@ class categoryApp{
             $domain_array = array_flip($domain_array);
             $domain = $domain_array[$cid];
             if(empty($domain)){
-                $rootid_array = iCache::get('category/domain_rootid');
+                $rootid_array = categoryApp::get_cahce("domain_rootid");
                 if($rootid_array){
                     $rootid = $rootid_array[$cid];
                     $rootid && $domain = $domain_array[$rootid];

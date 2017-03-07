@@ -43,23 +43,23 @@ class categoryAdmincp {
     public static $sappid = null;
 
     public function __construct($appid = null,$dir=null) {
-        self::$sappid    = iPHP::appid(__CLASS__);
+        // self::$sappid    = iPHP::appid(__CLASS__);
         $this->cid       = (int)$_GET['cid'];
         $this->appid     = null;
         $appid          && $this->appid = $appid;
         $_GET['appid']  && $this->appid = (int)$_GET['appid'];
         $this->_view_tpl_dir = $dir;
-
-        category::set_appid($this->appid);
+        category::$appid = $this->appid;
     }
 
-    public function do_add(){
+    public function do_add($default=null){
         if($this->cid) {
             admincp::CP($this->cid,'e','page');
             $rs		= iDB::row("SELECT * FROM `#iCMS@__category` WHERE `cid`='$this->cid' LIMIT 1;",ARRAY_A);
             $rootid	= $rs['rootid'];
             $rs['rule']     = json_decode($rs['rule'],true);
             $rs['template'] = json_decode($rs['template'],true);
+            $rs['config']   = json_decode($rs['config'],true);
         }else {
             $rootid = (int)$_GET['rootid'];
             $rootid && admincp::CP($rootid,'a','page');
@@ -68,9 +68,12 @@ class categoryAdmincp {
             $rs = array(
                 'pid'       => '0',
                 'status'    => '1',
-                'isexamine' => '1',
-                'issend'    => '1',
-                'sortnum'  => '0',
+                'config' => array(
+                    'ucshow'  => '1',
+                    'send'    => '1',
+                    'examine' => '0',
+                ),
+                'sortnum'   => '0',
                 'mode'      => '0',
                 'htmlext'   => iCMS::$config['router']['ext'],
             );
@@ -79,10 +82,14 @@ class categoryAdmincp {
                 $rs['htmlext']  = $rootRs['htmlext'];
                 $rs['rule']     = json_decode($rootRs['rule'],true);
                 $rs['template'] = json_decode($rootRs['template'],true);
+                $rs['config']   = json_decode($rootRs['config'],true);
 	        }
+            if($default){
+                $rs = array_merge($rs,$default);
+            }
         }
 
-        apps::former_create(self::$sappid,$rs);
+        apps::former_create(iCMS_APP_CATEGORY,$rs);
 
         include admincp::view($this->_view_add,$this->_view_tpl_dir);
     }
@@ -91,9 +98,6 @@ class categoryAdmincp {
         $cid          = (int)$_POST['cid'];
         $rootid       = (int)$_POST['rootid'];
         $status       = (int)$_POST['status'];
-        $isucshow     = (int)$_POST['isucshow'];
-        $issend       = (int)$_POST['issend'];
-        $isexamine    = (int)$_POST['isexamine'];
         $sortnum      = (int)$_POST['sortnum'];
         $mode         = (int)$_POST['mode'];
         $pid          = implode(',', (array)$_POST['pid']);
@@ -114,6 +118,7 @@ class categoryAdmincp {
         $description  = iSecurity::escapeStr($_POST['description']);
         $rule         = iSecurity::escapeStr($_POST['rule']);
         $template     = iSecurity::escapeStr($_POST['template']);
+        $config       = iSecurity::escapeStr($_POST['config']);
 
         // if($_rootid_hash){
         //     $_rootid = authcode($_rootid_hash);
@@ -143,6 +148,7 @@ class categoryAdmincp {
 
         $rule     = addslashes(json_encode($rule));
         $template = addslashes(json_encode($template));
+        $config   = addslashes(json_encode($config));
 
         iMap::init('prop',iCMS_APP_CATEGORY);
 
@@ -150,11 +156,10 @@ class categoryAdmincp {
             'rootid','pid','appid','sortnum','name','subname','password',
             'title','keywords','description','dir',
             'mode','domain','url','pic','mpic','spic','htmlext',
-            'rule','template',
-            'isexamine','issend','isucshow','status');
+            'rule','template','config','status');
         $data   = compact ($fields);
 
-        apps::former_data(self::$sappid,$data,'category');
+        apps::former_data(iCMS_APP_CATEGORY,$data,'category');
 
         if(empty($cid)) {
             admincp::CP($rootid,'a','alert');
@@ -176,13 +181,12 @@ class categoryAdmincp {
                 $data['dir']      = $dir;
                 $data['userid']   = members::$userid;
                 $data['creator']  = members::$nickname;
-                $data['pubdate']  = time();
+                $data['addtime']  = time();
                 $data['count']    = '0';
                 $data['comments'] = '0';
                 $cid = iDB::insert('category',$data);
                 iDB::update('category', array('sortnum'=>$cid), array('cid'=>$cid));
                 $pid && iMap::add($pid,$cid);
-                //$this->cahce_item($cid);
             }
             $msg = $this->category_name."添加完成!请记得更新缓存!";
         }else {
@@ -194,9 +198,9 @@ class categoryAdmincp {
             $data['dir'] = $dir;
             iDB::update('category', $data, array('cid'=>$cid));
             iMap::diff($pid,$_pid,$cid);
-            //$this->cahce_item($cid);
             $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
+        //$this->cahce_item($cid);
 
         // $this->config();
 
@@ -364,19 +368,17 @@ class categoryAdmincp {
     public function do_copy(){
         iDB::query("
             INSERT INTO `#iCMS@__category` (
-                `name`,`dir`,
+               `name`,`dir`,
                `rootid`, `pid`, `appid`, `userid`, `creator`,
                `subname`, `sortnum`, `password`, `title`, `keywords`, `description`,
                `url`, `pic`, `mpic`, `spic`, `count`, `mode`, `domain`, `htmlext`,
-               `rule`, `template`, `comments`, `isexamine`, `issend`,
-               `isucshow`, `status`, `pubdate`
+               `rule`, `template`,`config`, `comments`, `status`, `addtime`
             ) SELECT
                 CONCAT(`name`,'副本'),CONCAT(`dir`,'fuben'),
                 `rootid`, `pid`, `appid`, `userid`, `creator`,
                 `subname`, `sortnum`, `password`, `title`, `keywords`, `description`,
                 `url`, `pic`, `mpic`, `spic`, `count`, `mode`, `domain`, `htmlext`,
-                `rule`, `template`, `comments`, `isexamine`, `issend`,
-                `isucshow`, `status`, `pubdate`
+                `rule`, `template`,`config`,`comments`, `status`, `addtime`
             FROM `#iCMS@__category`
             WHERE cid = '$this->cid'");
         $cid = iDB::$insert_id;
@@ -406,8 +408,8 @@ class categoryAdmincp {
 	 	echo $this->tree((int)$_GET["root"],$expanded);
     }
     public function do_cache($dialog=true){
-        $this->config();
-        $_count = $this->cache(true,$this->appid);
+        categoryAdmincp::config();
+        $_count = category::cache(true,$this->appid);
         // if($_count>1000){
         //     $this->do_cacheall($_count);
         // }else{
@@ -477,8 +479,7 @@ class categoryAdmincp {
             $C->description,$C->keywords,
             $C->password,$C->mpic,$C->spic,
             $C->title,$C->subname,$C->iurl,$C->dir,
-            $C->htmlext,
-            $C->isexamine,$C->issend,$C->isucshow,$C->comments
+            $C->htmlext,$C->config,$C->comments
         );
         return $C;
     }
@@ -611,10 +612,9 @@ class categoryAdmincp {
         }
         configAdmincp::set(array(
             'domain'=>$domain
-        ),'category',self::$sappid,false);
+        ),'category',iCMS_APP_CATEGORY,false);
 
         configAdmincp::cache();
     }
-
 }
 

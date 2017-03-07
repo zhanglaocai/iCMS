@@ -11,10 +11,11 @@ admincp::head();
 $(function(){
 	iCMS.select('pid',"<?php echo $rs['pid']?$rs['pid']:0 ; ?>");
 	iCMS.select('mode',"<?php echo $rs['mode'] ; ?>");
+  iCMS.select('status',"<?php echo $rs['status'] ; ?>");
 
-	iCMS.select('isucshow',"<?php echo $rs['isucshow'] ; ?>");
-	iCMS.select('issend',"<?php echo $rs['issend'] ; ?>");
-	iCMS.select('isexamine',"<?php echo $rs['isexamine'] ; ?>");
+	iCMS.select('config_ucshow',"<?php echo $rs['config']['ucshow'] ; ?>");
+	iCMS.select('config_send',"<?php echo $rs['config']['send'] ; ?>");
+	iCMS.select('config_examine',"<?php echo $rs['config']['examine'] ; ?>");
 
 	$(document).on("click",".delprop",function(){
    		$(this).parent().parent().remove();
@@ -69,7 +70,7 @@ $(function(){
         <li class="active"><a href="#category-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
         <li><a href="#category-add-url" data-toggle="tab"><i class="fa fa-link"></i> URL规则设置</a></li>
         <li><a href="#category-add-tpl" data-toggle="tab"><i class="fa fa-columns"></i> 模版设置</a></li>
-        <li><a href="#category-add-user" data-toggle="tab"><i class="fa fa-user"></i> 用户设置</a></li>
+        <li><a href="#category-add-config" data-toggle="tab"><i class="fa fa-cog"></i> 配置</a></li>
         <li><a href="#category-add-custom" data-toggle="tab"><i class="fa fa-wrench"></i> 自定义</a></li>
       </ul>
     </div>
@@ -152,9 +153,11 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>状态</span>
-              <div class="switch" data-on-label="显示" data-off-label="隐藏">
-                <input type="checkbox" data-type="switch" name="status" id="status" <?php echo $rs['status']?'checked':''; ?>/>
-              </div>
+              <select name="status" id="status" class="chosen-select span3">
+                <option value="0">隐藏[status="0"]</option>
+                <option value="1">显示[status="1"]</option>
+                <option value="2">不调用[status="2"]</option>
+              </select>
             </div>
           </div>
           <div id="category-add-url" class="tab-pane hide">
@@ -186,22 +189,22 @@ $(function(){
           <div id="category-add-tpl" class="tab-pane hide">
               <?php include admincp::view('category.template',$this->_view_tpl_dir);?>
           </div>
-          <div id="category-add-user" class="tab-pane hide">
+          <div id="category-add-config" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">用户中心</span>
               <div class="switch">
-                <input type="checkbox" data-type="switch" name="isucshow" id="isucshow" <?php echo $rs['isucshow']?'checked':''; ?>/>
+                <input type="checkbox" data-type="switch" name="config[ucshow]" id="config_ucshow" <?php echo $rs['config']['ucshow']?'checked':''; ?>/>
               </div>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">支持投稿</span>
               <div class="switch">
-                <input type="checkbox" data-type="switch" name="issend" id="issend" <?php echo $rs['issend']?'checked':''; ?>/>
+                <input type="checkbox" data-type="switch" name="config[send]" id="config_send" <?php echo $rs['config']['send']?'checked':''; ?>/>
               </div>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">审核投稿</span>
               <div class="switch">
-                <input type="checkbox" data-type="switch" name="isexamine" id="isexamine" <?php echo $rs['isexamine']?'checked':''; ?>/>
+                <input type="checkbox" data-type="switch" name="config[examine]" id="config_examine" <?php echo $rs['config']['examine']?'checked':''; ?>/>
               </div>
             </div>
           </div>

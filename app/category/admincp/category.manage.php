@@ -15,13 +15,13 @@ admincp::head();
 <script type="text/javascript" src="./app/admincp/ui/jquery/treeview-0.1.0.js"></script>
 <script type="text/javascript" src="./app/admincp/ui/jquery/treeview-0.1.0.async.js"></script>
 <script id="tree_li" type="text/html">
-<div class="row-fluid status{{cid}}">
+<div class="row-fluid status{{status}}">
     <span class="sortnum">
         <input type="text" cid="{{cid}}" name="sortnum[{{cid}}]" value="{{sortnum}}" style="width:32px;"/>
     </span>
     <span class="name">
         <input {{if rootid=="0"}}style="font-weight:bold"{{/if}} type="text" name="name[{{cid}}]" value="{{name}}"/>
-        {{if !status}}
+        {{if status=="0"}}
         <i class="fa fa-eye-slash" title="隐藏<?php echo $this->category_name;?>"></i>
         {{/if}}
         <span class="label label-success">cid:<a href="{{href}}" target="_blank">{{cid}}</a></span>

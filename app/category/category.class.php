@@ -7,8 +7,18 @@
  */
 class category {
     public static $appid = null;
-    public static function set_appid($appid){
-        self::$appid = $appid;
+    private static $instance = null;
+
+    // static public function getInstance() {
+    //     if (is_null ( self::$instance ) || isset ( self::$instance )) {
+    //         self::$instance = new self();
+    //     }
+    //     return self::$instance;
+    // }
+    public static function appid($appid){
+        $category = new category();
+        $category::$appid = $appid;
+        return $category;
     }
     public static function init_sql($appid=null,$_sql=null){
         self::$appid && $appid = self::$appid;
@@ -61,7 +71,7 @@ class category {
         $data = array();
         if($cids){
           $cids = iSQL::explode_var($cids);
-          $appid && self::set_appid($appid);
+          $appid && self::$appid = $appid;
           $data = (array) self::get($cids);
         }
         return $data;
@@ -107,6 +117,7 @@ class category {
         $category->CP_DEL   = admincp::CP($C->cid,'d')?true:false;
         $category->rule     = json_decode($category->rule,true);
         $category->template = json_decode($category->template,true);
+        $category->config   = json_decode($category->config,true);
 
         if($callback){
            $category = call_user_func_array($callback,array($category));
@@ -131,7 +142,7 @@ class category {
     }
 
     public static function get_root($cid="0",$root=null) {
-        empty($root) && $root = iCache::get('category/rootid');
+        empty($root) && $root = self::get_cahce('rootid');
         $ids = $root[$cid];
         if(is_array($ids)){
             $array = $ids;
@@ -143,7 +154,7 @@ class category {
     }
     public static function get_parent($cid="0",$parent=null) {
         if($cid){
-            empty($parent) && $parent = iCache::get('category/parent');
+            empty($parent) && $parent = self::get_cahce('parent');
             $rootid = $parent[$cid];
             if($rootid){
                 return self::get_parent($rootid,$parent);
@@ -248,6 +259,7 @@ class category {
 
         is_string($C['rule'])    && $C['rule']     = json_decode($C['rule'],true);
         is_string($C['template'])&& $C['template'] = json_decode($C['template'],true);
+        is_string($C['config'])  && $C['config']   = json_decode($C['config'],true);
 
 		return $C;
     }
