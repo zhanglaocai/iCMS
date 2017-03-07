@@ -26,10 +26,10 @@ class appsAdmincp{
           $rs['status']  = "1";
           $base_fields   = apps_mod::base_fields_array();
 
-          $rs['fields'] = get_json_file(iPHP_APP_DIR.'/apps/etc/app.fields.json.php');
+          $rs['fields'] = get_json_file(iPHP_APP_DIR.'/apps/app.fields.json.php');
           $rs['fields'] = json_decode($rs['fields'],true);
 
-          $rs['menu']   = get_json_file(iPHP_APP_DIR.'/apps/etc/app.menu.json.php');
+          $rs['menu']   = get_json_file(iPHP_APP_DIR.'/apps/app.menu.json.php');
           $rs['menu']   = json_decode($rs['menu'],true);
 
         }else{
