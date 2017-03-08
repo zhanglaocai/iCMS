@@ -62,7 +62,7 @@ $(function(){
             <div class="input-prepend"> <span class="add-on">所属栏目</span>
               <select name="cid" id="cid" class="chosen-select span6" multiple="multiple" data-placeholder="请选择栏目(可多选)...">
                 <option value="0"> ==== 默认栏目 ==== </option>
-                <?php echo category::select('ca',$rs['cid'],0,1,true);?>
+                <?php echo category::priv('ca')->select($rs['cid'],0,1,true);?>
               </select>
             </div>
             <span class="help-inline">本标签所属的栏目</span>

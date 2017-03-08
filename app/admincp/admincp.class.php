@@ -11,7 +11,6 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-define('iCMS_SUPERADMIN_UID', '1');
 define('__ADMINCP__', iPHP_SELF . '?app');
 define('ACP_PATH', iPHP_APP_DIR . '/admincp');
 define('ACP_HOST', (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://" . $_SERVER['HTTP_HOST']);
@@ -41,20 +40,23 @@ class admincp {
 		members::$AUTH        = 'ADMIN_AUTH';
 		members::$AJAX        = iPHP::PG('ajax');
 		members::check_login(); //用户登陆验证
+		members::check_priv('ADMINCP','page');//检查是否有后台权限
 
 		iFile::init(array(
 			'userid'    => members::$userid,
 			'watermark' => iCMS::$config['watermark']
 		));
-
-		menu::init(); //菜单
-
-
-        self::$callback = array(
-            "history" => array("menu","history")
+		//菜单
+		menu::init();
+		menu::$callback = array(
+			"priv" => array("members","check_priv"),
+			"hkey" => members::$userid
         );
-		self::MP('ADMINCP', 'page'); //检查是否有后台权限
-		self::MP('__MID__', 'page'); //检查菜单ID
+
+        admincp::$callback = array(
+			"history" => array("menu","history"),
+			"priv"    => array("members","check_priv")
+        );
 	}
 
 	public static function get_seccode() {
@@ -134,6 +136,8 @@ class admincp {
 
 		//访问记录
 		iPHP::callback(self::$callback['history'],APP_DOURI);
+		//检查URL权限
+		iPHP::callback(self::$callback['priv'],array(APP_DOURI,'page'));
 
 		$method = self::$APP_METHOD;
 		$args === null && $args = self::$APP_ARGS;
@@ -176,58 +180,7 @@ class admincp {
 		}
 		return $array;
 	}
-	public static function MP($p, $ret = '') {
-		if (self::is_superadmin()) {
-			return true;
-		}
 
-		self::$menu->power = (array) members::$mpower;
-		if ($p === '__MID__') {
-			$rt1 = $rt2 = $rt3 = true;
-			self::$menu->rootid && $rt1 = self::$menu->check_power(self::$menu->rootid);
-			self::$menu->parentid && $rt2 = self::$menu->check_power(self::$menu->parentid);
-			self::$menu->do_mid && $rt3 = self::$menu->check_power(self::$menu->do_mid);
-			if ($rt1 && $rt2 && $rt3) {
-				return true;
-			}
-			self::permission_msg($p, $ret);
-		}
-		$rt = self::$menu->check_power($p);
-		$rt OR self::permission_msg($p, $ret);
-		return $rt;
-	}
-	public static function CP($p, $act = '', $ret = '') {
-		if (self::is_superadmin()) {
-			return true;
-		}
-
-		if ($p === '__CID__') {
-			foreach ((array) members::$cpower as $key => $_cid) {
-				if (!strstr($value, ':')) {
-					self::CP($_cid, $act) && $cids[] = $_cid;
-				}
-			}
-			return $cids;
-		}
-
-		$act && $p = $p . ':' . $act;
-
-		$rt = members::check_power((string) $p, members::$cpower);
-		$rt OR self::permission_msg($p, $ret);
-		return $rt;
-	}
-	public static function permission_msg($p = '', $ret = '') {
-		if ($ret == 'alert') {
-			iUI::alert('您没有相关权限!');
-			exit;
-		} elseif ($ret == 'page') {
-			include self::view("admincp.permission",'admincp');
-			exit;
-		}
-	}
-	public static function is_superadmin() {
-		return (members::$data->gid === iCMS_SUPERADMIN_UID);
-	}
 	public static function head($navbar = true) {
 		$body_class = '';
 		if (iCMS::$config['other']['sidebar_enable']) {

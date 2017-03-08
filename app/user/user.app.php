@@ -1120,7 +1120,7 @@ class userApp {
 		return implode('、', $links) . $text;
 	}
 
-	public function category($permission = '', $_cid = "0", $cid = "0", $level = 1) {
+	public function category($priv = '', $_cid = "0", $cid = "0", $level = 1) {
 		$rootid = categoryApp::get_cahce('rootid');
 		foreach ((array) $rootid[$cid] AS $root => $_cid) {
 			$C = categoryApp::get_cahce_cid($_cid);
@@ -1131,7 +1131,7 @@ class userApp {
 				$C['config']['examine'] && $text .= '[审核]';
 				$option .= "<option value='{$C['cid']}' $selected>{$text}</option>";
 			}
-			$rootid[$C['cid']] && $option .= $this->category($permission, $_cid, $C['cid'], $level + 1, $url);
+			$rootid[$C['cid']] && $option .= $this->category($priv, $_cid, $C['cid'], $level + 1, $url);
 		}
 		return $option;
 	}

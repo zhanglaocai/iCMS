@@ -80,9 +80,7 @@ class configAdmincp{
         empty($appid) && iUI::alert("配置程序出错缺少APPID!");
         $config = iSecurity::escapeStr($_POST['config']);
         self::set($config,$name,$appid,false);
-        if (is_callable($handler)) {
-            call_user_func_array($handler, array($config));
-        }
+        $handler && iPHP::callback($handler,array($config));
         configAdmincp::cache();
         iUI::success('配置更新完成','js:1');
     }

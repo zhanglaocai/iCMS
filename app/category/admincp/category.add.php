@@ -81,10 +81,10 @@ $(function(){
         <div id="category-add" class="tab-content">
           <div id="category-add-base" class="tab-pane active">
             <div class="input-prepend input-append"> <span class="add-on">上级<?php echo $this->category_name;?></span>
-              <?php if(admincp::CP($rootid) || empty($rootid)) {   ?>
+              <?php if(category::check_priv($rootid) || empty($rootid)) {   ?>
               <select name="rootid" class="span6 chosen-select">
                 <option value="0">======顶级<?php echo $this->category_name;?>=====</option>
-                <?php echo category::select('a',$rootid,0,1,true);?>
+                <?php echo category::priv('a')->select($rootid,0,1,true);?>
               </select>
               <span class="add-on" title="继承"><input type="checkbox" name="extends" /> 继承</span>
               <?php }else { ?>

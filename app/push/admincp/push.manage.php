@@ -47,7 +47,7 @@ hr { border-bottom:none; margin:4px 0px; }
         <div class="input-prepend input-append mb10"> <span class="add-on">版块</span>
           <select name="cid" id="cid" class="chosen-select">
             <option value="0">所有版块</option>
-            <?php echo category::select('cs') ; ?>
+            <?php echo category::priv('cs')->select() ; ?>
           </select>
           <span class="add-on">
           <input type="checkbox" name="sub" id="sub"/>

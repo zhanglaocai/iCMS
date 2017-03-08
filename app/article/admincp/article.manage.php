@@ -27,7 +27,9 @@ $(function(){
   <?php if($_GET['scid']=="on"){ ?>
     iCMS.checked('#search_scid');
   <?php } ?>
-  iCMS.checked('.spic[value="<?php echo $_GET['pic'] ; ?>"]');
+  <?php if(isset($_GET['pic'])){ ?>
+  iCMS.checked('.spic','<?php echo $_GET['pic'] ; ?>');
+  <?php } ?>
 
 	var edialog;
 	$(".edit").dblclick(function(){
@@ -108,7 +110,7 @@ $(function(){
         <div class="input-prepend input-append"> <span class="add-on">栏目</span>
           <select name="cid" id="cid" class="chosen-select" style="width: 230px;">
             <option value="0">所有栏目</option>
-            <?php echo $category_select = category::select('cs') ; ?>
+            <?php echo $category_select = category::priv('cs')->select() ; ?>
           </select>
           <span class="add-on tip" title="选中查询所有关联到此栏目的文章">
           <input type="checkbox" name="scid" id="search_scid"/>
@@ -310,10 +312,10 @@ $(function(){
                 <a href="<?php echo $value['url']; ?>" class="btn btn-success btn-mini" target="_blank">查看</a>
                 <?php } ?>
                 <!-- <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $value['id'] ; ?>" class="btn btn-primary btn-mini">+章节</a> -->
-                <?php if(admincp::CP($value['cid'],'ce')){ ?>
+                <?php if(category::check_priv($value['cid'],'ce')){ ?>
                 <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $value['id'] ; ?>" class="btn btn-primary btn-mini">编辑</a>
                 <?php } ?>
-                <?php if(in_array($value['status'],array("1","0")) && admincp::CP($value['cid'],'cd')){ ?>
+                <?php if(in_array($value['status'],array("1","0")) && category::check_priv($value['cid'],'cd')){ ?>
                 <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:2" target="iPHP_FRAME" class="del btn btn-danger btn-mini" title="移动此文章到回收站" />删除</a>
                 <?php } ?>
                 <?php if($value['status']=="2"){ ?>

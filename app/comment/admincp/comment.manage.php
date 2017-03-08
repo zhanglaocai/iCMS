@@ -52,7 +52,7 @@ function update_popover(html,a){
         <div class="input-prepend input-append"> <span class="add-on">栏目</span>
           <select name="cid" id="cid" class="span3 chosen-select">
             <option value="0">所有栏目</option>
-            <?php echo category::select('cs') ; ?>
+            <?php echo category::priv('cs')->select() ; ?>
           </select>
           <span class="add-on">
           <input type="checkbox" name="sub" id="sub"/>

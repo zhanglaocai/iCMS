@@ -54,7 +54,7 @@ class categoryAdmincp {
 
     public function do_add($default=null){
         if($this->cid) {
-            admincp::CP($this->cid,'e','page');
+            category::check_priv($this->cid,'e','page');
             $rs		= iDB::row("SELECT * FROM `#iCMS@__category` WHERE `cid`='$this->cid' LIMIT 1;",ARRAY_A);
             $rootid	= $rs['rootid'];
             $rs['rule']     = json_decode($rs['rule'],true);
@@ -62,7 +62,7 @@ class categoryAdmincp {
             $rs['config']   = json_decode($rs['config'],true);
         }else {
             $rootid = (int)$_GET['rootid'];
-            $rootid && admincp::CP($rootid,'a','page');
+            $rootid && category::check_priv($rootid,'a','page');
         }
         if(empty($rs)) {
             $rs = array(
@@ -125,7 +125,7 @@ class categoryAdmincp {
         //     if($rootid!=$_rootid){
         //         iUI::alert('非法数据提交!');
         //     }else{
-        //         admincp::CP($_rootid,'a','alert');
+        //         category::check_priv($_rootid,'a','alert');
         //         exit;
         //     }
         // }
@@ -162,7 +162,7 @@ class categoryAdmincp {
         apps::former_data(iCMS_APP_CATEGORY,$data,'category');
 
         if(empty($cid)) {
-            admincp::CP($rootid,'a','alert');
+            category::check_priv($rootid,'a','alert');
             $nameArray = explode("\n",$name);
             $_count    = count($nameArray);
         	foreach($nameArray AS $nkey=>$_name){
@@ -193,7 +193,7 @@ class categoryAdmincp {
             if(empty($dir) && empty($url)) {
                 $dir = strtolower(iPinyin::get($name));
             }
-            admincp::CP($cid,'e','alert');
+            category::check_priv($cid,'e','alert');
             $mode=="2" && $this->check_dir($dir,$this->appid,$url,$cid);
             $data['dir'] = $dir;
             iDB::update('category', $data, array('cid'=>$cid));
@@ -311,7 +311,7 @@ class categoryAdmincp {
             case 'dels':
                 iUI::$break = false;
                 foreach($id_array AS $cid){
-                    admincp::CP($cid,'d','alert');
+                    category::check_priv($cid,'d','alert');
                     $this->do_del($cid,false);
                     //$this->cahce_item($cid);
                 }
@@ -342,7 +342,7 @@ class categoryAdmincp {
         menu::$url = __ADMINCP__.'='.admincp::$APP_NAME;
         admincp::$APP_DO = 'list';
         $sql  = " where `appid`='{$this->appid}'";
-        $cids = admincp::CP('__CID__');
+        $cids = category::check_priv('__CID__');
         $sql.= iSQL::in($cids,'cid');
 
         if($_GET['keywords']) {
@@ -387,7 +387,7 @@ class categoryAdmincp {
     }
     public function do_del($cid = null,$dialog=true){
         $cid===null && $cid=(int)$_GET['cid'];
-        admincp::CP($cid,'d','alert');
+        category::check_priv($cid,'d','alert');
         $msg    = '请选择要删除的'.$this->category_name.'!';
 
         if(!$this->is_root($cid)) {
@@ -515,9 +515,9 @@ class categoryAdmincp {
     //         $C['iurl'] = (array) iURL::get('category',$C);
     //         $C['href'] = $C['iurl']['href'];
     //         $C = $this->tree_unset($C);
-    //         $C['CP_ADD']  = admincp::CP($C['cid'],'a')?true:false;
-    //         $C['CP_EDIT'] = admincp::CP($C['cid'],'e')?true:false;
-    //         $C['CP_DEL']  = admincp::CP($C['cid'],'d')?true:false;
+    //         $C['CP_ADD']  = category::check_priv($C['cid'],'a')?true:false;
+    //         $C['CP_EDIT'] = category::check_priv($C['cid'],'e')?true:false;
+    //         $C['CP_DEL']  = category::check_priv($C['cid'],'d')?true:false;
 
     //         $a = array('id'=>$C['cid'],'data'=>$C);
     //         if($rootid[$C['cid']]){
@@ -616,5 +616,6 @@ class categoryAdmincp {
 
         configAdmincp::cache();
     }
+
 }
 

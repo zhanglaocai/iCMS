@@ -13,22 +13,27 @@ class menu {
     public static $href_array  = array();
     public static $callback    = array();
     public static $url         = null;
-    public static $history_key = null;
 
 	public static function init() {
         // self::get_cache();
         self::get_array(true);
 	}
 
-    public static function mid($vars,&$sort=0){
+    public static function mid($vars,$sort=0,$parent=null,$level=0){
         foreach ($vars as $k => $v) {
             ++$sort;
             $key = $v['id']?$v['id']:$k;
             if(!isset($v['sort'])) $v['sort']= $sort;
+            //权限
+            $v['priv'] = $v['id']?$v['id']:$v['href'];
+            if($v['caption']=="-"){
+                $v['priv'] = $parent.'-'.$level;
+                ++$level;
+            }
 
             $array[$key] = $v;
             if($v['children']){
-                $array[$key]['children'] = self::mid($v['children'],$sort);
+                $array[$key]['children'] = self::mid($v['children'],$sort,$v['id'],$level);
             }
         }
         return $array;
@@ -36,15 +41,16 @@ class menu {
 
     public static function get_array($cache=false){
         $variable = array();
-        $sort     = 100000;
         $rs = apps::get_array(array('!menu'=>'','status'=>'1'),'id,config,menu','app ASC');
         foreach ($rs as $appid=> $app) {
             $menuArray = apps::menu($app);
+            $sort = $app['id']*1000;
             if($menuArray){
                 $menuArray = self::mid($menuArray,$sort);
                 $variable[] = $menuArray;
             }
         }
+
         // if(self::$callback['array'] && is_callable(self::$callback['array'])){
         //    $variable2 = call_user_func_array(self::$callback['array'],array(__CLASS__));
         //     $variable2 && $variable = array_merge($variable,$variable2);
@@ -114,7 +120,7 @@ class menu {
     public static function item_unique (&$items){
         if(is_array($items)){
             foreach ($items as $key => $value) {
-                if(in_array($key, array('id','name','icon','caption','sort'))){
+                if(in_array($key, array('id','name','icon','caption','sort','priv'))){
                     is_array($value) &&$items[$key] = $value[0];
                 }
                 if(is_array($items['children'])){
@@ -147,7 +153,7 @@ class menu {
     public static function history($url=null,$get=false){
         $url===null OR self::$url = $url;
         $iCache    = iCache::file_cache();
-        $key       = iPHP_APP.'/menu/history'.self::$history_key;
+        $key       = iPHP_APP.'/menu/history'.self::$callback['hkey'];
         $history   = (array)$iCache->get($key);
         if($get){
             return $history;
@@ -208,11 +214,14 @@ class menu {
         return $count;
     }
 	public static function li($mType,$a,$level = 0){
-		// if(!admincp::MP($id)) return false;
+        if(self::$callback['priv'] && is_callable(self::$callback['priv'])){
+           $priv = call_user_func_array(self::$callback['priv'],array($a));
+           if($priv===false) return null;
+        }
 
         $a = (array)$a;
 		if($a['caption']=='-'){
-			return '<li data-sort="'.$a['sort'].'" class="'.(($level||$mType=='sidebar')?'divider':'divider-vertical').'"></li>';
+			return '<li menu-sort="'.$a['sort'].'" class="'.(($level||$mType=='sidebar')?'divider':'divider-vertical').'"></li>';
 		}
 
         $href = self::href($a);
@@ -235,7 +244,7 @@ class menu {
 		}
 
 
-		$li = '<li class="'.$a['class'].'" title="'.$a['title'].'" menu-level="'.$level.'" menu-id="'.$a['id'].'" menu-sort="'.$a['sort'].'">';
+		$li = '<li class="'.$a['class'].'" title="'.$a['title'].'" menu-sort="'.$a['sort'].'">';
 
 		$link = '<a href="'.$href.'"';
 		$a['title']  && $link.= ' title="'.$a['title'].'"';
@@ -276,8 +285,4 @@ class menu {
 		$li.=$SMul.'</li>';
 		return $li;
 	}
-
-    public static function check_power($p){
-    	return is_array($p)?array_intersect((string)$p,self::$power):in_array((string)$p,self::power);
-    }
 }

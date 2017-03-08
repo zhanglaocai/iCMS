@@ -349,7 +349,7 @@ class iPHP {
      * @return [type]           [description]
      */
     public static function callback($callback,$value=array()){
-        if (is_array($callback) && @class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {
+        if (is_array($callback) && is_callable($callback)) {
            return call_user_func_array($callback,(array)$value);
         }
         return $value;
@@ -426,7 +426,9 @@ class iPHP {
 		$restart && self::$time_start = $time_end;
 		return round($time_total, 4);
 	}
-
+    public static function priv($p,$priv){
+        return is_array($p)?array_intersect((string)$p,$priv):in_array((string)$p,$priv);
+    }
 	public static function redirect($URL = '') {
 		$URL OR $URL = iPHP_REFERER;
 		if (headers_sent()) {

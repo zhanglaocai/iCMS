@@ -443,7 +443,7 @@ class spiderAdmincp {
 		$this->pid && $rs = spider::project($this->pid);
 		$cid = empty($rs['cid']) ? $this->cid : $rs['cid'];
 
-		$cata_option = category::select(false, $cid);
+		$cata_option = category::select($cid);
 		$rule_option = $this->rule_opt($rs['rid']);
 		$post_option = $this->post_opt($rs['poid']);
 

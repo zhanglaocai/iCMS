@@ -145,7 +145,7 @@ class appsAdmincp{
             if(stripos($array['menu'], '{app}') !== false){
               $menu = str_replace(
                   array('{appid}','{app}','{name}','{sort}'),
-                  array($array['id'],$array['app'],$array['name'],$id*1000),
+                  array($id,$array['app'],$array['name'],$id*1000),
                   $array['menu']
               );
               iDB::update('apps', array('menu'=>$menu), array('id'=>$id));

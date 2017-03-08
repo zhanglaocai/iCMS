@@ -27,9 +27,9 @@ defined('iPHP') OR exit('What are you doing?');
     <span class="add-on"><input type="checkbox" name="cpower[]" value="{{cid}}:cd" /> 删除</span>
 </div>
 </script>
-<script id="power_item" type="text/html">
-<div class="input-prepend input-append li2">
-  <span class="add-on"><input type="checkbox" name="power[]" value="{{id}}"></span>
+<script id="mpower_item" type="text/html">
+<div class="input-prepend input-append">
+  <span class="add-on"><input type="checkbox" name="power[]" value="{{priv}}"></span>
   {{if caption=='-'}}
   <span class="add-on tip" title="分隔符权限,仅为UI美观">────────────</span>
   {{else}}
@@ -39,18 +39,26 @@ defined('iPHP') OR exit('What are you doing?');
 </script>
 <script type="text/javascript">
 $(function(){
-  var power  = <?php echo $rs->power?$rs->power:'{}'?>,
-  cpower = <?php echo $rs->cpower?$rs->cpower:'{}'?>;
-  get_tree('power','<?php echo __ADMINCP__;?>=menu&do=ajaxtree&expanded=1','power_item');
-  get_tree('cpower','<?php echo __ADMINCP__;?>=category&do=ajaxtree&expanded=0','cpower_item');
-  set_select(power,'<?php echo admincp::$APP_NAME; ?>-power');
-  set_select(cpower,'<?php echo admincp::$APP_NAME; ?>-cpower');
+  var power  = <?php echo $rs->power?$rs->power:'{}'?>,cpower = <?php echo $rs->cpower?$rs->cpower:'{}'?>;
+  get_tree('<?php echo __ADMINCP__;?>=menu&do=ajaxtree&expanded=1','power',
+    function(html){
+      set_select(power,html)
+    }
+  );
+  get_tree('<?php echo __ADMINCP__;?>=category&do=ajaxtree&expanded=0','cpower',
+    function(html){
+      set_select(cpower,html)
+    }
+  );
+  set_select(power,'#<?php echo admincp::$APP_NAME; ?>- ');
+  set_select(cpower,'#<?php echo admincp::$APP_NAME; ?>-cpower');
 
 });
-function get_tree(e,url,tpl){
+function get_tree(url,e,callback){
   return $("#"+e+"_tree").treeview({
-      tpl:tpl,
+      tpl:e+'_item',
       url:url,
+      callback:callback,
       collapsed: false,
       animated: "medium",
       control:"#"+e+"_treecontrol"
@@ -58,18 +66,18 @@ function get_tree(e,url,tpl){
 }
 function set_select(vars,el){
     if(!vars) return;
+
     $.each(vars, function(i,val){
-      $('input[value="'+val+'"]',$("#"+el))
-        .prop("checked", true)
-        .closest('.checker > span')
-        .addClass('checked');
+      var input = $('input[value="'+val+'"]',$(el));
+      input.prop("checked", true)
+      $.uniform.update(input);
     });
 }
 </script>
 <style>
 .separator .checker{margin-top: -20px !important;}
 </style>
-<div id="<?php echo admincp::$APP_NAME; ?>-power" class="tab-pane hide">
+<div id="<?php echo admincp::$APP_NAME; ?>-mpower" class="tab-pane hide">
   <div class="input-prepend input-append">
     <span class="add-on">全选</span>
     <span class="add-on">
@@ -110,7 +118,7 @@ function set_select(vars,el){
     <a style="display:none;"></a>
     <a class="btn btn-info" href="javascript:;">展开/收缩</a>
   </div>
-  <ul id="power_tree">
+  <ul id="mpower_tree">
 
   </ul>
 </div>

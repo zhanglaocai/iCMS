@@ -8,6 +8,9 @@
 * @licence http://www.idreamsoft.com/license.php
 */
 class members{
+    const SUPERADMIN_UID ="1";
+    const SUPERADMIN_GID ="1";
+
     public static $userid       = 0;
     public static $data         = array();
     public static $nickname     = NULL;
@@ -32,8 +35,8 @@ class members{
         self::$nickname = self::$data->nickname?self::$data->nickname:self::$data->username;
 
         self::$group  = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='".self::$data->gid."' LIMIT 1;");
-        self::$mpower = (array)self::use_power(self::$group->power,self::$data->power);
-        self::$cpower = (array)self::use_power(self::$group->cpower,self::$data->cpower);
+        self::$mpower = self::use_power(self::$group->power,self::$data->power);
+        self::$cpower = self::use_power(self::$group->cpower,self::$data->cpower);
 
         return self::$data;
     }
@@ -71,9 +74,6 @@ class members{
 	public static function logout(){
 		iPHP::set_cookie(self::$AUTH,'',-31536000);
 	}
-    public static function check_power($p,$power){
-        return is_array($p)?array_intersect($p,(array)$power):in_array($p,(array)$power);
-    }
 	private static function use_power($p1,$p2){
         if($p1){ //用户独立权限优先
             return json_decode($p1);
@@ -82,5 +82,28 @@ class members{
         }
         return false;
 	}
+    public static function is_superadmin() {
+        return (members::$data->gid === self::SUPERADMIN_GID);
+    }
+    public static function check_priv($p=null, $ret = '') {
+        if (members::is_superadmin()) {
+            return true;
+        }
+        if(is_array($p)){
+            isset($p['priv']) && $p = $p['priv'];
+        }
+        if (stripos($p, '?') !==false){
+            $parse = parse_url($p);
+            parse_str($parse['query'], $output);
+            $pieces = array($output['app']);
+            $output['do'] && $pieces['do']='do='.$output['do'];
+            $pp = implode('&', $pieces);
+            $priv = iPHP::priv($pp,members::$mpower);
+        }else{
+            $priv = iPHP::priv($p,members::$mpower);
+        }
+        $priv OR iUI::permission($p, $ret);
+        return $priv?true:false;
+    }
 }
 

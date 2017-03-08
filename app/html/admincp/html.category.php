@@ -25,7 +25,7 @@ admincp::head();
             <select name="cid[]" multiple="multiple" class="span3" size="15">
               <option value="all">所 有 栏 目</option>
               <optgroup label="======================================"></optgroup>
-              <?php echo category::select('cs',0,0,1,false,array("mode"=>'1'));?>
+              <?php echo category::priv('cs')->select(0,0,1,false,array("mode"=>'1'));?>
             </select>
           </div>
           <div class="clearfloat mb10"></div>

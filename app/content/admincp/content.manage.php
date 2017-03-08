@@ -26,7 +26,7 @@ $("#<?php echo APP_FORMID;?>").batch();
           <span class="add-on">栏目</span>
           <select name="cid" id="cid" class="chosen-select" style="width: 230px;">
             <option value="0">所有栏目</option>
-            <?php echo $category_select = category::select('cs') ; ?>
+            <?php echo $category_select = category::priv('cs')->select() ; ?>
           </select>
           <span class="add-on">
             <input type="checkbox" name="sub" id="sub"/> 子栏目

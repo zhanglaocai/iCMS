@@ -7,6 +7,7 @@
  */
 class category {
     public static $appid = null;
+    public static $priv = null;
     private static $instance = null;
 
     // static public function getInstance() {
@@ -112,9 +113,9 @@ class category {
     public static function item($category,$callback=null) {
         $category->iurl     = iURL::get('category',(array)$category);
         $category->href     = $category->iurl->href;
-        $category->CP_ADD   = admincp::CP($category->cid,'a')?true:false;
-        $category->CP_EDIT  = admincp::CP($category->cid,'e')?true:false;
-        $category->CP_DEL   = admincp::CP($C->cid,'d')?true:false;
+        $category->CP_ADD   = category::check_priv($category->cid,'a')?true:false;
+        $category->CP_EDIT  = category::check_priv($category->cid,'e')?true:false;
+        $category->CP_DEL   = category::check_priv($category->cid,'d')?true:false;
         $category->rule     = json_decode($category->rule,true);
         $category->template = json_decode($category->template,true);
         $category->config   = json_decode($category->config,true);
@@ -129,14 +130,17 @@ class category {
 
         $sql.= iSQL::where($where,true);
         $sql = self::init_sql($appid,$sql);
-
         $variable = iDB::all("SELECT `cid` FROM `#iCMS@__category` WHERE {$sql} ORDER BY `sortnum`  ASC",ARRAY_A);
-
-        // var_dump(iDB::$last_query);
-
         $category = array();
         foreach ((array)$variable as $key => $value) {
-            $category[] = $value['cid'];
+            if(self::$priv){
+                if(category::check_priv($value['cid'],self::$priv)){
+                    $category[] = $value['cid'];
+                }
+            }else{
+                $category[] = $value['cid'];
+            }
+
         }
         return $category;
     }
@@ -313,27 +317,27 @@ class category {
         }
         return $sql;
     }
-    public static function select_lite($permission='',$scid="0",$cid="0",$level = 1,$url=false,$where=null) {
+    public static function select_lite($scid="0",$cid="0",$level = 1,$url=false,$where=null) {
         $cid_array  = (array)category::get_cid($cid,$where);//获取$cid下所有子栏目ID
         $cate_array = (array)category::get($cid_array);     //获取子栏目数据
         $root_array = (array)category::rootid($cid_array);  //获取子栏目父栏目数据
         foreach($cid_array AS $root=>$_cid) {
             $C = (array)$cate_array[$_cid];
-            if(admincp::CP($_cid,$permission) && $C['status']) {
+            if($C['status']) {
                 $tag      = ($level=='1'?"":"├ ");
                 $selected = ($scid==$_cid)?"selected":"";
                 $text     = str_repeat("│　", $level-1).$tag.$C['name']."[cid:{$_cid}]".($C['url']?"[∞]":"");
                 ($C['url'] && !$url) && $selected ='disabled';
                 $option.="<option value='{$_cid}' $selected>{$text}</option>";
             }
-            $root_array[$_cid] && $option.= self::select_lite($permission,$scid,$C['cid'],$level+1,$url);
+            $root_array[$_cid] && $option.= self::select_lite($scid,$C['cid'],$level+1,$url);
         }
         return $option;
     }
-    public static function select($permission='',$scid="0",$cid="0",$level = 1,$url=false,$where=null) {
+    public static function select($scid="0",$cid="0",$level = 1,$url=false,$where=null) {
         $cc = iDB::value("SELECT count(*) FROM `#iCMS@__category`");
         if($cc<=1000){
-            return self::select_lite($permission,$scid,$cid,$level,$url,$where);
+            return self::select_lite($scid,$cid,$level,$url,$where);
         }else{
             $array = iCache::get('category/cookie');
             foreach((array)$array AS $root=>$_cid) {
@@ -346,5 +350,32 @@ class category {
             }
             return $option;
         }
+    }
+    public static function priv($p) {
+        $category = new category();
+        $category::$priv = $p;
+        return $category;
+    }
+    public static function check_priv($p, $act = '', $ret = '') {
+        if (members::is_superadmin()) {
+            return true;
+        }
+        if ($p === '__CID__') {
+            foreach ((array) members::$cpower as $key => $_cid) {
+                if (!strstr($value, ':')) {
+                    self::check_priv($_cid, $act) && $cids[] = $_cid;
+                }
+            }
+            return $cids;
+        }
+
+        if(members::$cpower){
+            $act && $p = $p . ':' . $act;
+            $priv = iPHP::priv((string) $p, (array)members::$cpower);
+        }else{
+            $priv = false;
+        }
+        $priv OR iUI::permission($p, $ret);
+        return $priv;
     }
 }

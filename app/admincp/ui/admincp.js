@@ -17,15 +17,14 @@ $(function() {
             $("#"+el).val(va).trigger("chosen:updated");
         },
         checked: function(el,v){
-            // if(v){
+            if(v){
                 var va = v.split(',');
                 $.each(va, function(i,val){
                     $(el+'[value="'+val+'"]').prop("checked", true);
                 })
-            // }
-            // else{
-            //     $(el).prop("checked",true).uniform();
-            // }
+            }else{
+                $(el).prop("checked",true);
+            }
             $.uniform.update(el);
         },
     };

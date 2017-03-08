@@ -33,8 +33,12 @@
 				}).mouseout(function() {
 					$(this).css("background-color", "#FFFFFF");
 				});
-				$(':checkbox,:radio',current).uniform();
 
+				if(settings.callback){
+					settings.callback(current);
+				}
+
+				$(':checkbox,:radio',current).uniform();
 				if (this.expanded) {
 					current.addClass("open");
 				}

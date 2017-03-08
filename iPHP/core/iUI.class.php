@@ -286,4 +286,31 @@ class iUI {
 		}
 		return $iPages;
 	}
+    public static function permission($p = '', $ret = 'alert') {
+    	$msg = "您没有[$p]访问权限!";
+    	if(iPHP_SHELL){
+    		echo $msg."\n";
+	        exit;
+    	}
+    	if (isset($_GET['frame'])) {
+    		iUI::alert($msg);
+    		exit;
+    	}
+		if ($_POST) {
+	        if(iPHP::is_ajax()){
+	            $array = array('code'=>'0','msg'=>$msg);
+	            echo json_encode($array);
+	        }else{
+	            echo '<script>top.alert("' . $msg . '")</script>';
+	        }
+	        exit;
+	    }
+        if ($ret == 'alert') {
+            iUI::alert($msg);
+            exit;
+        } elseif ($ret == 'page') {
+            // include self::view("members.permission",'members');
+            exit($msg);
+        }
+    }
 }

@@ -23,7 +23,8 @@ $(function(){
       <h5 class="brs"><?php echo empty($this->uid)?'添加':'修改' ; ?>用户</h5>
       <ul class="nav nav-tabs" id="members-tab">
         <li class="active"><a href="#members-info" data-toggle="tab"><b>基本信息</b></a></li>
-        <li><a href="#members-power" data-toggle="tab"><b>后台权限</b></a></li>
+        <li><a href="#members-mpower" data-toggle="tab"><b>后台权限</b></a></li>
+        <li><a href="#members-apower" data-toggle="tab"><b>应用权限</b></a></li>
         <li><a href="#members-cpower" data-toggle="tab"><b>栏目权限</b></a></li>
       </ul>
     </div>

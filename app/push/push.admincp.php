@@ -36,7 +36,7 @@ class pushAdmincp{
         empty($rs['userid']) && $rs['userid']=members::$userid;
         $rs['addtime']	= $id?get_date(0,"Y-m-d H:i:s"):get_date($rs['addtime'],'Y-m-d H:i:s');
         $cid			= empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
-        $cata_option	= category::select('ca',$cid);
+        $cata_option	= category::priv('ca')->select($cid);
 
         empty($rs['userid']) && $rs['userid']=members::$userid;
         $strpos 	= strpos(iPHP_REFERER,'?');

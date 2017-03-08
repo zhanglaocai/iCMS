@@ -102,7 +102,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
           <select name="rootid" id="rootid" class="chosen-select" style="width: 230px;">
             <option value="-1">所有<?php echo $this->category_name;?></option>
             <option value="0">=====顶级<?php echo $this->category_name;?>=====</option>
-            <?php echo $category_select = category::select('s',0,0,1,true) ; ?>
+            <?php echo $category_select = category::priv('s')->select(0,0,1,true) ; ?>
           </select></div>
         <div class="input-prepend input-append"> <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
@@ -187,20 +187,20 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
               <td><a href="<?php echo APP_DOURI; ?>&rootid=<?php echo $rs[$i]['rootid'] ; ?>"><?php echo  $root?$root->name:'顶级'.$this->category_name ; ?></a></td>
               <td><?php echo $rs[$i]['count'] ; ?></td>
               <td>
-                <?php if(admincp::CP($rs[$i]['cid'],'ca') ){?>
+                <?php if(category::check_priv($rs[$i]['cid'],'ca') ){?>
                 <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&do=add&<?php echo $this->_app_cid;?>=<?php echo $rs[$i]['cid'] ;?>" class="btn btn-small"><i class="fa fa-edit"></i> 添加<?php echo $this->_app_name;?></a>
                 <?php } ?>
-                <?php if(admincp::CP($rs[$i]['cid'],'cs') ){?>
+                <?php if(category::check_priv($rs[$i]['cid'],'cs') ){?>
                 <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&<?php echo $this->_app_cid;?>=<?php echo $rs[$i]['cid'] ;?>&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> <?php echo $this->_app_name;?>管理</a>
                 <?php } ?>
-                <?php if(admincp::CP($rs[$i]['cid'],'a') ){?>
+                <?php if(category::check_priv($rs[$i]['cid'],'a') ){?>
                 <a href="<?php echo $this->category_uri; ?>&do=add&rootid=<?php echo $rs[$i]['cid'] ; ?>" class="btn btn-small"><i class="fa fa-plus-square"></i> 子<?php echo $this->category_name;?></a>
                 <?php } ?>
-                <?php if(admincp::CP($rs[$i]['cid'],'e') ){?>
+                <?php if(category::check_priv($rs[$i]['cid'],'e') ){?>
                 <a href="<?php echo $this->category_uri; ?>&do=copy&cid=<?php echo $rs[$i]['cid'] ; ?>" target="iPHP_FRAME" class="btn btn-small"><i class="fa fa-clipboard"></i> 克隆</a>
                 <a href="<?php echo $this->category_uri; ?>&do=add&cid=<?php echo $rs[$i]['cid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                 <?php } ?>
-                <?php if(admincp::CP($rs[$i]['cid'],'d') ){?>
+                <?php if(category::check_priv($rs[$i]['cid'],'d') ){?>
                 <a href="<?php echo $this->category_furi; ?>&do=del&cid=<?php echo $rs[$i]['cid'] ; ?>" target="iPHP_FRAME" class="del btn btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a></td>
                 <?php } ?>
             </tr>

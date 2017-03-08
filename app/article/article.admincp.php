@@ -35,11 +35,11 @@ class articleAdmincp{
     }
 
     public function do_add(){
-        $_GET['cid'] && admincp::CP($_GET['cid'],'ca','page');//添加权限
+        $_GET['cid'] && category::check_priv($_GET['cid'],'ca','page');//添加权限
         $rs      = array();
         if($this->id){
             list($rs,$adRs) = article::data($this->id,$this->dataid);
-            admincp::CP($rs['cid'],'ce','page');//编辑权限
+            category::check_priv($rs['cid'],'ce','page');//编辑权限
             if($adRs){
                 if($rs['chapter']){
                     foreach ($adRs as $key => $value) {
@@ -59,7 +59,7 @@ class articleAdmincp{
         $bodyCount = count($bodyArray);
         $bodyCount OR $bodyCount = 1;
         $cid         = empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
-        $cata_option = category::select('ca',$cid);
+        $cata_option = category::priv('ca')->select($cid);
 
         $rs['pubdate']       = get_date($rs['pubdate'],'Y-m-d H:i:s');
         $rs['markdown'] &&  self::$config['markdown'] = "1";
@@ -114,7 +114,7 @@ class articleAdmincp{
 		        $_POST['cid'] OR iUI::alert("请选择目标栏目!");
                 iMap::init('category',self::$appid);
                 $cid = (int)$_POST['cid'];
-                admincp::CP($cid,'ca','alert');
+                category::check_priv($cid,'ca','alert');
 		        foreach((array)$_POST['id'] AS $id) {
                     $_cid = article::value('cid',$id);
                     article::update(compact('cid'),compact('id'));
@@ -335,7 +335,7 @@ class articleAdmincp{
         $sql = "WHERE `status`='{$this->_status}'";
         $this->_postype==='all' OR $sql.= " AND `postype`='{$this->_postype}'";
 
-        if(admincp::MP("ARTICLE.VIEW")){
+        if(members::check_priv("ARTICLE.VIEW")){
             $_GET['userid'] && $sql.= iSQL::in($_GET['userid'],'userid');
         }else{
             $sql.= iSQL::in(members::$userid,'userid');
@@ -351,7 +351,7 @@ class articleAdmincp{
             }
         }
 
-        $cp_cids = admincp::CP('__CID__','cs');//取得所有有权限的栏目ID
+        $cp_cids = category::check_priv('__CID__','cs');//取得所有有权限的栏目ID
 
         if($cp_cids) {
             if(is_array($cp_cids)){
@@ -457,7 +457,7 @@ class articleAdmincp{
     public function do_save(){
         $aid         = (int)$_POST['aid'];
         $cid         = (int)$_POST['cid'];
-        admincp::CP($cid,($aid?'ce':'ca'),'alert');
+        category::check_priv($cid,($aid?'ce':'ca'),'alert');
 
 
         $userid      = (int)$_POST['userid'];
@@ -690,7 +690,7 @@ class articleAdmincp{
         $id OR iUI::alert("请选择要删除的文章");
         $uid && $sql="and `userid`='$uid' and `postype`='$postype'";
         $art = article::row($id,'cid,pic,tags',$sql);
-        admincp::CP($art['cid'],'cd','alert');
+        category::check_priv($art['cid'],'cd','alert');
 
         $fids   = iFile::index_fileid($id,self::$appid);
         $pieces = iFile::delete_file($fids);

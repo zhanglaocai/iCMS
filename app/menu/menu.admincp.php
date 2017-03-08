@@ -45,43 +45,22 @@ class menuAdmincp{
     public function do_manage($doType=null) {
         include admincp::view("menu.manage");
     }
-    public function power_tree($id=0){
-        $li   = '';
-        foreach((array)menu::$root_array[$id] AS $root=>$M) {
-            $li.= '<li>';
-            $li.= $this->power_holder($M);
-            if(menu::$child_array[$M['id']]){
-                $li.= '<ul>';
-                $li.= $this->power_tree($M['id']);
-                $li.= '</ul>';
-            }
-            $li.= '</li>';
-        }
-        return $li;
-    }
-    public function power_holder($M) {
-        $name ='<span class="add-on">'.$M['caption'].'</span>';
-        if($M['app']=='separator'){
-            $name ='<span class="add-on tip" title="分隔符权限,仅为UI美观">───分隔符───</span>';
-        }
-        return '<div class="input-prepend input-append li2">
-        <span class="add-on"><input type="checkbox" name="power[]" value="'.$M['id'].'"></span>
-        '.$name.'
-        </div>';
-    }
 
     public function do_ajaxtree(){
 		$expanded = $_GET['expanded']?true:false;
 	 	echo $this->tree($_GET["root"],$expanded);
     }
 
-    public function tree($id=null,$expanded=false,$menu_array = null){
+    public function tree($id=null,$expanded=false,$menu_array = null,$parent=null,$level=0){
         $array      = array();
         $menu_array === null && $menu_array = menu::$menu_array;
-        // $id && $menu_array = $menu_array[$id];
         foreach($menu_array AS $key=>$M) {
-            $a = array('id'=>$M['id']?$M['id']:md5($M['href']),'data'=>$M);
+            $a = array(
+                'id'   =>$M['id']?$M['id']:substr(md5($M['href']),8,16),
+                'data' =>$M
+            );
             unset($a['data']['children']);
+
             if($M['children']){
             	if($expanded){
                     $a['hasChildren'] = false;
