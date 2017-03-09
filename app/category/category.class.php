@@ -146,7 +146,7 @@ class category {
     }
 
     public static function get_root($cid="0",$root=null) {
-        empty($root) && $root = self::get_cahce('rootid');
+        empty($root) && $root = categoryApp::get_cahce('rootid');
         $ids = $root[$cid];
         if(is_array($ids)){
             $array = $ids;
@@ -158,7 +158,7 @@ class category {
     }
     public static function get_parent($cid="0",$parent=null) {
         if($cid){
-            empty($parent) && $parent = self::get_cahce('parent');
+            empty($parent) && $parent = categoryApp::get_cahce('parent');
             $rootid = $parent[$cid];
             if($rootid){
                 return self::get_parent($rootid,$parent);
