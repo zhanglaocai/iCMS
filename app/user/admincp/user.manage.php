@@ -145,7 +145,7 @@ $(function(){
                 <?php if($rs[$i]['regdate']) echo get_date($rs[$i]['regdate'],"Y-m-d H:i:s") ; ?><br />
                 <?php if($rs[$i]['lastlogintime']) echo get_date($rs[$i]['lastlogintime'],"Y-m-d") ; ?></td>
               <td>
-                <?php if(admincp::is_superadmin()){?>
+                <?php if(members::is_superadmin()){?>
                 <a href="<?php echo APP_URI; ?>&do=login&id=<?php echo $rs[$i]['uid'] ; ?>" class="btn btn-small" target="_blank">登陆</a>
                  <?php } ?>
                 <a href="<?php echo __ADMINCP__; ?>=article&do=user&userid=<?php echo $rs[$i]['uid'] ; ?>&pt=0" class="btn btn-small"><i class="fa fa-list-alt"></i> 文章</a>

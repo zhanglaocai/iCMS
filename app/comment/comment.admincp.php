@@ -59,6 +59,10 @@ class commentAdmincp{
     public function do_manage($appid=0){
     	$this->do_iCMS($appid);
     }
+    /**
+     * [查看评论回复]
+     * @return [type] [description]
+     */
     public function do_get_reply(){
     	$this->id OR exit("请选择要操作的评论");
         $comment = iDB::row("SELECT * FROM `#iCMS@__comment` WHERE `id`='$this->id' LIMIT 1");

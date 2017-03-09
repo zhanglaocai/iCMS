@@ -40,7 +40,7 @@ $(function(){
 
         <div id="user-add" class="tab-content">
           <div id="user-info" class="tab-pane active">
-            <?php if(admincp::is_superadmin()){ ?>
+            <?php if(members::is_superadmin()){ ?>
             <div class="input-prepend"> <span class="add-on">角色</span>
               <select name="user[gid]" id="gid" class="chosen-select" data-placeholder="请选择用户组">
                 <option value='0'>路人甲[GID:0] </option>

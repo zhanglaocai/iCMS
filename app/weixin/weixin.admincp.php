@@ -30,10 +30,18 @@ class weixinAdmincp{
         $_POST['config'] = array_merge((array)$this->config,(array)$_POST['config']);
         configAdmincp::save($this->appid);
     }
+    /**
+     * [自定义菜单]
+     * @return [type] [description]
+     */
     public function do_save_menu(){
         $this->config['menu'] = $_POST['wx_button'];
         $this->do_save_config();
     }
+    /**
+     * [同步菜单]
+     * @return [type] [description]
+     */
     public function do_rsync_menu(){
         weixin::init();
         // $a = weixin::mediaList('image');
@@ -46,9 +54,17 @@ class weixinAdmincp{
             iUI::alert('同步出错 <br />errcode:"'.$response->errcode.'" errmsg:"'.$response->errmsg.'"');
         }
     }
+    /**
+     * [菜单管理]
+     * @return [type] [description]
+     */
     public function do_menu(){
         include admincp::view("weixin.menu");
     }
+    /**
+     * [第三方平台]
+     * @return [type] [description]
+     */
     public function do_component_login(){
         $token = iSecurity::escapeStr($_GET['token']);
         if($token!=$this->config['token']){
@@ -59,6 +75,10 @@ class weixinAdmincp{
         '&url='.urlencode(iCMS::$config['router']['public']);
         iPHP::redirect($url);
     }
+    /**
+     * [事件管理]
+     * @return [type] [description]
+     */
     public function do_event(){
         $sql = " where ";
         switch($doType){ //status:[0:草稿][1:正常][2:回收]
@@ -88,6 +108,10 @@ class weixinAdmincp{
         $_count = count($rs);
         include admincp::view("weixin.event");
     }
+    /**
+     * [添加事件]
+     * @return [type] [description]
+     */
     public function do_event_add(){
         $id = (int)$_GET['id'];
         if($id) {
@@ -98,7 +122,10 @@ class weixinAdmincp{
         }
         include admincp::view("weixin.event.add");
     }
-
+    /**
+     * [保存事件]
+     * @return [type] [description]
+     */
     public function do_event_save(){
         $id       = (int)$_POST['id'];
         $pid      = $_POST['pid'];

@@ -14,7 +14,7 @@ class menuAdmincp{
     	// var_dump(menu::$menu_array['article']['children']);
      //    exit;
     }
-    public function do_add(){
+    private function do_add(){
     	// $id	= $_GET['id'];
      //    if($id) {
      //        $rs		= iDB::row("SELECT * FROM `#iCMS@__menu` WHERE `id`='$id' LIMIT 1;",ARRAY_A);
@@ -24,25 +24,25 @@ class menuAdmincp{
      //    }
      //    include admincp::view("menu.add");
     }
-    public function do_addseparator(){
+    private function do_addseparator(){
     	// $rootid	= $_GET['rootid'];
     	// $class	= $rootid?'divider':'divider-vertical';
     	// iDB::query("INSERT INTO `#iCMS@__menu` (`rootid`,`app`,`class`) VALUES($rootid,'separator','$class');");
     	// menu::cache();
     	// iUI::success('添加完成');
     }
-    public function do_updateorder(){
+    private function do_updateorder(){
   //   	foreach((array)$_POST['sortnum'] as $sortnum=>$id){
   //           iDB::query("UPDATE `#iCMS@__menu` SET `sortnum` = '".intval($sortnum)."' WHERE `id` ='".intval($id)."' LIMIT 1");
   //   	}
 		// menu::cache();
     }
-    public function do_iCMS(){
+    private function do_iCMS(){
     	admincp::$APP_METHOD="domanage";
     	$_GET['tab'] OR $_GET['tab']="tree";
     	$this->do_manage();
     }
-    public function do_manage($doType=null) {
+    private function do_manage($doType=null) {
         include admincp::view("menu.manage");
     }
 
@@ -79,14 +79,14 @@ class menuAdmincp{
         return $array?json_encode($array):'[]';
     }
 
-    public function do_copy() {
+    private function do_copy() {
         $id = $_GET['id'];
         $field = '`rootid`, `sortnum`, `app`, `name`, `title`, `href`, `icon`, `class`, `a_class`, `target`, `caret`, `data-toggle`, `data-meta`, `data-target`';
         iDB::query("insert into `#iCMS@__menu` ({$field}) select {$field} from `#iCMS@__menu` where id = '$id'");
         $nid = iDB::$insert_id;
         iUI::success('复制完成,编辑此菜单', 'url:' . APP_URI . '&do=add&id=' . $nid);
     }
-    public function do_save(){
+    private function do_save(){
         $id          = $_POST['id'];
         $rootid      = $_POST['rootid'];
         $app         = $_POST['app'];
@@ -127,7 +127,7 @@ class menuAdmincp{
 		menu::cache();
 		iUI::success($msg,'url:' . APP_URI . '&do=manage');
     }
-    public function do_del(){
+    private function do_del(){
         $id		= (int)$_GET['id'];
         if(empty(menu::$root_array[$id])) {
             iDB::query("DELETE FROM `#iCMS@__menu` WHERE `id` = '$id'");
@@ -138,7 +138,7 @@ class menuAdmincp{
         }
 		iUI::dialog($msg,'js:parent.$("#'.$id.'").remove();');
     }
-    public function select($currentid="0",$id="0",$level = 1) {
+    private function select($currentid="0",$id="0",$level = 1) {
         foreach((array)menu::$root_array[$id] AS $root=>$M) {
 			$t=$level=='1'?"":"├ ";
 			$selected=($currentid==$M['id'])?"selected":"";

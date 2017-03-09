@@ -106,6 +106,10 @@ class tagAdmincp{
         $propArray = propAdmincp::get("pid",null,'array');
     	include admincp::view("tag.manage");
     }
+    /**
+     * [导入标签]
+     * @return [type] [description]
+     */
     public function do_import(){
         $_POST['cid'] OR iUI::alert('请选择标签所属栏目！');
         iFile::$check_data           = false;

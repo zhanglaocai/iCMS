@@ -12,9 +12,10 @@ class databaseAdmincp {
 	public function __construct() {
 		$this->bakdir = $_GET['dir'];
 	}
-//    function do_iCMS(){
-	//    	$this->do_backup();
-	//    }
+	/**
+	 * [数据库恢复页]
+	 * @return [type] [description]
+	 */
 	public function do_recover() {
 		$res = iFS::folder('cache/backup', array('sql'));
 		$dirRs = $res['DirArray'];
@@ -24,9 +25,17 @@ class databaseAdmincp {
 		$URI = $res['URI'];
 		include admincp::view("database.recover");
 	}
+	/**
+	 * [修复数据库]
+	 * @return [type] [description]
+	 */
 	public function do_repair() {
 		$this->do_backup();
 	}
+	/**
+	 * [数据库备份页]
+	 * @return [type] [description]
+	 */
 	public function do_backup() {
 		$rs = iDB::all("SHOW TABLE STATUS FROM `" . iPHP_DB_NAME . "` WHERE ENGINE IS NOT NULL;");
 		//print_r($rs);
@@ -40,6 +49,10 @@ class databaseAdmincp {
 		//		}
 		include admincp::view("database.backup");
 	}
+	/**
+	 * [数据替换页]
+	 * @return [type] [description]
+	 */
 	public function do_replace() {
 		include admincp::view("database.replace");
 	}
@@ -60,6 +73,10 @@ class databaseAdmincp {
 			break;
 		}
 	}
+	/**
+	 * [数据备份]
+	 * @return [type] [description]
+	 */
 	public function do_savebackup() {
 		iDB::query("SET SQL_QUOTE_SHOW_CREATE = 0");
 
@@ -123,6 +140,10 @@ class databaseAdmincp {
 			iUI::success('备份文件已删除!', 'js:parent.$("#' . md5($this->bakdir) . '").remove();');
 		}
 	}
+	/**
+	 * [下载备份]
+	 * @return [type] [description]
+	 */
 	public function do_download() {
 		$this->bakdir OR iUI::alert('请选择要下载的备份卷');
 		iPHP::import(iPHP_LIB . '/pclzip.class.php'); //加载zip操作类
@@ -144,6 +165,10 @@ class databaseAdmincp {
 		flush();
 		ob_flush();
 	}
+	/**
+	 * [备份恢复]
+	 * @return [type] [description]
+	 */
 	public function do_recovery() {
 		$this->bakdir OR iUI::alert('请选择要恢复的备份卷');
 		$backupdir = iPHP_APP_CACHE . '/backup/' . $this->bakdir;
@@ -175,6 +200,10 @@ class databaseAdmincp {
 		$updateMsg = ($i == 1 ? false : true);
 		iUI::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
 	}
+	/**
+	 * [执行查询]
+	 * @return [type] [description]
+	 */
 	public function do_query() {
 		$field = $_POST["field"];
 		$pattern = $_POST["pattern"];

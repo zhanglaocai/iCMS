@@ -47,6 +47,10 @@ class userAdmincp{
 
         include admincp::view("user.add");
     }
+    /**
+     * [登陆用户]
+     * @return [type] [description]
+     */
     public function do_login(){
         if($this->uid) {
             $user = iDB::row("SELECT * FROM `#iCMS@__user` WHERE `uid`='$this->uid' LIMIT 1;",ARRAY_A);

@@ -323,6 +323,10 @@ class categoryAdmincp {
         $this->cache(true,$this->appid);
         iUI::success('操作成功!','js:1');
     }
+    /**
+     * [更新排序]
+     * @return [type] [description]
+     */
     public function do_updateorder(){
     	foreach((array)$_POST['sortnum'] as $sortnum=>$cid){
             iDB::query("UPDATE `#iCMS@__category` SET `sortnum` = '".intval($sortnum)."' WHERE `cid` ='".intval($cid)."' LIMIT 1");
@@ -333,11 +337,19 @@ class categoryAdmincp {
         $tabs = iPHP::get_cookie(admincp::$APP_NAME.'_tabs');
         $tabs=="list"?$this->do_list():$this->do_tree();
     }
+    /**
+     * [树模式]
+     * @return [type] [description]
+     */
     public function do_tree() {
         menu::$url = __ADMINCP__.'='.admincp::$APP_NAME;
         admincp::$APP_DO = 'tree';
         include admincp::view($this->_view_manage,$this->_view_tpl_dir);
     }
+    /**
+     * [列表模式]
+     * @return [type] [description]
+     */
     public function do_list(){
         menu::$url = __ADMINCP__.'='.admincp::$APP_NAME;
         admincp::$APP_DO = 'list';
@@ -416,7 +428,12 @@ class categoryAdmincp {
         //     $this->cache_all(0,$_count);
         // }
         $dialog && iUI::success('更新完成');
-   }
+    }
+    /**
+     * [更新缓存[NOPRIV]]
+     * @param  [type] $total [description]
+     * @return [type]        [description]
+     */
     public function do_cacheall($total){
         $page    = (int)$_GET['page'];
         $alltime = (int)$_GET['alltime'];

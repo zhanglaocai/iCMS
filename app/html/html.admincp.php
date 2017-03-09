@@ -16,12 +16,24 @@ class htmlAdmincp{
 		$this->CP        = iCMS::$config['router']['speed'];
 		$this->alltime   = $_GET['alltime']?$_GET['alltime']:0;
     }
+    /**
+     * [全站静态]
+     * @return [type] [description]
+     */
     public function do_all(){
     	include admincp::view("html.all");
     }
+    /**
+     * [首页静态]
+     * @return [type] [description]
+     */
     public function do_index(){
     	include admincp::view("html.index");
     }
+    /**
+     * [生成首页静态]
+     * @return [type] [description]
+     */
     public function do_createIndex(){
         $indexTPL  = iCMS::$config['template']['index']['tpl']	= $this->PG['indexTPL'];
         $indexName = iCMS::$config['template']['index']['name']  = $this->PG['indexName'];
@@ -31,6 +43,7 @@ class htmlAdmincp{
 		configAdmincp::update('template');
     	$this->CreateIndex($indexTPL,$indexName);
     }
+
     public function CreateIndex($indexTPL,$indexName,$p=1,$loop=1){
 
 		$_GET['loop']	&& $loop=0;
@@ -76,10 +89,18 @@ class htmlAdmincp{
 		$updateMsg = $this->page?true:false;
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
+    /**
+     * [栏目静态]
+     * @return [type] [description]
+     */
     public function do_category(){
         category::$appid = iCMS_APP_ARTICLE;
     	include admincp::view("html.category");
     }
+    /**
+     * [生成栏目静态]
+     * @return [type] [description]
+     */
     public function do_createCategory($cid=0,$p=1,$loop=1){
 		$category	= $this->PG['cid'];
 		$rootid		= $this->PG['rootid'];
@@ -160,10 +181,18 @@ class htmlAdmincp{
 		}
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
     }
+    /**
+     * [文章静态]
+     * @return [type] [description]
+     */
     public function do_article(){
         category::$appid = iCMS_APP_ARTICLE;
     	include admincp::view("html.article");
     }
+    /**
+     * [生成文章静态]
+     * @return [type] [description]
+     */
     public function do_createArticle($aid=null){
 		$category = $this->PG['cid'];
 		$startime = $this->PG['startime'];

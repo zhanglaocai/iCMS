@@ -10,22 +10,22 @@ admincp::head();
 <script type="text/javascript">
 $(function(){
 	iCMS.select('gid',"<?php echo $rs->gid ; ?>");
-	iCMS.select('gender',"<?php echo $rs->gender ; ?>");
-	iCMS.select('year',"<?php echo $rs->info['year'] ; ?>");
-	iCMS.select('month',"<?php echo $rs->info['month'] ; ?>");
-	iCMS.select('day',"<?php echo $rs->info['day'] ; ?>");
+	iCMS.select('info_gender',"<?php echo $rs->gender ; ?>");
+	iCMS.select('info_year',"<?php echo $rs->info['year'] ; ?>");
+	iCMS.select('info_month',"<?php echo $rs->info['month'] ; ?>");
+	iCMS.select('info_day',"<?php echo $rs->info['day'] ; ?>");
 });
 </script>
 
 <div class="iCMS-container">
   <div class="widget-box">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-user"></i> </span>
-      <h5 class="brs"><?php echo empty($this->uid)?'添加':'修改' ; ?>用户</h5>
+      <h5 class="brs"><?php echo empty($this->uid)?'添加':'修改' ; ?>管理员</h5>
       <ul class="nav nav-tabs" id="members-tab">
         <li class="active"><a href="#members-info" data-toggle="tab"><b>基本信息</b></a></li>
-        <li><a href="#members-mpower" data-toggle="tab"><b>后台权限</b></a></li>
-        <li><a href="#members-apower" data-toggle="tab"><b>应用权限</b></a></li>
-        <li><a href="#members-cpower" data-toggle="tab"><b>栏目权限</b></a></li>
+        <li><a href="#mpriv" data-toggle="tab"><b>后台权限</b></a></li>
+        <li><a href="#apriv" data-toggle="tab"><b>应用权限</b></a></li>
+        <li><a href="#cpriv" data-toggle="tab"><b>栏目权限</b></a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -34,9 +34,9 @@ $(function(){
         <input name="type" type="hidden" value="<?php echo $this->type; ?>" />
         <div id="members-add" class="tab-content">
           <div id="members-info" class="tab-pane active">
-            <?php if(admincp::is_superadmin()){ ?>
+            <?php if(members::is_superadmin()){ ?>
             <div class="input-prepend"> <span class="add-on">角色</span>
-              <select name="gid" id="gid" class="chosen-select" data-placeholder="请选择用户组">
+              <select name="gid" id="gid" class="chosen-select" data-placeholder="请选择管理组">
                 <option value='0'>路人甲[GID:0] </option>
                 <?php echo $this->groupAdmincp->select(); ?>
               </select>
@@ -61,7 +61,7 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">性别</span>
-              <select name="gender" id="gender" class="chosen-select">
+              <select name="info[gender]" id="info_gender" class="chosen-select">
                 <option value="2">保密</option>
                 <option value="1">男</option>
                 <option value="0">女</option>
@@ -69,22 +69,22 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">Q Q</span>
-              <input type="text" name="icq" id="icq" class="span3" value="<?php echo $rs->info['icq'] ; ?>"  maxlength="12"/>
+              <input type="text" name="info[QQ]" id="info_QQ" class="span3" value="<?php echo $rs->info['QQ'] ; ?>"  maxlength="12"/>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">博客</span>
-              <input type="text" name="home" id="home" class="span3" value="<?php echo $rs->info['home'] ; ?>" />
+              <input type="text" name="info[blog]" id="info_blog" class="span3" value="<?php echo $rs->info['blog'] ; ?>" />
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">生日</span>
-              <select name="year" id="year" class="chosen-select"  style="width:90px;" data-placeholder="年">
+              <select name="info[year]" id="info_year" class="chosen-select"  style="width:90px;" data-placeholder="年">
                 <?php
                 $year = (int)date('Y');$syear =$year-35;$eyear =$year-14;
                 for ($i=$syear; $i < $eyear; $i++) {?>
                 <option value="<?php echo $i ?>"><?php echo $i ?></option>
                 <?php } ?>
               </select>
-              <select name="month" id="month" class="span1 chosen-select" data-placeholder="月">
+              <select name="info[month]" id="info_month" class="span1 chosen-select" data-placeholder="月">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -98,7 +98,7 @@ $(function(){
                 <option value="11">11</option>
                 <option value="12">12</option>
               </select>
-              <select name="day" id="day" class="span1 chosen-select" data-placeholder="日">
+              <select name="info[day]" id="info_day" class="span1 chosen-select" data-placeholder="日">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -134,15 +134,15 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">来自</span>
-              <input type="text" name="from" id="from" class="span3" value="<?php echo $rs->info['from'] ; ?>" />
+              <input type="text" name="info[from]" class="span3" value="<?php echo $rs->info['from'] ; ?>" />
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">签名</span>
-              <textarea name="signature" id="signature" cols="45" rows="5" class="span3"><?php echo $rs->info['signature'] ; ?></textarea>
+              <textarea name="info[sign]" cols="45" rows="5" class="span3"><?php echo $rs->info['sign'] ; ?></textarea>
             </div>
             <div class="clearfloat mb10"></div>
           </div>
-          <?php include admincp::view("members.power"); ?>
+          <?php include admincp::view("members.priv"); ?>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>

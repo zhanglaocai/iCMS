@@ -16,7 +16,10 @@ class membersAdmincp{
         $this->uid      = (int)$_GET['id'];
         $this->groupAdmincp = new groupAdmincp(1);
     }
-
+    /**
+     * [工作统计]
+     * @return [type] [description]
+     */
     public function do_job(){
 		$job	= new members_job();
         $this->uid OR $this->uid = members::$userid;
@@ -26,15 +29,11 @@ class membersAdmincp{
         $rs     = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `uid`='$this->uid' LIMIT 1;");
 		include admincp::view("members.job");
     }
-    public function do_edit(){
-        $this->uid = members::$userid;
-        $this->do_add();
-    }
     public function do_add(){
         if($this->uid) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `uid`='$this->uid' LIMIT 1;");
-            $rs->info && $rs->info = unserialize($rs->info);
-            $rs->info = (array)$rs->info;
+            $rs->config&& $rs->config = json_decode($rs->config,true);
+            $rs->info  && $rs->info = json_decode($rs->info,true);
         }
         include admincp::view("members.add");
     }
@@ -60,29 +59,24 @@ class membersAdmincp{
         $username = iSecurity::escapeStr($_POST['uname']);
         $nickname = iSecurity::escapeStr($_POST['nickname']);
         $realname = iSecurity::escapeStr($_POST['realname']);
-        $power    = $_POST['power']?json_encode($_POST['power']):'';
-        $cpower   = $_POST['cpower']?json_encode($_POST['cpower']):'';
         $gid      = 0;
-        $info     = array();
-        $info['icq']       = iSecurity::escapeStr($_POST['icq']);
-        $info['home']      = iSecurity::escapeStr($_POST['home']);
-        $info['year']      = intval($_POST['year']);
-        $info['month']     = intval($_POST['month']);
-        $info['day']       = intval($_POST['day']);
-        $info['from']      = iSecurity::escapeStr($_POST['from']);
-        $info['signature'] = iSecurity::escapeStr($_POST['signature']);
-        $info              = addslashes(serialize($info));
+
+        $config = array_map(array("iSecurity","escapeStr"), (array)$_POST['config']);
+        $info   = array_map(array("iSecurity","escapeStr"), (array)$_POST['info']);
+
+        $config = addslashes(json_encode($config));
+        $info   = addslashes(json_encode($info));
         $_POST['pwd'] && $password = md5($_POST['pwd']);
 
         $username OR iUI::alert('账号不能为空');
 
-        if(admincp::is_superadmin()){
+        if(members::is_superadmin()){
             $gid = (int)$_POST['gid'];
         }else{
             isset($_POST['gid']) && iUI::alert('您没有权限更改角色');
         }
 
-        $fields = array('gid','gender','username','nickname','realname','power', 'cpower','info');
+        $fields = array('gid','gender','username','nickname','realname','info','config');
         $data   = compact ($fields);
         if(empty($uid)) {
             iDB::value("SELECT `uid` FROM `#iCMS@__members` where `username` ='$username' LIMIT 1") && iUI::alert('该账号已经存在');

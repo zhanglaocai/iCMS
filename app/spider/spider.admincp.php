@@ -24,6 +24,10 @@ class spiderAdmincp {
 		spider::$work = $this->work = false;
 		$this->poid = (int) $_GET['poid'];
 	}
+	/**
+	 * [更新采集结果]
+	 * @return [type] [description]
+	 */
 	public function do_update() {
 		if ($this->sid) {
 			$data = admincp::update_args($_GET['_args']);
@@ -76,11 +80,19 @@ class spiderAdmincp {
 		}
 		iUI::success('全部删除成功!', 'js:1');
 	}
+	/**
+	 * [删除采集结果]
+	 * @return [type] [description]
+	 */
 	public function do_delspider() {
 		$this->sid OR iUI::alert("请选择要删除的项目");
 		iDB::query("delete from `#iCMS@__spider_url` where `id` = '$this->sid';");
 		iUI::success('删除完成', 'js:1');
 	}
+	/**
+	 * [采集结果管理]
+	 * @return [type] [description]
+	 */
 	public function do_manage($doType = null) {
 		$sql = " WHERE 1=1";
 		$_GET['keywords'] && $sql .= "  AND `title` REGEXP '{$_GET['keywords']}'";
@@ -106,23 +118,35 @@ class spiderAdmincp {
 	public function do_inbox() {
 		$this->do_manage("inbox");
 	}
-
+	/**
+	 * [测试采集方案]
+	 * @return [type] [description]
+	 */
 	public function do_testdata() {
 		spider::$dataTest = true;
 		spider_data::crawl();
 	}
-
+	/**
+	 * [测试采集规则]
+	 * @return [type] [description]
+	 */
 	public function do_testrule() {
 		spider::$ruleTest = true;
 		spider_urls::crawl('WEB@AUTO');
 	}
-
+	/**
+	 * [手动采集页]
+	 * @return [type] [description]
+	 */
 	public function do_listpub() {
 		$responses = spider_urls::crawl('WEB@MANUAL');
 		extract($responses);
 		include admincp::view("spider.lists");
 	}
-
+	/**
+	 * [采集结果移除标记]
+	 * @return [type] [description]
+	 */
 	public function do_markurl() {
 		$hash = md5($this->url);
 		$title = iSecurity::escapeStr($_GET['title']);
@@ -141,6 +165,10 @@ class spiderAdmincp {
 		));
 		iUI::success("移除成功!", 'js:parent.$("#' . $hash . '").remove();');
 	}
+	/**
+	 * [删除采集数据]
+	 * @return [type] [description]
+	 */
     public function do_dropdata() {
         $this->pid OR iUI::alert("请选择要删除的项目");
 
@@ -158,6 +186,10 @@ class spiderAdmincp {
         iDB::query("DELETE FROM `#iCMS@__spider_url` where `pid` = '$this->pid';");
         iUI::success('所有采集数据删除完成');
     }
+	/**
+	 * [删除采集结果数据]
+	 * @return [type] [description]
+	 */
 	public function do_dropurl() {
 		$this->pid OR iUI::alert("请选择要删除的项目");
 
@@ -168,10 +200,18 @@ class spiderAdmincp {
 		iDB::query("delete from `#iCMS@__spider_url` where `pid` = '$this->pid'{$sql};");
 		iUI::success('数据清除完成');
 	}
+	/**
+	 * [自动采集页]
+	 * @return [type] [description]
+	 */
 	public function do_start() {
 		$a = spider_urls::crawl('WEB@AUTO');
 		$this->do_mpublish($a);
 	}
+	/**
+	 * [批量发布]
+	 * @return [type] [description]
+	 */
 	public function do_mpublish($pubArray = array()) {
 		iUI::$break = false;
 		if ($_POST['pub']) {
@@ -218,7 +258,10 @@ class spiderAdmincp {
 		$a['js'] = 'parent.$("#' . md5(spider::$url) . '").remove();';
 		return $a;
 	}
-
+	/**
+	 * [发布]
+	 * @return [type] [description]
+	 */
 	public function do_publish($work = null) {
 		return spider::publish($work);
 	}
@@ -230,7 +273,10 @@ class spiderAdmincp {
 	public function spider_content() {
 		return spider_data::crawl();
 	}
-
+	/**
+	 * [采集规则管理]
+	 * @return [type] [description]
+	 */
 	public function do_rule() {
 		if ($_GET['keywords']) {
 			$sql = " WHERE CONCAT(name,rule) REGEXP '{$_GET['keywords']}'";
@@ -243,6 +289,10 @@ class spiderAdmincp {
 		$_count = count($rs);
 		include admincp::view("spider.rule");
 	}
+	/**
+	 * [导出采集规则]
+	 * @return [type] [description]
+	 */
 	public function do_exportrule() {
 		$rs = iDB::row("select `name`, `rule` from `#iCMS@__spider_rule` where id = '$this->rid'");
 		$data = array('name' => addslashes($rs->name), 'rule' => addslashes($rs->rule));
@@ -251,13 +301,11 @@ class spiderAdmincp {
 		Header("Content-Disposition: attachment; filename=spider.rule." . $rs->name . '.txt');
         echo $data;
     }
-    public function do_exportproject(){
-        $data = iDB::all("select `name`, `urls`, `list_url`, `cid`, `rid`, `poid`, `sleep`, `checker`, `self`, `auto`, `lastupdate`, `psleep` from `#iCMS@__spider_project` where rid = '$this->rid'");
-        $data = base64_encode(serialize($data));
-        Header("Content-type: application/octet-stream");
-        Header("Content-Disposition: attachment; filename=spider.rule.".$this->rid.'.project.txt');
-		echo $data;
-	}
+
+	/**
+	 * [导入采集规则]
+	 * @return [type] [description]
+	 */
 	public function do_import_rule() {
 		iFile::$check_data = false;
 		iFS::$config['allow_ext'] = 'txt';
@@ -275,18 +323,28 @@ class spiderAdmincp {
 			iUI::success('规则导入完成', 'js:1');
 		}
 	}
+	/**
+	 * [复制采集规则]
+	 * @return [type] [description]
+	 */
 	public function do_copyrule() {
 		iDB::query("insert into `#iCMS@__spider_rule` (`name`, `rule`) select `name`, `rule` from `#iCMS@__spider_rule` where id = '$this->rid'");
 		$rid = iDB::$insert_id;
 		iUI::success('复制完成,编辑此规则', 'url:' . APP_URI . '&do=addrule&rid=' . $rid);
 	}
-
+	/**
+	 * [删除采集规则]
+	 * @return [type] [description]
+	 */
 	public function do_delrule() {
 		$this->rid OR iUI::alert("请选择要删除的项目");
 		iDB::query("delete from `#iCMS@__spider_rule` where `id` = '$this->rid';");
 		iUI::success('删除完成', 'js:1');
 	}
-
+	/**
+	 * [添加采集规则]
+	 * @return [type] [description]
+	 */
 	public function do_addrule() {
 		$rs = array();
 		$this->rid && $rs = spider::rule($this->rid);
@@ -305,7 +363,10 @@ class spiderAdmincp {
 
 		include admincp::view("spider.addrule");
 	}
-
+	/**
+	 * [保存采集规则]
+	 * @return [type] [description]
+	 */
 	public function do_saverule() {
 		$id = (int) $_POST['id'];
 		$name = iSecurity::escapeStr($_POST['name']);
@@ -340,7 +401,10 @@ class spiderAdmincp {
 		}
 		return $opt;
 	}
-
+	/**
+	 * [发布模块管理]
+	 * @return [type] [description]
+	 */
 	public function do_post() {
 		if ($_GET['keywords']) {
 			$sql = " WHERE CONCAT(name,app,post) REGEXP '{$_GET['keywords']}'";
@@ -353,22 +417,37 @@ class spiderAdmincp {
 		$_count = count($rs);
 		include admincp::view("spider.post");
 	}
+	/**
+	 * [复制发布模块]
+	 * @return [type] [description]
+	 */
 	public function do_copypost() {
 		iDB::query("INSERT INTO `#iCMS@__spider_post` (`name`, `app`, `post`, `fun`)
  SELECT `name`, `app`, `post`, `fun` FROM `#iCMS@__spider_post` WHERE id = '$this->poid'");
 		$poid = iDB::$insert_id;
 		iUI::success('复制完成,编辑此规则', 'url:' . APP_URI . '&do=addpost&poid=' . $poid);
 	}
+	/**
+	 * [删除发布模块]
+	 * @return [type] [description]
+	 */
 	public function do_delpost() {
 		$this->poid OR iUI::alert("请选择要删除的项目");
 		iDB::query("delete from `#iCMS@__spider_post` where `id` = '$this->poid';");
 		iUI::success('删除完成', 'js:1');
 	}
+	/**
+	 * [添加发布模块]
+	 * @return [type] [description]
+	 */
 	public function do_addpost() {
 		$this->poid && $rs = iDB::row("SELECT * FROM `#iCMS@__spider_post` WHERE `id`='$this->poid' LIMIT 1;", ARRAY_A);
 		include admincp::view("spider.addpost");
 	}
-
+	/**
+	 * [保存发布模块]
+	 * @return [type] [description]
+	 */
 	public function do_savepost() {
 		$id = (int) $_POST['id'];
 		$name = trim($_POST['name']);
@@ -397,13 +476,19 @@ class spiderAdmincp {
 		}
 		return $opt;
 	}
-
+	/**
+	 * [复制采集方案]
+	 * @return [type] [description]
+	 */
 	public function do_copyproject() {
 		iDB::query("INSERT INTO `#iCMS@__spider_project` (`name`, `urls`, `cid`, `rid`, `poid`, `sleep`,`checker`,`self`,`auto`, `psleep`) select `name`, `urls`, `cid`, `rid`, `poid`, `sleep`,`checker`,`self`,`auto`,`psleep` from `#iCMS@__spider_project` where id = '$this->pid'");
 		$pid = iDB::$insert_id;
 		iUI::success('复制完成,编辑此方案', 'url:' . APP_URI . '&do=addproject&pid=' . $pid . '&copy=1');
 	}
-
+	/**
+	 * [采集方案管理]
+	 * @return [type] [description]
+	 */
 	public function do_project() {
 
 		$sql = "where 1=1";
@@ -433,11 +518,19 @@ class spiderAdmincp {
 		$_count = count($rs);
 		include admincp::view("spider.project");
 	}
+	/**
+	 * [删除采集方案]
+	 * @return [type] [description]
+	 */
 	public function do_delproject() {
 		$this->pid OR iUI::alert("请选择要删除的项目");
 		iDB::query("delete from `#iCMS@__spider_project` where `id` = '$this->pid';");
 		iUI::success('删除完成');
 	}
+	/**
+	 * [添加采集方案]
+	 * @return [type] [description]
+	 */
 	public function do_addproject() {
 		$rs = array();
 		$this->pid && $rs = spider::project($this->pid);
@@ -450,7 +543,10 @@ class spiderAdmincp {
 		//$rs['sleep'] OR $rs['sleep'] = 30;
 		include admincp::view("spider.addproject");
 	}
-
+	/**
+	 * [保存采集方案]
+	 * @return [type] [description]
+	 */
 	public function do_saveproject() {
 		$id = (int) $_POST['id'];
 		$name = iSecurity::escapeStr($_POST['name']);
@@ -479,6 +575,10 @@ class spiderAdmincp {
 		}
 		iUI::success('完成', 'url:' . APP_URI . '&do=project');
 	}
+	/**
+	 * [导入采集方案]
+	 * @return [type] [description]
+	 */
     public function do_import_project(){
         iFile::$check_data           = false;
         iFS::$config['allow_ext']     = 'txt';
@@ -498,6 +598,21 @@ class spiderAdmincp {
             iUI::success('方案导入完成,请重新设置规则','js:1');
         }
     }
+	/**
+	 * [导出采集方案]
+	 * @return [type] [description]
+	 */
+    public function do_exportproject(){
+        $data = iDB::all("select `name`, `urls`, `list_url`, `cid`, `rid`, `poid`, `sleep`, `checker`, `self`, `auto`, `lastupdate`, `psleep` from `#iCMS@__spider_project` where rid = '$this->rid'");
+        $data = base64_encode(serialize($data));
+        Header("Content-type: application/octet-stream");
+        Header("Content-Disposition: attachment; filename=spider.rule.".$this->rid.'.project.txt');
+		echo $data;
+	}
+	/**
+	 * [测试代理 [NOPRIV]]
+	 * @return [type] [description]
+	 */
 	public function do_proxy_test() {
 		$a = spider_tools::proxy_test();
 		var_dump($a);

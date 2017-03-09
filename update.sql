@@ -78,3 +78,11 @@ ALTER TABLE `icms_category`
   DROP COLUMN `isucshow`,
   ADD COLUMN `config` TEXT NOT NULL AFTER `template`,
   CHANGE `count` `count` INT(10) UNSIGNED DEFAULT 0  NOT NULL  AFTER `config`;
+
+ALTER TABLE `icms_members`
+  DROP COLUMN `power`,
+  DROP COLUMN `cpower`,
+  ADD COLUMN `config` MEDIUMTEXT NOT NULL AFTER `info`;
+
+ALTER TABLE `icms_apps`
+  ADD COLUMN `title` VARCHAR(100) DEFAULT '' NOT NULL COMMENT '应用标题' AFTER `name`;

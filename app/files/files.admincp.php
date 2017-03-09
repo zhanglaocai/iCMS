@@ -18,12 +18,19 @@ class filesAdmincp{
 	    $this->callback OR $this->callback	= 'icms';
         $this->upload_max_filesize = get_cfg_var("upload_max_filesize");
     }
-
+    /**
+     * [上传文件页]
+     * @return [type] [description]
+     */
 	public function do_add(){
         members::check_priv('FILE.UPLOAD','page');
 		$this->id && $rs = iFS::get_filedata('id',$this->id);
 		include admincp::view("files.add");
 	}
+    /**
+     * [批量上传]
+     * @return [type] [description]
+     */
 	public function do_multi(){
         members::check_priv('FILE.UPLOAD','page');
 		$file_upload_limit	= $_GET['UN']?$_GET['UN']:100;
@@ -64,6 +71,10 @@ class filesAdmincp{
         $widget = array('search'=>1,'id'=>1,'uid'=>1,'index'=>1);
     	include admincp::view("files.manage");
     }
+    /**
+     * [流数据上传]
+     * @return [type] [description]
+     */
     public function do_IO(){
         $udir      = iSecurity::escapeStr($_GET['udir']);
         $name      = iSecurity::escapeStr($_GET['name']);
@@ -83,6 +94,10 @@ class filesAdmincp{
             "state"    => ($F['code']?'SUCCESS':$F['state'])
         ));
     }
+    /**
+     * [上传文件]
+     * @return [type] [description]
+     */
     public function do_upload(){
         members::check_priv('FILE.UPLOAD','alert');
 //iFile::$check_data = true;
@@ -113,6 +128,10 @@ class filesAdmincp{
 			iUI::js_callback($array);
 		}
     }
+    /**
+     * [下载远程图片]
+     * @return [type] [description]
+     */
     public function do_download(){
         iFile::$userid   = false;
         $rs            = iFS::get_filedata('id',$this->id);
@@ -175,6 +194,10 @@ class filesAdmincp{
     	$_GET['ajax'] && iUI::json(array('code'=>0,'msg'=>$msg));
     	iUI::alert($msg);
     }
+    /**
+     * [创建目录]
+     * @return [type] [description]
+     */
     public function do_mkdir(){
         members::check_priv('FILE.MKDIR') OR iUI::json(array('code'=>0,'msg'=>'您没有相关权限!'));
     	$name	= $_POST['name'];
@@ -190,16 +213,31 @@ class filesAdmincp{
     	}
 		iUI::json(array('code'=>0,'msg'=>'创建失败,请检查目录权限!!'));
     }
-
+    /**
+     * [选择模板文件页]
+     * @return [type] [description]
+     */
     public function do_seltpl(){
     	$this->explorer('template');
     }
+    /**
+     * [浏览文件]
+     * @return [type] [description]
+     */
     public function do_browse(){
     	$this->explorer(iCMS::$config['FS']['dir']);
     }
+    /**
+     * [浏览图片]
+     * @return [type] [description]
+     */
     public function do_picture(){
     	$this->explorer(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
     }
+    /**
+     * [图片编辑器]
+     * @return [type] [description]
+     */
     public function do_editpic(){
         members::check_priv('FILE.EDIT','page');
         $pic       = iSecurity::escapeStr($_GET['pic']);
@@ -240,10 +278,18 @@ class filesAdmincp{
         stristr($this->upload_max_filesize,'m') && $max_size = $max_size*1024*1024;
         include admincp::view("files.editpic");
     }
+    /**
+     * [预览]
+     * @return [type] [description]
+     */
     public function do_preview(){
         $_GET['pic'] && $src = iFS::fp($_GET['pic'],'+http');
         include admincp::view("files.preview");
     }
+    /**
+     * [删除目录]
+     * @return [type] [description]
+     */
     public function do_deldir(){
         members::check_priv('FILE.DELETE','alert');
         $_GET['path'] OR iUI::alert("请选择要删除的目录");
@@ -261,6 +307,10 @@ class filesAdmincp{
         }
         iUI::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
     }
+    /**
+     * [删除文件]
+     * @return [type] [description]
+     */
     public function do_delfile(){
         members::check_priv('FILE.DELETE','alert');
         $_GET['path'] OR iUI::alert("请选择要删除的文件");

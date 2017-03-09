@@ -22,6 +22,9 @@ class patchAdmincp{
 			$this->patch = patch::init(isset($_GET['force'])?true:false);
 		}
 	}
+    /**
+     * [升级检查]
+     */
     public function do_check(){
 		if(empty($this->patch)){
 			if($_GET['ajax']){
@@ -57,10 +60,16 @@ class patchAdmincp{
     		iUI::dialog('success:#:check:#:'.$json['msg'],0,30,$moreBtn);
 		}
     }
+    /**
+     * [下载升级包]
+     */
     public function do_download(){
 		$this->msg	= patch::download();//下载文件包
 		include admincp::view("patch");
     }
+    /**
+     * [安装升级包]
+     */
     public function do_install(){
 		$this->msg.= patch::update();//更新文件
 		if(patch::$next){
@@ -69,12 +78,16 @@ class patchAdmincp{
 		include admincp::view("patch");
     }
     //===================git=========
-    //
+    /**
+     * [开发版升级检查]
+     */
     public function do_git_check(){
     	$log =  patchAdmincp::git('log');
     	include admincp::view("git.log");
     }
-
+    /**
+     * [下载开发版升级包]
+     */
     public function do_git_download(){
     	$zip_url = patchAdmincp::git('zip',null,'url');
 		$release = $_GET['release'];
@@ -85,8 +98,9 @@ class patchAdmincp{
 		// $this->do_download();
 		iPHP::redirect(APP_URI.'&do=download&release='.$release.'&zipname='.$zipName.'&git=true');
     }
-
-
+    /**
+     * [查看开发版信息]
+     */
     public function do_git_show(){
     	$log =  patchAdmincp::git('show',$_GET['commit_id']);
         $type_map = array(

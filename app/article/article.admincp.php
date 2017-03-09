@@ -33,7 +33,9 @@ class articleAdmincp{
     public function do_save_config(){
         configAdmincp::save(self::$appid);
     }
-
+    /**
+     * [添加文章]
+     */
     public function do_add(){
         $_GET['cid'] && category::check_priv($_GET['cid'],'ca','page');//添加权限
         $rs      = array();
@@ -205,6 +207,12 @@ class articleAdmincp{
         $data && article::batch($data,$ids);
 		iUI::success('操作成功!','js:1');
     }
+    /**
+     * [百度推送 ]
+     * @param  [type]  $id     [description]
+     * @param  boolean $dialog [description]
+     * @return [type]          [description]
+     */
     public function do_baiduping($id = null,$dialog=true){
         $id===null && $id=$this->id;
         $id OR iUI::alert('请选择要推送的文章!');
@@ -219,14 +227,19 @@ class articleAdmincp{
             iUI::alert('推送失败！['.$res->message.']','js:1');
         }
     }
+    /**
+     * [JSON数据]
+     * @return [type] [description]
+     */
     public function do_getjson(){
         $id = (int)$_GET['id'];
         $rs = article::row($id);
         iUI::json($rs);
     }
-    public function do_getmeta(){
-        $cid = $_GET['cid'];
-    }
+    /**
+     * [简易编辑]
+     * @return [type] [description]
+     */
 	public function do_updatetitle(){
         $id          = (int)$_POST['id'];
         $cid         = (int)$_POST['cid'];
@@ -252,6 +265,10 @@ class articleAdmincp{
         article::update($data ,compact('id'));
 		exit('1');
 	}
+    /**
+     * [查找正文图片]
+     * @return [type] [description]
+     */
     public function do_findpic(){
         $content = article::body($this->id);
         if($content){
@@ -284,6 +301,10 @@ class articleAdmincp{
         }
         include admincp::view("files.manage","admincp");
     }
+    /**
+     * [正文预览]
+     * @return [type] [description]
+     */
     public function do_preview(){
 		echo article::body($this->id);
     }

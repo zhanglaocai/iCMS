@@ -110,16 +110,28 @@ class editorAdmincp{
             echo $result;
         }
     }
+    /**
+     * [编辑器图片管理]
+     * @return [type] [description]
+     */
     public function do_imageManager(){
 		$res = iFS::folder(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
 		$res['public'] = iCMS_PUBLIC_URL;
 		iUI::json($res);
     }
+    /**
+     * [编辑器文件管理]
+     * @return [type] [description]
+     */
     public function do_fileManager(){
         $res = iFS::folder(iCMS::$config['FS']['dir']);
         $res['public'] = iCMS_PUBLIC_URL;
         iUI::json($res);
     }
+    /**
+     * [编辑器抓取远程图片]
+     * @return [type] [description]
+     */
     public function do_catchimage(){
     	$url_array = (array)$_POST['source'];
 		/* 抓取远程图片 */
@@ -153,6 +165,10 @@ class editorAdmincp{
 			'list'  => $list
 		));
     }
+    /**
+     * [编辑器上传图片]
+     * @return [type] [description]
+     */
     public function do_uploadimage(){
         $F = iFS::upload('upfile');
         $F===false && exit(iFS::$ERROR);
@@ -165,6 +181,10 @@ class editorAdmincp{
 			'state'    => 'SUCCESS'
 		));
     }
+    /**
+     * [markdown上传图片]
+     * @return [type] [description]
+     */
     public function do_md_uploadimage(){
         $F = iFS::upload('editormd-image-file');
         $F===false && iUI::json(array(
@@ -178,6 +198,10 @@ class editorAdmincp{
             'success'  => 1
         ));
     }
+    /**
+     * [编辑器上传文件]
+     * @return [type] [description]
+     */
     public function do_uploadfile(){
         $F = iFS::upload('upfile');
         $F===false && exit(iFS::$ERROR);
@@ -191,6 +215,10 @@ class editorAdmincp{
             "state"    =>'SUCCESS'
 		));
     }
+    /**
+     * [编辑器上传视频]
+     * @return [type] [description]
+     */
     public function do_uploadvideo(){
         $F = iFS::upload('upfile');
         $F===false && exit(iFS::$ERROR);
@@ -202,6 +230,10 @@ class editorAdmincp{
             "state"    =>'SUCCESS'
         ));
     }
+    /**
+     * [编辑器上传涂鸦]
+     * @return [type] [description]
+     */
     public function do_uploadscrawl(){
 		if ($_GET[ "action" ] == "tmpImg") { // 背景上传
             iFS::$ERROR_TYPE  = false;

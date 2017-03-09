@@ -10,6 +10,9 @@
 */
 class configAdmincp{
     public function __construct() {}
+    /**
+     * [配置管理]
+     */
     public function do_iCMS(){
     	$config	= $this->get();
         $redis    = extension_loaded('redis');
@@ -18,8 +21,7 @@ class configAdmincp{
     	include admincp::view("config");
     }
     /**
-     * [do_save 保存配置]
-     * @return [type] [description]
+     * [保存配置]
      */
     public function do_save(){
         $config = iSecurity::escapeStr($_POST['config']);

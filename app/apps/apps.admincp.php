@@ -273,10 +273,17 @@ class appsAdmincp{
       apps::cache();
       iUI::success('更新完成');
     }
-
+    /**
+     * [钩子管理]
+     * @return [type] [description]
+     */
     public function do_hooks(){
         configAdmincp::app($this->appid,'hooks');
     }
+    /**
+     * [保存钩子]
+     * @return [type] [description]
+     */
     public function do_hooks_save(){
         $hooks = array();
         foreach ((array)$_POST['hooks']['method'] as $key => $method) {
@@ -289,15 +296,26 @@ class appsAdmincp{
         $_POST['config'] = $hooks;
         configAdmincp::save($this->appid,'hooks');
     }
-
+    /**
+     * [应用市场]
+     * @return [type] [description]
+     */
     public function do_store(){
       include admincp::view("apps.store");
     }
+    /**
+     * [应用市场数据]
+     * @return [type] [description]
+     */
     public function do_store_json(){
       $url  = apps_store::STORE_URL.'/store.json.php';
       $json = iHttp::remote($url);
       echo $json;
     }
+    /**
+     * [从应用市场安装应用]
+     * @return [type] [description]
+     */
     public function do_store_install(){
       $sid  = $_GET['sid'];
       $key  = md5(iPHP_KEY.iPHP_SELF.time());
@@ -322,7 +340,10 @@ class appsAdmincp{
       }
 
     }
-
+    /**
+     * [卸载应用]
+     * @return [type] [description]
+     */
     public function do_uninstall(){
       $app = apps::get($this->id);
       if($app['type'] && $app['apptype']){
@@ -333,6 +354,10 @@ class appsAdmincp{
         iUI::alert('应用已被禁止删除');
       }
     }
+    /**
+     * [安装应用]
+     * @return [type] [description]
+     */
     public function do_install(){
       $app = iSecurity::escapeStr($_GET['appname']);
       strstr($app,'..')!==false  && iUI::alert('您的应用有问题!');
