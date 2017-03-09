@@ -106,6 +106,7 @@ class patch {
 			$msg .= '请设置好上面提示的文件写权限<iCMS>';
 			$msg .= '然后重新更新<iCMS>';
 			self::$next = false;
+			$msg = str_replace(iPATH,'iPHP://',$msg);
 			return $msg;
 		}
 		//测试通过！
