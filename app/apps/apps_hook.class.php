@@ -133,4 +133,104 @@ class apps_hook {
             return $rs;
         }
     }
+    public static function get_app_priv(){
+        $privArray = array();
+        foreach (apps::get_array(array("status"=>'1')) as $key => $value) {
+            list($path,$obj_name)= apps::get_path($value['app'],'Admincp',true);
+            $apriv = array();
+            if(@is_file($path)||$value['apptype']=="2"){
+                if($value['apptype']=="2"){
+                  $obj_name = 'contentAdmincp';
+                }
+                $apriv = self::method_priv($obj_name,$value,$privArray);
+            }
+            $html.= self::app_priv_html($apriv,$value);
+
+            // if($value['apptype']=="2"){
+            //     $obj_name = 'categoryAdmincp';
+            //     $apriv = self::method_priv($obj_name,$value);
+            //     $html.= self::app_priv_html($apriv,$value);
+            // }
+        }
+        iCache::set('app/priv',$privArray,0);
+        return $html;
+    }
+
+    public static function app_priv_html($apriv,$value){
+        if($apriv){
+            ksort($apriv);
+            $html= '<tr id="'.$value['app'].'_apriv">';
+            $html.= '<td><input type="checkbox" class="checkAll checkbox" data-target="#'.$value['app'].'_apriv"/></td>';
+            $html.= '<td>'.$value['id'].'</td>';
+            $html.= '<td>'.$value['app'].'</td>';
+            $html.= '<td>'.$value['name'].'</td>';
+            $html.= '<td>';
+            $html.= '<div class="input-prepend input-append">';
+            $html.= implode('', $apriv);
+            $html.= '</div>';
+            $html.= '</td>';
+            $html.= '<td>';
+            $html.= '<div class="input-prepend input-append">';
+            $html.= '  <span class="add-on"><input type="checkbox" name="config[apriv][]" value="'.$value['app'].'.VIEW" /> 查看所有'.$value['title'].'</span>';
+            $html.= '  <span class="add-on"><input type="checkbox" name="config[apriv][]" value="'.$value['app'].'.EDIT" /> 编辑所有'.$value['title'].'</span>';
+            $html.= '  <span class="add-on"><input type="checkbox" name="config[apriv][]" value="'.$value['app'].'.DELETE" /> 删除所有'.$value['title'].'</span>';
+            $html.= '</div>';
+            $html.= '</td>';
+            $html.= '</tr>';
+        }
+        // echo '<div class="input-prepend input-append" id="'.$value['app'].'_apriv">';
+        // echo '<span class="add-on"><i class="fa fa-folder"></i> '.$value['name'].'权限 <input type="checkbox" class="checkAll checkbox" data-target="#'.$value['app'].'_apriv"/></span>';
+        // echo '<span class="add-on">::</span>';
+        // echo implode('', $apriv);
+        // // echo '<select name="config[apriv][]" id="apriv" multiple="multiple" class="chosen-select span6" data-placeholder="请设置应用权限">';
+        // // echo '</select>';
+        // echo '</div><div class="clearfloat mb10"></div>';
+        return $html;
+    }
+    public static function method_priv($obj_name,$value,&$privArray){
+        $docMap = array(
+            'iCMS'        => "{title}列表",
+            'manage'      => "{title}列表",
+            'add'         => "添加{title}",
+            'save'        => "保存{title}",
+            'update'      => "更新操作",
+            'batch'       => "批量操作",
+            'cache'       => "更新{title}缓存",
+            'copy'        => "克隆{title}",
+            'del'         => "删除{title}",
+            'ajaxtree'    => "ajax树状数据",
+            'inbox'       => "草稿箱",
+            'trash'       => "回收站",
+            'examine'     => "审核{title}",
+            'off'         => "淘汰{title}",
+            'config'      => "{title}配置",
+            'save_config' => "保存{title}配置",
+            'user'        => "用户{title}列表",
+            'updateorder' => "更新排序",
+        );
+        $class_methods = get_class_methods ($obj_name);
+        foreach ($class_methods as $key => $method) {
+            if(stripos($method, 'do_') !== false){
+                $doc = apps_hook::get_doc($obj_name,$method);
+                if($doc){
+                    $title = $doc[0];
+                    if(stripos($title, '[NOPRIV]') !== false){
+                      continue;
+                    }
+                }else{
+                    $title = $method;
+                }
+                $do = str_replace('do_', '', $method);
+                if($docMap[$do] && empty($doc)){
+                  $title = str_replace('{title}', $value['title'],$docMap[$do]);
+                }
+                $url = __ADMINCP__.'='.$value['app'].($do != 'iCMS' ? '&do=' . $do : '');
+                // $apriv[$do]='<option value="'.$obj_name.'::'.$method.'">'.$title.'</option>';
+                $apriv[$do]='<span class="add-on tip" title="网址:'.$url.'"><input type="checkbox" name="config[apriv][]" value="'.$value['app'].'.'.$do.'"/> '.$title.'</span>';
+                $privArray[$url] = $value['name'].'('.$title.')';
+            }
+        }
+        return $apriv;
+    }
 }
+

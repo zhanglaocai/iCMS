@@ -61,11 +61,11 @@ class membersAdmincp{
         $realname = iSecurity::escapeStr($_POST['realname']);
         $gid      = 0;
 
-        $config = array_map(array("iSecurity","escapeStr"), (array)$_POST['config']);
         $info   = array_map(array("iSecurity","escapeStr"), (array)$_POST['info']);
-
-        $config = addslashes(json_encode($config));
         $info   = addslashes(json_encode($info));
+
+        $config = (array)$_POST['config'];
+        $config = addslashes(json_encode($config));
         $_POST['pwd'] && $password = md5($_POST['pwd']);
 
         $username OR iUI::alert('账号不能为空');

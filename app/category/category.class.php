@@ -361,21 +361,23 @@ class category {
             return true;
         }
         if ($p === '__CID__') {
-            foreach ((array) members::$cpower as $key => $_cid) {
+            foreach (members::$priv['category'] as $key => $_cid) {
                 if (!strstr($value, ':')) {
                     self::check_priv($_cid, $act) && $cids[] = $_cid;
                 }
             }
             return $cids;
         }
-
-        if(members::$cpower){
+        if(members::$priv['category']){
             $act && $p = $p . ':' . $act;
-            $priv = iPHP::priv((string) $p, (array)members::$cpower);
+            $priv = iPHP::check_priv((string) $p, members::$priv['category']);
         }else{
             $priv = false;
         }
-        $priv OR iUI::permission($p, $ret);
+        $priv OR self::permission($p, $ret);
         return $priv;
+    }
+    public static function permission($p=null, $ret = '') {
+        iUI::permission('栏目:'.$p, $ret);
     }
 }

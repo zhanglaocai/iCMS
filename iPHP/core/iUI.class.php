@@ -296,20 +296,19 @@ class iUI {
     		iUI::alert($msg);
     		exit;
     	}
+        if(iPHP::is_ajax()){
+            $array = array('code'=>0,'msg'=>$msg);
+            echo json_encode($array);
+            exit;
+        }
 		if ($_POST) {
-	        if(iPHP::is_ajax()){
-	            $array = array('code'=>'0','msg'=>$msg);
-	            echo json_encode($array);
-	        }else{
-	            echo '<script>top.alert("' . $msg . '")</script>';
-	        }
+	        echo '<script>top.alert("' . $msg . '")</script>';
 	        exit;
 	    }
         if ($ret == 'alert') {
             iUI::alert($msg);
             exit;
         } elseif ($ret == 'page') {
-            // include self::view("members.permission",'members');
             exit($msg);
         }
     }

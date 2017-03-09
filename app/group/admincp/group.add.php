@@ -18,9 +18,9 @@ $(function(){
       <h5 class="brs"><?php echo empty($this->gid)?'添加':'修改' ; ?>角色</h5>
       <ul class="nav nav-tabs" id="group-tab">
         <li class="active"><a href="#group-info" data-toggle="tab"><b>基本信息</b></a></li>
-        <li><a href="#mpriv" data-toggle="tab"><b>后台权限</b></a></li>
-        <li><a href="#apriv" data-toggle="tab"><b>应用权限</b></a></li>
-        <li><a href="#cpriv" data-toggle="tab"><b>栏目权限</b></a></li>
+        <li><a href="#group-mpriv" data-toggle="tab"><b>后台权限</b></a></li>
+        <li><a href="#group-apriv" data-toggle="tab"><b>应用权限</b></a></li>
+        <li><a href="#group-cpriv" data-toggle="tab"><b>栏目权限</b></a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">

@@ -115,17 +115,17 @@ $(function(){
                 <a class="btn btn-small" href="<?php echo __ADMINCP__;?>=files&do=index&fid=<?php echo $rs[$i]['id'] ; ?>"><i class="fa fa-search"></i> 关联</a>
                 <?php }?>
                 <a class="btn btn-small" href="<?php echo $href; ?>" data-toggle="modal" title="查看"><i class="fa fa-eye"></i> 查看</a>
-                <?php if(members::check_priv('FILE.EDIT')){?>
+                <?php if(members::check_priv('files.editpic')){?>
                 <a class="btn btn-small" href="<?php echo __ADMINCP__;?>=files&frame=iPHP&do=editpic&from=modal&pic=<?php echo $filepath ; ?>" data-toggle="modal" title="编辑图片(<?php echo $rs[$i]['filename'].'.'.$rs[$i]['ext']; ?>)"><i class="fa fa-edit"></i> 编辑</a>
                 <?php }?>
                 <?php if(strstr($rs[$i]['ofilename'],'http://')){?>
                 <a href="<?php echo __ADMINCP__; ?>=files&frame=iPHP&do=download&id=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small" title="正常重新下载" target="iPHP_FRAME"><i class="fa fa-download"></i> 下载</a>
                 <a href="<?php echo __ADMINCP__; ?>=files&frame=iPHP&do=download&id=<?php echo $rs[$i]['id'] ; ?>&unwatermark=0" class="btn btn-small" title="重新下载 不添加水印" target="iPHP_FRAME"><i class="fa fa-download"></i> 下载2</a>
                 <?php }?>
-                <?php if(members::check_priv('FILE.UPLOAD')){?>
+                <?php if(members::check_priv('files.add')){?>
                 <a href="<?php echo __ADMINCP__; ?>=files&frame=iPHP&do=add&from=modal&id=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small" data-toggle="modal" data-meta='{"width":"500px","height":"300px"}' title="重新上传"><i class="fa fa-upload"></i> 上传</a>
                 <?php }?>
-                <?php if(members::check_priv('FILE.DELETE')){?>
+                <?php if(members::check_priv('files.del')){?>
                 <a href="<?php echo __ADMINCP__; ?>=files&frame=iPHP&do=del&id=<?php echo $rs[$i]['id'] ; ?>&indexid=<?php echo $rs[$i]['indexid'] ; ?>" target="iPHP_FRAME" class="del btn btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>
                 <?php }?>
               </td>

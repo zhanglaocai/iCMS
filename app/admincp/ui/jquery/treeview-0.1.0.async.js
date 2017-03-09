@@ -17,6 +17,11 @@
 	function load(settings, root, child, container) {
 		$.getJSON(settings.url, {root: root}, function(response) {
 			$("#tree-loading").remove();
+			console.log(typeof(response.code));
+			if(typeof(response.code)!="undefined"){
+				alert(response.msg);
+				return;
+			}
 			function createNode(parent) {
 				if(settings.tpl){
 					var html = template(settings.tpl, this.data);

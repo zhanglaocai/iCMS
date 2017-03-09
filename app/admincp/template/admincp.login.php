@@ -17,11 +17,11 @@ defined('iPHP') OR exit('What are you doing?');
 <meta content="iDreamSoft Inc." name="Copyright" />
 <link rel="stylesheet" href="./app/admincp/ui/bootstrap/2.3.2/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/bootstrap/2.3.2/css/bootstrap-responsive.min.css" type="text/css" />
-<link rel="stylesheet" href="./app/admincp/ui/artDialog/6.0.3/ui-dialog.css" type="text/css" />
+<link rel="stylesheet" href="./app/admincp/ui/artDialog/ui-dialog.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/iCMS.css" type="text/css" />
 
 <script type="text/javascript" src="./app/admincp/ui/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="./app/admincp/ui/artDialog/6.0.3/dialog-plus-min.js"></script>
+<script type="text/javascript" src="./app/admincp/ui/artDialog/dialog-plus-min.js"></script>
 <script type="text/javascript" src="./app/admincp/ui/iCMS.js"></script>
 <style>
 /* dialog */

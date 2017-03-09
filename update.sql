@@ -86,3 +86,8 @@ ALTER TABLE `icms_members`
 
 ALTER TABLE `icms_apps`
   ADD COLUMN `title` VARCHAR(100) DEFAULT '' NOT NULL COMMENT '应用标题' AFTER `name`;
+
+ALTER TABLE `icms62`.`icms_group`
+  DROP COLUMN `power`,
+  DROP COLUMN `cpower`,
+  ADD COLUMN `config` MEDIUMTEXT NOT NULL AFTER `sortnum`;

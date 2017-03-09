@@ -23,7 +23,6 @@ class filesAdmincp{
      * @return [type] [description]
      */
 	public function do_add(){
-        members::check_priv('FILE.UPLOAD','page');
 		$this->id && $rs = iFS::get_filedata('id',$this->id);
 		include admincp::view("files.add");
 	}
@@ -32,7 +31,6 @@ class filesAdmincp{
      * @return [type] [description]
      */
 	public function do_multi(){
-        members::check_priv('FILE.UPLOAD','page');
 		$file_upload_limit	= $_GET['UN']?$_GET['UN']:100;
 		$file_queue_limit	= $_GET['QN']?$_GET['QN']:10;
 		$file_size_limit	= (int)$this->upload_max_filesize;
@@ -41,7 +39,6 @@ class filesAdmincp{
 		include admincp::view("files.multi");
 	}
 	public function do_iCMS(){
-        members::check_priv('FILE.MANAGE','page');
     	$sql='WHERE 1=1 ';
         if($_GET['keywords']) {
             if($_GET['st']=="filename") {
@@ -99,7 +96,6 @@ class filesAdmincp{
      * @return [type] [description]
      */
     public function do_upload(){
-        members::check_priv('FILE.UPLOAD','alert');
 //iFile::$check_data = true;
     	$_POST['watermark'] OR iFile::$watermark = false;
         iFS::$ERROR_TYPE = true;
@@ -171,7 +167,6 @@ class filesAdmincp{
 		}
 	}
     public function do_del($id = null){
-        members::check_priv('FILE.DELETE','alert');
         $id ===null && $id = $this->id;
         $id OR iUI::alert("请选择要删除的文件");
         $indexid = (int)$_GET['indexid'];
@@ -199,7 +194,6 @@ class filesAdmincp{
      * @return [type] [description]
      */
     public function do_mkdir(){
-        members::check_priv('FILE.MKDIR') OR iUI::json(array('code'=>0,'msg'=>'您没有相关权限!'));
     	$name	= $_POST['name'];
         strstr($name,'.')!==false	&& iUI::json(array('code'=>0,'msg'=>'您输入的目录名称有问题!'));
         strstr($name,'..')!==false	&& iUI::json(array('code'=>0,'msg'=>'您输入的目录名称有问题!'));
@@ -239,8 +233,7 @@ class filesAdmincp{
      * @return [type] [description]
      */
     public function do_editpic(){
-        members::check_priv('FILE.EDIT','page');
-        $pic       = iSecurity::escapeStr($_GET['pic']);
+        $pic = iSecurity::escapeStr($_GET['pic']);
         //$pic OR iUI::alert("请选择图片!");
         if($pic){
             $src       = iFS::fp($pic,'+http')."?".time();
@@ -291,7 +284,6 @@ class filesAdmincp{
      * @return [type] [description]
      */
     public function do_deldir(){
-        members::check_priv('FILE.DELETE','alert');
         $_GET['path'] OR iUI::alert("请选择要删除的目录");
         strpos($_GET['path'], '..') !== false && iUI::alert("目录路径中带有..");
 
@@ -312,7 +304,6 @@ class filesAdmincp{
      * @return [type] [description]
      */
     public function do_delfile(){
-        members::check_priv('FILE.DELETE','alert');
         $_GET['path'] OR iUI::alert("请选择要删除的文件");
         strpos($_GET['path'], '..') !== false && iUI::alert("文件路径中带有..");
 
@@ -328,7 +319,6 @@ class filesAdmincp{
         iUI::dialog($msg,'js:parent.$("#'.$hash.'").remove();');
     }
     public function explorer($dir=NULL,$type=NULL){
-        members::check_priv('FILE.BROWSE','page');
         $res    = iFS::folder($dir,$type);
         $dirRs  = $res['DirArray'];
         $fileRs = $res['FileArray'];

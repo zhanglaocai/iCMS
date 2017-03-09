@@ -426,7 +426,7 @@ class iPHP {
 		$restart && self::$time_start = $time_end;
 		return round($time_total, 4);
 	}
-    public static function priv($p,$priv){
+    public static function check_priv($p,$priv){
         return is_array($p)?array_intersect((string)$p,$priv):in_array((string)$p,$priv);
     }
 	public static function redirect($URL = '') {

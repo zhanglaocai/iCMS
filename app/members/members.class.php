@@ -15,8 +15,7 @@ class members{
     public static $data         = array();
     public static $nickname     = NULL;
     public static $group        = array();
-    public static $mpower       = array();
-    public static $cpower       = array();
+    public static $priv         = array();
     public static $AJAX         = false;
     public static $AUTH         = 'iCMS_AUTH';
     public static $LOGIN_PAGE   = 'Login.php';
@@ -30,14 +29,18 @@ class members{
         self::$data = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `username`='{$a}' AND `password`='{$p}' AND `status`='1' LIMIT 1;");
         self::$data OR self::LoginPage();
         unset(self::$data->password);
-        self::$data->info && self::$data->info	= unserialize(self::$data->info);
         self::$userid   = self::$data->uid;
         self::$nickname = self::$data->nickname?self::$data->nickname:self::$data->username;
 
-        self::$group  = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='".self::$data->gid."' LIMIT 1;");
-        self::$mpower = self::use_power(self::$group->power,self::$data->power);
-        self::$cpower = self::use_power(self::$group->cpower,self::$data->cpower);
+        self::$data->info   = json_decode(self::$data->info);
+        self::$data->config = json_decode(self::$data->config);
 
+        self::$group  = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='".self::$data->gid."' LIMIT 1;");
+        self::$group->config = json_decode(self::$group->config);
+
+        self::$priv['menu']     = self::prior_priv(self::$data->config->mpriv,self::$group->config->mpriv);
+        self::$priv['app']      = self::prior_priv(self::$data->config->apriv,self::$group->config->apriv);
+        self::$priv['category'] = self::prior_priv(self::$data->config->cpriv,self::$group->config->cpriv);
         return self::$data;
     }
     //登陆验证
@@ -74,13 +77,13 @@ class members{
 	public static function logout(){
 		iPHP::set_cookie(self::$AUTH,'',-31536000);
 	}
-	private static function use_power($p1,$p2){
+	private static function prior_priv($p1,$p2){
         if($p1){ //用户独立权限优先
-            return json_decode($p1);
+            return $p1;
         }elseif($p2){
-            return json_decode($p2);
+            return $p2;
         }
-        return false;
+        return array();
 	}
     public static function is_superadmin() {
         return (members::$data->gid === self::SUPERADMIN_GID);
@@ -89,21 +92,31 @@ class members{
         if (members::is_superadmin()) {
             return true;
         }
-        if(is_array($p)){
-            isset($p['priv']) && $p = $p['priv'];
-        }
+        // if(is_array($p)){
+        //     isset($p['priv']) && $p = $p['priv'];
+        // }
         if (stripos($p, '?') !==false){
             $parse = parse_url($p);
             parse_str($parse['query'], $output);
             $pieces = array($output['app']);
             $output['do'] && $pieces['do']='do='.$output['do'];
             $pp = implode('&', $pieces);
-            $priv = iPHP::priv($pp,members::$mpower);
+            $priv = iPHP::check_priv($pp,self::$priv['menu']);
         }else{
-            $priv = iPHP::priv($p,members::$mpower);
+            $priv = iPHP::check_priv($p,self::$priv['menu']);
         }
-        $priv OR iUI::permission($p, $ret);
+        $priv OR self::permission($p, $ret);
         return $priv?true:false;
+    }
+    public static function permission($p=null, $ret = '') {
+        $title = $p;
+        if (stripos($p, '?') !==false){
+            $priv = iCache::get('app/priv');
+            $p = preg_replace('@app=(\w+)_category@is', 'app=category', $p);
+            $priv[$p] && $title = $priv[$p];
+        }
+        iUI::permission($title, $ret);
+        // include self::view("members.permission",'members');
     }
 }
 

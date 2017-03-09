@@ -32,6 +32,7 @@ class groupAdmincp{
     }
     public function do_add(){
         $this->gid && $rs = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='$this->gid' LIMIT 1;");
+        $rs->config = json_decode($rs->config,true);
         include admincp::view("group.add");
     }
     public function do_manage(){
@@ -66,10 +67,12 @@ class groupAdmincp{
 		$gid    = intval($_POST['gid']);
 		$type   = intval($_POST['type']);
 		$name   = iSecurity::escapeStr($_POST['name']);
-		$power  = $_POST['power']?json_encode($_POST['power']):'';
-		$cpower = $_POST['cpower']?json_encode($_POST['cpower']):'';
+
+        $config = (array)$_POST['config'];
+        $config = addslashes(json_encode($config));
+
 		$name OR iUI::alert('角色名不能为空');
-		$fields = array('name', 'sortnum', 'power', 'cpower', 'type');
+		$fields = array('name', 'sortnum', 'config', 'type');
 		$data   = compact ($fields);
 		if($gid){
             iDB::update('group', $data, array('gid'=>$gid));
