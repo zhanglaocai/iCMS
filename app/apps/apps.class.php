@@ -27,6 +27,11 @@ class apps {
 
     public static function former_create($appid,$rs){
         $app = apps::get($appid);
+        $data_table = apps_mod::data_table_name($app['app']);
+        if($app['table'][$data_table]){
+            $data_fields = apps_mod::base_fields($app['app']);
+            $app['fields']+= $data_fields;
+        }
         if($app['fields']){
             iFormer::$config['app']     = $app;
             iFormer::$config['gateway'] = 'admincp';

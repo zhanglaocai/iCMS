@@ -71,7 +71,7 @@ class articleApp {
 	 * @param  [type] $data [description]
 	 * @return [type]       [description]
 	 */
-    public function hooked($data){
+    public static function hooked($data){
         return iPHP::hook('article',$data,iCMS::$config['hooks']['article']);
     }
 	public function article($id, $page = 1, $tpl = true) {

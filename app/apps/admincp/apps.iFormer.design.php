@@ -156,7 +156,7 @@
         </li>
         <li i="field" tag="prop" type="prop" field="VARCHAR" len="255" label="属性">
           <span class="fb-icon fb-icon-prop"></span>
-          <p>属性</p>
+          <p>属性(单选)</p>
         </li>
         <li i="field" tag="multi_prop" type="multi_prop" field="VARCHAR" len="255" label="多选属性">
           <span class="fb-icon fb-icon-prop"></span>

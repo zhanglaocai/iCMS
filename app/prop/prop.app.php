@@ -7,9 +7,9 @@
  */
 class propApp {
 	public $methods = array('iCMS');
-	public static function value($app,$field=null) {
-        $pieces[] = $app;
-        $field && $pieces[] = $field;
+	public static function value($field,$app=null) {
+        $app && $pieces[] = $app;
+        $pieces[] = $field;
         $keys = implode('/', $pieces);
 		$propArray 	= iCache::get("prop/{$keys}");
 		$propArray && sort($propArray);

@@ -266,10 +266,7 @@ class articleFunc{
 	public static function article_data($vars) {
 		$vars['aid'] OR iUI::warning('iCMS&#x3a;article&#x3a;data 标签出错! 缺少"aid"属性或"aid"值为空.');
 		$data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $vars['aid'] . "' LIMIT 1;", ARRAY_A);
-		if ($data['body']) {
-			$data['body'] = articleApp::ubb($data['body']);
-			$data['body'] = articleApp::taoke($data['body']);
-		}
+		$article = articleApp::hooked($article);
 		return $data;
 	}
 	public static function article_prev($vars) {
@@ -349,14 +346,8 @@ class articleFunc{
 					$value['page'] = $GLOBALS['page'] ? $GLOBALS['page'] : 1;
 					$value['total'] = $total;
 				}
-				if ($vars['archive'] == "date") {
-					$_date = archive_date($value['postime']);
-					unset($resource[$key]);
-					$resource[$_date][$key] = $value;
-				} else {
-					$resource[$key] = $value;
-				}
-
+				$resource[$key] = $value;
+				unset($variable[$key]);
 			}
 		}
 		return $resource;

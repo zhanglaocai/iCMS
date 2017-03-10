@@ -120,7 +120,7 @@ var iFormer = {
                 case 'multi_file':
                     $elem = this.widget('textarea');
                     elem_type = null;
-                case 'prop':
+                case 'text_prop':
                 case 'file':
                 case 'image':
                     var eText = {
@@ -171,6 +171,7 @@ var iFormer = {
                 case 'PRIMARY':
                 case 'user_category':
                 case 'userid':
+                case 'union':
                 case 'hidden':
                     var div_after = function () {
                         var $span;
@@ -222,6 +223,7 @@ var iFormer = {
                 case 'multi_prop':
                 case 'multi_category':
                 case 'multiple':
+                case 'prop':
                 case 'category':
                 case 'select':
                     $elem = this.widget('select');

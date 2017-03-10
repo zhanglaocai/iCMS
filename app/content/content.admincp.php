@@ -113,11 +113,12 @@ class contentAdmincp{
         include admincp::view('content.manage');
     }
     public function do_save(){
-        list($variable,$keys,$orig_post) = iFormer::post($this->app);
+        list($variable,$tables,$orig_post) = iFormer::post($this->app);
 
         if(!$variable){
             iCMS::alert("表单数据处理出错!");
         }
+        print_r($variable);
         $update = false;
         foreach ($variable as $table_name => $data) {
             if(empty($data)){
@@ -127,33 +128,20 @@ class contentAdmincp{
             $table   = $this->app['table'][$table_name];
             //当前表主键
             $primary = $table['primary'];
-
             //关联字符 && 关联数据
-            if($table['union'] && $uDATA){
-              $data[$table['union']] = $uDATA[$table['union']];
+            if($table['union'] && $union_data){
+              $data[$table['union']] = $union_data[$table['union']];
             }
-
-            $union_key = null;
-            //查找下个数据表名
-            $next_table_name = next($keys);
-            if($next_table_name){
-              $next_table = $this->app['table'][$next_table_name];
-              //有设置关联字段
-              $next_table['union'] && $union_key = $next_table['union'];
-            }
-
-            //union
-            if(empty($data[$primary])){ //主键值为空
-                unset($data[$primary]);
+            $union_id = apps_mod::data_union_id($table_name);
+            $id = $data[$primary];
+            unset($data[$primary]);//主键不更新
+            if(empty($id)){ //主键值为空
                 $id = iDB::insert($table_name,$data);
-                $union_key && $uDATA = array_combine(array($union_key),array($id));
             }else{
                 $update = true;
-                //主键不更新
-                $id = $data[$primary];
-                unset($data[$primary]);
                 iDB::update($table_name, $data, array($primary=>$id));
             }
+            empty($table['union']) && $union_data[$union_id] = $id;
         }
         $REFERER_URL = $_POST['REFERER'];
         if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){

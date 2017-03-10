@@ -81,10 +81,8 @@ class iFormer {
             $default = $field['default'];
 
             list($type,$type2) = explode(':', $field['type']);
-            empty($value) && $value = $default;
-
-
-            if(empty($value)){
+            isset($value) OR $value = $default;
+            if(!isset($value)){
                 if(in_array($field['field'], array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
                     $value ='0';
                 }else{
@@ -131,22 +129,27 @@ class iFormer {
                     $modal = filesAdmincp::modal_btn($name,$click,$attr['id']);
                     $html  = $input.$modal;
                 break;
-                case 'prop':
+                case 'txt_prop':
                     $div_class.=' input-append';
                     $input->attr('type','text');
                     $prop = propAdmincp::btn_group($name,self::$config['app']['app'],$attr['id']);
                     $html = $input.$prop;
                 break;
+                case 'prop':
                 case 'multi_prop':
                     unset($attr['type']);
-                    $attr['name']     = $attr['name'].'[]';
-                    $attr['multiple'] = 'true';
+                    $attr['data-placeholder']= '请选择'.$field['label'].'...';
+                    if(strpos($type,'multi')!==false){
+                        $attr['name']     = $attr['name'].'[]';
+                        $attr['multiple'] = 'true';
+                        $attr['data-placeholder']= '请选择'.$field['label'].'(可多选)...';
+                        $orig = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
+                    }
                     $select = self::widget('select',$attr)->addClass('chosen-select');
                     $option='<option value="0">默认'.$field['label'].'['.$name.'=\'0\']</option>';
                     $option.= propAdmincp::get($name,null,'option',null,self::$config['app']['app']);
-                    $_input = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
-                    $html = $select->html($option).$_input;
-                    $script = self::script('iCMS.select("'.$attr['id'].'","'.($value?trim($value):0).'");',true);
+                    $html = $select->html($option).$orig;
+                    $script = self::script('iCMS.select("'.$attr['id'].'","'.trim($value).'");',true);
                 break;
                 case 'date':
                 case 'datetime':
@@ -168,6 +171,7 @@ class iFormer {
                     }
                 break;
                 case 'PRIMARY':
+                case 'union':
                 case 'hidden':
                     $div_class.=' hide';
                     $html = $input->attr('type','hidden');
@@ -555,9 +559,10 @@ class iFormer {
         if(empty($post)) return array(false,false,false);
 
         $orig_post   = array();
-        $medium_post = array();
+        $data_post = array();
 
         $field_array = iFormer::fields($app['fields']);
+        $data_table  = next($app['table']);
 
         foreach ($post as $key => $value) {
             $fields = $field_array[$key];
@@ -576,26 +581,29 @@ class iFormer {
             }
             //找查MEDIUMTEXT字段 并移除当前POST
             if($fields['field']=='MEDIUMTEXT'){
-              $medium_post[$key] = $value;
+              $data_post[$key] = $value;
               unset($post[$key]);
             }
+            if($data_table){
+                if($data_table['primary']==$key||$data_table['union']==$key){
+                  $data_post[$key] = $value;
+                  unset($post[$key]);
+                }
+            }
         }
-        $keys = array_keys($app['table']);//返回所有表名
-        switch (count($keys)) {
-            case '1':
-                $values = compact('post'); //将表单数据存入数组
-            break;
-            case '2':
-                $values = compact('post','medium_post'); //将表单数据存入数组
-            break;
+        if($data_table){
+            $values = compact('post','data_post'); //将表单数据存入数组
+        }else{
+            $values = compact('post'); //将表单数据存入数组
         }
+        $tables = array_keys($app['table']);//返回所有表名
         //创建一个数组，用一个表名数组的值作为其键名，表单数据的值作为其值
-        $variable = array_combine($keys,$values);
+        $variable = array_combine($tables,$values);
 
         /**
          * array(表单数据,表名,_orig_字段数据用于比较);
          */
-        return array($variable,$keys,$orig_post);
+        return array($variable,$tables,$orig_post);
     }
     /**
      * 表单数据处理

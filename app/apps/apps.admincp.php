@@ -26,10 +26,10 @@ class appsAdmincp{
           $rs['status']  = "1";
           $base_fields   = apps_mod::base_fields_array();
 
-          $rs['fields'] = get_json_file(iPHP_APP_DIR.'/apps/app.fields.json.php');
+          $rs['fields'] = get_json_file(iPHP_APP_DIR.'/apps/json/fields.php');
           $rs['fields'] = json_decode($rs['fields'],true);
 
-          $rs['menu']   = get_json_file(iPHP_APP_DIR.'/apps/app.menu.json.php');
+          $rs['menu']   = get_json_file(iPHP_APP_DIR.'/apps/json/menu.php');
           $rs['menu']   = json_decode($rs['menu'],true);
 
         }else{
@@ -112,7 +112,7 @@ class appsAdmincp{
             // iDB::$print_sql = true;
 
             if($addons_fieldata){
-              $addons_name = $array['app'].'_data';
+              $addons_name = apps_mod::data_table_name($array['app']);
               apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
             }
 
@@ -124,13 +124,17 @@ class appsAdmincp{
             );
             array_push ($tb,null,$array['name']);
             $table_array = array();
-            $table_array[$array['app']]= $tb;
+            $table_array[$array['app']]= $tb;//记录基本表名
 
             //有MEDIUMTEXT类型字段就创建xxx_data附加表
             if($addons_fieldata){
-              $union_id = $array['app'].'_id';
-              $addons_fieldata = apps_mod::base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
+              $union_id = apps_mod::data_union_id($array['app']);//关联基本表id
+              $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段
+              $addons_fieldata = $addons_base_fields+$addons_fieldata;
               $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
+              // //添加到字段数据里
+              // $field_array = array_merge($field_array,$addons_base_fields);
+              // $array['fields'] = addslashes(json_encode($field_array));
             }
             $array['table']  = $table_array;
             $array['config'] = $config_array;
@@ -174,7 +178,7 @@ class appsAdmincp{
             //MEDIUMTEXT类型字段 新旧数据计算交差集 origin 为旧字段名
             $addons_sql_array = apps_db::make_alter_sql($addons_json_field,$_addons_json_field,$_POST['origin']);
 
-            $addons_name = $array['app'].'_data';
+            $addons_name = apps_mod::data_table_name($array['app']);
             //存在附加表数据
             if($addons_fieldata){
               if($addons_sql_array){
@@ -188,10 +192,14 @@ class appsAdmincp{
                   if($addons_fieldata){
                     apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
                     //有MEDIUMTEXT类型字段创建xxx_data附加表
-                    $union_id = $array['app'].'_id';
-                    $addons_fieldata = apps_mod::base_fields($array['app'])+$addons_fieldata;//xxx_data附加表的基础字段
+                    $union_id = apps_mod::data_union_id($array['app']);
+                    $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段
+                    $addons_fieldata = $addons_base_fields+$addons_fieldata;
                     $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
                     $array['table'] = addslashes(json_encode($table_array));
+                    // //添加到字段数据里
+                    // $field_array = array_merge($field_array,$addons_base_fields);
+                    // $array['fields'] = addslashes(json_encode($field_array));
                   }
                 }
               }

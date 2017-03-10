@@ -7,6 +7,12 @@
  */
 
 class apps_mod {
+    public static function data_table_name($name){
+      return $name.'_data';
+    }
+    public static function data_union_id($name){
+      return $name.'_id';
+    }
     public static function base_fields_array(){
       $sql = implode(",\n", self::base_fields_sql());
       preg_match_all("@`(.+)`\s(.+)\sDEFAULT\s'(.*?)'\sCOMMENT\s'(.+)',@", $sql, $matches);
@@ -62,6 +68,14 @@ class apps_mod {
         }
         return $array;
     }
+    public static function base_fields($name=null,$primary='data_') {
+      $a[$primary.'id'] = "id=".$primary."id&label=附加表id&comment=主键%20自增ID&field=PRIMARY&name=".$primary."id&default=&type=PRIMARY&len=10&";
+      if($name){
+        $union_id = $name.'_id';
+        $a[$union_id] = "id=".$union_id."&label=关联内容ID&comment=内容ID%20关联".$name."表&field=INT&name=".$union_id."&default=&type=union&len=10";
+      }
+      return $a;
+    }
     public static function json_field($json=null){
         if(empty($json)) return array();
 
@@ -106,14 +120,6 @@ class apps_mod {
             }
         }
         return $addons_json_field;
-    }
-    public static function base_fields($name=null,$primary='data_') {
-      $a[$primary.'id'] = "id=".$primary."id&label=附加表id&comment=主键%20自增ID&field=PRIMARY&name=".$primary."id&default=&type=PRIMARY&len=10&";
-      if($name){
-        $union_id = $name.'_id';
-        $a[$union_id] = "id=".$union_id."&label=内容ID&comment=内容ID%20关联".$name."表&field=INT&name=".$union_id."&default=&type=union&len=10";
-      }
-      return $a;
     }
     /**
      * 创建xxx_data附加表

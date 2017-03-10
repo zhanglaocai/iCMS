@@ -148,7 +148,7 @@ class propAdmincp{
         $propArray = iCache::get("prop/{$app}/{$field}");
         $target OR $target = $field;
         $div = '<div class="btn-group">'.
-        '<a class="btn dropdown-toggle iCMS-default" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>'.
+        '<a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>'.
         '<ul class="dropdown-menu">';
         if($propArray)foreach ((array)$propArray as $prop) {
             $div.= '<li><a href="javascript:;" data-toggle="insert" data-target="#' . $target . '" data-value="' . $prop['val'] . '">' . $prop['name'] . '</a></li>';
@@ -159,9 +159,11 @@ class propAdmincp{
     }
     public static function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$app = "") {
         $app OR $app = admincp::$APP_NAME;
-        $propArray = iCache::get("prop/{$app}/{$field}");
         is_array($valArray) OR $valArray  = explode(',', $valArray);
         $opt = array();
+        $propArray = iCache::get("prop/{$app}/{$field}");
+        empty($propArray) && $propArray = iCache::get("prop/{$field}");
+
         if($propArray)foreach ((array)$propArray AS $k => $P) {
             if ($out == 'option') {
                 $opt[]="<option value='{$P['val']}'" . (isset($valArray[$P['val']]) ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";

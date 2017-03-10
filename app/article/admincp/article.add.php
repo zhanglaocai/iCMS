@@ -8,21 +8,22 @@ defined('iPHP') OR exit('What are you doing?');
 admincp::head();
 ?>
 <script type="text/javascript">
-window.catchRemoteImageEnable = <?php echo self::$config['catch_remote']=="1"?'true':'false';?>;
+window.catchRemoteImageEnable = <?php echo iCMS::$config['catch_remote']=="1"?'true':'false';?>;
 </script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.ueditor.js"></script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/ueditor/ueditor.all.min.js"></script>
 <script type="text/javascript">
 $(function(){
-  iCMS.editor.create('editor-body-1');
-
   $("#title").focus();
+
+  iCMS.editor.create('editor-body-1');
 	$(".editor-page").change(function(){
 		$(".editor-container").hide();
 		$("#editor-wrap-"+this.value).show();
     iCMS.editor.create('editor-body-'+this.value).focus();
 		$(".editor-page").val(this.value).trigger("chosen:updated");
 	});
+
   iCMS.select('pid',"<?php echo $rs['pid']?trim($rs['pid']):0 ; ?>");
   iCMS.select('cid',"<?php echo $rs['cid']; ?>");
   iCMS.select('scid',"<?php echo trim($rs['scid']);?>");
@@ -96,7 +97,6 @@ function mergeEditorPage(){
   });
   iCMS.editor.create(neid).focus();
   $(".editor-page").html('<option value="1">第 1 页</option>').val(1).trigger("chosen:updated");
-
 }
 function addEditorPage(){
 	//iCMSed.cleanup(iCMSed.id);

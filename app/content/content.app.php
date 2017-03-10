@@ -24,6 +24,36 @@ class contentApp {
     public function API_iCMS(){
         return $this->do_iCMS();
     }
+    public function API_hits($id = null) {
+        $id === null && $id = $this->id;
+        if ($id) {
+            $sql = iSQL::update_hits();
+            iDB::query("UPDATE `".$this->table['table']."` SET {$sql} WHERE `".$this->primary."` ='$id'");
+        }
+    }
+    public function ACTION_vote() {
+        $type = $_POST['type'];
+        $this->__vote($type);
+    }
+    private function __vote($type) {
+        // user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
+
+        $id = (int) $_POST['iid'];
+        $id OR iUI::code(0, 'iCMS:content:empty_id', 0, 'json');
+
+        $ackey = $this->app.'_' . $type . '_' . $id;
+        $vote = iPHP::get_cookie($ackey);
+        $vote && iUI::code(0, 'iCMS:content:!' . $type, 0, 'json');
+
+        if ($type == 'good') {
+            $sql = '`good`=good+1';
+        } else {
+            $sql = '`bad`=bad+1';
+        }
+        iDB::query("UPDATE `".$this->table['table']."` SET {$sql} WHERE `".$this->primary."` ='{$id}' limit 1");
+        iPHP::set_cookie($ackey, time(), 86400);
+        iUI::code(1, 'iCMS:content:' . $type, 0, 'json');
+    }
     public function do_iCMS($a = null) {
         return $this->content($this->id, isset($_GET['p']) ? (int) $_GET['p'] : 1);;
     }
@@ -124,6 +154,7 @@ class contentApp {
         if($this->data['fields']){
             $fields = iFormer::fields($this->data['fields']);
         }
+        $option_array = array();
         foreach ($fields as $key => $field) {
             $value  = $rs[$key];
             $values = array();
@@ -195,7 +226,8 @@ class contentApp {
                         continue;
                     }
                     $nkey   = $key.'_prop';
-                    $values['prop'] = propApp::value($this->app,$key);
+                    $values['prop'] = propApp::value($key,$this->app);
+                    empty($values['prop']) && $values['prop'] = propApp::value($key);
                     $valArray = explode(",", $value);
                     if($values['prop'])foreach ($values['prop'] as $i => $val) {
                         if(in_array($val['val'], $valArray)){
@@ -215,7 +247,8 @@ class contentApp {
                     $val = trim($val,"\r\n");
                     if($val){
                         list($opt_text,$opt_value) = explode("=", $val);
-                        $values['option'][$opt_value] = $opt_text;
+                        $option_array[$key][$opt_value] = $opt_text;
+                        // $values['option'][$opt_value] = $opt_text;
                         if(in_array($opt_value, $valArray)){
                             $values['value'][$opt_value] = $opt_text;
                         }
@@ -224,6 +257,7 @@ class contentApp {
             }
             $nkey && $rs[$nkey] = $values;
         }
+        $option_array && $rs['option_array'] = $option_array;
         return $rs;
     }
 

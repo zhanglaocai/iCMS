@@ -206,7 +206,7 @@ class contentFunc {
         }
         return $array;
     }
-    public static function content_array($vars, $variable) {
+    private static function content_array($vars, $variable) {
         $resource = array();
         if ($variable) {
             $vars['category_lite'] = true;
@@ -243,4 +243,5 @@ class contentFunc {
             }
         }
         return $resource;
-    }}
+    }
+}

@@ -7,9 +7,9 @@
  */
 class propFunc{
 	public static function prop_array($vars){
-		$app	= $vars['sapp'];
 		$field	= $vars['field'];
-        $variable = propApp::value($app,$field);
+        $sapp    = $vars['sapp'];
+        $variable = propApp::value($field,$sapp);
 
         $offset = $vars['start']?$vars['start']:0;
 		$vars['row'] && $variable = array_slice($variable,$offset, $vars['row']);

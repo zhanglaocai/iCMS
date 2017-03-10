@@ -25,9 +25,10 @@ class pushFunc{
             $where_sql.= iSQL::in($cid,'cid');
         }
 
-        isset($vars['pid']) 	&& $where_sql.= " AND `type` ='{$vars['pid']}'";
-        isset($vars['pic']) 	&& $where_sql.= " AND `haspic`='1'";
-        isset($vars['nopic']) 	&& $where_sql.= " AND `haspic`='0'";
+        isset($vars['pid'])  && $where_sql.= " AND `pid` ='{$vars['pid']}'";
+        isset($vars['pid!']) && $where_sql.= " AND `pid` !='{$vars['pid!']}'";
+        isset($vars['pic'])  && $where_sql.= " AND `haspic`='1'";
+        isset($vars['nopic'])&& $where_sql.= " AND `haspic`='0'";
 
     	isset($vars['startdate'])    && $where_sql.=" AND `addtime`>='".strtotime($vars['startdate'])."'";
     	isset($vars['enddate'])     && $where_sql.=" AND `addtime`<='".strtotime($vars['enddate'])."'";
