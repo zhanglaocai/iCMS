@@ -37,10 +37,14 @@ class members{
 
         self::$group  = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='".self::$data->gid."' LIMIT 1;");
         self::$group->config = json_decode(self::$group->config);
-
-        self::$priv['menu']     = self::prior_priv(self::$data->config->mpriv,self::$group->config->mpriv);
-        self::$priv['app']      = self::prior_priv(self::$data->config->apriv,self::$group->config->apriv);
-        self::$priv['category'] = self::prior_priv(self::$data->config->cpriv,self::$group->config->cpriv);
+// if (!members::is_superadmin()) {
+//     var_dump(self::$data->config->mpriv,self::$group->config->mpriv);
+//     var_dump(array_merge((array)self::$data->config->mpriv,(array)self::$group->config->mpriv));
+// }
+// exit;
+        self::$priv['menu']     = self::merge_priv(self::$data->config->mpriv,self::$group->config->mpriv);
+        self::$priv['app']      = self::merge_priv(self::$data->config->apriv,self::$group->config->apriv);
+        self::$priv['category'] = self::merge_priv(self::$data->config->cpriv,self::$group->config->cpriv);
         return self::$data;
     }
     //登陆验证
@@ -77,46 +81,56 @@ class members{
 	public static function logout(){
 		iPHP::set_cookie(self::$AUTH,'',-31536000);
 	}
-	private static function prior_priv($p1,$p2){
-        if($p1){ //用户独立权限优先
-            return $p1;
-        }elseif($p2){
-            return $p2;
-        }
-        return array();
+	private static function merge_priv($p1,$p2){
+        return array_merge((array)$p1,(array)$p2);
 	}
     public static function is_superadmin() {
         return (members::$data->gid === self::SUPERADMIN_GID);
     }
-    public static function check_priv($p=null, $ret = '') {
+    public static function check_priv($p=null, $ret = null) {
         if (members::is_superadmin()) {
             return true;
         }
-        // if(is_array($p)){
-        //     isset($p['priv']) && $p = $p['priv'];
-        // }
+        if(is_array($p)){
+            isset($p['priv']) && $p = $p['priv'];
+        }
+        //判断当前访问链接权限
         if (stripos($p, '?') !==false){
+            // $p = preg_replace('@app=(\w+)_category@is', 'app=category', $p);
             $parse = parse_url($p);
             parse_str($parse['query'], $output);
             $pieces = array($output['app']);
             $output['do'] && $pieces['do']='do='.$output['do'];
-            $pp = implode('&', $pieces);
+            // $output['do'] && $pieces['do'] = $output['do'];
+            $pp  = implode('&', $pieces);
             $priv = iPHP::check_priv($pp,self::$priv['menu']);
+            //在菜单权限无权限时 查找应用权限
+            if(!$priv){
+                $output['app'] = preg_replace('@(\w+)_category@is', 'category', $output['app']);
+                $pieces = array($output['app']);
+                $output['do'] && $pieces['do']=$output['do'];
+                $pp = implode('.', $pieces);
+                $priv = iPHP::check_priv($pp,self::$priv['app']);
+            }
         }else{
+            //一般用于判断菜单权限
             $priv = iPHP::check_priv($p,self::$priv['menu']);
         }
+
         $priv OR self::permission($p, $ret);
         return $priv?true:false;
     }
-    public static function permission($p=null, $ret = '') {
-        $title = $p;
-        if (stripos($p, '?') !==false){
-            $priv = iCache::get('app/priv');
-            $p = preg_replace('@app=(\w+)_category@is', 'app=category', $p);
-            $priv[$p] && $title = $priv[$p];
+    public static function permission($p=null, $ret = null) {
+        if($ret){
+            $title = $p;
+            if (stripos($p, '?') !==false){
+                $priv = iCache::get('app/priv');
+                $p = preg_replace('@app=(\w+)_category@is', 'app=category', $p);
+                $priv[$p] && $title = $priv[$p];
+            }
+            iUI::permission($title, $ret);
+            // include self::view("members.permission",'members');
         }
-        iUI::permission($title, $ret);
-        // include self::view("members.permission",'members');
     }
 }
 

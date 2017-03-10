@@ -67,10 +67,6 @@ $("#<?php echo APP_FORMID;?>").batch();
           </thead>
           <tbody>
           <?php
-
-            iFormer::$callback['category'] = array('category','get');
-            // iFormer::$callback['multi_prop'] = array('category','get');
-
             $multiArray = iFormer::multi_value($rs,$fields);
             $categoryArray = $multiArray['cid'];
             foreach ((array)$rs as $key => $value) {
@@ -87,12 +83,6 @@ $("#<?php echo APP_FORMID;?>").batch();
               <td><?php echo iFormer::de_value($value[$fkey],$fields[$fkey]); ?></td>
               <?php }?>
               <td>
-                <?php if($value['status']=="1"){ ?>
-                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $id ; ?>&_args=status:0" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-power-off"></i> 禁用</a>
-                <?php } ?>
-                <?php if($value['status']=="0"){ ?>
-                <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $id ; ?>&_args=status:1" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-play-circle"></i> 启用</a>
-                <?php } ?>
                 <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $id ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                 <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $id ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger fr" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>
               </td>

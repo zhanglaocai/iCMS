@@ -16,9 +16,10 @@ class category {
     //     }
     //     return self::$instance;
     // }
-    public static function appid($appid){
+    public static function appid($appid,$priv=null){
         $category = new category();
         $category::$appid = $appid;
+        $priv && $category::$priv = $priv;
         return $category;
     }
     public static function init_sql($appid=null,$_sql=null){
@@ -113,9 +114,9 @@ class category {
     public static function item($category,$callback=null) {
         $category->iurl     = iURL::get('category',(array)$category);
         $category->href     = $category->iurl->href;
-        $category->CP_ADD   = category::check_priv($category->cid,'a')?true:false;
-        $category->CP_EDIT  = category::check_priv($category->cid,'e')?true:false;
-        $category->CP_DEL   = category::check_priv($category->cid,'d')?true:false;
+        $category->CP_ADD   = category::check_priv($category->cid,'a');
+        $category->CP_EDIT  = category::check_priv($category->cid,'e');
+        $category->CP_DEL   = category::check_priv($category->cid,'d');
         $category->rule     = json_decode($category->rule,true);
         $category->template = json_decode($category->template,true);
         $category->config   = json_decode($category->config,true);
@@ -134,7 +135,7 @@ class category {
         $category = array();
         foreach ((array)$variable as $key => $value) {
             if(self::$priv){
-                if(category::check_priv($value['cid'],self::$priv)){
+                if(category::check_priv($value['cid'],self::$priv,null)){
                     $category[] = $value['cid'];
                 }
             }else{
@@ -336,20 +337,21 @@ class category {
     }
     public static function select($scid="0",$cid="0",$level = 1,$url=false,$where=null) {
         $cc = iDB::value("SELECT count(*) FROM `#iCMS@__category`");
-        if($cc<=1000){
-            return self::select_lite($scid,$cid,$level,$url,$where);
-        }else{
-            $array = iCache::get('category/cookie');
-            foreach((array)$array AS $root=>$_cid) {
-                $C = category::cache_get($_cid);
-                if($C['status']) {
-                    $selected = ($scid==$_cid)?"selected":"";
-                    $text     = $C['name']."[cid:{$_cid}][pid:{$C['pid']}]";
-                    $option  .= "<option value='{$_cid}' $selected>{$text}</option>";
-                }
-            }
-            return $option;
-        }
+        return self::select_lite($scid,$cid,$level,$url,$where);
+
+        // if($cc<=1000){
+        // }else{
+        //     $array = iCache::get('category/cookie');
+        //     foreach((array)$array AS $root=>$_cid) {
+        //         $C = category::cache_get($_cid);
+        //         if($C['status']) {
+        //             $selected = ($scid==$_cid)?"selected":"";
+        //             $text     = $C['name']."[cid:{$_cid}][pid:{$C['pid']}]";
+        //             $option  .= "<option value='{$_cid}' $selected>{$text}</option>";
+        //         }
+        //     }
+        //     return $option;
+        // }
     }
     public static function priv($p) {
         $category = new category();
@@ -360,7 +362,7 @@ class category {
         if (members::is_superadmin()) {
             return true;
         }
-        if ($p === '__CID__') {
+        if ($p === 'CIDS') {
             foreach (members::$priv['category'] as $key => $_cid) {
                 if (!strstr($value, ':')) {
                     self::check_priv($_cid, $act) && $cids[] = $_cid;
@@ -378,6 +380,12 @@ class category {
         return $priv;
     }
     public static function permission($p=null, $ret = '') {
-        iUI::permission('栏目:'.$p, $ret);
+        if($ret){
+            $title = '栏目:cid='.$p;
+            if($p=="0"){
+                $title = "添加顶级栏目";
+            }
+            iUI::permission($title, $ret);
+        }
     }
 }

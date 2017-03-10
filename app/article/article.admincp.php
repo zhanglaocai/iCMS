@@ -356,7 +356,7 @@ class articleAdmincp{
         $sql = "WHERE `status`='{$this->_status}'";
         $this->_postype==='all' OR $sql.= " AND `postype`='{$this->_postype}'";
 
-        if(members::check_priv("ARTICLE.VIEW")){
+        if(members::check_priv("article.VIEW")){
             $_GET['userid'] && $sql.= iSQL::in($_GET['userid'],'userid');
         }else{
             $sql.= iSQL::in(members::$userid,'userid');
@@ -372,7 +372,7 @@ class articleAdmincp{
             }
         }
 
-        $cp_cids = category::check_priv('__CID__','cs');//取得所有有权限的栏目ID
+        $cp_cids = category::check_priv('CIDS','cs');//取得所有有权限的栏目ID
 
         if($cp_cids) {
             if(is_array($cp_cids)){

@@ -81,13 +81,14 @@ $(function(){
         <div id="category-add" class="tab-content">
           <div id="category-add-base" class="tab-pane active">
             <div class="input-prepend input-append"> <span class="add-on">上级<?php echo $this->category_name;?></span>
-              <?php if(category::check_priv($rootid) || empty($rootid)) {   ?>
+              <?php if(category::check_priv($rootid,'a') && empty($rootid)) {   ?>
               <select name="rootid" class="span6 chosen-select">
                 <option value="0">======顶级<?php echo $this->category_name;?>=====</option>
                 <?php echo category::priv('a')->select($rootid,0,1,true);?>
               </select>
-              <span class="add-on" title="继承"><input type="checkbox" name="extends" /> 继承</span>
+              <!-- <span class="add-on" title="继承"><input type="checkbox" name="extends" /> 继承</span> -->
               <?php }else { ?>
+              <input name="_rootid_hash" type="hidden" value="<?php echo authcode($rootid,'decode') ; ?>" />
               <input name="rootid" id="rootid" type="hidden" value="<?php echo $rootid ; ?>" />
               <input readonly="true" value="<?php echo category::get($rootid)->name ; ?>" type="text" class="txt" />
               <?php } ?>

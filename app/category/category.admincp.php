@@ -120,15 +120,14 @@ class categoryAdmincp {
         $template     = iSecurity::escapeStr($_POST['template']);
         $config       = iSecurity::escapeStr($_POST['config']);
 
-        // if($_rootid_hash){
-        //     $_rootid = authcode($_rootid_hash);
-        //     if($rootid!=$_rootid){
-        //         iUI::alert('非法数据提交!');
-        //     }else{
-        //         category::check_priv($_rootid,'a','alert');
-        //         exit;
-        //     }
-        // }
+        if($_rootid_hash){
+            $_rootid = authcode($_rootid_hash);
+            if($rootid!=$_rootid){
+                iUI::alert('非法数据提交!');
+            }else{
+                category::check_priv($_rootid,'a','alert');
+            }
+        }
         ($cid && $cid==$rootid) && iUI::alert('不能以自身做为上级'.$this->category_name);
         empty($name) && iUI::alert($this->category_name.'名称不能为空!');
 
@@ -354,7 +353,7 @@ class categoryAdmincp {
         menu::$url = __ADMINCP__.'='.admincp::$APP_NAME;
         admincp::$APP_DO = 'list';
         $sql  = " where `appid`='{$this->appid}'";
-        $cids = category::check_priv('__CID__');
+        $cids = category::check_priv('CIDS');
         $sql.= iSQL::in($cids,'cid');
 
         if($_GET['keywords']) {
@@ -501,6 +500,7 @@ class categoryAdmincp {
         return $C;
     }
     public function tree($cid = 0,$expanded=false,$ret=false){
+        category::$priv = 's';
         $array      = array();
         $cid_array  = (array)category::get_cid($cid);
         $cate_array = (array)category::get($cid_array);

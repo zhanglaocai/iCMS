@@ -78,7 +78,7 @@ $(function(){
         <div class="input-prepend input-append"> <span class="add-on">分类</span>
           <select name="tcid" id="tcid" class="chosen-select">
             <option value="0">所有分类</option>
-            <?php echo $tcid_select = category::appid($this->appid)->select('cs') ;?>
+            <?php echo $tcid_select = category::appid($this->appid,'cs')->select() ;?>
           </select>
           <span class="add-on">
           <input type="checkbox" name="tfsub" id="tfsub"/>

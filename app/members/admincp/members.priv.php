@@ -94,7 +94,7 @@ function set_select(vars,el){
     <span class="add-on"><input type="checkbox" name="config[mpriv][]" value="ADMINCP" /> 允许登陆后台</span>
   </div>
   <div class="clearfloat mb10"></div>
-  <span class="alert alert-danger">注:此处权限设置为后台的菜单权限,设置后还要设置具体的相关应用权限,否刚有可能出错</span>
+  <span class="alert alert-danger">注:此处权限设置为后台的菜单权限是否显示,设置后还要设置具体的相关应用权限,否刚有可能出错</span>
   <div class="clearfloat mb10"></div>
   <div id="mpriv_treecontrol">
     <a style="display:none;"></a>

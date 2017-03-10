@@ -24,12 +24,13 @@ $(function(){
         <input name="cid" type="hidden" value="<?php echo $rs['cid']  ; ?>" />
         <div id="pushcategory-add" class="tab-content">
           <div class="input-prepend"> <span class="add-on">上级版块</span>
-            <?php if(category::check_priv($rootid) || empty($rootid)) {   ?>
+            <?php if(category::check_priv($rootid,'a') && empty($rootid)) {   ?>
             <select name="rootid" class="chosen-select">
               <option value="0">======顶级版块=====</option>
               <?php echo category::priv('ca')->select($rootid,0,1,true);?>
             </select>
             <?php }else {  ?>
+            <input name="_rootid_hash" type="hidden" value="<?php echo authcode($rootid,'decode') ; ?>" />
             <input name="rootid" id="rootid" type="hidden" value="<?php echo $rootid ; ?>" />
             <input readonly="true" value="<?php echo category::get($rootid)->name ; ?>" type="text" class="txt" />
             <?php }  ?>

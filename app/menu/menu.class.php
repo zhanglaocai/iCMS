@@ -215,7 +215,7 @@ class menu {
     }
 	public static function li($mType,$a,$level = 0){
         if(self::$callback['priv'] && is_callable(self::$callback['priv'])){
-           $priv = call_user_func_array(self::$callback['priv'],array($a['priv'],null));
+           $priv = call_user_func_array(self::$callback['priv'],array($a,null));
            if($priv===false) return null;
         }
 

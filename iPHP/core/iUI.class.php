@@ -287,7 +287,7 @@ class iUI {
 		return $iPages;
 	}
     public static function permission($p = '', $ret = 'alert') {
-    	$msg = "您没有[$p]访问权限!";
+    	$msg = "您没有[$p]的访问权限!";
     	if(iPHP_SHELL){
     		echo $msg."\n";
 	        exit;
