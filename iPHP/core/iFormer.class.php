@@ -21,21 +21,21 @@ class iFormer {
     public static $config   = array();
 
     public static $callback   = array();
+    public static $variable   = array();
+
 
     public static function multi_value($rs,$fieldArray) {
-        $array = array();
         foreach ($fieldArray as $key => $field) {
             if(in_array($field['type'], array('category','multi_category','prop','multi_prop'))){
                 $value = iSQL::values($rs,$field['name'],'array',null);
                 $value = iSQL::explode_var($value);
-                // var_dump($field['type']);
-                $call = self::$callback[$field['type']];
+                $call  = self::$callback[$field['type']];
                 if($call && is_callable($call)){
-                    $array[$field['name']] = call_user_func_array($call, array($value));
+                    self::$variable[$field['name']] = call_user_func_array($call, array($value));
                 }
             }
         }
-        return $array;
+        return self::$variable;
     }
     /**
      * 将由查询字符串(query string)组成的数组转换成二维数组
@@ -261,7 +261,7 @@ class iFormer {
                         $orig = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
                     }
                     $select = self::widget('select',$attr)->addClass('chosen-select');
-                    $option = category::appid(self::$config['app']['id'])->select('cs');
+                    $option = category::appid(self::$config['app']['id'],'cs')->select();
                     $script = self::script('iCMS.select("'.$attr['id'].'","'.trim($value).'");',true);
                     $html = $select->html($option).$orig;
                 break;
@@ -500,7 +500,13 @@ class iFormer {
           $value = get_date($value,'Y-m-d H:i:s');
         }
         if(in_array($type, array('category','multi_category'))){
-
+            $variable = iFormer::$variable[$fields['name']];
+            $valArray = explode(",", $value);
+            $value = '';
+            foreach ($valArray as $i => $val) {
+                $array = $variable[$val];
+                $value.= '<a href="'.APP_DOURI.'&cid='.$val.'&'.$uri.'">'.$array->name.'</a>';
+            }
         }
         //多选字段转换
         if(isset($fields['multiple'])){
@@ -509,7 +515,7 @@ class iFormer {
 
         return $value;
     }
-    public static function value($value,$fields) {
+    public static function en_value($value,$fields) {
         //字段数据类型
         $field = $fields['field'];
 
@@ -535,8 +541,6 @@ class iFormer {
         }else{
           $value = iSecurity::escapeStr($value);
         }
-print_r($fields);
-var_dump($value);
         return $value;
     }
     /**
@@ -560,7 +564,7 @@ var_dump($value);
             //字段绑定的函数处理
             $fields['func'] && $value = iFormer::func($fields['func'],$value);
             //字段数据处理
-            $value = iFormer::value($value,$fields);
+            $value = iFormer::en_value($value,$fields);
             //数据验证
             iFormer::validate($fields,'php',$value);
 
