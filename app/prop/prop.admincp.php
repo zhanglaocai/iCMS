@@ -25,13 +25,13 @@ class propAdmincp{
         include admincp::view("prop.add");
     }
     public function do_save(){
-        $pid      = (int)$_POST['pid'];
-        $cid      = (int)$_POST['cid'];
+        $pid   = (int)$_POST['pid'];
+        $cid   = (int)$_POST['cid'];
+        $field = iSecurity::escapeStr($_POST['field']);
+        $app   = iSecurity::escapeStr($_POST['app']);
+        $val   = iSecurity::escapeStr($_POST['val']);
         $sortnum = (int)$_POST['sortnum'];
-        $field    = iSecurity::escapeStr($_POST['field']);
-        $name     = iSecurity::escapeStr($_POST['name']);
-        $app     = iSecurity::escapeStr($_POST['app']);
-        $val      = iSecurity::escapeStr($_POST['val']);
+        $name = $_POST['name'];
 
 		($field=='pid'&& !is_numeric($val)) && iUI::alert('pid字段的值只能用数字');
         $field OR iUI::alert('属性字段不能为空!');
@@ -48,7 +48,14 @@ class propAdmincp{
 			$msg="属性更新完成!";
 		}else{
 	        iDB::value("SELECT `pid` FROM `#iCMS@__prop` where `app` ='$app' AND `val` ='$val' AND `field` ='$field' AND `cid` ='$cid'") && iUI::alert('该类型属性值已经存在!请另选一个');
-            iDB::insert('prop',$data);
+            $nameArray = explode("\n",$name);
+            foreach($nameArray AS $nkey=>$_name){
+                $_name  = trim($_name);
+                if(empty($_name)) continue;
+                $data['name'] = $_name;
+                $data['val']  = $nkey+1;
+                iDB::insert('prop',$data);
+            }
 	        $msg="新属性添加完成!";
 		}
 		$this->cache();

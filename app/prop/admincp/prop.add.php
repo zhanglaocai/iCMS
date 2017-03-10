@@ -65,20 +65,19 @@ iCMS.select('prop-app',"<?php echo $rs['app'] ; ?>");
                 <li><a href="javascript:;" data-value='pid' data-toggle="insert" data-target="#field">用户:属性:pid</a></li>
                 <li class="divider"></li>
                 <li><a href="javascript:;" data-value='pid' data-toggle="insert" data-target="#field">推送:属性:pid</a></li>
-
               </ul>
             </div>
           </div>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">属性名称</span>
-            <input type="text" name="name" class="span4" id="name" value="<?php echo $rs['name'];?>"/>
+            <textarea name="name" id="name" class="span6" style="height: 150px;width:600;"><?php echo $rs['name'] ; ?></textarea>
           </div>
-          <span class="help-inline">可填写中文</span>
+          <span class="help-inline">可填写中文 <span class="label label-important">可批量添加,每行一个</span></span>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">属 性 值</span>
             <input type="text" name="val" class="span4" id="val" value="<?php echo $rs['val'];?>"/>
           </div>
-          <span class="help-inline">pid:只能填写数字</span>
+          <span class="help-inline">pid:只能填写数字,批量添加时将按序号填写</span>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">排序</span>
             <input type="text" name="sortnum" class="span2" id="sortnum" value="<?php echo $rs['sortnum'];?>"/>
