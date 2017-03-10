@@ -162,7 +162,7 @@ class propAdmincp{
         is_array($valArray) OR $valArray  = explode(',', $valArray);
         $opt = array();
         $propArray = iCache::get("prop/{$app}/{$field}");
-        empty($propArray) && $propArray = iCache::get("prop/{$field}");
+        // empty($propArray) && $propArray = iCache::get("prop/{$field}");
 
         if($propArray)foreach ((array)$propArray AS $k => $P) {
             if ($out == 'option') {

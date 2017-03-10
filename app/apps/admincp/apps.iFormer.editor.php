@@ -3,6 +3,7 @@
   <form id="iFormer-field-form">
     <input type="hidden" name="id" id="iFormer-id"/>
     <input type="hidden" name="type" id="iFormer-type"/>
+    <input type="hidden" name="multiple" id="iFormer-multiple"/>
 
     <div class="input-prepend">
       <span class="add-on">字段名称</span>

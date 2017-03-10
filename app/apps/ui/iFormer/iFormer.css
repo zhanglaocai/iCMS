@@ -57,3 +57,4 @@
 .iFormer-layout .pagebreak .action { margin-top: 5px; }
 .iFormer-layout div { cursor: move; }
 .iFormer-layout .add-on .label { margin-right: 5px; }
+.label-tip{opacity: 0.5;float: left;}

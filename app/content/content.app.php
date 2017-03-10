@@ -226,20 +226,24 @@ class contentApp {
                         continue;
                     }
                     $nkey   = $key.'_prop';
-                    $values['prop'] = propApp::value($key,$this->app);
-                    empty($values['prop']) && $values['prop'] = propApp::value($key);
-                    $valArray = explode(",", $value);
-                    if($values['prop'])foreach ($values['prop'] as $i => $val) {
-                        if(in_array($val['val'], $valArray)){
-                            $values['value'][$val['val']] = $val;
+                    $propArray = propApp::value($key,$this->app);
+                    // empty($values['prop']) && $propArray = propApp::value($key);
+                    if($field['type']=='multi_prop'){
+                        $valArray = explode(",", $value);
+                        if($propArray)foreach ($propArray as $i => $val) {
+                            if(in_array($val['val'], $valArray)){
+                                $values[$val['val']] = $val;
+                            }
                         }
+                    }else{
+                        $values = $propArray[$value];
                     }
                 break;
                 default:
                     // $values = $value;
                 break;
             }
-            if($field['option']){
+            if($field['option'] && !in_array($key, array('creative','status'))){
                 $nkey = $key.'_array';
                 $optionArray = explode(";", $field['option']);
                 $valArray = explode(",", $value);
@@ -249,15 +253,24 @@ class contentApp {
                         list($opt_text,$opt_value) = explode("=", $val);
                         $option_array[$key][$opt_value] = $opt_text;
                         // $values['option'][$opt_value] = $opt_text;
-                        if(in_array($opt_value, $valArray)){
-                            $values['value'][$opt_value] = $opt_text;
+                        if($field['multiple']){
+                            if(in_array($opt_value, $valArray)){
+                                $values[$opt_value] = $opt_text;
+                            }
+                        }else{
+                            if($opt_value==$value){
+                                $nkey = $key.'_value';
+                                $values = $opt_text;
+                                break;
+                            }
                         }
                     }
                 }
             }
             $nkey && $rs[$nkey] = $values;
         }
-        $option_array && $rs['option_array'] = $option_array;
+        // $rs['option_array'] = $option_array;
+        $option_array && iView::assign('option_array', $rs);
         return $rs;
     }
 

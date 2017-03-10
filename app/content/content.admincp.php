@@ -113,12 +113,17 @@ class contentAdmincp{
         include admincp::view('content.manage');
     }
     public function do_save(){
-        list($variable,$tables,$orig_post) = iFormer::post($this->app);
+        list($variable,$tables,$orig_post,$imap) = iFormer::post($this->app);
 
         if(!$variable){
             iCMS::alert("表单数据处理出错!");
         }
-        print_r($variable);
+        // $fieldArray = iFormer::fields($this->app['fields']);
+
+        // foreach ($imap_array as $key => $value) {
+        //     iMap::init($key,$this->app['id']);
+        // }
+
         $update = false;
         foreach ($variable as $table_name => $data) {
             if(empty($data)){
@@ -142,6 +147,17 @@ class contentAdmincp{
                 iDB::update($table_name, $data, array($primary=>$id));
             }
             empty($table['union']) && $union_data[$union_id] = $id;
+        }
+var_dump($imap);
+
+        if($imap)foreach ($imap as $key => $value) {
+            iMap::init($value[0],$this->app['id']);
+            if($update){
+                $orig = $orig_post[$key];
+                iMap::diff($value[1],$orig,$id);
+            }else{
+                iMap::add($value[1],$id);
+            }
         }
         $REFERER_URL = $_POST['REFERER'];
         if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){

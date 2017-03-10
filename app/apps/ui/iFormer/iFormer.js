@@ -227,7 +227,18 @@ var iFormer = {
                 case 'category':
                 case 'select':
                     $elem = this.widget('select');
-
+                    var div_after = function () {
+                        var eText = {
+                            prop:'属性',
+                            multi_prop:'属性',
+                            category:'栏目',
+                            multi_category:'栏目',
+                        }
+                        if(eText[obj_type]){
+                            var $span = iFormer.widget('span').addClass('label label-info label-tip').text(eText[obj_type]);
+                            $('.add-on:first',$div).append($span);
+                        }
+                    }
                     if(obj_type.indexOf("multi")!='-1'){
                         obj['multiple'] = true;
                         $elem.attr('multiple',true);

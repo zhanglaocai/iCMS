@@ -563,6 +563,7 @@ class iFormer {
 
         $field_array = iFormer::fields($app['fields']);
         $data_table  = next($app['table']);
+        $imap_array  = array();
 
         foreach ($post as $key => $value) {
             $fields = $field_array[$key];
@@ -574,6 +575,14 @@ class iFormer {
             iFormer::validate($fields,'php',$value);
 
             $post[$key] = $value;
+
+            if(in_array($fields['type'], array('category','multi_category'))){
+                $imap_array[$key] = array('category',$value);
+            }
+            if(in_array($fields['type'], array('prop','multi_prop'))){
+                $imap_array[$key] = array('prop',$value);
+            }
+
             //找查原始数据 并移除当前POST
             if(strpos($key,'_orig_')!==false){
               $orig_post[$key] = $value;
@@ -603,7 +612,7 @@ class iFormer {
         /**
          * array(表单数据,表名,_orig_字段数据用于比较);
          */
-        return array($variable,$tables,$orig_post);
+        return array($variable,$tables,$orig_post,$imap_array);
     }
     /**
      * 表单数据处理
