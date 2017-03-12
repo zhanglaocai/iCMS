@@ -150,7 +150,7 @@ $(function(){
                 <a class="btn btn-small mv_dir"><i class="fa fa-edit"></i> 重命名</a>
                 <a href="<?php echo __ADMINCP__; ?>=files&do=multi&from=modal&dir=<?php echo $dirRs[$i]['path'] ; ?>" class="btn btn-small" data-toggle="modal" data-meta='{"width":"98%","height":"580px"}' title="上传到此目录"><i class="fa fa-upload"></i> 上传</a>
                 <?php } ?>
-                <a class="btn btn-small" href="<?php echo __ADMINCP__; ?>=files&frame=iPHP&do=deldir&path=<?php echo $dirRs[$i]['path'] ; ?>" target="iPHP_FRAME" title="删除目录" onclick="return confirm('确定要删除?');"><i class="fa fa-trash-o"></i> 删除</a>
+                <a class="btn btn-danger btn-small" href="<?php echo __ADMINCP__; ?>=files&frame=iPHP&do=deldir&path=<?php echo $dirRs[$i]['path'] ; ?>" target="iPHP_FRAME" title="删除目录" onclick="return confirm('确定要删除?');"><i class="fa fa-trash-o"></i> 删除</a>
             </tr>
             <?php }  ?>
           </tbody>

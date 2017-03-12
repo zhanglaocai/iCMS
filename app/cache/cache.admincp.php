@@ -21,10 +21,10 @@ class cacheAdmincp{
             $acp::cache();
         }
         $this->do_menu(false);
-        $this->do_allcategory(false);
         $this->do_category(false);
-        $this->do_pushcategory(false);
-        $this->do_tagcategory(false);
+        $this->do_article_category(false);
+        $this->do_push_category(false);
+        $this->do_tag_category(false);
         $this->do_tpl(false);
         iUI::success('全部缓存更新完成');
     }
@@ -51,7 +51,7 @@ class cacheAdmincp{
      * [更新所有分类缓存]
      * @return [type] [description]
      */
-    public function do_allcategory($dialog=true){
+    public function do_category($dialog=true){
     	$category = new category();
     	$category->cache(true);
     	$dialog && iUI::success('更新完成');
@@ -60,7 +60,7 @@ class cacheAdmincp{
      * [更新文章分类缓存]
      * @return [type] [description]
      */
-    public function do_category($dialog=true){
+    public function do_article_category($dialog=true){
         $categoryAdmincp = new article_categoryAdmincp();
         $categoryAdmincp->do_cache($dialog);
     }
@@ -68,7 +68,7 @@ class cacheAdmincp{
      * [更新推荐分类缓存]
      * @return [type] [description]
      */
-    public function do_pushcategory($dialog=true){
+    public function do_push_category($dialog=true){
         $categoryAdmincp = new push_categoryAdmincp();
         $categoryAdmincp->do_cache($dialog);
     }
@@ -76,7 +76,7 @@ class cacheAdmincp{
      * [更新标签分类缓存]
      * @return [type] [description]
      */
-    public function do_tagcategory($dialog=true){
+    public function do_tag_category($dialog=true){
         $categoryAdmincp = new tag_categoryAdmincp();
         $categoryAdmincp->do_cache($dialog);
     }

@@ -4,6 +4,13 @@
     "caption": "{name}",
     "icon": "pencil-square-o",
     "children": [{
+        "caption": "更新栏目缓存",
+        "href": "{app}_category&do=cache",
+        "icon": "refresh",
+        "target":"iPHP_FRAME"
+    }, {
+        "caption": "-"
+    }, {
         "caption": "栏目管理",
         "href": "{app}_category",
         "icon": "list-alt"

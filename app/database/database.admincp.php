@@ -223,6 +223,15 @@ class databaseAdmincp {
 		}
 		iUI::success($rows_affected . "条记录被替换<hr />操作完成!!");
 	}
+	/**
+	 * [优化分表]
+	 * @return [type] [description]
+	 */
+	public function do_sharding() {
+		admincp::head();
+		print("暂无");
+		admincp::foot();
+	}
 	public function bakuptable($tabledb) {
 		foreach ($tabledb as $table) {
 			$creattable .= "DROP TABLE IF EXISTS $table;\n";
