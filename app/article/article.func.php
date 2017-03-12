@@ -44,7 +44,7 @@ class articleFunc{
 			$vars['sub'] && $cids += categoryApp::get_cids($vars['cids'], true);
 
 			if ($cids) {
-				iMap::init('category', iCMS_APP_ARTICLE);
+				iMap::init('category', iCMS_APP_ARTICLE,'cid');
 				$map_where += iMap::where($cids);
 			}
 		}
@@ -53,12 +53,12 @@ class articleFunc{
 		}
 
 		if (isset($vars['pids']) && !isset($vars['pid'])) {
-			iMap::init('prop', iCMS_APP_ARTICLE);
+			iMap::init('prop', iCMS_APP_ARTICLE,'pid');
 			$map_where += iMap::where($vars['pids']);
 		}
 
 		if (isset($vars['tids'])) {
-			iMap::init('tags', iCMS_APP_ARTICLE);
+			iMap::init('tags', iCMS_APP_ARTICLE,'tags');
 			$map_where += iMap::where($vars['tids']);
 		}
 		if (isset($vars['keywords'])) {

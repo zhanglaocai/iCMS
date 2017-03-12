@@ -24,7 +24,8 @@ $(function(){
         <input name="id" type="hidden" value="<?php echo $this->poid ; ?>" />
         <div id="addpost" class="tab-content">
           <div class="input-prepend"><span class="add-on">应用</span>
-            <select name="app" id="app" class="chosen-select span2">
+            <select name="app" id="app" class="chosen-select span3">
+              <option value="0"></option>
               <option value="article"> 文章系统 </option>
               <option value="tags"> 标签系统 </option>
               <option value="category"> 栏目系统 </option>

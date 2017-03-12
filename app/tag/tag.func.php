@@ -16,7 +16,7 @@ class tagFunc{
             $where_sql.= iSQL::in($vars['tcid'],'tcid');
         }
         if(isset($vars['tcids']) && !isset($vars['tcid'])){
-            iMap::init('category',iCMS_APP_TAG);
+            iMap::init('category',iCMS_APP_TAG,'cid');
             //$where_sql.= iMap::exists($vars['tcid'],'`#iCMS@__tags`.id'); //map 表大的用exists
             $map_where+=iMap::where($vars['tcid']);
         }
@@ -28,7 +28,7 @@ class tagFunc{
             $where_sql.= iSQL::in($vars['pid'],'pid');
         }
         if(isset($vars['pids']) && !isset($vars['pid'])){
-            iMap::init('prop',iCMS_APP_TAG);
+            iMap::init('prop',iCMS_APP_TAG,'pid');
             //$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__tags`.id'); //map 表大的用exists
             $map_where+= iMap::where($vars['pids']);
         }
@@ -46,7 +46,7 @@ class tagFunc{
             $vars['sub'] && $cids+=categoryApp::get_cids($vars['cids'],true);
 
             if($cids){
-                iMap::init('category',iCMS_APP_TAG);
+                iMap::init('category',iCMS_APP_TAG,'cid');
                 $map_where+=iMap::where($cids);
             }
         }

@@ -82,7 +82,7 @@ class articleAdmincp{
     	$data = admincp::update_args($_GET['_args']);
         if($data){
             if(isset($data['pid'])){
-                iMap::init('prop',self::$appid);
+                iMap::init('prop',self::$appid,'pid');
                 $_pid = article::value('pid',$this->id);
                 iMap::diff($data['pid'],$_pid,$this->id);
             }
@@ -114,7 +114,7 @@ class articleAdmincp{
             break;
     		case 'move':
 		        $_POST['cid'] OR iUI::alert("请选择目标栏目!");
-                iMap::init('category',self::$appid);
+                iMap::init('category',self::$appid,'cid');
                 $cid = (int)$_POST['cid'];
                 category::check_priv($cid,'ca','alert');
 		        foreach((array)$_POST['id'] AS $id) {
@@ -130,7 +130,7 @@ class articleAdmincp{
             break;
             case 'scid':
                 //$_POST['scid'] OR iUI::alert("请选择目标栏目!");
-                iMap::init('category',self::$appid);
+                iMap::init('category',self::$appid,'cid');
                 $scid = implode(',', (array)$_POST['scid']);
                 foreach((array)$_POST['id'] AS $id) {
                     $_scid = article::value('scid',$id);
@@ -140,7 +140,7 @@ class articleAdmincp{
                 iUI::success('文章副栏目设置完成!','js:1');
             break;
             case 'prop':
-                iMap::init('prop',self::$appid);
+                iMap::init('prop',self::$appid,'pid');
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {
                     $_pid = article::value('pid',$id);
@@ -367,7 +367,7 @@ class articleAdmincp{
             if(empty($_GET['pid'])){
                 $sql.= " AND `pid`=''";
             }else{
-                iMap::init('prop',self::$appid);
+                iMap::init('prop',self::$appid,'pid');
                 $map_where+=iMap::where($pid);
             }
         }
@@ -389,7 +389,7 @@ class articleAdmincp{
                 array_push ($cids,$cid);
             }
             if($_GET['scid'] && $cid){
-                iMap::init('category',self::$appid);
+                iMap::init('category',self::$appid,'cid');
                 $map_where+= iMap::where($cids);
             }else{
                 $sql.= iSQL::in($cids,'cid');
@@ -600,17 +600,15 @@ class articleAdmincp{
                     tag::$add_status = $_POST['tag_status'];
                 }
                 tag::add($tags,$userid,$aid,$cid);
-                //article::update(compact('tags'),array('id'=>$aid));
             }
 
-            iMap::init('prop',self::$appid);
+            iMap::init('prop',self::$appid,'pid');
             $pid && iMap::add($pid,$aid);
 
-            iMap::init('category',self::$appid);
+            iMap::init('category',self::$appid,'cid');
             iMap::add($cid,$aid);
             $scid && iMap::add($scid,$aid);
 
-            $tagArray && tag::map_iid($tagArray,$aid);
 
             $url OR $this->article_data($body,$aid,$haspic);
             categoryAdmincp::update_count_one($cid);
@@ -659,12 +657,10 @@ class articleAdmincp{
 
             admincp::callback($aid,$this,'primary');
 
-            iMap::init('prop',self::$appid);
-            iMap::diff($pid,$_pid,$aid);
-
-            iMap::init('category',self::$appid);
+            iMap::init('prop',self::$appid,'pid')->diff($pid,$_pid,$aid);
+            iMap::init('category',self::$appid,'cid');
             iMap::diff($cid,$_cid,$aid);
-            iMap::diff($scid,$_scid,$aid);
+            $scid && iMap::diff($scid,$_scid,$aid);
 
             $url OR $this->article_data($body,$aid,$haspic);
 
@@ -826,9 +822,9 @@ class articleAdmincp{
                 }
             }
             $description = implode("\n", $resource);
-            // $description = csubstr($body_text,self::$config['descLen']);
-            // $description = addslashes(trim($description));
-            // $description = str_replace('#--iCMS.PageBreak--#','',$description);
+            $description = csubstr($description,self::$config['descLen']);
+            $description = addslashes(trim($description));
+            $description = str_replace('#--iCMS.PageBreak--#','',$description);
             unset($bodyText);
             return $description;
         }

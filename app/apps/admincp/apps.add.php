@@ -69,6 +69,12 @@ $(function(){
             <span class="help-inline">应用唯一标识</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
+              <span class="add-on">应用标题</span>
+              <input type="text" name="_title" class="span3" id="_title" value="<?php echo $rs['title'] ; ?>"/>
+            </div>
+            <span class="help-inline">应用标题.例:应用名称(文章系统),应用标题(文章)</span>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend">
               <span class="add-on">应用简介</span>
               <textarea name="config[info]" id="config_info" class="span6" style="height: 150px;"><?php echo $rs['config']['info'] ; ?></textarea>
             </div>

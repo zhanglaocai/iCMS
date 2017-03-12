@@ -65,7 +65,7 @@ class tagAdmincp{
             if($_GET['pid']==0){
                 $sql.= " AND `pid`=''";
             }else{
-                iMap::init('prop',$this->appid);
+                iMap::init('prop',$this->appid,'pid');
                 $map_where = iMap::where($pid);
             }
         }
@@ -151,11 +151,9 @@ class tagAdmincp{
                     $data    = compact ($fields);
                     $id = iDB::insert('tags',$data);
 
-                    iMap::init('prop',$this->appid);
-                    $pid && iMap::add($pid,$id);
-
-                    iMap::init('category',$this->appid);
-                    $cid  && iMap::add($cid,$id);
+                    $pid && iMap::init('prop',$this->appid,'pid')->add($pid,$id);
+                    iMap::init('category',$this->appid,'cid');
+                    iMap::add($cid,$id);
                     $tcid && iMap::add($tcid,$id);
                     $msg['success']++;
                 }
@@ -254,10 +252,10 @@ class tagAdmincp{
             $id = iDB::insert('tags',$data);
 			tag::cache($id,'id');
 
-            iMap::init('prop',$this->appid);
+            iMap::init('prop',$this->appid,'pid');
             $pid && iMap::add($pid,$id);
 
-            iMap::init('category',$this->appid);
+            iMap::init('category',$this->appid,'cid');
             iMap::add($cid,$id);
             $tcid && iMap::add($tcid,$id);
 
@@ -271,10 +269,10 @@ class tagAdmincp{
             iDB::update('tags', $data, array('id'=>$id));
 			tag::cache($id,'id');
 
-            iMap::init('prop',$this->appid);
+            iMap::init('prop',$this->appid,'pid');
             iMap::diff($pid,$_pid,$id);
 
-            iMap::init('category',$this->appid);
+            iMap::init('category',$this->appid,'cid');
             iMap::diff($cid,$_cid,$id);
             iMap::diff($tcid,$_tcid,$id);
             $msg = '标签更新完成';
@@ -352,7 +350,7 @@ class tagAdmincp{
     		break;
     		case 'move':
 		        $_POST['cid'] OR iUI::alert("请选择目标栏目!");
-                iMap::init('category',$this->appid);
+                iMap::init('category',$this->appid,'cid');
 		        $cid = (int)$_POST['cid'];
 		        foreach($idArray AS $id) {
                     $_cid = iDB::value("SELECT `cid` FROM `#iCMS@__tags` where `id` ='$id'");
@@ -367,7 +365,7 @@ class tagAdmincp{
     		break;
     		case 'mvtcid':
 		        $_POST['tcid'] OR iUI::alert("请选择目标分类!");
-                iMap::init('category',$this->appid);
+                iMap::init('category',$this->appid,'cid');
 		        $tcid = (int)$_POST['tcid'];
 		        foreach($idArray AS $id) {
                     $_tcid = iDB::value("SELECT `tcid` FROM `#iCMS@__tags` where `id` ='$id'");
@@ -381,7 +379,7 @@ class tagAdmincp{
 		        iUI::success('成功移动到目标分类!','js:1');
     		break;
     		case 'prop':
-                iMap::init('prop',$this->appid);
+                iMap::init('prop',$this->appid,'pid');
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {
                     $_pid = iDB::value("SELECT pid FROM `#iCMS@__tags` WHERE `id`='$id'");;

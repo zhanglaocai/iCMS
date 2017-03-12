@@ -11,14 +11,15 @@ class tag {
     public static $remove     = true;
     public static $add_status = '1';
 
-	public static function data($fv=0,$field='name',$limit=0){
-		$sql      = $fv ? "where `$field`='$fv'":'';
+	public static function data($vars,$limit=0){
+		// $sql      = $fv ? "where `$field`='$fv'":'';
+        $sql = iSQL::where($vars);
 		$limitSQL = $limit ? "LIMIT $limit ":'';
 	    return iDB::all("SELECT * FROM `#iCMS@__tags` {$sql} order by id DESC {$limitSQL}");
 	}
 	public static function cache($value=0,$field='id'){
         return;
-		$rs     = self::data($value,$field);
+		$rs     = self::data(array($field=>$value));
 		$_count = count($rs);
 	    for($i=0;$i<$_count;$i++) {
 			$C              = categoryApp::get_cahce_cid($rs[$i]['cid']);
@@ -37,36 +38,6 @@ class tag {
 		$tkey = $dir1.'/'.$dir2.'/'.$cid;
         return 'iCMS/tags/'.$tkey;
     }
-    public static function getag($key='tags',&$array,$C,$TC){
-    	if(empty($array[$key])) return;
-
-		$strLink	= '';
-        $strArray	= explode(',',$array[$key]);
-
-        foreach($strArray AS $k=>$name){
-        	$name				= trim($name);
-        	$_cache				= self::get_cache($name,$C['cid'],$TC['cid']);
-			$strA[$k]['name']	= $name;
-			$strA[$k]['url']	= $_cache['url']?$_cache['url']:iCMS_PUBLIC_URL.'/search.php?q='.$name;
-			$strLink.='<a href="'.$strA[$k]['url'].'" target="_self">'.$strA[$k]['name'].'</a> ';
-        }
-        $search	= $C['name'];
-
-        $sstrA	= $strArray;
-        count($strArray)>3 && $sstrA = array_slice($strArray,0,3);
-        $sstr	= implode(',',$sstrA);
-        $sstr && $search = $sstr;
-
-        $array[$key.'link']		= $strLink;
-        $array[$key.'_array']	= $strA;
-        $array['search'][$key]	= $search;
-
-        return array(
-        	$key.'link'		=> $strLink,
-        	$key.'_array'	=> $strA,
-        	'search'		=> array($key=>$search)
-        );
-    }
 
 	public static function get_cache($tid){
 		$tkey	= self::tkey($tid);
@@ -82,12 +53,6 @@ class tag {
 			iCache::delete($tkey);
         }
     }
-    public static function map_iid($var=array(),$iid=0){
-    	foreach ((array)$var as $key => $t) {
-    		iDB::query("UPDATE `#iCMS@__tags_map` SET `iid` = '$iid' WHERE `id` = '".$t[4]."'");
-    	}
-    }
-
 	public static function add($tags,$uid="0",$iid="0",$cid='0',$tcid='0') {
 		$a        = explode(',',$tags);
 		$c        = count($a);
@@ -104,24 +69,28 @@ class tag {
 	    $name = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$name);
 	    $tid = iDB::value("SELECT `id` FROM `#iCMS@__tags` WHERE `name`='$name'");
 	    if($tid) {
-	        $tlid = iDB::value("
+            $mapid = iDB::value("
                 SELECT `id` FROM `#iCMS@__tags_map`
-                WHERE `iid`='$iid' and `node`='$tid' and `appid`='".self::$appid."'");
-	        if(empty($tlid)) {
-                $tlid = iDB::insert('tags_map',array(
-                    'node'  => $tid,
-                    'iid'   => $iid,
-                    'appid' => self::$appid,
-                ));
-	            iDB::query("
+                WHERE `iid`='$iid'
+                AND `node`='$tid'
+                AND `appid`='".self::$appid."'
+            ");
+            if(empty($mapid)) {
+                iDB::query("
                     UPDATE `#iCMS@__tags`
                     SET  `count`=count+1,`pubdate`='".time()."'
-                    WHERE `id`='$tid'");
-	        }
+                    WHERE `id`='$tid'
+                ");
+            }
+
 	    }else {
 			$tkey   = iPinyin::get($name,iCMS::$config['other']['py_split']);
-			$fields = array('uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'seotitle', 'subtitle', 'keywords', 'description', 'haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl', 'sortnum', 'pubdate', 'postime', 'status');
-			$data   = compact ($fields);
+			$data   = compact(array(
+                'uid', 'cid', 'tcid', 'pid', 'tkey', 'name',
+                'seotitle', 'subtitle', 'keywords', 'description',
+                'haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl',
+                'sortnum', 'pubdate', 'postime', 'status'
+            ));
             $data['pid']     = '0';
             $data['count']   = '1';
             $data['weight']  = '0';
@@ -131,12 +100,9 @@ class tag {
             $data['status']  = self::$add_status;
 
 			$tid = iDB::insert('tags',$data);
-            $tmid = iDB::insert('tags_map',array(
-                'node'  => $tid,
-                'iid'   => $iid,
-                'appid' => self::$appid,
-            ));
 	    }
+        iMap::init('tags',self::$appid,'tags');
+        iMap::add($tid,$iid);
 	    return $name;
 	}
 	public static function diff($Ntags,$Otags,$uid="0",$iid="0",$cid='0',$tcid='0') {
@@ -147,26 +113,25 @@ class tag {
 	    foreach((array)$N AS $i=>$tag) {//新增
             $tag_array[$i] = self::update($tag,$uid,$iid,$cid,$tcid);
 		}
+        iMap::init('tags',self::$appid,'tags');
+
 	    foreach((array)$diff['-'] AS $tag) {//减少
 	        $ot	= iDB::row("
                 SELECT `id`,`count`
                 FROM `#iCMS@__tags`
-                WHERE `name`='$tag' LIMIT 1;");
+                WHERE `name`='$tag' LIMIT 1;
+            ");
+
 	        if($ot->count<=1) {
-	        	//$iid && $sql="AND `iid`='$iid'";
-	            iDB::query("DELETE FROM `#iCMS@__tags`  WHERE `name`='$tag'");
-	            iDB::query("DELETE FROM `#iCMS@__tags_map` WHERE `node`='$ot->id'");
+	            iDB::query("DELETE FROM `#iCMS@__tags` WHERE `name`='$tag'");
 	        }else {
 	            iDB::query("
                     UPDATE `#iCMS@__tags`
                     SET  `count`=count-1,`pubdate`='".time()."'
-                    WHERE `name`='$tag' and `count`>0");
-	            iDB::query("
-                    DELETE FROM `#iCMS@__tags_map`
-                    WHERE `iid`='$iid'
-                    AND `node`='$ot->id'
-                    AND `appid`='".self::$appid."'");
+                    WHERE `name`='$tag' and `count`>0
+                ");
 	        }
+            iMap::diff('',$ot->id,$iid);
 	   }
 	   return implode(',', (array)$tag_array);
 	}
@@ -196,7 +161,8 @@ class tag {
                 DELETE FROM
                 `#iCMS@__tags_map`
                 WHERE `node`='$tag->id'
-                AND `appid`='".self::$appid."' {$sql}");
+                AND `appid`='".self::$appid."' {$sql}
+            ");
             $ckey = self::tkey($tag->cid);
             // iCache::delete($ckey);
 	    }

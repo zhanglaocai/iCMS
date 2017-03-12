@@ -209,7 +209,7 @@ class menu {
     public static function children_count($variable){
         $count = 0;
         foreach ((array)$variable as $key => $value) {
-            $a['caption']=='-' OR $count++;
+            $value['caption']=='-' OR $count++;
         }
         return $count;
     }

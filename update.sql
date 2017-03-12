@@ -87,7 +87,20 @@ ALTER TABLE `icms_members`
 ALTER TABLE `icms_apps`
   ADD COLUMN `title` VARCHAR(100) DEFAULT '' NOT NULL COMMENT '应用标题' AFTER `name`;
 
-ALTER TABLE `icms62`.`icms_group`
+ALTER TABLE `icms_group`
   DROP COLUMN `power`,
   DROP COLUMN `cpower`,
   ADD COLUMN `config` MEDIUMTEXT NOT NULL AFTER `sortnum`;
+
+ALTER TABLE `icms_prop_map`
+  CHANGE `node` `node` INT(10) UNSIGNED DEFAULT 0  NOT NULL   COMMENT 'pid',
+  CHANGE `appid` `appid` INT(10) UNSIGNED DEFAULT 0  NOT NULL   COMMENT '应用ID',
+  ADD COLUMN `field` VARCHAR(255) DEFAULT ''  NOT NULL   COMMENT '字段' AFTER `iid`;
+
+ALTER TABLE `icms_category_map`
+  CHANGE `node` `node` INT(10) UNSIGNED DEFAULT 0  NOT NULL   COMMENT 'cid',
+  ADD COLUMN `field` VARCHAR(255) DEFAULT ''  NOT NULL   COMMENT '字段' AFTER `iid`;
+
+ALTER TABLE `icms_tags_map`
+  ADD COLUMN `field` VARCHAR(255) DEFAULT ''  NOT NULL   COMMENT '字段' AFTER `iid`;
+

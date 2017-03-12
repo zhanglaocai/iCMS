@@ -66,7 +66,7 @@ class admincpApp{
         $fdc = iDB::value("SELECT count(*) FROM `#iCMS@__file_data`");
         $lc  = iDB::value("SELECT count(*) FROM `#iCMS@__links`");
 
-    	include admincp::view("index");
+    	include admincp::view("admincp.index");
     }
     // 检测函数支持
     public function isfun($fun = ''){

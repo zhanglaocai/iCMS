@@ -55,7 +55,7 @@ class contentFunc {
             $vars['sub'] && $cids += categoryApp::get_cids($vars['cids'], true);
 
             if ($cids) {
-                iMap::init('category', self::$app['id']);
+                iMap::init('category', self::$app['id'],'cid');
                 $map_where += iMap::where($cids);
             }
         }
@@ -64,12 +64,12 @@ class contentFunc {
         }
 
         if (isset($vars['pids']) && !isset($vars['pid'])) {
-            iMap::init('prop', self::$app['id']);
+            iMap::init('prop', self::$app['id'],'pid');
             $map_where += iMap::where($vars['pids']);
         }
 
         if (isset($vars['tids'])) {
-            iMap::init('tags', self::$app['id']);
+            iMap::init('tags', self::$app['id'],'tags');
             $map_where += iMap::where($vars['tids']);
         }
         if ($vars['keywords']) {

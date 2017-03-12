@@ -255,7 +255,7 @@ class userApp {
 			$article_data = compact($data_fields);
 			article::data_insert($article_data);
 
-			iMap::init('category', iCMS_APP_ARTICLE);
+			iMap::init('category', iCMS_APP_ARTICLE,'cid');
 			iMap::add($cid, $aid);
 			iDB::query("
                 UPDATE `#iCMS@__user_category`
@@ -274,7 +274,7 @@ class userApp {
 				array('id' => $aid, 'userid' => user::$userid))) {
 				article::data_update(compact($data_fields), array('aid' => $aid));
 			}
-			iMap::init('category', iCMS_APP_ARTICLE);
+			iMap::init('category', iCMS_APP_ARTICLE,'cid');
 			iMap::diff($cid, $_cid, $aid);
 			if ($ucid != $_ucid) {
 				iDB::query("

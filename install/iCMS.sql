@@ -19,13 +19,14 @@ CREATE TABLE `icms_apps` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '应用ID appid',
   `app` varchar(100) NOT NULL DEFAULT '' COMMENT '应用标识',
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '应用名',
+  `title` varchar(100) NOT NULL DEFAULT '' COMMENT '应用标题',
   `apptype` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '类型 0官方 1本地 2自定义',
   `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '应用类型',
   `table` text NOT NULL COMMENT '应用表',
   `config` text NOT NULL COMMENT '应用配置',
   `fields` text NOT NULL COMMENT '应用自定义字段',
   `menu` text NOT NULL COMMENT '应用菜单',
-  `addtimes` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
+  `addtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '应用状态',
   PRIMARY KEY (`id`),
   KEY `idx_name` (`app`)
@@ -123,18 +124,16 @@ CREATE TABLE `icms_category` (
   `pic` varchar(255) NOT NULL DEFAULT '',
   `mpic` varchar(255) NOT NULL DEFAULT '',
   `spic` varchar(255) NOT NULL DEFAULT '',
-  `count` int(10) unsigned NOT NULL DEFAULT '0',
   `mode` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `domain` varchar(255) NOT NULL DEFAULT '',
   `htmlext` varchar(10) NOT NULL DEFAULT '',
   `rule` text NOT NULL,
   `template` text NOT NULL,
+  `config` text NOT NULL,
+  `count` int(10) unsigned NOT NULL DEFAULT '0',
   `comments` int(10) unsigned NOT NULL DEFAULT '0',
-  `isexamine` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `issend` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `isucshow` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `addtime` int(10) DEFAULT '0',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `pubdate` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`cid`),
   KEY `dir` (`dir`),
   KEY `s_o_cid` (`status`,`sortnum`,`cid`),
@@ -147,8 +146,9 @@ DROP TABLE IF EXISTS `icms_category_map`;
 
 CREATE TABLE `icms_category_map` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `node` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'category cid',
+  `node` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'cid',
   `iid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
+  `field` varchar(255) NOT NULL DEFAULT '' COMMENT '字段',
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `idx` (`appid`,`node`,`iid`)
@@ -272,8 +272,28 @@ CREATE TABLE `icms_file_map` (
   `userid` int(10) unsigned NOT NULL,
   `appid` int(10) unsigned NOT NULL,
   `indexid` int(10) unsigned NOT NULL,
-  `addtimes` int(10) unsigned NOT NULL,
+  `addtime` int(10) unsigned NOT NULL,
   PRIMARY KEY (`fileid`,`appid`,`indexid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Table structure for table `icms_forms` */
+
+DROP TABLE IF EXISTS `icms_forms`;
+
+CREATE TABLE `icms_forms` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '应用ID appid',
+  `app` varchar(100) NOT NULL DEFAULT '' COMMENT '应用标识',
+  `name` varchar(100) NOT NULL DEFAULT '' COMMENT '应用名',
+  `apptype` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '类型 0官方 1本地 2自定义',
+  `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '应用类型',
+  `table` text NOT NULL COMMENT '应用表',
+  `config` text NOT NULL COMMENT '应用配置',
+  `fields` text NOT NULL COMMENT '应用自定义字段',
+  `menu` text NOT NULL COMMENT '应用菜单',
+  `addtimes` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '应用状态',
+  PRIMARY KEY (`id`),
+  KEY `idx_name` (`app`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_group` */
@@ -284,8 +304,7 @@ CREATE TABLE `icms_group` (
   `gid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   `sortnum` int(10) unsigned NOT NULL DEFAULT '0',
-  `power` mediumtext NOT NULL,
-  `cpower` mediumtext NOT NULL,
+  `config` mediumtext NOT NULL,
   `type` enum('1','0') NOT NULL DEFAULT '0',
   PRIMARY KEY (`gid`),
   KEY `type` (`type`)
@@ -350,8 +369,7 @@ CREATE TABLE `icms_members` (
   `realname` varchar(255) NOT NULL DEFAULT '',
   `gender` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `info` mediumtext NOT NULL,
-  `power` mediumtext NOT NULL,
-  `cpower` mediumtext NOT NULL,
+  `config` mediumtext NOT NULL,
   `regtime` int(10) unsigned DEFAULT '0',
   `lastip` varchar(15) NOT NULL DEFAULT '',
   `lastlogintime` int(10) unsigned NOT NULL DEFAULT '0',
@@ -362,7 +380,7 @@ CREATE TABLE `icms_members` (
   PRIMARY KEY (`uid`),
   KEY `username` (`username`),
   KEY `groupid` (`gid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_message` */
 
@@ -411,9 +429,10 @@ DROP TABLE IF EXISTS `icms_prop_map`;
 
 CREATE TABLE `icms_prop_map` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `node` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'prop id',
+  `node` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'pid',
   `iid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
-  `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'iCMS.define.php',
+  `field` varchar(255) NOT NULL DEFAULT '' COMMENT '字段',
+  `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `idx` (`appid`,`node`,`iid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -597,10 +616,11 @@ CREATE TABLE `icms_tags_map` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `node` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '标签ID',
   `iid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
+  `field` varchar(255) NOT NULL DEFAULT '' COMMENT '字段',
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `tid_index` (`appid`,`node`,`iid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_user` */
 

@@ -118,11 +118,6 @@ class contentAdmincp{
         if(!$variable){
             iCMS::alert("表单数据处理出错!");
         }
-        // $fieldArray = iFormer::fields($this->app['fields']);
-
-        // foreach ($imap_array as $key => $value) {
-        //     iMap::init($key,$this->app['id']);
-        // }
 
         $update = false;
         foreach ($variable as $table_name => $data) {
@@ -148,10 +143,10 @@ class contentAdmincp{
             }
             empty($table['union']) && $union_data[$union_id] = $id;
         }
-var_dump($imap);
+var_dump($imap,$update);
 
         if($imap)foreach ($imap as $key => $value) {
-            iMap::init($value[0],$this->app['id']);
+            iMap::init($value[0],$this->app['id'],$key);
             if($update){
                 $orig = $orig_post[$key];
                 iMap::diff($value[1],$orig,$id);
@@ -159,15 +154,15 @@ var_dump($imap);
                 iMap::add($value[1],$id);
             }
         }
-        $REFERER_URL = $_POST['REFERER'];
-        if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
-            $REFERER_URL= APP_URI.'&do=manage';
-        }
-        if($update){
-            iUI::success($this->app['name'].'编辑完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
-        }else{
-            iUI::success($this->app['name'].'添加完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
-        }
+        // $REFERER_URL = $_POST['REFERER'];
+        // if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
+        //     $REFERER_URL= APP_URI.'&do=manage';
+        // }
+        // if($update){
+        //     iUI::success($this->app['name'].'编辑完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
+        // }else{
+        //     iUI::success($this->app['name'].'添加完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
+        // }
     }
 
     public function do_del($id = null,$dialog=true){

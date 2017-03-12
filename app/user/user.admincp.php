@@ -78,7 +78,7 @@ class userAdmincp{
             if($_GET['pid']==0){
                 $sql.= " AND `pid`=''";
             }else{
-                iMap::init('prop',$this->appid);
+                iMap::init('prop',$this->appid,'pid');
                 $map_where = iMap::where($pid);
             }
         }
@@ -134,7 +134,7 @@ class userAdmincp{
             iDB::value("SELECT `uid` FROM `#iCMS@__user` where `username` ='$username' LIMIT 1") && iUI::alert('该账号已经存在');
             iDB::value("SELECT `uid` FROM `#iCMS@__user` where `nickname` ='$nickname' LIMIT 1") && iUI::alert('该昵称已经存在');
             $uid = iDB::insert('user',$user);
-            iMap::init('prop',iCMS_APP_USER);
+            iMap::init('prop',iCMS_APP_USER,'pid');
             $pid && iMap::add($pid,$uid);
             $msg = "账号添加完成!";
         }else {
@@ -142,7 +142,7 @@ class userAdmincp{
             iDB::value("SELECT `uid` FROM `#iCMS@__user` where `nickname` ='$nickname' AND `uid` !='$uid' LIMIT 1") && iUI::alert('该昵称已经存在');
             $password && $user['password'] = md5($password);
             iDB::update('user', $user, array('uid'=>$uid));
-            iMap::init('prop',iCMS_APP_USER);
+            iMap::init('prop',iCMS_APP_USER,'pid');
             iMap::diff($pid,$_pid,$uid);
             if(iDB::value("SELECT `uid` FROM `#iCMS@__user_data` where `uid`='$uid' LIMIT 1")){
                 iDB::update('user_data', $userdata, array('uid'=>$uid));
@@ -161,7 +161,7 @@ class userAdmincp{
     	$batch	= $_POST['batch'];
     	switch($batch){
             case 'prop':
-                iMap::init('prop',iCMS_APP_USER);
+                iMap::init('prop',iCMS_APP_USER,'pid');
 
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {

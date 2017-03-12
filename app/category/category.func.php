@@ -42,7 +42,7 @@ class categoryFunc{
 			break;
 		}
 		if(isset($vars['pids'])){
-			iMap::init('prop',iCMS_APP_CATEGORY);
+			iMap::init('prop',iCMS_APP_CATEGORY,'pid');
 			$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__category`.cid'); //主表小 map表大
 	//		$map_where=iMap::where($vars['pids']); //主表大 map表大
 	//		$map_ids    = iMap::ids($vars['pid']);

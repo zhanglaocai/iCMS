@@ -10,17 +10,14 @@
  */
 class iMap {
 	public static $table = 'prop';
-	public static $field = 'node';
+	public static $field  = null;
 	public static $appid = '1';
 
-	public static function init($table = 'prop',$appid='1',$field = 'node'){
-		self::$table = $table;
+	public static function init($table = 'prop',$appid='1',$field = null){
+		self::$table = iPHP_DB_PREFIX_TAG.$table.'_map';
 		self::$field = $field;
 		self::$appid = $appid;
-		return self;
-	}
-	public static function table(){
-		return iPHP_DB_PREFIX_TAG.self::$table.'_map';
+		return new iMap();
 	}
 	public static function del($nodes,$iid="0") {
 		$_array   = explode(',',$nodes);
@@ -28,7 +25,13 @@ class iMap {
 		$varArray = array();
 	    for($i=0;$i<$_count;$i++) {
 	    	$_node = $_array[$i];
-			iDB::query("DELETE FROM `".self::table()."` WHERE `".self::$field."`='$_node' AND `iid`='$iid' AND `appid`='".self::$appid."'");
+			iDB::query("
+				DELETE FROM `".self::$table."`
+				WHERE `node`='$_node'
+				AND `iid`='$iid'
+				AND `field`='".self::$field."'
+				AND `appid`='".self::$appid."'
+			");
 	    }
 	}
 	public static function add($nodes,$iid="0") {
@@ -36,14 +39,25 @@ class iMap {
 		$_count   = count($_array);
 		$varArray = array();
 	    for($i=0;$i<$_count;$i++) {
-	        $varArray[$i] = self::addnew($_array[$i],$iid);
+	        $varArray[$i] = self::insert($_array[$i],$iid,$field);
 	    }
 	    return json_encode($varArray);
 	}
-	public static function addnew($node,$iid="0") {
-		$has = iDB::value("SELECT `id` FROM `".self::table()."` WHERE `".self::$field."`='$node' AND `iid`='$iid' AND `appid`='".self::$appid."' LIMIT 1");
+	public static function insert($node,$iid="0") {
+		$has = iDB::value("
+		SELECT `id` FROM `".self::$table."`
+			WHERE `node`='$node'
+			AND `iid`='$iid'
+			AND `field`='".self::$field."'
+			AND `appid`='".self::$appid."'
+			LIMIT 1
+		");
 	    if(!$has) {
-	        iDB::query("INSERT INTO `".self::table()."` (`".self::$field."`,`iid`, `appid`) VALUES ('$node','$iid','".self::$appid."')");
+	        iDB::query("
+	        	INSERT INTO `".self::$table."`
+	        	(`node`,`iid`,`field`, `appid`) VALUES
+	        	('$node','$iid','".self::$field."','".self::$appid."')
+	        ");
 	    }
 	    //return array($vars,$tid,$cid,$tcid);
 	}
@@ -53,10 +67,16 @@ class iMap {
 		$diff      = array_diff_values($N,$O);
 		$varsArray = array();
 	    foreach((array)$N AS $i=>$_node) {//新增
-            $varsArray[$i] = self::addnew($_node,$iid);
+            $varsArray[$i] = self::insert($_node,$iid);
 		}
 	    foreach((array)$diff['-'] AS $_node) {//减少
-	        iDB::query("DELETE FROM `".self::table()."` WHERE `".self::$field."`='$_node' AND `iid`='$iid' AND `appid`='".self::$appid."'");
+	        iDB::query("
+	        	DELETE FROM `".self::$table."`
+	        	WHERE `node`='$_node'
+	        	AND `iid`='$iid'
+	        	AND `field`='".self::$field."'
+	        	AND `appid`='".self::$appid."'
+	        ");
 	   }
 	   return json_encode($varsArray);
 	}
@@ -73,10 +93,10 @@ class iMap {
 		if(!is_array($nodes) && strstr($nodes, ',')){
 			$nodes = explode(',', $nodes);
 		}
-		$table     = self::table();
-		$where_sql = iSQL::in(self::$appid,'appid',false,true,$table);
-		$where_sql.= iSQL::in($nodes,self::$field,false,false,$table);
-		return array($table=>$where_sql);
+		$where_sql = iSQL::in(self::$appid,'appid',false,true,self::$table);
+		$where_sql.= iSQL::in($nodes,'node',false,false,self::$table);
+		$where_sql.= iSQL::in(self::$field,'field',false,false,self::$table);
+		return array(self::$table=>$where_sql);
 	}
 
 	public static function sql($nodes=0){
@@ -86,8 +106,9 @@ class iMap {
 			$nodes = explode(',', $nodes);
 		}
 		$where_sql = iSQL::in(self::$appid,'appid',false,true);
-		$where_sql.= iSQL::in($nodes,self::$field);
-		return "SELECT `iid` FROM ".self::table()." WHERE {$where_sql}";
+		$where_sql.= iSQL::in($nodes,'node');
+		$where_sql.= iSQL::in(self::$field,'field');
+		return "SELECT `iid` FROM ".self::$table." WHERE {$where_sql}";
 	}
 
 	public static function exists($nodes=0,$iid=''){

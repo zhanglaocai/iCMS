@@ -134,4 +134,7 @@ class patchAdmincp{
 			}
 		}
 	}
+    public static function check_js() {
+        include admincp::view("check","patch");
+    }
 }

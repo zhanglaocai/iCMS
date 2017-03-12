@@ -149,7 +149,7 @@ class categoryAdmincp {
         $template = addslashes(json_encode($template));
         $config   = addslashes(json_encode($config));
 
-        iMap::init('prop',iCMS_APP_CATEGORY);
+        iMap::init('prop',iCMS_APP_CATEGORY,'pid');
 
         $fields = array(
             'rootid','pid','appid','sortnum','name','subname','password',

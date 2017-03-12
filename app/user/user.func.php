@@ -49,7 +49,7 @@ class userFunc{
             $where_sql.= iSQL::in($vars['pid'],'pid');
         }
         if(isset($vars['pids']) && !isset($vars['pid'])){
-            iMap::init('prop',iCMS_APP_USER);
+            iMap::init('prop',iCMS_APP_USER,'pid');
             //$where_sql.= iMap::exists($vars['pid'],'`#iCMS@__user`.uid'); //map 表大的用exists
             $map_where = iMap::where($vars['pids']);
         }

@@ -32,7 +32,9 @@ class groupAdmincp{
     }
     public function do_add(){
         $this->gid && $rs = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='$this->gid' LIMIT 1;");
-        $rs->config = json_decode($rs->config,true);
+        if($rs){
+            $rs->config = json_decode($rs->config,true);
+        }
         include admincp::view("group.add");
     }
     public function do_manage(){

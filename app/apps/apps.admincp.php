@@ -49,6 +49,7 @@ class appsAdmincp{
     public function do_save(){
         $id      = (int)$_POST['_id'];
         $name    = iSecurity::escapeStr($_POST['_name']);
+        $title   = iSecurity::escapeStr($_POST['_title']);
         $app     = iSecurity::escapeStr($_POST['_app']);
         $apptype = (int)$_POST['apptype'];
         $type    = (int)$_POST['type'];
@@ -61,6 +62,7 @@ class appsAdmincp{
 
         $name OR iUI::alert('应用名称不能为空!');
         empty($app) && $app = iPinyin::get($name);
+        empty($title) && $title = $name;
 
         if($table_array){
           $table_array  = array_filter($table_array);
@@ -102,7 +104,7 @@ class appsAdmincp{
         }
 
         $addtime = time();
-        $array   = compact(array('app','name','menu','table','config','fields','addtime','apptype','type','status'));
+        $array   = compact(array('app','name','title','menu','table','config','fields','addtime','apptype','type','status'));
 
         if(empty($id)) {
 
@@ -340,9 +342,9 @@ class appsAdmincp{
             请使用微信扫描下面二维码<br />
             <img alt="模式一扫码支付" src="http://paysdk.weixin.qq.com/example/qrcode.php?data='.$array->pay.'"/>
           ','js:1',1000000);
-          echo '<script type="text/javascript">
-            top.pay_notify("'.$key.'","'.$sid.'",d);
-          </script>';
+          // echo '<script type="text/javascript">
+          //   top.pay_notify("'.$key.'","'.$sid.'",d);
+          // </script>';
           exit;
         }
       }
