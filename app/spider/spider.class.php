@@ -242,8 +242,8 @@ class spider{
             }
         }
 
-        iSecurity::slashes($_POST);
-        $fun = $postArgs->fun;
+        $_POST = stripslashes_deep($_POST);
+        $fun   = $postArgs->fun;
         $success_code = "1001";
         if(iFS::checkHttp($fun)){
             $json = self::postUrl($fun,$_POST);
