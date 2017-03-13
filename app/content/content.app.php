@@ -251,10 +251,10 @@ class contentApp {
                     if ($vars['tag']) {
                         $tkey = $key.'_array';
                         $rs[$key.'_fname'] = $category['name'];
-                        var_dump($rs['id']);
+                        // var_dump($rs['id']);
                         if ($value) {
                             $multi_tag = tagApp::multi_tag(array($rs['id']=>$value),$key);
-                            var_dump($multi_tag);
+                            // var_dump($multi_tag);
                             $rs+=(array)$multi_tag[$rs['id']];
                         }
                         if(is_array($rs[$tkey])){
