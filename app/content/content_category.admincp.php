@@ -17,7 +17,7 @@ class content_categoryAdmincp extends categoryAdmincp {
 
         $this->category_name   = "栏目";
         $this->_app            = $app['app'];
-        $this->_app_name       = $app['name'];
+        $this->_app_name       = $app['title'];
         $this->_app_table      = $table['name'];
         $this->_app_cid        = 'cid';
         /**
@@ -26,14 +26,14 @@ class content_categoryAdmincp extends categoryAdmincp {
         $this->category_template = array(
             'index'     => array('首页','{iTPL}/content.index.htm'),
             'list'      => array('列表','{iTPL}/content.list.htm'),
-            $app['app'] => array($app['name'],'{iTPL}/content.htm')
+            $app['app'] => array($app['title'],'{iTPL}/content.htm')
         );
 
         /**
          *  URL规则
          */
         $this->category_rule+= array(
-            $app['app'] => array($app['name'],'/{CDIR}/{YYYY}/{MM}{DD}/{ID}{EXT}','{ID},{0xID},{LINK}')
+            $app['app'] => array($app['title'],'/{CDIR}/{YYYY}/{MM}{DD}/{ID}{EXT}','{ID},{0xID},{LINK}')
         );
         /**
          *  URL规则选项
@@ -41,7 +41,7 @@ class content_categoryAdmincp extends categoryAdmincp {
         $this->category_rule_list+= array(
             $app['app'] => array(
                 array('----'),
-                array('{ID}',$app['name'].'ID'),
+                array('{ID}',$app['title'].'ID'),
                 array('{0xID}','8位ID'),
                 array('{0x3ID}','8位ID(前3位)',fasle),
                 array('{0x3,2ID}','8位ID',fasle),

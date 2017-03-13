@@ -109,7 +109,7 @@ class iFormer {
                     unset($attr['type']);
                     $div_class.=' input-append';
                     $input  = self::widget('textarea',$attr)->css('height','150px');
-                    $picbtn = filesAdmincp::pic_btn($attr['id'],null,true);
+                    $picbtn = filesAdmincp::pic_btn($attr['id'],null,($type=='multi_file'?'文件':'图片'),true);
                     $html   = $input.$picbtn;
                     $script = self::script('$("#'.$attr['id'].'").autoTextarea({maxHeight:300});',true);
                 break;
@@ -117,7 +117,7 @@ class iFormer {
                 case 'file':
                     $div_class.=' input-append';
                     $input->attr('type','text');
-                    $picbtn = filesAdmincp::pic_btn($attr['id'],null,true);
+                    $picbtn = filesAdmincp::pic_btn($attr['id'],null,($type=='file'?'文件':'图片'),true);
                     $html = $input.$picbtn;
                 break;
                 case 'tpldir':
@@ -187,6 +187,11 @@ class iFormer {
                     $value OR $value = self::$config['value'][$type];
                     $input->attr('type','text');
                     $html = $input->val($value);
+                break;
+                case 'tag':
+                    $html = $input->attr('type','text')->attr('onkeyup',"javascript:this.value=this.value.replace(/，/ig,',');");
+                    $orig = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
+                    $html.= $orig;
                 break;
                 case 'number':
                     $html = $input->attr('type','text');
@@ -582,7 +587,9 @@ class iFormer {
             if(in_array($fields['type'], array('prop','multi_prop'))){
                 $imap_array[$key] = array('prop',$value);
             }
-
+            if(in_array($fields['type'], array('tag'))){
+                $tag_array[$key] = array($value,$post['cid']);
+            }
             //找查原始数据 并移除当前POST
             if(strpos($key,'_orig_')!==false){
               $orig_post[$key] = $value;
@@ -612,7 +619,7 @@ class iFormer {
         /**
          * array(表单数据,表名,_orig_字段数据用于比较);
          */
-        return array($variable,$tables,$orig_post,$imap_array);
+        return array($variable,$tables,$orig_post,$imap_array,$tag_array);
     }
     /**
      * 表单数据处理

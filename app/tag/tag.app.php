@@ -122,52 +122,52 @@ class tagApp {
         }
         return $tagArray;
     }
-    public static function multi_tag($tags=0){
+    public static function multi_tag($tags=null,$tkey='tags'){
         if(empty($tags)) return array();
 
         if(!is_array($tags) && strpos($tags, ',') !== false){
             $tags = explode(',', $tags);
         }
         $multi = array();
-        foreach ($tags as $aid => $value) {
+        foreach ($tags as $id => $value) {
             if($value){
                 $a = explode(',', $value);
                 foreach ($a as $ak => $av) {
-                    $tMap[$av] = $aid;
+                    $tMap[$av] = $id;
                     $tArray[]  = $av;
                 }
             }
         }
         $tagArray = self::multi($tArray);
         $tagArray = self::map($tagArray,$tMap);
-        $tagArray = self::app_tag($tagArray);
+        $tagArray = self::tags($tagArray,$tkey);
         return $tagArray;
     }
-    public static function app_tag($array,$aid=null){
+    private static function tags($array,$tkey,$id=null){
         $tArray = array();
-        foreach ((array) $array AS $_aid => $tag) {
+        foreach ((array) $array AS $_id => $tag) {
             if(isset($tag['id'])){
-                $aid===null && $aid = $_aid;
-                $tArray[$aid]['tags_array'][$tag['id']] = $tag;
-                $tArray[$aid]['tags_link'].= $tag['link'];
+                $id===null && $id = $_id;
+                $tArray[$id][$tkey.'_array'][$tag['id']] = $tag;
+                $tArray[$id][$tkey.'_link'].= $tag['link'];
             }else{
-                $tArray+=(array)self::app_tag($tag,$_aid);
+                $tArray+=(array)self::tags($tag,$tkey,$_id);
             }
         }
         return $tArray;
     }
-    public static function map($tagArray,$tMap){
+    private static function map($tagArray,$tMap){
         $array = array();
         $map   = $tMap;
         foreach ((array)$tagArray as $tid => $tag) {
-            $aid = $tMap[$tag['name']];
+            $id = $tMap[$tag['name']];
             unset($map[$tag['name']]);
-            $akey = array_search($aid, $map);
+            $akey = array_search($id, $map);
             $map = $tMap;
             if($akey){
-                $array[$aid][$tid]= $tag;
+                $array[$id][$tid]= $tag;
             }else{
-                $array[$aid] = $tag;
+                $array[$id] = $tag;
             }
         }
         return $array;

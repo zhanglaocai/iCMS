@@ -209,7 +209,6 @@ class contentFunc {
     private static function content_array($vars, $variable) {
         $resource = array();
         if ($variable) {
-            $vars['category_lite'] = true;
             if($vars['data']){
                 $idArray = iSQL::values($variable,'id','array',null);
                 $idArray && $content_data = (array) contentApp::data($idArray);
@@ -219,10 +218,11 @@ class contentFunc {
                 $tagArray = iSQL::values($variable,'tags','array',null,'id');
                 $tagArray && $tags_data = (array)tagApp::multi_tag($tagArray);
                 unset($tagArray);
+                $vars['tags'] = false;
             }
             $contentApp = new contentApp(self::$app);
             foreach ($variable as $key => $value) {
-                $value = $contentApp->value($value, false, $vars);
+                $value = $contentApp->value($value,$vars);
 
                 if ($value === false) {
                     continue;

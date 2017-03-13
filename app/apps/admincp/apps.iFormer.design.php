@@ -162,6 +162,10 @@
           <span class="fb-icon fb-icon-prop"></span>
           <p>属性(多选)</p>
         </li>
+        <li i="field" tag="tag" type="tag" field="VARCHAR" len="255" label="标签" ui-class="span6">
+          <span class="fb-icon fb-icon-tag"></span>
+          <p>标签</p>
+        </li>
         <li i="field" tag="username" type="username" field="VARCHAR" len="255" label="用户名">
           <span class="fb-icon fb-icon-username"></span>
           <p>用户名</p>

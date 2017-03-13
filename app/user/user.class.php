@@ -61,11 +61,14 @@ class user {
 			'at'     => '<a href="javascript:;">'.$name.'</a>',
         );
 	}
-	public static function info($uid,$name,$size=0){
+	public static function info($uid,$name=null,$size=0){
 		if(empty($uid)){
 			return self::empty_info($uid, $name);
 		}
 		$url = self::router($uid,"url");
+		if($name===null){
+			$name = self::value($uid,'nickname');
+		}
 		return array(
 			'uid'    => $uid,
 			'name'   => $name,
@@ -76,7 +79,7 @@ class user {
 			'link'   => '<a href="'.$url.'" class="iCMS_user_link" target="_blank" i="ucard:'.$uid.'">'.$name.'</a>',
 		);
 	}
-	public static function value($val,$where='uid',$field='username'){
+	public static function value($val,$field='username',$where='uid'){
 		$row = iDB::row("SELECT {$field} FROM `#iCMS@__user` where `$where`='{$val}'");
 		if(isset($row->setting)){
 			$row->setting = (array)json_decode($row->setting,true);
@@ -87,7 +90,7 @@ class user {
 		return $row->$field;
 	}
 	public static function check($val,$field='username'){
-		$uid = self::value($val,$field,'uid');
+		$uid = self::value($val,'uid',$field);
 		return empty($uid)?false:$uid;
 	}
 	public static function follow($uid=0,$fuid=0){

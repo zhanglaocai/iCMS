@@ -50,6 +50,7 @@ $(function() {
         receive: function(event, ui) {
             var helper = ui.helper,
             tag        = helper.attr('tag'),
+            aclass     = helper.attr('ui-class'),
             field      = helper.attr('field'),
             type       = helper.attr('type'),
             label      = helper.attr('label'),
@@ -61,6 +62,7 @@ $(function() {
                 'label': (label || '表单') + id,
                 'label-after':after,
                 'field': field,
+                'class': aclass,
                 'name': id,
                 'default': '',
                 'type': type,

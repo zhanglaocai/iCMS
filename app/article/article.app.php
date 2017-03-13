@@ -98,11 +98,8 @@ class articleApp {
 		}
 
 		$vars = array(
-			'tag'           => true,
-			'user'          => true,
-			'meta'          => true,
-			'prev_next'     => true,
-			'category_lite' => true,
+			'tag'  => true,
+			'user' => true,
 		);
 		$article = $this->value($article, $article_data, $vars, $page, $tpl);
 		unset($article_data);

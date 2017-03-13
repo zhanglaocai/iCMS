@@ -62,7 +62,7 @@ class contentApp {
     }
     public function content($id, $page = 1, $tpl = true) {
         $rs = apps_mod::get_data($this->data,$id);
-        $rs OR iPHP::error_404('找不到'.$this->data['name'].': <b>'.$this->primary.':' . $id . '</b>', 10001);
+        $rs OR iPHP::error_404('找不到'.$this->data['title'].': <b>'.$this->primary.':' . $id . '</b>', 10001);
         if ($rs['url']) {
             if (iView::$gateway == "html") {
                 return false;
@@ -71,8 +71,11 @@ class contentApp {
                 iPHP::redirect($rs['url']);
             }
         }
-
-        $rs = $this->value($rs,$page,$tpl);
+        $vars = array(
+            'tag'  => true,
+            'user' => true,
+        );
+        $rs = $this->value($rs,$vars,$page,$tpl);
         $rs = $this->hooked($rs);
 
         if ($tpl) {
@@ -92,12 +95,12 @@ class contentApp {
         }
     }
 
-    public function value($rs, $page = 1, $tpl = false) {
+    public function value($rs, $vars = array(),$page = 1, $tpl = false) {
         $rs['appid'] = $this->appid;
         $category = categoryApp::category($rs['cid'],false);
 
         if ($tpl) {
-            $category OR iPHP::error_404('找不到该'.$this->data['name'].'的栏目缓存<b>cid:' . $rs['cid'] . '</b> 请更新栏目缓存或者确认栏目是否存在', 10002);
+            $category OR iPHP::error_404('找不到该'.$this->data['title'].'的栏目缓存<b>cid:' . $rs['cid'] . '</b> 请更新栏目缓存或者确认栏目是否存在', 10002);
         } else {
             if (empty($category)) {
                 return false;
@@ -124,11 +127,14 @@ class contentApp {
         if($category['mode'] && stripos($rs['url'], '.php?')===false){
             iURL::page_url($rs['iurl']);
         }
-        if ($rs['postype']) {
-            $rs['user'] = user::empty_info($rs['userid'], '#' . $rs['editor']);
-        } else {
-            $rs['user'] = user::info($rs['userid'], $rs['editor']);
+        if($vars['user']){
+            if ($rs['postype']) {
+                $rs['user'] = user::empty_info($rs['userid'], '#' . $rs['editor']);
+            } else {
+                $rs['user'] = user::info($rs['userid'], $rs['editor']);
+            }
         }
+
         $rs['hits'] = array(
             'script' => iCMS_API . '?app='.$this->app.'&do=hits&cid=' . $rs['cid'] . '&id=' . $rs[$this->primary],
             'count'  => $rs['hits'],
@@ -200,24 +206,26 @@ class contentApp {
                     if($key=='cid'){
                         continue;
                     }
-                    $nkey     = $key.'_category';
-                    $category = categoryApp::get_cahce_cid($value);
-                    $values   = categoryApp::get_lite($category);
+                    $nkey      = $key.'_category';
+                    $_category = categoryApp::get_cahce_cid($value);
+                    $values    = categoryApp::get_lite($_category);
                 break;
                 case 'multi_category':
                     $nkey   = $key.'_category';
                     $valArray = explode(",", $value);
                     foreach ($valArray as $i => $val) {
-                        $category   = categoryApp::get_cahce_cid($val);
-                        $values[$i] = categoryApp::get_lite($category);
+                        $_category  = categoryApp::get_cahce_cid($val);
+                        $values[$i] = categoryApp::get_lite($_category);
                     }
                 break;
                 case 'userid':
-                    $nkey   = $key.'_user';
-                    if ($rs['postype']) {
-                        // $values = user::empty_info($value);
-                    } else {
-                        $values = user::info($value);
+                    if($vars['user']){
+                        $nkey   = $key.'_user';
+                        if ($rs['postype']) {
+                            $values = user::empty_info($value,'###');
+                        } else {
+                            $values = user::info($value);
+                        }
                     }
                 break;
                 case 'multi_prop':
@@ -237,6 +245,23 @@ class contentApp {
                         }
                     }else{
                         $values = $propArray[$value];
+                    }
+                break;
+                case 'tag':
+                    if ($vars['tag']) {
+                        $tkey = $key.'_array';
+                        $rs[$key.'_fname'] = $category['name'];
+                        var_dump($rs['id']);
+                        if ($value) {
+                            $multi_tag = tagApp::multi_tag(array($rs['id']=>$value),$key);
+                            var_dump($multi_tag);
+                            $rs+=(array)$multi_tag[$rs['id']];
+                        }
+                        if(is_array($rs[$tkey])){
+                            $tags_fname = array_slice ($rs[$tkey],0,1);
+                            $rs[$key.'_fname'] = $tags_fname[0]['name'];
+                        }
+                        unset($multi_tag, $tags_fname);
                     }
                 break;
                 default:

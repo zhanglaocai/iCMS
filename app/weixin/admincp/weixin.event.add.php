@@ -132,7 +132,7 @@ function articles_item(){
           <div class="clearfloat mb10"></div>
           <div class="input-prepend">
             <span class="add-on">事件类型</span>
-            <select name="eventype" id="eventype" class="span3 chosen-select" data-placeholder="请选择事件类型...">
+            <select name="eventype" id="eventype" class="span5 chosen-select" data-placeholder="请选择事件类型...">
               <option value='0'></option>
               <optgroup label="用户消息" data-type="keyword">
                 <option value='keyword'>关键词</option>

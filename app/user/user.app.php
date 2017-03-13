@@ -841,7 +841,7 @@ class userApp {
 		$send_uid = user::$userid;
 		$send_name = user::$nickname;
 
-		$setting = (array)user::value($receiv_uid,'uid','setting');
+		$setting = (array)user::value($receiv_uid,'setting');
 		if($setting['inbox']['receive']=='follow'){
 			if($mid){
 				$mid = iSecurity::escapeStr($_POST['mid']);
@@ -879,7 +879,7 @@ class userApp {
 			if ($check) {
 				iUI::code(1, 'user:follow:success', 0, 'json');
 			} else {
-				$fname  = user::value($fuid,'uid','nickname');
+				$fname  = user::value($fuid,'nickname');
 				$fields = array('uid', 'name', 'fuid', 'fname');
 				$data   = compact($fields);
 				iDB::insert('user_follow', $data);

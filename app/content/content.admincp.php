@@ -113,7 +113,7 @@ class contentAdmincp{
         include admincp::view('content.manage');
     }
     public function do_save(){
-        list($variable,$tables,$orig_post,$imap) = iFormer::post($this->app);
+        list($variable,$tables,$orig_post,$imap,$tags) = iFormer::post($this->app);
 
         if(!$variable){
             iCMS::alert("表单数据处理出错!");
@@ -154,6 +154,19 @@ var_dump($imap,$update);
                 iMap::add($value[1],$id);
             }
         }
+
+        if($tags)foreach ($tags as $key => $value) {
+            if(empty($value[0])){
+                continue;
+            }
+            tag::$appid = $this->app['id'];
+            if($update){
+                $orig = $orig_post[$key];
+                tag::diff($value[0],$orig,members::$userid,$id,$value[1]);
+            }else{
+                tag::add($value[0],members::$userid,$id,$value[1]);
+            }
+        }
         // $REFERER_URL = $_POST['REFERER'];
         // if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
         //     $REFERER_URL= APP_URI.'&do=manage';
@@ -167,18 +180,18 @@ var_dump($imap,$update);
 
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
-		$id OR iUI::alert("请选择要删除的{$this->app['name']}");
+		$id OR iUI::alert("请选择要删除的{$this->app['title']}");
 
         $table_array = apps::get_table($this->app);
         $table       = $table_array['table'];
         $primary     = $table_array['primary'];
 
 		iDB::query("DELETE FROM `{$table}` WHERE `{$primary}` = '$id'");
-		$dialog && iUI::success("{$this->app['name']}删除完成",'js:parent.$("#tr'.$id.'").remove();');
+		$dialog && iUI::success("{$this->app['title']}删除完成",'js:parent.$("#tr'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iUI::alert("请选择要删除的{$this->app['name']}");
+        $idArray OR iUI::alert("请选择要删除的{$this->app['title']}");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){

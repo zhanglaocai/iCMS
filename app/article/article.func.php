@@ -311,7 +311,6 @@ class articleFunc{
 	public static function article_array($vars, $variable) {
 		$resource = array();
 		if ($variable) {
-			$vars['category_lite'] = true;
 	        if($vars['data']||$vars['pics']){
 	            $aidArray = iSQL::values($variable,'id','array',null);
 	            $aidArray && $article_data = (array) articleApp::data($aidArray);
@@ -321,6 +320,7 @@ class articleFunc{
 	            $tagArray = iSQL::values($variable,'tags','array',null,'id');
 				$tagArray && $tags_data = (array)tagApp::multi_tag($tagArray);
 	            unset($tagArray);
+	            $vars['tags'] = false;
 	        }
 			foreach ($variable as $key => $value) {
 				$value = articleApp::value($value, false, $vars);

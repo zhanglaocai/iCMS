@@ -599,7 +599,7 @@ class articleAdmincp{
                 if(isset($_POST['tag_status'])){
                     tag::$add_status = $_POST['tag_status'];
                 }
-                tag::add($tags,$userid,$aid,$cid);
+                tag::add($tags,members::$userid,$aid,$cid);
             }
 
             iMap::init('prop',self::$appid,'pid');
