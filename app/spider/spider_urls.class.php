@@ -303,7 +303,7 @@ class spider_urls {
                         if($value){
                             echo '<b>其它采集结果:</b><br />';
                             echo '<pre>';
-                            var_dump($value);
+                            var_dump(array_map('htmlspecialchars', $value));
                             echo '</pre>';
                         }
                         echo $hash . "<br /><hr />";
