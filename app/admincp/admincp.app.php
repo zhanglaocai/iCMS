@@ -26,7 +26,28 @@ class admincpApp{
    	    members::logout();
     	iUI::success('注销成功!','url:'.iPHP_SELF);
     }
+    /**
+     * [操作记录]
+     * @return [type] [description]
+     */
+    public function do_access_log(){
+        $sql = "WHERE 1=1";
+        if($_GET['keywords']) {
+            $sql.=" AND CONCAT(username,app,uri,useragent,ip,method,referer) REGEXP '{$_GET['keywords']}'";
+        }
+        $_GET['cid'] && $sql.=" AND `uid` = '{$_GET['uid']}'";
+        $_GET['sapp'] && $sql.=" AND `app` = '{$_GET['sapp']}'";
+        $_GET['ip'] && $sql.=" AND `ip` = '{$_GET['ip']}'";
 
+
+        $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
+        $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
+        $total      = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__access_log` {$sql}","G");
+        iUI::pagenav($total,$maxperpage,"条记录");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__access_log` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
+        $_count = count($rs);
+        include admincp::view("admincp.access");
+    }
     public function do_iCMS(){
         //数据统计
         $rs=iDB::all("SHOW FULL TABLES FROM `".iPHP_DB_NAME."` WHERE table_type = 'BASE TABLE';");

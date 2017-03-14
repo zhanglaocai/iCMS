@@ -139,6 +139,8 @@ class admincp {
 		//检查URL权限
 		iPHP::callback(self::$callback['priv'],array(APP_DOURI,'page'));
 
+		self::access_log();
+
 		$method = self::$APP_METHOD;
 		$args === null && $args = self::$APP_ARGS;
 
@@ -198,7 +200,20 @@ class admincp {
 	public static function foot() {
 		include self::view("admincp.footer",'admincp');
 	}
-
+	public static function access_log() {
+		$access = array(
+			'uid'       => members::$userid,
+			'username'  => members::$nickname,
+			'app'       => self::$APP_NAME,
+			'uri'       => $_SERVER['REQUEST_URI'],
+			'useragent' => $_SERVER['HTTP_USER_AGENT'],
+			'ip'        => iPHP::get_ip(),
+			'method'    => $_SERVER['REQUEST_METHOD'],
+			'referer'   => $_SERVER['HTTP_REFERER'],
+			'addtime'   => $_SERVER['REQUEST_TIME'],
+		);
+		iDB::insert("access_log",$access);
+	}
 	public static function callback($id, &$that, $type = null) {
 		if ($type === null || $type == 'primary') {
 			if ($that->callback['primary']) {
