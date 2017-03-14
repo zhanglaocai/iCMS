@@ -58,7 +58,10 @@ class appsAdmincp{
         $fieldata = $_POST['fields'];
         $config_array = $_POST['config'];
         $table_array  = $_POST['table'];
-        $menu = $_POST['menu'];
+
+        $menu = json_decode(stripcslashes($_POST['menu']));
+        $menu = json_encode($menu);
+        $menu = addslashes($menu);
 
         $name OR iUI::alert('应用名称不能为空!');
         empty($app) && $app = iPinyin::get($name);
@@ -105,6 +108,7 @@ class appsAdmincp{
 
         $addtime = time();
         $array   = compact(array('app','name','title','menu','table','config','fields','addtime','apptype','type','status'));
+        // $array['menu'] = str_replace(array("\r","\n"),'',$array['menu']);
 
         if(empty($id)) {
 
