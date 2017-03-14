@@ -19,7 +19,7 @@ class favoriteApp {
         user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
 
         iPHP::app('favorite.func');
-        $array = favorite_list(array('userid'=>user::$userid));
+        $array = favoriteFunc::favorite_list(array('userid'=>user::$userid));
         iUI::json($array);
     }
     /**

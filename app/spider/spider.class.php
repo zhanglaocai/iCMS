@@ -81,8 +81,8 @@ class spider{
         $project = spider::project($pid);
         $hash    = md5($url);
         if(($project['checker'] && empty($_GET['indexid'])) || $work=="DATA@RULE"){
-            $title = iSecurity::escapeStr($title);
-            $url   = iSecurity::escapeStr($url);
+            $title = addslashes($title);
+            $url   = addslashes($url);
             $project_checker = $project['checker'];
             $work=="DATA@RULE" && $project_checker = '1';
             switch ($project_checker) {
@@ -215,7 +215,7 @@ class spider{
                     'rid'     => spider::$rid,
                     'pid'     => spider::$pid,
                     'title'   => addslashes($title),
-                    'url'     => $url,
+                    'url'     => addslashes($url),
                     'hash'    => $hash,
                     'status'  => '1',
                     'addtime' => time(),
@@ -242,7 +242,7 @@ class spider{
             }
         }
 
-        $_POST = stripslashes_deep($_POST);
+        iSecurity::_addslashes($_POST);
         $fun   = $postArgs->fun;
         $success_code = "1001";
         if(iFS::checkHttp($fun)){

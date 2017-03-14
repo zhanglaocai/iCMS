@@ -322,6 +322,9 @@ class spider_tools {
         if(strtoupper($encode)==$out){
             return $html;
         }
+        if(strtoupper($encode)=='GB2312'){
+            $encode = 'GBK';
+        }
         $html = preg_replace('/(<meta[^>]*?charset=(["\']?))[a-z\d_\-]*(\2[^>]*?>)/is', "\\1$out\\3", $html,1);
         if (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($html,$out,$encode);
