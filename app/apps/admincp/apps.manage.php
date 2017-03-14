@@ -14,6 +14,20 @@ admincp::head();
 <script type="text/javascript">
 $(function(){
   $("#<?php echo APP_FORMID;?>").batch();
+  $("#local_app").click(function(event) {
+      var local_app_wrap = document.getElementById("local_app_wrap");
+      iCMS.dialog({
+        title: 'iCMS - 安装本地应用',
+        content:local_app_wrap
+      });
+  });
+  $("#local").click(function() {
+      $("#localfile").click();
+  });
+  $("#localfile").change(function() {
+      $("#local_app_wrap form").submit();
+      $(this).val('');
+  });
 });
 </script>
 <div class="iCMS-container">
@@ -25,7 +39,10 @@ $(function(){
     </div>
   </div>
   <div class="widget-content">
-    <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
+      <div class="pull-right">
+        <button class="btn btn-primary" type="button" id="local_app"><i class="fa fa-send"></i> 安装本地应用</button>
+      </div>
+      <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
       <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
       <div class="input-prepend input-append">
         <span class="add-on">每页</span>
@@ -74,8 +91,8 @@ $(function(){
               <tr id="tr<?php echo $data['id'] ; ?>">
                 <td><b><?php echo $data['id'] ; ?></b></td>
                 <td>
-                  <span class="label label-success"><?php echo apps::$type_array[$data['type']] ; ?></span>
-                  <b><?php echo $data['app'] ; ?></b>
+                  <b><?php echo $data['app'] ; ?></b><br />
+                  <span class="label label-inverse"><?php echo $config['version'] ; ?></span>
                 </td>
                 <td>
                   <?php echo $data['name'] ; ?>
@@ -132,6 +149,7 @@ $(function(){
                         <div class="clearfix mt5"></div>
                       <?php }?>
                       <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
+                      <a href="<?php echo APP_URI; ?>&do=pack&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-download"></i> 打包</a>
                       <?php if($data['apptype']){?>
                         <?php if($data['status']){?>
                           <a href="<?php echo APP_URI; ?>&do=update&_args=status:0&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-warning" onclick="return confirm('关闭应用不会删除数据，但应用将不可用\n确定要关闭应用?');"><i class="fa fa-close"></i> 关闭</a>
@@ -170,6 +188,17 @@ $(function(){
       </form>
     </div>
   </div>
+</div>
+<div id="local_app_wrap" style="display:none;">
+  <form action="<?php echo APP_FURI; ?>&do=local_app" method="post" enctype="multipart/form-data" target="iPHP_FRAME">
+    <div class="alert alert-info">
+      请选择iCMS应用安装包文件(.zip)
+    </div>
+    <div class="clearfloat mb10"></div>
+    <a id="local" class="btn btn-primary btn-large btn-block"><i class="fa fa-upload"></i> 请选择要安装的应用</a>
+    <input id="localfile" name="upfile" type="file" class="hide"/>
+    <div class="clearfloat mb10"></div>
+  </form>
 </div>
 <script>
 $("li","#apps-tab").click(function(event) {

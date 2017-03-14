@@ -85,6 +85,12 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
+              <span class="add-on">应用版本</span>
+              <input type="text" name="config[version]" class="span3" id="config_version" value="<?php echo $rs['config']['version']?$rs['config']['version']:'v1.0.0' ; ?>"/>
+            </div>
+            <span class="help-inline">版本号</span>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend">
               <span class="add-on">应用菜单</span>
               <select name="config[menu]" id="config_menu" class="chosen-select span3" data-placeholder="请选择应用类型...">
                 <option value="0">无菜单</option>

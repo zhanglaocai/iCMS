@@ -26,10 +26,10 @@ class appsAdmincp{
           $rs['status']  = "1";
           $base_fields   = apps_mod::base_fields_array();
 
-          $rs['fields'] = get_json_file(iPHP_APP_DIR.'/apps/json/fields.php');
+          $rs['fields'] = get_php_file(iPHP_APP_DIR.'/apps/json/fields.php');
           $rs['fields'] = json_decode($rs['fields'],true);
 
-          $rs['menu']   = get_json_file(iPHP_APP_DIR.'/apps/json/menu.php');
+          $rs['menu']   = get_php_file(iPHP_APP_DIR.'/apps/json/menu.php');
           $rs['menu']   = json_decode($rs['menu'],true);
 
         }else{
@@ -382,10 +382,76 @@ class appsAdmincp{
      * @return [type] [description]
      */
     public function do_install(){
-      $app = iSecurity::escapeStr($_GET['appname']);
-      strstr($app,'..')!==false  && iUI::alert('您的应用有问题!');
-      $path = apps::installed($app,'path');
-      iFS::write($path,'1');
-      iUI::success('安装完成!','url:'.APP_URI);
+      apps_store::$zipName  = "markerTest.zip";
+      apps_store::$app_name = "markerTest";
+      // apps_store::$test = true;
+      $this->msg = apps_store::install();
+      if(apps_store::$next){
+        $this->msg.= apps_store::setup();//安装数据库
+      }
+      $this->msg.= '更新应用缓存<iCMS>';
+      apps::cache();
+      $this->msg.= '更新菜单缓存<iCMS>';
+      menu::cache();
+      $this->msg.= '应用安装完成<iCMS>';
+      include admincp::view("install");
+    }
+    /**
+     * [本地安装应用]
+     * @return [type] [description]
+     */
+    // public function do_local_app(){
+    //     iFile::$check_data        = false;
+    //     iFile::$cloud_enable      = false;
+    //     iFS::$config['allow_ext'] = 'zip';
+
+    //     $F    = iFS::upload('upfile');
+    //     $path = $F['RootPath'];
+    //     if($path){
+    //       apps_store::$app_name = preg_replace('/iCMS\.APP\.(\w+)-v.*?\.zip/is', '$1', $F['oname']);
+    //       print_r(apps_store::$app_name);
+
+    //       @unlink($path);
+    //       // iUI::success('应用安装完成,请重新设置规则','js:1');
+    //     }
+    // }
+    /**
+     * [打包下载应用]
+     * @return [type] [description]
+     */
+    public function do_pack(){
+      $rs = iDB::row("SELECT * FROM `#iCMS@__apps` where `id`='".$this->id."'",ARRAY_A);
+      $appdir = iPHP_APP_DIR.'/'.$rs['app'];
+      unset($rs['id']);
+      $data     = base64_encode(serialize($rs));
+      $config   = json_decode($rs['config'],true);
+      $filename = 'iCMS.APP.'.$rs['app'].'-'.$config['version'];
+      if(iFS::ex($appdir)) {
+        $remove_path = iPHP_APP_DIR;
+      }else{
+        $appdir = iPHP_APP_CACHE.'/pack.app/'.$rs['app'];
+        $remove_path = iPHP_APP_CACHE.'/pack.app/';
+        iFS::mkdir($appdir);
+      }
+      $app_data_file = $appdir.'/iCMS.APP.DATA.php';
+      put_php_file($app_data_file, $data);
+      if($rs['table']){
+        $app_table_file = $appdir.'/iCMS.APP.TABLE.php';
+
+        put_php_file(
+          $app_table_file,
+          apps_db::create_table_sql($rs['table'])
+        );
+      }
+      $zipfile = apps::get_zip($filename,$appdir,$remove_path);
+      filesApp::attachment($zipfile);
+      iFS::rm($zipfile);
+      iFS::rm($app_data_file);
+      $app_table_file && iFS::rm($app_table_file);
+
+      if($remove_path != iPHP_APP_DIR){
+        iFS::rmdir($remove_path);
+      }
+
     }
 }

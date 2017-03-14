@@ -204,6 +204,21 @@ class apps_db {
          iDB::query($sql);
          return array($name,$PRIMARY);
     }
+    public static function create_table_sql($json) {
+        if($json){
+          $tableArray = apps::table_item($json);
+          foreach ($tableArray as $key => $value) {
+            $tables[] = $value['table'];
+          }
+          if($tables){
+            $sql = databaseAdmincp::bakuptable($tables,false);
+            $sql = preg_replace('/\sAUTO_INCREMENT=\d+/is', '', $sql);
+            $sql = str_replace('`'.iPHP_DB_PREFIX, '`'.iPHP_DB_PREFIX_TAG, $sql);
+            return $sql;
+          }
+        }
+        return false;
+    }
 /**
  * 以下方法移植自adminer
  */
