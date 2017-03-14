@@ -225,7 +225,7 @@ class iDB{
         }
         if ( is_array( $where ) ){
             foreach ( $where as $c => $v )
-                $wheres[] = "$c = '" . addslashes( $v ) . "'";
+                $wheres[] = "`$c` = '" . addslashes( $v ) . "'";
         }else{
             return false;
         }
