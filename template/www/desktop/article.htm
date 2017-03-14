@@ -147,27 +147,40 @@
                         <a i="vote:article:good" class="like-btn">
                             <i class="like-icon up"></i>
                             <span i="vote_good_num" class="like-num"><!--{$article.good}--></span>
-                            <span class="like-txt">赞</span>
                         </a>
                         <a i="vote:article:bad" class="like-btn">
                             <i class="like-icon down"></i>
                             <span i="vote_bad_num" class="like-num"><!--{$article.bad}--></span>
-                            <span class="like-txt">踩</span>
+                        </a>
+                        <a i="favorite:article" class="favorite-btn" title="添加到收藏夹">
+                            <i class="favorite-icon"></i>
+                            <span i="favorite_num" class="favorite-num"><!--{$article.favorite}--></span>
                         </a>
                     </div>
                     <div class="clearfix"></div>
-                    <div class="article-prevnext mt10">
-                        <p class="prev"><b>上一篇:</b>
+                    <div class="article-prevnext mt20">
+                        <p class="prev">
+                            <b>上一篇:</b>
                             <!--{iCMS:article:prev cid="$article.cid" id="$article.id"}-->
+                            <!--{if $article_prev}-->
                             <a href="<!--{$article_prev.url}-->" class="prev" target="_self">
                                 <!--{$article_prev.title}-->
                             </a>
+                            <!--{else}-->
+                            没有了
+                            <!--{/if}-->
                         </p>
                         <p class="next">
                             <!--{iCMS:article:next cid="$article.cid" id="$article.id"}-->
+                            <!--{if $article_next}-->
                             <a href="<!--{$article_next.url}-->" class="next" target="_self">
                                 <!--{$article_next.title}-->
-                            </a><b>:下一篇</b></p>
+                            </a>
+                            <!--{else}-->
+                            没有了
+                            <!--{/if}-->
+                            <b>:下一篇</b>
+                        </p>
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -284,8 +297,7 @@
         <div class="clearfix mb20"></div>
     </div>
     <!--{include file="./footer.htm"}-->
-    <script src="<!--{$article.hits.script}-->">
-    </script>
+    <script src="<!--{$article.hits.script}-->"></script>
 </body>
 
 </html>

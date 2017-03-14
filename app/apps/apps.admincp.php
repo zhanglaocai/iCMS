@@ -229,9 +229,9 @@ class appsAdmincp{
         }
     }
     public function do_iCMS(){
-      if($_GET['keywords']) {
-		    $sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";
-      }
+      // if($_GET['keywords']) {
+		    // $sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";
+      // }
       $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
       $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
       $total      = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__apps` {$sql}","G");
@@ -318,7 +318,7 @@ class appsAdmincp{
      * @return [type] [description]
      */
     public function do_store_json(){
-      $url  = apps_store::STORE_URL.'/store.json.php';
+      $url  = apps_store::STORE_URL.'/store.json';
       $json = iHttp::remote($url);
       echo $json;
     }
@@ -328,9 +328,13 @@ class appsAdmincp{
      */
     public function do_store_install(){
       $sid  = $_GET['sid'];
-      $key  = md5(iPHP_KEY.iPHP_SELF.time());
-      $url  = apps_store::STORE_URL.'/store.get.php?sid='.$sid.'&key='.$key;
+      $time = time();
+      $host = $_SERVER['HTTP_HOST'];
+      $key  = md5(iPHP_KEY.$host.uniqid(true));
+      $array= compact(array('sid','key','host','time'));
+      $url  = apps_store::STORE_URL.'/store.get?'.http_build_query($array);
       $json = iHttp::remote($url);
+      var_dump($json);
       if($json){
         $array = json_decode($json);
         if($array->premium){
@@ -340,12 +344,17 @@ class appsAdmincp{
           iUI::dialog('
             此应用为付费版,请先付费后安装!<br />
             请使用微信扫描下面二维码<br />
-            <img alt="模式一扫码支付" src="http://paysdk.weixin.qq.com/example/qrcode.php?data='.$array->pay.'"/>
+            <p style="text-align: center;">
+            <img alt="模式一扫码支付"
+            src="http://paysdk.weixin.qq.com/example/qrcode.php?data='.$array->pay.'"/>
+            </p>
           ','js:1',1000000);
-          // echo '<script type="text/javascript">
-          //   top.pay_notify("'.$key.'","'.$sid.'",d);
-          // </script>';
+          echo '<script type="text/javascript">
+            top.pay_notify("'.$key.'","'.$sid.'",d);
+          </script>';
           exit;
+        }else{
+          apps_store::download($array->url,$array->name);
         }
       }
 

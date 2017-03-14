@@ -20,9 +20,6 @@ admincp::head();
       </ul>
     </div>
   </div>
-  <div class="alert alert-info">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    欢迎使用iCMS内容管理系统！<strong><?php echo members::$data->username;?></strong>。您最后一次登陆时间:<strong><?php echo get_date(members::$data->lastlogintime,"Y-n-j H:i:s") ; ?></strong>，IP地址为:<strong><?php echo members::$data->lastip; ?></strong>。如有异常请及时排查！ </div>
   <div class="widget-box">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-signal"></i> </span>
       <h5>站点数据统计</h5>
@@ -77,27 +74,18 @@ admincp::head();
         <tr>
           <td>当前程序版本</td>
           <td>iCMS <?php echo iCMS_VERSION ; ?>[<?php echo iCMS_RELEASE ; ?>]</td>
-          <td>
-            <a href="<?php echo __ADMINCP__;?>=patch&do=check&force=1&frame=iPHP" target="iPHP_FRAME" id="home_patch">最新版本</a>
-            /
-            <a href="<?php echo __ADMINCP__;?>=patch&do=git_check&git=true" data-toggle="modal" data-target="#iCMS-MODAL" data-meta="{&quot;width&quot;:&quot;85%&quot;,&quot;height&quot;:&quot;640px&quot;}" title="开发版信息">开发版</a>
-          </td>
-          <td>
-            <span id="iCMS_RELEASE"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span>
-            <span id="GIT_COMMIT_TIME" class="hide"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span>
-          </td>
+          <td><a href="<?php echo __ADMINCP__;?>=patch&do=check&force=1&frame=iPHP" target="iPHP_FRAME" id="home_patch">最新版本</a></td>
+          <td><span id="iCMS_RELEASE"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span></td>
+          <td><a href="<?php echo __ADMINCP__;?>=patch&do=git_check&git=true" data-toggle="modal" data-target="#iCMS-MODAL" data-meta="{&quot;width&quot;:&quot;85%&quot;,&quot;height&quot;:&quot;640px&quot;}" title="开发版信息">开发版信息</a></td>
+          <td><span id="iCMS_GIT"><img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle"></span></td>
         </tr>
         <tr>
           <td>服务器操作系统</td>
           <td><?php $os = explode(" ", php_uname()); echo $os[0];?> &nbsp;内核版本：<?php if('/'==DIRECTORY_SEPARATOR){echo $os[2];}else{echo $os[1];} ?></td>
           <td>WEB服务器版本</td>
           <td><?php echo $_SERVER['SERVER_SOFTWARE'] ; ?></td>
-        </tr>
-        <tr>
           <td>服务器端口</td>
           <td><?php echo getenv(SERVER_PORT) ; ?></td>
-          <td>服务器时间</td>
-          <td><?php echo date("Y-m-d H:i:s"); ?></td>
         </tr>
         <tr>
           <td>服务器总空间</td>
@@ -110,10 +98,14 @@ admincp::head();
             $df = round(@disk_free_space(".")/(1024*1024*1024),3);
             echo $df?$df:'∞'
            ?>G</td>
+          <td>服务器时间</td>
+          <td><?php echo date("Y-m-d H:i:s"); ?></td>
         </tr>
         <tr>
           <td>PHP版本</td>
           <td><?php echo PHP_VERSION ; ?></td>
+          <td>MySQL 版本</td>
+          <td><?php echo iDB::version() ; ?></td>
           <td>PHP运行方式</td>
           <td><?php echo strtoupper(php_sapi_name());?></td>
         </tr>
@@ -122,24 +114,16 @@ admincp::head();
           <td><?php echo $this->show("memory_limit"); ?></td>
           <td>脚本上传文件大小限制</td>
           <td><?php echo $this->show("upload_max_filesize");?></td>
-        </tr>
-        <tr>
-          <td>POST方法提交最大限制</td>
-          <td><?php echo $this->show("post_max_size"); ?></td>
           <td>脚本超时时间</td>
           <td><?php echo $this->show("max_execution_time"); ?>秒</td>
         </tr>
         <tr>
-          <td>MySQL 类库</td>
+          <td>MySQL支持</td>
           <td><?php echo version_compare(PHP_VERSION,'5.5','>=')?'mysqli':'mysql';?></td>
-          <td>MySQL 版本</td>
-          <td><?php echo iDB::version() ; ?></td>
-        </tr>
-        <tr>
-          <td>FTP支持：</td>
-          <td><?php echo $this->isfun("ftp_login");?></td>
           <td>CURL支持：</td>
           <td><?php echo $this->isfun("curl_init");?></td>
+          <td>mb_string支持：</td>
+          <td><?php echo $this->isfun("mb_convert_encoding");?></td>
         </tr>
         <tr>
           <td>GD库支持</td>
@@ -151,10 +135,14 @@ admincp::head();
             echo $this->check(0);
           }
           ?></td>
+          <td>FTP支持：</td>
+          <td><?php echo $this->isfun("ftp_login");?></td>
           <td>Session支持</td>
           <td><?php echo $this->isfun("session_start") ; ?></td>
         </tr>
         <tr>
+          <td>POST最大限制</td>
+          <td><?php echo $this->show("post_max_size"); ?></td>
           <td>被屏蔽的函数</td>
           <td><?php echo get_cfg_var("disable_functions")?'<a class="tip" href="javascript:;" title="'.get_cfg_var("disable_functions").'">查看</a>':"无" ; ?></td>
           <td>安全模式</td>
@@ -254,7 +242,7 @@ $(function(){
 		$.getJSON("http://www.idreamsoft.com/cms/version.php?VERSION=<?php echo iCMS_VERSION ; ?>&RELEASE=<?php echo iCMS_RELEASE ; ?>&callback=?",
 		    function(o){
             $('#iCMS_RELEASE').text(o.release);
-            // $('#GIT_COMMIT_TIME').text(o.commit_time);
+            $('#iCMS_GIT').text(o.git);
 		    }
 		);
 	},1000);

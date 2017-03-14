@@ -19,11 +19,11 @@ function pay_notify (key,sid,d) {
   var timer = window.setInterval(function(){
     console.log(key,sid);
     $.getJSON(
-      "<?php echo apps_store::STORE_URL;?>/store.pay.notify.php?callback=?",{key,sid},
+      "<?php echo apps_store::STORE_URL;?>/store.pay.notify?callback=?",{key,sid},
       function(o){
           console.log(o);
-          d.close().remove();
-          clearInterval(timer);
+          // d.close().remove();
+          // clearInterval(timer);
       }
     );
   },1000);
@@ -99,9 +99,9 @@ function pay_notify (key,sid,d) {
       {{/if}}
     </div>
     <div class="item-author">
-      <p class="avatar"><img src="{{value.author.avatar}}" /></p>
+      <p class="avatar"><img src="{{value.avatar}}" /></p>
       <p class="name">
-        <b>@{{value.author.name}}</b>
+        <b>@{{value.author}}</b>
         <span class="version">当前版本:{{value.version}}</span>
         {{if value.demo}}
           <a class="demo" href="{{value.demo}}" target="_blank">&gt;&gt;演示</a>

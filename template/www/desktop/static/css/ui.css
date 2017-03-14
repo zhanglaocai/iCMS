@@ -243,6 +243,10 @@ body.articleApp { }
 .article-prevnext { }
 .article-prevnext p.prev { float: left; }
 .article-prevnext p.next { float: right; }
+.favorite-btn { position: relative; display: block; text-decoration: none; text-align: left; color: #fff; background: #fff; font-size: 16px; line-height: 25px; font-family: "microsoft yahei"; border: 1px solid #ddd; border-radius: 5px; padding: 5px; float: left; margin-right: 10px; }
+.favorite-num { margin-left: 35px; color: #369; }
+.favorite-icon {position: absolute; top: 2px; left: 10px; width: 27px; height: 27px; display: block;  background: url(../img/favorite.png) no-repeat; top: 6px; _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled='true', sizingMethod='scale', src='../img/favorite.png'); _background: none; }
+.favorite-txt { color: #666; }
 
 /* ==commnet==*/
 .commnet { padding-right: 10px; width: auto; }

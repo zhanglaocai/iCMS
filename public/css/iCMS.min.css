@@ -296,7 +296,7 @@ p.click2next,p.article_pic{text-indent:0px !important;text-align:center;}
 /* favorite_dialog */
 .iCMS_FAVORITE_DIALOG{width:400px;}
 .iCMS_FAVORITE_DIALOG .favorite_list_content{text-align:left;text-decoration:none;}
-.iCMS_FAVORITE_DIALOG .favorite_list_content .favo-list-item-link{display:block;margin:0 12px;border:solid 1px #DDD;padding:8px 12px;box-shadow:0 1px 1px rgba(0,0,0,.05)}
+.iCMS_FAVORITE_DIALOG .favorite_list_content .favo-list-item-link{display:block;margin:0 12px;border:solid 1px #DDD;padding:8px 12px;box-shadow:0 1px 1px rgba(0,0,0,.05);text-decoration: none;}
 .iCMS_FAVORITE_DIALOG .favorite_list_content .favo-list-item-link .meta{display:block}
 .iCMS_FAVORITE_DIALOG .favorite_list_content .favo-list-item-link:hover{text-decoration:none;background-color:#F5F5F5}
 .iCMS_FAVORITE_DIALOG .favorite_list_content .active{background:url(../img/check.png) no-repeat 96% center;}
