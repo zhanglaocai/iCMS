@@ -80,7 +80,7 @@ class patch {
 		$msg .= '开始测试目录权限<iCMS>';
 		$bakDir = iPATH . self::$release . 'bak';
 		$update = true;
-		if (!self::checkDir(iPATH)) {
+		if (!iFS::checkdir(iPATH)) {
 			$update = false;
 			$msg .= iPATH . ' 目录无写权限<iCMS>';
 		}
@@ -89,7 +89,7 @@ class patch {
 		foreach ($archive_files as $file) {
 			$folder = $file['folder'] ? $file['filename'] : dirname($file['filename']);
 			$dp = iPATH . $folder;
-			if (!self::checkDir($dp) && iFS::ex($dp)) {
+			if (!iFS::checkdir($dp) && iFS::ex($dp)) {
 				$update = false;
 				$msg .= $dp . ' 目录无写权限<iCMS>';
 			}
@@ -176,18 +176,5 @@ class patch {
 		}
 		// var_dump($msg);
 		return $msg;
-	}
-	public static function checkDir($dirpath) {
-		if (empty($dirpath)) {
-			return false;
-		}
-		$dirpath = rtrim($dirpath, '/') . '/';
-		if ($fp = @fopen($dirpath . 'iCMS.txt', "wb")) {
-			@fclose($fp);
-			@unlink($dirpath . 'iCMS.txt');
-			return true;
-		} else {
-			return false;
-		}
 	}
 }

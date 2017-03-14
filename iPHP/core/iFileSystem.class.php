@@ -64,7 +64,10 @@ class iFS {
 			return true;
 		}
 	}
-    public static function del($fn, $check = 1) {
+	public static function del($fn, $check = 1) {
+		self::rm($fn, $check);
+	}
+    public static function rm($fn, $check = 1) {
 		$check && self::check($fn);
 		@chmod($fn, 0777);
 		$del = @unlink($fn);
@@ -127,7 +130,19 @@ class iFS {
 
 		return false;
 	}
-
+	public static function checkdir($dirpath) {
+		if (empty($dirpath)) {
+			return false;
+		}
+		$dirpath = rtrim($dirpath, '/') . '/';
+		if ($fp = @fopen($dirpath . 'iCMS.txt', "wb")) {
+			@fclose($fp);
+			@unlink($dirpath . 'iCMS.txt');
+			return true;
+		} else {
+			return false;
+		}
+	}
 	//删除目录
 	public static function rmdir($dir, $df = true, $ex = NULL) {
 		$exclude = array('.', '..');
@@ -143,6 +158,17 @@ class iFS {
 		}
 		return @rmdir($dir);
 	}
+	//获取文件夹下所有文件/文件夹列表
+    public static function fileList($dir){
+      $lists = array();
+      foreach(glob($dir."/*") as $value){
+        if(is_dir($value)){
+          $lists+= self::fileList($value);
+        }
+        $lists[] = $value;
+      }
+      return (array)$lists;
+    }
 	//获取文件夹列表
 	public static function folder($dir = '', $type = NULL) {
 		$dir = trim($dir, '/');

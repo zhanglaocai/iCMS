@@ -112,9 +112,9 @@ class tagAdmincp{
      */
     public function do_import(){
         $_POST['cid'] OR iUI::alert('请选择标签所属栏目！');
-        iFile::$check_data           = false;
-        iFS::$config['allow_ext']     = 'txt';
-        iFS::$config['yun']['enable'] = false;
+        iFile::$check_data        = false;
+        iFile::$cloud_enable      = false;
+        iFS::$config['allow_ext'] = 'txt';
         $F    = iFS::upload('upfile');
         $path = $F['RootPath'];
         if($path){

@@ -241,7 +241,11 @@ function metadata($data=null) {
     }
     return $mdArray;
 }
-function get_json_file($path){
+function put_php_file($path,$data){
+    $data ="<?php defined('iPHP') OR exit('What are you doing?');?>\n".$data;
+    file_put_contents($path, $data);
+}
+function get_php_file($path){
     if(@is_file($path)){
         $json = file_get_contents($path);
         $json = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);

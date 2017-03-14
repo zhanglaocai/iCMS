@@ -232,9 +232,9 @@ class databaseAdmincp {
 		print("暂无");
 		admincp::foot();
 	}
-	public function bakuptable($tabledb) {
+	public static function bakuptable($tabledb,$exists=true) {
 		foreach ($tabledb as $table) {
-			$creattable .= "DROP TABLE IF EXISTS $table;\n";
+			$exists && $creattable .= "DROP TABLE IF EXISTS `$table`;\n";
 			$CreatTable = iDB::row("SHOW CREATE TABLE $table", ARRAY_A);
 			$CreatTable['Create Table'] = str_replace($CreatTable['Table'], $table, $CreatTable['Create Table']);
 			$creattable .= $CreatTable['Create Table'] . ";\n\n";

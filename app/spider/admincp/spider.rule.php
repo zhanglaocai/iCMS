@@ -42,7 +42,7 @@ $(function(){
           <input type="text" name="keywords" class="span2" id="keywords" value="<?php echo $_GET['keywords'] ; ?>" />
           <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜 索</button>
         </div>
-        <div style="float:right;">
+        <div class="pull-right">
           <button class="btn btn-success" type="button" id="import_rule"><i class="fa fa-send"></i> 导入规则</button>
         </div>
       </form>

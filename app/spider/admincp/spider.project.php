@@ -48,6 +48,9 @@ $(function(){
   <div class="widget-box">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-search"></i> </span>
       <h5>搜索</h5>
+      <div class="pull-right">
+        <button class="btn btn-success" type="button" id="import_project"><i class="fa fa-send"></i> 导入方案</button>
+      </div>
     </div>
     <div class="widget-content">
       <form action="<?php echo iPHP_SELF; ?>" method="get" class="form-inline">
@@ -94,9 +97,6 @@ $(function(){
         <div class="input-prepend input-append"> <span class="add-on">关键字</span>
           <input type="text" name="keywords" class="span2" id="keywords" value="<?php echo $_GET['keywords']; ?>" />
           <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜 索</button>
-        </div>
-        <div style="float:right;">
-          <button class="btn btn-success" type="button" id="import_project"><i class="fa fa-send"></i> 导入方案</button>
         </div>
       </form>
     </div>

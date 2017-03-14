@@ -307,9 +307,9 @@ class spiderAdmincp {
 	 * @return [type] [description]
 	 */
 	public function do_import_rule() {
-		iFile::$check_data = false;
-		iFS::$config['allow_ext'] = 'txt';
-		iFS::$config['yun']['enable'] = false;
+        iFile::$check_data        = false;
+        iFile::$cloud_enable      = false;
+        iFS::$config['allow_ext'] = 'txt';
 		$F = iFS::upload('upfile');
 		$path = $F['RootPath'];
 		if ($path) {
@@ -580,9 +580,9 @@ class spiderAdmincp {
 	 * @return [type] [description]
 	 */
     public function do_import_project(){
-        iFile::$check_data           = false;
-        iFS::$config['allow_ext']     = 'txt';
-        iFS::$config['yun']['enable'] = false;
+        iFile::$check_data        = false;
+        iFile::$cloud_enable      = false;
+        iFS::$config['allow_ext'] = 'txt';
         $F    = iFS::upload('upfile');
         $path = $F['RootPath'];
         if($path){
@@ -603,10 +603,17 @@ class spiderAdmincp {
 	 * @return [type] [description]
 	 */
     public function do_exportproject(){
-        $data = iDB::all("select `name`, `urls`, `list_url`, `cid`, `rid`, `poid`, `sleep`, `checker`, `self`, `auto`, `lastupdate`, `psleep` from `#iCMS@__spider_project` where rid = '$this->rid'");
+        $data = iDB::all("
+        	SELECT `name`, `urls`, `list_url`,
+        	`cid`, `rid`, `poid`, `sleep`,
+        	`checker`, `self`, `auto`,
+        	`lastupdate`, `psleep`
+        	FROM `#iCMS@__spider_project`
+        	WHERE rid = '$this->rid'
+        ");
         $data = base64_encode(serialize($data));
-        Header("Content-type: application/octet-stream");
-        Header("Content-Disposition: attachment; filename=spider.rule.".$this->rid.'.project.txt');
+        header("Content-type: application/octet-stream");
+        header("Content-Disposition: attachment; filename=spider.rule.".$this->rid.'.project.txt');
 		echo $data;
 	}
 	/**

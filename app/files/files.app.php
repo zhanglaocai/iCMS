@@ -17,12 +17,16 @@ class filesApp {
         $data = iFile::get('filename',$filename);
         $url  = iFS::fp($data->filepath, '+http');
         $path = iFS::fp($data->filepath, '+iPATH');
-
+        self::attachment($path,$data->ofilename);
+    }
+    public static function attachment($path,$filename=null){
+        $path_parts = pathinfo($path);
+        $filename===null && $filename = $path_parts['basename'];
         ob_end_clean();
         header("Content-Type: application/force-download");
         header("Content-Transfer-Encoding: binary");
-        header('Content-Type: '.filesApp::mime_types($data->ext));
-        header('Content-Disposition: attachment; filename=' . $data->ofilename);
+        header('Content-Type: '.filesApp::mime_types($path_parts['extension']));
+        header('Content-Disposition: attachment; filename=' . $filename);
         header('Content-Length: ' . filesize($path));
         readfile($path);
         flush();
