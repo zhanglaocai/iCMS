@@ -248,10 +248,15 @@ function put_php_file($path,$data){
 function get_php_file($path){
     if(@is_file($path)){
         $json = file_get_contents($path);
-        $json = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $json);
+        $json = get_php_content($json);
     }
     return $json;
 }
+function get_php_content($content){
+    $content = str_replace("<?php defined('iPHP') OR exit('What are you doing?');?>\n", '', $content);
+    return $content;
+}
+
 /** Json数据格式化
 * @param  Mixed  $data   数据
 * @param  String $indent 缩进字符，默认4个空格

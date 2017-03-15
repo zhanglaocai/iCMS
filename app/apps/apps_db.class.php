@@ -219,6 +219,26 @@ class apps_db {
         }
         return false;
     }
+    public static function multi_query($sql) {
+        $sql      = str_replace("\r", "\n", $sql);
+        $resource = array();
+        $num      = 0;
+        $sql_array = explode(";\n", trim($sql));
+        foreach($sql_array as $query) {
+            $queries = explode("\n", trim($query));
+            foreach($queries as $query) {
+                $resource[$num] .= $query[0] == '#' ? '' : $query;
+            }
+            $num++;
+        }
+        unset($sql);
+
+        foreach($resource as $key=>$query) {
+            $query = trim($query);
+            $query = str_replace('`icms_', '`#iCMS@__', $query);
+            $query && iDB::query($query);
+        }
+    }
 /**
  * 以下方法移植自adminer
  */

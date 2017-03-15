@@ -13,10 +13,11 @@ admincp::head();
 </style>
 <script type="text/javascript">
 $(function(){
-$("#<?php echo APP_FORMID;?>").batch();
+  $("#<?php echo APP_FORMID;?>").batch();
 });
+var pay_notify_timer;
 function pay_notify (key,sid,d) {
-  var timer = window.setInterval(function(){
+  pay_notify_timer = window.setInterval(function(){
     console.log(key,sid);
     $.getJSON(
       "<?php echo apps_store::STORE_URL;?>/store.pay.notify?callback=?",{key,sid},
@@ -27,6 +28,9 @@ function pay_notify (key,sid,d) {
       }
     );
   },1000);
+}
+function clear_pay_notify_timer () {
+  clearInterval(pay_notify_timer);
 }
 </script>
 <div class="iCMS-container">

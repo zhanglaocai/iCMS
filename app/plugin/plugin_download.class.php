@@ -15,8 +15,7 @@ class plugin_download{
         preg_match_all('#<a\s*class="attachment".*ext=".*?"\s*fid=".*?"\s*path="(.*?)"\s*href="(.*?)"\s*title=".*?">.*?</a>#is',
             $content, $variable);
         foreach ((array)$variable[1] as $key => $path) {
-           $info = pathinfo($path);
-           $urlArray[$key]= filesApp::get_url($info['filename']);
+           $urlArray[$key]= filesApp::get_url(basename($path));
         }
         if($urlArray){
             $content = str_replace($variable[2], $urlArray, $content);

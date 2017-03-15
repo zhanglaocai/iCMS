@@ -21,13 +21,6 @@ $(function(){
         content:local_app_wrap
       });
   });
-  $("#local").click(function() {
-      $("#localfile").click();
-  });
-  $("#localfile").change(function() {
-      $("#local_app_wrap form").submit();
-      $(this).val('');
-  });
 });
 </script>
 <div class="iCMS-container">
@@ -192,11 +185,21 @@ $(function(){
 <div id="local_app_wrap" style="display:none;">
   <form action="<?php echo APP_FURI; ?>&do=local_app" method="post" enctype="multipart/form-data" target="iPHP_FRAME">
     <div class="alert alert-info">
-      请选择iCMS应用安装包文件(.zip)
+      由于安全限制<br />
+      请先把iCMS应用安装包文件(.zip)<br />
+      上传到网站根目录下
     </div>
     <div class="clearfloat mb10"></div>
-    <a id="local" class="btn btn-primary btn-large btn-block"><i class="fa fa-upload"></i> 请选择要安装的应用</a>
-    <input id="localfile" name="upfile" type="file" class="hide"/>
+    <div class="input-prepend">
+      <span class="add-on">可用安装包</span>
+      <select name="zipfile" class="chosen-select span4" data-placeholder="请选择iCMS应用安装包文件(.zip)...">
+        <?php foreach(glob(iPATH."iCMS.APP.*-v*.*.*.zip") as $value){ ?>
+        <option value="<?php echo $value;?>"><?php echo str_replace(iPATH, '', $value);?></option>
+        <?php } ?>
+      </select>
+    </div>
+    <div class="clearfloat mb10"></div>
+    <button class="btn btn-primary btn-large btn-block" type="submit"><i class="fa fa-check"></i> 安装</button>
     <div class="clearfloat mb10"></div>
   </form>
 </div>

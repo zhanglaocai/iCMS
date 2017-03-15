@@ -342,9 +342,13 @@ class appsAdmincp{
       if($json){
         $array = json_decode($json);
         if($array->premium){
-          iUI::$break            = false;
-          iUI::$dialog['ok']     = true;
-          iUI::$dialog['cancel'] = true;
+          iUI::$break               = false;
+          iUI::$dialog['ok']        = true;
+          iUI::$dialog['cancel']    = true;
+          iUI::$dialog['ok:js']     =
+          iUI::$dialog['cancel:js'] = '
+            top.clear_pay_notify_timer();
+          ';
           iUI::dialog('
             此应用为付费版,请先付费后安装!<br />
             请使用微信扫描下面二维码<br />
@@ -400,7 +404,57 @@ class appsAdmincp{
      * [本地安装应用]
      * @return [type] [description]
      */
-    // public function do_local_app(){
+    public function do_local_app(){
+      $zipfile  = $_POST['zipfile'];
+      // $app = preg_replace('/.*iCMS\.APP\.(\w+)-v.*?\.zip/is', '$1', $zipfile);
+      // iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iUI::alert('该应用已经存在!');
+
+      iPHP::import(iPHP_LIB . '/pclzip.class.php'); //加载zip操作类
+      $zip = new PclZip($zipfile);
+      if (false == ($archive_files = $zip->extract(PCLZIP_OPT_EXTRACT_AS_STRING))) {
+          iUI::alert("ZIP包错误");
+      }
+
+      if (0 == count($archive_files)) {
+          iUI::alert("空的ZIP文件");
+      }
+      foreach ($archive_files AS $key => $file) {
+        $filename = basename($file['filename']);
+        if($filename=="iCMS.APP.DATA.php"){
+          $content = get_php_content($file['content']);
+          $content = base64_decode($content);
+          $array   = unserialize($content);
+
+          iDB::value("
+            SELECT `id` FROM `#iCMS@__apps`
+            WHERE `app` ='".$array['app']."'
+          ") && iUI::alert('该应用已经存在!');
+
+          if($array['table']){
+            $tableArray = apps::table_item($array['table']);
+            foreach ($tableArray AS $value) {
+              apps_db::check_table($value['table']) && iUI::alert('['.$value['table'].']数据表已经存在!');
+            }
+          }
+          $array['addtime'] = time();
+          $array = array_map('addslashes', $array);
+          // $appid = iDB::insert("apps",$array);
+          unset($archive_files[$key]);
+          break;
+        }
+      }
+
+      foreach ($archive_files AS $key => $file) {
+        $filename = basename($file['filename']);
+        if($filename=="iCMS.APP.TABLE.php"){
+          $content = get_php_content($file['content']);
+          // $content && apps_db::multi_query($content);
+          unset($archive_files[$key]);
+          break;
+        }
+      }
+      print_r($archive_files);
+
     //     iFile::$check_data        = false;
     //     iFile::$cloud_enable      = false;
     //     iFS::$config['allow_ext'] = 'zip';
@@ -414,7 +468,7 @@ class appsAdmincp{
     //       @unlink($path);
     //       // iUI::success('应用安装完成,请重新设置规则','js:1');
     //     }
-    // }
+    }
     /**
      * [打包下载应用]
      * @return [type] [description]

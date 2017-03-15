@@ -17,8 +17,7 @@ class apps_store {
 
     public static function download($url=null,$name) {
         iFS::mkdir(STORE_DIR);
-        $path_parts  =  pathinfo ($url);
-        self::$zipname = $path_parts['basename'];
+        self::$zipname = basename($url);
         $zipFile = STORE_DIR . self::$zipname; //临时文件
         $msg = '正在下载 [' . $name . '] 安装包 ' . $url . '<iCMS>下载完成....<iCMS>';
         if (iFS::ex($zipFile)) {
@@ -145,25 +144,5 @@ class apps_store {
              $path = iPHP_TPL_DIR.'/'.substr($path, $pos+10);
         }
         return $path;
-    }
-    public static function run_query($sql) {
-        $sql      = str_replace("\r", "\n", $sql);
-        $resource = array();
-        $num      = 0;
-        $sql_array = explode(";\n", trim($sql));
-        foreach($sql_array as $query) {
-            $queries = explode("\n", trim($query));
-            foreach($queries as $query) {
-                $resource[$num] .= $query[0] == '#' ? '' : $query;
-            }
-            $num++;
-        }
-        unset($sql);
-
-        foreach($resource as $key=>$query) {
-            $query = trim($query);
-            $query = str_replace('`icms_', '`#iCMS@__', $query);
-            $query && iDB::query($query);
-        }
     }
 }

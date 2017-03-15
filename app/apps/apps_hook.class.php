@@ -63,9 +63,8 @@ class apps_hook {
         //plugins
         $plugin = apps::get('plugin','app');
         if($plugin['status'])foreach (glob(iPHP_APP_DIR."/plugin/plugin_*.class.php") as $filename) {
-            $parts    = pathinfo($filename);
             $path     = str_replace(iPHP_APP_DIR.'/','',$filename);
-            $obj_name = substr($parts['filename'],0,-6);
+            $obj_name = basename($filename,'.class.php');
             $option  .= self::app_hook_method($obj_name);
         }
         return $option;
