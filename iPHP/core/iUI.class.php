@@ -211,8 +211,8 @@ class iUI {
 		}else{
 			self::$dialog['ok'] OR $options[] = $ok;
 		}
-		self::$dialog['ok'] && $options[] = 'okValue: "确 定",ok: function(){}';
-		self::$dialog['cancel'] && $options[] = 'cancelValue: "取 消",cancel: function(){}';
+		self::$dialog['ok'] && $options[] = 'okValue: "确 定",ok: function(){'.self::$dialog['ok:js'].'}';
+		self::$dialog['cancel'] && $options[] = 'cancelValue: "取 消",cancel: function(){'.self::$dialog['cancel:js'].'}';
 
 		$dialog = 'var iTOP = window.top,';
 		if ($update) {
