@@ -174,14 +174,14 @@ class apps {
     }
     public static function get_router(){
         $rs = apps::get_array(array('status'=>'1'));
-        foreach ($rs as $key => $value) {
+        foreach ((array)$rs as $key => $value) {
             $array[$value['app']] = apps_mod::get_router($value);
         }
         return $array;
     }
     public static function get_appsid($app=null,$trans=false){
         $rs = apps::get_array(array('status'=>'1'));
-        foreach ($rs as $key => $value) {
+        foreach ((array)$rs as $key => $value) {
             $array[$value['app']] = $value['id'];
         }
         $trans && $array = array_flip($array);

@@ -16,7 +16,7 @@ MySQL - 5.5.53 : Database - icms62
 
 LOCK TABLES `icms_apps` WRITE;
 
-insert  into `icms_apps`(`id`,`app`,`name`,`apptype`,`type`,`table`,`config`,`fields`,`menu`,`addtimes`,`status`) values
+insert  into `icms_apps`(`id`,`app`,`name`,`apptype`,`type`,`table`,`config`,`fields`,`menu`,`addtime`,`status`) values
     (1,'article','文章',0,1,'{\"article\":[\"article\",\"id\",\"\",\"\\u6587\\u7ae0\"],\"article_data\":[\"article_data\",\"id\",\"aid\",\"\\u6b63\\u6587\"]}','{\"iFormer\":\"1\",\"info\":\"\\u6587\\u7ae0\\u8d44\\u8baf\\u7cfb\\u7edf\",\"template\":[\"iCMS:article:list\",\"iCMS:article:search\",\"iCMS:article:data\",\"iCMS:article:prev\",\"iCMS:article:next\",\"iCMS:article:array\",\"$article\"],\"router\":\"1\",\"menu\":\"main\"}','','[{\"id\":\"article\",\"sort\":\"2\",\"caption\":\"文章\",\"icon\":\"pencil-square-o\",\"children\":[{\"caption\":\"文章系统配置\",\"href\":\"article&do=config\",\"icon\":\"cog\"},{\"caption\":\"-\"},{\"caption\":\"栏目管理\",\"href\":\"article_category\",\"icon\":\"list-alt\"},{\"caption\":\"添加栏目\",\"href\":\"article_category&do=add\",\"icon\":\"edit\"},{\"caption\":\"-\"},{\"caption\":\"添加文章\",\"href\":\"article&do=add\",\"icon\":\"edit\"},{\"caption\":\"文章管理\",\"href\":\"article&do=manage\",\"icon\":\"list-alt\"},{\"caption\":\"草稿箱\",\"href\":\"article&do=inbox\",\"icon\":\"inbox\"},{\"caption\":\"回收站\",\"href\":\"article&do=trash\",\"icon\":\"trash-o\"},{\"caption\":\"-\"},{\"caption\":\"用户文章管理\",\"href\":\"article&do=user\",\"icon\":\"check-circle\"},{\"caption\":\"审核用户文章\",\"href\":\"article&do=examine\",\"icon\":\"minus-circle\"},{\"caption\":\"淘汰的文章\",\"href\":\"article&do=off\",\"icon\":\"times-circle\"},{\"caption\":\"-\"},{\"caption\":\"文章评论管理\",\"href\":\"comment&appname=article&appid=1\",\"icon\":\"comments\"}]}]',1488594570,1),
     (2,'category','分类',0,1,'{\"category\":[\"category\",\"cid\",\"\",\"\\u5206\\u7c7b\"],\"category_map\":[\"category_map\",\"id\",\"node\",\"\\u5206\\u7c7b\\u6620\\u5c04\"]}','{\"iFormer\":\"1\",\"info\":\"\\u901a\\u7528\\u65e0\\u9650\\u7ea7\\u5206\\u7c7b\\u7cfb\\u7edf\",\"template\":[\"iCMS:category:array\",\"iCMS:category:list\",\"$category\"],\"router\":\"1\",\"menu\":\"main\"}','','',1488594584,1),
     (3,'tag','标签',0,1,'{\"tags\":[\"tags\",\"id\",\"\",\"\\u6807\\u7b7e\"],\"tags_map\":[\"tags_map\",\"id\",\"node\",\"\\u6807\\u7b7e\\u6620\\u5c04\"]}','{\"iFormer\":\"1\",\"info\":\"\\u81ea\\u7531\\u591a\\u6837\\u6027\\u6807\\u7b7e\\u7cfb\\u7edf\",\"template\":[\"iCMS:tag:list\",\"iCMS:tag:array\",\"$tag\"],\"router\":\"1\",\"menu\":\"main\"}','','[{\"id\":\"assist\",\"children\":[{\"id\":\"tag\",\"caption\":\"标签\",\"icon\":\"tags\",\"children\":[{\"caption\":\"标签配置\",\"href\":\"tag&do=config\",\"icon\":\"cog\"},{\"caption\":\"-\"},{\"caption\":\"标签管理\",\"href\":\"tag\",\"icon\":\"tag\"},{\"caption\":\"添加标签\",\"href\":\"tag&do=add\",\"icon\":\"edit\"},{\"caption\":\"-\"},{\"caption\":\"分类管理\",\"href\":\"tag_category\",\"icon\":\"sitemap\"},{\"caption\":\"添加分类\",\"href\":\"tag_category&do=add\",\"icon\":\"edit\"}]}]}]',1488594591,1),
@@ -182,8 +182,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `icms_members` WRITE;
 
-insert  into `icms_members`(`uid`,`gid`,`username`,`password`,`nickname`,`realname`,`gender`,`info`,`power`,`cpower`,`regtime`,`lastip`,`lastlogintime`,`logintimes`,`post`,`type`,`status`) values
-    (1,1,'admin','e10adc3949ba59abbe56e057f20f883e','iCMS','',0,'','','',0,'127.0.0.1',1488373614,266,0,1,1);
+insert  into `icms_members`(`uid`,`gid`,`username`,`password`,`nickname`,`realname`,`gender`,`info`,`config`,`regtime`,`lastip`,`lastlogintime`,`logintimes`,`post`,`type`,`status`) values
+    (1,1,'admin','e10adc3949ba59abbe56e057f20f883e','iCMS','',0,'','',0,'127.0.0.1',1488373614,266,0,1,1);
 
 UNLOCK TABLES;
 
