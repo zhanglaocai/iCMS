@@ -153,10 +153,10 @@ UNLOCK TABLES;
 
 LOCK TABLES `icms_group` WRITE;
 
-insert  into `icms_group`(`gid`,`name`,`sortnum`,`power`,`cpower`,`type`) values
-    (1,'超级管理员',1,'','','1'),
-    (2,'编辑',2,'','','1'),
-    (3,'会员',1,'','','0');
+insert  into `icms_group`(`gid`,`name`,`sortnum`,`config`,`type`) values
+    (1,'超级管理员',1,'','1'),
+    (2,'编辑',2,'','1'),
+    (3,'会员',1,'','0');
 
 UNLOCK TABLES;
 

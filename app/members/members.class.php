@@ -36,7 +36,11 @@ class members{
         self::$data->config = json_decode(self::$data->config);
 
         self::$group  = iDB::row("SELECT * FROM `#iCMS@__group` WHERE `gid`='".self::$data->gid."' LIMIT 1;");
-        self::$group->config = json_decode(self::$group->config);
+        if(self::$group){
+            self::$group->config = json_decode(self::$group->config);
+        }else{
+            self::$group = new stdClass();
+        }
 // if (!members::is_superadmin()) {
 //     var_dump(self::$data->config->mpriv,self::$group->config->mpriv);
 //     var_dump(array_merge((array)self::$data->config->mpriv,(array)self::$group->config->mpriv));
