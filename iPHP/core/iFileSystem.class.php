@@ -12,7 +12,7 @@ class iFS {
 	public static $force_ext = false;
 	public static $valid_ext = true;
 	public static $config = null;
-	public static $file_data = null;
+	public static $data = null;
 
 	public static $CALLABLE = null;
 	public static $ERROR = null;
@@ -468,13 +468,13 @@ class iFS {
 
 			list($RootPath, $FileDir) = self::mk_udir($udir); // 文件保存目录方式
 
-			if (self::$file_data) {
-				$fid = self::$file_data->id;
-				$file_md5 = self::$file_data->filename;
-				$oFileName = self::$file_data->ofilename;
-				$FileDir = self::$file_data->path;
-				// $FileExt = self::$file_data->ext;
-				$FileSize = self::$file_data->size;
+			if (self::$data) {
+				$fid        = self::$data->id;
+				$file_md5   = self::$data->filename;
+				$oFileName  = self::$data->ofilename;
+				$FileDir    = self::$data->path;
+				// $FileExt = self::$data->ext;
+				$FileSize   = self::$data->size;
 			} else {
 				$file_md5 = md5_file($tmp_file);
 				$frs = self::get_filedata('filename', $file_md5);

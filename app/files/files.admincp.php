@@ -100,9 +100,9 @@ class filesAdmincp{
     	$_POST['watermark'] OR iFile::$watermark = false;
         iFS::$ERROR_TYPE = true;
     	if($this->id){
-            iFS::$file_data = iFile::get('id',$this->id);
+            iFS::$data = iFile::get('id',$this->id);
             $F = iFS::upload('upfile');
-            if($F && $F['size']!=iFS::$file_data->size){
+            if($F && $F['size']!=iFS::$data->size){
                 iDB::query("update `#iCMS@__files` SET `size`='".$F['size']."' WHERE `id` = '$this->id'");
             }
     	}else{

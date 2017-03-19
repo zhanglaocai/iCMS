@@ -26,7 +26,7 @@
  *   KEY `fn_userid` (`filename`,`userid`)
  * ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
  *
- * CREATE TABLE `iPHP_file_map` (
+ * CREATE TABLE `iPHP_files_map` (
  * `fileid` int(10) unsigned NOT NULL,
  * `appid` int(10) NOT NULL,
  * `indexid` int(10) NOT NULL,
