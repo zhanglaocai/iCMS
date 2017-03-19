@@ -71,7 +71,7 @@ class articleAdmincp{
             $rs['editor']  = empty(members::$data->nickname)?members::$data->username:members::$data->nickname;
             $rs['userid']  = members::$userid;
 		}
-
+        apps::iFormer_create($this->appid,$rs,true);
         if(self::$config['markdown']){
             include admincp::view("article.markdown");
         }else{
@@ -592,7 +592,7 @@ class articleAdmincp{
             $mobile  = 0;
 
             $aid  = article::insert(compact($fields));
-
+            apps::iFormer_save($this->appid,$aid);
             admincp::callback($aid,$this,'primary');
 
             if($tags){
@@ -654,7 +654,7 @@ class articleAdmincp{
             $picdata = $this->picdata($pic,$mpic,$spic);
 
             article::update(compact($fields),array('id'=>$aid));
-
+            apps::iFormer_save($this->appid,$aid);
             admincp::callback($aid,$this,'primary');
 
             iMap::init('prop',self::$appid,'pid')->diff($pid,$_pid,$aid);

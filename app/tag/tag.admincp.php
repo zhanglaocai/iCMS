@@ -28,7 +28,7 @@ class tagAdmincp{
 
     public function do_add(){
         $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
-        apps::former_create($this->appid,$rs);
+        apps::iFormer_create($this->appid,$rs);
         include admincp::view('tag.add');
     }
     public function do_update(){
@@ -241,8 +241,6 @@ class tagAdmincp{
         );
         $data   = compact ($fields);
 
-        apps::former_data($this->appid,$data,'tags');
-
 		if(empty($id)){
             $this->check_tkey($tkey);
             $data['tkey']     = $tkey;
@@ -277,6 +275,7 @@ class tagAdmincp{
             iMap::diff($tcid,$_tcid,$id);
             $msg = '标签更新完成';
 		}
+        apps::iFormer_save($this->appid,$id);
         admincp::callback($id,$this);
         if($this->callback['code']){
             return array(

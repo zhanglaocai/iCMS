@@ -42,7 +42,7 @@ class pushAdmincp{
         $strpos 	= strpos(iPHP_REFERER,'?');
         $REFERER 	= $strpos===false?'':substr(iPHP_REFERER,$strpos);
 
-        apps::former_create($this->appid,$rs);
+        apps::iFormer_create($this->appid,$rs);
 
     	include admincp::view("push.add");
     }
@@ -146,12 +146,10 @@ class pushAdmincp{
 
         $data   = compact ($fields);
 
-        apps::former_data($this->appid,$data,'push');
-
         if(empty($id)) {
-            iDB::insert('push',$data);
+            $id = iDB::insert('push',$data);
             iDB::query("UPDATE `#iCMS@__category` SET `count` = count+1 WHERE `cid` ='$cid' LIMIT 1 ");
-            $msg = '推送完成';
+            $msg = '推荐完成';
         }else{
 			iDB::update('push', $data, array('id'=>$id));
             if($_cid!=$cid) {
@@ -160,6 +158,7 @@ class pushAdmincp{
             }
             $msg = '编辑完成!';
         }
+        apps::iFormer_save($this->appid,$id);
         admincp::callback($id,$this);
         if($this->callback['code']){
             return array(
@@ -200,13 +199,13 @@ class pushAdmincp{
 	}
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
-		$id OR iUI::alert('请选择要删除的推送');
+		$id OR iUI::alert('请选择要删除的推荐');
 		iDB::query("DELETE FROM `#iCMS@__push` WHERE `id` = '$id'");
-		$dialog && iUI::success('推送删除完成','js:parent.$("#tr'.$id.'").remove();');
+		$dialog && iUI::success('推荐删除完成','js:parent.$("#tr'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
-        $idArray OR iUI::alert("请选择要删除的推送");
+        $idArray OR iUI::alert("请选择要删除的推荐");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){

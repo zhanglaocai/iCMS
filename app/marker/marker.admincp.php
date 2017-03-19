@@ -26,7 +26,7 @@ class markerAdmincp{
             $rs['status'] = '1';
         }
 
-        apps::former_create(self::$appid,$rs);
+        apps::iFormer_create(self::$appid,$rs);
 
         include admincp::view("marker.add");
     }
@@ -47,7 +47,6 @@ class markerAdmincp{
         $fields = array('cid','pid','name','key','data','status');
         $data   = compact ($fields);
 
-        apps::former_data(self::$appid,$data,'marker');
 
 		if($id){
             iDB::update('marker', $data, array('id'=>$id));
@@ -57,6 +56,7 @@ class markerAdmincp{
             $id = iDB::insert('marker',$data);
 	        $msg="新标记添加完成!";
 		}
+        apps::iFormer_save(self::$appid,$id);
 		$this->cache($id);
         iUI::success($msg,'url:'.APP_URI);
     }

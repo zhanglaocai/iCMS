@@ -21,7 +21,7 @@ class linksAdmincp{
             $rs['keyword'] = $_GET['keyword'];
             $rs['url']     = $_GET['url'];
         }
-        apps::former_create(self::$appid,$rs);
+        apps::iFormer_create(self::$appid,$rs,true);
 
         include admincp::view("links.add");
     }
@@ -39,17 +39,17 @@ class linksAdmincp{
         $fields = array('cid', 'name', 'logo', 'url', 'desc', 'sortnum');
         $data   = compact ($fields);
 
-        apps::former_data(self::$appid,$data,'links');
 
         if(empty($id)) {
             iDB::value("SELECT `id` FROM `#iCMS@__links` where `name` ='$name'") && iUI::alert('该网站已经存在!');
-            iDB::insert('links',$data);
+            $id = iDB::insert('links',$data);
             $msg="网站添加完成!";
         }else {
             iDB::value("SELECT `id` FROM `#iCMS@__links` where `name` ='$name' AND `id` !='$id'") && iUI::alert('该网站已经存在!');
             iDB::update('links', $data, array('id'=>$id));
             $msg="网站编辑完成!";
         }
+        apps::iFormer_save(self::$appid,$id);
         iUI::success($msg,'url:'.APP_URI);
     }
 

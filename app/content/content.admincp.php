@@ -26,7 +26,7 @@ class contentAdmincp{
     }
     public function do_add(){
       $rs = apps_mod::get_data($this->app,$this->id);
-      apps::former_create($this->appid,$rs);
+      apps::iFormer_create($this->app,$rs);
       include admincp::view('content.add');
     }
 
@@ -113,69 +113,16 @@ class contentAdmincp{
         include admincp::view('content.manage');
     }
     public function do_save(){
-        list($variable,$tables,$orig_post,$imap,$tags) = iFormer::post($this->app);
-
-        if(!$variable){
-            iCMS::alert("表单数据处理出错!");
+        $update = apps::iFormer_save($this->app);
+        $REFERER_URL = $_POST['REFERER'];
+        if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
+            $REFERER_URL= APP_URI.'&do=manage';
         }
-
-        $update = false;
-        foreach ($variable as $table_name => $data) {
-            if(empty($data)){
-              continue;
-            }
-            //当表数据
-            $table   = $this->app['table'][$table_name];
-            //当前表主键
-            $primary = $table['primary'];
-            //关联字符 && 关联数据
-            if($table['union'] && $union_data){
-              $data[$table['union']] = $union_data[$table['union']];
-            }
-            $union_id = apps_mod::data_union_id($table_name);
-            $id = $data[$primary];
-            unset($data[$primary]);//主键不更新
-            if(empty($id)){ //主键值为空
-                $id = iDB::insert($table_name,$data);
-            }else{
-                $update = true;
-                iDB::update($table_name, $data, array($primary=>$id));
-            }
-            empty($table['union']) && $union_data[$union_id] = $id;
+        if($update){
+            iUI::success($this->app['name'].'编辑完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
+        }else{
+            iUI::success($this->app['name'].'添加完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
         }
-var_dump($imap,$update);
-
-        if($imap)foreach ($imap as $key => $value) {
-            iMap::init($value[0],$this->app['id'],$key);
-            if($update){
-                $orig = $orig_post[$key];
-                iMap::diff($value[1],$orig,$id);
-            }else{
-                iMap::add($value[1],$id);
-            }
-        }
-
-        if($tags)foreach ($tags as $key => $value) {
-            if(empty($value[0])){
-                continue;
-            }
-            tag::$appid = $this->app['id'];
-            if($update){
-                $orig = $orig_post[$key];
-                tag::diff($value[0],$orig,members::$userid,$id,$value[1]);
-            }else{
-                tag::add($value[0],members::$userid,$id,$value[1]);
-            }
-        }
-        // $REFERER_URL = $_POST['REFERER'];
-        // if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
-        //     $REFERER_URL= APP_URI.'&do=manage';
-        // }
-        // if($update){
-        //     iUI::success($this->app['name'].'编辑完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
-        // }else{
-        //     iUI::success($this->app['name'].'添加完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
-        // }
     }
 
     public function do_del($id = null,$dialog=true){

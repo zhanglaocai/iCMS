@@ -214,6 +214,19 @@ class appsAdmincp{
                 //不存在附加表数据 直接删除附加表 返回 table的json值 $table_array为引用参数
                 apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
                 $array['table'] = addslashes(json_encode($table_array));
+              }else{
+                $data_tables = next($table_array);
+                $union_id = apps_mod::data_union_id($array['app']);
+                //判断是否自动生成的表
+                if(is_array($data_tables) &&
+                  in_array("data_id" ,$data_tables) &&
+                  in_array($union_id ,$data_tables))
+                {
+                  apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
+                  $array['table'] = addslashes(json_encode($table_array));
+                }else{
+                  apps_db::alter_table($addons_name,$addons_sql_array);
+                }
               }
             }
 

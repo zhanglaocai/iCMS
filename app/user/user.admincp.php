@@ -43,7 +43,7 @@ class userAdmincp{
                 $userdata = iDB::row("SELECT * FROM `#iCMS@__user_data` WHERE `uid`='$this->uid' LIMIT 1;");
             }
         }
-        apps::former_create($this->appid,$rs);
+        apps::iFormer_create($this->appid,$rs);
 
         include admincp::view("user.add");
     }
@@ -126,8 +126,6 @@ class userAdmincp{
         $user['lastlogintime'] = str2time($user['lastlogintime']);
         $user['pid']           = $pid;
 
-        apps::former_data($this->appid,$user,'user');
-
        if(empty($uid)) {
             $password OR iUI::alert('密码不能为空');
             $user['password'] = md5($password);
@@ -152,6 +150,7 @@ class userAdmincp{
             }
             $msg = "账号修改完成!";
         }
+        apps::iFormer_save($this->appid,$uid);
         iUI::success($msg,'url:'.APP_URI);
     }
     public function do_batch(){

@@ -70,9 +70,11 @@ $(function(){
     //   iCMS.alert("章节模式下 章节标题不能为空!");
     //   return false;
     // }
+    <?php echo iFormer::$validate;?>
 	});
-
+  <?php echo iFormer::$script;?>
 });
+
 function mergeEditorPage(){
   var html = [];
   $(".editor-container").each(function(n,a){
@@ -213,6 +215,7 @@ function _modal_dialog(cancel_text){
       <ul class="nav nav-tabs" id="article-add-tab">
         <li class="active"><a href="#article-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
         <li><a href="#article-add-publish" data-toggle="tab"><i class="fa fa-rocket"></i> 发布设置</a></li>
+        <li><a href="#article-add-custom" data-toggle="tab"><i class="fa fa-wrench"></i> 自定义</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding iCMS-article-add">
@@ -468,6 +471,9 @@ function _modal_dialog(cancel_text){
               <input type="text" name="url" class="span6 tip" title="注意:文章设置外部链接后编辑器里的内容是不会被保存的哦!" id="url" value="<?php echo $rs['url'] ; ?>"/>
                </div><span class="help-inline">不填写请留空!</span>
             <div class="clearfloat mb10"></div>
+          </div>
+          <div id="article-add-custom" class="tab-pane hide">
+              <?php echo iFormer::$html;?>
           </div>
         </div>
         <div class="form-actions">

@@ -1,5 +1,7 @@
 RENAME TABLE `icms_app` TO `icms_apps`;
 RENAME TABLE `icms_filedata` TO `icms_file_data`;
+RENAME TABLE `icms_file_data` TO `icms_files`;
+
 
 ALTER TABLE `icms_article`
   CHANGE `ordernum` `sortnum` INT(10) UNSIGNED DEFAULT 0  NOT NULL   COMMENT '排序';
@@ -28,7 +30,7 @@ ALTER TABLE `icms_prop`
 
 
 /* Create table in target */
-CREATE TABLE `icms_file_map`(
+CREATE TABLE `icms_files_map`(
     `fileid` int(10) unsigned NOT NULL  ,
     `userid` int(10) unsigned NOT NULL  ,
     `appid` int(10) unsigned NOT NULL  ,
