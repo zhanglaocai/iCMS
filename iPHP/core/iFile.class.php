@@ -8,7 +8,7 @@
  * @license http://www.iiiphp.com/license
  * @version 2.0.0
  *
- * CREATE TABLE `iPHP_file_data` (
+ * CREATE TABLE `iPHP_files` (
  *   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
  *   `userid` int(10) unsigned NOT NULL DEFAULT '0',
  *   `filename` varchar(255) NOT NULL DEFAULT '',
@@ -50,7 +50,7 @@ class iFile {
     private static $_map_table      = null;
 
     public static function config($table = array()) {
-        empty($table) && $table = array('file_data','file_map');
+        empty($table) && $table = array('files','files_map');
 
         list(self::$TABLE_DATA,self::$TABLE_MAP) = $table;
         self::$_data_table = iPHP_DB_PREFIX . self::$TABLE_DATA;

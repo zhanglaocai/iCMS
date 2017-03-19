@@ -84,7 +84,7 @@ class admincpApp{
         $kc  = iDB::value("SELECT count(*) FROM `#iCMS@__keywords`");
         $pc  = iDB::value("SELECT count(*) FROM `#iCMS@__push`");
         $uc  = iDB::value("SELECT count(*) FROM `#iCMS@__user`");
-        $fdc = iDB::value("SELECT count(*) FROM `#iCMS@__file_data`");
+        $fdc = iDB::value("SELECT count(*) FROM `#iCMS@__files`");
         $lc  = iDB::value("SELECT count(*) FROM `#iCMS@__links`");
 
     	include admincp::view("admincp.index");

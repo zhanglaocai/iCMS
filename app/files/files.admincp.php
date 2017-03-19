@@ -61,9 +61,9 @@ class filesAdmincp{
 
         $orderby	= $_GET['orderby']?iSecurity::escapeStr($_GET['orderby']):"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
-		$total		= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__file_data` {$sql}","G");
+		$total		= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__files` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"个文件");
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__file_data` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__files` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
         $widget = array('search'=>1,'id'=>1,'uid'=>1,'index'=>1);
     	include admincp::view("files.manage");
@@ -103,7 +103,7 @@ class filesAdmincp{
             iFS::$file_data = iFile::get('id',$this->id);
             $F = iFS::upload('upfile');
             if($F && $F['size']!=iFS::$file_data->size){
-                iDB::query("update `#iCMS@__file_data` SET `size`='".$F['size']."' WHERE `id` = '$this->id'");
+                iDB::query("update `#iCMS@__files` SET `size`='".$F['size']."' WHERE `id` = '$this->id'");
             }
     	}else{
             $udir = ltrim($_POST['udir'],'/');
@@ -143,7 +143,7 @@ class filesAdmincp{
 
     		$_FileSize	= strlen($fileresults);
     		if($_FileSize!=$rs->size){
-	    		iDB::query("update `#iCMS@__file_data` SET `size`='$_FileSize' WHERE `id` = '$this->id'");
+	    		iDB::query("update `#iCMS@__files` SET `size`='$_FileSize' WHERE `id` = '$this->id'");
     		}
     		iUI::success("{$rs->ofilename} <br />重新下载到<br /> {$rs->filepath} <br />完成",'js:1',3);
     	}else{
@@ -171,11 +171,11 @@ class filesAdmincp{
         $id OR iUI::alert("请选择要删除的文件");
         $indexid = (int)$_GET['indexid'];
         $sql     = isset($_GET['indexid'])?"AND `indexid`='$indexid'":"";
-        $rs      = iDB::row("SELECT * FROM `#iCMS@__file_data` WHERE `id` = '$id' {$sql} LIMIT 1;");
+        $rs      = iDB::row("SELECT * FROM `#iCMS@__files` WHERE `id` = '$id' {$sql} LIMIT 1;");
     	if($rs){
             $rs->filepath = rtrim($rs->path,'/').'/'.$rs->filename.'.'.$rs->ext;
             $FileRootPath = iFS::fp($rs->filepath,"+iPATH");
-            iDB::query("DELETE FROM `#iCMS@__file_data` WHERE `id` = '$id' {$sql};");
+            iDB::query("DELETE FROM `#iCMS@__files` WHERE `id` = '$id' {$sql};");
 	    	if(iFS::del($FileRootPath)){
                 $msg = 'success:#:check:#:文件删除完成!';
 	    		$_GET['ajax'] && iUI::json(array('code'=>1,'msg'=>$msg));
@@ -255,7 +255,7 @@ class filesAdmincp{
             $file_ext = 'jpg';
         }
         if($_GET['indexid']){
-            $rs = iDB::all("SELECT * FROM `#iCMS@__file_data` where `indexid`='{$_GET['indexid']}' order by `id` ASC LIMIT 100");
+            $rs = iDB::all("SELECT * FROM `#iCMS@__files` where `indexid`='{$_GET['indexid']}' order by `id` ASC LIMIT 100");
             foreach ((array)$rs as $key => $value) {
                 $filepath = $value['path'] . $value['filename'] . '.' . $value['ext'];
                 $src[] = iFS::fp($filepath,'+http')."?".time();
