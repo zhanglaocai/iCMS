@@ -312,4 +312,7 @@ class iUI {
             exit($msg);
         }
     }
+    public static function check($o) {
+        return $o?'<font color="green"><i class="fa fa-check"></i></font>':'<font color="red"><i class="fa fa-times"></i></font>';
+    }
 }
