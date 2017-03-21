@@ -73,6 +73,7 @@ class menu {
     }
     public static function cache(){
         self::get_array(true);
+        return true;
     }
     public static function get_caption(){
         $iCache = iCache::file_cache();

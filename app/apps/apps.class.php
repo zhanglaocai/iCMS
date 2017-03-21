@@ -153,11 +153,9 @@ class apps {
         apps::del_app_data($app['id']);
         //查找app目录
         $appdir = iPHP_APP_DIR . '/' . $app['app'];
-        if(file_exists($appdir)){
-            // 删除APP
-            // iFS::rmdir($appdir);
-        }
-        // $path = self::get_path($app['app'],);
+        // 删除应用
+        file_exists($appdir) && iFS::rmdir($appdir);
+
         iUI::success('应用删除完成!','js:1');
     }
     public static function installed($app,$r=false){
@@ -388,6 +386,7 @@ class apps {
         iCache::set('app/idarray',  $appid_array,0);
         iCache::set('app/array',$app_array,0);
         configAdmincp::cache();
+        return true;
 	}
     public static function set_app_cache($a){
         if(!is_array($a)){
