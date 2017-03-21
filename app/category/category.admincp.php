@@ -230,24 +230,22 @@ class categoryAdmincp {
         switch($batch){
             case 'move':
                 $tocid = (int)$_POST['tocid'];
-                $key   = array_search($tocid,$id_array);
-                if($tocid) unset($id_array[$key]);//清除同ID
                 foreach($id_array as $k=>$cid){
-                    iDB::query("UPDATE `#iCMS@__category` SET `rootid` ='$tocid' WHERE `cid` ='$cid'");
+                    $tocid!=$cid && iDB::query("UPDATE `#iCMS@__category` SET `rootid` ='$tocid' WHERE `cid` ='$cid'");
                 }
-                $this->cache(true,$this->appid);
+                // $this->cache(true,$this->appid);
                 iUI::success('更新完成!','js:1');
             break;
             case 'merge':
                 $tocid = (int)$_POST['tocid'];
-                $key   = array_search($tocid,$id_array);
-                unset($id_array[$key]);//清除同ID
                 foreach($id_array as $k=>$cid){
-                    $this->mergecontent($tocid,$cid);
-                    $this->do_del($cid,false);
+                    if($tocid!=$cid){
+                        $this->mergecontent($tocid,$cid);
+                        $this->do_del($cid,false);
+                    }
                 }
                 $this->update_app_count($tocid);
-                $this->cache(true,$this->appid);
+                // $this->cache(true,$this->appid);
                 iUI::success('更新完成!','js:1');
             break;
             case 'dir':
@@ -317,9 +315,9 @@ class categoryAdmincp {
                 iUI::$break    = true;
                 iUI::success('全部删除完成!','js:1');
             break;
-       }
+        }
         $sql && iDB::query("UPDATE `#iCMS@__category` SET {$sql} WHERE `cid` IN ($ids)");
-        $this->cache(true,$this->appid);
+        // $this->cache(true,$this->appid);
         iUI::success('操作成功!','js:1');
     }
     /**
