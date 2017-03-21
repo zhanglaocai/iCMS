@@ -248,5 +248,5 @@ $(function(){
 	},1000);
 });
 </script>
-<?php patchAdmincp::check_js();?>
+<?php iPHP::callback(array('patchAdmincp','check_js'));?>
 <?php admincp::foot();?>
