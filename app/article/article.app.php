@@ -7,7 +7,7 @@
  */
 class articleApp {
 	public $methods = array('iCMS', 'article', 'clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
-	public static $pregimg = "/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
+	public static $pregimg = "/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
 	public static $config  = null;
 	public function __construct() {
 		self::$config = iCMS::$config['article'];

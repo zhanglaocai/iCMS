@@ -356,22 +356,6 @@ class userApp {
 			iUI::code(1, 0, 0, 'json');
 		}
 	}
-	private function __ACTION_manage_favorite() {
-		$actArray = array('delete');
-		$act = iSecurity::escapeStr($_POST['act']);
-		if (in_array($act, $actArray)) {
-			$id = (int) $_POST['id'];
-			$id OR iUI::code(0, 'iCMS:error', 0, 'json');
-			iDB::query("
-                DELETE
-                FROM `#iCMS@__favorite_data`
-                WHERE `uid` = '" . user::$userid . "'
-                AND `id`='$id'
-                LIMIT 1;
-            ");
-			iUI::code(1, 0, 0, 'json');
-		}
-	}
 	public function API_profile() {
 		$pgArray = array('base', 'avatar', 'setpassword', 'bind', 'custom');
 		$pg = iSecurity::escapeStr($_GET['pg']);

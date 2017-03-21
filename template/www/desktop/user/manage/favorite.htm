@@ -29,7 +29,12 @@
                             <!--{$favorite_list[$favorite_data.fid].title}-->
                         </a>
                     </td>
-                    <td class="action"><a href="javascript:;" class="tip ml10" data-id="<!--{$favorite_data.id}-->" data-action="delete" title="彻底删除"><i class="fa fa-trash-o"></i>&#215;</a></td>
+                    <td class="action">
+                        <a href="javascript:;" class="tip ml10"  title="彻底删除"
+                        data-fid="<!--{$favorite_data.fid}-->"
+                        data-id="<!--{$favorite_data.id}-->"
+                        data-action="delete"><i class="fa fa-trash-o"></i>&#215;</a>
+                    </td>
                 </tr>
                 <!--{/iCMS}-->
             </tbody>
@@ -51,6 +56,7 @@ $(function() {
         event.preventDefault();
         var param = {
             'id': $(this).attr("data-id"),
+            'fid': $(this).attr("data-fid"),
             'action': $(this).attr("data-action")
         }
         $.post("<!--{iCMS:router url='favorite'}-->", param, function(c) {

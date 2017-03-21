@@ -20,31 +20,39 @@ class favoriteApp {
         $array = favoriteFunc::favorite_list(array('userid'=>user::$userid));
         iUI::json($array);
     }
+    public function __ACTION_manage_favorite() {
+        $actArray = array('delete');
+        $act = iSecurity::escapeStr($_POST['act']);
+        if (in_array($act, $actArray)) {
+            $id = (int) $_POST['id'];
+            $id OR iUI::code(0, 'iCMS:error', 0, 'json');
+            iDB::query("
+                DELETE
+                FROM `#iCMS@__favorite_data`
+                WHERE `uid` = '" . user::$userid . "'
+                AND `id`='$id'
+                LIMIT 1;
+            ");
+            iUI::code(1, 0, 0, 'json');
+        }
+    }
     /**
      * [ACTION_delete 删除收藏]
      */
     public function ACTION_delete(){
         $this->__login();
 
-        $uid     = user::$userid;
-        $appid   = (int)$_POST['appid'];
-        $iid     = (int)$_POST['iid'];
-        $cid     = (int)$_POST['cid'];
-        $suid    = (int)$_POST['suid'];
-        $id      = (int)$_POST['id'];
-        $fid     = (int)$_POST['fid'];
-        $title   = iSecurity::escapeStr($_POST['title']);
-        $url     = iSecurity::escapeStr($_POST['url']);
+        $id  = (int) $_POST['id'];
+        $fid = (int) $_POST['fid'];
 
-        if(!$fid||!$url){
-            iUI::code(0,'iCMS:error',0,'json');
-        }
+        $id OR iUI::code(0, 'iCMS:error', 0, 'json');
+
         iDB::query("
             DELETE
             FROM `#iCMS@__favorite_data`
-            WHERE `uid` = '$uid'
-            AND `fid` = '$fid'
-            AND `url` = '$url';
+            WHERE `uid` = '" . user::$userid . "'
+            AND `id`='$id'
+            LIMIT 1;
         ");
         iDB::query("
             UPDATE `#iCMS@__favorite`
