@@ -73,7 +73,7 @@ class admincpApp{
         }
         $acc = iDB::value("SELECT count(*) FROM `#iCMS@__category` WHERE `appid`='".iCMS_APP_ARTICLE."'");
         $tac = iDB::value("SELECT count(*) FROM `#iCMS@__category` WHERE `appid`='".iCMS_APP_TAG."'");
-        // $pac = iDB::value("SELECT count(*) FROM `#iCMS@__category` WHERE `appid`='".iCMS_APP_PUSH."'");
+        $apc = iDB::value("SELECT count(*) FROM `#iCMS@__apps`");
 
         $ac  = iDB::value("SELECT count(*) FROM `#iCMS@__article`");
         $ac0 = iDB::value("SELECT count(*) FROM `#iCMS@__article` WHERE `status`='0'");
@@ -82,7 +82,7 @@ class admincpApp{
         $ctc = iDB::value("SELECT count(*) FROM `#iCMS@__comment`");
         $tc  = iDB::value("SELECT count(*) FROM `#iCMS@__tags`");
         $kc  = iDB::value("SELECT count(*) FROM `#iCMS@__keywords`");
-        // $pc  = iDB::value("SELECT count(*) FROM `#iCMS@__push`");
+        $pc  = iDB::value("SELECT count(*) FROM `#iCMS@__prop`");
         $uc  = iDB::value("SELECT count(*) FROM `#iCMS@__user`");
         $fdc = iDB::value("SELECT count(*) FROM `#iCMS@__files`");
         $lc  = iDB::value("SELECT count(*) FROM `#iCMS@__links`");
