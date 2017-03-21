@@ -235,10 +235,10 @@ class apps {
         }
         return $data;
     }
-    public static function get_router(){
+    public static function get_iurl(){
         $rs = apps::get_array(array('status'=>'1'));
         foreach ((array)$rs as $key => $value) {
-            $array[$value['app']] = apps_mod::get_router($value);
+            $array[$value['app']] = apps_mod::iurl($value);
         }
         return $array;
     }

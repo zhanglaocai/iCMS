@@ -185,7 +185,7 @@ class apps_mod {
         }
         return $data;
     }
-    public static function get_template_tag($rs,$ret='string'){
+    public static function template($rs,$ret='string'){
       //模板标签
       if($rs['app']){
         $_app = $rs['app'];
@@ -210,7 +210,7 @@ class apps_mod {
       }
       return $ret=='string'?implode("\n", (array)$template):(array)$template;
     }
-    public static function get_router($rs){
+    public static function iurl($rs){
       if($rs['table'] && $rs['apptype']=="2"){
         $table  = reset($rs['table']);
         $router = array('rule'=>'4','primary'=>$table['primary'],'page'=>'p');

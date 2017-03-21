@@ -235,7 +235,7 @@
           <label for="reg_agreement">
             <input type="checkbox" name="agreement" id="reg_agreement" checked="checked">
             <span>
-              我已看过并同意《<a href="<!--{iCMS:router url='api:public:agreement'}-->" target="_blank"><!--{$site.title}-->网络服务使用协议</a>》
+              我已看过并同意《<a href="<!--{iCMS:router url='public:agreement'}-->" target="_blank"><!--{$site.title}-->网络服务使用协议</a>》
             </span>
           </label>
         </div>
@@ -243,7 +243,7 @@
           <button type="submit" id="register_submit" class="btn btn-primary btn-lg btn-block">注 册</button>
         </div>
         <div class="clearfix mt10">
-          <a class="btn btn-success" href="<!--{iCMS:router url='api:user:login' query="$query"}-->" style="margin-top: 8px;">
+          <a class="btn btn-success" href="<!--{iCMS:router url='user:login' query="$query"}-->" style="margin-top: 8px;">
             <i class="fa fa-user"></i> 已经有帐号？请直接登录 »
           </a>
         </div>
@@ -252,13 +252,13 @@
         <div class="open-btn">
           <h3 class="gray mb10">您也可以用以下方式登录：</h3>
           <!--{if $iCMS.CONFIG.user.open.QQ.enable }-->
-          <a class="btn btn-primary btn-sm" href="<!--{iCMS:router url='api:user:login:qq'}-->"><i class="fa fa-qq"></i> QQ 登录</a>
+          <a class="btn btn-primary btn-sm" href="<!--{iCMS:router url='user:login:qq'}-->"><i class="fa fa-qq"></i> QQ 登录</a>
           <!--{/if}-->
           <!--{if $iCMS.CONFIG.user.open.WB.enable }-->
-          <a class="btn btn-danger btn-sm" href="<!--{iCMS:router url='api:user:login:wb'}-->"><i class="fa fa-weibo"></i> 微博登录</a>
+          <a class="btn btn-danger btn-sm" href="<!--{iCMS:router url='user:login:wb'}-->"><i class="fa fa-weibo"></i> 微博登录</a>
           <!--{/if}-->
           <!--{if $iCMS.CONFIG.user.open.WX.enable }-->
-          <a class="btn btn-success btn-sm" href="<!--{iCMS:router url='api:user:login:wx'}-->"><i class="fa fa-weixin"></i> 微信登录</a>
+          <a class="btn btn-success btn-sm" href="<!--{iCMS:router url='user:login:wx'}-->"><i class="fa fa-weixin"></i> 微信登录</a>
           <!--{/if}-->
         </div>
         <!--{/if}-->

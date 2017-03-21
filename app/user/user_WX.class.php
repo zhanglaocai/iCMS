@@ -1,5 +1,5 @@
 <?php
-class WX {
+class user_WX {
 	public $appid  = '';
 	public $appkey = '';
 	public $scope  = "snsapi_login";

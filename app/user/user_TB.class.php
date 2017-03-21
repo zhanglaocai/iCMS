@@ -1,5 +1,5 @@
 <?php
-class TB {
+class user_TB {
 	public $appid  = '';
 	public $appkey = '';
 	public $scope  = "promotion,item,usergrade";

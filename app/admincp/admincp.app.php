@@ -73,7 +73,7 @@ class admincpApp{
         }
         $acc = iDB::value("SELECT count(*) FROM `#iCMS@__category` WHERE `appid`='".iCMS_APP_ARTICLE."'");
         $tac = iDB::value("SELECT count(*) FROM `#iCMS@__category` WHERE `appid`='".iCMS_APP_TAG."'");
-        $pac = iDB::value("SELECT count(*) FROM `#iCMS@__category` WHERE `appid`='".iCMS_APP_PUSH."'");
+        // $pac = iDB::value("SELECT count(*) FROM `#iCMS@__category` WHERE `appid`='".iCMS_APP_PUSH."'");
 
         $ac  = iDB::value("SELECT count(*) FROM `#iCMS@__article`");
         $ac0 = iDB::value("SELECT count(*) FROM `#iCMS@__article` WHERE `status`='0'");
@@ -82,7 +82,7 @@ class admincpApp{
         $ctc = iDB::value("SELECT count(*) FROM `#iCMS@__comment`");
         $tc  = iDB::value("SELECT count(*) FROM `#iCMS@__tags`");
         $kc  = iDB::value("SELECT count(*) FROM `#iCMS@__keywords`");
-        $pc  = iDB::value("SELECT count(*) FROM `#iCMS@__push`");
+        // $pc  = iDB::value("SELECT count(*) FROM `#iCMS@__push`");
         $uc  = iDB::value("SELECT count(*) FROM `#iCMS@__user`");
         $fdc = iDB::value("SELECT count(*) FROM `#iCMS@__files`");
         $lc  = iDB::value("SELECT count(*) FROM `#iCMS@__links`");
@@ -92,23 +92,20 @@ class admincpApp{
     // 检测函数支持
     public function isfun($fun = ''){
         if (!$fun || trim($fun) == '' || preg_match('~[^a-z0-9\_]+~i', $fun, $tmp)) return '错误';
-        return $this->check((false !== function_exists($fun)));
+        return iUI::check((false !== function_exists($fun)));
     }
     //检测PHP设置参数
     public function show($varName){
         switch($result = get_cfg_var($varName)){
             case 0:
-                return $this->check(0);
+                return iUI::check(0);
             break;
             case 1:
-                return $this->check(1);
+                return iUI::check(1);
             break;
             default:
                 return $result;
             break;
         }
-    }
-    public function check($o) {
-        return $o?'<font color="green"><i class="fa fa-check"></i></font>':'<font color="red"><i class="fa fa-times"></i></font>';
     }
 }

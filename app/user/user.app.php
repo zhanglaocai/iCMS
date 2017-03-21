@@ -601,7 +601,7 @@ class userApp {
 			);
 			$authcode = base64_encode($authcode);
 			$authcode = rawurlencode($authcode);
-			$find_url = iURL::router('api:user:findpwd', '?&');
+			$find_url = iURL::router('user:findpwd', '?&');
 			if (iPHP_ROUTER_REWRITE) {
 				$find_url = iFS::fp($find_url, '+http');
 			}
@@ -899,38 +899,6 @@ class userApp {
 			iUI::code(1, 0, 0, 'json');
 		}
 	}
-	public function ACTION_favorite() {
-		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
-
-		$uid = user::$userid;
-		$appid = (int) $_POST['appid'];
-		$iid = (int) $_POST['iid'];
-		$cid = (int) $_POST['cid'];
-		$url = iSecurity::escapeStr($_POST['url']);
-		$title = iSecurity::escapeStr($_POST['title']);
-		$addtime = time();
-
-		$url OR iUI::code(0, 'iCMS:favorite:url', 0, 'json');
-
-		if (iDB::value("
-            SELECT `id`FROM `#iCMS@__user_favorite`
-            where `uid`='" . user::$userid . "'
-            AND `url`='$url' LIMIT 1;")) {
-			iUI::code(0, 'iCMS:favorite:failure', 0, 'json');
-		}
-
-		$fields = array('uid', 'appid', 'cid', 'url', 'title', 'addtime');
-		$data = compact($fields);
-		$cid = iDB::insert('user_favorite', $data);
-
-		iDB::query("
-            UPDATE `#iCMS@__article`
-            SET `favorite`=favorite+1
-            WHERE `id` ='{$aid}'
-            limit 1
-        ");
-		iUI::code(1, 'iCMS:favorite:success', 0, 'json');
-	}
 
 	public function API_hits($uid = null) {
 		$uid === null && $uid = (int) $_GET['uid'];
@@ -1139,29 +1107,28 @@ class userApp {
 		if (!isset($_GET['sign'])) {
 			return;
 		}
-		$sign = $_GET['sign'];
-		$code = $_GET['code'];
+		$sign  = strtoupper($_GET['sign']);
+		$code  = $_GET['code'];
 		$state = $_GET['state'];
+		$bind  = $sign;
 		$platform_map = array('WX' => 1, 'QQ' => 2, 'WB' => 3, 'TB' => 4);
-		$class_name = strtoupper($sign);
-		$platform = $platform_map[$class_name];
-		$bind = $sign;
+		$platform     = $platform_map[$sign];
 
 		if ($platform) {
-			iPHP::app('user.open/' . $class_name . '.class', 'static');
-			$api = new $class_name;
-			$api->appid = iCMS::$config['user']['open'][$class_name]['appid'];
-			$api->appkey = iCMS::$config['user']['open'][$class_name]['appkey'];
-			$redirect_uri = rtrim(iCMS::$config['user']['open'][$class_name]['redirect'], '/');
-			$api->url = user::login_uri($redirect_uri) . 'sign=' . $sign;
+			$class_name   = 'user_'.$sign;
+			$open = new $class_name;
+			$open->appid = iCMS::$config['user']['open'][$sign]['appid'];
+			$open->appkey = iCMS::$config['user']['open'][$sign]['appkey'];
+			$redirect_uri = rtrim(iCMS::$config['user']['open'][$sign]['redirect'], '/');
+			$open->url = user::login_uri($redirect_uri) . 'sign=' . $sign;
 
 			if (isset($_GET['bind']) && $_GET['bind'] == $sign) {
-				$api->get_openid();
+				$open->get_openid();
 			} else {
-				$api->callback();
+				$open->callback();
 			}
 
-			$userid = user::openid($api->openid, $platform);
+			$userid = user::openid($open->openid, $platform);
 			if ($userid) {
 				$user = user::get($userid, false);
 				user::set_cookie($user->username, $user->password, array(
@@ -1171,27 +1138,22 @@ class userApp {
 					'status' => $user->status,
 				)
 				);
-				$api->cleancookie();
+				$open->cleancookie();
 				iPHP::redirect($this->forward);
 			} else {
 				if (isset($_GET['bind'])) {
 					$user = array();
-					$user['openid'] = $api->openid;
+					$user['openid'] = $open->openid;
 					$user['platform'] = $platform;
-					$api->cleancookie();
+					$open->cleancookie();
 					iView::assign('user', $user);
 					iView::render('iCMS://user/login.htm');
 				} else {
-					$user = $api->get_user_info();
-					$user['openid'] = $api->openid;
+					$user = $open->get_user_info();
+					$user['openid'] = $open->openid;
 					$user['platform'] = $platform;
-					if (iDB::value("
-                        SELECT `uid`
-                        FROM `#iCMS@__user`
-                        where `nickname`='" . $user['nickname'] . "' LIMIT 1
-                        ")) {
-						$user['nickname'] = $sign . '_' . $user['nickname'];
-					}
+					user::check($user['nickname'],'nickname') && $user['nickname'] = $sign . '_' . $user['nickname'];
+
 					iView::assign('user', $user);
 					iView::assign('query', compact(array('sign', 'code', 'state', 'bind')));
 					iView::render('iCMS://user/register.htm');

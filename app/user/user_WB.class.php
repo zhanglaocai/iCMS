@@ -1,5 +1,5 @@
 <?php
-class WB {
+class user_WB {
 	public $appid  = '';
 	public $appkey = '';
 	public $scope  = "promotion,item,usergrade";

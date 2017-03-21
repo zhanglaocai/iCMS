@@ -38,7 +38,7 @@
         $.post(iCMS.api('user'), param, function(ret) {
           if (ret.code) {
             alert(ret.msg);
-            window.top.location.href = '<!--{iCMS:router url='api:user:login'}-->';
+            window.top.location.href = '<!--{iCMS:router url='user:login'}-->';
           } else {
             iCMS.alert(ret.msg);
           }

@@ -132,7 +132,7 @@ admincp::head();
                 $gd_info = @gd_info();
               echo $gd_info["GD Version"];
           }else{
-            echo $this->check(0);
+            echo iUI::check(0);
           }
           ?></td>
           <td>FTP支持：</td>
@@ -146,7 +146,7 @@ admincp::head();
           <td>被屏蔽的函数</td>
           <td><?php echo get_cfg_var("disable_functions")?'<a class="tip" href="javascript:;" title="'.get_cfg_var("disable_functions").'">查看</a>':"无" ; ?></td>
           <td>安全模式</td>
-          <td><?php echo $this->check(ini_get('safe_mode')); ?></td>
+          <td><?php echo iUI::check(ini_get('safe_mode')); ?></td>
         </tr>
       </table>
     </div>

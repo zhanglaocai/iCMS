@@ -69,7 +69,7 @@ $(function(){
               <tr>
                 <th style="width:40px;">APPID</th>
                 <th>标识</th>
-                <th>名称</th>
+                <th class="span3">名称</th>
                 <th>数据表</th>
                 <th class="span3">模板标签</th>
                 <th>操作</th>

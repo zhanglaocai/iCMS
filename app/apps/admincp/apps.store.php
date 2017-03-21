@@ -75,10 +75,10 @@ function clear_pay_notify_timer () {
   <script type="text/javascript" src="./app/admincp/ui/template-3.0.js"></script>
 <style>
 #store-container{margin-left: -15px;}
-.store-item{margin-left: 15px;width: 22%; border: 1px solid #CDCDCD; border-radius: 5px;padding: 8px;margin-bottom: 10px;height: 300px;background-color: #fff;}
-.item-head{margin-bottom: 10px;height: 100px; background-color: #333;text-align: center;}
+.store-item{margin-left: 15px; border: 1px solid #CDCDCD; border-radius: 5px;padding: 8px;margin-bottom: 10px;height: 300px;background-color: #fff;}
+.item-head{margin-bottom: 10px;height: 100px; background-color: #333;text-align: center;overflow: hidden;}
 .item-head h3{height: 100px;line-height: 90px;font-size: 36px;color: #f5f5f5;}
-.item-head img{height: 100px;width: 100%; background-color: #dadada;}
+.item-head p{height: 100px;max-width: 360px; background-color: #dadada;}
 
 .item-author{height: 60px;}
 .item-author .avatar img {width: 60px;height: 60px;border-radius: 30px;float: left;}
@@ -90,14 +90,16 @@ function clear_pay_notify_timer () {
 .item-description p{font-size: 14px;}
 .item-action {margin-top: 10px;}
 .item-action .btn-large{ width: 100%; height: 35px;line-height: 35px;padding: 0px;}
-
+@media (min-width:1200px) {
+  .store-item{width: 22%;}
+}
 </style>
 <script id="store-item" type="text/html">
 {{each data as value i}}
-  <div id="store-item-{{value.app}}" class="store-item span3">
+  <div id="store-item-{{value.app}}" class="store-item span4">
     <div class="item-head">
       {{if value.pic}}
-        <img src="{{value.pic}}"/>
+        <p style="background:url('{{value.pic}}') center center"></p>
       {{else}}
         <h3>{{value.name}}</h3>
       {{/if}}

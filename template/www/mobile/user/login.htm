@@ -111,7 +111,7 @@
           <button type="submit" id="login-submit" class="btn btn-primary btn-lg btn-block">登 录</button>
         </div>
         <div class="clearfix mt10">
-          <a class="btn btn-success" href="<!--{iCMS:router url='api:user:register'}-->">
+          <a class="btn btn-success" href="<!--{iCMS:router url='user:register'}-->">
             <i class="fa fa-user"></i> 我没有账号？去注册 »
           </a>
         </div>
@@ -120,13 +120,13 @@
         <div class="open-btn">
           <h3 class="gray mb10">您也可以用以下方式登录：</h3>
           <!--{if $iCMS.CONFIG.user.open.QQ.enable }-->
-          <a class="btn btn-primary btn-sm" href="<!--{iCMS:router url='api:user:login:qq'}-->"><i class="fa fa-qq"></i> QQ 登录</a>
+          <a class="btn btn-primary btn-sm" href="<!--{iCMS:router url='user:login:qq'}-->"><i class="fa fa-qq"></i> QQ 登录</a>
           <!--{/if}-->
           <!--{if $iCMS.CONFIG.user.open.WB.enable }-->
-          <a class="btn btn-danger btn-sm" href="<!--{iCMS:router url='api:user:login:wb'}-->"><i class="fa fa-weibo"></i> 微博登录</a>
+          <a class="btn btn-danger btn-sm" href="<!--{iCMS:router url='user:login:wb'}-->"><i class="fa fa-weibo"></i> 微博登录</a>
           <!--{/if}-->
           <!--{if $iCMS.CONFIG.user.open.WX.enable }-->
-          <a class="btn btn-success btn-sm" href="<!--{iCMS:router url='api:user:login:wx'}-->"><i class="fa fa-weixin"></i> 微信登录</a>
+          <a class="btn btn-success btn-sm" href="<!--{iCMS:router url='user:login:wx'}-->"><i class="fa fa-weixin"></i> 微信登录</a>
           <!--{/if}-->
         </div>
         <!--{/if}-->

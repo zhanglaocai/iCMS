@@ -6,16 +6,16 @@
         <div i="login" class="user-login fr">
             <ul class="ul">
                 <!--{if $iCMS.CONFIG.user.open.QQ.enable }-->
-                <li><a href="<!--{iCMS:router url='api:user:login:qq'}-->" class="login_qq">QQ登录</a></li>
+                <li><a href="<!--{iCMS:router url='user:login:qq'}-->" class="login_qq">QQ登录</a></li>
                 <!--{/if}-->
                 <!--{if $iCMS.CONFIG.user.open.WB.enable }-->
-                <li><a href="<!--{iCMS:router url='api:user:login:wb'}-->" class="login_wb">微博登录</a></li>
+                <li><a href="<!--{iCMS:router url='user:login:wb'}-->" class="login_wb">微博登录</a></li>
                 <!--{/if}-->
                 <!--{if $iCMS.CONFIG.user.open.WX.enable }-->
-                <li><a href="<!--{iCMS:router url='api:user:login:wx'}-->" class="login_wx">微信登录</a></li>
+                <li><a href="<!--{iCMS:router url='user:login:wx'}-->" class="login_wx">微信登录</a></li>
                 <!--{/if}-->
-                <li><a href="<!--{iCMS:router url='api:user:login'}-->" title="登录">登录</a></li>
-                <li class="last"><a href="<!--{iCMS:router url='api:user:register'}-->" target="_blank">注册</a></li>
+                <li><a href="<!--{iCMS:router url='user:login'}-->" title="登录">登录</a></li>
+                <li class="last"><a href="<!--{iCMS:router url='user:register'}-->" target="_blank">注册</a></li>
             </ul>
         </div>
         <div i="profile" class="user-profile fr hide">
@@ -26,7 +26,7 @@
                 <li><a href="<!--{iCMS:router url='user:publish'}-->" target="_blank"><i class="fa fa-edit"></i> 发表文章</a></li>
                 <li><a href="<!--{iCMS:router url='user:profile'}-->" target="_blank"><i class="fa fa-cog"></i> 账号设置</a></li>
                 <li class="last">
-                    <a i="logout" class="logout" href="<!--{iCMS:router url='api:user:logout'}-->"><i class="fa fa-edit"></i> 退出</a>
+                    <a i="logout" class="logout" href="<!--{iCMS:router url='user:logout'}-->"><i class="fa fa-edit"></i> 退出</a>
                 </li>
             </ul>
         </div>

@@ -50,7 +50,7 @@ class configAdmincp{
     public static function cache(){
         $config         = self::get();
         $config['apps'] = apps::get_appsid();
-        $config['iurl'] = apps::get_router();
+        $config['iurl'] = apps::get_iurl();
         self::write($config);
     }
     public static function head($title=null){

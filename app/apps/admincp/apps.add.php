@@ -37,7 +37,7 @@ $(function(){
       <h5 class="brs"><?php echo empty($this->id)?'添加':'修改' ; ?>应用</h5>
       <ul class="nav nav-tabs" id="apps-add-tab">
         <li class="active"><a href="#apps-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
-        <li><a href="#apps-add-menu" data-toggle="tab"><i class="fa fa-bars"></i> 菜单配置</a></li>
+        <li><a href="#apps-add-menu" data-toggle="tab"><i class="fa fa-bars"></i> 配置</a></li>
         <?php if($rs['table'])foreach ($rs['table'] as $key => $tval) {?>
         <li><a href="#apps-add-<?php echo $key; ?>-field" data-toggle="tab"><i class="fa fa-database"></i> <?php echo $tval['label']?$tval['label']:$tval['name']; ?>表字段</a></li>
         <?php }?>
@@ -183,6 +183,11 @@ $(function(){
             <div class="input-prepend">
               <span class="add-on">应用路由</span>
               <textarea name="config[router]" id="config_router" class="span6" style="height:120px;"><?php echo $rs['config']['router']?jsonFormat($rs['config']['router']):'' ; ?></textarea>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend">
+              <span class="add-on">内容网址</span>
+              <textarea name="config[iurl]" id="config_iurl" class="span6" style="height:120px;"><?php echo $rs['config']['iurl']?jsonFormat($rs['config']['iurl']):'' ; ?></textarea>
             </div>
           </div>
           <div class="clearfloat"></div>

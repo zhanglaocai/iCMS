@@ -1,5 +1,5 @@
 <?php
-class QQ {
+class user_QQ {
 	public $appid  = '';
 	public $appkey = '';
 	public $scope  = "get_user_info,add_topic,add_one_blog,add_album,upload_pic,list_album,add_share,check_page_fans,do_like,get_tenpay_address,get_info,get_other_info,get_fanslist,get_idolist,add_idol";

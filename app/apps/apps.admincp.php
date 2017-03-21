@@ -38,9 +38,9 @@ class appsAdmincp{
           }
         }
 
-        $rs['config']['template'] = apps_mod::get_template_tag($rs);
-        if(empty($rs['config']['router'])){
-          $rs['config']['router'] = apps_mod::get_router($rs);
+        $rs['config']['template'] = apps_mod::template($rs);
+        if(empty($rs['config']['iurl'])){
+          $rs['config']['iurl'] = apps_mod::iurl($rs);
         }
 
         include admincp::view("apps.add");
@@ -145,8 +145,8 @@ class appsAdmincp{
             $array['table']  = $table_array;
             $array['config'] = $config_array;
 
-            $config_array['template'] = apps_mod::get_template_tag($array,'array');
-            $config_array['router']   = apps_mod::get_router($array);
+            $config_array['template'] = apps_mod::template($array,'array');
+            $config_array['iurl']   = apps_mod::iurl($array);
 
             $array['table'] = addslashes(json_encode($table_array));
             $array['config'] = addslashes(json_encode($config_array));
@@ -215,17 +215,19 @@ class appsAdmincp{
                 apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
                 $array['table'] = addslashes(json_encode($table_array));
               }else{
-                $data_tables = next($table_array);
-                $union_id = apps_mod::data_union_id($array['app']);
-                //判断是否自动生成的表
-                if(is_array($data_tables) &&
-                  in_array("data_id" ,$data_tables) &&
-                  in_array($union_id ,$data_tables))
-                {
-                  apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
-                  $array['table'] = addslashes(json_encode($table_array));
-                }else{
-                  apps_db::alter_table($addons_name,$addons_sql_array);
+                if($table_array){
+                  $data_tables = next($table_array);
+                  $union_id = apps_mod::data_union_id($array['app']);
+                  //判断是否自动生成的表
+                  if(is_array($data_tables) &&
+                    in_array("data_id" ,$data_tables) &&
+                    in_array($union_id ,$data_tables))
+                  {
+                    apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
+                    $array['table'] = addslashes(json_encode($table_array));
+                  }else{
+                    apps_db::alter_table($addons_name,$addons_sql_array);
+                  }
                 }
               }
             }
@@ -358,8 +360,7 @@ class appsAdmincp{
           iUI::$break               = false;
           iUI::$dialog['ok']        = true;
           iUI::$dialog['cancel']    = true;
-          iUI::$dialog['ok:js']     =
-          iUI::$dialog['cancel:js'] = '
+          iUI::$dialog['ok:js']     = iUI::$dialog['cancel:js'] = '
             top.clear_pay_notify_timer();
           ';
           iUI::dialog('
@@ -375,7 +376,15 @@ class appsAdmincp{
           </script>';
           exit;
         }else{
-          apps_store::download($array->url,$array->name);
+          // apps_store::$test = true;
+          $msg = apps_store::download($array->url,$array->name);
+          $msg.= apps_store::install();
+          $msg = str_replace('<iCMS>', '<br />', $msg);
+          if(apps_store::$app_id){
+            iUI::dialog($msg,'url:'.APP_URI."&do=add&id=".apps_store::$app_id,10);
+          }else{
+            iUI::dialog($msg,'js:1',3);
+          }
         }
       }
 
@@ -389,98 +398,24 @@ class appsAdmincp{
       if($app['type'] && $app['apptype']){
         apps::uninstall($this->id);
         apps::cache();
+        menu::cache();
         iUI::alert('应用已经删除');
       }else{
         iUI::alert('应用已被禁止删除');
       }
     }
     /**
-     * [安装应用]
-     * @return [type] [description]
-     */
-    public function do_install(){
-      apps_store::$zipName  = "markerTest.zip";
-      apps_store::$app_name = "markerTest";
-      // apps_store::$test = true;
-      $this->msg = apps_store::install();
-      if(apps_store::$next){
-        $this->msg.= apps_store::setup();//安装数据库
-      }
-      $this->msg.= '更新应用缓存<iCMS>';
-      apps::cache();
-      $this->msg.= '更新菜单缓存<iCMS>';
-      menu::cache();
-      $this->msg.= '应用安装完成<iCMS>';
-      include admincp::view("install");
-    }
-    /**
      * [本地安装应用]
      * @return [type] [description]
      */
     public function do_local_app(){
-      $zipfile  = $_POST['zipfile'];
-      // $app = preg_replace('/.*iCMS\.APP\.(\w+)-v.*?\.zip/is', '$1', $zipfile);
-      // iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iUI::alert('该应用已经存在!');
-
-      iPHP::import(iPHP_LIB . '/pclzip.class.php'); //加载zip操作类
-      $zip = new PclZip($zipfile);
-      if (false == ($archive_files = $zip->extract(PCLZIP_OPT_EXTRACT_AS_STRING))) {
-          iUI::alert("ZIP包错误");
+      if(strpos($_POST['zipfile'], '..') !== false){
+        iUI::alert('What the fuck!!');
       }
-
-      if (0 == count($archive_files)) {
-          iUI::alert("空的ZIP文件");
-      }
-      foreach ($archive_files AS $key => $file) {
-        $filename = basename($file['filename']);
-        if($filename=="iCMS.APP.DATA.php"){
-          $content = get_php_content($file['content']);
-          $content = base64_decode($content);
-          $array   = unserialize($content);
-
-          iDB::value("
-            SELECT `id` FROM `#iCMS@__apps`
-            WHERE `app` ='".$array['app']."'
-          ") && iUI::alert('该应用已经存在!');
-
-          if($array['table']){
-            $tableArray = apps::table_item($array['table']);
-            foreach ($tableArray AS $value) {
-              apps_db::check_table($value['table']) && iUI::alert('['.$value['table'].']数据表已经存在!');
-            }
-          }
-          $array['addtime'] = time();
-          $array = array_map('addslashes', $array);
-          // $appid = iDB::insert("apps",$array);
-          unset($archive_files[$key]);
-          break;
-        }
-      }
-
-      foreach ($archive_files AS $key => $file) {
-        $filename = basename($file['filename']);
-        if($filename=="iCMS.APP.TABLE.php"){
-          $content = get_php_content($file['content']);
-          // $content && apps_db::multi_query($content);
-          unset($archive_files[$key]);
-          break;
-        }
-      }
-      print_r($archive_files);
-
-    //     iFile::$check_data        = false;
-    //     iFile::$cloud_enable      = false;
-    //     iFS::$config['allow_ext'] = 'zip';
-
-    //     $F    = iFS::upload('upfile');
-    //     $path = $F['RootPath'];
-    //     if($path){
-    //       apps_store::$app_name = preg_replace('/iCMS\.APP\.(\w+)-v.*?\.zip/is', '$1', $F['oname']);
-    //       print_r(apps_store::$app_name);
-
-    //       @unlink($path);
-    //       // iUI::success('应用安装完成,请重新设置规则','js:1');
-    //     }
+      apps_store::$zipFile  = trim($_POST['zipfile'],"\0\n\r\t\x0B");
+      apps_store::$msg_mode = 'alert';
+      apps_store::install();
+      iUI::success('应用安装完成','js:1');
     }
     /**
      * [打包下载应用]
@@ -493,15 +428,18 @@ class appsAdmincp{
       $data     = base64_encode(serialize($rs));
       $config   = json_decode($rs['config'],true);
       $filename = 'iCMS.APP.'.$rs['app'].'-'.$config['version'];
-      if(iFS::ex($appdir)) {
+      if(iFS::ex($appdir)) { //本地应用
         $remove_path = iPHP_APP_DIR;
-      }else{
+      }else{//自定义应用
         $appdir = iPHP_APP_CACHE.'/pack.app/'.$rs['app'];
         $remove_path = iPHP_APP_CACHE.'/pack.app/';
         iFS::mkdir($appdir);
       }
+      //应用数据
       $app_data_file = $appdir.'/iCMS.APP.DATA.php';
       put_php_file($app_data_file, $data);
+
+      //数据库结构
       if($rs['table']){
         $app_table_file = $appdir.'/iCMS.APP.TABLE.php';
 
@@ -510,6 +448,7 @@ class appsAdmincp{
           apps_db::create_table_sql($rs['table'])
         );
       }
+
       $zipfile = apps::get_zip($filename,$appdir,$remove_path);
       filesApp::attachment($zipfile);
       iFS::rm($zipfile);

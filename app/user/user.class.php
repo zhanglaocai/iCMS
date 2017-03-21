@@ -17,7 +17,7 @@ class user {
 	private static $AUTH      = 'USER_AUTH';
 
 	public static function login_uri($uri=null){
-		$login_uri = iURL::router('api:user:login','?&');
+		$login_uri = iURL::router('user:login','?&');
 		if(iPHP_ROUTER_REWRITE){
 			if(stripos($login_uri, 'http://')===false){
 				$login_uri = rtrim(iCMS_URL,'/').$login_uri;
