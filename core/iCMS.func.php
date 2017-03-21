@@ -263,6 +263,10 @@ function get_php_content($content){
 * @return JSON
 */
 function jsonFormat($data, $indent=null){
+    if(empty($data)||$data=='null'){
+        return;
+    }
+    is_array($data) OR $data = json_decode($data,true);
 
     // 对数组中每个元素递归进行urlencode操作，保护中文字符
     array_walk_recursive($data, 'jsonFormatProtect');

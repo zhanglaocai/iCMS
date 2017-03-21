@@ -25,12 +25,12 @@ class iCMS {
         iFS::init(self::$config['FS']);
         iCache::init(self::$config['cache']);
         iURL::init(self::$config['router']);
-        iURL::$USER_URL = iCMS_USER_URL;
-        iURL::$API_URL  = iCMS_PUBLIC_URL;
-        iURL::$CONFIG   = array(
-            'tag'    => self::$config['tag'],//标签配置
-            'app'    => self::$config['iurl'],//应用路由定义
-            'domain' => array('categoryApp','domain')//绑定域名回调
+        iURL::$CONFIG+= array(
+            'user_url' => iCMS_USER_URL,
+            'api_url'  => iCMS_PUBLIC_URL,
+            'tag'      => self::$config['tag'],//标签配置
+            'iurl'     => self::$config['iurl'],//应用路由定义
+            'domain'   => array('categoryApp','domain')//绑定域名回调
         );
 	}
     /**

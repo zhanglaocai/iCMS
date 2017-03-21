@@ -35,6 +35,7 @@ class configAdmincp{
         $config['router']['user']   = rtrim($config['router']['user'],'/');
         $config['router']['dir']    = rtrim($config['router']['dir'],'/').'/';
         $config['FS']['url']        = trim($config['FS']['url'],'/').'/';
+        $config['router']['config'] = json_decode(stripcslashes($_POST['config']['router']['config']),true);
 
     	foreach($config AS $n=>$v){
     		$this->set($v,$n,0);

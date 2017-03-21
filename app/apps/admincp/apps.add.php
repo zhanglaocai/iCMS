@@ -181,11 +181,6 @@ $(function(){
             <textarea name="menu" id="menu" class="span8" style="height:450px;"><?php echo $rs['menu']?jsonFormat($rs['menu']):'' ; ?></textarea>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
-              <span class="add-on">应用路由</span>
-              <textarea name="config[router]" id="config_router" class="span6" style="height:120px;"><?php echo $rs['config']['router']?jsonFormat($rs['config']['router']):'' ; ?></textarea>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend">
               <span class="add-on">内容网址</span>
               <textarea name="config[iurl]" id="config_iurl" class="span6" style="height:120px;"><?php echo $rs['config']['iurl']?jsonFormat($rs['config']['iurl']):'' ; ?></textarea>
             </div>

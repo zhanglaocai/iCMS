@@ -13,26 +13,21 @@ define('iPHP_PAGE_SIGN', '{P}');
 class iURL {
     public static $CONFIG   = null;
     public static $ARRAY    = null;
-    public static $API_URL  = null;
-    public static $USER_URL = null;
     public static $APP_CONF = null;
 
+    public static function init($config=null){
+        self::$CONFIG = $config;
+    }
+
     public static function router($key, $var = null) {
-        if(isset($GLOBALS['iPHP_ROUTER'])){
-            $routerArray = $GLOBALS['iPHP_ROUTER'];
-        }else{
-            $path = iPHP_APP_CONF . '/router.json';
-            @is_file($path) OR iPHP::error_throw($path . ' not exist', 0013);
-            $routerArray = json_decode(file_get_contents($path), true);
-            $GLOBALS['iPHP_ROUTER'] = $routerArray;
-        }
-        $routerKey = $key;
+        $routerArray = self::$CONFIG['config'];
+        $routerKey   = $key;
         is_array($key) && $routerKey = $key[0];
         $router = $routerArray[$routerKey];
         $url = iPHP_ROUTER_REWRITE?$router[0]:$router[1];
 
         if (iPHP_ROUTER_REWRITE && stripos($routerKey, 'uid:') === 0) {
-            $url = rtrim(self::$USER_URL, '/') . $url;
+            $url = rtrim(self::$CONFIG['user_url'], '/') . $url;
         }
 
         if (is_array($key)) {
@@ -50,14 +45,10 @@ class iURL {
             $url .= iPHP_ROUTER_REWRITE ? '?' : '&';
         }
         if(!iPHP_ROUTER_REWRITE){
-            $url = self::$API_URL.'/'.$url;
+            $url = self::$CONFIG['api_url'].'/'.$url;
         }
         return $url;
     }
-
-	public static function init($config=null){
-        self::$CONFIG = $config;
-	}
 
     public static function rule($matches) {
     	$b	= $matches[1];
@@ -116,7 +107,7 @@ class iURL {
         $array      = (array)$a;
         $router_url = self::$CONFIG['url'];
         $router_dir = self::$CONFIG['dir'];
-        $app_conf   = self::$CONFIG['app'][$uri];
+        $app_conf   = self::$CONFIG['iurl'][$uri];
 
         switch($app_conf['rule']) {
             case '0':
