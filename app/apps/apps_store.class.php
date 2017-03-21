@@ -19,13 +19,14 @@ class apps_store {
     public static $app_name = null;
     public static $app_data = false;
 
-    public static function download($url=null,$name) {
+    public static function download($url=null,$name,$zipName=null) {
         iFS::mkdir(STORE_DIR);
-        self::$zipName = basename($url);
+        $zipName===null && $zipName = basename($url);
+        self::$zipName = $zipName;
         self::$zipFile = STORE_DIR . self::$zipName; //临时文件
 
         $msg = self::msg('正在下载 [' . $name . '] 安装包',true);
-        $msg.= self::msg($url,true);
+        // $msg.= self::msg($url,true);
         $msg.= self::msg('安装包下载完成',true);
 
         if (iFS::ex(self::$zipFile) && (filemtime(self::$zipFile)-time()<3600)) {

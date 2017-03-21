@@ -349,11 +349,10 @@ class appsAdmincp{
       $sid  = $_GET['sid'];
       $time = time();
       $host = $_SERVER['HTTP_HOST'];
-      $key  = md5(iPHP_KEY.$host.uniqid(true));
+      $key  = md5(iPHP_KEY.$host.$time);
       $array= compact(array('sid','key','host','time'));
       $url  = apps_store::STORE_URL.'/store.get?'.http_build_query($array);
       $json = iHttp::remote($url);
-      var_dump($json);
       if($json){
         $array = json_decode($json);
         if($array->premium){
@@ -372,22 +371,33 @@ class appsAdmincp{
             </p>
           ','js:1',1000000);
           echo '<script type="text/javascript">
-            top.pay_notify("'.$key.'","'.$sid.'",d);
+            top.pay_notify("'.$key.'","'.$sid.'","'.$array->name.'",d);
           </script>';
           exit;
         }else{
-          // apps_store::$test = true;
-          $msg = apps_store::download($array->url,$array->name);
-          $msg.= apps_store::install();
-          $msg = str_replace('<iCMS>', '<br />', $msg);
-          if(apps_store::$app_id){
-            iUI::dialog($msg,'url:'.APP_URI."&do=add&id=".apps_store::$app_id,10);
-          }else{
-            iUI::dialog($msg,'js:1',3);
-          }
+          $this->setup_zipurl($array->url,$array->name);
         }
       }
-
+    }
+    public function do_premium_install(){
+      $url    = $_GET['url'];
+      $name   = $_GET['name'];
+      $key    = $_GET['key'];
+      $sid    = $_GET['sid'];
+      $array  = compact(array('sid','key'));
+      $zipurl = $url.'?'.http_build_query($array);
+      $this->setup_zipurl($zipurl,$name,$key.'.zip');
+    }
+    public function setup_zipurl($url,$name,$zipname=null){
+          // apps_store::$test = true;
+        $msg = apps_store::download($url,$name,$zipname);
+        $msg.= apps_store::install();
+        $msg = str_replace('<iCMS>', '<br />', $msg);
+        if(apps_store::$app_id){
+          iUI::dialog($msg,'url:'.APP_URI."&do=add&id=".apps_store::$app_id,10);
+        }else{
+          iUI::dialog($msg,'js:1',3);
+        }
     }
     /**
      * [卸载应用]

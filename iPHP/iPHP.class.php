@@ -348,7 +348,7 @@ class iPHP {
      * @param  [type] $value    [引用参数]
      * @return [type]           [description]
      */
-    public static function callback($callback,$value=array(),$return=null){
+    public static function callback($callback,$value=null,$return=null){
         if (is_array($callback) && is_callable($callback)) {
            return call_user_func_array($callback,(array)$value);
         }else{
@@ -434,12 +434,12 @@ class iPHP {
     public static function check_priv($p,$priv){
         return is_array($p)?array_intersect((string)$p,$priv):in_array((string)$p,$priv);
     }
-	public static function redirect($URL = '') {
-		$URL OR $URL = iPHP_REFERER;
+	public static function redirect($url = '') {
+		$url OR $url = iPHP_REFERER;
 		if (headers_sent()) {
-			echo '<meta http-equiv=\'refresh\' content=\'0;url=' . $URL . '\'><script type="text/javascript">window.location.replace(\'' . $URL . '\');</script>';
+			echo '<meta http-equiv=\'refresh\' content=\'0;url=' . $url . '\'><script type="text/javascript">window.location.replace(\'' . $url . '\');</script>';
 		} else {
-			header("Location: $URL");
+			header("Location: $url");
 		}
 		exit;
 	}

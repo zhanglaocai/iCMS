@@ -16,15 +16,21 @@ $(function(){
   $("#<?php echo APP_FORMID;?>").batch();
 });
 var pay_notify_timer;
-function pay_notify (key,sid,d) {
+function pay_notify (key,sid,name,d) {
   pay_notify_timer = window.setInterval(function(){
     console.log(key,sid);
     $.getJSON(
-      "<?php echo apps_store::STORE_URL;?>/store.pay.notify?callback=?",{key,sid},
+      "<?php echo apps_store::STORE_URL;?>/store.pay.notify?callback=?",{key,sid,name},
       function(o){
           console.log(o);
-          // d.close().remove();
-          // clearInterval(timer);
+          if(o.code=="1" && o.url && o.t){
+            $("#iPHP_FRAME").attr("src","<?php echo APP_URI;?>&do=premium_install&url="+o.url+'&name='+name+'&key='+key+'&sid='+sid)
+            clear_pay_notify_timer();
+            d.close().remove();
+          }else if(o.code=="2"){
+            alert(o.msg);
+            window.location.reload();
+          }
       }
     );
   },1000);
