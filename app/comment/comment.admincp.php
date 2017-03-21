@@ -114,26 +114,11 @@ class commentAdmincp{
         ");
     }
     public static function del($comment){
-        $app = apps::get_table($comment->appid);
-        if($app['table']&&$app['primary']){
-            iDB::query("
-                UPDATE ".$app['table']."
-                SET comments = comments-1
-                WHERE `comments`>0
-                AND `".$app['primary']."`='{$comment->iid}'
-                LIMIT 1;
-            ");
-        }
-        iDB::query("
-            UPDATE `#iCMS@__user`
-            SET comments = comments-1
-            WHERE `comments`>0
-            AND `uid`='{$comment->userid}'
-            LIMIT 1;
-        ");
         iDB::query("
             DELETE FROM `#iCMS@__comment`
             WHERE `id` = '$comment->id';
         ");
+        iPHP::callback(array('apps','update_count'),array($comment->iid,$comment->appid,'comments','-'));
+        iPHP::callback(array('user','update_count'),array($comment->userid, 'comments','-'));
     }
 }

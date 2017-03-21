@@ -29,11 +29,8 @@
                             <!--{$favorite_list[$favorite_data.fid].title}-->
                         </a>
                     </td>
-                    <td class="action">
-                        <a href="javascript:;" class="tip ml10"  title="彻底删除"
-                        data-fid="<!--{$favorite_data.fid}-->"
-                        data-id="<!--{$favorite_data.id}-->"
-                        data-action="delete"><i class="fa fa-trash-o"></i>&#215;</a>
+                    <td class="action" data-param='<!--{$favorite_data.param|json_encode}-->'>
+                        <a href="javascript:;" class="tip ml10"  title="彻底删除" data-action="delete"><i class="fa fa-trash-o"></i>&#215;</a>
                     </td>
                 </tr>
                 <!--{/iCMS}-->
@@ -52,13 +49,12 @@
 </form>
 <script type="text/javascript">
 $(function() {
+    var iAPI = iCMS.run('api');
     $("[data-action]").on('click', function(event) {
         event.preventDefault();
-        var param = {
-            'id': $(this).attr("data-id"),
-            'fid': $(this).attr("data-fid"),
-            'action': $(this).attr("data-action")
-        }
+        var param = iAPI.param($(this));
+        param['action'] = $(this).attr('data-action');
+
         $.post("<!--{iCMS:router url='favorite'}-->", param, function(c) {
             if (c.code) {
                 $("#id-" + param.id).hide('500', function() {

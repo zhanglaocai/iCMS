@@ -264,7 +264,7 @@ class spider_content {
         }
 
         if ($data['filter']) {
-            $fwd = iPHP::callback(array("filterApp","run"),array(&$content));
+            $fwd = iPHP::callback(array("filterApp","run"),array(&$content),false);
             if($fwd){
                 $filterMsg = '['.$name.']包含被系统屏蔽的字符!';
                 if(spider::$dataTest){

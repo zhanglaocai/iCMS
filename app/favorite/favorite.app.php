@@ -20,45 +20,53 @@ class favoriteApp {
         $array = favoriteFunc::favorite_list(array('userid'=>user::$userid));
         iUI::json($array);
     }
-    public function __ACTION_manage_favorite() {
-        $actArray = array('delete');
-        $act = iSecurity::escapeStr($_POST['act']);
-        if (in_array($act, $actArray)) {
-            $id = (int) $_POST['id'];
-            $id OR iUI::code(0, 'iCMS:error', 0, 'json');
-            iDB::query("
-                DELETE
-                FROM `#iCMS@__favorite_data`
-                WHERE `uid` = '" . user::$userid . "'
-                AND `id`='$id'
-                LIMIT 1;
-            ");
-            iUI::code(1, 0, 0, 'json');
-        }
-    }
+
     /**
      * [ACTION_delete 删除收藏]
      */
     public function ACTION_delete(){
         $this->__login();
 
-        $id  = (int) $_POST['id'];
-        $fid = (int) $_POST['fid'];
+        $uid     = user::$userid;
+        $fid     = (int)$_POST['fid'];
+        $id      = (int)$_POST['id'];
+        $appid   = (int)$_POST['appid'];
+        $iid     = (int)$_POST['iid'];
+        $cid     = (int)$_POST['cid'];
+        $suid    = (int)$_POST['suid'];
+        $title   = iSecurity::escapeStr($_POST['title']);
+        $url     = iSecurity::escapeStr($_POST['url']);
 
-        $id OR iUI::code(0, 'iCMS:error', 0, 'json');
+        if(empty($fid)){
+            iUI::code(0,'iCMS:error',0,'json');
+        }
+        if(empty($url) && empty($id)){
+            iUI::code(0,'iCMS:error',0,'json');
+        }
+        if($url){
+            iDB::query("
+                DELETE
+                FROM `#iCMS@__favorite_data`
+                WHERE `uid` = '$uid'
+                AND `fid` = '$fid'
+                AND `url` = '$url';
+            ");
+        }
+        if($id){
+            iDB::query("
+                DELETE
+                FROM `#iCMS@__favorite_data`
+                WHERE `uid` = '$uid'
+                AND `id`='$id'
+            ");
+        }
 
-        iDB::query("
-            DELETE
-            FROM `#iCMS@__favorite_data`
-            WHERE `uid` = '" . user::$userid . "'
-            AND `id`='$id'
-            LIMIT 1;
-        ");
         iDB::query("
             UPDATE `#iCMS@__favorite`
             SET `count` = count-1
             WHERE `id` = '$fid' AND `count`>0;
         ");
+        iPHP::callback(array('apps','update_count'),array($iid,$appid,'favorite','-'));
         iUI::code(1,0,0,'json');
     }
     /**
@@ -78,7 +86,13 @@ class favoriteApp {
         $url     = iSecurity::escapeStr($_POST['url']);
         $addtime = time();
 
-        $id  = iDB::value("SELECT `id` FROM `#iCMS@__favorite_data` WHERE `uid`='$uid' AND `fid`='$fid' AND `url`='$url' LIMIT 1");
+        $id  = iDB::value("
+            SELECT `id` FROM `#iCMS@__favorite_data`
+            WHERE `uid`='$uid'
+             AND `fid`='$fid'
+             AND `url`='$url'
+             LIMIT 1
+        ");
         $id && iUI::code(0,'iCMS:favorite:failure',0,'json');
 
         $fields = array('uid', 'appid', 'fid', 'iid', 'url', 'title', 'addtime');
@@ -90,6 +104,7 @@ class favoriteApp {
                 SET `count` = count+1
                 WHERE `id` = '$fid';
             ");
+            iPHP::callback(array('apps','update_count'),array($iid,$appid,'favorite','+'));
             iUI::code(1,'iCMS:favorite:success',$fdid,'json');
         }
         iUI::code(0,'iCMS:favorite:error',0,'json');
@@ -107,11 +122,11 @@ class favoriteApp {
         $mode        = (int)$_POST['mode'];
 
         empty($title) && iUI::code(0,'iCMS:favorite:create_empty',0,'json');
-        $fwd  = iPHP::callback(array("filterApp","run"),array(&$title));
+        $fwd  = iPHP::callback(array("filterApp","run"),array(&$title),false);
         $fwd && iUI::code(0,'iCMS:favorite:create_filter',0,'json');
 
         if($description){
-            $fwd  = iPHP::callback(array("filterApp","run"),array(&$description));
+            $fwd  = iPHP::callback(array("filterApp","run"),array(&$description),false);
             $fwd && iUI::code(0,'iCMS:favorite:create_filter',0,'json');
         }
 

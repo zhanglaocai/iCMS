@@ -227,11 +227,11 @@ class userApp {
 		empty($cid) && iUI::alert('请选择所属栏目！');
 		empty($body) && iUI::alert('文章内容不能为空！');
 
-		$fwd = iPHP::callback(array("filterApp","run"),array(&$title));
+		$fwd = iPHP::callback(array("filterApp","run"),array(&$title),false);
 		$fwd && iUI::alert('user:publish:filter_title');
-		$fwd = iPHP::callback(array("filterApp","run"),array(&$description));
+		$fwd = iPHP::callback(array("filterApp","run"),array(&$description),false);
 		$fwd && iUI::alert('user:publish:filter_desc');
-		$fwd = iPHP::callback(array("filterApp","run"),array(&$body));
+		$fwd = iPHP::callback(array("filterApp","run"),array(&$body),false);
 		$fwd && iUI::alert('user:publish:filter_body');
 
 		if (empty($description)) {
@@ -264,7 +264,7 @@ class userApp {
                 AND `uid`='" . user::$userid . "'
                 AND `appid`='" . iCMS_APP_ARTICLE . "'
             ");
-			user::update_count(user::$userid, 1, 'article');
+			user::update_count(user::$userid,'article');
 			$lang = array(
 				'1' => 'user:article:add_success',
 				'3' => 'user:article:add_examine',
@@ -867,8 +867,8 @@ class userApp {
 				$fields = array('uid', 'name', 'fuid', 'fname');
 				$data   = compact($fields);
 				iDB::insert('user_follow', $data);
-				user::update_count($uid, 1, 'follow');
-				user::update_count($fuid, 1, 'fans');
+				user::update_count($uid, 'follow');
+				user::update_count($fuid,'fans');
 				iUI::code(1, 'user:follow:success', 0, 'json');
 			}
 		} else {
@@ -878,8 +878,8 @@ class userApp {
                 AND `fuid`='$fuid'
                 LIMIT 1;
             ");
-			user::update_count($uid, 1, 'follow', '-');
-			user::update_count($fuid, 1, 'fans', '-');
+			user::update_count($uid,'follow', '-');
+			user::update_count($fuid,'fans', '-');
 			iUI::code(1, 0, 0, 'json');
 		}
 	}

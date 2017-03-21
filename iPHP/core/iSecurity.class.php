@@ -203,7 +203,7 @@ class iSecurity {
 	            $string[$key] = iSecurity::escapeStr($val);
 	        }
 	    } else {
-			$string = str_replace(array('%00','\\0'), '', $string); //modified@2010-7-5
+			$string = str_replace(array('%00','\\0',"\0","\x0B"), '', $string); //modified@2010-7-5
 			$string = str_replace(array('&', '"',"'", '<', '>'), array('&amp;', '&quot;','&#039;', '&lt;', '&gt;'), $string);
 			$string = preg_replace('/&amp;((#(\d{3,5}|x[a-fA-F0-9]{4})|[a-zA-Z][a-z0-9]{2,5});)/', '&\\1',$string);
 	    	$string = str_replace('\\\\', '&#92;', $string);

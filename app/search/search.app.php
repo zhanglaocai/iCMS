@@ -18,7 +18,7 @@ class searchApp {
         $q  = iSecurity::encoding($q);
         $q  = iSecurity::escapeStr($q);
 
-        $fwd = iPHP::callback(array("filterApp","run"),array(&$q));
+        $fwd = iPHP::callback(array("filterApp","run"),array(&$q),false);
         $fwd && iPHP::error_404('非法搜索词!', 60002);
 
         $search['title']   = stripslashes($q);

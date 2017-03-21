@@ -80,9 +80,18 @@ class favoriteFunc{
 		}
 		if(empty($resource)){
 			$resource  = iDB::all("SELECT * FROM `#iCMS@__favorite_data` {$where_sql} {$order_sql} LIMIT {$offset},{$maxperpage}");
-			// $resource = array();
-			// if($rs)foreach ($rs as $key => $value) {
-			// }
+			if($resource)foreach ($resource as $key => $value) {
+				$value['param'] = array(
+					"id"    => $value['id'],
+					"fid"   => $value['fid'],
+					"appid" => $value['appid'],
+					"iid"   => $value['iid'],
+					"uid"   => $value['uid'],
+					"title" => $value['title'],
+					"url"   => $value['url'],
+				);
+				$resource[$key] = $value;
+			}
 			$vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
 		}
 		return $resource;

@@ -348,11 +348,16 @@ class iPHP {
      * @param  [type] $value    [引用参数]
      * @return [type]           [description]
      */
-    public static function callback($callback,$value=array()){
+    public static function callback($callback,$value=array(),$return=null){
         if (is_array($callback) && is_callable($callback)) {
            return call_user_func_array($callback,(array)$value);
+        }else{
+	        if($return===null){
+				return $value;
+	        }else{
+	        	return $return;
+	        }
         }
-        return $value;
     }
 	public static function app($app = NULL, $args = NULL) {
 		$app_dir = $app_name = $app;

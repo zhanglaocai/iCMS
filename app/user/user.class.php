@@ -109,9 +109,13 @@ class user {
 		$fuid = iDB::row("SELECT `fuid` FROM `#iCMS@__user_follow` where `uid`='{$uid}' and `fuid`='$fuid' limit 1");
 		return $fuid?$fuid:false;
 	}
-	public static function update_count($uid=0,$count=0,$field='article',$math='+'){
+	public static function update_count($uid=0,$field='article',$math='+',$count='1'){
 		$math=='-' && $sql = " AND `{$field}`>0";
-		iDB::query("UPDATE `#iCMS@__user` SET `{$field}` = {$field}{$math}{$count} WHERE `uid`='{$uid}' {$sql} LIMIT 1;");
+		iDB::query("
+			UPDATE `#iCMS@__user`
+			SET `{$field}` = {$field}{$math}{$count}
+			WHERE `uid`='{$uid}' {$sql}
+		");
 	}
 	public static function openid($openid=0,$platform=0){
 		$uid = iDB::value("SELECT `uid` FROM `#iCMS@__user_openid` where `openid`='{$openid}' AND `platform`='{$platform}'");

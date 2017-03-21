@@ -472,4 +472,19 @@ class apps {
         $v_list == 0 && iPHP::error_throw($zip->errorInfo(true)); //如果有误，提示错误信息。
         return $zipFile;
     }
+    public static function update_count($id,$appid=0,$field,$math='+',$count=1){
+        $rs = self::get_app($appid);
+        $tables = reset($rs['table']);
+        if($tables){
+            $fields = apps_db::fields($tables['table']);
+            if($fields[$field]){
+                $math=='-' && $sql = " AND `{$field}`>0";
+                iDB::query("
+                    UPDATE `".$tables['table']."`
+                    SET `{$field}` = {$field}{$math}{$count}
+                    WHERE `".$tables['primary']."` = '$id' {$sql}
+                ");
+            }
+        }
+    }
 }

@@ -99,7 +99,7 @@ class commentApp {
 		$iid OR iUI::code(0, 'iCMS:article:empty_id', 0, 'json');
 		$content OR iUI::code(0, 'iCMS:comment:empty', 0, 'json');
 
-		$fwd = iPHP::callback(array("filterApp","run"),array(&$content));
+		$fwd = iPHP::callback(array("filterApp","run"),array(&$content),false);
 		$fwd && iUI::code(0, 'iCMS:comment:filter', 0, 'json');
 
 		$appid OR $appid = iCMS_APP_ARTICLE;
@@ -113,11 +113,16 @@ class commentApp {
 		$quote = '0';
 		$floor = '0';
 
-		$fields = array('appid', 'cid', 'iid', 'suid', 'title', 'userid', 'username', 'content', 'reply_id', 'reply_uid', 'reply_name', 'addtime', 'status', 'up', 'down', 'ip', 'quote', 'floor');
+		$fields = array('appid', 'cid', 'iid', 'suid', 'title', 'userid', 'username',
+			'content', 'reply_id', 'reply_uid', 'reply_name', 'addtime',
+			'status', 'up', 'down', 'ip', 'quote', 'floor'
+		);
 		$data = compact($fields);
 		$id = iDB::insert('comment', $data);
-		iDB::query("UPDATE `#iCMS@__article` SET comments=comments+1 WHERE `id` ='{$iid}' limit 1");
-		user::update_count($userid, 1, 'comments');
+
+		iPHP::callback(array('apps','update_count'),array($iid,$appid,'comments','+'));
+		iPHP::callback(array('user','update_count'),array($userid,'comments','+'));
+
 		if ($this->config['examine']) {
 			iUI::code(0, 'iCMS:comment:examine', $id, 'json');
 		}
