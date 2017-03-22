@@ -65,7 +65,7 @@ class iPHP {
 			$map[$name] && $name = $map[$name];
 			$core===null && $core = iPHP_CORE;
 			$path = $core.'/'.$name.'.class.php';
-		}else if(iPHP::$apps[$name]||in_array($name, array('apps','content')) ){
+		}else if(iPHP::$apps[$name]||in_array($name, array('apps','content','former')) ){
 			//app.class.php
 			$file OR $file = $name.'.class';
 			$path = iPHP_APP_DIR . '/' . $name . '/' . $file . '.php';

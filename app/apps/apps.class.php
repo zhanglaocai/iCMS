@@ -18,111 +18,11 @@ class apps {
         '1' => '系统应用',
         '0' => '系统组件',
     );
-    public static function iFormer_create($app,$rs,$gd=false){
-        is_array($app) OR $app = apps::get($app);
-        $data_table_name = apps_mod::data_table_name($app['app']);
-        if($app['fields']){
-            $data_table = $app['table'][$data_table_name];
-            if($data_table){
-                $data_fields = apps_mod::base_fields($app['app']);
-                $data_fields && $app['fields']+= $data_fields;
-                if($gd){
-                    $table = reset($app['table']);
-                    $id = $rs[$table['primary']];
-                    $primary_key = $data_table['primary'];
-                    $data_table['union'] && $primary_key = $data_table['union'];
-                    $rs+= (array)iDB::row("SELECT * FROM `{$data_table['table']}` WHERE `{$primary_key}`='$id' LIMIT 1;",ARRAY_A);
-                }
-            }
-            iFormer::$config['app']     = $app;
-            iFormer::$config['gateway'] = 'admincp';
-            iFormer::$config['value']   = array(
-                'userid'   => members::$userid,
-                'username' => members::$data->username,
-                'nickname' => members::$data->nickname
-            );
-            iFormer::render($app,$rs);
-        }
-    }
-    // public static function iFormer_save($app,&$data=null,$pri_id=null){
-    public static function iFormer_save($app,$pri_id=null){
-        is_array($app) OR $app = apps::get($app);
 
-        if($app['fields']){
-
-            list($variable,$tables,$orig_post,$imap,$tags) = iFormer::post($app);
-
-            if(!$variable){
-                iCMS::alert("表单数据处理出错!");
-            }
-            //非自定义应用数据
-            if($pri_id){
-                $pri_table = reset($app['table']);
-            }
-
-            $update = false;
-            foreach ($variable as $table_name => $_data) {
-                if(empty($_data)){
-                  continue;
-                }
-                // if($data && $table_name==$pri_table['name']){
-                //     $data = array_merge($data,$_data);
-                //     continue;
-                // }
-                //当前表 数据
-                $_table   = $app['table'][$table_name];
-                //当前表 主键
-                $primary = $_table['primary'];
-                //关联字符 && 关联数据
-                if($_table['union'] && $union_data){
-                  $_data[$_table['union']] = $union_data[$_table['union']];
-                }
-                //非自定义应用数据
-                if($pri_id && $table_name==$pri_table['name']){
-                    $_data[$pri_table['primary']] = $pri_id;
-                }
-
-                $id = $_data[$primary];
-                unset($_data[$primary]);//主键不更新
-                if(empty($id)){ //主键值为空
-                    $id = iDB::insert($table_name,$_data);
-                }else{
-                    $update = true;
-                    iDB::update($table_name, $_data, array($primary=>$id));
-                }
-                $union_id = apps_mod::data_union_id($table_name);
-                empty($_table['union']) && $union_data[$union_id] = $id;
-            }
-
-            if($imap)foreach ($imap as $key => $value) {
-                iMap::init($value[0],$app['id'],$key);
-                if($update){
-                    $orig = $orig_post[$key];
-                    iMap::diff($value[1],$orig,$id);
-                }else{
-                    iMap::add($value[1],$id);
-                }
-            }
-
-            if($tags)foreach ($tags as $key => $value) {
-                if(empty($value[0])){
-                    continue;
-                }
-                tag::$appid = $app['id'];
-                if($update){
-                    $orig = $orig_post[$key];
-                    tag::diff($value[0],$orig,members::$userid,$id,$value[1]);
-                }else{
-                    tag::add($value[0],members::$userid,$id,$value[1]);
-                }
-            }
-            return $update;
-        }
-    }
-    public static function uninstall($appid){
-        $data = self::get($appid);
-        if($data){
-            self::__uninstall($data);
+    public static function uninstall($app){
+        is_array($app) OR $app = self::get($app);
+        if($app){
+            self::__uninstall($app);
             // $obj_name = $data['app'].'Admincp';
             // var_dump(@class_exists($obj_name));
             // $obj_name = $data['app'].'App';
@@ -148,15 +48,13 @@ class apps {
         //删除配置
         configAdmincp::del($app['id'],$app['app']);
         //删除表
-        apps::drop_app_table($app['table']);
+        self::drop_table($app['table']);
         //删除数据
-        apps::del_app_data($app['id']);
+        self::del_data($app['id']);
         //查找app目录
         $appdir = iPHP_APP_DIR . '/' . $app['app'];
         // 删除应用
         file_exists($appdir) && iFS::rmdir($appdir);
-
-        iUI::success('应用删除完成!','js:1');
     }
     public static function installed($app,$r=false){
         $path  = iPHP_APP_DIR.'/'.$app.'/etc/iAPP.install.lock';
@@ -165,10 +63,10 @@ class apps {
         }
         return file_exists($path);
     }
-    public static function del_app_data($id){
+    public static function del_data($id){
         $id && iDB::query("DELETE FROM `#iCMS@__apps` WHERE `id` = '{$id}'; ");
     }
-    public static function drop_app_table($table){
+    public static function drop_table($table){
         if($table)foreach ((array)$table as $key => $value) {
             $value['table'] && iDB::query("DROP TABLE IF EXISTS `".$value['table']."`");
         }

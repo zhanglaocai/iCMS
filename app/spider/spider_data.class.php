@@ -211,6 +211,7 @@ class spider_data {
         gc_collect_cycles();
 
         if (spider::$dataTest) {
+            echo "<b>最终采集结果:</b>";
             echo "<pre style='width:99%;word-wrap: break-word;white-space: pre-wrap;'>";
             print_r(iSecurity::escapeStr($responses));
             echo '<hr />';

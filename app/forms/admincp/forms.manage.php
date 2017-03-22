@@ -116,18 +116,17 @@ $(function(){
                   ?>
                 </td>
                   <td>
-                        <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>&do=manage&appid=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 内容管理</a>
-                        <a href="<?php echo __ADMINCP__; ?>=<?php echo $data['app'] ; ?>&do=add&appid=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-edit"></i> 添加内容</a>
-                        <div class="clearfix mt5"></div>
-                      <a href="<?php echo APP_URI; ?>&do=create&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                      <a href="<?php echo APP_URI; ?>&do=pack&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-download"></i> 打包</a>
-                        <?php if($data['status']){?>
-                          <a href="<?php echo APP_URI; ?>&do=update&_args=status:0&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-warning" onclick="return confirm('关闭表单不会删除数据，但表单将不可用\n确定要关闭表单?');"><i class="fa fa-close"></i> 关闭</a>
-                        <?php }else{?>
-                          <a href="<?php echo APP_URI; ?>&do=update&_args=status:1&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-success"><i class="fa fa-check"></i> 启用</a>
-                        <?php }?>
-                        <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载表单会清除表单所有数据！\n卸载表单会清除表单所有数据！\n卸载表单会清除表单所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
-                    </td>
+                    <a href="<?php echo APP_URI; ?>&do=data&form_id=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 数据</a>
+                    <a href="<?php echo APP_URI; ?>&do=submit&form_id=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-edit"></i> 添加</a>
+                    <div class="clearfix mt5"></div>
+                    <a href="<?php echo APP_URI; ?>&do=create&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
+                    <a href="<?php echo APP_URI; ?>&do=pack&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-download"></i> 打包</a>
+                    <?php if($data['status']){?>
+                    <a href="<?php echo APP_URI; ?>&do=update&_args=status:0&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-warning" onclick="return confirm('关闭表单不会删除数据，但表单将不可用\n确定要关闭表单?');"><i class="fa fa-close"></i> 关闭</a>
+                    <?php }else{?>
+                    <a href="<?php echo APP_URI; ?>&do=update&_args=status:1&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-success"><i class="fa fa-check"></i> 启用</a>
+                    <?php }?>
+                    <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载表单会清除表单所有数据！\n卸载表单会清除表单所有数据！\n卸载表单会清除表单所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
                 </tr>
                 <?php }  ?>
               </tbody>

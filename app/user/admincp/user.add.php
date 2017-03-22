@@ -33,7 +33,7 @@ $(function(){
       </ul>
     </div>
     <div class="widget-content nopadding">
-      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-user" target="iPHP_FRAME">
+      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <input name="uid" type="hidden" value="<?php echo $this->uid; ?>" />
         <input  name="user[type]" type="hidden"value="<?php echo $rs->type ; ?>"/>
         <input name="_pid" type="hidden" value="<?php echo $rs->pid; ?>" />
@@ -243,7 +243,10 @@ $(function(){
             </div>
           </div>
           <div id="user-custom" class="tab-pane">
-            <?php echo iFormer::$html;?>
+          <?php
+            echo former::head();
+            echo former::form();
+          ?>
           </div>
         </div>
         <div class="form-actions">
@@ -253,12 +256,4 @@ $(function(){
     </div>
   </div>
 </div>
-<script>
-$(function(){
-  $("#<?php echo APP_FORMID;?>").submit(function(){
-    <?php echo iFormer::$validate;?>
-  });
-  <?php echo iFormer::$script;?>
-})
-</script>
 <?php admincp::foot();?>

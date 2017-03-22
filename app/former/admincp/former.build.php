@@ -17,14 +17,14 @@
   <p>预览前请先提交修改</p>
 </div>
 <?php if($this->id){?>
-<a href="<?php echo APP_URI; ?>&do=app_add&appid=<?php echo $this->id ; ?>&preview"
+<a href="<?php echo __ADMINCP__; ?>=<?php echo $rs['app'] ; ?>&do=add&appid=<?php echo $this->id ; ?>&preview"
     class="btn btn-success" data-toggle="modal" data-target="#iCMS-MODAL" data-meta='{"width":"85%","height":"640px"}'>
     <i class="fa fa-eye"></i> 预览表单
 </a>
 <?php }?>
-<link rel="stylesheet" href="./app/apps/ui/iFormer/iFormer.css" type="text/css" />
 <script type="text/javascript" src="./app/admincp/ui/jquery/jquery-ui.min.js"></script>
-<script type="text/javascript" src="./app/apps/ui/iFormer/iFormer.js"></script>
+<link rel="stylesheet" href="./app/former/ui/iFormer.css" type="text/css" />
+<script type="text/javascript" src="./app/former/ui/iFormer.js"></script>
 <script type="text/javascript">
 <?php
 if($rs['fields']){
@@ -82,4 +82,4 @@ $(function() {
     $(".iFormer-design").draggable().disableSelection();
 });
 </script>
-<?php include admincp::view("apps.iFormer.design","apps");?>
+<?php include admincp::view("former.design","former");?>

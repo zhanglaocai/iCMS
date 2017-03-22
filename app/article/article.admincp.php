@@ -71,7 +71,9 @@ class articleAdmincp{
             $rs['editor']  = empty(members::$data->nickname)?members::$data->username:members::$data->nickname;
             $rs['userid']  = members::$userid;
 		}
-        apps::iFormer_create(self::$appid,$rs,true);
+
+        iPHP::callback(array("formerAdmincp","add"),array(self::$appid,$rs,true));
+
         if(self::$config['markdown']){
             include admincp::view("article.markdown");
         }else{
@@ -122,8 +124,8 @@ class articleAdmincp{
                     article::update(compact('cid'),compact('id'));
 		            if($_cid!=$cid) {
                         iMap::diff($cid,$_cid,$id);
-                        categoryAdmincp::update_count_one($_cid,'-');
-                        categoryAdmincp::update_count_one($cid);
+                        categoryAdmincp::update_count($_cid,'-');
+                        categoryAdmincp::update_count($cid);
 		            }
 		        }
 		        iUI::success('成功移动到目标栏目!','js:1');
@@ -592,7 +594,7 @@ class articleAdmincp{
             $mobile  = 0;
 
             $aid  = article::insert(compact($fields));
-            apps::iFormer_save($this->appid,$aid);
+            iPHP::callback(array("formerAdmincp","save"),array(self::$appid,$aid));
             admincp::callback($aid,$this,'primary');
 
             if($tags){
@@ -611,7 +613,7 @@ class articleAdmincp{
 
 
             $url OR $this->article_data($body,$aid,$haspic);
-            categoryAdmincp::update_count_one($cid);
+            categoryAdmincp::update_count($cid);
 
             $article_url = iURL::get('article',array(array(
                 'id'      =>$aid,
@@ -648,16 +650,17 @@ class articleAdmincp{
             iUI::dialog('success:#:check:#:文章添加完成!<br />10秒后返回文章列表','url:'.$REFERER_URL,10,$moreBtn);
         }else{
             isset($_POST['ischapter']) OR $chapter = 0;
-			if($tags){
-	            tag::diff($tags,$_tags,members::$userid,$aid,$cid);
-            }
+
+	        $tags && tag::diff($tags,$_tags,members::$userid,$aid,$cid);
+
             $picdata = $this->picdata($pic,$mpic,$spic);
 
             article::update(compact($fields),array('id'=>$aid));
-            apps::iFormer_save($this->appid,$aid);
+            iPHP::callback(array("formerAdmincp","save"),array(self::$appid,$aid));
             admincp::callback($aid,$this,'primary');
 
-            iMap::init('prop',self::$appid,'pid')->diff($pid,$_pid,$aid);
+            iMap::init('prop',self::$appid,'pid');
+            iMap::diff($pid,$_pid,$aid);
             iMap::init('category',self::$appid,'cid');
             iMap::diff($cid,$_cid,$aid);
             $scid && iMap::diff($scid,$_scid,$aid);
@@ -665,8 +668,8 @@ class articleAdmincp{
             $url OR $this->article_data($body,$aid,$haspic);
 
             if($_cid!=$cid) {
-                categoryAdmincp::update_count_one($_cid,'-');
-                categoryAdmincp::update_count_one($cid);
+                categoryAdmincp::update_count($_cid,'-');
+                categoryAdmincp::update_count($cid);
             }
             if($this->callback['code']){
                 return array(
@@ -729,7 +732,7 @@ class articleAdmincp{
         article::del($id);
         article::del_data($id);
         $msg.= self::del_msg('文章数据删除');
-        categoryAdmincp::update_count_one($art['cid'],'-');
+        categoryAdmincp::update_count($art['cid'],'-');
         $msg.= self::del_msg('栏目数据更新');
         $msg.= self::del_msg('删除完成');
         return $msg;

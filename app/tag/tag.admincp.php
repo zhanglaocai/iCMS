@@ -28,7 +28,7 @@ class tagAdmincp{
 
     public function do_add(){
         $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
-        apps::iFormer_create($this->appid,$rs);
+        iPHP::callback(array("formerAdmincp","add"),array($this->appid,$rs,true));
         include admincp::view('tag.add');
     }
     public function do_update(){
@@ -275,7 +275,7 @@ class tagAdmincp{
             iMap::diff($tcid,$_tcid,$id);
             $msg = '标签更新完成';
 		}
-        apps::iFormer_save($this->appid,$id);
+        iPHP::callback(array("formerAdmincp","save"),array($this->appid,$id));
         admincp::callback($id,$this);
         if($this->callback['code']){
             return array(
@@ -356,8 +356,8 @@ class tagAdmincp{
                     iDB::update("tags",compact('cid'),compact('id'));
 		            if($_cid!=$cid) {
                         iMap::diff($cid,$_cid,$id);
-                        categoryAdmincp::update_count_one($_cid,'-');
-                        categoryAdmincp::update_count_one($cid);
+                        categoryAdmincp::update_count($_cid,'-');
+                        categoryAdmincp::update_count($cid);
 		            }
 		        }
 		        iUI::success('成功移动到目标栏目!','js:1');
@@ -371,8 +371,8 @@ class tagAdmincp{
                     iDB::update("tags",compact('tcid'),compact('id'));
 		            if($_tcid!=$tcid) {
                         iMap::diff($tcid,$_tcid,$id);
-                        categoryAdmincp::update_count_one($_tcid,'-');
-                        categoryAdmincp::update_count_one($tcid);
+                        categoryAdmincp::update_count($_tcid,'-');
+                        categoryAdmincp::update_count($tcid);
 		            }
 		        }
 		        iUI::success('成功移动到目标分类!','js:1');

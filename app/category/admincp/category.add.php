@@ -75,7 +75,7 @@ $(function(){
       </ul>
     </div>
     <div class="widget-content nopadding">
-      <form action="<?php echo $this->category_furi; ?>&do=save" method="post" class="form-inline" id="iCMS-category" target="iPHP_FRAME">
+      <form action="<?php echo $this->category_furi; ?>&do=save" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <input name="cid" type="hidden" value="<?php echo $rs['cid']  ; ?>" />
         <input name="_pid" type="hidden" value="<?php echo $rs['pid']  ; ?>" />
         <div id="category-add" class="tab-content">
@@ -210,7 +210,10 @@ $(function(){
             </div>
           </div>
           <div id="category-add-custom" class="tab-pane hide">
-              <?php echo iFormer::$html;?>
+            <?php
+              echo former::head();
+              echo former::form();
+            ?>
           </div>
         </div>
         <div class="form-actions">
@@ -220,13 +223,4 @@ $(function(){
     </div>
   </div>
 </div>
-<script>
-$(function(){
-  $("#<?php echo APP_FORMID;?>").submit(function(){
-      <?php echo iFormer::$validate;?>
-
-  });
-  <?php echo iFormer::$script;?>
-})
-</script>
 <?php admincp::foot();?>

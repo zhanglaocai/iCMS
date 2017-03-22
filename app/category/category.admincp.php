@@ -89,8 +89,7 @@ class categoryAdmincp {
             }
         }
 
-        apps::iFormer_create(iCMS_APP_CATEGORY,$rs);
-
+        iPHP::callback(array("formerAdmincp","add"),array(iCMS_APP_CATEGORY,$rs,true));
         include admincp::view($this->_view_add,$this->_view_tpl_dir);
     }
     public function do_save(){
@@ -183,7 +182,7 @@ class categoryAdmincp {
                 $data['comments'] = '0';
                 $cid = iDB::insert('category',$data);
                 iDB::update('category', array('sortnum'=>$cid), array('cid'=>$cid));
-                apps::iFormer_save(iCMS_APP_CATEGORY,$cid);
+                iPHP::callback(array("formerAdmincp","save"),array(iCMS_APP_CATEGORY,$cid));
                 $pid && iMap::add($pid,$cid);
             }
             $msg = $this->category_name."添加完成!请记得更新缓存!";
@@ -195,7 +194,7 @@ class categoryAdmincp {
             $mode=="2" && $this->check_dir($dir,$this->appid,$url,$cid);
             $data['dir'] = $dir;
             iDB::update('category', $data, array('cid'=>$cid));
-            apps::iFormer_save(iCMS_APP_CATEGORY,$cid);
+            iPHP::callback(array("formerAdmincp","save"),array(iCMS_APP_CATEGORY,$cid));
             iMap::diff($pid,$_pid,$cid);
             $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
@@ -595,7 +594,7 @@ class categoryAdmincp {
         iDB::query("UPDATE `#iCMS@__category` SET `count` ='$cc' WHERE `cid` ='$cid'");
     }
 
-    public static function update_count_one($cid,$math='+'){
+    public static function update_count($cid,$math='+'){
         $math=='-' && $sql = " AND `count`>0";
         iDB::query("UPDATE `#iCMS@__category` SET `count` = count".$math."1 WHERE `cid` ='$cid' {$sql}");
     }

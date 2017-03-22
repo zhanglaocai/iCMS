@@ -155,7 +155,7 @@ class apps_mod {
      */
     public static function get_field_array($data,$ui=false) {
         $array = array();
-        foreach ($data as $key => $value) {
+        if($data)foreach ($data as $key => $value) {
           $output = array();
           if($value=='UI:BR'){
               $ui && $output = array('type'=>'br');

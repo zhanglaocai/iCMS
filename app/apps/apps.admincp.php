@@ -355,6 +355,10 @@ class appsAdmincp{
         }
       }
     }
+    /**
+     * [付费安装]
+     * @return [type] [description]
+     */
     public function do_premium_install(){
       $url    = $_GET['url'];
       $name   = $_GET['name'];
@@ -364,17 +368,7 @@ class appsAdmincp{
       $zipurl = $url.'?'.http_build_query($array);
       $this->setup_zipurl($zipurl,$name,$key.'.zip');
     }
-    public function setup_zipurl($url,$name,$zipname=null){
-          // apps_store::$test = true;
-        $msg = apps_store::download($url,$name,$zipname);
-        $msg.= apps_store::install();
-        $msg = str_replace('<iCMS>', '<br />', $msg);
-        if(apps_store::$app_id){
-          iUI::dialog($msg,'url:'.APP_URI."&do=add&id=".apps_store::$app_id,10);
-        }else{
-          iUI::dialog($msg,'js:1',3);
-        }
-    }
+
     /**
      * [卸载应用]
      * @return [type] [description]
@@ -382,7 +376,7 @@ class appsAdmincp{
     public function do_uninstall(){
       $app = apps::get($this->id);
       if($app['type'] && $app['apptype']){
-        apps::uninstall($this->id);
+        apps::uninstall($app);
         apps::cache();
         menu::cache();
         iUI::alert('应用已经删除');
@@ -445,5 +439,16 @@ class appsAdmincp{
         iFS::rmdir($remove_path);
       }
 
+    }
+    public function setup_zipurl($url,$name,$zipname=null){
+          // apps_store::$test = true;
+        $msg = apps_store::download($url,$name,$zipname);
+        $msg.= apps_store::install();
+        $msg = str_replace('<iCMS>', '<br />', $msg);
+        if(apps_store::$app_id){
+          iUI::dialog($msg,'url:'.APP_URI."&do=add&id=".apps_store::$app_id,10);
+        }else{
+          iUI::dialog($msg,'js:1',3);
+        }
     }
 }

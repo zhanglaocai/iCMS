@@ -171,7 +171,7 @@ $(function(){
             <?php include admincp::view("apps.base","apps");?>
           </div>
           <div id="apps-add-custom" class="tab-pane">
-            <?php include admincp::view("apps.iFormer.build","apps");?>
+            <?php include admincp::view("former.build","former");?>
           </div>
           <?php } ?>
           <div id="apps-add-menu" class="tab-pane">
@@ -188,12 +188,14 @@ $(function(){
           <div class="clearfloat"></div>
           <div class="form-actions">
             <button class="btn btn-primary btn-large" type="submit"><i class="fa fa-check"></i> 提交</button>
+            <?php if($rs['apptype']){?>
             <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $rs['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"/><i class="fa fa-trash-o"></i> 卸载</a>
+            <?php }?>
           </div>
         </form>
       </div>
     </div>
   </div>
 </div>
-<?php include admincp::view("apps.iFormer.editor","apps");?>
+<?php include admincp::view("former.editor","former");?>
 <?php admincp::foot();?>

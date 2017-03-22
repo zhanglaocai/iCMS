@@ -75,6 +75,7 @@ class apps_store {
                 return self::msg($msg.$setup_msg);
             }
         }
+        self::$test OR iFS::rm(self::$zipFile);
         apps::cache() && $msg.= self::msg('更新应用缓存',true);
         menu::cache() && $msg.= self::msg('更新菜单缓存',true);
         $msg.= self::msg('应用安装完成',true);
@@ -112,7 +113,6 @@ class apps_store {
                 $msg.= self::msg('安装文件 [' . $fp . ']',true);
             }
         }
-        self::$test OR iFS::rm(self::$zipFile);
         return array($msg,true);
     }
     public static function setup_app_data(&$archive_files){

@@ -11,7 +11,7 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class spider_content {
-
+    public static $hash = null;
     /**
      * 抓取资源
      * @param  [string] $html      [抓取结果]

@@ -43,7 +43,7 @@ $(function(){
       return confirm('您之前添加过其它章节!确定要取消章节模式?');
     }
   })
-	$("#iCMS-article").submit(function(){
+	$("#<?php echo APP_FORMID;?>").submit(function(){
     var cid = $("#cid option:selected").val();
 		if(cid=="0"){
       $("#cid").focus();
@@ -70,9 +70,7 @@ $(function(){
     //   iCMS.alert("章节模式下 章节标题不能为空!");
     //   return false;
     // }
-    <?php echo iFormer::$validate;?>
 	});
-  <?php echo iFormer::$script;?>
 });
 
 function mergeEditorPage(){
@@ -218,8 +216,8 @@ function _modal_dialog(cancel_text){
         <li><a href="#article-add-custom" data-toggle="tab"><i class="fa fa-wrench"></i> 自定义</a></li>
       </ul>
     </div>
-    <div class="widget-content nopadding iCMS-article-add">
-      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-article" target="iPHP_FRAME">
+    <div class="widget-content nopadding">
+      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <input name="_cid" type="hidden" value="<?php echo $rs['cid'] ; ?>" />
         <input name="_scid" type="hidden" value="<?php echo $rs['scid']; ?>" />
         <input name="_tags" type="hidden" value="<?php echo $rs['tags']; ?>" />
@@ -473,7 +471,10 @@ function _modal_dialog(cancel_text){
             <div class="clearfloat mb10"></div>
           </div>
           <div id="article-add-custom" class="tab-pane hide">
-              <?php echo iFormer::$html;?>
+            <?php
+              echo former::head();
+              echo former::form();
+            ?>
           </div>
         </div>
         <div class="form-actions">

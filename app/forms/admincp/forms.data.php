@@ -21,17 +21,8 @@ $("#<?php echo APP_FORMID;?>").batch();
     <div class="widget-content">
       <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
-        <input type="hidden" name="do" value="manage" />
-        <div class="input-prepend input-append">
-          <span class="add-on">栏目</span>
-          <select name="cid" id="cid" class="chosen-select" style="width: 230px;">
-            <option value="0">所有栏目</option>
-            <?php echo $category_select = category::priv('cs')->select() ; ?>
-          </select>
-          <span class="add-on">
-            <input type="checkbox" name="sub" id="sub"/> 子栏目
-          </span>
-        </div>
+        <input type="hidden" name="do" value="form_manage" />
+        <input type="hidden" name="form_id" value="<?php echo $this->form_id;?>" />
         <div class="input-prepend input-append">
           <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
@@ -86,12 +77,12 @@ $("#<?php echo APP_FORMID;?>").batch();
           ?>
             <tr id="tr<?php echo $id; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $id ; ?>" /></td>
-              <td> <a href="<?php echo $value['url'] ; ?>" target="_blank"/> <?php echo $id ; ?></a></td>
+              <td><?php echo $id ; ?></td>
               <?php foreach ($list_fields as $fi => $fkey) {?>
               <td><?php echo former::de_value($value[$fkey],$fields[$fkey]); ?></td>
               <?php }?>
               <td>
-                <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $id ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
+                <a href="<?php echo APP_URI; ?>&do=submit&form_id=<?php echo $this->form_id ; ?>&id=<?php echo $id ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                 <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $id ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>
               </td>
             </tr>

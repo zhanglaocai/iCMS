@@ -13,7 +13,7 @@ $(function(){
 	iCMS.select('tcid',"<?php echo $rs['tcid'] ; ?>");
 	iCMS.select('pid',"<?php echo $rs['pid']?$rs['pid']:0 ; ?>");
 	iCMS.select('status',"<?php echo $rs['status'] ; ?>");
-	$("#iCMS-tags").submit(function(){
+	$("#<?php echo APP_FORMID;?>").submit(function(){
 		// if($("#cid option:selected").val()=="0"){
 		// 	iCMS.alert("请选择所属栏目");
 		// 	$("#cid").focus();
@@ -49,7 +49,7 @@ $(function(){
       </ul>
     </div>
     <div class="widget-content nopadding">
-      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-tags" target="iPHP_FRAME">
+      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <input name="id" type="hidden" value="<?php echo $this->id ; ?>" />
         <input name="uid" type="hidden" value="<?php echo $rs['uid'] ; ?>" />
 
@@ -161,7 +161,10 @@ $(function(){
             </div>
           </div>
           <div id="tag-add-custom" class="tab-pane hide">
-            <?php echo iFormer::$html;?>
+          <?php
+            echo former::head();
+            echo former::form();
+          ?>
           </div>
         </div>
         <div class="form-actions">
@@ -171,13 +174,4 @@ $(function(){
     </div>
   </div>
 </div>
-<script>
-$(function(){
-  $("#<?php echo APP_FORMID;?>").submit(function(){
-      <?php echo iFormer::$validate;?>
-
-  });
-  <?php echo iFormer::$script;?>
-})
-</script>
 <?php admincp::foot();?>

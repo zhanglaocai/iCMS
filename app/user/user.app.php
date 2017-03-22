@@ -771,7 +771,7 @@ class userApp {
 		$uid = user::$userid;
 		$name = iSecurity::escapeStr($_POST['name']);
 		empty($name) && iUI::code(0, 'user:category:empty', 'add_category', 'json');
-		$fwd = iPHP::callback(array("filterApp","run"),array(&$name));
+		$fwd = iPHP::callback(array("filterApp","run"),array(&$name),false);
 		$fwd && iUI::code(0, 'user:category:filter', 'add_category', 'json');
 		$max = iDB::value("
             SELECT COUNT(cid)
@@ -811,40 +811,7 @@ class userApp {
 		$id = iDB::insert('user_report', $data);
 		iUI::code(1, 'iCMS:report:success', $id, 'json');
 	}
-	public function ACTION_pm() {
-		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 
-		$receiv_uid = (int) $_POST['uid'];
-		$content = iSecurity::escapeStr($_POST['content']);
-
-		$receiv_uid OR iUI::code(0, 'iCMS:error', 0, 'json');
-		$content OR iUI::code(0, 'iCMS:pm:empty', 0, 'json');
-
-		$receiv_name = iSecurity::escapeStr($_POST['name']);
-
-		$send_uid = user::$userid;
-		$send_name = user::$nickname;
-
-		$setting = (array)user::value($receiv_uid,'setting');
-		if($setting['inbox']['receive']=='follow'){
-			if($mid){
-				$mid = iSecurity::escapeStr($_POST['mid']);
-				$mid = authcode($mid);
-				// $row = iDB::row("SELECT `send_uid`,`receiv_uid` FROM `#iCMS@__message` where `id`='$mid'");
-				$muserid = iDB::value("SELECT `userid` FROM `#iCMS@__message` where `id`='$mid'");
-			}
-			if($muserid!=user::$userid){
-				$check = user::follow($receiv_uid, $send_uid);
-				$check OR iUI::code(0, 'iCMS:pm:nofollow', 0, 'json');
-			}
-
-		}
-
-		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');
-		$data = compact($fields);
-		message::send($data, 1);
-		iUI::code(1, 'iCMS:pm:success', $id, 'json');
-	}
 	public function ACTION_follow() {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 

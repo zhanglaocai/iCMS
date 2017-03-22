@@ -66,11 +66,6 @@ class commentApp {
 		iView::assign('vars',$vars);
 		iView::render('iCMS://comment/api.json.htm');
 	}
-	public function pm($a) {
-		$fields = array('send_uid', 'send_name', 'receiv_uid', 'receiv_name', 'content');
-		$data = compact($fields);
-		message::send($data, 1);
-	}
 	public static function redirect_url($var) {
 		$url = iCMS_API.'?app=comment&do=redirect&iid='.$var['iid'].'&appid='.$var['appid'].'&cid='.$var['cid'];
 		return $url;

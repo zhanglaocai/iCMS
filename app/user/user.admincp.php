@@ -43,8 +43,7 @@ class userAdmincp{
                 $userdata = iDB::row("SELECT * FROM `#iCMS@__user_data` WHERE `uid`='$this->uid' LIMIT 1;");
             }
         }
-        apps::iFormer_create($this->appid,$rs);
-
+        iPHP::callback(array("formerAdmincp","add"),array($this->appid,$rs,true));
         include admincp::view("user.add");
     }
     /**
@@ -150,7 +149,7 @@ class userAdmincp{
             }
             $msg = "账号修改完成!";
         }
-        apps::iFormer_save($this->appid,$uid);
+        iPHP::callback(array("formerAdmincp","save"),array($this->appid,$uid));
         iUI::success($msg,'url:'.APP_URI);
     }
     public function do_batch(){

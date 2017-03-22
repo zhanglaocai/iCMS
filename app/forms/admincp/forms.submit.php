@@ -17,22 +17,15 @@ admincp::head(!$preview);
       <?php }else{ ?>
             <h5 class="brs"><?php echo ($this->id?'添加':'修改'); ?><?php echo $app['title'];?></h5>
       <?php } ?>
-      <ul class="nav nav-tabs" id="-add-tab">
-        <li class="active"><a href="#-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
-      </ul>
     </div>
-    <div class="widget-content nopadding">
-      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
-        <input id="appid" name="appid" type="hidden"  value="<?php echo $this->appid;?>" />
+    <div class="widget-content">
+      <form action="<?php echo APP_FURI; ?>&do=savedata" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
+        <input id="form_id" name="form_id" type="hidden"  value="<?php echo $this->form_id;?>" />
         <input name="REFERER" type="hidden" value="<?php echo iPHP_REFERER ; ?>" />
-        <div class="tab-content">
-          <div id="-add-base" class="tab-pane active">
-            <?php
-              echo former::head();
-              echo former::form();
-            ?>
-          </div>
-        </div>
+        <?php
+          echo former::head();
+          echo former::form();
+        ?>
         <?php if($preview){?>
         <?php }else{ ?>
         <?php }?>

@@ -123,7 +123,7 @@ define("user", function(require) {
                     return false;
                 }
                 param.action = 'pm';
-                $.post(API.url('user'), param, function(c) {
+                $.post(API.url('message'), param, function(c) {
                     dialog.remove();
                     UI.alert(c.msg,c.code);
                 }, 'json');

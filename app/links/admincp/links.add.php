@@ -16,7 +16,7 @@ admincp::head();
       <h5><?php echo empty($this->id)?'添加':'修改' ; ?>网站</h5>
     </div>
     <div class="widget-content nopadding">
-      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-links" target="iPHP_FRAME">
+      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <input name="id" type="hidden" value="<?php echo $this->id; ?>" />
         <div class="tab-content">
           <div id="-add-base" class="tab-pane active">
@@ -44,7 +44,10 @@ admincp::head();
               <input type="text" name="sortnum" class="span1" id="sortnum" value="<?php echo $rs['sortnum'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
-            <?php echo iFormer::$html;?>
+            <?php
+              echo former::head();
+              echo former::form();
+            ?>
           </div>
         </div>
         <div class="form-actions">
@@ -54,13 +57,5 @@ admincp::head();
     </div>
   </div>
 </div>
-<script>
-$(function(){
-  $("#<?php echo APP_FORMID;?>").submit(function(){
-      <?php echo iFormer::$validate;?>
 
-  });
-  <?php echo iFormer::$script;?>
-})
-</script>
 <?php admincp::foot();?>

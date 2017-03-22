@@ -178,6 +178,15 @@
           <span class="fb-icon fb-icon-userid"></span>
           <p>用户ID</p>
         </li>
+        <li i="field" tag="ip" type="ip:hidden" field="VARCHAR" len="255" label="IP地址">
+          <span class="fb-icon fb-icon-username"></span>
+          <p>IP地址</p>
+        </li>
+        <li i="field" tag="referer" type="referer:hidden" field="VARCHAR" len="255" label="来路">
+          <span class="fb-icon fb-icon-username"></span>
+          <p>来路</p>
+        </li>
+
         <li i="field" tag="seccode" type="seccode" label="验证码">
           <span class="fb-icon fb-icon-url"></span>
           <p>验证码</p>

@@ -26,7 +26,7 @@ class contentAdmincp{
     }
     public function do_add(){
       $rs = apps_mod::get_data($this->app,$this->id);
-      apps::iFormer_create($this->app,$rs);
+      iPHP::callback(array("formerAdmincp","add"),array($this->app,$rs));
       include admincp::view('content.add');
     }
 
@@ -106,14 +106,15 @@ class contentAdmincp{
         $_count = count($rs);
 
         if($this->app['fields']){
-            $fields = iFormer::fields($this->app['fields']);
+            $fields = former::fields($this->app['fields']);
         }
         $list_fields = array('title','cid','pubdate');
 
         include admincp::view('content.manage');
     }
     public function do_save(){
-        $update = apps::iFormer_save($this->app);
+        $update = iPHP::callback(array("formerAdmincp","save"),array($this->app));
+
         $REFERER_URL = $_POST['REFERER'];
         if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
             $REFERER_URL= APP_URI.'&do=manage';

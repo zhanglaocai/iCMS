@@ -10,7 +10,7 @@
  * iFormer 表单生成器
  */
 
-class iFormer {
+class former {
     public static $line = true;
 
     public static $html     = null;
@@ -64,10 +64,10 @@ class iFormer {
     }
 
     public static function render($app,$rs) {
-        $fields = iFormer::fields($app['fields'],true);
+        $fields = self::fields($app['fields'],true);
         foreach ($fields as $key => $value) {
-          iFormer::html($value,$rs[$value['name']]);
-          iFormer::validate($value);
+          self::html($value,$rs[$value['name']]);
+          self::validate($value);
         }
     }
     public static function html($field,$value=null) {
@@ -149,7 +149,7 @@ class iFormer {
                     $option='<option value="0">默认'.$field['label'].'['.$name.'=\'0\']</option>';
                     $option.= propAdmincp::get($name,null,'option',null,self::$config['app']['app']);
                     $html = $select->html($option).$orig;
-                    $script = self::script('iCMS.select("'.$attr['id'].'","'.trim($value).'");',true);
+                    $script = self::script('iDATA.select("'.$attr['id'].'","'.trim($value).'");',true);
                 break;
                 case 'date':
                 case 'datetime':
@@ -240,6 +240,7 @@ class iFormer {
                             $val = trim($val,"\r\n");
                             if($val){
                                 list($opt_text,$opt_value) = explode("=", $val);
+                                is_null($opt_value) && $opt_value = $opt_text;
                                 $attr2 = $attr;
                                 $attr2['value'] = $opt_value;
                                 $attr2['class'].= ' '.$attr2['id'];
@@ -251,7 +252,7 @@ class iFormer {
                     }else{
                         $html = $span->html($input);
                     }
-                    $script= self::script('iCMS.checked(".'.$attr['id'].'","'.$value.'");',true);
+                    $script= self::script('iDATA.checked(".'.$attr['id'].'","'.$value.'");',true);
 
                     if($type=='switch'){
                         $attr['type'] = 'checkbox';
@@ -271,7 +272,7 @@ class iFormer {
                     }
                     $select = self::widget('select',$attr)->addClass('chosen-select');
                     $option = category::appid(self::$config['app']['id'],'cs')->select();
-                    $script = self::script('iCMS.select("'.$attr['id'].'","'.trim($value).'");',true);
+                    $script = self::script('iDATA.select("'.$attr['id'].'","'.trim($value).'");',true);
                     $html = $select->html($option).$orig;
                 break;
                 case 'multiple':
@@ -294,7 +295,7 @@ class iFormer {
                             }
                         }
                         $html = $html->html($option);
-                        $script = self::script('iCMS.select("'.$attr['id'].'","'.trim($value).'");',true);
+                        $script = self::script('iDATA.select("'.$attr['id'].'","'.trim($value).'");',true);
                     }
                     $html.= $_input;
                 break;
@@ -509,7 +510,7 @@ class iFormer {
           $value = get_date($value,'Y-m-d H:i:s');
         }
         if(in_array($type, array('category','multi_category'))){
-            $variable = iFormer::$variable[$fields['name']];
+            $variable = self::$variable[$fields['name']];
             $valArray = explode(",", $value);
             $value = '';
             foreach ($valArray as $i => $val) {
@@ -529,11 +530,20 @@ class iFormer {
         $field = $fields['field'];
 
         //字段类型
-        list($type,$type2) = explode(':', $fields['type']);
+        list($type,$_type) = explode(':', $fields['type']);
 
         //时间转换
         if(in_array($type, array('date','datetime'))){
           $value = str2time($value);
+          if($_type=='hidden'){
+            $value = time();
+          }
+        }
+        if(in_array($type, array('ip'))){
+          $value = iPHP::get_ip();
+        }
+        if(in_array($type, array('referer'))){
+          $value = $_SERVER['HTTP_REFERER'];
         }
         //多选字段转换
         if(isset($fields['multiple'])){
@@ -559,25 +569,25 @@ class iFormer {
      * @return [array]     [description]
      */
     public static function post($app,$post=null) {
-        if($post===null) $post = $_POST[iFormer::$prefix];
+        if($post===null) $post = $_POST[self::$prefix];
 
         if(empty($post)) return array(false,false,false);
 
         $orig_post   = array();
         $data_post = array();
 
-        $field_array = iFormer::fields($app['fields']);
+        $field_array = self::fields($app['fields']);
         $data_table  = next($app['table']);
         $imap_array  = array();
 
         foreach ($post as $key => $value) {
             $fields = $field_array[$key];
             //字段绑定的函数处理
-            $fields['func'] && $value = iFormer::func($fields['func'],$value);
+            $fields['func'] && $value = self::func($fields['func'],$value);
             //字段数据处理
-            $value = iFormer::en_value($value,$fields);
+            $value = self::en_value($value,$fields);
             //数据验证
-            iFormer::validate($fields,'php',$value);
+            self::validate($fields,'php',$value);
 
             $post[$key] = $value;
 
@@ -630,17 +640,24 @@ class iFormer {
     public static function func($func,$value) {
         return $value;
     }
-    public static function form($id='form',$func='submit') {
-        echo iFormer::$html;
-        echo '<script type="text/javascript">';
-        echo '
-            $(function(){
-                $('.$id.').'.$func.'(function(){
-                    '.iFormer::$validate.'
-                });
-            });
-        ';
-        echo iFormer::$script;
-        echo '</script>';
+    public static function head() {
+        return '<script src="./app/former/ui/iDATA.js" type="text/javascript"></script>';
+    }
+    public static function form($id=null,$func='submit') {
+        $html = self::$html;
+        if(self::$validate||self::$script){
+            $html.= '<script type="text/javascript">';
+            $html.= '$(function(){';
+            if(self::$validate){
+                defined('APP_FORMID') && $id = '#'.APP_FORMID;
+                $html.= '$("'.$id.'"").'.$func.'(function(){';
+                $html.= self::$validate;
+                $html.= '});';
+            }
+            $html.= self::$script;
+            $html.= '});';
+            $html.= '</script>';
+        }
+        echo $html;
     }
 }

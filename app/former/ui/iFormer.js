@@ -338,7 +338,7 @@ var iFormer = {
             });
             $container.append($origin);
         }
-        data = data||this.urlEncode(obj);
+        data = data||this.url_encode(obj);
 
         iFormer.fields(data,$container);
 
@@ -363,7 +363,7 @@ var iFormer = {
         // if(data){
             $fields.val(data);
         // }else{
-        //     $fields.val(this.urlEncode(obj));
+        //     $fields.val(this.url_encode(obj));
         // }
         $container.append($fields);
     },
@@ -402,7 +402,7 @@ var iFormer = {
         $div.append(parent);
         $div.addClass('input-append');
     },
-    urlEncode:function(param, key) {
+    url_encode:function(param, key) {
       if(param==null) return '';
 
       var query = [],t = typeof (param);
@@ -411,20 +411,22 @@ var iFormer = {
       } else {
         for (var i in param) {
           var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);
-          var q = this.urlEncode(param[i], k);
+          var q = this.url_encode(param[i], k);
           if(q!=='') query.push(q);
         }
       }
       return query.join('&');
     },
-    urlDecode: function(query) {
+    url_decode: function(query) {
         var args = [],pairs = query.split("&");
         for (var i = 0; i < pairs.length; i++) {
             var pos = pairs[i].indexOf('=');
             if (pos == -1) continue;
             var argname = pairs[i].substring(0, pos);
+            argname = argname.replace(/\+/g, '%20');
             argname = decodeURIComponent(argname);
             var value = pairs[i].substring(pos + 1);
+            value = value.replace(/\+/g, '%20');
             value = decodeURIComponent(value);
 
             if(argname.indexOf('[')!=-1){
@@ -474,7 +476,7 @@ var iFormer = {
             var me = $(this),
             data   = $("[name='fields[]']",$container).val(),
             origin  = $("[name^='origin']",$container).val(),
-            obj    = iFormer.urlDecode(data);
+            obj    = iFormer.url_decode(data);
             // console.log(obj);
             iFormer.edit_dialog(obj,
                 function(param,qt) {
@@ -569,6 +571,7 @@ var iFormer = {
                 //更新字段展现
                 var data = $.extend(obj,{
                     'label': $("#iFormer-label", $fbox).val(),
+                    'type': $("#iFormer-type", $fbox).val(),
                     'name': $("#iFormer-name", $fbox).val(),
                     'class': $("#iFormer-class", $fbox).val(),
                     'comment': $("#iFormer-comment", $fbox).val(),
@@ -607,6 +610,7 @@ var iFormer = {
 
                 //更新 fields[]
                 param = $("form", $fbox).serialize();
+                param = param.replace(/\+/g, '%20');
                 callback(data,param);
                 me.freset(fbox);
                 return true;

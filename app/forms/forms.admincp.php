@@ -11,12 +11,77 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class formsAdmincp{
-
     public function __construct() {
       $this->appid = iCMS_APP_FORMS;
-    	$this->id = (int)$_GET['id'];
+      $this->id = (int)$_GET['id'];
+      $_GET['form_id'] && $this->form_id = (int)$_GET['form_id'];
     }
+    public function form_init(){
+      $this->app = forms::get($this->form_id);
+    }
+    /**
+     * [添加表单内容]
+     * @return [type] [description]
+     */
+    public function do_submit(){
+      $this->form_init();
+      $rs = forms::get_data($this->app,$this->id);
+      iPHP::callback(array("formerAdmincp","add"),array($this->app,$rs));
+      include admincp::view('forms.submit');
+    }
+    /**
+     * [保存表单数据]
+     * @return [type] [description]
+     */
+    public function do_savedata(){
+      $this->form_id = (int)$_POST['form_id'];
+      $this->form_init();
+      $update = iPHP::callback(array("formerAdmincp","save"),array($this->app));
+      $REFERER_URL = $_POST['REFERER'];
+      if(empty($REFERER_URL)||strstr($REFERER_URL, '=form_save')){
+          $REFERER_URL= APP_URI.'&do=form_manage&form_id='.$this->form_id;
+      }
+      if($update){
+          iUI::success($this->app['name'].'编辑完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
+      }else{
+          iUI::success($this->app['name'].'添加完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
+      }
+    }
+    /**
+     * [表单数据查看]
+     * @param  string $stype [description]
+     * @return [type]        [description]
+     */
+    public function do_data($stype='normal') {
+        $this->form_init();
+        $table_array = apps::get_table($this->app);
+        $table       = $table_array['table'];
+        $primary     = $table_array['primary'];
 
+        $sql = "WHERE 1=1";
+
+        if($_GET['keywords']) {
+          $sql.=" AND title REGEXP '{$_GET['keywords']}'";
+        }
+
+        isset($_GET['keywords'])&& $uri.='&keyword='.$_GET['keywords'];
+
+        $orderby    = $_GET['orderby']?$_GET['orderby']:"{$primary} DESC";
+        $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
+        $total      = iCMS::page_total_cache("SELECT count(*) FROM `{$table}` {$sql}","G");
+        iUI::pagenav($total,$maxperpage,"条记录");
+
+        $rs = iDB::all("SELECT * FROM `{$table}` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
+        $_count = count($rs);
+        if($this->app['fields']){
+            $fields = former::fields($this->app['fields']);
+        }
+        include admincp::view('forms.data');
+    }
+    /**
+     * [创建表单]
+     * @return [type] [description]
+     */
     public function do_create(){
         $this->id && $rs = forms::get($this->id);
         if(empty($rs)){
@@ -29,7 +94,10 @@ class formsAdmincp{
         $rs['app'] = ltrim($rs['app'],'forms_');
         include admincp::view("forms.create");
     }
-
+  /**
+   * [保存表单]
+   * @return [type] [description]
+   */
     public function do_save(){
         $id      = (int)$_POST['_id'];
         $name    = iSecurity::escapeStr($_POST['_name']);
@@ -220,32 +288,16 @@ class formsAdmincp{
       iUI::success('更新完成');
     }
 
-    public function setup_zipurl($url,$name,$zipname=null){
-          // apps_store::$test = true;
-        $msg = apps_store::download($url,$name,$zipname);
-        $msg.= apps_store::install();
-        $msg = str_replace('<iCMS>', '<br />', $msg);
-        if(apps_store::$app_id){
-          iUI::dialog($msg,'url:'.APP_URI."&do=add&id=".apps_store::$app_id,10);
-        }else{
-          iUI::dialog($msg,'js:1',3);
-        }
-    }
     /**
      * [卸载表单]
      * @return [type] [description]
      */
-    public function do_uninstall(){
-      return;
-      $app = apps::get($this->id);
-      if($app['type'] && $app['apptype']){
-        apps::uninstall($this->id);
-        apps::cache();
-        menu::cache();
-        iUI::alert('表单已经删除');
-      }else{
-        iUI::alert('表单已被禁止删除');
-      }
+    public function do_del($id = null,$dialog=true){
+      $id===null && $id=$this->id;
+      $id OR iUI::alert('请选择要删除的表单!');
+      $forms = forms::get($id);
+      forms::delete($this->id);
+      $dialog && iUI::success("表单已经删除!",'url:'.APP_URI);
     }
     /**
      * [本地安装表单]
@@ -268,20 +320,19 @@ class formsAdmincp{
       $rs = iDB::row("SELECT * FROM `#iCMS@__forms` where `id`='".$this->id."'",ARRAY_A);
       unset($rs['id']);
       $data     = base64_encode(serialize($rs));
-      $config   = json_decode($rs['config'],true);
-      $filename = 'iCMS.FORMS.'.$rs['app'].'-'.$config['version'];
+      $filename = 'iCMS.FORMS.'.$rs['app'];
       //自定义表单
       $appdir = iPHP_APP_CACHE.'/pack.forms/'.$rs['app'];
       $remove_path = iPHP_APP_CACHE.'/pack.forms/';
       iFS::mkdir($appdir);
 
       //表单数据
-      $app_data_file = $appdir.'/iCMS.FORMS.DATA.php';
+      $app_data_file = $appdir.'/iCMS.APP.DATA.php';
       put_php_file($app_data_file, $data);
 
       //数据库结构
       if($rs['table']){
-        $app_table_file = $appdir.'/iCMS.FORMS.TABLE.php';
+        $app_table_file = $appdir.'/iCMS.APP.TABLE.php';
 
         put_php_file(
           $app_table_file,
@@ -295,5 +346,16 @@ class formsAdmincp{
       iFS::rm($app_data_file);
       $app_table_file && iFS::rm($app_table_file);
       iFS::rmdir($remove_path);
+    }
+    public function setup_zipurl($url,$name,$zipname=null){
+          // apps_store::$test = true;
+        $msg = apps_store::download($url,$name,$zipname);
+        $msg.= apps_store::install();
+        $msg = str_replace('<iCMS>', '<br />', $msg);
+        if(apps_store::$app_id){
+          iUI::dialog($msg,'url:'.APP_URI."&do=add&id=".apps_store::$app_id,10);
+        }else{
+          iUI::dialog($msg,'js:1',3);
+        }
     }
 }

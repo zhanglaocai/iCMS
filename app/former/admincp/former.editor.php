@@ -2,9 +2,7 @@
 <div id="iFormer-field-editor" class="hide" style="width:500px;text-align: left;">
   <form id="iFormer-field-form">
     <input type="hidden" name="id" id="iFormer-id"/>
-    <input type="hidden" name="type" id="iFormer-type"/>
     <input type="hidden" name="multiple" id="iFormer-multiple"/>
-
     <div class="input-prepend">
       <span class="add-on">字段名称</span>
       <input type="text" name="label" class="span3" id="iFormer-label" value=""/>
@@ -69,21 +67,25 @@
       <span class="add-on">字段注释</span>
       <input type="text" name="comment" class="span3" id="iFormer-comment" value=""/>
     </div>
-    <span class="help-inline">选填,数据表的comment,不熟悉的可不填</span>
-    <hr />
+    <span class="help-inline">选填,不熟悉的可不填</span>
+    <div class="input-prepend">
+      <span class="add-on">字段类型</span>
+      <input type="text" name="type" class="span3" id="iFormer-type" value=""/>
+    </div>
+    <span class="help-inline">* 必填 不熟悉的请勿修改</span>
     <div id="iFormer-option-wrap" class="hide">
       <div class="input-prepend">
         <span class="add-on">选项列表</span>
         <textarea type="text" name="option" class="span3" id="iFormer-option" disabled/></textarea>
       </div>
-      <span class="help-inline">* 必填.<br />
-          格式: 选项=值;<br />
-          例:电脑=pc;<br />
-          手机=phone;
+      <span class="help-inline">* 必填.格式: 选项=值;<br />
+          电脑=pc;<br />
+          手机=phone;<br />
+          iPad;
       </span>
-      <hr />
       <div class="clearfix"></div>
     </div>
+    <hr style="margin: 10px 0px;" />
     <div class="field-tab-box">
       <ul class="nav nav-tabs" id="field-tab">
         <li class="active"><a href="#field-tab-0" data-toggle="tab"><i class="fa fa-dashboard"></i> UI</a></li>

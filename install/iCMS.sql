@@ -1,5 +1,7 @@
 /*
-SQLyog Ultimate v12.09 (64 bit)
+SQLyog Job Agent v12.09 (64 bit) Copyright(c) Webyog Inc. All Rights Reserved.
+
+
 MySQL - 5.5.53 : Database - icms62
 *********************************************************************
 */
@@ -9,11 +11,10 @@ MySQL - 5.5.53 : Database - icms62
 /*!40101 SET SQL_MODE=''*/;
 
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 /*Table structure for table `icms_access_log` */
-
-DROP TABLE IF EXISTS `icms_access_log`;
 
 CREATE TABLE `icms_access_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -30,11 +31,9 @@ CREATE TABLE `icms_access_log` (
   KEY `uid` (`uid`),
   KEY `app` (`app`),
   KEY `ip` (`ip`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=992 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_apps` */
-
-DROP TABLE IF EXISTS `icms_apps`;
 
 CREATE TABLE `icms_apps` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '应用ID appid',
@@ -51,11 +50,9 @@ CREATE TABLE `icms_apps` (
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '应用状态',
   PRIMARY KEY (`id`),
   KEY `idx_name` (`app`)
-) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=123 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_article` */
-
-DROP TABLE IF EXISTS `icms_article`;
 
 CREATE TABLE `icms_article` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '文章ID',
@@ -107,11 +104,9 @@ CREATE TABLE `icms_article` (
   KEY `hits_week` (`status`,`hits_week`),
   KEY `hits_month` (`status`,`hits_month`),
   KEY `cid_hits` (`status`,`cid`,`hits`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_article_data` */
-
-DROP TABLE IF EXISTS `icms_article_data`;
 
 CREATE TABLE `icms_article_data` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -120,11 +115,9 @@ CREATE TABLE `icms_article_data` (
   `body` mediumtext NOT NULL,
   PRIMARY KEY (`id`),
   KEY `aid` (`aid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_category` */
-
-DROP TABLE IF EXISTS `icms_category`;
 
 CREATE TABLE `icms_category` (
   `cid` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -159,11 +152,9 @@ CREATE TABLE `icms_category` (
   KEY `dir` (`dir`),
   KEY `s_o_cid` (`status`,`sortnum`,`cid`),
   KEY `t_o_cid` (`appid`,`sortnum`,`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_category_map` */
-
-DROP TABLE IF EXISTS `icms_category_map`;
 
 CREATE TABLE `icms_category_map` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -173,11 +164,9 @@ CREATE TABLE `icms_category_map` (
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `idx` (`appid`,`node`,`iid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_comment` */
-
-DROP TABLE IF EXISTS `icms_comment`;
 
 CREATE TABLE `icms_comment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -202,11 +191,9 @@ CREATE TABLE `icms_comment` (
   PRIMARY KEY (`id`),
   KEY `idx_iid` (`appid`,`status`,`iid`,`id`),
   KEY `idx_uid` (`status`,`userid`,`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_config` */
-
-DROP TABLE IF EXISTS `icms_config`;
 
 CREATE TABLE `icms_config` (
   `appid` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -216,8 +203,6 @@ CREATE TABLE `icms_config` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_favorite` */
-
-DROP TABLE IF EXISTS `icms_favorite`;
 
 CREATE TABLE `icms_favorite` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -230,11 +215,9 @@ CREATE TABLE `icms_favorite` (
   `mode` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1 公开 0私密',
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`,`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_favorite_data` */
-
-DROP TABLE IF EXISTS `icms_favorite_data`;
 
 CREATE TABLE `icms_favorite_data` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -247,11 +230,9 @@ CREATE TABLE `icms_favorite_data` (
   `addtime` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `idx` (`uid`,`fid`,`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_favorite_follow` */
-
-DROP TABLE IF EXISTS `icms_favorite_follow`;
 
 CREATE TABLE `icms_favorite_follow` (
   `fid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '收藏夹ID',
@@ -261,11 +242,9 @@ CREATE TABLE `icms_favorite_follow` (
   KEY `uid` (`uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-/*Table structure for table `icms_file_data` */
+/*Table structure for table `icms_files` */
 
-DROP TABLE IF EXISTS `icms_file_data`;
-
-CREATE TABLE `icms_file_data` (
+CREATE TABLE `icms_files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL DEFAULT '0',
   `filename` varchar(255) NOT NULL DEFAULT '',
@@ -284,11 +263,9 @@ CREATE TABLE `icms_file_data` (
   KEY `fn_userid` (`filename`,`userid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-/*Table structure for table `icms_file_map` */
+/*Table structure for table `icms_files_map` */
 
-DROP TABLE IF EXISTS `icms_file_map`;
-
-CREATE TABLE `icms_file_map` (
+CREATE TABLE `icms_files_map` (
   `fileid` int(10) unsigned NOT NULL,
   `userid` int(10) unsigned NOT NULL,
   `appid` int(10) unsigned NOT NULL,
@@ -298,8 +275,6 @@ CREATE TABLE `icms_file_map` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_forms` */
-
-DROP TABLE IF EXISTS `icms_forms`;
 
 CREATE TABLE `icms_forms` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '应用ID appid',
@@ -319,8 +294,6 @@ CREATE TABLE `icms_forms` (
 
 /*Table structure for table `icms_group` */
 
-DROP TABLE IF EXISTS `icms_group`;
-
 CREATE TABLE `icms_group` (
   `gid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
@@ -333,8 +306,6 @@ CREATE TABLE `icms_group` (
 
 /*Table structure for table `icms_keywords` */
 
-DROP TABLE IF EXISTS `icms_keywords`;
-
 CREATE TABLE `icms_keywords` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `keyword` varchar(255) NOT NULL DEFAULT '',
@@ -345,8 +316,6 @@ CREATE TABLE `icms_keywords` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_links` */
-
-DROP TABLE IF EXISTS `icms_links`;
 
 CREATE TABLE `icms_links` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -359,27 +328,9 @@ CREATE TABLE `icms_links` (
   UNIQUE KEY `id` (`id`),
   KEY `s_o_id` (`cid`,`sortnum`,`id`),
   KEY `ordernum` (`sortnum`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-/*Table structure for table `icms_marker` */
-
-DROP TABLE IF EXISTS `icms_marker`;
-
-CREATE TABLE `icms_marker` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `cid` int(10) unsigned NOT NULL DEFAULT '0',
-  `pid` int(10) unsigned NOT NULL DEFAULT '0',
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `key` varchar(255) NOT NULL DEFAULT '',
-  `data` mediumtext NOT NULL,
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `marker` (`key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_members` */
-
-DROP TABLE IF EXISTS `icms_members`;
 
 CREATE TABLE `icms_members` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -405,8 +356,6 @@ CREATE TABLE `icms_members` (
 
 /*Table structure for table `icms_message` */
 
-DROP TABLE IF EXISTS `icms_message`;
-
 CREATE TABLE `icms_message` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发送者ID',
@@ -426,8 +375,6 @@ CREATE TABLE `icms_message` (
 
 /*Table structure for table `icms_prop` */
 
-DROP TABLE IF EXISTS `icms_prop`;
-
 CREATE TABLE `icms_prop` (
   `pid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `rootid` int(10) unsigned NOT NULL,
@@ -442,11 +389,9 @@ CREATE TABLE `icms_prop` (
   KEY `field` (`field`),
   KEY `cid` (`cid`),
   KEY `type` (`app`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_prop_map` */
-
-DROP TABLE IF EXISTS `icms_prop_map`;
 
 CREATE TABLE `icms_prop_map` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -456,45 +401,9 @@ CREATE TABLE `icms_prop_map` (
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `idx` (`appid`,`node`,`iid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-/*Table structure for table `icms_push` */
-
-DROP TABLE IF EXISTS `icms_push`;
-
-CREATE TABLE `icms_push` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `sortnum` int(10) unsigned NOT NULL DEFAULT '0',
-  `cid` int(10) unsigned NOT NULL DEFAULT '0',
-  `rootid` int(10) unsigned NOT NULL DEFAULT '0',
-  `pid` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `haspic` tinyint(1) NOT NULL DEFAULT '0',
-  `editor` varchar(100) NOT NULL DEFAULT '',
-  `userid` int(10) unsigned NOT NULL DEFAULT '0',
-  `title` varchar(255) NOT NULL DEFAULT '',
-  `pic` varchar(255) NOT NULL DEFAULT '',
-  `url` varchar(255) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
-  `title2` varchar(255) NOT NULL DEFAULT '',
-  `pic2` varchar(255) NOT NULL DEFAULT '',
-  `url2` varchar(255) NOT NULL DEFAULT '',
-  `description2` text NOT NULL,
-  `title3` varchar(255) NOT NULL DEFAULT '',
-  `pic3` varchar(255) NOT NULL DEFAULT '',
-  `url3` varchar(255) NOT NULL DEFAULT '',
-  `description3` text NOT NULL,
-  `metadata` mediumtext NOT NULL,
-  `addtime` int(10) unsigned NOT NULL DEFAULT '0',
-  `hits` int(10) unsigned NOT NULL DEFAULT '0',
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `pid_order` (`pid`,`sortnum`),
-  KEY `pid_id` (`pid`,`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_search_log` */
-
-DROP TABLE IF EXISTS `icms_search_log`;
 
 CREATE TABLE `icms_search_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -504,11 +413,9 @@ CREATE TABLE `icms_search_log` (
   PRIMARY KEY (`id`),
   KEY `search_times` (`search`,`times`),
   KEY `search_id` (`search`,`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_sph_counter` */
-
-DROP TABLE IF EXISTS `icms_sph_counter`;
 
 CREATE TABLE `icms_sph_counter` (
   `counter_id` int(11) NOT NULL,
@@ -517,8 +424,6 @@ CREATE TABLE `icms_sph_counter` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_spider_post` */
-
-DROP TABLE IF EXISTS `icms_spider_post`;
 
 CREATE TABLE `icms_spider_post` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -530,8 +435,6 @@ CREATE TABLE `icms_spider_post` (
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_spider_project` */
-
-DROP TABLE IF EXISTS `icms_spider_project`;
 
 CREATE TABLE `icms_spider_project` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -552,8 +455,6 @@ CREATE TABLE `icms_spider_project` (
 
 /*Table structure for table `icms_spider_rule` */
 
-DROP TABLE IF EXISTS `icms_spider_rule`;
-
 CREATE TABLE `icms_spider_rule` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -562,8 +463,6 @@ CREATE TABLE `icms_spider_rule` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_spider_url` */
-
-DROP TABLE IF EXISTS `icms_spider_url`;
 
 CREATE TABLE `icms_spider_url` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -585,8 +484,6 @@ CREATE TABLE `icms_spider_url` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_tags` */
-
-DROP TABLE IF EXISTS `icms_tags`;
 
 CREATE TABLE `icms_tags` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -627,11 +524,9 @@ CREATE TABLE `icms_tags` (
   KEY `pid_id` (`pid`,`id`),
   KEY `cid_id` (`cid`,`id`),
   KEY `rootid` (`rootid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_tags_map` */
-
-DROP TABLE IF EXISTS `icms_tags_map`;
 
 CREATE TABLE `icms_tags_map` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -641,11 +536,9 @@ CREATE TABLE `icms_tags_map` (
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `tid_index` (`appid`,`node`,`iid`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_user` */
-
-DROP TABLE IF EXISTS `icms_user`;
 
 CREATE TABLE `icms_user` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -677,11 +570,9 @@ CREATE TABLE `icms_user` (
   UNIQUE KEY `username` (`nickname`),
   KEY `email` (`username`),
   KEY `nickname` (`nickname`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_user_category` */
-
-DROP TABLE IF EXISTS `icms_user_category`;
 
 CREATE TABLE `icms_user_category` (
   `cid` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -696,8 +587,6 @@ CREATE TABLE `icms_user_category` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_user_data` */
-
-DROP TABLE IF EXISTS `icms_user_data`;
 
 CREATE TABLE `icms_user_data` (
   `uid` int(11) unsigned NOT NULL,
@@ -720,8 +609,6 @@ CREATE TABLE `icms_user_data` (
 
 /*Table structure for table `icms_user_follow` */
 
-DROP TABLE IF EXISTS `icms_user_follow`;
-
 CREATE TABLE `icms_user_follow` (
   `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '关注者ID',
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '关注者',
@@ -732,8 +619,6 @@ CREATE TABLE `icms_user_follow` (
 
 /*Table structure for table `icms_user_openid` */
 
-DROP TABLE IF EXISTS `icms_user_openid`;
-
 CREATE TABLE `icms_user_openid` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `openid` varchar(255) NOT NULL,
@@ -742,8 +627,6 @@ CREATE TABLE `icms_user_openid` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_user_report` */
-
-DROP TABLE IF EXISTS `icms_user_report`;
 
 CREATE TABLE `icms_user_report` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -761,8 +644,6 @@ CREATE TABLE `icms_user_report` (
 
 /*Table structure for table `icms_weixin_api_log` */
 
-DROP TABLE IF EXISTS `icms_weixin_api_log`;
-
 CREATE TABLE `icms_weixin_api_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ToUserName` varchar(255) NOT NULL DEFAULT '',
@@ -774,8 +655,6 @@ CREATE TABLE `icms_weixin_api_log` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_weixin_event` */
-
-DROP TABLE IF EXISTS `icms_weixin_event`;
 
 CREATE TABLE `icms_weixin_event` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -792,5 +671,6 @@ CREATE TABLE `icms_weixin_event` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

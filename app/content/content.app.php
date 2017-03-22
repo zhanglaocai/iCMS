@@ -158,7 +158,7 @@ class contentApp {
 
         $fields = array();
         if($this->data['fields']){
-            $fields = iFormer::fields($this->data['fields']);
+            $fields = former::fields($this->data['fields']);
         }
         $option_array = array();
         foreach ($fields as $key => $field) {
