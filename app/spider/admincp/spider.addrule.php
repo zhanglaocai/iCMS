@@ -436,13 +436,22 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">水印设置</span><span class="add-on">
               <label class="radio">
-                <input type="radio" name="rule[watermark_mode]" id="watermark_mode0" value="0"<?php if(!$rule['watermark_mode']){ echo ' checked="true"';};?>>
+                <input type="radio" name="rule[watermark_mode]" id="watermark_mode0" value="0"<?php if($rule['watermark_mode']=="0"){ echo ' checked="true"';};?>>
                 系统全局 </label>
-              </span><span class="add-on">
-              <label class="radio">
-                <input type="radio" name="rule[watermark_mode]" id="watermark_mode1" value="1"<?php if($rule['watermark_mode']){ echo ' checked="true"';};?>>
-                本规则 </label>
-              </span></div>
+              </span>
+              <span class="add-on">
+                <label class="radio">
+                  <input type="radio" name="rule[watermark_mode]" id="watermark_mode1" value="1"<?php if($rule['watermark_mode']=="1"){ echo ' checked="true"';};?>>
+                  本规则
+                </label>
+              </span>
+              <span class="add-on">
+                <label class="radio">
+                  <input type="radio" name="rule[watermark_mode]" id="watermark_mode2" value="2"<?php if($rule['watermark_mode']=="2"){ echo ' checked="true"';};?>>
+                  关闭水印
+                </label>
+              </span>
+            </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">水印位置</span>
               <select name="rule[watermark][pos]" id="watermark_pos" class="span3 chosen-select">

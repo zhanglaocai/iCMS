@@ -100,7 +100,7 @@ class spider_urls {
 
         if(empty($urlsArray)){
             if($work=='shell'){
-                echo "采集列表为空!请填写!\n";
+                echo spider::errorlog("采集列表为空!请填写!\n",$url,'urls.empty',array('pid'=>$pid,'sid'=>$sid,'rid'=>$rid));
                 return false;
             }
             iUI::alert('采集列表为空!请填写!', 'js:parent.window.iCMS_MODAL.destroy();');
@@ -123,6 +123,14 @@ class spider_urls {
         $pubAllCount      = array();
         spider::$curl_proxy = $rule['proxy'];
         spider::$urlslast   = null;
+        if (spider::$ruleTest) {
+            echo '<b>列表总:</b>'.count($urlsArray) . "条<br />";
+            echo '<pre>';
+            print_r($urlsArray);
+            echo '</pre>';
+            $urlsArray = array(reset($urlsArray));
+            echo '<b>测试第一条</b><br />';
+        }
         foreach ($urlsArray AS $key => $url) {
             $url = trim($url);
             spider::$urlslast = $url;
@@ -134,6 +142,7 @@ class spider_urls {
             }
             $html = spider_tools::remote($url);
             if(empty($html)){
+                echo spider::errorlog("采集列表内容为空!\n",$url,'url.empty',array('pid'=>$pid,'sid'=>$sid,'rid'=>$rid));
                 continue;
             }
             if($rule['mode']=="2"){
@@ -235,6 +244,9 @@ class spider_urls {
                 $pubCount[$url]['count'] = count($lists);
                 $pubAllCount['count']+=$pubCount[$url]['count'];
                 echo "开始采集:".$url." 列表 ".$pubCount[$url]['count']."条记录\n";
+                if(empty($pubCount[$url]['count'])){
+                    echo spider::errorlog("采集列表记录为0!\n",$url,'url.zero',array('pid'=>$pid,'sid'=>$sid,'rid'=>$rid));
+                }
                 foreach ($urlsData AS $lkey => $value) {
                     spider::$title = $value['title'];
                     spider::$url   = $value['url'];

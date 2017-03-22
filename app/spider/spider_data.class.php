@@ -60,7 +60,7 @@ class spider_data {
         if(empty($html)){
             $msg = '错误:001..采集 ' . $url . '文件内容为空!请检查采集规则';
             if(spider::$work=='shell'){
-                echo spider::errorlog("{$msg}\n",$url,array('pid'=>$pid,'sid'=>$sid,'rid'=>$rid));
+                echo spider::errorlog("{$msg}\n",$url,'data.empty',array('pid'=>$pid,'sid'=>$sid,'rid'=>$rid));
                 return false;
             }else{
                 iUI::alert($msg);
@@ -133,10 +133,7 @@ class spider_data {
             unset($content_html);
 
             if (strpos($dname,'ARRAY:')!== false){
-                // if(strpos($data['rule'], 'RULE@')!==false){
                 $dname = str_replace('ARRAY:', '', $dname);
-                // $contentArray = $responses[$dname];
-                // // $contentArray = $responses[$dname];
                 $cArray = array();
 
                 foreach ((array)$content as $k => $value) {
@@ -159,7 +156,7 @@ class spider_data {
                 $s_key = substr(strrchr($dname, "."), 1);
                 if(isset($responses[$f_key][$s_key])){
                     if(is_array($responses[$f_key][$s_key])){
-                        $responses[$f_key][$s_key] = array_merge($responses[$f_key][$s_key],$content);
+                        $responses[$f_key][$s_key] = array_merge((array)$responses[$f_key][$s_key],(array)$content);
                     }else{
                         $responses[$f_key][$s_key].= $content;
                     }
@@ -172,7 +169,7 @@ class spider_data {
                  */
                 if(isset($responses[$dname])){
                     if(is_array($responses[$dname])){
-                        $responses[$dname] = array_merge($responses[$dname],$content);
+                        $responses[$dname] = array_merge((array)$responses[$dname],(array)$content);
                     }else{
                         $responses[$dname].= $content;
                     }
@@ -200,7 +197,11 @@ class spider_data {
 
             gc_collect_cycles();
         }
-
+        foreach ($responses as $key => $value) {
+            if(strpos($key, ':')!==false){
+                unset($responses[$key]);
+            }
+        }
         if(isset($responses['title']) && empty($responses['title'])){
             $responses['title'] = $responses['__title__'];
         }
@@ -224,6 +225,7 @@ class spider_data {
         iFile::$watermark_config['x']   = iCMS::$config['watermark']['x'];
         iFile::$watermark_config['y']   = iCMS::$config['watermark']['y'];
         iFile::$watermark_config['img'] = iCMS::$config['watermark']['img'];
+        iFile::$watermark = true;
 
         $rule['fs']['encoding'] && iHttp::$CURLOPT_ENCODING = $rule['fs']['encoding'];
         $rule['fs']['referer']  && iHttp::$CURLOPT_REFERER  = $rule['fs']['referer'];
@@ -232,6 +234,9 @@ class spider_data {
             iFile::$watermark_config['x']   = $rule['watermark']['x'];
             iFile::$watermark_config['y']   = $rule['watermark']['y'];
             $rule['watermark']['img'] && iFile::$watermark_config['img'] = $rule['watermark']['img'];
+        }
+        if($rule['watermark_mode']=="2"){
+            iFile::$watermark = false;
         }
         if (spider::$callback['data'] && is_callable(spider::$callback['data'])) {
             $responses = call_user_func_array(spider::$callback['data'],array($responses));

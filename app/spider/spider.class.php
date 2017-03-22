@@ -156,32 +156,37 @@ class spider{
             iDB::update('spider_url',$data,array('id'=>$suid));
         }
     }
-    public static function errorlog($msg,$url=null,$a=null) {
+    public static function errorlog($msg,$url=null,$type=0,$a=null) {
         $data = array(
-            'work'  =>spider::$work,
-            'rid'   =>spider::$rid,
-            'sid'   =>spider::$sid,
-            'pid'   =>spider::$pid,
-            'reurl' =>($url?$url:spider::$url),
-            'msg'   =>$msg,
+            'work'    => spider::$work,
+            'rid'     => (int)spider::$rid,
+            'sid'     => (int)spider::$sid,
+            'pid'     => (int)spider::$pid,
+            'url'     => ($url?$url:spider::$url),
+            'msg'     => $msg,
+            'date'    => date("Y-m-d"),
+            'addtime' => time(),
+            'type'    => $type
         );
         $a && $data = array_merge($data,(array)$a);
-        iFS::mkdir(iPHP_APP_CACHE.'/log/');
-        file_put_contents(iPHP_APP_CACHE.'/log/spider.error.'.date("Y-m-d").'.log',var_export($data,1)."\n\n",FILE_APPEND);
+        iDB::insert('spider_error',$data);
         return $msg;
     }
     public static function publish($work = null) {
         $_POST = spider_data::crawl();
+        if($_POST===false){
+            return false;
+        }
         if(spider::$work && $work===null) $work = spider::$work;
 
         if($work=='shell'){
            if(empty($_POST['title'])){
-                echo spider::errorlog("标题不能为空\n",$_POST['reurl']);
-               return false;
+                echo spider::errorlog("标题不能为空\n",$_POST['reurl'],'publish.title');
+                return false;
            }
            if(empty($_POST['body'])){
-                echo spider::errorlog("内容不能为空\n",$_POST['reurl']);
-               return false;
+                echo spider::errorlog("内容不能为空\n",$_POST['reurl'],'publish.body');
+                return false;
            }
         }
         $checker = spider::checker($work,spider::$pid,$_POST['reurl'],$_POST['title']);
