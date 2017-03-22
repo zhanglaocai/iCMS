@@ -14,7 +14,7 @@ class articleAdmincp{
     public $callback = array();
     public $chapter  = false;
     public static $config   = null;
-    public static $appid       = null;
+    public static $appid = null;
 
     public function __construct() {
         self::$appid     = iCMS_APP_ARTICLE;
@@ -71,7 +71,7 @@ class articleAdmincp{
             $rs['editor']  = empty(members::$data->nickname)?members::$data->username:members::$data->nickname;
             $rs['userid']  = members::$userid;
 		}
-        apps::iFormer_create($this->appid,$rs,true);
+        apps::iFormer_create(self::$appid,$rs,true);
         if(self::$config['markdown']){
             include admincp::view("article.markdown");
         }else{
