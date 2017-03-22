@@ -49,7 +49,7 @@ class iPicture {
         self::image($source_img,$otype,$source);
         //释放内存
         isset($source_img) && imagedestroy($source_img);
-        return @is_file($source)? true : false;
+        return is_file($source)? true : false;
     }
 
     public static function watermark($pf) {
@@ -188,7 +188,7 @@ class iPicture {
         unset($water_info);
         isset($water_im) && imagedestroy($water_im);
         unset($ground_info);
-        return @is_file($pf)? true : false;
+        return is_file($pf)? true : false;
     }
     public static function thumbnail($src,$tw="0",$th="0",$scale=true) {
     	if(!self::$config['thumb']['enable']) return;

@@ -29,7 +29,7 @@ class iUI {
 		$fname = $app . '.lang.php';
 		$path = iPHP_APP_CORE . '/lang/' . $fname;
 
-		if (!@is_file($path)) {
+		if (!is_file($path)) {
 			if ($throw) {
 				iPHP::error_throw($fname . ' not exist', 0015);
 			} else {

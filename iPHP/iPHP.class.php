@@ -70,7 +70,7 @@ class iPHP {
 			$file OR $file = $name.'.class';
 			$path = iPHP_APP_DIR . '/' . $name . '/' . $file . '.php';
 		}
-		if (@is_file($path)) {
+		if (file_exists($path)) {
 			$key = str_replace(iPATH, '/', $path);
 			$GLOBALS['iPHP_REQ'][$key] = true;
 			require_once $path;
@@ -95,7 +95,7 @@ class iPHP {
 		define('iPHP_APP_SITE', $site);
 		define('iPHP_APP_CONF', iPHP_CONF_DIR . '/' . iPHP_APP_SITE); //网站配置目录
 		define('iPHP_APP_CONFIG', iPHP_APP_CONF . '/config.php'); //网站配置文件
-		@is_file(iPHP_APP_CONFIG) OR self::error_throw('Unable to find "' . iPHP_APP_SITE . '" config file ('.iPHP_APP_CONFIG.').Please install '.iPHP_APP, '0001');
+		is_file(iPHP_APP_CONFIG) OR self::error_throw('Unable to find "' . iPHP_APP_SITE . '" config file ('.iPHP_APP_CONFIG.').Please install '.iPHP_APP, '0001');
 
 		$config = require iPHP_APP_CONFIG;
 		//config.php 中开启后 此处设置无效
@@ -376,7 +376,7 @@ class iPHP {
 			default:$object = $app_name . 'App';
 		}
 		$path = iPHP_APP_DIR . '/' . $app_dir . '/' . $app_file . '.php';
-		if (@is_file($path)) {
+		if (is_file($path)) {
 			self::import($path);
 		}else{
 			return false;

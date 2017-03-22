@@ -405,7 +405,7 @@ class apps {
     }
     public static function get_func($app,$tag=false){
         list($path,$obj_name)= apps::get_path($app,'func',true);
-        if(@is_file($path)){
+        if(is_file($path)){
             $class_methods = get_class_methods($obj_name);
             if($tag){
                 foreach ($class_methods as $key => $value) {

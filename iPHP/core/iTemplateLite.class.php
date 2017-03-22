@@ -199,7 +199,7 @@ class iTemplateLite {
 
 		$this->template_dir = $this->_get_dir($this->template_dir);
 		$RootPath           = $this->template_dir.$file;
-		@is_file($RootPath) OR $this->trigger_error("template file '$RootPath' does not exist", E_USER_ERROR);
+		is_file($RootPath) OR $this->trigger_error("template file '$RootPath' does not exist", E_USER_ERROR);
 		return $RootPath;
 	}
 
@@ -251,7 +251,7 @@ class iTemplateLite {
 		$compile_file  = $this->_get_compile_file($template_file);
 		$this->_include_file OR $this->_file = $file;
 
-		if (!@is_file($compile_file)){
+		if (!is_file($compile_file)){
 			$iTC                            = new iTemplateLite_Compiler();
 			$iTC->left_delimiter            = $this->left_delimiter;
 			$iTC->right_delimiter           = $this->right_delimiter;
@@ -1133,7 +1133,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 		// check for a plugin in the plugin directory
 		$_plugins_file_name = $type . '.' . $function . '.php';
 		$pluginfile         = $this->_get_plugin_dir($_plugins_file_name).$_plugins_file_name;
-		if(@is_file($pluginfile)){
+		if(is_file($pluginfile)){
 			require_once $pluginfile;
 			$_plugins_fun_name = 'tpl_' . $type . '_' . $function;
 			if (function_exists($_plugins_fun_name)){

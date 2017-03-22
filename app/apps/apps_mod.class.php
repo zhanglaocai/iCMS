@@ -195,7 +195,7 @@ class apps_mod {
         $template = (array)apps::get_func($_app,true);
         list($path,$obj_name)= apps::get_path($_app,'app',true);
 
-        if(@is_file($path)){
+        if(is_file($path)){
             //判断是否有APP同名方法存在 如果有 $appname 模板标签可用
             $class_methods = get_class_methods ($obj_name);
             if(array_search ($_app ,  $class_methods )!==FALSE){

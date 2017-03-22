@@ -122,7 +122,7 @@ class iView {
         $flag = iPHP_APP . ':/';
         if (strpos($tpl, $flag) !== false) {
             $_tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
-            if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
+            if (is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
                 return $_tpl;
             }
 
@@ -134,7 +134,7 @@ class iView {
 
             // }
             $_tpl = str_replace($flag, iPHP_APP, $tpl);
-            if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
+            if (is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
                 return $_tpl;
             }
             $tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
@@ -147,7 +147,7 @@ class iView {
         //         $tpl = str_replace($current_tpl . '/', iPHP_DEFAULT_TPL . '/', $tpl);
         //     }
         // }
-        if (@is_file(iPHP_TPL_DIR . "/" . $tpl)) {
+        if (is_file(iPHP_TPL_DIR . "/" . $tpl)) {
             return $tpl;
         } else {
             iPHP::error_404('Unable to find the template file <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');

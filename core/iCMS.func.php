@@ -246,7 +246,7 @@ function put_php_file($path,$data){
     file_put_contents($path, $data);
 }
 function get_php_file($path){
-    if(@is_file($path)){
+    if(is_file($path)){
         $json = file_get_contents($path);
         $json = get_php_content($json);
     }

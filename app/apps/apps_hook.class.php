@@ -56,7 +56,7 @@ class apps_hook {
         $option = '';
         foreach (apps::get_array(array("status"=>'1')) as $key => $value) {
             list($path,$obj_name)= apps::get_path($value['app'],'app',true);
-            if(@is_file($path)){
+            if(is_file($path)){
                 $option.= self::app_hook_method($obj_name);
             }
         }
@@ -137,7 +137,7 @@ class apps_hook {
         foreach (apps::get_array(array("status"=>'1')) as $key => $value) {
             list($path,$obj_name)= apps::get_path($value['app'],'Admincp',true);
             $apriv = array();
-            if(@is_file($path)||$value['apptype']=="2"){
+            if(is_file($path)||$value['apptype']=="2"){
                 if($value['apptype']=="2"){
                   $obj_name = 'contentAdmincp';
                 }

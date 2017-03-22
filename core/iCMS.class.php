@@ -93,7 +93,7 @@ class iCMS {
     public static function redirect_html($fp,$url='') {
         if(iView::$gateway=='html'||empty($url)||stristr($url, '.php?')||iPHP_DEVICE!='desktop') return;
 
-        @is_file($fp) && iPHP::redirect($url);
+        is_file($fp) && iPHP::redirect($url);
     }
     //分页数缓存
     public static function page_total_cache($sql, $type = null,$cachetime=3600) {
