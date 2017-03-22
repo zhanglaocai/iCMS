@@ -263,6 +263,7 @@ function get_php_content($content){
 * @return JSON
 */
 function jsonFormat($data, $indent=null){
+    $data = stripcslashes($data);
     if(empty($data)||$data=='null'){
         return;
     }

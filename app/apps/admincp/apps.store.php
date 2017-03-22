@@ -22,7 +22,7 @@ function pay_notify (key,sid,name,d) {
     $.getJSON(
       "<?php echo apps_store::STORE_URL;?>/store.pay.notify?callback=?",{key,sid,name},
       function(o){
-          console.log(o);
+          //console.log(o);
           if(o.code=="1" && o.url && o.t){
             $("#iPHP_FRAME").attr("src","<?php echo APP_URI;?>&do=premium_install&url="+o.url+'&name='+name+'&key='+key+'&sid='+sid)
             clear_pay_notify_timer();

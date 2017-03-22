@@ -630,4 +630,17 @@ class iFormer {
     public static function func($func,$value) {
         return $value;
     }
+    public static function form($id='form',$func='submit') {
+        echo iFormer::$html;
+        echo '<script type="text/javascript">';
+        echo '
+            $(function(){
+                $('.$id.').'.$func.'(function(){
+                    '.iFormer::$validate.'
+                });
+            });
+        ';
+        echo iFormer::$script;
+        echo '</script>';
+    }
 }

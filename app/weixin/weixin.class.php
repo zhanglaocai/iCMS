@@ -1,5 +1,12 @@
 <?php
-
+/**
+* iCMS - i Content Management System
+* Copyright (c) 2007-2017 idreamsoft.com iiimon Inc. All rights reserved.
+*
+* @author coolmoo <idreamsoft@qq.com>
+* @site http://www.idreamsoft.com
+* @licence http://www.idreamsoft.com/license.php
+*/
 define('iCMS_WEIXIN_COMPONENT',"http://wx.idreamsoft.com");//iCMS微信第三方平台
 
 class weixin {
@@ -11,7 +18,7 @@ class weixin {
     protected static $appId          = null;
     protected static $appSecret      = null;
     protected static $accessTokenKey = 'weixin/ACCESS_TOKEN';
-    protected static $apiUrl         = 'https://api.weixin.qq.com/cgi-bin';
+    protected static $API_URL         = 'https://api.weixin.qq.com/cgi-bin';
 
     public static function init($config=null){
         $config && self::$config = $config;
@@ -21,7 +28,7 @@ class weixin {
         }
 
         if(self::$component){
-            self::$apiUrl = iCMS_WEIXIN_COMPONENT.'/cgi-bin';
+            self::$API_URL = iCMS_WEIXIN_COMPONENT.'/cgi-bin';
             return;
         }
         self::$accessTokenKey = 'weixin/ACCESS_TOKEN_'.md5(self::$appId.self::$appSecret);
@@ -31,7 +38,7 @@ class weixin {
         return;
     }
     public static function get_access_token(){
-        $url = self::$apiUrl.'/token?grant_type=client_credential'.
+        $url = self::$API_URL.'/token?grant_type=client_credential'.
         '&appid='.self::$appId.
         '&secret='.self::$appSecret;
         $response = self::http($url);
@@ -47,7 +54,7 @@ class weixin {
         //}
     }
     public static function url($uri,$query=null){
-        $url = self::$apiUrl.'/'.$uri.'?access_token='.self::$accessToken;
+        $url = self::$API_URL.'/'.$uri.'?access_token='.self::$accessToken;
         if(self::$component){
             $url.= '&appid='.self::$appId;
         }
@@ -97,7 +104,7 @@ class weixin {
         return $response;
     }
     /**
-     * [get_media_list 获取素材列表]
+     * [mediaList 获取素材列表]
      * @param  integer $offset [从全部素材的该偏移位置开始返回，0表示从第一个素材 返回]
      * @param  integer $count  [返回素材的数量，取值在1到20之间]
      * @param  string  $type   [素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）]

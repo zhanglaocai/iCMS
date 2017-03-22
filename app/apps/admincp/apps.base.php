@@ -7,7 +7,7 @@
     </div>
   </div>
   <div class="clearfloat mb10"></div>
-  <?php foreach ((array)$base_fields[1] as $key => $value) { ?>
+  <?php if($base_fields)foreach ((array)$base_fields[1] as $key => $value) { ?>
   <div id="field_<?php echo $value; ?>">
     <div class="input-prepend input-append">
       <span class="add-on"><?php echo $value; ?></span>

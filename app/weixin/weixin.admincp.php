@@ -80,6 +80,10 @@ class weixinAdmincp{
      * @return [type] [description]
      */
     public function do_event(){
+        weixin::init();
+        $a = weixin::mediaList('news');
+var_dump($a);
+exit;
         $sql = " where ";
         switch($doType){ //status:[0:草稿][1:正常][2:回收]
             case 'inbox'://草稿

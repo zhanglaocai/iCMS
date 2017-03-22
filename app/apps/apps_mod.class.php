@@ -15,7 +15,7 @@ class apps_mod {
     }
     public static function base_fields_array(){
       $sql = implode(",\n", self::base_fields_sql());
-      preg_match_all("@`(.+)`\s(.+)\sDEFAULT\s'(.*?)'\sCOMMENT\s'(.+)',@", $sql, $matches);
+      preg_match_all("@`(.+)`\s(.+)\sDEFAULT\s'(.*?)'\sCOMMENT\s'(.+)'@", $sql, $matches);
       return $matches;
     }
     public static function base_fields_sql(){

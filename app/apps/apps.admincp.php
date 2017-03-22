@@ -264,37 +264,13 @@ class appsAdmincp{
       }
     	include admincp::view("apps.manage");
     }
-    // public function do_manage(){
-    //   apps::scan('config/app.json');
-    //   $rs = apps::config('iApp.json');
-    //   include admincp::view("apps.json.manage");
-    // }
 
-    public function do_del($id = null,$dialog=true){
-    	$id===null && $id=$this->id;
-  		$id OR iUI::alert('请选择要删除的应用!');
-      $rs   = iDB::row("SELECT `name` FROM `#iCMS@__apps` WHERE `id`='$id' LIMIT 1;");
-      $name = $rs->name;
-      iDB::query("DROP TABLE `#iCMS@__{$name}`; ");
-
-  		iDB::query("DELETE FROM `#iCMS@__apps` WHERE `id` = '$id'");
-  		apps::cache();
-  		$dialog && iUI::success('应用已经删除','js:parent.$("#tr'.$id.'").remove();');
-    }
     public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iUI::alert("请选择要操作的应用");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
       	switch($batch){
-      		case 'dels':
-  				  iUI::$break	= false;
-  	    		foreach($idArray AS $id){
-  	    			$this->do_del($id,false);
-  	    		}
-  	    		iUI::$break	= true;
-  				  iUI::success('应用全部删除完成!','js:1');
-      		break;
   		  }
 
 	  }
