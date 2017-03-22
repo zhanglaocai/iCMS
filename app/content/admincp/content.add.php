@@ -15,7 +15,7 @@ admincp::head(!$preview);
       <?php if($preview){?>
             <h5 class="brs">预览表单</h5>
       <?php }else{ ?>
-            <h5 class="brs"><?php echo ($this->id?'添加':'修改'); ?><?php echo $app['title'];?></h5>
+            <h5 class="brs"><?php echo ($this->id?'修改':'添加'); ?><?php echo $app['title'];?></h5>
       <?php } ?>
       <ul class="nav nav-tabs" id="-add-tab">
         <li class="active"><a href="#-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>

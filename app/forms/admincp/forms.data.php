@@ -50,38 +50,29 @@ $("#<?php echo APP_FORMID;?>").batch();
             <tr>
               <th><i class="fa fa-arrows-v"></i></th>
               <th style="width:20px;"><?php echo strtoupper($primary); ?></th>
-              <?php foreach ($list_fields as $fi => $fkey) {?>
-                <th><?php echo $fields[$fkey]['label'] ; ?></th>
-              <?php }?>
-              <th>操作</th>
+              <th>表单内容</th>
             </tr>
           </thead>
           <tbody>
           <?php
-
-            former::$callback = array(
-              'category'       => array('category','get'),
-              'multi_category' => array('category','get'),
-              // 'prop'           => array('prop','get'),
-              // 'multi_prop'     => array('prop','get'),
-            );
-            former::multi_value($rs,$fields);
-
-            $categoryArray = former::$variable['cid'];
-
             foreach ((array)$rs as $key => $value) {
-              $id            = $value[$primary];
-              $category      = (array)$categoryArray[$value['cid']];
-              $iurl          = iURL::get($this->app['app'],array($value,$category));
-              $value['url']  = $iurl->href;
+              $id = $value[$primary];
           ?>
             <tr id="tr<?php echo $id; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $id ; ?>" /></td>
               <td><?php echo $id ; ?></td>
-              <?php foreach ($list_fields as $fi => $fkey) {?>
-              <td><?php echo former::de_value($value[$fkey],$fields[$fkey]); ?></td>
-              <?php }?>
               <td>
+                <table class="table table-bordered">
+                  <tbody>
+                    <?php foreach ($fields as $fi => $field) {?>
+                    <tr>
+                      <td class="span3"><?php echo $field['label'] ; ?></td>
+                      <td><?php echo $value[$field['id']] ; ?></td>
+                    </tr>
+                    <?php } ?>
+                  </tbody>
+                </table>
+                <div class="clearfloat mb5"></div>
                 <a href="<?php echo APP_URI; ?>&do=submit&form_id=<?php echo $this->form_id ; ?>&id=<?php echo $id ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                 <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $id ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>
               </td>

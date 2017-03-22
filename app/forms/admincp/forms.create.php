@@ -125,7 +125,7 @@ $(function(){
             <?php include admincp::view("apps.base","apps");?>
           </div>
           <div id="apps-add-custom" class="tab-pane">
-            <?php include admincp::view("apps.iFormer.build","apps");?>
+            <?php include admincp::view("former.build","former");?>
           </div>
           <div class="clearfloat"></div>
           <div class="form-actions">
@@ -136,5 +136,5 @@ $(function(){
     </div>
   </div>
 </div>
-<?php include admincp::view("apps.iFormer.editor","apps");?>
+<?php include admincp::view("former.editor","former");?>
 <?php admincp::foot();?>
