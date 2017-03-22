@@ -236,6 +236,7 @@ class formsAdmincp{
      * @return [type] [description]
      */
     public function do_uninstall(){
+      return;
       $app = apps::get($this->id);
       if($app['type'] && $app['apptype']){
         apps::uninstall($this->id);
