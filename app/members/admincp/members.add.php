@@ -78,6 +78,7 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">生日</span>
               <select name="info[year]" id="info_year" class="chosen-select"  style="width:90px;" data-placeholder="年">
+                <option value=""></option>
                 <?php
                 $year = (int)date('Y');$syear =$year-35;$eyear =$year-14;
                 for ($i=$syear; $i < $eyear; $i++) {?>
@@ -85,29 +86,31 @@ $(function(){
                 <?php } ?>
               </select>
               <select name="info[month]" id="info_month" class="span1 chosen-select" data-placeholder="月">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
+                <option value=""></option>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
                 <option value="10">10</option>
                 <option value="11">11</option>
                 <option value="12">12</option>
               </select>
               <select name="info[day]" id="info_day" class="span1 chosen-select" data-placeholder="日">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
+                <option value=""></option>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
                 <option value="10">10</option>
                 <option value="11">11</option>
                 <option value="12">12</option>

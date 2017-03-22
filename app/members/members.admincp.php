@@ -32,8 +32,8 @@ class membersAdmincp{
     public function do_add(){
         if($this->uid) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `uid`='$this->uid' LIMIT 1;");
-            $rs->config&& $rs->config = json_decode($rs->config,true);
-            $rs->info  && $rs->info = json_decode($rs->info,true);
+            $rs->config = json_decode($rs->config,true);
+            $rs->info   = json_decode($rs->info,true);
         }
         include admincp::view("members.add");
     }
