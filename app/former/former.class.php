@@ -11,8 +11,6 @@
  */
 
 class former {
-    public static $line = true;
-
     public static $html     = null;
     public static $validate = null;
     public static $script   = null;
@@ -23,6 +21,21 @@ class former {
     public static $callback   = array();
     public static $variable   = array();
 
+    public static $template   = array(
+        'main'=>'
+            <div class="form-group {{class}}">
+                {{label}}
+                {{input}}
+                {{label2}}
+            </div>
+            {{help}}
+            {{script}}
+        ',
+        'input'   =>'{{content}}',
+        'help'   =>'<span class="help-inline">{{content}}</span>',
+        'label'  =>'<span class="add-on">{{content}}</span>',
+        'label2' =>'<span class="add-on">{{content}}</span>',
+    );
 
     public static function multi_value($rs,$fieldArray) {
         foreach ($fieldArray as $key => $field) {
@@ -72,7 +85,6 @@ class former {
     }
     public static function html($field,$value=null) {
         if($field['type']=='br'){
-            self::$line = true;
             $div = self::widget("div")->addClass("clearfloat mt10");
         }else{
             $id      = $field['id'];
@@ -80,7 +92,7 @@ class former {
             $class   = $field['class'];
             $default = $field['default'];
 
-            list($type,$type2) = explode(':', $field['type']);
+            list($type,$_type) = explode(':', $field['type']);
             isset($value) OR $value = $default;
             if(!isset($value)){
                 if(in_array($field['field'], array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
@@ -90,12 +102,10 @@ class former {
                 }
             }
 
-            $div_class="input-prepend";
+            $field['label']      && $label  = self::display($field['label'],'label');
+            $field['help']       && $help   = self::display($field['help'],'help');
+            $field['label-after']&& $label2 = self::display($field['label-after'],'label2');
 
-            // if(self::$line === false){
-            //     $div_class.=' input-append';
-            // }
-            $field['label'] && $label = ' <span class="add-on">'.$field['label'].'</span>';
             $attr = compact(array('id','name','type','class','value'));
             $attr['id']   = self::$prefix.'_'.$id.'';
             $attr['name'] = self::$prefix.'['.$name.']';
@@ -107,33 +117,33 @@ class former {
                 case 'multi_image':
                 case 'multi_file':
                     unset($attr['type']);
-                    $div_class.=' input-append';
+                    // $form_group.=' input-append';
                     $input  = self::widget('textarea',$attr)->css('height','150px');
                     $picbtn = filesAdmincp::pic_btn($attr['id'],null,($type=='multi_file'?'文件':'图片'),true);
-                    $html   = $input.$picbtn;
                     $script = self::script('$("#'.$attr['id'].'").autoTextarea({maxHeight:300});',true);
+                    $input.= $picbtn;
                 break;
                 case 'image':
                 case 'file':
-                    $div_class.=' input-append';
+                    // $form_group.=' input-append';
                     $input->attr('type','text');
                     $picbtn = filesAdmincp::pic_btn($attr['id'],null,($type=='file'?'文件':'图片'),true);
-                    $html = $input.$picbtn;
+                    $input.= $picbtn;
                 break;
                 case 'tpldir':
                 case 'tplfile':
-                    $div_class.=' input-append';
+                    // $form_group.=' input-append';
                     $input->attr('type','text');
                     $click ='file';
                     $type=='tpldir' && $click = 'dir';
                     $modal = filesAdmincp::modal_btn($name,$click,$attr['id']);
-                    $html  = $input.$modal;
+                    $input.= $modal;
                 break;
                 case 'txt_prop':
-                    $div_class.=' input-append';
+                    // $form_group.=' input-append';
                     $input->attr('type','text');
                     $prop = propAdmincp::btn_group($name,self::$config['app']['app'],$attr['id']);
-                    $html = $input.$prop;
+                    $input.= $prop;
                 break;
                 case 'prop':
                 case 'multi_prop':
@@ -148,8 +158,8 @@ class former {
                     $select = self::widget('select',$attr)->addClass('chosen-select');
                     $option='<option value="0">默认'.$field['label'].'['.$name.'=\'0\']</option>';
                     $option.= propAdmincp::get($name,null,'option',null,self::$config['app']['app']);
-                    $html = $select->html($option).$orig;
                     $script = self::script('iDATA.select("'.$attr['id'].'","'.trim($value).'");',true);
+                    $input = $select->html($option).$orig;
                 break;
                 case 'date':
                 case 'datetime':
@@ -162,47 +172,44 @@ class former {
                         $value = get_date($value,'Y-m-d H:i:s');
                     }
                     $input->val($value);
-                    $html = $input;
                 break;
                 case 'user_category':
                     if(self::$config['gateway']=='admincp'){
-                        $div_class.=' hide';
-                        $html = $input->attr('type','hidden');
+                        $form_group=' hide';
+                        $input->attr('type','hidden');
                     }
                 break;
                 case 'PRIMARY':
                 case 'union':
                 case 'hidden':
-                    $div_class.=' hide';
-                    $html = $input->attr('type','hidden');
+                    $form_group=' hide';
+                    $input->attr('type','hidden');
                 break;
                 case 'userid':
-                    $div_class.=' hide';
+                    $form_group=' hide';
                     $value OR $value = self::$config['value']['userid'];
                     $input->attr('type','text');
-                    $html = $input->val($value);
+                    $input->val($value);
                 break;
                 case 'nickname':
                 case 'username':
                     $value OR $value = self::$config['value'][$type];
                     $input->attr('type','text');
-                    $html = $input->val($value);
+                    $input->val($value);
                 break;
                 case 'tag':
-                    $html = $input->attr('type','text')->attr('onkeyup',"javascript:this.value=this.value.replace(/，/ig,',');");
+                    $input = $input->attr('type','text')->attr('onkeyup',"javascript:this.value=this.value.replace(/，/ig,',');");
                     $orig = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
-                    $html.= $orig;
+                    $input.= $orig;
                 break;
                 case 'number':
-                    $html = $input->attr('type','text');
+                    $input->attr('type','text');
                 break;
-                case 'text':
-                    $html = $input;
-                break;
+                case 'text':break;
                 case 'seccode':
                     $input->addClass('seccode')->attr('maxlength',"4")->attr('type','text');
                     $seccode = publicApp::seccode();
-                    $html = $input.$seccode;
+                    $input.= $seccode;
                 break;
                 case 'editor':
                     if(self::$config['gateway']=='admincp'){
@@ -210,20 +217,20 @@ class former {
                         $attr['class'] = '';
                         $attr['type']  = 'text/plain';
                         $attr['id']    = 'editor-body-'.$attr['id'];
-                        $div_class     = 'editor-container';
+                        $form_group    = 'editor-container';
                         $script        = editorAdmincp::ueditor_script($attr['id']);
                     }
-                    $html = self::widget('textarea',$attr);
+                    $input = self::widget('textarea',$attr);
                 break;
                 case 'multitext':
                     unset($attr['type']);
                     $input = self::widget('textarea',$attr);
-                    $html = $input->css('height','300px');
+                    $input->css('height','300px');
                 break;
                 case 'textarea':
                     unset($attr['type']);
                     $input = self::widget('textarea',$attr);
-                    $html = $input->css('height','150px');
+                    $input->css('height','150px');
                 break;
                 case 'switch':
                 case 'radio':
@@ -231,10 +238,10 @@ class former {
                     $span = self::widget('span',array('class'=>'add-on'));
                     if($type=='checkbox'){
                         $attr['name']     = $attr['name'].'[]';
-                        $attr['multiple'] = 'true';
+                        // $attr['multiple'] = 'true';
                     }
                     if($field['option']){
-                        $div_class  .=' input-append';
+                        // $form_group  .=' input-append';
                         $optionArray = explode(";", $field['option']);
                         foreach ($optionArray as $ok => $val) {
                             $val = trim($val,"\r\n");
@@ -248,16 +255,16 @@ class former {
                                 $span->append($opt_text.self::widget('input',$attr2).' ');
                             }
                         }
-                        $html = $span;
+                        $input = $span;
                     }else{
-                        $html = $span->html($input);
+                        $input = $span->html($input);
                     }
                     $script= self::script('iDATA.checked(".'.$attr['id'].'","'.$value.'");',true);
 
                     if($type=='switch'){
                         $attr['type'] = 'checkbox';
                         $input = self::widget('input',$attr);
-                        $html  ='<div class="switch">'.$input.'</div>';
+                        $input ='<div class="switch">'.$input.'</div>';
                     }
                 break;
                 case 'multi_category':
@@ -273,7 +280,7 @@ class former {
                     $select = self::widget('select',$attr)->addClass('chosen-select');
                     $option = category::appid(self::$config['app']['id'],'cs')->select();
                     $script = self::script('iDATA.select("'.$attr['id'].'","'.trim($value).'");',true);
-                    $html = $select->html($option).$orig;
+                    $input = $select->html($option).$orig;
                 break;
                 case 'multiple':
                 case 'select':
@@ -284,7 +291,7 @@ class former {
                         $attr['name']     = $attr['name'].'[]';
                         $_input = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
                     }
-                    $html = self::widget('select',$attr)->addClass('chosen-select');
+                    $input = self::widget('select',$attr)->addClass('chosen-select');
                     if($field['option']){
                         $optionArray = explode(";", $field['option']);
                         foreach ($optionArray as $ok => $val) {
@@ -294,45 +301,55 @@ class former {
                                 $option.='<option value="'.$opt_value.'">'.$opt_text.' ['.$name.'="'.$opt_value.'"]</option>';
                             }
                         }
-                        $html = $html->html($option);
+                        $input->html($option);
                         $script = self::script('iDATA.select("'.$attr['id'].'","'.trim($value).'");',true);
                     }
-                    $html.= $_input;
+                    $input.= $_input;
                 break;
                 case 'device':
                     $value = iPHP::$mobile?'1':'0';
+                    $input->val($value);
                 break;
                 case 'postype':
                     $value = self::$config['gateway']=='admincp'?'1':'0';
+                    $input->val($value);
                 break;
                 default:
                     $input->attr('type','text');
-                    $html = $input;
                 break;
             }
-            if($type2=='hidden'){
-                $div_class ='hide';
-                $html = $input->attr('type','hidden');
-            }
-            if($field['label-after']){
-                $label_after = self::widget('span',array('class'=>'add-on'));
-                $label_after->html($field['label-after']);
-                $div_class  .=' input-append';
+            if($_type=='hidden'){
+                $form_group ='hide';
+                $input->attr('type','hidden');
             }
 
-            $div='<div class="'.$div_class.'">'.$label.$html.$label_after.'</div>'.$script;
-
-            $field['help'] && $div.='<span class="help-inline">'.$field['help'].'</span>';
-            // $div.= self::script($field['javascript']);
-            self::$line = false;
+            $div = self::display(array(
+                'class'  => 'former_'.$type.' '.$form_group,
+                'label'  => $label,
+                'label2' => $label2,
+                'input'  => self::display($input,'input'),
+                'help'   => $help,
+                'script' => $script,
+            ));
         }
         self::$html.= $div;
-        // var_dump($field);
-        // var_dump($script);
-        // echo $div;
-        // exit;
         return $div;
     }
+    public static function display($html,$key="main") {
+        $output = $html;
+        if(self::$template[$key]){
+            $output = self::$template[$key];
+            if(is_array($html)){
+                foreach ($html as $k => $value) {
+                    $output = str_replace('{{'.$k.'}}', $value, $output);
+                }
+            }else{
+                $output = str_replace('{{content}}', $html, $output);
+            }
+        }
+        return $output;
+    }
+
     public static function script($code=null,$script=false,$ready=true) {
         if($code){
             $code = '+function(){'.$code.'}();';
@@ -503,7 +520,7 @@ class former {
         $field = $fields['field'];
 
         //字段类型
-        list($type,$type2) = explode(':', $fields['type']);
+        list($type,$_type) = explode(':', $fields['type']);
 
         //时间转换
         if(in_array($type, array('date','datetime'))){
