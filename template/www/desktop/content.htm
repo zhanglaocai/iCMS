@@ -51,9 +51,12 @@
                     <div class="clearfix"></div>
                     <div class="article-body">
                         所有可调用变量,具体调用请自行修改
-                        <pre>
-                            <!--{$content|print_r}-->
-                        </pre>
+                                <!--{foreach value="cvalue" key="ckey" from="$content"}-->
+                                <p>
+                                    <b>&lt;!--{$content.<!--{$ckey}-->}--&gt;</b>
+                                    <!--{$cvalue|print_R}-->
+                                </p>
+                                <!--{/foreach}-->
                     </div>
 
                     <div class="clearfix mb10"></div>

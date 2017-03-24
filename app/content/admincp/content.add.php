@@ -29,7 +29,7 @@ admincp::head(!$preview);
           <div id="-add-base" class="tab-pane active">
             <?php
               echo former::head();
-              echo former::form();
+              echo former::layout();
             ?>
           </div>
         </div>

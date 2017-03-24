@@ -28,7 +28,7 @@ class tagAdmincp{
 
     public function do_add(){
         $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
-        iPHP::callback(array("formerAdmincp","add"),array($this->appid,$rs,true));
+        iPHP::callback(array("formerApp","add"),array($this->appid,$rs,true));
         include admincp::view('tag.add');
     }
     public function do_update(){
@@ -275,7 +275,7 @@ class tagAdmincp{
             iMap::diff($tcid,$_tcid,$id);
             $msg = '标签更新完成';
 		}
-        iPHP::callback(array("formerAdmincp","save"),array($this->appid,$id));
+        iPHP::callback(array("formerApp","save"),array($this->appid,$id));
         admincp::callback($id,$this);
         if($this->callback['code']){
             return array(

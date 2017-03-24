@@ -163,7 +163,7 @@ $(function(){
           <div id="tag-add-custom" class="tab-pane hide">
           <?php
             echo former::head();
-            echo former::form();
+            echo former::layout();
           ?>
           </div>
         </div>

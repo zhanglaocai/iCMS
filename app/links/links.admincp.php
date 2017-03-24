@@ -21,7 +21,7 @@ class linksAdmincp{
             $rs['keyword'] = $_GET['keyword'];
             $rs['url']     = $_GET['url'];
         }
-        iPHP::callback(array("formerAdmincp","add"),array(self::$appid,$rs,true));
+        iPHP::callback(array("formerApp","add"),array(self::$appid,$rs,true));
         include admincp::view("links.add");
     }
     public function do_save(){
@@ -48,7 +48,7 @@ class linksAdmincp{
             iDB::update('links', $data, array('id'=>$id));
             $msg="网站编辑完成!";
         }
-        iPHP::callback(array("formerAdmincp","save"),array(self::$appid,$id));
+        iPHP::callback(array("formerApp","save"),array(self::$appid,$id));
         iUI::success($msg,'url:'.APP_URI);
     }
 

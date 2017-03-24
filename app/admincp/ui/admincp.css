@@ -28,6 +28,11 @@ body{background-color:#EDEDED;color:#000;}
     border-radius: 0 4px 4px 0!important;
 }
 
+.input-append input:last-child, .input-append select:last-child{
+    -webkit-border-radius: 0 4px 4px 0!important;
+    -moz-border-radius: 0 4px 4px 0!important;
+    border-radius: 0 4px 4px 0!important;
+}
 /* bootstrap admincp */
 .table th{background:#fafafa url("img/table_head.gif") repeat-x 0 100%;}
 .table td{background-color:#fff;}

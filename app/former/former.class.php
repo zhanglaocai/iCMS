@@ -11,7 +11,7 @@
  */
 
 class former {
-    public static $html     = null;
+    public static $html     = array();
     public static $validate = null;
     public static $script   = null;
 
@@ -20,10 +20,16 @@ class former {
 
     public static $callback   = array();
     public static $variable   = array();
-
     public static $template   = array(
+        'class'=>array(
+            'group'  => 'input-group',
+            'input'  => 'form-control',
+            'label'  => 'input-group-addon',
+            'label2' => 'input-group-addon',
+            'help'   => 'help-inline'
+        ),
         'main'=>'
-            <div class="form-group {{class}}">
+            <div class="{{class_group}} {{class}}">
                 {{label}}
                 {{input}}
                 {{label2}}
@@ -31,12 +37,22 @@ class former {
             {{help}}
             {{script}}
         ',
-        'input'   =>'{{content}}',
-        'help'   =>'<span class="help-inline">{{content}}</span>',
-        'label'  =>'<span class="add-on">{{content}}</span>',
-        'label2' =>'<span class="add-on">{{content}}</span>',
+        'input'  => '{{content}}',
+        'help'   => '<span class="{{class_help}}">{{content}}</span>',
+        'label'  => '<span class="{{class_label}}">{{content}}</span>',
+        'label2' => '<span class="{{class_label2}}">{{content}}</span>',
     );
-
+    /**
+     * [创建表单表单]
+     * @param  [type]  $app        [app数据]
+     * @param  [type]  $rs         [数据]
+     * @return [type]              [description]
+     */
+    public static function create($app,$rs=null,$gateway='admincp'){
+        self::$config['gateway'] = $gateway;
+        self::$config['app']     = $app;
+        self::render($app,$rs);
+    }
     public static function multi_value($rs,$fieldArray) {
         foreach ($fieldArray as $key => $field) {
             if(in_array($field['type'], array('category','multi_category','prop','multi_prop'))){
@@ -79,12 +95,13 @@ class former {
     public static function render($app,$rs) {
         $fields = self::fields($app['fields'],true);
         foreach ($fields as $key => $value) {
-          self::html($value,$rs[$value['name']]);
+          self::html($value,$rs[$value['name']],$key);
           self::validate($value);
         }
     }
-    public static function html($field,$value=null) {
+    public static function html($field,$value=null,$fkey=null) {
         if($field['type']=='br'){
+            $id  = $fkey;
             $div = self::widget("div")->addClass("clearfloat mt10");
         }else{
             $id      = $field['id'];
@@ -110,6 +127,7 @@ class former {
             $attr['id']   = self::$prefix.'_'.$id.'';
             $attr['name'] = self::$prefix.'['.$name.']';
             $field['holder'] && $attr['placeholder'] = $field['holder'];
+            self::$template['class']['input'] && $attr['class'].= ' '.self::$template['class']['input'];
             $input = self::widget('input',$attr);
             $input->val($value);
 
@@ -235,29 +253,34 @@ class former {
                 case 'switch':
                 case 'radio':
                 case 'checkbox':
-                    $span = self::widget('span',array('class'=>'add-on'));
+                    // $span = self::widget('span',array('class'=>'add-on'));
                     if($type=='checkbox'){
                         $attr['name']     = $attr['name'].'[]';
                         // $attr['multiple'] = 'true';
                     }
                     if($field['option']){
+                        $attr['class'] = $type;
                         // $form_group  .=' input-append';
                         $optionArray = explode(";", $field['option']);
-                        foreach ($optionArray as $ok => $val) {
+                        $option = '';
+                        foreach ($optionArray as $optk => $val) {
                             $val = trim($val,"\r\n");
                             if($val){
                                 list($opt_text,$opt_value) = explode("=", $val);
-                                is_null($opt_value) && $opt_value = $opt_text;
+                                $opt_value===null && $opt_value = $opt_text;
                                 $attr2 = $attr;
                                 $attr2['value'] = $opt_value;
-                                $attr2['class'].= ' '.$attr2['id'];
-                                $attr2['id'].='_'.$ok;
-                                $span->append($opt_text.self::widget('input',$attr2).' ');
+                                $attr2['class'] = ' '.$attr2['id'];
+                                $attr2['id'].='_'.$optk;
+                                $option.= self::widget('label',array('for'=>$attr2['id']))->html($opt_text);
+                                $option.= self::widget('input',$attr2);
                             }
                         }
-                        $input = $span;
+                        $input = self::display($option,'label');
                     }else{
-                        $input = $span->html($input);
+                        $input->attr('class',$type);
+                        $input = self::display($input,'label');
+                        // $input = $span->html($input);
                     }
                     $script= self::script('iDATA.checked(".'.$attr['id'].'","'.$value.'");',true);
 
@@ -319,7 +342,7 @@ class former {
                 break;
             }
             if($_type=='hidden'){
-                $form_group ='hide';
+                $form_group =' hide';
                 $input->attr('type','hidden');
             }
 
@@ -332,13 +355,12 @@ class former {
                 'script' => $script,
             ));
         }
-        self::$html.= $div;
-        return $div;
+        self::$html[$id]= $div;
     }
     public static function display($html,$key="main") {
         $output = $html;
         if(self::$template[$key]){
-            $output = self::$template[$key];
+            $output = self::template_class(self::$template[$key]);
             if(is_array($html)){
                 foreach ($html as $k => $value) {
                     $output = str_replace('{{'.$k.'}}', $value, $output);
@@ -346,6 +368,12 @@ class former {
             }else{
                 $output = str_replace('{{content}}', $html, $output);
             }
+        }
+        return $output;
+    }
+    public static function template_class($output) {
+        if(self::$template['class'])foreach (self::$template['class'] as $k => $value) {
+            $output = str_replace('{{class_'.$k.'}}', $value, $output);
         }
         return $output;
     }
@@ -658,23 +686,26 @@ class former {
         return $value;
     }
     public static function head() {
-        return '<script src="./app/former/ui/iDATA.js" type="text/javascript"></script>';
+        return self::widget("script",array(
+            'type' => "text/javascript",
+            'src'  => "./app/former/ui/iDATA.js",
+        ));
     }
-    public static function form($id=null,$func='submit') {
-        $html = self::$html;
+    public static function layout($id=null,$func='submit') {
+        $pieces[] = implode('',self::$html);
         if(self::$validate||self::$script){
-            $html.= '<script type="text/javascript">';
-            $html.= '$(function(){';
+            $pieces[]= '<script type="text/javascript">';
+            $pieces[]= '$(function(){';
             if(self::$validate){
                 defined('APP_FORMID') && $id = '#'.APP_FORMID;
-                $html.= '$("'.$id.'"").'.$func.'(function(){';
-                $html.= self::$validate;
-                $html.= '});';
+                $pieces[]= '$("'.$id.'").'.$func.'(function(){';
+                $pieces[]= self::$validate;
+                $pieces[]= '});';
             }
-            $html.= self::$script;
-            $html.= '});';
-            $html.= '</script>';
+            $pieces[]= self::$script;
+            $pieces[]= '});';
+            $pieces[]= '</script>';
         }
-        echo $html;
+        return implode(PHP_EOL, $pieces);
     }
 }

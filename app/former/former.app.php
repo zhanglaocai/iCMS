@@ -8,7 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.2.0
 */
-class formerAdmincp{
+class formerApp{
     public function __construct() {
         $this->appid = iCMS_APP_FORMER;
     }
@@ -19,7 +19,7 @@ class formerAdmincp{
      * @param  boolean $union_data [是否查询数据表]
      * @return [type]              [description]
      */
-    public static function add($app,$rs,$union_data=false,$gateway='admincp'){
+    public static function add($app,$rs,$union_data=false){
         is_array($app) OR $app = apps::get($app);
         $data_table_name = apps_mod::data_table_name($app['app']);
         if($app['fields']){
@@ -35,14 +35,17 @@ class formerAdmincp{
                     $rs+= (array)iDB::row("SELECT * FROM `{$data_table['table']}` WHERE `{$primary_key}`='$id' LIMIT 1;",ARRAY_A);
                 }
             }
-            former::$config['app']     = $app;
-            former::$config['gateway'] = $gateway;
+            former::$template['class'] = array(
+                'group'  => 'input-prepend input-append',
+                'label'  => 'add-on',
+                'label2' => 'add-on',
+            );
             former::$config['value']   = array(
                 'userid'   => members::$userid,
                 'username' => members::$data->username,
                 'nickname' => members::$data->nickname
             );
-            former::render($app,$rs);
+            former::create($app,$rs);
         }
     }
     /**

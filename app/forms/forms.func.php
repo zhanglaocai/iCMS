@@ -7,24 +7,24 @@
  */
 class formsFunc{
 	public static function forms_make($vars){
-		$field	= $vars['field'];
-        $sapp    = $vars['sapp'];
-        $variable = propApp::value($field,$sapp);
+        $formid = $vars['formid'];
+        $form   = forms::get($formid);
 
-        $offset = $vars['start']?$vars['start']:0;
-		$vars['row'] && $variable = array_slice($variable,$offset, $vars['row']);
-
-        foreach ($variable as $key => $value) {
-            if($field){
-                $value['url'] = propApp::url($vars['url'],$value);
-            }else{
-                foreach ($value as $k => $v) {
-                    $v['url'] = propApp::url($vars['url'],$v);
-                    $value[$k] = $v;
-                }
+        isset($vars['main']) && former::$template['main'] = $vars['main'];
+        isset($vars['label']) && former::$template['label'] = $vars['label'];
+        foreach ($vars as $key => $value) {
+            if(stripos($key, 'class_') !== false){
+                $key = str_replace('class_', '', $key);
+                former::$template['class'][$key] = $value;
             }
-            $variable[$key] = $value;
         }
-		return $variable;
+        former::$config['value']   = array(
+            'userid'   => user::$userid,
+            'username' => user::$username,
+            'nickname' => user::$nickname
+        );
+        former::create($form);
+        echo former::head();
+        echo former::layout();
 	}
 }

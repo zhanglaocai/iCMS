@@ -12,7 +12,9 @@ var iDATA = {
         }else{
             // $(el).prop("checked",true);
         }
-        $.uniform.update(el);
+        if($.uniform){
+            $.uniform.update(el);
+        }
     },
 };
 

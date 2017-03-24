@@ -10,7 +10,7 @@ body { background-image: url(../img/body-bg.jpg); padding: 0px; margin: 0px; }
 
 /* ==user-login== */
 .top-wrap .user-login { }
-.top-wrap .user-profile { width: 320px; }
+.top-wrap .user-profile { width: 360px; }
 
 /*.top-wrap .user-login ul { list-style: none; margin: 0px; }*/
 .top-wrap ul.ul li { float: left; border-right: 1px dotted #CCC; padding-left: 15px; line-height: 18px; margin-top: 6px; }

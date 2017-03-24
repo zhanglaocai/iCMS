@@ -26,7 +26,7 @@ class contentAdmincp{
     }
     public function do_add(){
       $rs = apps_mod::get_data($this->app,$this->id);
-      iPHP::callback(array("formerAdmincp","add"),array($this->app,$rs));
+      iPHP::callback(array("formerApp","add"),array($this->app,$rs));
       include admincp::view('content.add');
     }
 
@@ -113,7 +113,7 @@ class contentAdmincp{
         include admincp::view('content.manage');
     }
     public function do_save(){
-        $update = iPHP::callback(array("formerAdmincp","save"),array($this->app));
+        $update = iPHP::callback(array("formerApp","save"),array($this->app));
 
         $REFERER_URL = $_POST['REFERER'];
         if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){

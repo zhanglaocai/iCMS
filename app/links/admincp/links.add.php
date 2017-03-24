@@ -46,7 +46,7 @@ admincp::head();
             <div class="clearfloat mb10"></div>
             <?php
               echo former::head();
-              echo former::form();
+              echo former::layout();
             ?>
           </div>
         </div>

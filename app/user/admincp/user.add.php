@@ -245,7 +245,7 @@ $(function(){
           <div id="user-custom" class="tab-pane">
           <?php
             echo former::head();
-            echo former::form();
+            echo former::layout();
           ?>
           </div>
         </div>

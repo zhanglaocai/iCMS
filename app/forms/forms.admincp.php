@@ -26,7 +26,7 @@ class formsAdmincp{
     public function do_submit(){
       $this->form_init();
       $rs = forms::get_data($this->app,$this->id);
-      iPHP::callback(array("formerAdmincp","add"),array($this->app,$rs));
+      iPHP::callback(array("formerApp","add"),array($this->app,$rs));
       include admincp::view('forms.submit');
     }
     /**
@@ -36,7 +36,7 @@ class formsAdmincp{
     public function do_savedata(){
       $this->form_id = (int)$_POST['form_id'];
       $this->form_init();
-      $update = iPHP::callback(array("formerAdmincp","save"),array($this->app));
+      $update = iPHP::callback(array("formerApp","save"),array($this->app));
       $REFERER_URL = $_POST['REFERER'];
       if(empty($REFERER_URL)||strstr($REFERER_URL, '=form_save')){
           $REFERER_URL= APP_URI.'&do=form_manage&form_id='.$this->form_id;

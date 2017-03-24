@@ -24,7 +24,7 @@ admincp::head(!$preview);
         <input name="REFERER" type="hidden" value="<?php echo iPHP_REFERER ; ?>" />
         <?php
           echo former::head();
-          echo former::form();
+          echo former::layout();
         ?>
         <?php if($preview){?>
         <?php }else{ ?>

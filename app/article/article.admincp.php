@@ -72,7 +72,7 @@ class articleAdmincp{
             $rs['userid']  = members::$userid;
 		}
 
-        iPHP::callback(array("formerAdmincp","add"),array(self::$appid,$rs,true));
+        iPHP::callback(array("formerApp","add"),array(self::$appid,$rs,true));
 
         if(self::$config['markdown']){
             include admincp::view("article.markdown");
@@ -594,7 +594,7 @@ class articleAdmincp{
             $mobile  = 0;
 
             $aid  = article::insert(compact($fields));
-            iPHP::callback(array("formerAdmincp","save"),array(self::$appid,$aid));
+            iPHP::callback(array("formerApp","save"),array(self::$appid,$aid));
             admincp::callback($aid,$this,'primary');
 
             if($tags){
@@ -656,7 +656,7 @@ class articleAdmincp{
             $picdata = $this->picdata($pic,$mpic,$spic);
 
             article::update(compact($fields),array('id'=>$aid));
-            iPHP::callback(array("formerAdmincp","save"),array(self::$appid,$aid));
+            iPHP::callback(array("formerApp","save"),array(self::$appid,$aid));
             admincp::callback($aid,$this,'primary');
 
             iMap::init('prop',self::$appid,'pid');

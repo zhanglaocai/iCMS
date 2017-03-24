@@ -11,6 +11,7 @@ define("USER_AUTHASH",'#=(iCMS@'.iPHP_KEY.'@iCMS)=#');
 
 class user {
 	public static $userid     = 0;
+	public static $username   = '';
 	public static $nickname   = '';
 	public static $cookietime = 0;
 	public static $format     = false;
@@ -219,6 +220,7 @@ class user {
 		self::set_cookie($user->username,$user->password,(array)$user);
 		self::$userid   = $user->uid;
 		self::$nickname = $user->nickname;
+		self::$username = $user->username;
 		return true;
 	}
 	public static function get_cookie($unpw=false) {

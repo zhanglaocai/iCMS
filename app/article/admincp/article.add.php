@@ -473,7 +473,7 @@ function _modal_dialog(cancel_text){
           <div id="article-add-custom" class="tab-pane hide">
             <?php
               echo former::head();
-              echo former::form();
+              echo former::layout();
             ?>
           </div>
         </div>

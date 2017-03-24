@@ -73,6 +73,7 @@ $(function(){
               foreach ((array)$rs as $key => $data) {
                 $table  = apps::table_item($data['table']);
                 $config = json_decode($data['config'],true);
+                $data['url'] = iURL::router(array('forms:id',$data['id']));;
               ?>
               <tr id="tr<?php echo $data['id'] ; ?>">
                 <td><b><?php echo $data['id'] ; ?></b></td>
@@ -116,6 +117,7 @@ $(function(){
                   ?>
                 </td>
                   <td>
+                    <a href="<?php echo $data['url'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 表单</a>
                     <a href="<?php echo APP_URI; ?>&do=data&form_id=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 数据</a>
                     <a href="<?php echo APP_URI; ?>&do=submit&form_id=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-edit"></i> 添加</a>
                     <div class="clearfix mt5"></div>
