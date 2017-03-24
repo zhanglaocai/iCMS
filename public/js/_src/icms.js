@@ -18,6 +18,7 @@ window.iCMS = {
         iCMS.CONFIG     = $.extend(config,options);
         iCMS.CONFIG.API = iCMS.CONFIG.PUBLIC + '/api.php';
         iCMS.UI         = require("ui");
+        iCMS.FORMER     = require("former");
         iCMS.dialog     = iCMS.UI.dialog;
         iCMS.alert      = iCMS.UI.alert;
     },

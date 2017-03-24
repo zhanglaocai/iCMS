@@ -471,10 +471,7 @@ function _modal_dialog(cancel_text){
             <div class="clearfloat mb10"></div>
           </div>
           <div id="article-add-custom" class="tab-pane hide">
-            <?php
-              echo former::head();
-              echo former::layout();
-            ?>
+            <?php echo former::layout();?>
           </div>
         </div>
         <div class="form-actions">

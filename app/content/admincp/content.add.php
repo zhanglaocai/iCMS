@@ -27,10 +27,7 @@ admincp::head(!$preview);
         <input name="REFERER" type="hidden" value="<?php echo iPHP_REFERER ; ?>" />
         <div class="tab-content">
           <div id="-add-base" class="tab-pane active">
-            <?php
-              echo former::head();
-              echo former::layout();
-            ?>
+            <?php echo former::layout();?>
           </div>
         </div>
         <?php if($preview){?>

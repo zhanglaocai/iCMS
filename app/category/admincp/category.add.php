@@ -210,10 +210,7 @@ $(function(){
             </div>
           </div>
           <div id="category-add-custom" class="tab-pane hide">
-            <?php
-              echo former::head();
-              echo former::layout();
-            ?>
+            <?php echo former::layout();?>
           </div>
         </div>
         <div class="form-actions">

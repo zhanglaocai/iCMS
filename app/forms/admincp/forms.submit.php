@@ -22,10 +22,7 @@ admincp::head(!$preview);
       <form action="<?php echo APP_FURI; ?>&do=savedata" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <input id="form_id" name="form_id" type="hidden"  value="<?php echo $this->form_id;?>" />
         <input name="REFERER" type="hidden" value="<?php echo iPHP_REFERER ; ?>" />
-        <?php
-          echo former::head();
-          echo former::layout();
-        ?>
+        <?php echo former::layout();?>
         <?php if($preview){?>
         <?php }else{ ?>
         <?php }?>

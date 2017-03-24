@@ -44,10 +44,7 @@ admincp::head();
               <input type="text" name="sortnum" class="span1" id="sortnum" value="<?php echo $rs['sortnum'] ; ?>"/>
             </div>
             <div class="clearfloat mb10"></div>
-            <?php
-              echo former::head();
-              echo former::layout();
-            ?>
+            <?php echo former::layout();?>
           </div>
         </div>
         <div class="form-actions">

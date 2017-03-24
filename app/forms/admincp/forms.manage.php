@@ -73,7 +73,7 @@ $(function(){
               foreach ((array)$rs as $key => $data) {
                 $table  = apps::table_item($data['table']);
                 $config = json_decode($data['config'],true);
-                $data['url'] = iURL::router(array('forms:id',$data['id']));;
+                $data['url'] = iURL::router(array('forms:id',$data['id']));
               ?>
               <tr id="tr<?php echo $data['id'] ; ?>">
                 <td><b><?php echo $data['id'] ; ?></b></td>

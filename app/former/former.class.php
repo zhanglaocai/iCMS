@@ -48,9 +48,8 @@ class former {
      * @param  [type]  $rs         [数据]
      * @return [type]              [description]
      */
-    public static function create($app,$rs=null,$gateway='admincp'){
-        self::$config['gateway'] = $gateway;
-        self::$config['app']     = $app;
+    public static function create($app,$rs=null){
+        self::$config['app'] = $app;
         self::render($app,$rs);
     }
     public static function multi_value($rs,$fieldArray) {
@@ -176,7 +175,7 @@ class former {
                     $select = self::widget('select',$attr)->addClass('chosen-select');
                     $option='<option value="0">默认'.$field['label'].'['.$name.'=\'0\']</option>';
                     $option.= propAdmincp::get($name,null,'option',null,self::$config['app']['app']);
-                    $script = self::script('iDATA.select("'.$attr['id'].'","'.trim($value).'");',true);
+                    $value===null OR $script = self::script('iCMS.FORMER.select("'.$attr['id'].'","'.$value.'");',true);
                     $input = $select->html($option).$orig;
                 break;
                 case 'date':
@@ -193,18 +192,18 @@ class former {
                 break;
                 case 'user_category':
                     if(self::$config['gateway']=='admincp'){
-                        $form_group=' hide';
+                        $form_group=' former_hide';
                         $input->attr('type','hidden');
                     }
                 break;
                 case 'PRIMARY':
                 case 'union':
                 case 'hidden':
-                    $form_group=' hide';
+                    $form_group=' former_hide';
                     $input->attr('type','hidden');
                 break;
                 case 'userid':
-                    $form_group=' hide';
+                    $form_group=' former_hide';
                     $value OR $value = self::$config['value']['userid'];
                     $input->attr('type','text');
                     $input->val($value);
@@ -282,7 +281,7 @@ class former {
                         $input = self::display($input,'label');
                         // $input = $span->html($input);
                     }
-                    $script= self::script('iDATA.checked(".'.$attr['id'].'","'.$value.'");',true);
+                    $value===null OR $script= self::script('iCMS.FORMER.checked(".'.$attr['id'].'","'.$value.'");',true);
 
                     if($type=='switch'){
                         $attr['type'] = 'checkbox';
@@ -302,7 +301,7 @@ class former {
                     }
                     $select = self::widget('select',$attr)->addClass('chosen-select');
                     $option = category::appid(self::$config['app']['id'],'cs')->select();
-                    $script = self::script('iDATA.select("'.$attr['id'].'","'.trim($value).'");',true);
+                    $value===null OR $script = self::script('iCMS.FORMER.select("'.$attr['id'].'","'.$value.'");',true);
                     $input = $select->html($option).$orig;
                 break;
                 case 'multiple':
@@ -325,7 +324,7 @@ class former {
                             }
                         }
                         $input->html($option);
-                        $script = self::script('iDATA.select("'.$attr['id'].'","'.trim($value).'");',true);
+                        $value===null OR $script = self::script('iCMS.FORMER.select("'.$attr['id'].'","'.$value.'");',true);
                     }
                     $input.= $_input;
                 break;
@@ -342,7 +341,7 @@ class former {
                 break;
             }
             if($_type=='hidden'){
-                $form_group =' hide';
+                $form_group =' former_hide';
                 $input->attr('type','hidden');
             }
 
@@ -684,12 +683,6 @@ class former {
      */
     public static function func($func,$value) {
         return $value;
-    }
-    public static function head() {
-        return self::widget("script",array(
-            'type' => "text/javascript",
-            'src'  => "./app/former/ui/iDATA.js",
-        ));
     }
     public static function layout($id=null,$func='submit') {
         $pieces[] = implode('',self::$html);

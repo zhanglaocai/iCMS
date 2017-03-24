@@ -131,6 +131,8 @@ del{text-decoration:line-through;padding:3px 0;background:#f5dfdf;color:#ac1414}
 .fs12{font-size:12px;}
 .label{font-size:12px;line-height:1.6;}
 
+/* former */
+.former_hide{display: none!important;}
 /* seccode */
 .public_seccode{}
 .seccode{width:90px!important;height:34px!important;}

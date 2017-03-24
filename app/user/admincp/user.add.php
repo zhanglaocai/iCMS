@@ -243,10 +243,7 @@ $(function(){
             </div>
           </div>
           <div id="user-custom" class="tab-pane">
-          <?php
-            echo former::head();
-            echo former::layout();
-          ?>
+          <?php echo former::layout();?>
           </div>
         </div>
         <div class="form-actions">

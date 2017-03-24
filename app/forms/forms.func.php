@@ -7,9 +7,14 @@
  */
 class formsFunc{
 	public static function forms_make($vars){
+        if(empty($vars['formid'])){
+            return false;
+        }
         $formid = $vars['formid'];
         $form   = forms::get($formid);
-
+        if(empty($form)){
+            return false;
+        }
         isset($vars['main']) && former::$template['main'] = $vars['main'];
         isset($vars['label']) && former::$template['label'] = $vars['label'];
         foreach ($vars as $key => $value) {
@@ -23,8 +28,10 @@ class formsFunc{
             'username' => user::$username,
             'nickname' => user::$nickname
         );
+        former::$config['gateway'] = 'usercp';
         former::create($form);
-        echo former::head();
         echo former::layout();
 	}
+    public static function forms_list($vars){
+    }
 }

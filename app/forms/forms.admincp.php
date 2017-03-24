@@ -17,7 +17,7 @@ class formsAdmincp{
       $_GET['form_id'] && $this->form_id = (int)$_GET['form_id'];
     }
     public function form_init(){
-      $this->app = forms::get($this->form_id);
+      $this->form = forms::get($this->form_id);
     }
     /**
      * [添加表单内容]
@@ -25,26 +25,30 @@ class formsAdmincp{
      */
     public function do_submit(){
       $this->form_init();
-      $rs = forms::get_data($this->app,$this->id);
-      iPHP::callback(array("formerApp","add"),array($this->app,$rs));
+      $rs = forms::get_data($this->form,$this->id);
+      iPHP::callback(array("formerApp","add"),array($this->form,$rs));
       include admincp::view('forms.submit');
     }
     /**
      * [保存表单数据]
      * @return [type] [description]
      */
-    public function do_savedata(){
+    public function do_savedata($dialog=true){
       $this->form_id = (int)$_POST['form_id'];
       $this->form_init();
-      $update = iPHP::callback(array("formerApp","save"),array($this->app));
+      $update = iPHP::callback(array("formerApp","save"),array($this->form));
       $REFERER_URL = $_POST['REFERER'];
       if(empty($REFERER_URL)||strstr($REFERER_URL, '=form_save')){
           $REFERER_URL= APP_URI.'&do=form_manage&form_id='.$this->form_id;
       }
-      if($update){
-          iUI::success($this->app['name'].'编辑完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
+      if($dialog){
+        if($update){
+            iUI::success($this->form['name'].'编辑完成!<br />3秒后返回'.$this->form['name'].'列表','url:'.$REFERER_URL);
+        }else{
+            iUI::success($this->form['name'].'添加完成!<br />3秒后返回'.$this->form['name'].'列表','url:'.$REFERER_URL);
+        }
       }else{
-          iUI::success($this->app['name'].'添加完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
+        return $update;
       }
     }
     /**
@@ -54,7 +58,7 @@ class formsAdmincp{
      */
     public function do_data($stype='normal') {
         $this->form_init();
-        $table_array = apps::get_table($this->app);
+        $table_array = apps::get_table($this->form);
         $table       = $table_array['table'];
         $primary     = $table_array['primary'];
 
@@ -73,8 +77,8 @@ class formsAdmincp{
 
         $rs = iDB::all("SELECT * FROM `{$table}` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
-        if($this->app['fields']){
-            $fields = former::fields($this->app['fields']);
+        if($this->form['fields']){
+            $fields = former::fields($this->form['fields']);
         }
         include admincp::view('forms.data');
     }
@@ -91,6 +95,7 @@ class formsAdmincp{
           $rs['fields'] = json_decode($rs['fields'],true);
           $base_fields  = forms::base_fields_array();
         }
+        empty($rs['tpl']) && $rs['tpl'] = '{iTPL}/forms.htm';
         $rs['app'] = ltrim($rs['app'],'forms_');
         include admincp::view("forms.create");
     }
@@ -99,32 +104,35 @@ class formsAdmincp{
    * @return [type] [description]
    */
     public function do_save(){
-        $id      = (int)$_POST['_id'];
-        $name    = iSecurity::escapeStr($_POST['_name']);
-        $title   = iSecurity::escapeStr($_POST['_title']);
-        $app     = iSecurity::escapeStr($_POST['_app']);
+        $id    = (int)$_POST['_id'];
+        $app   = iSecurity::escapeStr($_POST['_app']);
+        $name  = iSecurity::escapeStr($_POST['_name']);
+        $title = iSecurity::escapeStr($_POST['_title']);
+        $tpl   = iSecurity::escapeStr($_POST['_tpl']);
+        $pic   = iSecurity::escapeStr($_POST['_pic']);
+        $description   = iSecurity::escapeStr($_POST['_description']);
         $type    = (int)$_POST['type'];
         $status  = (int)$_POST['status'];
-
-        $fieldata     = $_POST['fields'];
-        $config_array = $_POST['config'];
-        $table_array  = $_POST['table'];
-
 
         $name OR iUI::alert('表单名称不能为空!');
         empty($app) && $app = iPinyin::get($name);
         empty($title) && $title = $name;
         $app = 'forms_'.ltrim($app,'forms_');
 
+        $table_array  = $_POST['table'];
         if($table_array){
           $table_array  = array_filter($table_array);
           $table  = addslashes(json_encode($table_array));
         }
 
-        $config_array = array_filter($config_array);
-        $config = addslashes(json_encode($config_array));
+        $config_array = $_POST['config'];
+        if($config_array){
+          $config_array = array_filter($config_array);
+          $config       = addslashes(json_encode($config_array));
+        }
 
-        $fields = '';
+        $fields   = '';
+        $fieldata = $_POST['fields'];
         if(is_array($fieldata)){
           $field_array = array();
           foreach ($fieldata as $key => $value) {
@@ -148,9 +156,11 @@ class formsAdmincp{
           $fields = addslashes(json_encode($field_array));
         }
 
+        iFS::$force_ext = "jpg";
+        iFS::checkHttp($pic) && $pic = iFS::http($pic);
+
         $addtime = time();
-        $array   = compact(array('app','name','title','menu','table','config','fields','addtime','apptype','type','status'));
-        // $array['menu'] = str_replace(array("\r","\n"),'',$array['menu']);
+        $array   = compact(array('app','name','title','pic','description','tpl','table','config','fields','addtime','type','status'));
 
         if(empty($id)) {
 

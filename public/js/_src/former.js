@@ -1,5 +1,5 @@
-var iDATA = {
-    select: function(el, v) {
+define("former",{
+     select: function(el, v) {
         var va = v.split(',');
         $("#"+el).val(va).trigger("chosen:updated");
     },
@@ -15,6 +15,5 @@ var iDATA = {
         if($.uniform){
             $.uniform.update(el);
         }
-    },
-};
-
+    }
+});

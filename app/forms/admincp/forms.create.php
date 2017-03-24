@@ -67,21 +67,28 @@ $(function(){
               <span class="add-on">表单标题</span>
               <input type="text" name="_title" class="span3" id="_title" value="<?php echo $rs['title'] ; ?>"/>
             </div>
-            <span class="help-inline">表单标题.例:表单名称(文章系统),表单标题(文章)</span>
+            <span class="help-inline">表单标题</span>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend input-append"> <span class="add-on">表单图片</span>
+              <input type="text" name="_pic" class="span6" id="_pic" value="<?php echo $rs['pic'] ; ?>"/>
+              <?php filesAdmincp::pic_btn("_pic");?>
+            </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">表单简介</span>
-              <textarea name="config[info]" id="config_info" class="span6" style="height: 150px;"><?php echo $rs['config']['info'] ; ?></textarea>
+              <textarea name="_description" id="_description" class="span6" style="height: 150px;"><?php echo $rs['description'] ; ?></textarea>
             </div>
-            <span class="help-inline">版本号</span>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend input-append"> <span class="add-on">表单模板</span>
+              <input type="text" name="_tpl" class="span3" id="_tpl" value="<?php echo $rs['tpl'] ; ?>"/>
+              <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=_tpl" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a>
+            </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
-              <span class="add-on">用户中心</span>
-              <div class="switch" data-on-label="启用" data-off-label="禁用">
-                <input type="checkbox" data-type="switch" name="usercp" id="usercp" <?php echo $rs['config']['usercp']?'checked':''; ?>/>
-              </div>
-              <span class="help-inline">启用后,用户中心将显示此表单并根据字段设计</span>
+              <span class="add-on">完成提示</span>
+              <input type="text" name="config[success]" class="span3" id="config_success" value="<?php echo $rs['config']['success']?$rs['config']['success']:'提交成功！' ; ?>"/>
             </div>
+            <span class="help-inline">表单提交完成提示语</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">表单状态</span>

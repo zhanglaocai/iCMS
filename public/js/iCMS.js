@@ -17,6 +17,7 @@
             'passport.js',
             'common.js',
             'comment.js',
+            'former.js',
             'icms.js',
         ],
         baseURL = './public/js/_src/';
