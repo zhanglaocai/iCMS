@@ -6,12 +6,14 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 class formsFunc{
-	public static function forms_make($vars){
-        if(empty($vars['formid'])){
-            return false;
+	public static function forms_create($vars){
+        if(isset($vars['formid'])){
+            $formid = $vars['formid'];
+            $form   = forms::get($formid);
+        }else if(isset($vars['form'])){
+            is_array($vars['form']) && $form = $vars['form'];
         }
-        $formid = $vars['formid'];
-        $form   = forms::get($formid);
+
         if(empty($form)){
             return false;
         }

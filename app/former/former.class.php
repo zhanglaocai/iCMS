@@ -269,7 +269,7 @@ class former {
                                 $opt_value===null && $opt_value = $opt_text;
                                 $attr2 = $attr;
                                 $attr2['value'] = $opt_value;
-                                $attr2['class'] = ' '.$attr2['id'];
+                                $attr2['class'].= ' '.$attr2['id'];
                                 $attr2['id'].='_'.$optk;
                                 $option.= self::widget('label',array('for'=>$attr2['id']))->html($opt_text);
                                 $option.= self::widget('input',$attr2);

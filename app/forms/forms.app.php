@@ -32,17 +32,11 @@ class formsApp {
     public function form($formid,$tpl = true){
         $form = forms::get($formid);
         $form OR iPHP::error_404('找不到相关表单,<b>ID:' . $id . '</b>', 10001);
-        former::$config['value']   = array(
-            'userid'   => user::$userid,
-            'username' => user::$username,
-            'nickname' => user::$nickname
-        );
-        former::$config['gateway'] = 'usercp';
-        former::create($form);
 
-        $form['layout'] = former::layout();
+        $form['fieldArray'] = former::fields($form['fields']);
         $form['action'] = iURL::router(array('forms'));
         $form['url']    = iURL::router(array('forms:id',$form['id']));
+        $form['result'] = iURL::router(array('forms:result',$form['id']));
         $form['link']   = '<a href="'.$form['url'].'" class="forms" target="_blank">'.$form['title'].'</a>';
         $form['pic']    = filesApp::get_pic($form['pic']);
         $form['time']   = time();

@@ -180,6 +180,7 @@ class articleApp {
 			unset($art_data);
 			$total = $count + intval(self::$config['pageno_incr']);
 			$article['page'] = self::page($article,$page,$total,$count,$category['mode']);
+			$article['PAGES'] = $article['page']['PAGES'];unset($article['page']['PAGES']);
 			is_array($article['page']['next'])&& $next_url = $article['page']['next']['url'];
 			$pic_array[0] && $article['body'] = self::body_pics_page($pic_array,$article,$page,$total,$next_url);
 		}

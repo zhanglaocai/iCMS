@@ -298,5 +298,19 @@ class contentApp {
         $option_array && iView::assign('option_array', $rs);
         return $rs;
     }
-
+    /**
+     * [iPHP::run回调]
+     * @param  [type] $app [description]
+     * @return [type]      [description]
+     */
+    public static function run($app){
+        $data = apps::get_app($app);
+        if($data){
+            iPHP::$app_path = iPHP_APP_DIR . '/content';
+            iPHP::$app_file = iPHP::$app_path . '/content.app.php';
+            iPHP::$app      = new contentApp($data);
+        }else{
+            iPHP::error_404('Unable to find custom application <b>' . $app . '.app.php</b>', '0003');
+        }
+    }
 }

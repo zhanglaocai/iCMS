@@ -121,9 +121,8 @@ class category {
         $category->template = json_decode($category->template,true);
         $category->config   = json_decode($category->config,true);
 
-        if($callback){
-           $category = call_user_func_array($callback,array($category));
-        }
+        $callback && $category = iPHP::callback($callback,array($category));
+
         return $category;
     }
     public static function get_cid($rootid=null,$where=null,$appid=null) {

@@ -155,13 +155,8 @@ class iPHP {
 		self::$app_file = self::$app_path . '/' . $app . '.app.php';
 		//自定义APP调用
 		if(!is_file(self::$app_file)){
-			$appData = apps::get_app($app);
-			if($appData){
-				self::$app_path = iPHP_APP_DIR . '/content';
-				self::$app_file = self::$app_path . '/content.app.php';
-			}else{
-				iPHP::error_404('Unable to find custom application <b>' . $app . '.app.php</b>', '0003');
-			}
+			//自定义APP调用成功会设置self::$app
+			self::callback(array('contentApp','run'),array($app));
 		}
 		is_file(self::$app_file) OR iPHP::error_404('Unable to find application <b>' . $app . '.app.php</b>', '0002');
 
@@ -191,15 +186,13 @@ class iPHP {
 		iView::$handle->_iVARS['SAPI'] .= self::$app_name;
 		iView::$handle->_iVARS += $app_vars;
 
-		if($appData){ //自定义APP调用
-			self::$app = new contentApp($appData);
-		}else{
+		if(self::$app===null){
 			$obj_name = $app.'App';
 			self::$app = new $obj_name();
 		}
 
 		if (self::$app_do && self::$app->methods) {
-			in_array(self::$app_do, self::$app->methods) OR iPHP::error_404('Call to undefined method <b>' . self::$app_name . '::'.self::$app_method.'</b>', '0003');
+			in_array(self::$app_do, self::$app->methods) OR iPHP::error_404('Call to undefined method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0003');
 			$method = self::$app_method;
 			$args === null && $args = self::$app_args;
 			if ($args) {
@@ -208,11 +201,11 @@ class iPHP {
 				}
 				return call_user_func_array(array(self::$app, $method), (array) $args);
 			} else {
-				method_exists(self::$app, self::$app_method) OR iPHP::error_404('Call to undefined method <b>' . self::$app_name . '::'.self::$app_method.'</b>', '0004');
+				method_exists(self::$app, self::$app_method) OR iPHP::error_404('Call to undefined method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0004');
 				return self::$app->$method();
 			}
 		} else {
-			iPHP::error_404('Call to undefined method <b>' . self::$app_name . '::'.self::$app_method.'</b>', '0005');
+			iPHP::error_404('Call to undefined method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0005');
 		}
 	}
 
@@ -349,7 +342,7 @@ class iPHP {
      * @return [type]           [description]
      */
     public static function callback($callback,$value=null,$return=null){
-        if (is_array($callback) && is_callable($callback)) {
+        if (is_callable($callback)) {
            return call_user_func_array($callback,(array)$value);
         }else{
 	        if($return===null){
@@ -359,29 +352,6 @@ class iPHP {
 	        }
         }
     }
-	public static function app($app = NULL, $args = NULL) {
-		$app_dir = $app_name = $app;
-		$file_type = 'app';
-		if (strpos($app, '.') !== false) {
-			list($app_dir, $app_name, $file_type) = explode('.', $app);
-			if (empty($file_type)) {
-				$file_type = $app_name;
-				$app_name = $app_dir;
-			}
-		}
-		$app_file = $app_name.'.'.$file_type;
-		switch ($file_type) {
-			case 'class':$object = $app_name;break;
-			case 'func':break;
-			default:$object = $app_name . 'App';
-		}
-		$path = iPHP_APP_DIR . '/' . $app_dir . '/' . $app_file . '.php';
-		if (is_file($path)) {
-			self::import($path);
-		}else{
-			return false;
-		}
-	}
 	public static function vendor($name, $args = null) {
 		iPHP::import(iPHP_LIB . '/vendor/Vendor.' . $name . '.php');
 		if (function_exists($name)) {
