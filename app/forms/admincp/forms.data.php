@@ -45,6 +45,7 @@ $("#<?php echo APP_FORMID;?>").batch();
     </div>
     <div class="widget-content nopadding">
       <form action="<?php echo APP_FURI; ?>&do=batch" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
+        <input type="hidden" name="form_id" value="<?php echo $this->form_id;?>" />
         <table class="table table-bordered table-condensed table-hover">
           <thead>
             <tr>
@@ -74,7 +75,7 @@ $("#<?php echo APP_FORMID;?>").batch();
                 </table>
                 <div class="clearfloat mb5"></div>
                 <a href="<?php echo APP_URI; ?>&do=submit&form_id=<?php echo $this->form_id ; ?>&id=<?php echo $id ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $id ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>
+                <a href="<?php echo APP_FURI; ?>&do=delete&form_id=<?php echo $this->form_id ; ?>&id=<?php echo $id ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>
               </td>
             </tr>
             <?php }  ?>
@@ -93,7 +94,7 @@ $("#<?php echo APP_FORMID;?>").batch();
                   </a>
                   <ul class="dropdown-menu">
                     <li class="divider"></li>
-                    <li><a data-toggle="batch" data-action="dels"><i class="fa fa-trash-o"></i> 删除</a></li>
+                    <li><a data-toggle="batch" data-action="data-dels"><i class="fa fa-trash-o"></i> 删除</a></li>
                   </ul>
                 </div>
               </div>

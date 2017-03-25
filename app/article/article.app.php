@@ -76,7 +76,7 @@ class articleApp {
     }
 	public function article($id, $page = 1, $tpl = true) {
 		$article = iDB::row("SELECT * FROM `#iCMS@__article` WHERE id='" . (int) $id . "' AND `status` ='1' LIMIT 1;", ARRAY_A);
-		$article OR iPHP::error_404('找不到相关文章,<b>ID:' . $id . '</b>', 10001);
+		$article OR iPHP::error_404('找不到相关文章<b>ID:' . $id . '</b>', 10001);
 		if ($article['url']) {
 			if (iView::$gateway == "html") {
 				return false;

@@ -114,10 +114,10 @@ class contentAdmincp{
     public function do_save(){
         $update = iPHP::callback(array("formerApp","save"),array($this->app));
 
-        $REFERER_URL = $_POST['REFERER'];
-        if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
-            $REFERER_URL= APP_URI.'&do=manage';
-        }
+        // $REFERER_URL = $_POST['REFERER'];
+        // if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
+        // }
+        $REFERER_URL= APP_URI.'&do=manage';
         if($update){
             iUI::success($this->app['name'].'编辑完成!<br />3秒后返回'.$this->app['name'].'列表','url:'.$REFERER_URL);
         }else{
@@ -129,11 +129,12 @@ class contentAdmincp{
     	$id===null && $id=$this->id;
 		$id OR iUI::alert("请选择要删除的{$this->app['title']}");
 
-        $table_array = apps::get_table($this->app);
-        $table       = $table_array['table'];
-        $primary     = $table_array['primary'];
-
-		iDB::query("DELETE FROM `{$table}` WHERE `{$primary}` = '$id'");
+        $tables = $this->app['table'];
+        foreach ($tables as $key => $value) {
+            $primary_key = $value['primary'];
+            $value['union'] && $primary_key = $value['union'];
+            iDB::query("DELETE FROM `{$value['table']}` WHERE `{$primary_key}`='$id'");
+        }
 		$dialog && iUI::success("{$this->app['title']}删除完成",'js:parent.$("#tr'.$id.'").remove();');
     }
     public function do_batch(){

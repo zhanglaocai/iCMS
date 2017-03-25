@@ -163,7 +163,7 @@ var iFormer = {
                     $elem = this.widget('textarea').hide();
                     var div_after = function () {
                         var img = iFormer.widget('img');
-                        img.prop('src', './app/apps/ui/iFormer/img/editor.png');
+                        img.prop('src', './app/former/ui/img/editor.png');
                         $div.append(img);
                     }
                     elem_type = null;

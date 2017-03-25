@@ -14,7 +14,7 @@ class formsFunc{
             is_array($vars['form']) && $form = $vars['form'];
         }
 
-        if(empty($form)){
+        if(empty($form)||empty($form['status'])){
             return false;
         }
         isset($vars['main']) && former::$template['main'] = $vars['main'];

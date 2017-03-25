@@ -82,6 +82,27 @@ class formsAdmincp{
         include admincp::view('forms.data');
     }
     /**
+     * [删除表单数据]
+     * @param  [type]  $id     [description]
+     * @param  boolean $dialog [description]
+     * @return [type]          [description]
+     */
+    public function do_delete($id = null,$dialog=true){
+      $id===null && $id=$this->id;
+      $id OR iUI::alert("请选择要删除的{$this->form['name']}数据");
+      $this->form_id = (int)$_POST['form_id'];
+      $this->form_init();
+
+      $tables = $this->form['table'];
+      if($tables)foreach ($tables as $key => $value) {
+          $primary_key = $value['primary'];
+          $value['union'] && $primary_key = $value['union'];
+          iDB::query("DELETE FROM `{$value['table']}` WHERE `{$primary_key}`='$id'");
+      }
+      $dialog && iUI::success("{$this->form['name']}数据删除完成",'js:parent.$("#tr'.$id.'").remove();');
+    }
+
+    /**
      * [创建表单]
      * @return [type] [description]
      */
@@ -288,17 +309,29 @@ class formsAdmincp{
         $idArray OR iUI::alert("请选择要操作的表单");
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
-      	switch($batch){
-  		  }
+        switch($batch){
+          case 'data-dels':
+            iUI::$break = false;
+            foreach($idArray AS $id){
+              $this->do_delete($id,false);
+            }
+            iUI::$break = true;
+            iUI::success('全部删除完成!','js:1');
+          break;
+          case 'dels':
+            iUI::$break = false;
+            foreach($idArray AS $id){
+              $this->do_del($id,false);
+            }
+            iUI::$break = true;
+            iUI::success('全部删除完成!','js:1');
+          break;
+        }
 
 	  }
-    public function do_cache(){
-      apps::cache();
-      iUI::success('更新完成');
-    }
 
     /**
-     * [卸载表单]
+     * [删除表单]
      * @return [type] [description]
      */
     public function do_del($id = null,$dialog=true){
