@@ -6,7 +6,6 @@
 * @author coolmoo <iiiphp@qq.com>
 * @site http://www.iiiphp.com
 * @licence http://www.iiiphp.com/license
-* @version 6.2.0
 */
 defined('iPHP') OR exit('What are you doing?');
 
