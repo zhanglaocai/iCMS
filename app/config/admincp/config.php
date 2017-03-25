@@ -308,7 +308,7 @@ function modal_tplfile(el,a){
               <div class="clearfloat mb10"></div>
               <div class="input-prepend">
                 <span class="add-on">REWRITE配置</span>
-                <textarea name="config[router][config]" id="router_config" class="span6" style="height:120px;"><?php echo jsonFormat($config['router']['config']); ?></textarea>
+                <textarea name="config[router][config]" id="router_config" class="span6" style="height:120px;"><?php echo $config['router']['config']?json_encode($config['router']['config']):'' ;?></textarea>
               </div>
               <span class="help-inline">REWRITE配置,如果不熟悉请勿修改.敬请等待官方推出相关编辑器</span>
             </div>

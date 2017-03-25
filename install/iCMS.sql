@@ -1,10 +1,9 @@
 /*
-SQLyog Job Agent v12.09 (64 bit) Copyright(c) Webyog Inc. All Rights Reserved.
-
-
-MySQL - 5.5.53 : Database - icms62
+SQLyog Ultimate v12.09 (64 bit)
+MySQL - 5.5.53 : Database - icms7
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -31,7 +30,7 @@ CREATE TABLE `icms_access_log` (
   KEY `uid` (`uid`),
   KEY `app` (`app`),
   KEY `ip` (`ip`)
-) ENGINE=MyISAM AUTO_INCREMENT=992 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_apps` */
 
@@ -50,7 +49,7 @@ CREATE TABLE `icms_apps` (
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '应用状态',
   PRIMARY KEY (`id`),
   KEY `idx_name` (`app`)
-) ENGINE=MyISAM AUTO_INCREMENT=123 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_article` */
 
@@ -104,7 +103,7 @@ CREATE TABLE `icms_article` (
   KEY `hits_week` (`status`,`hits_week`),
   KEY `hits_month` (`status`,`hits_month`),
   KEY `cid_hits` (`status`,`cid`,`hits`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_article_data` */
 
@@ -115,7 +114,7 @@ CREATE TABLE `icms_article_data` (
   `body` mediumtext NOT NULL,
   PRIMARY KEY (`id`),
   KEY `aid` (`aid`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_category` */
 
@@ -152,7 +151,7 @@ CREATE TABLE `icms_category` (
   KEY `dir` (`dir`),
   KEY `s_o_cid` (`status`,`sortnum`,`cid`),
   KEY `t_o_cid` (`appid`,`sortnum`,`cid`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_category_map` */
 
@@ -164,7 +163,7 @@ CREATE TABLE `icms_category_map` (
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `idx` (`appid`,`node`,`iid`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_comment` */
 
@@ -191,7 +190,7 @@ CREATE TABLE `icms_comment` (
   PRIMARY KEY (`id`),
   KEY `idx_iid` (`appid`,`status`,`iid`,`id`),
   KEY `idx_uid` (`status`,`userid`,`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_config` */
 
@@ -215,7 +214,7 @@ CREATE TABLE `icms_favorite` (
   `mode` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1 公开 0私密',
   PRIMARY KEY (`id`),
   KEY `uid` (`uid`,`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_favorite_data` */
 
@@ -230,7 +229,7 @@ CREATE TABLE `icms_favorite_data` (
   `addtime` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `idx` (`uid`,`fid`,`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_favorite_follow` */
 
@@ -277,17 +276,19 @@ CREATE TABLE `icms_files_map` (
 /*Table structure for table `icms_forms` */
 
 CREATE TABLE `icms_forms` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '应用ID appid',
-  `app` varchar(100) NOT NULL DEFAULT '' COMMENT '应用标识',
-  `name` varchar(100) NOT NULL DEFAULT '' COMMENT '应用名',
-  `apptype` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '类型 0官方 1本地 2自定义',
-  `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '应用类型',
-  `table` text NOT NULL COMMENT '应用表',
-  `config` text NOT NULL COMMENT '应用配置',
-  `fields` text NOT NULL COMMENT '应用自定义字段',
-  `menu` text NOT NULL COMMENT '应用菜单',
-  `addtimes` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
-  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '应用状态',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '表单ID',
+  `app` varchar(255) NOT NULL DEFAULT '' COMMENT '表单标识',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '表单名',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT '表单标题',
+  `pic` varchar(255) NOT NULL DEFAULT '' COMMENT '表单图片',
+  `description` varchar(5120) NOT NULL DEFAULT '' COMMENT '表单简介',
+  `tpl` varchar(255) NOT NULL DEFAULT '' COMMENT '表单模板',
+  `table` text NOT NULL COMMENT '表单表',
+  `config` text NOT NULL COMMENT '表单配置',
+  `fields` text NOT NULL COMMENT '表单字段',
+  `addtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
+  `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '表单类型',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '表单状态',
   PRIMARY KEY (`id`),
   KEY `idx_name` (`app`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -302,7 +303,7 @@ CREATE TABLE `icms_group` (
   `type` enum('1','0') NOT NULL DEFAULT '0',
   PRIMARY KEY (`gid`),
   KEY `type` (`type`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_keywords` */
 
@@ -328,7 +329,7 @@ CREATE TABLE `icms_links` (
   UNIQUE KEY `id` (`id`),
   KEY `s_o_id` (`cid`,`sortnum`,`id`),
   KEY `ordernum` (`sortnum`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_members` */
 
@@ -352,7 +353,7 @@ CREATE TABLE `icms_members` (
   PRIMARY KEY (`uid`),
   KEY `username` (`username`),
   KEY `groupid` (`gid`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_message` */
 
@@ -389,7 +390,7 @@ CREATE TABLE `icms_prop` (
   KEY `field` (`field`),
   KEY `cid` (`cid`),
   KEY `type` (`app`)
-) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_prop_map` */
 
@@ -401,7 +402,7 @@ CREATE TABLE `icms_prop_map` (
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `idx` (`appid`,`node`,`iid`)
-) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_search_log` */
 
@@ -413,7 +414,7 @@ CREATE TABLE `icms_search_log` (
   PRIMARY KEY (`id`),
   KEY `search_times` (`search`,`times`),
   KEY `search_id` (`search`,`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_sph_counter` */
 
@@ -422,6 +423,22 @@ CREATE TABLE `icms_sph_counter` (
   `max_doc_id` int(11) NOT NULL,
   PRIMARY KEY (`counter_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Table structure for table `icms_spider_error` */
+
+CREATE TABLE `icms_spider_error` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `rid` int(10) unsigned NOT NULL DEFAULT '0',
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
+  `sid` int(10) unsigned NOT NULL DEFAULT '0',
+  `url` varchar(1024) NOT NULL DEFAULT '',
+  `msg` varchar(1024) NOT NULL DEFAULT '',
+  `work` varchar(255) NOT NULL DEFAULT '',
+  `date` varchar(255) NOT NULL DEFAULT '',
+  `addtime` int(10) unsigned NOT NULL DEFAULT '0',
+  `type` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_spider_post` */
 
@@ -432,7 +449,7 @@ CREATE TABLE `icms_spider_post` (
   `post` text NOT NULL,
   `fun` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_spider_project` */
 
@@ -524,7 +541,7 @@ CREATE TABLE `icms_tags` (
   KEY `pid_id` (`pid`,`id`),
   KEY `cid_id` (`cid`,`id`),
   KEY `rootid` (`rootid`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_tags_map` */
 
@@ -536,7 +553,7 @@ CREATE TABLE `icms_tags_map` (
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `tid_index` (`appid`,`node`,`iid`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_user` */
 
@@ -570,7 +587,7 @@ CREATE TABLE `icms_user` (
   UNIQUE KEY `username` (`nickname`),
   KEY `email` (`username`),
   KEY `nickname` (`nickname`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_user_category` */
 
@@ -640,7 +657,7 @@ CREATE TABLE `icms_user_report` (
   `addtime` int(10) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_weixin_api_log` */
 

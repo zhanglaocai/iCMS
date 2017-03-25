@@ -54,10 +54,6 @@ class appsAdmincp{
         $type    = (int)$_POST['type'];
         $status  = (int)$_POST['status'];
 
-        $fieldata = $_POST['fields'];
-        $config_array = $_POST['config'];
-        $table_array  = $_POST['table'];
-
         $menu = json_decode(stripcslashes($_POST['menu']));
         $menu = json_encode($menu);
         $menu = addslashes($menu);
@@ -66,22 +62,25 @@ class appsAdmincp{
         empty($app) && $app = iPinyin::get($name);
         empty($title) && $title = $name;
 
+        $table_array  = $_POST['table'];
         if($table_array){
           $table_array  = array_filter($table_array);
           $table  = addslashes(json_encode($table_array));
         }
 
+        $config_array = $_POST['config'];
         if($config_array['template']){
           $config_array['template'] = explode("\n", $config_array['template']);
           $config_array['template'] = array_map('trim', $config_array['template']);
         }
-        if($config_array['router']){
-          $config_array['router'] = json_decode(stripcslashes($config_array['router']),true);
+        if($config_array['iurl']){
+          $config_array['iurl'] = json_decode(stripcslashes($config_array['iurl']),true);
         }
         $config_array = array_filter($config_array);
         $config = addslashes(json_encode($config_array));
 
         $fields = '';
+        $fieldata = $_POST['fields'];
         if(is_array($fieldata)){
           $field_array = array();
           foreach ($fieldata as $key => $value) {

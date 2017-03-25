@@ -178,11 +178,14 @@ $(function(){
             <div class="alert alert-error alert-block">
               <p>菜单配置属于重要数据,如果不熟悉请勿修改.敬请等待官方推出相关编辑器</p>
             </div>
-            <textarea name="menu" id="menu" class="span8" style="height:450px;"><?php echo $rs['menu']?jsonFormat($rs['menu']):'' ; ?></textarea>
+            <div class="input-prepend">
+              <span class="add-on">菜单配置</span>
+              <textarea name="menu" id="menu" class="span8" style="height:450px;"><?php echo $rs['menu']?json_encode($rs['menu']):'' ; ?></textarea>
+            </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">内容网址</span>
-              <textarea name="config[iurl]" id="config_iurl" class="span6" style="height:120px;"><?php echo $rs['config']['iurl']?jsonFormat($rs['config']['iurl']):'' ; ?></textarea>
+              <textarea name="config[iurl]" id="config_iurl" class="span8" style="height:120px;"><?php echo $rs['config']['iurl']?json_encode($rs['config']['iurl']):'' ; ?></textarea>
             </div>
           </div>
           <div class="clearfloat"></div>
