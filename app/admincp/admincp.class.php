@@ -199,6 +199,16 @@ class admincp {
 	public static function foot() {
 		include self::view("admincp.footer",'admincp');
 	}
+	public static function error_page($msg) {
+		admincp::head();
+		echo '
+		<div class="alert">
+		  <button type="button" class="close" data-dismiss="alert">&times;</button>
+		  <strong>Warning!</strong> '.$msg.'
+		</div>';
+		admincp::foot();
+		exit();
+	}
 	public static function access_log() {
 		$access = array(
 			'uid'       => members::$userid,

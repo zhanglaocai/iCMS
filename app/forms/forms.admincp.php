@@ -23,6 +23,7 @@ class formsAdmincp{
      * @return [type] [description]
      */
     public function do_submit(){
+      empty($this->form_id) && admincp::error_page("请选择要添加的表单");
       $this->form_init();
       $rs = forms::get_data($this->form,$this->id);
       iPHP::callback(array("formerApp","add"),array($this->form,$rs));
@@ -56,6 +57,7 @@ class formsAdmincp{
      * @return [type]        [description]
      */
     public function do_data($stype='normal') {
+        empty($this->form_id) && admincp::error_page("请选择要查看的表单数据");
         $this->form_init();
         $table_array = apps::get_table($this->form);
         $table       = $table_array['table'];

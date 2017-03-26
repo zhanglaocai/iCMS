@@ -18,12 +18,11 @@ class cacheAdmincp{
      */
     public function do_all(){
         foreach ($this->acp as $key => $acp) {
-            $acp::cache();
+            iPHP::callback(array($acp,'cache'));
         }
         $this->do_menu(false);
         $this->do_category(false);
         $this->do_article_category(false);
-        $this->do_push_category(false);
         $this->do_tag_category(false);
         $this->do_tpl(false);
         iUI::success('全部缓存更新完成');
@@ -62,14 +61,6 @@ class cacheAdmincp{
      */
     public function do_article_category($dialog=true){
         $categoryAdmincp = new article_categoryAdmincp();
-        $categoryAdmincp->do_cache($dialog);
-    }
-    /**
-     * [更新推荐分类缓存]
-     * @return [type] [description]
-     */
-    public function do_push_category($dialog=true){
-        $categoryAdmincp = new push_categoryAdmincp();
         $categoryAdmincp->do_cache($dialog);
     }
     /**
