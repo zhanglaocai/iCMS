@@ -342,6 +342,12 @@ class iPHP {
      * @return [type]           [description]
      */
     public static function callback($callback,$value=null,$return=null){
+    	if (stripos($callback[1], '_FALSE') !== false) {
+    		$return = false;
+    	}
+    	if (stripos($callback[1], '_TRUE') !== false) {
+    		$return = true;
+    	}
         if (is_callable($callback)) {
            return call_user_func_array($callback,(array)$value);
         }else{
@@ -406,7 +412,7 @@ class iPHP {
     }
 	public static function redirect($url = '') {
 		$url OR $url = iPHP_REFERER;
-		if (headers_sent()) {
+		if (@headers_sent()) {
 			echo '<meta http-equiv=\'refresh\' content=\'0;url=' . $url . '\'><script type="text/javascript">window.location.replace(\'' . $url . '\');</script>';
 		} else {
 			header("Location: $url");

@@ -26,7 +26,7 @@ admincp::head();
         <div class="clearfloat mb10"></div>
         <div class="input-prepend">
           <span class="add-on">替换词</span>
-          <input type="text" name="replace" class="span6" id="replace" value="<?php echo $rs['replace'] ; ?>"/>
+          <textarea name="replace" id="replace" class="span6" style="height: 150px;"><?php echo $rs['replace'] ; ?></textarea>
         </div>
         <span class="help-inline">可添加html</span>
       </div>

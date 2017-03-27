@@ -106,3 +106,6 @@ ALTER TABLE `icms_category_map`
 ALTER TABLE `icms_tags_map`
   ADD COLUMN `field` VARCHAR(255) DEFAULT ''  NOT NULL   COMMENT '字段' AFTER `iid`;
 
+ALTER TABLE `icms_keywords`
+  CHANGE `url` `replace` VARCHAR(255) CHARSET utf8 COLLATE utf8_general_ci DEFAULT ''  NOT NULL,
+  DROP COLUMN `times`;

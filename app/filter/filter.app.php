@@ -12,11 +12,11 @@ class filterApp{
         $this->appid = iCMS_APP_FILTER;
     }
     /**
-     * [查找判断禁用词]
+     * [查找禁用词,返回true或false]
      * @param [string] $content [参数]
      * @return [string]         [返回禁用词]
      */
-    public static function HOOK_disable($content){
+    public static function HOOK_disable_FALSE($content){
         $disable = iCache::get('filter/disable');  //disable禁止
         //禁止关键词
         $subject = $content;
@@ -69,7 +69,7 @@ class filterApp{
      * @return [sting]           [返回内容]
      */
     public static function run(&$content){
-        if($result = self::HOOK_disable($content)){
+        if($result = self::HOOK_disable_FALSE($content)){
             return $result;
         }
 

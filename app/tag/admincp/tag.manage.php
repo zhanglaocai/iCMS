@@ -214,6 +214,8 @@ $(function(){
                     <li><a data-toggle="batch" data-action="tag"><i class="fa fa-tags"></i> 设置相关标签</a></li>
                     <li><a data-toggle="batch" data-action="tpl"><i class="fa fa-tags"></i> 设置模板</a></li>
                     <li class="divider"></li>
+                     <li><a data-toggle="batch" data-action="keywords"><i class="fa fa-paperclip"></i> 设置为内链</a></li>
+                    <li class="divider"></li>
                     <li><a data-toggle="batch" data-action="dels"><i class="fa fa-trash-o"></i> 删除</a></li>
                   </ul>
                 </div>

@@ -22,9 +22,14 @@ class keywordsAdmincp{
         if($this->id) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__keywords` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
         }else{
-        	$rs['keyword']	= $_GET['keyword'];
-        	$rs['replace']		= $_GET['replace'];
+            $rs['keyword'] = $_GET['keyword'];
+            $rs['replace'] = $_GET['replace'];
         }
+        if($_GET['url']){
+            $rs['replace'] =  '<a href="'.$_GET['url'].'" target="_blank" class="keywords"/>'.$rs['keyword'].'</a>';
+            $rs['replace'] =  htmlspecialchars($rs['replace']);
+        }
+
         include admincp::view("keywords.add");
     }
     public function do_save(){
@@ -34,23 +39,26 @@ class keywordsAdmincp{
 
         $keyword OR iUI::alert('关键词不能为空!');
         $replace OR iUI::alert('替换词不能为空!');
-        $fields = array('keyword', 'replace', 'times');
-        $data   = compact ($fields);
+        $fields = array('keyword', 'replace');
+        $data   = compact($fields);
 
         if(empty($id)) {
             iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='$keyword'") && iUI::alert('该关键词已经存在!');
             iDB::insert('keywords',$data);
-            $this->cache();
             $msg="关键词添加完成!";
         }else {
             iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='$keyword' AND `id` !='$id'") && iUI::alert('该关键词已经存在!');
             iDB::update('keywords', $data, array('id'=>$id));
-            $this->cache();
             $msg="关键词编辑完成!";
         }
+        $this->cache();
         iUI::success($msg,'url:'.APP_URI);
     }
-
+    public static function insert($data){
+        if(!iDB::value("SELECT `id` FROM `#iCMS@__keywords` where `keyword` ='".$data['keyword']."'")){
+            iDB::insert('keywords',$data);
+        }
+    }
     public function do_iCMS(){
         if($_GET['keywords']) {
 			$sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";

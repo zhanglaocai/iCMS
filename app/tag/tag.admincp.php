@@ -338,6 +338,24 @@ class tagAdmincp{
         $ids     = implode(',',$idArray);
         $batch   = $_POST['batch'];
     	switch($batch){
+            case 'keywords':
+                $rs = iDB::all("SELECT * FROM `#iCMS@__tags` where `id` IN ($ids)");
+                $categoryArray  = category::multi_get($rs,'cid');
+                $tcategoryArray = category::multi_get($rs,'tcid',$this->appid);
+                foreach($rs AS $tag){
+                    $C          = (array)$categoryArray[$tag['cid']];
+                    $TC         = (array)$tcategoryArray[$tag['tcid']];
+                    $iurl       = iURL::get('tag',array($tag,$C,$TC));
+                    $tag['url'] = $iurl->href;
+                    $data = array();
+                    $data['keyword'] = $tag['name'];
+                    $data['replace'] = '<a href="'.$tag['url'].'" target="_blank" class="keywords"/>'.$tag['name'].'</a>';
+                    $data['replace'] = htmlspecialchars($data['replace']);
+                    array_map('addslashes', $data);
+                    iPHP::callback(array('keywordsAdmincp','insert'),array($data));
+                }
+                iUI::success('内链添加完成!','js:1');
+            break;
     		case 'dels':
 				iUI::$break	= false;
 	    		foreach($idArray AS $id){
