@@ -32,7 +32,7 @@ class formsFunc{
         );
         former::$config['gateway'] = 'usercp';
         former::create($form);
-        echo former::layout();
+        echo former::layout("#former_".$form['id']);
 	}
     public static function forms_list($vars){
     }

@@ -5,6 +5,7 @@
  * @license http://www.idreamsoft.com iDreamSoft
  * @author coolmoo <idreamsoft@qq.com>
  */
+
 class formsApp {
     public $methods = array('iCMS','save');
     public function do_iCMS(){
@@ -24,11 +25,21 @@ class formsApp {
             $ret   = $formsAdmincp->do_savedata(false);
             $forms = $formsAdmincp->form;
             iPHP::set_cookie('token_time','',-31536000);
-            iUI::success($forms['config']['success']);
+            $array = array('code'=>1,'msg'=>$forms['config']['success']);
         }else{
-            iUI::alert('提交出错!');
+            $array = array('code'=>0,'msg'=>'提交出错!');
+        }
+        if(iPHP::is_ajax()){
+            echo json_encode($array);
+        }else{
+            if ($array['code']){
+                iUI::success($array['msg']);
+            }else{
+                iUI::alert($array['msg']);
+            }
         }
     }
+
     public function forms($formid,$tpl = true){
         $forms = forms::get($formid);
 
@@ -44,6 +55,8 @@ class formsApp {
         $forms['pic']    = filesApp::get_pic($forms['pic']);
         $forms['time']   = time();
         $forms['token']  = authcode($formid.'#'.$forms['time'],'decode');
+        $forms['layout_id']  = "former_".$forms['id'];
+
         iPHP::set_cookie('token_time', $forms['time'], 600);
 
         if ($tpl) {

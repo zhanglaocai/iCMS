@@ -21,14 +21,19 @@ class former {
     public static $callback   = array();
     public static $variable   = array();
     public static $template   = array(
-        'class'=>array(
-            'group'  => 'input-group',
-            'input'  => 'form-control',
-            'label'  => 'input-group-addon',
-            'label2' => 'input-group-addon',
-            'help'   => 'help-inline'
+        'widget'=>array(
+            'text' => 'form-control',
         ),
-        'main'=>'
+        'class'=>array(
+            'group'    => 'input-group',
+            'input'    => 'form-control',
+            'label'    => 'input-group-addon',
+            'label2'   => 'input-group-addon',
+            'help'     => 'help-inline',
+            'radio'    => 'form-control',
+            'checkbox' => 'form-control',
+        ),
+        'group'=>'
             <div class="{{class_group}} {{class}}">
                 {{label}}
                 {{input}}
@@ -37,10 +42,12 @@ class former {
             {{help}}
             {{script}}
         ',
-        'input'  => '{{content}}',
-        'help'   => '<span class="{{class_help}}">{{content}}</span>',
-        'label'  => '<span class="{{class_label}}">{{content}}</span>',
-        'label2' => '<span class="{{class_label2}}">{{content}}</span>',
+        'input'    => '{{content}}',
+        'label'    => '<span class="{{class_label}}">{{content}}</span>',
+        'label2'   => '<span class="{{class_label2}}">{{content}}</span>',
+        'help'     => '<span class="{{class_help}}">{{content}}</span>',
+        'radio'    => '<span class="{{class_radio}}">{{content}}</span>',
+        'checkbox' => '<span class="{{class_checkbox}}">{{content}}</span>',
     );
     /**
      * [创建表单表单]
@@ -91,11 +98,13 @@ class former {
         return $widget;
     }
 
-    public static function render($app,$rs) {
+    public static function render($app,$rs=null) {
         $fields = self::fields($app['fields'],true);
-        foreach ($fields as $key => $value) {
-          self::html($value,$rs[$value['name']],$key);
-          self::validate($value);
+        foreach ($fields as $fkey => $field) {
+            $value = $rs[$field['name']];
+            $rs===null && $value = null;
+            self::html($field,$value,$fkey);
+            self::validate($field);
         }
     }
     public static function html($field,$value=null,$fkey=null) {
@@ -109,12 +118,14 @@ class former {
             $default = $field['default'];
 
             list($type,$_type) = explode(':', $field['type']);
-            isset($value) OR $value = $default;
-            if(!isset($value)){
-                if(in_array($field['field'], array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
-                    $value ='0';
-                }else{
-                    $value ='';
+            if($value!==null){
+                isset($value) OR $value = $default;
+                if(!isset($value)){
+                    if(in_array($field['field'], array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
+                        $value ='0';
+                    }else{
+                        $value ='';
+                    }
                 }
             }
 
@@ -126,7 +137,8 @@ class former {
             $attr['id']   = self::$prefix.'_'.$id.'';
             $attr['name'] = self::$prefix.'['.$name.']';
             $field['holder'] && $attr['placeholder'] = $field['holder'];
-            self::$template['class']['input'] && $attr['class'].= ' '.self::$template['class']['input'];
+            self::$template['class']['input'] && $attr['class'].=' '.self::$template['class']['input'];
+
             $input = self::widget('input',$attr);
             $input->val($value);
 
@@ -252,14 +264,10 @@ class former {
                 case 'switch':
                 case 'radio':
                 case 'checkbox':
-                    // $span = self::widget('span',array('class'=>'add-on'));
                     if($type=='checkbox'){
-                        $attr['name']     = $attr['name'].'[]';
-                        // $attr['multiple'] = 'true';
+                        $attr['name'] = $attr['name'].'[]';
                     }
                     if($field['option']){
-                        $attr['class'] = $type;
-                        // $form_group  .=' input-append';
                         $optionArray = explode(";", $field['option']);
                         $option = '';
                         foreach ($optionArray as $optk => $val) {
@@ -271,16 +279,19 @@ class former {
                                 $attr2['value'] = $opt_value;
                                 $attr2['class'].= ' '.$attr2['id'];
                                 $attr2['id'].='_'.$optk;
-                                $option.= self::widget('label',array('for'=>$attr2['id']))->html($opt_text);
-                                $option.= self::widget('input',$attr2);
+                                $option.= self::widget('label',array('for'=>$attr2['id'],'class'=>$type.'-inline'))->html($opt_text);
+                                $_input = self::widget('input',$attr2);
+                                if(self::$template['class']['input']){
+                                    $_input->removeClass(self::$template['class']['input']);
+                                }
+                                $option.= $_input;
                             }
                         }
-                        $input = self::display($option,'label');
+                        $input = self::display($option,$type);
                     }else{
-                        $input->attr('class',$type);
-                        $input = self::display($input,'label');
-                        // $input = $span->html($input);
+                        $input = self::display($input,$type);
                     }
+
                     $value===null OR $script= self::script('iCMS.FORMER.checked(".'.$attr['id'].'","'.$value.'");',true);
 
                     if($type=='switch'){
@@ -292,7 +303,7 @@ class former {
                 case 'multi_category':
                 case 'category':
                     unset($attr['type']);
-                    $attr['data-placeholder']= '== 请选择所属'.$field['label'].' ==';
+                    $attr['data-placeholder']= '请选择所属'.$field['label'].'...';
                     if(strpos($type,'multi')!==false){
                         $attr['name']     = $attr['name'].'[]';
                         $attr['multiple'] = 'true';
@@ -306,20 +317,27 @@ class former {
                 break;
                 case 'multiple':
                 case 'select':
-                    $attr['class'] = $field['class'];
+                    // $attr['class'] = $field['class'];
+                    $attr['data-placeholder']= '请选择'.$field['label'].'...';
                     if(strpos($type,'multi')!==false){
                         unset($attr['type']);
                         $attr['multiple'] = 'true';
                         $attr['name']     = $attr['name'].'[]';
+                        $attr['data-placeholder']= '请选择'.$field['label'].'(可多选)...';
                         $_input = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
                     }
-                    $input = self::widget('select',$attr)->addClass('chosen-select');
+                    $input  = self::widget('select',$attr)->addClass('chosen-select');
+                    $option = '';
+                    if(self::$config['gateway']=='admincp'){
+                        $option.='<option value=""></option>';
+                    }
                     if($field['option']){
                         $optionArray = explode(";", $field['option']);
                         foreach ($optionArray as $ok => $val) {
                             $val = trim($val,"\r\n");
                             if($val){
                                 list($opt_text,$opt_value) = explode("=", $val);
+                                $opt_value===null && $opt_value = $opt_text;
                                 $option.='<option value="'.$opt_value.'">'.$opt_text.' ['.$name.'="'.$opt_value.'"]</option>';
                             }
                         }
@@ -356,7 +374,7 @@ class former {
         }
         self::$html[$id]= $div;
     }
-    public static function display($html,$key="main") {
+    public static function display($html,$key="group") {
         $output = $html;
         if(self::$template[$key]){
             $output = self::template_class(self::$template[$key]);
@@ -690,7 +708,9 @@ class former {
             $pieces[]= '<script type="text/javascript">';
             $pieces[]= '$(function(){';
             if(self::$validate){
-                defined('APP_FORMID') && $id = '#'.APP_FORMID;
+                if($is===null && defined('APP_FORMID')){
+                    $id = '#'.APP_FORMID;
+                }
                 $pieces[]= '$("'.$id.'").'.$func.'(function(){';
                 $pieces[]= self::$validate;
                 $pieces[]= '});';
