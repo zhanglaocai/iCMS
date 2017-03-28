@@ -16,7 +16,7 @@ admincp::head();
 .editormd-form input[type=text], .editormd-form input[type=number]{color: #999 !important;border:1px solid #ddd;}
 .editormd-dialog-container .editormd-btn, .editormd-dialog-container button, .editormd-dialog-container input[type=submit], .editormd-dialog-footer .editormd-btn, .editormd-dialog-footer button, .editormd-dialog-footer input[type=submit], .editormd-form .editormd-btn, .editormd-form button, .editormd-form input[type=submit]{padding: 1px 2px;}
 </style>
-<script type="text/javascript" charset="utf-8" src="./app/admincp/ui/editor.md/editormd.js"></script>
+<script type="text/javascript" charset="utf-8" src="./app/admincp/ui/editor.md/editormd.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.editormd.js"></script>
 <script type="text/javascript">
 $(function(){

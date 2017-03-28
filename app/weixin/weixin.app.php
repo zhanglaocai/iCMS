@@ -19,6 +19,7 @@ class weixinApp {
     public $FromUserName = null;
     public $ToUserName   = null;
     public $encrypt_type = null;
+    public $XML = null;
     public function __construct($config=null) {
         $config===null && $config = iCMS::$config['weixin'];
         weixin::$config = $config;
@@ -60,16 +61,11 @@ class weixinApp {
                 exit($errCode . "\n");
             }
         }
-        $xml = weixin::input($input);
-        if (is_object($xml)){
-			$FromUserName = $this->FromUserName = $xml->FromUserName;
-			$ToUserName   = $this->ToUserName   = $xml->ToUserName;
-			$content      = trim($xml->Content);
-			$msgType      = $xml->MsgType;
-			$event        = $xml->Event;
-			$eventKey     = $xml->EventKey;
-
-            $this->api_log($xml);
+        $this->XML = weixin::input($input);
+        if (is_object($this->XML)){
+            $msgType = $this->XML->MsgType;
+            $event   = $this->XML->Event;
+            $this->api_log();
 
             //接收信息类型
             // if($msgType=="text"){ //text 文符串
@@ -92,15 +88,15 @@ class weixinApp {
             //
             //接收信息类型
             if($msgType=="event"){//事件
-                iPHP::callback(array($this,'event_'.strtolower($event)),array($xml));
+                iPHP::callback(array($this,'event_'.strtolower($event)),array($this->XML));
             }else{
-                iPHP::callback(array($this,'msg_'.strtolower($msgType)),array($xml));
+                iPHP::callback(array($this,'msg_'.strtolower($msgType)),array($this->XML));
             }
             self::DEBUG();
             //查找空白事件
-            $this->get_event('null','keyword','eq');
+            $this->get_event('null','keyword','eq',true);
             //默认回复
-            $this->send('对不起，没找到相关内容');
+            $this->send('对不起，没找到相关内容[1]');
         }
         self::DEBUG();
     }
@@ -133,29 +129,25 @@ class weixinApp {
      */
     public function event_click($xml){
         $eventkey = $xml->EventKey;
-        $rs = $this->get(array(
-            'eventype' =>'click',
-            'eventkey' =>$eventkey,
-        ),'msg');
-        $rs['msg'] && $this->send($rs['msg']);
+        $this->get_event($xml->EventKey,'click',null);
     }
     /**
      * [关注]
      */
     public function event_subscribe(){
-        $rs = $this->get(array(
+        $event = $this->get(array(
             'eventype'=>'subscribe'
-        ),'msg');
-        $rs['msg'] && $this->send($rs['msg']);
+        ));
+        $event && $this->send($event);
     }
     /**
      * [取消关注]
      */
     public function event_unsubscribe(){
-        $msg = $this->get(array(
+        $event = $this->get(array(
             'eventype'=>'unsubscribe'
-        ),'msg');
-        $msg && $this->send($msg);
+        ));
+        $event && $this->send($event);
     }
     /**
      * [关键词]
@@ -171,25 +163,28 @@ class weixinApp {
             $site_host = str_replace('http://', '', iCMS_URL);
             $this->send($site_name.' ('.$site_host.') '.$site_desc."\n回复:".$site_key.' 将会收到我们最新为您准备的信息');
         }
-        // iView::assign('weixin',$data);
-        // iView::render("iCMS://weixin.api.htm");
     }
-    public function get_event($eventkey=null,$eventype='keyword',$operator=null){
-        $rs = $this->get(array(
-            'operator' =>'eq', //完全匹配模式
+    public function get_event($eventkey=null,$eventype='keyword',$operator='eq',$ret=null){
+        $where = array(
+            // 'operator' =>'eq', //完全匹配模式
             'eventype' =>$eventype,
             'eventkey' =>$eventkey,
-        ),'msg');
-        $rs['msg'] && $this->send($rs['msg']);
-        if($operator=='eq'){
+        );
+        $operator && $where['operator'] = $operator;
+        $event = $this->get($where);
+        // var_dump($event);
+        $event && $this->send($event);
+
+        if($ret){
             return;
         }
         //所有关键词
         $event = iDB::all("
-            SELECT `msg`,`operator`,`eventkey`
+            SELECT `msg`,`operator`,`eventkey`,`msgtype`
             FROM `#iCMS@__weixin_event`
             WHERE `eventype`='".$eventype."'
             AND `operator`!='eq'
+            AND `status` = '1'
             ORDER BY `id` DESC
         ");
 
@@ -197,42 +192,55 @@ class weixinApp {
             $value['msg'] = $this->msg_decode($value['msg']);
             if($value['operator']=='in'){
                 if (stripos($eventkey, $value['eventkey']) !== false) {
-                    $this->send($value['msg']);
+                    $this->send($value);
                 }
             }
             if($value['operator']=='re'){
                 $value['eventkey'] = str_replace('@', '\@', $value['eventkey']);
                 if (preg_match('@'.$value['eventkey'].'@is',$eventkey)) {
-                    $this->send($value['msg']);
+                    $this->send($value);
                 }
             }
         }
     }
-    public function get($vars,$field="*",$orderby='id DESC'){
-        $sql = iSQL::where($vars,false);
-        $sql.= 'order by '.$orderby;
-        $row = iDB::row("SELECT {$field} FROM `#iCMS@__weixin_event` where {$sql}",ARRAY_A);
-        $row['msg'] = $this->msg_decode($row['msg']);
+    public function get($vars=array(),$field="*",$orderby='id DESC'){
+        $_vars = array('status'=>'1');
+        $sql = iSQL::where(array_merge($_vars,(array)$vars));
+        $sql.= ' order by '.$orderby;
+        $row = iDB::row("
+            SELECT {$field}
+            FROM `#iCMS@__weixin_event`
+            WHERE {$sql} ",ARRAY_A);
+        // echo iDB::$last_query;
+        if($row){
+            $row['msg'] = $this->msg_decode($row['msg']);
+        }
         return $row;
     }
 
-    public function send($content=null){
-        weixin::msg_xml($content,$this->FromUserName,$this->ToUserName);
+    public function send($event){
+        // var_dump($event);
+        if(is_array($event) &&isset($event['msgtype']) && $event['msgtype']=='tpl'){
+            iView::assign('weixin',self::object2array($this->XML));
+            iView::render($event['msg']['Tpl']);
+            exit;
+        }
+        weixin::msg_xml($event['msg'],$this->XML->FromUserName,$this->XML->ToUserName);
         exit;
     }
     public function msg_decode($msg=null){
         $msg && $msg = json_decode($msg,true);
         return $msg;
     }
-    public function api_log($xml){
+    public function api_log(){
         $data = array(
-            'ToUserName'   => $xml->ToUserName,
-            'FromUserName' => $xml->FromUserName,
-            'CreateTime'   => $xml->CreateTime,
-            'content'      => $xml->Content,
+            'ToUserName'   => $this->XML->ToUserName,
+            'FromUserName' => $this->XML->FromUserName,
+            'CreateTime'   => $this->XML->CreateTime,
+            'content'      => $this->XML->Content,
             'dayline'      => get_date(null,'Y-m-d H:i:s'),
         );
-        $array  = self::object2array($xml);
+        $array  = self::object2array($this->XML);
         unset($array['ToUserName'],$array['FromUserName'],$array['CreateTime']);
         $data['content'] = json_encode($array);
         iDB::insert('weixin_api_log',$data);
