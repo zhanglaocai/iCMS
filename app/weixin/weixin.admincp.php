@@ -12,18 +12,11 @@ defined('iPHP') OR exit('What are you doing?');
 class weixinAdmincp{
     public function __construct() {
         $this->appid  = iCMS_APP_WEIXIN;
-        $this->config = iCMS::$config[admincp::$APP_NAME];
-
+        $this->config = configAdmincp::get($this->appid,admincp::$APP_NAME);
         $this->config['component']==="1" && weixin::$component = true;
         weixin::$config = $this->config;
     }
     public function do_config(){
-        // weixin::init();
-        // // $a = weixin::mediaList('news');
-        // $a = weixin::qrcode_create('GwKA9BTkSixf_nsyg1jROoJtBv8ey59xP3bALbwYS7E');
-        // var_dump($a);
-
-        // exit;
         configAdmincp::app($this->appid);
     }
     public function do_save_config(){
@@ -44,9 +37,6 @@ class weixinAdmincp{
      */
     public function do_rsync_menu(){
         weixin::init();
-        // $a = weixin::mediaList('image');
-        // print_r($a);
-        // exit;
         $response = weixin::setMenu();
         if(empty($response->errcode)){
             iUI::success('同步成功');
@@ -75,15 +65,22 @@ class weixinAdmincp{
         '&url='.urlencode(iCMS::$config['router']['public']);
         iPHP::redirect($url);
     }
+    public function do_media(){
+        weixin::init();
+        $from     = $_GET['from'];
+        $type     = $_GET['type'];
+        $callback = $_GET['callback'];
+        $target   = $_GET['target'];
+
+        $rs   = weixin::mediaList($type);
+        $navbar = false;
+        include admincp::view("weixin.media");
+    }
     /**
      * [事件管理]
      * @return [type] [description]
      */
     public function do_event(){
-        weixin::init();
-        $a = weixin::mediaList('news');
-var_dump($a);
-exit;
         $sql = " where ";
         switch($doType){ //status:[0:草稿][1:正常][2:回收]
             case 'inbox'://草稿
@@ -110,6 +107,7 @@ exit;
         $rs     = iDB::all("SELECT * FROM `#iCMS@__weixin_event` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         // var_dump(iDB::$last_query);
         $_count = count($rs);
+
         include admincp::view("weixin.event");
     }
     /**
@@ -120,9 +118,9 @@ exit;
         $id = (int)$_GET['id'];
         if($id) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__weixin_event` WHERE `id`='$id' LIMIT 1;",ARRAY_A);
-            if(strpos($rs['msg'],'a:') !== FALSE){
-              $rs['msg'] = unserialize($rs['msg']);
-            }
+            // if($rs['msgtype']!='text'){
+            //   $rs['msg'] = json_decode($rs['msg'],true);
+            // }
         }
         include admincp::view("weixin.event.add");
     }
@@ -139,7 +137,7 @@ exit;
         $operator = $_POST['operator'];
         $msgtype  = $_POST['msgtype'];
         $msg      = $_POST['msg'];
-        $msg      = $_POST['status'];
+        $status   = $_POST['status'];
 
         $eventype OR iUI::alert("请选择事件类型");
         $name OR iUI::alert("请填写事件名称");
@@ -149,11 +147,11 @@ exit;
         }
         $msgtype OR iUI::alert("请选择回复消息的类型");
         $msg OR iUI::alert("请填写回复内容");
-        if($msgtype!='text'){
-            $msg = json_encode($msg);
-        }
-        $fields = array('pid', 'name', 'eventype', 'eventkey', 'msgtype', 'operator', 'msg', 'addtime', 'status');
-        $data   = compact ($fields);
+
+        $msg     = addslashes(json_encode($msg));
+        $addtime = time();
+        $fields  = array('pid', 'name', 'eventype', 'eventkey', 'msgtype', 'operator', 'msg', 'addtime', 'status');
+        $data    = compact ($fields);
         if(empty($id)) {
             iDB::value("SELECT `id` FROM `#iCMS@__weixin_event` where `eventkey` ='$eventkey'") && iUI::alert('该事件已经存在!');
             iDB::insert('weixin_event',$data);
@@ -165,20 +163,22 @@ exit;
     }
     public function menu_get_type($type,$out='value'){
       $type_map = array(
-        'click'              =>'key',
-        'view'               =>'url',
-        'scancode_push'      =>'key',
-        'scancode_waitmsg'   =>'key',
-        'pic_sysphoto'       =>'key',
-        'pic_photo_or_album' =>'key',
-        'pic_weixin'         =>'key',
-        'location_select'    =>'key',
-        'media_id'           =>'media_id',
-        'view_limited'       =>'media_id'
+        'click'              =>array('key','点击事件'),
+        'view'               =>array('url','跳转URL'),
+        'miniprogram'        =>array('url','小程序'),
+        'scancode_push'      =>array('key','扫码推事件'),
+        'scancode_waitmsg'   =>array('key','扫码带提示'),
+        'pic_sysphoto'       =>array('key','系统拍照发图'),
+        'pic_photo_or_album' =>array('key','拍照或者相册发图'),
+        'pic_weixin'         =>array('key','微信相册发图器'),
+        'location_select'    =>array('key','地理位置选择器'),
+        'media_id'           =>array('media_id','素材(第三方)'),
+        'view_limited'       =>array('media_id','图文(第三方)')
       );
+
       if($out=='value'){
         empty($type) && $type='click';
-        return $type_map[$type];
+        return $type_map[$type][0];
       }
       if($out=='opt'){
         $option = '';
@@ -187,7 +187,7 @@ exit;
           if($type==$key){
             $seltext =' selected="selected"';
           }
-          $option.='<option value="'.$key.'"'.$seltext.'>'.$key.'</option>';
+          $option.='<option value="'.$key.'"'.$seltext.'>'.$value[1].'</option>';
         }
         return $option;
       }
@@ -201,15 +201,29 @@ exit;
             $this->menu_get_type($a['type'],'opt').
           '</select>'.
           '<span class="add-on">名称</span>'.
-          '<input type="text" name="wx_button['.$key.'][sub_button]['.$i.'][name]" value="'.$a['name'].'">'.
+          '<input type="text" class="span2" name="wx_button['.$key.'][sub_button]['.$i.'][name]" value="'.$a['name'].'">'.
           '<span class="button_key">'.
             '<span class="add-on">'.strtoupper($keyname).'</span>'.
-            '<input type="text" name="wx_button['.$key.'][sub_button]['.$i.']['.$keyname.']" value="'.$a[$keyname].'">'.
-          '</span>'.
+            '<input type="text" name="wx_button['.$key.'][sub_button]['.$i.']['.$keyname.']" value="'.$a[$keyname].'">';
+      if($a['appid']){
+        $html.= '<span class="add-on">APPID</span>'.
+                '<input type="text" name="wx_button['.$key.'][sub_button]['.$i.'][appid]" value="'.$a['appid'].'">';
+      }
+      if($a['pagepath']){
+        $html.= '<span class="add-on">PAGEPATH</span>'.
+                '<input type="text" name="wx_button['.$key.'][sub_button]['.$i.'][pagepath]" value="'.$a['pagepath'].'">';
+      }
+
+      $html.= '</span>'.
           '<a href="javascript:void(0);" class="btn wx_del_sub_button"><i class="fa fa-del"></i>删除</a>'.
         '</div>'.
       '</li>';
       return $html;
+    }
+    public static function modal_btn($title='',$target='MediaId',$type='news',$callback='media',$do='media',$from='modal'){
+        $href   = APP_URI."&do={$do}&type={$type}&from={$from}&target={$target}&callback={$callback}";
+        $_title = $title.'文件';
+        return '<a href="'.$href.'" class="btn media_modal" data-toggle="modal" title="选择'.$_title.'"><i class="fa fa-search"></i> 选择</a>';
     }
     public function do_save(){
         iUI::success('更新完成');

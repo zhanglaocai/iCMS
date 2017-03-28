@@ -50,6 +50,23 @@ $(function(){
         name = name.replace('[media_id]','[key]');
         var text = 'KEY';
         switch (this.value) {
+          case 'miniprogram':
+            $('.add-on',button_key).text('URL');
+            name = name.replace('[key]','[url]');
+            $('input',button_key).attr('name',name);
+
+            var appid    = $('input',button_key).clone();
+            var pagepath = $('input',button_key).clone();
+            appid.attr('name',name.replace('[url]','[appid]'));
+            pagepath.attr('name',name.replace('[url]','[pagepath]'));
+
+            var program = $('<span class="miniprogram">');
+            program.append('<span class="add-on">APPID</span>');
+            program.append(appid);
+            program.append('<span class="add-on">PAGEPATH</span>');
+            program.append(pagepath);
+            $('input',button_key).after(program);
+          break;
           case 'view':
             text = 'URL';
             name = name.replace('[key]','[url]');
@@ -59,10 +76,13 @@ $(function(){
             text = 'media_id';
             name = name.replace('[key]','[media_id]');
           break;
-
         }
-        $('.add-on',button_key).text(text);
-        $('input',button_key).attr('name',name);
+        if(this.value!='miniprogram'){
+          $('.add-on',button_key).text(text);
+          $(".miniprogram",button_key).remove();
+          $('input',button_key).attr('name',name);
+        }
+
     });
 });
 </script>
@@ -93,11 +113,12 @@ $(function(){
                     <select name="wx_button[<?php echo $i;?>][type]">
                       <?php echo $this->menu_get_type($type,'opt');?>
                     </select>
-                  <span class="add-on">名称</span><input type="text" name="wx_button[<?php echo $i;?>][name]" value="<?php echo $menuArray[$i]['name'];?>">
+                  <span class="add-on">名称</span>
+                  <input type="text" class="span2" name="wx_button[<?php echo $i;?>][name]" value="<?php echo $menuArray[$i]['name'];?>">
                   <span class="button_key <?php if($menuArray[$i]['sub_button']){ echo 'hide'; }?>">
-                    <span class="add-on"><?php echo strtoupper($keyname);?></span><input type="text" name="wx_button[<?php echo $i;?>][<?php echo $keyname;?>]" value="<?php echo $menuArray[$i][$keyname];?>">
+                    <span class="add-on"><?php echo strtoupper($keyname);?></span>
+                    <input type="text" name="wx_button[<?php echo $i;?>][<?php echo $keyname;?>]" value="<?php echo $menuArray[$i][$keyname];?>">
                   </span>
-
                   <a href="javascript:void(0);" subkey="<?php echo $i;?>" class="btn addsub"/><i class="fa fa-plus"></i> 子菜单</a>
                 </div>
                 <ul class="sub_button sub_button_<?php echo $i;?>">

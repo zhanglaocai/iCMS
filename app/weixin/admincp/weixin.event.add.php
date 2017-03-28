@@ -9,6 +9,8 @@ admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
+  var msgArray = <?php echo $rs['msg']?$rs['msg']:'null'; ?>;
+
   $("#eventype").bind('chosen:updated change',function(event) {
     eventype_change (this);
   });
@@ -17,6 +19,8 @@ $(function(){
   });
   function eventype_change (a) {
     var data_type = $('option:selected',a).parent().attr('data-type');
+    var select = $('option:selected',a).val();
+    var text = $('option:selected',a).text();
     $("#operator_input").hide();
     if(data_type=="keyword"){
       $("#eventkey_input .add-on").text('关键词');
@@ -25,8 +29,9 @@ $(function(){
     }else if(data_type=="system"){
       $("#eventkey_input .help-inline").text('关键词');
       $("#eventkey_input .help-inline").text('此类型事件可不添写');
+      $("#name").val(text);
+      $("#eventkey").val(select);
     }else{
-      var select = $('option:selected',a).val();
       if(select=='view'){
         $("#eventkey_input .add-on").text('跳转URL');
         $("#eventkey_input .help-inline").text('设置跳转URL');
@@ -36,13 +41,43 @@ $(function(){
       }
     }
   }
+  function msg(msgArray,keyArray,name) {
+    $.each(msgArray, function(index, value) {
+        if(typeof(value)==='object'){
+          keyArray.push('['+index+']');
+          msg(value,keyArray,name);
+          keyArray = [];
+        }else if(typeof(value)==='string'){
+          var key  = keyArray.join('')+'['+index+']';
+          if(name){
+            var kname = '[name="msg['+name+']'+key+'"]';
+          }else{
+            var kname = '[name="msg'+key+'"]';
+          }
+          console.log(kname);
+          $(kname).val(value);
+        }
+    });
+    // console.log(keyArray);
+  }
   function msgtype_change (a) {
     var select = $('option:selected',a).val();
     var clone = $('#msg-'+select).clone(true).show();
     $('#msg').html(clone);
     if(select=='news'){
       $('#msg').html('<a name="additem" class="btn btn-inverse">添加一条</a>');
-      articles_item();
+      if(msgArray){
+        $.each(msgArray['Articles'], function(index, value) {
+          articles_item();
+        });
+        msg(msgArray['Articles'],[],'Articles');
+      }else{
+        articles_item();
+      }
+    }else{
+        if(msgArray){
+          msg(msgArray,[]);
+        }
     }
   }
   $("#msg").on("click",'a[name="additem"]',function(event) {
@@ -91,17 +126,32 @@ function articles_item(){
   var length = $('#msg .articles_item').length+1;
   var clone  = $('#msg-news .articles_item').clone(true);
   var dkey   = $(".articles_item:last",'#msg').attr('data-key');
-  var key    = 0;
   if(length>10){
     iCMS.alert("图文信息最多只能添加10条");
     return false;
   }
   if(typeof dkey=="undefined"){
+    key = 0;
   }else{
     key = parseInt(dkey)+1;
   }
   var html = clone[0].outerHTML.replace(/\{KEY\}/g,key);
   $('#msg').append(html);
+}
+function modal_media (e,a) {
+  if(!e) return;
+  if(!a.checked) return;
+
+  $('#'+e,$('#msg')).val(a.value);
+  return 'off';
+}
+function modal_tplfile(e,a){
+  if(!e) return;
+  if(!a.checked) return;
+
+  var val = a.value.replace(iCMS.config.DEFTPL+'/', "{iTPL}/");
+  $('#'+e,$('#msg')).val(val);
+  return 'off';
 }
 </script>
 <div class="iCMS-container">
@@ -125,7 +175,7 @@ function articles_item(){
           <div class="input-prepend">
             <span class="add-on">状态</span>
             <select name="status" id="status" class="chosen-select span3">
-              <option value="0">正常[status='1']</option>
+              <option value="1">正常[status='1']</option>
               <option value="0">草稿[status='0']</option>
             </select>
           </div>
@@ -141,11 +191,11 @@ function articles_item(){
                 <option value='click'>点击事件</option>
                 <option value='view'>跳转链接</option>
                 <option value='scancode_push'>扫码推事件</option>
-                <option value='scancode_waitmsg'>扫码推事件且弹出“消息接收中”提示框</option>
-                <option value='pic_sysphoto'>弹出系统拍照发图</option>
-                <option value='pic_photo_or_album'>弹出拍照或者相册发图</option>
-                <option value='pic_weixin'>弹出微信相册发图器</option>
-                <option value='location_select'>弹出地理位置选择器</option>
+                <option value='scancode_waitmsg'>扫码带提示</option>
+                <option value='pic_sysphoto'>系统拍照发图</option>
+                <option value='pic_photo_or_album'>拍照或者相册发图</option>
+                <option value='pic_weixin'>微信相册发图器</option>
+                <option value='location_select'>地理位置选择器</option>
               </optgroup>
               <optgroup label="系统事件" data-type="system">
                 <option value='subscribe'>关注</option>
@@ -192,11 +242,11 @@ function articles_item(){
               <option value='video'>视频消息</option>
               <option value='music'>音乐消息</option>
               <option value='news'>图文消息</option>
+              <option value='tpl'>调用模板</option>
             </select>
           </div>
           <div class="clearfloat mb10"></div>
-          <div id="msg">
-          </div>
+          <div id="msg"></div>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
@@ -208,28 +258,31 @@ function articles_item(){
 <div style="display:none;" id="msg-text">
   <div class="input-prepend">
     <span class="add-on">消息内容</span>
-    <textarea name="msg" id="msg" class="span6" style="height: 150px;"></textarea>
+    <textarea name="msg[Text]" id="msg_Text" class="span6" style="height: 150px;"></textarea>
   </div>
   <span class="help-inline">回复的消息内容（换行：在content中能够换行，微信客户端就支持换行显示）</span>
 </div>
 <div style="display:none;" id="msg-image">
-  <div class="input-prepend">
+  <div class="input-prepend input-append">
     <span class="add-on">MediaId</span>
     <input type="text" name="msg[Image][MediaId]" class="span6" id="msg_Image_MediaId" value=""/>
+    <?php echo self::modal_btn('素材','msg_Image_MediaId','image');?>
   </div>
   <span class="help-inline">通过上传多媒体文件，得到的id。</span>
 </div>
 <div style="display:none;" id="msg-voice">
-  <div class="input-prepend">
+  <div class="input-prepend input-append">
     <span class="add-on">MediaId</span>
     <input type="text" name="msg[Voice][MediaId]" class="span6" id="msg_Voice_MediaId" value=""/>
+    <?php echo self::modal_btn('素材','msg_Voice_MediaId','voice');?>
   </div>
   <span class="help-inline">通过上传多媒体文件，得到的id。</span>
 </div>
 <div style="display:none;" id="msg-video">
-  <div class="input-prepend">
+  <div class="input-prepend input-append">
     <span class="add-on">MediaId</span>
     <input type="text" name="msg[Video][MediaId]" class="span6" id="msg_Video_MediaId" value=""/>
+    <?php echo self::modal_btn('素材','msg_Video_MediaId','video');?>
   </div>
   <span class="help-inline">通过上传多媒体文件，得到的id。</span>
   <div class="clearfloat mt10"></div>
@@ -260,9 +313,9 @@ function articles_item(){
   <div class="clearfloat mt10"></div>
   <div class="input-prepend">
     <span class="add-on">音乐链接</span>
-    <input type="text" name="msg[Music][MusicURL]" class="span6" id="msg_Music_MusicURL" value=""/>
+    <input type="text" name="msg[Music][MusicUrl]" class="span6" id="msg_Music_MusicUrl" value=""/>
   </div>
-  <span class="help-inline">音乐描述</span>
+  <span class="help-inline">音乐链接</span>
   <div class="clearfloat mt10"></div>
   <div class="input-prepend">
     <span class="add-on">高质量</span>
@@ -270,9 +323,10 @@ function articles_item(){
   </div>
   <span class="help-inline">高质量音乐链接，WIFI环境优先使用该链接播放音乐</span>
   <div class="clearfloat mt10"></div>
-  <div class="input-prepend">
+  <div class="input-prepend input-append">
     <span class="add-on">缩略图</span>
     <input type="text" name="msg[Music][ThumbMediaId]" class="span6" id="msg_Music_ThumbMediaId" value=""/>
+    <?php echo self::modal_btn('素材','msg_Music_ThumbMediaId','voice');?>
   </div>
   <span class="help-inline">缩略图的媒体id，通过上传多媒体文件，得到的id</span>
 </div>
@@ -305,5 +359,12 @@ function articles_item(){
     <div class="clearfloat mt10"></div>
     <a name="delitem" class="btn btn-danger">删除</a>
   </div>
+</div>
+<div style="display:none;" id="msg-tpl">
+  <div class="input-prepend input-append"> <span class="add-on">API模板</span>
+    <input type="text" name="msg[Tpl]" class="span3" id="msg_Tpl" />
+    <?php echo filesAdmincp::modal_btn('模板','msg_Tpl','file','tplfile');?>
+  </div>
+  <span class="help-inline">可在模板中调用各应用数据</span>
 </div>
 <?php admincp::foot();?>

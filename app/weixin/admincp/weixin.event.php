@@ -9,19 +9,6 @@ admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
-	<?php if(isset($_GET['pid']) && $_GET['pid']!='-1'){  ?>
-	$("#pid").val("<?php echo (int)$_GET['pid'] ; ?>").trigger("chosen:updated");
-	<?php } if($_GET['cid']){  ?>
-	$("#cid").val("<?php echo $_GET['cid'] ; ?>").trigger("chosen:updated");
-	<?php } if($_GET['st']){ ?>
-	$("#st").val("<?php echo $_GET['st'] ; ?>").trigger("chosen:updated");
-	<?php } if($_GET['orderby']){ ?>
-	$("#orderby").val("<?php echo $_GET['orderby'] ; ?>");
-	<?php } if($_GET['sub']=="on"){ ?>
-	iCMS.checked('#sub');
-	<?php } if($_GET['nopic']=="on"){ ?>
-  iCMS.checked('#nopic');
-	<?php } ?>
 	$("#<?php echo APP_FORMID;?>").batch();
 });
 </script>
@@ -57,9 +44,6 @@ hr { border-bottom:none; margin:4px 0px; }
         <input type="checkbox" class="checkAll" data-target="#<?php echo APP_BOXID;?>" />
       </span>
       <h5>事件列表</h5>
-      <span class="fr mt5 mr10">
-          <button class="btn btn-mini btn-success" type="button" id="import"><i class="fa fa-send"></i> 批理导入标签</button>
-      </span>
     </div>
     <div class="widget-content nopadding">
       <form action="<?php echo APP_FURI; ?>&do=batch" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
@@ -67,32 +51,31 @@ hr { border-bottom:none; margin:4px 0px; }
           <thead>
             <tr>
               <th><i class="fa fa-arrows-v"></i></th>
-              <th>排序</th>
-              <th class="span6">标题</th>
-              <th>版块</th>
-              <th>编辑</th>
-              <th>日期</th>
+              <th style="width:60px;">事件ID</th>
+              <th>事件名</th>
+              <th>事件类型</th>
+              <th>事件</th>
+              <th>回复类型</th>
+              <th class="span2">添加时间</th>
               <th>操作</th>
             </tr>
           </thead>
           <tbody>
-            <?php for($i=0;$i<$_count;$i++){
-              // $C = $this->category[$rs[$i]['cid']];
+            <?php
+            for($i=0;$i<$_count;$i++){
+              // $msg = json_decode($rs[$i]['msg'],true);
             ?>
             <tr id="tr<?php echo $rs[$i]['id'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id'] ; ?>" /></td>
-              <td class="sortnum"><input type="text" name="sortnum[<?php echo $rs[$i]['id'] ; ?>]" value="<?php echo $rs[$i]['sortnum'] ; ?>"/></td>
-              <td>
-                <?php if($rs[$i]['haspic'])echo '<img src="./app/admincp/ui/image.gif" align="absmiddle">'?>
-                <a href="<?php echo $rs[$i]['url']; ?>" class="noneline" target="_blank"><?php echo $rs[$i]['title'] ; ?></a>
-                </td>
-              <td><a href="<?php echo APP_DOURI; ?>&cid=<?php echo $rs[$i]['cid'] ; ?><?php echo $uri ; ?>"><?php echo $C['name'] ; ?></a></td>
-              <td><a href="<?php echo APP_DOURI; ?>&userid=<?php echo $rs[$i]['userid'] ; ?><?php echo $uri ; ?>"><?php echo $rs[$i]['editor'] ; ?></a></td>
+              <td><?php echo $rs[$i]['id'] ; ?></a></td>
+              <td><?php echo $rs[$i]['name'] ; ?></a></td>
+              <td><?php echo $rs[$i]['eventype'] ; ?></a></td>
+              <td><?php echo $rs[$i]['eventkey'] ; ?></a></td>
+              <td><?php echo $rs[$i]['msgtype'] ; ?></a></td>
               <td><?php echo get_date($rs[$i]['addtime'],'Y-m-d H:i');?></td>
-              <td>
-                <a href="<?php echo $rs[$i]['url']; ?>" class="btn btn-small" target="_blank"><i class="fa fa-eye"></i> 查看</a>
+              <td style="text-align: right;">
                 <a href="<?php echo APP_URI; ?>&do=event_add&id=<?php echo $rs[$i]['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $rs[$i]['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small" title='移动此推送到回收站' /><i class="fa fa-trash-o"></i> 删除</a></td>
+                <a href="<?php echo APP_URI; ?>&do=event_del&id=<?php echo $rs[$i]['id'] ; ?>" target="iPHP_FRAME" class="del btn btn-small" title='移动此推送到回收站' /><i class="fa fa-trash-o"></i> 删除</a></td>
             </tr>
             <?php }  ?>
           </tbody>

@@ -55,11 +55,9 @@ class weixin {
     }
     public static function url($uri,$query=null){
         $url = self::$API_URL.'/'.$uri.'?access_token='.self::$accessToken;
-        if(self::$component){
-            $url.= '&appid='.self::$appId;
-        }
+        self::$component && $url.= '&appid='.self::$appId;
         $query && $url.= '&'.http_build_query((array)$query);
-        self::$debug && var_dump($url);
+        // self::$debug && var_dump($url);
         return $url;
     }
     public static function setMenu($param=null){
@@ -107,7 +105,7 @@ class weixin {
      * [mediaList 获取素材列表]
      * @param  integer $offset [从全部素材的该偏移位置开始返回，0表示从第一个素材 返回]
      * @param  integer $count  [返回素材的数量，取值在1到20之间]
-     * @param  string  $type   [素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）]
+     * @param  string  $type   [素材的类型，图片(image)、视频(video)、语音 (voice)、图文(news)]
      * @return [array]  [永久图文消息素材列表]
      */
     public static function mediaList($type='news',$offset=0,$count=20){
@@ -117,12 +115,12 @@ class weixin {
             'offset' => $offset,
             'count'  => $count,
         );
-        $cache_name = 'weixin/media_list';
+        $cache_name = 'weixin/media_'.$type.'_list_'.$offset.'_'.$count;
         $post_data  = json_encode($param);
         $response   = iCache::get($cache_name);
         if(empty($response)){
             $response  = self::http($url,$post_data);
-            iCache::set($cache_name,$response,30);
+            iCache::set($cache_name,$response,300);
         }
 // print_r($response);
         if($response->errcode){
@@ -135,16 +133,24 @@ class weixin {
             $items = array();
             foreach ($response->item as $key => $value) {
                 $items[$key]['media_id']    = $value->media_id;
+                $items[$key]['name']        = $value->name;
+                $items[$key]['url']         = $value->url;
                 $items[$key]['update_time'] = $value->update_time;
-                // $items[$key]['content']     = self::media_item($value->content->news_item);
-                // foreach ($value->content->news_item as $key2 => $value2) {
-                //     $items[$key]['content'][$key2] = (array)$value2;
-                // }
+                if(isset($value->content->news_item)){
+                    $items[$key]['content'] = self::media_item($value->content->news_item);
+                }
             }
             $media_list_array['items']  = $items;
             return $media_list_array;
         }
         return $response;
+    }
+    public static function media_item($itemArray){
+        $items = array();
+        if($itemArray)foreach ($itemArray as $k => $v) {
+            $items[$k] = (array)$v;
+        }
+        return $items;
     }
     public static function qrcode_create($info) {
         $param =  array(
@@ -164,7 +170,6 @@ class weixin {
         return $response;
     }
 
-
     public static function http($url, $POSTFIELDS=null) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -180,7 +185,7 @@ class weixin {
         }
 
         $response = curl_exec ($ch);
-        self::$debug && var_dump($response);
+        // self::$debug && var_dump($response);
         curl_close ($ch);
 
         if(empty($response)){
@@ -188,16 +193,44 @@ class weixin {
         }
         return json_decode($response);
     }
-    public static function msg_xml($text,$FromUserName,$ToUserName){
+    public static function msg_xml($content,$FromUserName,$ToUserName){
         $CreateTime = time();
-        echo "<xml>
-        <ToUserName><![CDATA[".$FromUserName."]]></ToUserName>
-        <FromUserName><![CDATA[".$ToUserName."]]></FromUserName>
-        <CreateTime>".$CreateTime."</CreateTime>
-        <MsgType><![CDATA[text]]></MsgType>
-        <Content><![CDATA[".$text."]]></Content>
-        <FuncFlag>0</FuncFlag>
-        </xml>";
+        echo "<xml>";
+        echo "<ToUserName><![CDATA[".$FromUserName."]]></ToUserName>";
+        echo "<FromUserName><![CDATA[".$ToUserName."]]></FromUserName>";
+        echo "<CreateTime>".$CreateTime."</CreateTime>";
+        if(is_array($content)){
+            foreach ($content as $key => $value) {
+                if($key=='Articles'){
+                    echo "<MsgType><![CDATA[news]]></MsgType>";
+                    echo "<ArticleCount>".count($value)."</ArticleCount>";
+                    echo "<Articles>";
+                    foreach ($value as $kk => $vv) {
+                        echo "<item>";
+                        foreach ($vv['item'] as $k => $v) {
+                            echo "<{$k}><![CDATA[".$v."]]></{$k}>";
+                        }
+                        echo "</item>";
+                    }
+                    echo "</Articles>";
+                }else{
+                    echo "<MsgType><![CDATA[".strtolower($key)."]]></MsgType>";
+                    if(is_array($value)){
+                        echo "<{$key}>";
+                        foreach ($value as $k => $v) {
+                            echo "<{$k}><![CDATA[".$v."]]></{$k}>";
+                        }
+                        echo "</{$key}>";
+                    }else{
+                        echo "<Content><![CDATA[".$value."]]></Content>";
+                    }
+                }
+            }
+        }else{
+            echo "<MsgType><![CDATA[text]]></MsgType>";
+            echo "<Content><![CDATA[".$content."]]></Content>";
+        }
+        echo "</xml>";
         exit;
     }
     public static  function checkSignature(){
@@ -223,8 +256,8 @@ class weixin {
             return false;
         }
     }
-    public static  function input(){
-        $input = file_get_contents("php://input");
+    public static  function input($input=null){
+        $input===null && $input = file_get_contents("php://input");
         if ($input){
             return simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
         }else{
