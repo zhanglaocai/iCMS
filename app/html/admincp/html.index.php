@@ -23,7 +23,8 @@ admincp::head();
         <div id="html-add" class="tab-content">
           <div class="input-prepend input-append"> <span class="add-on">主页模板</span>
             <input type="text" name="indexTPL" class="span3" id="indexTPL" value="<?php echo iCMS::$config['template']['index']['tpl'] ; ?>"/>
-            <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=indexTPL" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
+            <?php echo filesAdmincp::modal_btn('模板','indexTPL');?>
+          </div>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"> <span class="add-on">文 件 名</span>
             <input type="text" name="indexName" class="span3" id="indexName" value="<?php echo iCMS::$config['template']['index']['name'] ; ?>"/>

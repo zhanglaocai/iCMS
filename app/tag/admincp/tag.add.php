@@ -144,7 +144,8 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">标签模板</span>
               <input type="text" name="tpl" class="span3" id="tpl" value="<?php echo $rs['tpl'] ; ?>"/>
-            <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=tpl" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
+              <?php echo filesAdmincp::modal_btn('模板','tpl');?>
+          </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">标签权重</span>
               <input type="text" name="weight" class="span3" id="weight" value="<?php echo $rs['weight']?$rs['weight']:time() ; ?>"/>

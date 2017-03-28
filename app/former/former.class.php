@@ -165,7 +165,7 @@ class former {
                     $input->attr('type','text');
                     $click ='file';
                     $type=='tpldir' && $click = 'dir';
-                    $modal = filesAdmincp::modal_btn($name,$click,$attr['id']);
+                    $modal = filesAdmincp::modal_btn($name,$attr['id'],$click);
                     $input.= $modal;
                 break;
                 case 'txt_prop':

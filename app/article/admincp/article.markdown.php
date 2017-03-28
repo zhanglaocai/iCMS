@@ -473,7 +473,8 @@ function _modal_dialog(cancel_text){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">模板</span>
               <input type="text" name="tpl" class="span6" id="tpl" value="<?php echo $rs['tpl'] ; ?>"/>
-              <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=tpl" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
+              <?php echo filesAdmincp::modal_btn('模板','tpl');?>
+            </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">自定链接</span>
               <input type="text" name="clink" class="span6" id="clink" value="<?php echo $rs['clink'] ; ?>"/>

@@ -231,7 +231,8 @@ $(function(){
   <div id="tplBatch">
     <div class="input-prepend input-append"> <span class="add-on">标签模板</span>
       <input type="text" name="mtpl" class="span2" id="mtpl" value=""/>
-    <a href="<?php echo __ADMINCP__; ?>=files&do=seltpl&from=modal&click=file&target=mtpl" class="btn" data-toggle="modal" title="选择模板文件"><i class="fa fa-search"></i> 选择</a> </div>
+      <?php echo filesAdmincp::modal_btn('模板','mtpl');?>
+    </div>
   </div>
 </div>
 <div id="import_wrap" style="display:none;">
