@@ -20,14 +20,16 @@ admincp::head();
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.editormd.js"></script>
 <script type="text/javascript">
 $(function(){
-  iCMS.editor.create();
   $("#title").focus();
-	$(".iCMS-editor-page").change(function(){
-		$(".iCMS-editor").hide();
-		$("#editor-"+this.value).show();
-    iCMS.editor.create(this.value).focus();
-		$(".iCMS-editor-page").val(this.value).trigger("chosen:updated");
+
+  iCMS.editor.create('editor-body-1');
+	$(".editor-page").change(function(){
+		$(".editor-container").hide();
+		$("#editor-wrap-"+this.value).show();
+    iCMS.editor.create('editor-body-'+this.value).focus();
+		$(".editor-page").val(this.value).trigger("chosen:updated");
 	});
+
   iCMS.select('pid',"<?php echo $rs['pid']?trim($rs['pid']):0 ; ?>");
   iCMS.select('cid',"<?php echo $rs['cid']; ?>");
   iCMS.select('scid',"<?php echo trim($rs['scid']);?>");
@@ -40,7 +42,6 @@ $(function(){
     }
   })
 
-
   $('#ischapter').click(function(){
     var checkedStatus = $(this).prop("checked"),chapter = $("input[name=chapter]").val();
     subtitleToggle (checkedStatus);
@@ -48,7 +49,7 @@ $(function(){
       return confirm('您之前添加过其它章节!确定要取消章节模式?');
     }
   })
-	$("#iCMS-article").submit(function(){
+	$("#<?php echo APP_FORMID;?>").submit(function(){
     var cid = $("#cid option:selected").val();
 		if(cid=="0"){
       $("#cid").focus();
@@ -61,12 +62,12 @@ $(function(){
 			return false;
 		}
 		if($("#url").val()==''){
-			var n=$(".iCMS-editor-page:eq(0) option:first").val(),ed = iCMS.editor.get(n);
+			var n=$(".editor-page:eq(0) option:first").val(),ed = iCMS.editor.get('editor-body-'+n);
 			if(!ed.hasContents()){
         ed.focus();
 				iCMS.alert("第"+n+"页内容不能为空!");
-				$('#editor-'+n).show();
-				$(".iCMS-editor-page").val(n).trigger("chosen:updated");
+				$('#editor-wrap-'+n).show();
+				$(".editor-page").val(n).trigger("chosen:updated");
 				return false;
 			}
 		}
@@ -76,15 +77,15 @@ $(function(){
     //   return false;
     // }
 	});
-
 });
+
 function mergeEditorPage(){
   return;
   var html = [];
-  $(".iCMS-editor").each(function(n,a){
-    var id = a.id,eid = id.replace('editor-','');
+  $(".editor-container").each(function(n,a){
+    var eid = a.id.replace('editor-wrap-','editor-body-');
     if(iCMS.editor.container[eid]){
-        iCMS.editor.container[eid].remove();
+        iCMS.editor.container[eid].destroy();
     }
     var content = $("textarea",this).val();
     content && html.push(content);
@@ -93,24 +94,23 @@ function mergeEditorPage(){
     }
   });
 
-  $(".iCMS-editor").show();
+  $(".editor-container").show();
   var allHtml = html.join('#--iCMS.PageBreak--#'),
-  ned = $("textarea",".iCMS-editor"),
-  neid = ned.attr('id').replace('iCMS-editor-','');
+  ned = $("textarea",".editor-container"),
+  neid = $(".editor-container").attr('id').replace('editor-wrap-','editor-body-');
   ned.val(allHtml).css({
     width: "100%",
     height: '500px'
   });
-  // iCMS.editor.create(neid).focus();
-  $(".iCMS-editor-page").html('<option value="1">第 1 页</option>').val(1).trigger("chosen:updated");
-
+  iCMS.editor.create(neid).focus();
+  $(".editor-page").html('<option value="1">第 1 页</option>').val(1).trigger("chosen:updated");
 }
 function addEditorPage(){
 	//iCMSed.cleanup(iCMSed.id);
-	var index	= parseInt($(".iCMS-editor-page option:last").val()),n	= index+1;
-	$(".iCMS-editor").hide();
-	$("#editor-"+index).after(
-    '<div class="iCMS-editor" id="editor-'+n+'">'+
+	var index	= parseInt($(".editor-page option:last").val()),n	= index+1;
+	$(".editor-container").hide();
+	$("#editor-wrap-"+index).after(
+    '<div id="editor-wrap-'+n+'" class="editor-container">'+
       '<div class="chapter-title hide">'+
         '<input name="adid[]" id="adid-'+n+'" type="hidden" value="" />'+
         '<div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>'+
@@ -118,11 +118,11 @@ function addEditorPage(){
         '</div>'+
         '<div class="clearfloat mb10"></div>'+
       '</div>'+
-      '<textarea type="text/plain" id="iCMS-editor-'+n+'" name="body[]"></textarea>'+
+      '<textarea type="text/plain" id="editor-body-'+n+'" name="body[]"></textarea>'+
     '</div>'
   );
-	$(".iCMS-editor-page").append('<option value="'+n+'">第 '+n+' 页</option>').val(n).trigger("chosen:updated");
-	iCMS.editor.create(n).focus();
+	$(".editor-page").append('<option value="'+n+'">第 '+n+' 页</option>').val(n).trigger("chosen:updated");
+	iCMS.editor.create('editor-body-'+n).focus();
   var checkedStatus = $('#ischapter').prop("checked");
   subtitleToggle (checkedStatus);
 }
@@ -140,9 +140,9 @@ function subtitleToggle (checkedStatus) {
   }
 }
 function delEditorPage(){
-	if($(".iCMS-editor-page:eq(0) option").length==1) return;
+	if($(".editor-page:eq(0) option").length==1) return;
 
-	var s = $(".iCMS-editor-page option:selected"),
+	var s = $(".editor-page option:selected"),
     i = s.val(),p = s.prev(),n = s.next();
 	if(n.length){
     var index = n.val();
@@ -150,22 +150,19 @@ function delEditorPage(){
     var index = p.val();
 	}
   s.remove();
-  iCMS.editor.destroy(i);
-  //iCMS.editor.get(i).destroy();
-  $("#iCMS-editor-"+i).remove();
-  $("#editor-"+i).remove();
+  iCMS.editor.destroy('editor-body-'+i);
+  $("#editor-body-"+i).remove();
+  $("#editor-wrap-"+i).remove();
 
-	$(".iCMS-editor-page").val(index).trigger("chosen:updated");
-	$("#editor-"+index).show();
-	iCMS.editor.id	= index;
-	iCMS.editor.get(index).focus();
+	$(".editor-page").val(index).trigger("chosen:updated");
+	$("#editor-wrap-"+index).show();
+	iCMS.editor.eid	= 'editor-body-'+index;
+	iCMS.editor.get('editor-body-'+index).focus();
 }
 function modal_picture(el,a){
   if(!a.checked) return;
-
-  var i       = iCMS.editor.id,
-  ed          = iCMS.editor.get(i),
-  url         = $(a).attr("url");
+  var ed = iCMS.editor.get(),
+  url = $(a).attr("url");
   // if(a.checked){
   var imgObj  = {};
   imgObj.src  = url;
@@ -190,7 +187,7 @@ function modal_sweditor(el){
   fileType = e.attr('_fileType'),
   original = e.attr('_original'),
   url      = e.attr('url'),
-  ed       = iCMS.editor.get(iCMS.editor.id);
+  ed       = iCMS.editor.get();
 
   if(url=='undefined') return;
   var html = '<p class="attachment icon_'+fileType+'"><a href="'+url+'" target="_blank">' + original + '</a></p>';
@@ -223,10 +220,11 @@ function _modal_dialog(cancel_text){
       <ul class="nav nav-tabs" id="article-add-tab">
         <li class="active"><a href="#article-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
         <li><a href="#article-add-publish" data-toggle="tab"><i class="fa fa-rocket"></i> 发布设置</a></li>
+        <li><a href="#article-add-custom" data-toggle="tab"><i class="fa fa-wrench"></i> 自定义</a></li>
       </ul>
     </div>
-    <div class="widget-content nopadding iCMS-article-add">
-      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-article" target="iPHP_FRAME">
+    <div class="widget-content nopadding">
+      <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
         <input name="_cid" type="hidden" value="<?php echo $rs['cid'] ; ?>" />
         <input name="_scid" type="hidden" value="<?php echo $rs['scid']; ?>" />
         <input name="_tags" type="hidden" value="<?php echo $rs['tags']; ?>" />
@@ -235,7 +233,7 @@ function _modal_dialog(cancel_text){
         <input name="aid" type="hidden" value="<?php echo $this->id ; ?>" />
         <input name="userid" type="hidden" value="<?php echo $rs['userid'] ; ?>" />
         <input name="postype" type="hidden" value="<?php echo $rs['postype'] ; ?>" />
-        <input name="REFERER" type="hidden" value="<?php echo $REFERER ; ?>" />
+        <input name="REFERER" type="hidden" value="<?php echo iPHP_REFERER ; ?>" />
         <input name="chapter" type="hidden" value="<?php echo $rs['chapter']; ?>" />
         <input name="markdown" type="hidden" value="<?php echo self::$config['markdown']; ?>" />
         <div id="article-add" class="tab-content">
@@ -339,16 +337,15 @@ function _modal_dialog(cancel_text){
             <div class="subtitle-box">
               <input name="adid" type="hidden" value="<?php echo $adRs['id']; ?>" />
               <div class="input-prepend "> <span class="add-on">副标题</span>
-                <input type="text" name="subtitle" class="span6" id="subtitle" value="<?php echo $adRs['subtitle'] ; ?>" />
+                  <input type="text" name="subtitle" class="span6" id="subtitle" value="<?php echo $adRs['subtitle'] ; ?>" />
               </div>
-            <div class="clearfloat mb10"></div>
+              <div class="clearfloat mb10"></div>
             </div>
             <?php } ?>
-            <div class="input-prepend input-append">
-              <div class="btn-group">
-                <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
-                <div class="input-prepend"> <span class="add-on"><i class="fa fa-building-o"></i> 内容</span>
-                  <select class="iCMS-editor-page chosen-select">
+              <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
+              <div class="input-prepend">
+                <span class="add-on"><i class="fa fa-building-o"></i> 内容</span>
+                <select class="editor-page chosen-select">
                 <?php
                   $option ='';
                   for($i=0;$i<$bodyCount;$i++){
@@ -357,18 +354,20 @@ function _modal_dialog(cancel_text){
                   }
                   echo $option;
                 ?>
-                  </select>
+                </select>
+              </div>
+              <div class="input-prepend">
+                <div class="btn-group">
+                  <button type="button" class="btn" onclick="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</button>
+                  <button type="button" class="btn" onclick="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</button>
+                  <button type="button" class="btn" onclick="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</button>
+                  <button type="button" class="btn" onclick="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</button>
                 </div>
-                <a class="btn" href="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</a>
-                <a class="btn" href="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</a>
-                <a class="btn" href="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</a>
-                <a class="btn" href="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</a>
               </div>
               <!--div class="btn-group">
-                <a class="btn" href="<?php echo __ADMINCP__; ?>=files&do=multi&from=modal&callback=sweditor" data-toggle="modal" title="批量上传"><i class="fa fa-upload"></i> 批量上传</a>
-                <a class="btn" href="<?php echo __ADMINCP__; ?>=files&do=picture&from=modal&click=file&callback=picture" data-toggle="modal" title="从网站选择图片"><i class="fa fa-picture-o"></i> 从网站选择</a>
+                <button type="button" class="btn" href="<?php echo __ADMINCP__; ?>=files&do=multi&from=modal&callback=sweditor" data-toggle="modal" title="批量上传"><i class="fa fa-upload"></i> 批量上传</button>
+                <button type="button" class="btn" href="<?php echo __ADMINCP__; ?>=files&do=picture&from=modal&click=file&callback=picture" data-toggle="modal" title="从网站选择图片"><i class="fa fa-picture-o"></i> 从网站选择</button>
               </div-->
-            </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append">
               <span class="add-on wauto">
@@ -378,9 +377,9 @@ function _modal_dialog(cancel_text){
               <input name="inbox" type="checkbox" id="inbox" value="1" <?php if($rs['status']=="0")echo 'checked="checked"'  ?>/>
               存为草稿</span>
               <span class="add-on wauto">
-              <input name="remote" type="checkbox" id="remote" value="1" <?php if($this->config['remote']=="1")echo 'checked="checked"'  ?>/>
+              <input name="remote" type="checkbox" id="remote" value="1" <?php if(self::$config['remote']=="1")echo 'checked="checked"'  ?>/>
               下载远程图片</span><span class="add-on wauto">
-              <input name="autopic" type="checkbox" id="autopic" value="1" <?php if($this->config['autopic']=="1")echo 'checked="checked"'  ?>/>
+              <input name="autopic" type="checkbox" id="autopic" value="1" <?php if(self::$config['autopic']=="1")echo 'checked="checked"'  ?>/>
               提取缩略图 </span><span class="add-on wauto">
               <input name="dellink" type="checkbox" id="dellink" value="1"/>
               清除链接 </span>  <span class="add-on wauto">
@@ -396,41 +395,33 @@ function _modal_dialog(cancel_text){
             <?php for($i=0;$i<$bodyCount;$i++){
                 $idNum  = $i+1;
             ?>
-            <div class="chapter-title
-              <?php
-                if(!$rs['chapter']){
-                  echo ' hide';
-                }
-              ?>
-            ">
-              <input name="adid[]" id="adid-<?php echo $idNum;?>"
-                <?php
-                  if(!$rs['chapter']){
-                    echo ' disabled="true"';
-                  }
-                ?>
-              type="hidden" value="<?php echo $adIdArray[$i] ; ?>" />
-              <div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>
+            <div id="editor-wrap-<?php echo $idNum;?>" class="editor-container<?php if($i){ echo ' hide';}?>">
+              <div class="chapter-title <?php if(!$rs['chapter']){ echo ' hide';}?>">
+                <input name="adid[]" id="adid-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> type="hidden" value="<?php echo $adIdArray[$i] ; ?>" />
+                <div class="input-prepend">
+                  <span class="add-on" style="width:60px;">章节标题</span>
                   <input type="text" id="chapter-title-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> name="chaptertitle[]" class="span6" value="<?php echo $cTitArray[$i] ; ?>" />
+                </div>
+                <div class="clearfloat mb10"></div>
               </div>
-              <div class="clearfloat mb10"></div>
-            </div>
-            <div class="iCMS-editor<?php if($i){ echo ' hide';}?>" id="editor-<?php echo $idNum;?>">
-              <textarea type="text/plain" id="iCMS-editor-<?php echo $idNum;?>" name="body[]"><?php echo $bodyArray[$i];?></textarea>
+              <div id="editor-body-<?php echo $idNum;?>">
+                <textarea type="text/plain" name="body[]"><?php echo $bodyArray[$i];?></textarea>
+              </div>
             </div>
             <?php }?>
+
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on"><i class="fa fa-building-o"></i> 内容</span>
-              <select class="iCMS-editor-page chosen-select">
+              <select class="editor-page chosen-select">
               <?php echo $option;?>
               </select>
             </div>
-            <div class="input-prepend input-append">
+            <div class="input-prepend">
               <div class="btn-group">
-                <a class="btn" href="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</a>
-                <a class="btn" href="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</a>
-                <a class="btn" href="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</a>
-                <a class="btn" href="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</a>
+                <button type="button" class="btn" onclick="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</button>
+                <button type="button" class="btn" onclick="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</button>
+                <button type="button" class="btn" onclick="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</button>
+                <button type="button" class="btn" onclick="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</button>
               </div>
             </div>
           </div>
@@ -485,6 +476,9 @@ function _modal_dialog(cancel_text){
                </div><span class="help-inline">不填写请留空!</span>
             <div class="clearfloat mb10"></div>
           </div>
+          <div id="article-add-custom" class="tab-pane hide">
+            <?php echo former::layout();?>
+          </div>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>
@@ -492,5 +486,8 @@ function _modal_dialog(cancel_text){
       </form>
     </div>
   </div>
+</div>
+<div id="category_select" style="display: none;">
+    <input class="form-control input-lg" id="user_category_new" type="text" placeholder="请输入分类名称">
 </div>
 <?php admincp::foot();?>
