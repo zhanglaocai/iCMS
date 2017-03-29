@@ -7,12 +7,11 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
-ini_set('display_errors', 'ON');
-error_reporting(E_ALL & ~E_NOTICE);
-$input = file_get_contents("php://input");
-
-weixinApp::DEBUG($_SERVER['REQUEST_URI'],'input');
-weixinApp::DEBUG($input,'input');
+if(iPHP_DEBUG){
+    $input = file_get_contents("php://input");
+    weixinApp::DEBUG($_SERVER['REQUEST_URI'],'input');
+    weixinApp::DEBUG($input,'input');
+}
 
 class weixinApp {
     public $methods = array('interface');
@@ -26,10 +25,10 @@ class weixinApp {
     }
 
     public function API_interface(){
-        // if(iPHP_DEBUG){
+        if(iPHP_DEBUG){
             ob_start();
             iDB::$show_errors = true;
-        // }
+        }
 
         if ($_GET["api_token"]!=weixin::$config['token']) {
             throw new Exception('TOKEN is error!');
@@ -67,25 +66,6 @@ class weixinApp {
             $event   = $this->XML->Event;
             $this->api_log();
 
-            //接收信息类型
-            // if($msgType=="text"){ //text 文符串
-            //     iPHP::callback(array($this,'msg_text'),array($xml));
-            // }elseif($msgType=="event"){//事件
-            //     iPHP::callback(array($this,'event_'.strtolower($event)),array($xml));
-            // }elseif($msgType=="location"){//发送位置
-            //     iPHP::callback(array($this,'msg_location'),array($xml));
-            // }elseif($msgType=="image"){//直接发送图片或者事件里的图片
-            //     iPHP::callback(array($this,'msg_image'),array($xml));
-            // }elseif($msgType=="voice"){//直接发送语音消息
-            //     iPHP::callback(array($this,'msg_voice'),array($xml));
-            // }elseif($msgType=="video"){//直接发送视频消息
-            //     iPHP::callback(array($this,'msg_video'),array($xml));
-            // }elseif($msgType=="shortvideo"){//小视频消息
-            //     iPHP::callback(array($this,'msg_shortvideo'),array($xml));
-            // }elseif($msgType=="link"){//链接消息
-            //     iPHP::callback(array($this,'msg_link'),array($xml));
-            // }
-            //
             //接收信息类型
             if($msgType=="event"){//事件
                 iPHP::callback(array($this,'event_'.strtolower($event)),array($this->XML));
@@ -246,14 +226,14 @@ class weixinApp {
         iDB::insert('weixin_api_log',$data);
     }
     public static function DEBUG($output=null,$name='debug'){
-    // if(iPHP_DEBUG){
-        if($output===null){
-            $output = ob_get_contents();
-            ob_end_clean();
+        if(iPHP_DEBUG){
+            if($output===null){
+                $output = ob_get_contents();
+                ob_end_clean();
+            }
+            // file_put_contents(iPHP_APP_CACHE.'/weixin.api.'.$name.'.log',$output,FILE_APPEND);
+            iFS::write(iPHP_APP_CACHE.'/weixin.api.'.$name.'.log',$output."\n",1,'ab+');
         }
-        // file_put_contents(iPHP_APP_CACHE.'/weixin.api.'.$name.'.log',$output,FILE_APPEND);
-        iFS::write(iPHP_APP_CACHE.'/weixin.api.'.$name.'.log',$output."\n",1,'ab+');
-    // }
     }
     public static function object2array($object) {
         return @json_decode(@json_encode($object),true);
