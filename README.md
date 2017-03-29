@@ -23,33 +23,72 @@ iCMS 是一套采用 PHP 和 MySQL 构建的高效简洁的内容管理系统,�
 ## 解压缩安装包
 解压缩后你会看到如下的目录结构
 ```
-/iCMS
- ├─app -----------------[应用目录]
- ├─cache ---------------[缓存目录]
- ├─conf ----------------[站点配置目录]
- ├─core ----------------[iCMS核心]
- ├─html ----------------[静态目录]
- ├─install -------------[安装程序]
- ├─iPHP ----------------[iPHP简易框架]
- ├─public --------------[公共资源]
- ├─res -----------------[上传资源]
- ├─template ------------[模板目录]
- │  admincp.php --------[后台管理]
- │  article.php --------[文章]
- │  category.php -------[栏目]
- │  comment.php --------[评论]
- │  config.php ---------[系统配置]
- │  crossdomain.xml ----[flash跨域策略文件]
- │  favicon.ico --------[iCMS图标]
- │  favorite.php -------[收藏]
- │  iCMS.php -----------[iCMS核心文件]
- │  index.php ----------[首页]
- │  LICENSE.md ---------[版本说明]
- │  README.md ----------[相关说明]
- │  robots.txt ---------[Robots协议]
- │  tag.php ------------[标签]
- │  user.php -----------[用户]
- └──────────────
+./iCMS
+├─app
+│  ├─admincp
+│  ├─apps
+│  ├─article
+│  ├─cache
+│  ├─category
+│  ├─comment
+│  ├─config
+│  ├─content
+│  ├─database
+│  ├─editor
+│  ├─favorite
+│  ├─files
+│  ├─filter
+│  ├─former
+│  ├─forms
+│  ├─func
+│  ├─hook
+│  ├─html
+│  ├─index
+│  ├─keywords
+│  ├─links
+│  ├─members
+│  ├─menu
+│  ├─message
+│  ├─patch
+│  ├─plugin
+│  ├─prop
+│  ├─public
+│  ├─search
+│  ├─spider
+│  ├─tag
+│  ├─user
+│  └─weixin
+├─cache
+│  ├─backup
+│  ├─conf
+│  ├─iCMS
+│  └─template
+├─core
+├─install
+├─iPHP
+├─public
+├─res
+├─template
+│  admincp.php
+│  article.php
+│  category.php
+│  comment.php
+│  config.php
+│  crossdomain.xml
+│  favicon.ico
+│  favorite.php
+│  gulpfile.js
+│  iCMS.php
+│  index.php
+│  LICENSE
+│  package.json
+│  README.md
+│  robots.txt
+│  tag.php
+│  TODO.md
+│  UPDATE.md
+└─user.php
+
 ```
 
 ## 上传至服务器WEB目录
