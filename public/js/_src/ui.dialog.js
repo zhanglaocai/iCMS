@@ -1,5 +1,5 @@
 iCMS.define("ui.dialog", function(require) {
-    var artdialog = require("artdialog");
+    var artdialog = iCMS.require("artdialog");
 
     return function(options, callback) {
         var defaults = {

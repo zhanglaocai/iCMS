@@ -98,7 +98,7 @@ iCMS.define("utils",{
                 if (typeof(ret) === "object") {
                     msg = ret.msg || 'error';
                 }
-                var UI = require("ui");
+                var UI = iCMS.require("ui");
                 UI.alert(msg);
             }
         }

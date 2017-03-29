@@ -1,5 +1,5 @@
-iCMS.define("comment", function(require) {
-    var API = require("api"),UI = require("ui"),USER = require("user"),utils = require("utils"),
+iCMS.define("comment", function() {
+    var API = iCMS.require("api"),UI = iCMS.require("ui"),USER = iCMS.require("user"),utils = iCMS.require("utils"),
 
     $COMMENT = {
         seccode:iCMS.CONFIG.COMMENT.seccode,

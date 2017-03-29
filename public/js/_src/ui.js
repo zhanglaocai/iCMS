@@ -1,11 +1,10 @@
 iCMS.define("ui",{
         dialog: function(opts) {
-            var dialog = require("ui.dialog");
+            var dialog = iCMS.require("ui.dialog");
             return dialog(opts);
         },
         alert: function(msg, ok, callback) {
-            var dialog = require("ui.dialog");
-            // require(['dialog'], function(d) {
+            var dialog = iCMS.require("ui.dialog");
                 var opts = ok ? {
                     label: 'success',
                     icon: 'check'
@@ -28,7 +27,7 @@ iCMS.define("ui",{
          * @param  {[type]} b [容器]
          */
         seccode:function(a, b) {
-            var API = require("api"),
+            var API = iCMS.require("api"),
             a = a||'.seccode-img',
             b = b||'body';
             $(a, b).attr('src', API.url('public', '&do=seccode&') + Math.random());

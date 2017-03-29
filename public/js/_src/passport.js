@@ -1,5 +1,5 @@
 iCMS.define("passport", function(require) {
-    var API = require("api");
+    var API = iCMS.require("api");
     return {
         SUCCESS:{},
         FAIL:{},
@@ -10,7 +10,7 @@ iCMS.define("passport", function(require) {
             }, 'json');
         },
         __callback: function(ret, SUCCESS, FAIL) {
-            var utils = require("utils");
+            var utils = iCMS.require("utils");
             utils.callback(ret, SUCCESS, FAIL, this);
         },
         LOGIN: function(param) {

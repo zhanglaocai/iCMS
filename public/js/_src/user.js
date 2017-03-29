@@ -1,6 +1,6 @@
 iCMS.define("user", function(require) {
-    var utils = require("utils"),
-    API = require("api"),UI = require("ui");
+    var utils = iCMS.require("utils"),
+    API = iCMS.require("api"),UI = iCMS.require("ui");
 
     $User = {
         INBOX_URL:iCMS.CONFIG.API+'?app=user&do=manage&pg=inbox',
@@ -33,7 +33,7 @@ iCMS.define("user", function(require) {
             }, 'json');
         },
         AUTH: function() {
-            var cookie = require("cookie");
+            var cookie = iCMS.require("cookie");
             return cookie.get(iCMS.CONFIG.AUTH) ? true : false;
         },
         CHECK:{

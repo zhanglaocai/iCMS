@@ -1,5 +1,5 @@
-iCMS.define("common", function(require) {
-    var API = require("api"),utils = require("utils"),USER = require("user"),UI = require("ui");
+iCMS.define("common", function() {
+    var API = iCMS.require("api"),utils = iCMS.require("utils"),USER = iCMS.require("user"),UI = iCMS.require("ui");
     return {
         __post: function(param,uri,SUCCESS,FAIL) {
             var me = this;
