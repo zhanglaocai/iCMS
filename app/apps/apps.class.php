@@ -136,7 +136,8 @@ class apps {
     public static function get_iurl(){
         $rs = apps::get_array(array('status'=>'1'));
         foreach ((array)$rs as $key => $value) {
-            $array[$value['app']] = apps_mod::iurl($value);
+            $router = apps_mod::iurl($value);
+            $router && $array[$value['app']] = $router;
         }
         return $array;
     }
