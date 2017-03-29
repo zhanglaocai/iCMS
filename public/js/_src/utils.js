@@ -1,4 +1,4 @@
-define("utils",{
+iCMS.define("utils",{
         addcss: function(url, id) {
             url = iCMS.CONFIG.PUBLIC+'/'+url;
             var s = document.createElement("link"), h = document.getElementsByTagName("head")[0];

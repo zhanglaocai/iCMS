@@ -3,7 +3,7 @@
  */
 (function (){
     var paths  = [
-            'require.js',
+            'icms.js',
             'plugin.js',
             'poshytip.js',
             'config.js',
@@ -18,7 +18,7 @@
             'common.js',
             'comment.js',
             'former.js',
-            'icms.js',
+            'init.js',
         ],
         baseURL = './public/js/_src/';
         if(window.location.href.indexOf('/public/')!="-1"){

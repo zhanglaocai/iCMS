@@ -1,4 +1,4 @@
-define("ui",{
+iCMS.define("ui",{
         dialog: function(opts) {
             var dialog = require("ui.dialog");
             return dialog(opts);

@@ -1,4 +1,4 @@
-define("ui.dialog", function(require) {
+iCMS.define("ui.dialog", function(require) {
     var artdialog = require("artdialog");
 
     return function(options, callback) {

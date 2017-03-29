@@ -1,4 +1,4 @@
-define("comment", function(require) {
+iCMS.define("comment", function(require) {
     var API = require("api"),UI = require("ui"),USER = require("user"),utils = require("utils"),
 
     $COMMENT = {

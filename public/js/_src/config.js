@@ -1,4 +1,4 @@
-define("config", {
+iCMS.define("config", {
     API: '/api.php',
     UHOME: '/{uid}/',
     PUBLIC: '/public/',

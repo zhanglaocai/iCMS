@@ -1,4 +1,4 @@
-define("api",{
+iCMS.define("api",{
         url: function(app, _do) {
             return iCMS.CONFIG.API + '?app=' + app + (_do || '');
         },

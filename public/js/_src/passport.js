@@ -1,4 +1,4 @@
-define("passport", function(require) {
+iCMS.define("passport", function(require) {
     var API = require("api");
     return {
         SUCCESS:{},

@@ -1,4 +1,4 @@
-define("user", function(require) {
+iCMS.define("user", function(require) {
     var utils = require("utils"),
     API = require("api"),UI = require("ui");
 

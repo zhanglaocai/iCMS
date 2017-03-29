@@ -1,4 +1,4 @@
-define("common", function(require) {
+iCMS.define("common", function(require) {
     var API = require("api"),utils = require("utils"),USER = require("user"),UI = require("ui");
     return {
         __post: function(param,uri,SUCCESS,FAIL) {

@@ -1,4 +1,4 @@
-define("cookie",{
+iCMS.define("cookie",{
         set: function(cookieName, cookieValue, seconds, path, domain, secure) {
             var expires = new Date();
             expires.setTime(expires.getTime() + seconds);

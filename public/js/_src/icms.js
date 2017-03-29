@@ -1,10 +1,10 @@
 window.iCMS = {
-    version : "6.2.0",
+    version : "7.0.0",
     plugins : {},
     modules : {},
     data : {},
     UI:{},
-    API:require("api"),
+    API:{},
     $:function(i,doc) {
         var doc = doc||document;
         return $('[i=' + i + ']',$(doc));
@@ -13,17 +13,24 @@ window.iCMS = {
         var param = $(a).attr('i').replace(i+':','');
         return param.split(":");
     },
-    init: function(options) {
-        var config      = require("config");
-        iCMS.CONFIG     = $.extend(config,options);
-        iCMS.CONFIG.API = iCMS.CONFIG.PUBLIC + '/api.php';
-        iCMS.UI         = require("ui");
-        iCMS.FORMER     = require("former");
-        iCMS.dialog     = iCMS.UI.dialog;
-        iCMS.alert      = iCMS.UI.alert;
+    require:function (id) {
+        var mod = iCMS.modules[id];
+        var exports = 'exports';
+
+        if (typeof mod === 'object') {
+            return mod;
+        }
+        if (!mod[exports]) {
+            mod[exports] = {};
+            mod[exports] = mod.call(mod[exports], iCMS.require, mod[exports], mod) || mod[exports];
+        }
+        return mod[exports];
+    },
+    define:function (name, fn) {
+        iCMS.modules[name] = fn;
     },
     run:function (id,callback) {
-        var mod = require(id);
+        var mod = iCMS.require(id);
         if (typeof callback === "function") {
             return callback(mod);
         }else{

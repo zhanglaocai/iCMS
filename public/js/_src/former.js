@@ -1,4 +1,4 @@
-define("former",{
+iCMS.define("former",{
      select: function(el, v) {
         var va = v.split(',');
         $("#"+el).val(va).trigger("chosen:updated");

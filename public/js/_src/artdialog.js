@@ -1,4 +1,4 @@
-define("artdialog", function() {
+iCMS.define("artdialog", function() {
     function addcss(url, id) {
         url = iCMS.CONFIG.PUBLIC+'/'+url;
         var s = document.createElement("link"), h = document.getElementsByTagName("head")[0];
