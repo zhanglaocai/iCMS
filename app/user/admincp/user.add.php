@@ -149,9 +149,7 @@ $(function(){
               <input type="text" name="userdata[mobile]" class="span3" id="mobile" value="<?php echo $userdata->mobile ; ?>"/>
             </div>
             <div class="clearfix mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">现有的地址</span>
-              <input type="text" name="userdata[enterprise]" class="span3" id="enterprise" value="<?php echo $userdata->enterprise ; ?>"/>
-              <span class="add-on">街道地址</span>
+            <div class="input-prepend"> <span class="add-on">地址</span>
               <input type="text" name="userdata[address]" class="span3" id="address" value="<?php echo $userdata->address ; ?>"/>
             </div>
             <div class="clearfix mb10"></div>
@@ -236,10 +234,6 @@ $(function(){
             <div class="clearfix mb10"></div>
             <div class="input-prepend"> <span class="add-on">昵称修改次数</span>
               <input type="text" name="userdata[unickEdit]" id="unickEdit" class="span3" value="<?php echo $userdata->unickEdit ; ?>" />
-            </div>
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">自定义封面</span>
-              <input type="text" name="userdata[coverpic]" id="coverpic" class="span3" value="<?php echo $userdata->coverpic ; ?>" />
             </div>
           </div>
           <div id="user-custom" class="tab-pane">

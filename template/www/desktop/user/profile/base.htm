@@ -27,10 +27,10 @@
             </div>
             <div class="form-control">
                 <label class="radio-inline">
-                    <input type="radio" name="gender"  value="0" checked> 女
+                    <input type="radio" name="gender" id="female" value="0" checked> 女
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="gender" value="1"> 男
+                    <input type="radio" name="gender" id="male" value="1"> 男
                 </label>
             </div>
         </div>
@@ -172,7 +172,7 @@
 $(function() {
     initPlace('<!--{$userdata.city}-->', '<!--{$userdata.province}-->');
     <!--{if $me.gender}-->
-    $("[name=gender][value=<!--{$me.gender}-->]").attr("checked", true);
+    $("#<!--{$me.gender}-->[name=gender]").attr("checked", true);
     <!--{/if}-->
     <!--{if $me.setting.inbox.receive}-->
     $(".inbox-receive[value=<!--{$me.setting.inbox.receive}-->]").attr("checked", true);
