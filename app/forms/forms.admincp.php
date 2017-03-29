@@ -347,13 +347,13 @@ class formsAdmincp{
      * [本地安装表单]
      * @return [type] [description]
      */
-    public function do_local_app(){
+    public function do_local_forms(){
       if(strpos($_POST['zipfile'], '..') !== false){
         iUI::alert('What the fuck!!');
       }
-      apps_store::$zipFile  = trim($_POST['zipfile'],"\0\n\r\t\x0B");
-      apps_store::$msg_mode = 'alert';
-      apps_store::install();
+      forms_zip::$zipFile  = trim($_POST['zipfile'],"\0\n\r\t\x0B");
+      forms_zip::$msg_mode = 'alert';
+      forms_zip::install();
       iUI::success('表单安装完成','js:1');
     }
     /**

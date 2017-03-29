@@ -157,7 +157,7 @@ $(function(){
   </div>
 </div>
 <div id="local_app_wrap" style="display:none;">
-  <form action="<?php echo APP_FURI; ?>&do=local_app" method="post" enctype="multipart/form-data" target="iPHP_FRAME">
+  <form action="<?php echo APP_FURI; ?>&do=local_forms" method="post" enctype="multipart/form-data" target="iPHP_FRAME">
     <div class="alert alert-info">
       由于安全限制<br />
       请先把iCMS表单安装包文件(.zip)<br />
@@ -167,7 +167,7 @@ $(function(){
     <div class="input-prepend">
       <span class="add-on">可用安装包</span>
       <select name="zipfile" class="chosen-select span4" data-placeholder="请选择iCMS表单安装包文件(.zip)...">
-        <?php foreach(glob(iPATH."iCMS.APP.*-v*.*.*.zip") as $value){ ?>
+        <?php foreach(glob(iPATH."iCMS.FORMS.*_*.zip") as $value){ ?>
         <option value="<?php echo $value;?>"><?php echo str_replace(iPATH, '', $value);?></option>
         <?php } ?>
       </select>
