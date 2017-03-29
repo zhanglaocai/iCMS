@@ -11,7 +11,7 @@ admincp::head();
 $(function(){
 	iCMS.select('gid',"<?php echo $rs->gid ; ?>");
   iCMS.select('pid',"<?php echo $rs->pid?$rs->pid:0; ?>");
-	iCMS.select('gender',"<?php echo $userdata->gender ; ?>");
+	iCMS.select('gender',"<?php echo $rs->gender ; ?>");
 	iCMS.select('year',"<?php echo $userdata->year ; ?>");
 	iCMS.select('month',"<?php echo $userdata->month ; ?>");
   iCMS.select('day',"<?php echo $userdata->day ; ?>");
