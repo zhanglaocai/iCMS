@@ -61,7 +61,7 @@ $lock_file = iPATH.'cache/install.lock';
 			step:function (a,b) {
 				$("#step"+b).show();
 				$("#step"+a).hide();
-				$('body').animate({
+				$('html,body').animate({
                     scrollTop: 570
                 });
 			},
