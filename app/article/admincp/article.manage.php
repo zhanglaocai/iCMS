@@ -254,7 +254,9 @@ $(function(){
                   <?php } ?>
                   <!-- <a href="<?php echo __ADMINCP__; ?>=chapter&aid=<?php echo $value['id'] ; ?>" class="tip-bottom" title="章节管理" target="_blank"><i class="fa fa-sitemap"></i></a> -->
                   <?php if($value['status']=="1"){ ?>
+                  <?php if(apps::check('push')){ ?>
                   <a href="<?php echo __ADMINCP__; ?>=push&do=add&title=<?php echo $value['title'] ; ?>&pic=<?php echo $value['pic'] ; ?>&url=<?php echo $value['url'] ; ?>" class="tip-bottom" title="推送此文章"><i class="fa fa-thumb-tack"></i></a>
+                  <?php } ?>
                   <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:0" class="tip-bottom" target="iPHP_FRAME" title="转为草稿"><i class="fa fa-inbox"></i></a>
                   <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=pubdate:now" class="tip-bottom" target="iPHP_FRAME" title="更新文章时间"><i class="fa fa-clock-o"></i></a>
                   <?php } ?>

@@ -123,6 +123,14 @@ class apps {
         }
         return $data;
     }
+    public static function check($app){
+        $apps = iCMS::$config['apps'];
+        if(is_numeric($app)){
+            return array_search($app,$apps);
+        }else{
+            return array_key_exists($app, $apps);
+        }
+    }
     public static function get_array($vars,$field="*",$orderby=''){
         $sql = iSQL::where($vars,false);
         $orderby && $sql.= 'order by '.$orderby;
