@@ -45,7 +45,7 @@ $(function() {
             },
             //未登陆事件
             function(f) {
-                console.log(f)
+                // console.log(f)
             }
         );
         //点击退出登陆
