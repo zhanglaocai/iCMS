@@ -683,7 +683,8 @@ CREATE TABLE `icms_weixin_event` (
   `msg` mediumtext NOT NULL COMMENT '消息内容包含格式',
   `addtime` int(10) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `eventkey` (`eventkey`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
