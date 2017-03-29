@@ -105,6 +105,7 @@ iCMS 是一套采用 PHP 和 MySQL 构建的高效简洁的内容管理系统,�
 点击**开始安装**进入下一步。
 
 打开浏览器，在地址栏中输入http://您的网站域名/install/index.php
+
 ![安装界面][5]
 
 ###填写配置信息
@@ -126,5 +127,5 @@ iCMS 是一套采用 PHP 和 MySQL 构建的高效简洁的内容管理系统,�
 [2]: http://www.mysql.com/
 [3]: http://www.postgresql.org/
 [4]: http://sqlite.org/
-[5]: http://www.idreamsoft.com/static/install.jpg
+[5]: http://www.idreamsoft.com/static/install7.jpg
 [6]: http://git-scm.com/book/zh/v1/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git
