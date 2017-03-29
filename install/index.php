@@ -148,7 +148,7 @@ $lock_file = iPATH.'cache/install.lock';
 		<div class="jumbotron masthead">
 			<div class="container">
 				<h1>iCMS <?php echo iCMS_VERSION ;?></h1>
-				<p>简洁、高效、开源的内容管理系统，让网站管理更高效、简单。</p>
+				<p>简洁、高效、开源的内容管理系统，让网站管理更简单。</p>
 				<p>
 					<?php if(file_exists($lock_file)){ ?>
 					<button type="button" class="btn btn-large" disabled>开始安装</button>
@@ -194,7 +194,7 @@ $lock_file = iPATH.'cache/install.lock';
 				<div class="row-fluid">
 					<div class="span4">
 						<img class="marketing-img" src="./img/Development.png">
-						<h2>开源免费</h2>
+						<h2>十年磨一剑,免费且开源。</h2>
 						<p>由艾梦软件历时多年开发，并在实际项目中高效运行。iCMS 项目使用了
 						<a href="http://www.idreamsoft.com/iPHP/" target="_blank">iPHP</a>、
 						<a href="http://github.com/twbs/bootstrap" target="_blank">Bootstrap</a>、
@@ -207,12 +207,12 @@ $lock_file = iPATH.'cache/install.lock';
 					<div class="span4">
 						<img class="marketing-img" src="./img/responsive-design.png">
 						<h2>一套程序、多种设备。</h2>
-						<p>你的网站能在 <a href="http://www.idreamsoft.com" target="_blank">iCMS</a> 的帮助下通过同一套内容管理系统快速、有效适配手机、微信、微信小程序、平板、PC等设备，这一切都是归于 iCMS 多终端适配功能。</p>
+						<p>你的网站能在 <a href="http://www.idreamsoft.com" target="_blank">iCMS</a> 的帮助下通过一套内容管理系统快速、有效适配手机、微信、微信小程序、平板、PC等设备，这一切都是归于 iCMS 多终端适配功能。</p>
 					</div>
 					<div class="span4">
 						<img class="marketing-img" src="./img/Enterprise-Features.jpg">
-						<h2>功能齐全。</h2>
-						<p><a href="http://www.idreamsoft.com" target="_blank">iCMS</a> 提供了网站运营所需的基本功能。也提供了功能强大标签(TAG)系统、自定义应用、自定义表、内容多属性多栏目归属、自定义内链、高负载、整合第三方登陆</p>
+						<h2>功能齐全,可自定义</h2>
+						<p><a href="http://www.idreamsoft.com" target="_blank">iCMS</a> 提供了网站运营所需的基本功能。也提供了功能强大标签(TAG)系统、自定义应用、自定义表单、内容多属性多栏目归属、自定义内链、高负载、整合第三方登陆</p>
 					</div>
 				</div>
 			</div>
@@ -487,7 +487,7 @@ $lock_file = iPATH.'cache/install.lock';
 		<iframe class="hide" id="iCMS_FRAME" name="iCMS_FRAME"></iframe>
 		<footer class="footer">
 			<div class="container">
-				<p>艾梦软件(<a href="http://www.idreamsoft.com" target="_blank">iDreamSoft.com</a>) 版权所有  &copy; 2007-2014</p>
+				<p>艾梦软件(<a href="http://www.idreamsoft.com" target="_blank">iDreamSoft.com</a>) 版权所有  &copy; 2007-2017</p>
 				<p>iCMS 源码受 <a href="https://github.com/idreamsoft/iCMS/blob/master/LICENSE.md" target="_blank">LGPL</a> 开源协议保护</p>
 				<ul class="footer-links">
 					<li><a href="http://www.idreamsoft.com" target="_blank">iCMS</a></li>
