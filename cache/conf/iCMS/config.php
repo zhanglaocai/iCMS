@@ -349,7 +349,6 @@ return array (
     'database' => '32',
     'html' => '33',
     'spider' => '34',
-    'ceshi' => '35',
   ),
   'other' => 
   array (
@@ -592,12 +591,6 @@ return array (
     array (
       'rule' => '0',
       'primary' => '',
-    ),
-    'ceshi' => 
-    array (
-      'rule' => '4',
-      'primary' => 'id',
-      'page' => 'p',
     ),
   ),
 );
