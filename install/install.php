@@ -31,6 +31,7 @@ if($_POST['action']=='install'){
     define('iPHP_DB_PREFIX_TAG','#iCMS@__');
 
 	require iPATH.'iPHP/iPHP.php';//iPHP框架文件
+    require_once iPHP_CORE.'/iUI.class.php';
 
     $router_url     = iSecurity::escapeStr(trim($_POST['ROUTER_URL'],'/'));
     $admin_name     = iSecurity::escapeStr(trim($_POST['ADMIN_NAME']));
