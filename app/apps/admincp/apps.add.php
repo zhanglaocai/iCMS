@@ -26,7 +26,12 @@ $(function(){
       iCMS.alert("应用标识不能为空");
       return false;
     }
-  })
+  });
+  $("#type").change(function(){
+    if(this.value=="3"){
+
+    }
+  });
 })
 </script>
 
@@ -43,9 +48,9 @@ $(function(){
         <?php }?>
         <?php if($rs['config']['iFormer']){?>
           <?php if(!$rs['table']){?>
-          <li><a href="#apps-add-field" data-toggle="tab"><i class="fa fa-cog"></i> 基础字段</a></li>
+          <li id="tab-field"><a href="#apps-add-field" data-toggle="tab"><i class="fa fa-cog"></i> 基础字段</a></li>
           <?php }?>
-          <li><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 自定义字段</a></li>
+          <li id="tab-custom"><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 自定义字段</a></li>
         <?php }?>
       </ul>
     </div>
@@ -112,7 +117,7 @@ $(function(){
             <div class="input-prepend">
               <span class="add-on">应用类型</span>
               <select name="type" id="type" class="chosen-select span3" data-placeholder="请选择应用类型...">
-                <?php echo apps::get_type_select() ; ?>
+                <?php echo apps::get_type_select('0') ; ?>
               </select>
             </div>
             <script>$(function(){iCMS.select('type',"<?php echo $rs['type']; ?>");})</script>
@@ -137,8 +142,8 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
             <?php if($rs['table']){?>
-            <h3 class="title" style="width:450px;">数据表</h3>
-            <table class="table table-bordered bordered" style="width:460px;">
+            <h3 class="title" style="width:620px;">数据表</h3>
+            <table class="table table-bordered bordered" style="width:600px;">
               <thead>
                 <tr>
                   <th style="width:120px;">表名</th>
@@ -150,14 +155,15 @@ $(function(){
               <tbody>
                 <?php foreach ((array)$rs['table'] as $tkey => $tval) {?>
                 <tr>
-                  <td><input type="hidden" name="table[<?php echo $tkey; ?>][0]" value="<?php echo $tval['name'] ; ?>"/> <?php echo $tval['name'] ; ?></td>
-                  <td><input type="hidden" name="table[<?php echo $tkey; ?>][1]" value="<?php echo $tval['primary'] ; ?>"/> <?php echo $tval['primary'] ; ?></td>
-                  <td><input type="hidden" name="table[<?php echo $tkey; ?>][2]" value="<?php echo $tval['union'] ; ?>"/> <?php echo $tval['union'] ; ?></td>
-                  <td><input type="text" name="table[<?php echo $tkey; ?>][3]" class="span2" id="table_<?php echo $tkey; ?>_2" value="<?php echo $tval['label'] ; ?>"/></td>
+                  <td><input type="text" name="table[<?php echo $tkey; ?>][0]" class="span2" id="table_<?php echo $tkey; ?>_0" value="<?php echo $tval['name'] ; ?>"/></td>
+                  <td><input type="text" name="table[<?php echo $tkey; ?>][1]" class="span2" id="table_<?php echo $tkey; ?>_1" value="<?php echo $tval['primary'] ; ?>"/></td>
+                  <td><input type="text" name="table[<?php echo $tkey; ?>][2]" class="span2" id="table_<?php echo $tkey; ?>_2" value="<?php echo $tval['union'] ; ?>"/></td>
+                  <td><input type="text" name="table[<?php echo $tkey; ?>][3]" class="span2" id="table_<?php echo $tkey; ?>_3" value="<?php echo $tval['label'] ; ?>"/></td>
                 </tr>
                 <?php } ?>
               </tbody>
             </table>
+            <span class="help-inline">非二次开发,请勿修改表名</span>
             <?php }else{ ?>
             <input name="table" type="hidden" value="<?php echo $rs['table']; ?>" />
             <?php } ?>

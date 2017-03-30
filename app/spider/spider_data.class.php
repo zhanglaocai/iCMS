@@ -128,7 +128,9 @@ class spider_data {
                 }
             }
             $content = spider_content::crawl($content_html,$data,$rule,$responses);
-
+            if($content === false){
+                continue;
+            }
             unset($content_html);
 
             if (strpos($dname,'ARRAY:')!== false){

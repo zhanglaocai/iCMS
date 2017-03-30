@@ -177,9 +177,15 @@ class apps {
     //     }
     //     return $array;
     // }
-    public static function get_type_select(){
+    public static function get_type_select($not=null){
       $option = '';
       foreach (self::$type_array as $key => $type) {
+        if($not!==null){
+            $notArray = explode(',', $not);
+            if(array_search($key, $notArray)!==false){
+                continue;
+            }
+        }
         $option.='<option value="'.$key.'">'.$type.'[type=\''.$key.'\']</option>';
       }
       $option.= propAdmincp::get("type");

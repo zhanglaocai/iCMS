@@ -53,7 +53,7 @@
 .iFormer-layout .row-fluid { height: 35px; }
 .iFormer-layout .row-fluid div { background-color: #efefef; }
 .iFormer-layout .clearfloat { visibility: hidden; height: 0px; border-left: 0px; border-right: 0px; }
-.iFormer-layout .pagebreak { cursor: move; background-position: 30% center; background-image: url(../.../../../../admincp/ui/ueditor/themes/default/images/pagebreak.gif); background-repeat: no-repeat; clear: both; display: block; width: 100%; border-top: #999999 1px dotted; border-bottom: #999999 1px dotted; border-right: 0px; margin: 5px 0px; border-left: 0px; padding: 0px; height: 5px; _height: 2px; -webkit-user-select: none; }
+.iFormer-layout .pagebreak { cursor: move; background-position: 30% center; background-image: url(../.../../../../app/admincp/ui/ueditor/themes/default/images/pagebreak.gif); background-repeat: no-repeat; clear: both; display: block; width: 100%; border-top: #999999 1px dotted; border-bottom: #999999 1px dotted; border-right: 0px; margin: 5px 0px; border-left: 0px; padding: 0px; height: 5px; _height: 2px; -webkit-user-select: none; }
 .iFormer-layout .pagebreak .action { margin-top: 5px; }
 .iFormer-layout div { cursor: move; }
 .iFormer-layout .add-on .label { margin-right: 5px; }
