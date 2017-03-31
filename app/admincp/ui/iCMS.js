@@ -8,6 +8,9 @@
             DIALOG:[]
         },
         UI:{
+            success: function(msg,callback) {
+                return iCMS.alert(msg,true,callback);
+            },
             alert: function(msg,ok,callback) {
                 return iCMS.alert(msg,ok,callback);
             },
@@ -69,6 +72,9 @@
               trigger: 'manual',
               title:title
             }).tooltip('show');
+        },
+        success: function(msg,callback) {
+            window.top.iCMS.alert(msg,true,callback);
         },
         alert: function(msg,ok,callback) {
             var opts = ok ? {

@@ -20,12 +20,20 @@ $(function(){
 <div class="iCMS-container">
   <div class="widget-box">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-user"></i> </span>
-      <h5 class="brs"><?php echo empty($this->uid)?'添加':'修改' ; ?>管理员</h5>
+      <h5 class="brs">
+        <?php if(admincp::$APP_DO=='profile'){ ?>
+        个人信息
+        <?php }else{?>
+        <?php echo empty($this->uid)?'添加':'修改' ; ?>管理员
+        <?php }?>
+      </h5>
       <ul class="nav nav-tabs" id="members-tab">
         <li class="active"><a href="#members-info" data-toggle="tab"><b>基本信息</b></a></li>
+        <?php if(members::is_superadmin()){ ?>
         <li><a href="#members-mpriv" data-toggle="tab"><b>后台权限</b></a></li>
         <li><a href="#members-apriv" data-toggle="tab"><b>应用权限</b></a></li>
         <li><a href="#members-cpriv" data-toggle="tab"><b>栏目权限</b></a></li>
+        <?php }?>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -145,7 +153,9 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
           </div>
+          <?php if(members::is_superadmin()){ ?>
           <?php include admincp::view("members.priv"); ?>
+          <?php }?>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 提交</button>

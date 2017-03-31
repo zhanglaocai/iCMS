@@ -21,6 +21,10 @@ class admincpApp{
         }
         return $nav;
     }
+    /**
+     * [退出登陆]
+     * @return [type] [description]
+     */
     public function do_logout(){
    	    members::logout();
     	iUI::success('注销成功!','url:'.iPHP_SELF);

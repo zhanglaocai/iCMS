@@ -19,7 +19,7 @@ class filesAdmincp{
         $this->upload_max_filesize = get_cfg_var("upload_max_filesize");
     }
     /**
-     * [上传文件页]
+     * [单文件上传页面]
      * @return [type] [description]
      */
 	public function do_add(){

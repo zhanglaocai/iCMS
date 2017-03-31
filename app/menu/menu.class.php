@@ -8,10 +8,11 @@
 * @licence http://www.idreamsoft.com/license.php
 */
 class menu {
-    public static $menu_array  = array();
-    public static $href_array  = array();
-    public static $callback    = array();
-    public static $url         = null;
+    public static $menu_array = array();
+    public static $href_array = array();
+    public static $callback   = array();
+    public static $url        = null;
+    public static $priv_key   = 0;
 
 	public static function init() {
         // self::get_cache();
@@ -26,8 +27,9 @@ class menu {
             //权限
             $v['priv'] = $v['id']?$v['id']:$v['href'];
             if($v['caption']=="-"){
-                $v['priv'] = $parent.'-'.$level;
+                $v['priv'] = $parent.'-'.self::$priv_key.'-'.$level;
                 ++$level;
+                ++self::$priv_key;
             }
 
             $array[$key] = $v;

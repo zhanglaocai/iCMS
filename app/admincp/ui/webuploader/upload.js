@@ -150,7 +150,18 @@
         uploader.on('ready', function() {
             window.uploader = uploader;
         });
-
+        // uploader.on('uploadSuccess', function(a, b, c) {
+        //     // console.log("uploadSuccess",b)
+        // });
+        // uploader.on('uploadComplete', function(a) {
+        //     console.log("uploadComplete",a)
+        // });
+        uploader.on('uploadAccept', function(b, e, c) {
+            if ( e.code==0 ) {
+                iCMS.UI.alert(e.msg);
+                return false;
+            }
+        });
         // 当有文件添加进来时执行，负责view的创建
         function addFile( file ) {
             var $li = $( '<li id="' + file.id + '">' +
@@ -341,8 +352,9 @@
             } else if ( state === 'confirm' ) {
                 stats = uploader.getStats();
                 if ( stats.uploadFailNum ) {
-                    text = '已成功上传' + stats.successNum+ '张照片至XX相册，'+
-                        stats.uploadFailNum + '张照片上传失败，<a class="retry" href="#">重新上传</a>失败图片或<a class="ignore" href="#">忽略</a>'
+                    text = '已成功上传' + stats.successNum+ '张图片，'+
+                        stats.uploadFailNum + '张图片上传失败，<a class="retry" href="#">重新上传</a>失败图片';
+                        //'或<a class="ignore" href="#">忽略</a>'
                 }
 
             } else {
@@ -411,7 +423,7 @@
                 case 'finish':
                     stats = uploader.getStats();
                     if ( stats.successNum ) {
-                        alert( '上传成功' );
+                        iCMS.UI.success( '上传成功' );
                     } else {
                         // 没有成功的图片，重设
                         state = 'done';
@@ -456,7 +468,6 @@
 
             removeFile( file );
             updateTotalProgress();
-
         };
 
         uploader.on( 'all', function( type ) {

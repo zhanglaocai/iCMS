@@ -36,6 +36,19 @@ class membersAdmincp{
         }
         include admincp::view("members.add");
     }
+    /**
+     * [个人信息]
+     * @return [type] [description]
+     */
+    public function do_profile(){
+        $this->uid = members::$userid;
+        if($this->uid) {
+            $rs = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `uid`='$this->uid' LIMIT 1;");
+            $rs->config = json_decode($rs->config,true);
+            $rs->info   = json_decode($rs->info,true);
+        }
+        include admincp::view("members.add");
+    }
     public function do_iCMS(){
     	if($_GET['job']){
     		$job = new members_job();
@@ -73,10 +86,15 @@ class membersAdmincp{
             $gid = (int)$_POST['gid'];
         }else{
             isset($_POST['gid']) && iUI::alert('您没有权限更改角色');
+            $gid = members::$data->gid;
         }
 
-        $fields = array('gid','gender','username','nickname','realname','info','config');
+        $fields = array('gid','gender','username','nickname','realname','info');
         $data   = compact ($fields);
+
+        if(members::is_superadmin()){
+            $data['config'] = $config;
+        }
         if(empty($uid)) {
             iDB::value("SELECT `uid` FROM `#iCMS@__members` where `username` ='$username' LIMIT 1") && iUI::alert('该账号已经存在');
             $_data = compact(array('password','regtime', 'lastip', 'lastlogintime', 'logintimes', 'post', 'type', 'status'));
@@ -93,7 +111,7 @@ class membersAdmincp{
             $password && iDB::query("UPDATE `#iCMS@__members` SET `password`='$password' WHERE `uid` ='".$uid."'");
             $msg="账号修改完成!";
         }
-        iUI::success($msg,'url:'.APP_URI);
+        iUI::success($msg,'js:1');
     }
     public function do_batch(){
     	$idA	= (array)$_POST['id'];

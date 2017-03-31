@@ -23,7 +23,7 @@ defined('iPHP') OR exit('What are you doing?');
               <li><a href="javascript:;"><?php echo members::$group->name;?></a></li>
               <li class="divider"></li>
               <li><a href="<?php echo __ADMINCP__; ?>=members&do=job"><i class="fa fa-bar-chart-o"></i> 工作统计</a></li>
-              <li><a href="<?php echo __ADMINCP__; ?>=members&do=add&id=<?php echo members::$userid;?>"><i class="fa fa-user"></i> 更改信息</a></li>
+              <li><a href="<?php echo __ADMINCP__; ?>=members&do=profile"><i class="fa fa-user"></i> 个人信息</a></li>
               <?php if(members::is_superadmin()){?>
               <li class="divider"></li>
               <li><a href="<?php echo iPHP_SELF; ?>?do=access_log"><i class="fa fa-bar-chart"></i> 操作记录</a></li>
