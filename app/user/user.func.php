@@ -7,6 +7,9 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 class userFunc{
+    public static function user_cookie($vars=null){
+        return user::get_cookie();
+    }
     public static function user_data($vars=null){
         if($vars['cookie']){
             return user::get_cookie();
