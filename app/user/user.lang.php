@@ -69,6 +69,7 @@ return array(
 		'forbidden'=>'系统已经关闭注册功能！',
 		'interval' =>'同一个IP在{time}时间内只能注册一个账号！',
 		'nickname'=> array(
+			'filter'=>'昵称中包含被系统屏蔽的字符，请重新填写。',
 			'empty'=>'请填写昵称！',
 			'error'=>'昵称只能4~20位，每个中文字算2位字符。',
 			'exist'=>'昵称已经被注册了,请换个再试试。',

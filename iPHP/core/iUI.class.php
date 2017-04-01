@@ -27,7 +27,8 @@ class iUI {
 		list($app, $do, $key, $msg) = $keyArray;
 
 		$fname = $app . '.lang.php';
-		$path = iPHP_APP_CORE . '/lang/' . $fname;
+		$path = iPHP_APP_DIR.'/'.$app.'/'.$fname;
+		$app=="iCMS" && $path = iPHP_APP_CORE.'/'.$fname;
 
 		if (!is_file($path)) {
 			if ($throw) {
