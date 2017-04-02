@@ -706,6 +706,10 @@ class userApp {
 		(cstrlen($nickname) > 20 || cstrlen($nickname) < 4) && iUI::code(0, 'user:register:nickname:error', 'nickname', 'json');
 		user::check($nickname, 'nickname') && iUI::code(0, 'user:register:nickname:exist', 'nickname', 'json');
 
+		$fwd = iPHP::callback(array("filterApp","run"),array(&$nickname),false);
+		$fwd && iUI::alert('user:register:nickname:filter');
+
+
 		trim($_POST['password']) OR iUI::code(0, 'user:password:empty', 'password', 'json');
 		trim($_POST['rstpassword']) OR iUI::code(0, 'user:password:rst_empty', 'rstpassword', 'json');
 		$password == $rstpassword OR iUI::code(0, 'user:password:unequal', 'password', 'json');
