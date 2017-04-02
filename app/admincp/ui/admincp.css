@@ -133,7 +133,8 @@ body{background-color:#EDEDED;color:#000;}
 .iCMS-config .add-on{width:90px;text-align:left;}
 .iCMS-article-add .add-on{width:50px;text-align:center;}
 .editor-page{width:150px;}
-#editor-body{width: 95%;height: 450px;}
+.editor-body{}
+.editor-container{width: 95%!important;}
 .border{padding:5px;border:1px solid #ccc;border:1px solid rgba(0,0,0,0.15);-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;}
 .tar{text-align:right!important;}
 .tal{text-align:left!important;}

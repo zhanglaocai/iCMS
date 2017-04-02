@@ -243,7 +243,7 @@ class former {
                 case 'editor':
                     if(self::$config['gateway']=='admincp'){
                         $label         = null;
-                        $attr['class'] = '';
+                        $attr['class'] = 'editor-body';
                         $attr['type']  = 'text/plain';
                         $attr['id']    = 'editor-body-'.$attr['id'];
                         $form_group    = 'editor-container';

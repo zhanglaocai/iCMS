@@ -19,18 +19,17 @@ class appsAdmincp{
     public function do_add(){
         $this->id && $rs = apps::get($this->id);
         if(empty($rs)){
-          $rs['config']['iFormer'] = '1';
-          $rs['apptype'] = "2";
           $rs['type']    = "2";
           $rs['status']  = "1";
-          $base_fields   = apps_mod::base_fields_array();
-
-          $rs['fields'] = get_php_file(iPHP_APP_DIR.'/apps/json/fields.php');
-          $rs['fields'] = json_decode($rs['fields'],true);
-
-          $rs['menu']   = get_php_file(iPHP_APP_DIR.'/apps/json/menu.php');
-          $rs['menu']   = json_decode($rs['menu'],true);
-
+          if($rs['type']=="2"){
+            $rs['apptype'] = "2";
+            $rs['config']['iFormer'] = '1';
+            $base_fields  = apps_mod::base_fields_array();
+            $rs['fields'] = get_php_file(iPHP_APP_DIR.'/apps/json/fields.php');
+            $rs['fields'] = json_decode($rs['fields'],true);
+            $rs['menu']   = get_php_file(iPHP_APP_DIR.'/apps/json/menu.php');
+            $rs['menu']   = json_decode($rs['menu'],true);
+          }
         }else{
           if($rs['apptype']=="2"){
             $rs['config']['iFormer'] = '1';
@@ -109,45 +108,48 @@ class appsAdmincp{
         // $array['menu'] = str_replace(array("\r","\n"),'',$array['menu']);
 
         if(empty($id)) {
-
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iUI::alert('该应用已经存在!');
             apps_db::check_table(iDB::table($array['app'])) && iUI::alert('['.$array['app'].']数据表已经存在!');
-
             // iDB::$print_sql = true;
+            if($type=='3'){
+              $array['fields'] = '';
+              $msg = "应用信息添加完成!";
+            }else if($type=='2'){
+              if($addons_fieldata){
+                $addons_name = apps_mod::data_table_name($array['app']);
+                apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
+              }
 
-            if($addons_fieldata){
-              $addons_name = apps_mod::data_table_name($array['app']);
-              apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
+              //创建基本表
+              $tb = apps_db::create_table(
+                $array['app'],
+                apps_mod::get_field_array($fieldata),//获取字段数组
+                apps_mod::base_fields_index()//索引
+              );
+              array_push ($tb,null,$array['name']);
+              $table_array = array();
+              $table_array[$array['app']]= $tb;//记录基本表名
+
+              //有MEDIUMTEXT类型字段就创建xxx_data附加表
+              if($addons_fieldata){
+                $union_id = apps_mod::data_union_id($array['app']);//关联基本表id
+                $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段
+                $addons_fieldata = $addons_base_fields+$addons_fieldata;
+                $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
+                // //添加到字段数据里
+                // $field_array = array_merge($field_array,$addons_base_fields);
+                // $array['fields'] = addslashes(json_encode($field_array));
+              }
+              $array['table']  = $table_array;
+              $array['config'] = $config_array;
+
+              $config_array['template'] = apps_mod::template($array,'array');
+              $config_array['iurl']   = apps_mod::iurl($array);
+
+              $array['table'] = addslashes(json_encode($table_array));
+              $array['config'] = addslashes(json_encode($config_array));
+              $msg = "应用创建完成!";
             }
-
-            //创建基本表
-            $tb = apps_db::create_table(
-              $array['app'],
-              apps_mod::get_field_array($fieldata),//获取字段数组
-              apps_mod::base_fields_index()//索引
-            );
-            array_push ($tb,null,$array['name']);
-            $table_array = array();
-            $table_array[$array['app']]= $tb;//记录基本表名
-
-            //有MEDIUMTEXT类型字段就创建xxx_data附加表
-            if($addons_fieldata){
-              $union_id = apps_mod::data_union_id($array['app']);//关联基本表id
-              $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段
-              $addons_fieldata = $addons_base_fields+$addons_fieldata;
-              $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
-              // //添加到字段数据里
-              // $field_array = array_merge($field_array,$addons_base_fields);
-              // $array['fields'] = addslashes(json_encode($field_array));
-            }
-            $array['table']  = $table_array;
-            $array['config'] = $config_array;
-
-            $config_array['template'] = apps_mod::template($array,'array');
-            $config_array['iurl']   = apps_mod::iurl($array);
-
-            $array['table'] = addslashes(json_encode($table_array));
-            $array['config'] = addslashes(json_encode($config_array));
 
             $id = iDB::insert('apps',$array);
             if(stripos($array['menu'], '{app}') !== false){
@@ -158,8 +160,6 @@ class appsAdmincp{
               );
               iDB::update('apps', array('menu'=>$menu), array('id'=>$id));
             }
-
-            $msg = "应用创建完成!";
         }else {
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app' AND `id` !='$id'") && iUI::alert('该应用已经存在!');
             $_fields     = iDB::value("SELECT `fields` FROM `#iCMS@__apps` where `id` ='$id'");//json

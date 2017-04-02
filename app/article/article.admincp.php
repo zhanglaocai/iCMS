@@ -71,7 +71,7 @@ class articleAdmincp{
             $rs['userid']  = members::$userid;
 		}
 
-        iPHP::callback(array("formerApp","add"),array(self::$appid,$rs,true));
+        iPHP::callback(array("formerApp","add"),array(self::$appid,$rs,false));
 
         if(self::$config['markdown']){
             include admincp::view("article.markdown");
@@ -593,7 +593,6 @@ class articleAdmincp{
             $mobile  = 0;
 
             $aid  = article::insert(compact($fields));
-            iPHP::callback(array("formerApp","save"),array(self::$appid,$aid));
             admincp::callback($aid,$this,'primary');
 
             if($tags){
@@ -610,9 +609,10 @@ class articleAdmincp{
             iMap::add($cid,$aid);
             $scid && iMap::add($scid,$aid);
 
-
             $url OR $this->article_data($body,$aid,$haspic);
             categoryAdmincp::update_count($cid);
+
+            iPHP::callback(array("formerApp","save"),array(self::$appid,$aid));
 
             $article_url = iURL::get('article',array(array(
                 'id'      =>$aid,
@@ -655,7 +655,6 @@ class articleAdmincp{
             $picdata = $this->picdata($pic,$mpic,$spic);
 
             article::update(compact($fields),array('id'=>$aid));
-            iPHP::callback(array("formerApp","save"),array(self::$appid,$aid));
             admincp::callback($aid,$this,'primary');
 
             iMap::init('prop',self::$appid,'pid');
@@ -670,6 +669,7 @@ class articleAdmincp{
                 categoryAdmincp::update_count($_cid,'-');
                 categoryAdmincp::update_count($cid);
             }
+            iPHP::callback(array("formerApp","save"),array(self::$appid,$aid));
             if($this->callback['code']){
                 return array(
                     "code"    => $this->callback['code'],

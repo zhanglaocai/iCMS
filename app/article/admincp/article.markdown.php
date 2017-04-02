@@ -63,7 +63,7 @@ $(function(){
 		}
 		if($("#url").val()==''){
 			var n=$(".editor-page:eq(0) option:first").val(),ed = iCMS.editor.get('editor-body-'+n);
-			if(!ed.hasContents()){
+			if(!ed.getMarkdown()){
         ed.focus();
 				iCMS.alert("第"+n+"页内容不能为空!");
 				$('#editor-wrap-'+n).show();

@@ -27,11 +27,38 @@ $(function(){
       return false;
     }
   });
+
   $("#type").change(function(){
     if(this.value=="3"){
-
+      $("#tab-field,#tab-custom").hide();
+      $('[name="apptype"]').val('1');
+      $('#config_iFormer').val('0');
+      $("#menu").data('data', $("#menu").val());
+      $("#menu").val('');
+      $(".type_3").show();
+    }else if(this.value=="2"){
+      $("#tab-field,#tab-custom").show();
+      $('[name="apptype"]').val('2');
+      $('#config_iFormer').val('1');
+      $(".type_3").hide();
+      var data = $("#menu").data('data');
+      if(data){
+        $("#menu").val(data);
+      }
     }
   });
+  $(".add_table_item").click(function(){
+    // var clone = $("#table_item").clone();
+    // console.log(clone);
+      var key = $("#table_list").find('tr').size();
+      var tr = $("<tr>");
+      for (var i = 0; i < 4; i++) {
+          var td = $("<td>");
+          td.html('<input type="text" name="table['+key+']['+i+']" class="span2" id="table_'+key+'_'+i+'" value=""/>');
+          tr.append(td);
+      };
+      $("#table_list").append(tr);
+  })
 })
 </script>
 
@@ -58,7 +85,7 @@ $(function(){
       <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-apps" target="iPHP_FRAME">
         <input name="_id" type="hidden" value="<?php echo $this->id; ?>" />
         <input name="apptype" type="hidden" value="<?php echo $rs['apptype']; ?>" />
-        <input name="config[iFormer]" type="hidden" value="<?php echo $rs['config']['iFormer']; ?>" />
+        <input id="config_iFormer" name="config[iFormer]" type="hidden" value="<?php echo $rs['config']['iFormer']; ?>" />
         <div id="apps-add" class="tab-content">
           <div id="apps-add-base" class="tab-pane active">
             <div class="input-prepend">
@@ -88,6 +115,7 @@ $(function(){
               <span class="add-on">模板标签</span>
               <textarea name="config[template]" id="config_template" class="span6" style="height: 150px;" readonly><?php echo $rs['config']['template'] ; ?></textarea>
             </div>
+            <span class="help-inline">程序自动获取</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">应用版本</span>
@@ -124,14 +152,15 @@ $(function(){
             <?php }else{ ?>
               <input name="type" type="hidden" value="<?php echo $rs['type']; ?>" />
             <?php } ?>
+            <span class="help-inline hide type_3">第三方应用类型,仅供用户开发应用添加数据用,此类型不会自动创建相关表,仅添加一条应用数据</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">用户中心</span>
               <div class="switch" data-on-label="启用" data-off-label="禁用">
                 <input type="checkbox" data-type="switch" name="usercp" id="usercp" <?php echo $rs['config']['usercp']?'checked':''; ?>/>
               </div>
-              <span class="help-inline">启用后,用户中心将显示此应用并根据字段设计</span>
             </div>
+            <span class="help-inline">启用后,用户中心将显示此应用并根据字段设计</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">应用状态</span>
@@ -141,8 +170,10 @@ $(function(){
               <span class="help-inline"></span>
             </div>
             <div class="clearfloat mb10"></div>
-            <?php if($rs['table']){?>
-            <h3 class="title" style="width:620px;">数据表</h3>
+            <h3 class="title" style="width:620px;">
+              数据表
+              <a class="add_table_item hide type_3" href="javascript:;" title="添加"><i class="fa fa-plus-square"></i> 添加</a>
+            </h3>
             <table class="table table-bordered bordered" style="width:600px;">
               <thead>
                 <tr>
@@ -152,7 +183,8 @@ $(function(){
                   <th>名称</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="table_list">
+              <?php if($rs['table']){?>
                 <?php foreach ((array)$rs['table'] as $tkey => $tval) {?>
                 <tr>
                   <td><input type="text" name="table[<?php echo $tkey; ?>][0]" class="span2" id="table_<?php echo $tkey; ?>_0" value="<?php echo $tval['name'] ; ?>"/></td>
@@ -161,25 +193,14 @@ $(function(){
                   <td><input type="text" name="table[<?php echo $tkey; ?>][3]" class="span2" id="table_<?php echo $tkey; ?>_3" value="<?php echo $tval['label'] ; ?>"/></td>
                 </tr>
                 <?php } ?>
+              <?php }else{ ?>
+                <input name="table" type="hidden" value="<?php echo $rs['table']; ?>" />
+              <?php } ?>
               </tbody>
             </table>
             <span class="help-inline">非二次开发,请勿修改表名</span>
-            <?php }else{ ?>
-            <input name="table" type="hidden" value="<?php echo $rs['table']; ?>" />
-            <?php } ?>
             <div class="clearfloat mb10"></div>
           </div>
-          <!-- 数据表字段 -->
-          <?php include admincp::view("apps.table","apps");?>
-          <?php if($rs['config']['iFormer']){?>
-          <div id="apps-add-field" class="tab-pane">
-            <!-- 基础字段 -->
-            <?php include admincp::view("apps.base","apps");?>
-          </div>
-          <div id="apps-add-custom" class="tab-pane">
-            <?php include admincp::view("former.build","former");?>
-          </div>
-          <?php } ?>
           <div id="apps-add-menu" class="tab-pane">
             <div class="alert alert-error alert-block">
               <p>菜单配置属于重要数据,如果不熟悉请勿修改.敬请等待官方推出相关编辑器</p>
@@ -194,6 +215,17 @@ $(function(){
               <textarea name="config[iurl]" id="config_iurl" class="span8" style="height:120px;"><?php echo $rs['config']['iurl']?json_encode($rs['config']['iurl']):'' ; ?></textarea>
             </div>
           </div>
+          <!-- 数据表字段 -->
+          <?php include admincp::view("apps.table","apps");?>
+          <?php if($rs['config']['iFormer']){?>
+          <div id="apps-add-field" class="tab-pane">
+            <!-- 基础字段 -->
+            <?php include admincp::view("apps.base","apps");?>
+          </div>
+          <div id="apps-add-custom" class="tab-pane">
+            <?php include admincp::view("former.build","former");?>
+          </div>
+          <?php } ?>
           <div class="clearfloat"></div>
           <div class="form-actions">
             <button class="btn btn-primary btn-large" type="submit"><i class="fa fa-check"></i> 提交</button>
@@ -204,6 +236,14 @@ $(function(){
         </form>
       </div>
     </div>
+  </div>
+</div>
+<div class="hide">
+  <div id="table_item">
+      <td><input type="text" name="table[~KEY~][0]" class="span2" id="table_~KEY~_0" value=""/></td>
+      <td><input type="text" name="table[~KEY~][1]" class="span2" id="table_~KEY~_1" value=""/></td>
+      <td><input type="text" name="table[~KEY~][2]" class="span2" id="table_~KEY~_2" value=""/></td>
+      <td><input type="text" name="table[~KEY~][3]" class="span2" id="table_~KEY~_3" value=""/></td>
   </div>
 </div>
 <?php include admincp::view("former.editor","former");?>

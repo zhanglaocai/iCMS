@@ -25,6 +25,7 @@ class contentAdmincp{
     }
     public function do_add(){
       $rs = apps_mod::get_data($this->app,$this->id);
+      isset($rs['status']) OR $rs['status'] = '1';
       iPHP::callback(array("formerApp","add"),array($this->app,$rs));
       include admincp::view('content.add');
     }

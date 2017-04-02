@@ -196,6 +196,7 @@
       <div class="clearfix"></div>
     </div>
     <div id="fields-tab-addons" class="tab-pane">
+      <?php ?>
       <ul>
         <li i="field" tag="textarea" type="multitext" field="MEDIUMTEXT" label="大文本">
           <span class="fb-icon fb-icon-textarea"></span>
@@ -206,6 +207,7 @@
           <p>编辑器</p>
         </li>
         <span class="help-inline">* 此标签下的字段会独立创建data表</span>
+        <span class="help-inline">* 文章系统无法使用编辑器字段</span>
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>

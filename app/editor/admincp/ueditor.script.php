@@ -8,6 +8,7 @@ $(function(){
     iCMS.editor.create("<?php echo $id;?>");
 })
 </script>
+<div class="clearfloat"></div>
 <div class="input-prepend">
   <div class="btn-group">
     <button type="button" class="btn" onclick="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</button>

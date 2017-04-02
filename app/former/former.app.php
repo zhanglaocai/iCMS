@@ -25,12 +25,17 @@ class formerApp{
             $data_table = $app['table'][$data_table_name];
             if($data_table){
                 $data_fields = apps_mod::base_fields($app['app']);
-                $data_fields && $app['fields']+= $data_fields;
+                $primary_key = $data_table['primary'];
+                $union_key   = $data_table['union'];
+                $fpk = $data_fields[$primary_key];
+                $fpk && $app['fields']+= array($primary_key=>$fpk);
+                $fuk = $data_fields[$union_key];
+                $fuk && $app['fields']+= array($union_key=>$fuk);
+
                 if($union_data){
-                    $table = reset($app['table']);
-                    $id = $rs[$table['primary']];
-                    $primary_key = $data_table['primary'];
-                    $data_table['union'] && $primary_key = $data_table['union'];
+                    $table    = reset($app['table']);
+                    $id       = $rs[$table['primary']];
+                    $union_key&& $primary_key = $union_key;
                     $rs+= (array)iDB::row("SELECT * FROM `{$data_table['table']}` WHERE `{$primary_key}`='$id' LIMIT 1;",ARRAY_A);
                 }
             }
