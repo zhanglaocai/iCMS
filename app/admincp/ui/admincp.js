@@ -381,10 +381,11 @@ function modal_icms(el,a){
                 }
 
                 var a = $(this),b = this,
-                act   = a.attr('data-action').replace(',','_'),
+                act   = a.attr('data-action'),
+                _act  = act.replace(',','_').replace(':','_'),
                 dia   = a.attr('data-dialog'),
-                ab    = $('#'+act+'Batch'),
-                box   = document.getElementById(act+'Batch'),
+                ab    = $('#'+_act+'Batch'),
+                box   = document.getElementById(_act+'Batch'),
                 title = a.text();
 
                 if(dia==="no"){
