@@ -118,7 +118,7 @@ class iURL {
                 $category = $array;
                 $i->href  = $category['url'];
                 $url      = self::rule_data($category,'index');
-                // $purl     = self::rule_data($category,'list');
+                $purl     = self::rule_data($category,'list');
             break;
             case '2'://内容
                 $array    = (array)$a[0];
