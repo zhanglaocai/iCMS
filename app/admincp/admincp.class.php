@@ -36,7 +36,7 @@ class admincp {
 		iDB::$show_explain    = false;
 
 		members::$LOGIN_PAGE  = ACP_PATH.'/template/admincp.login.php';
-		members::$GATEWAY     = iPHP::PG('ajax')?'ajax':null;
+		members::$GATEWAY     = iPHP::PG('gateway');
 		members::check_login(); //用户登陆验证
 		members::check_priv('ADMINCP','page');//检查是否有后台权限
 

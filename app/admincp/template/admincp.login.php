@@ -70,7 +70,7 @@ $(function(){
         username:$("#username").val(),
         password:$("#password").val(),
         admincp_seccode :$("#seccode").val(),
-        ajax:1
+        gateway:'ajax'
       };
 
 		if(param.username==""){
