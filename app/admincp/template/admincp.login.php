@@ -92,7 +92,7 @@ $(function(){
       return false;
     }
 		$.post("<?php echo iPHP_SELF; ?>",param,function(json){
-				if(json.code=="1"){
+				if(json.code){
 					window.location.href ='<?php echo iPHP_SELF; ?>';
 				}else{
           $(".iCMS_seccode_img").attr('src','<?php echo iPHP_SELF; ?>?do=seccode&i='+ Math.random());

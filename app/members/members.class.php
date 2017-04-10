@@ -16,18 +16,20 @@ class members{
     public static $nickname     = NULL;
     public static $group        = array();
     public static $priv         = array();
-    public static $AJAX         = false;
+    public static $GATEWAY      = false;
     public static $AUTH         = 'iCMS_AUTH';
-    public static $LOGIN_PAGE   = 'Login.php';
+    public static $LOGIN_PAGE   = 'login.php';
     private static $LOGIN_COUNT = 0;
 
     public static function check($a,$p) {
     	if(empty($a) && empty($p)) {
-        	self::LoginPage();
+        	return false;
     	}
 
         self::$data = iDB::row("SELECT * FROM `#iCMS@__members` WHERE `username`='{$a}' AND `password`='{$p}' AND `status`='1' LIMIT 1;");
-        self::$data OR self::LoginPage();
+        if(empty(self::$data)){
+            return false;
+        }
         unset(self::$data->password);
         self::$userid   = self::$data->uid;
         self::$nickname = self::$data->nickname?self::$data->nickname:self::$data->username;
@@ -41,15 +43,11 @@ class members{
         }else{
             self::$group = new stdClass();
         }
-// if (!members::is_superadmin()) {
-//     var_dump(self::$data->config->mpriv,self::$group->config->mpriv);
-//     var_dump(array_merge((array)self::$data->config->mpriv,(array)self::$group->config->mpriv));
-// }
-// exit;
+
         self::$priv['menu']     = self::merge_priv(self::$data->config->mpriv,self::$group->config->mpriv);
         self::$priv['app']      = self::merge_priv(self::$data->config->apriv,self::$group->config->apriv);
         self::$priv['category'] = self::merge_priv(self::$data->config->cpriv,self::$group->config->cpriv);
-        return self::$data;
+        return true;
     }
     //登陆验证
     public static function check_login() {
@@ -63,23 +61,40 @@ class members{
         if(empty($a) && empty($p)) {
             $auth       = iPHP::get_cookie(self::$AUTH);
             list($a,$p) = explode($sep,authcode($auth,'DECODE'));
-            return self::check($a,$p);
+            $c = self::check($a,$p);
         }else {
-            $p   = md5($p);
-            $crs = self::check($a,$p);
-            iDB::query("UPDATE `#iCMS@__members` SET `lastip`='".$ip."',`lastlogintime`='".time()."',`logintimes`=logintimes+1 WHERE `uid`='".self::$userid."'");
-            iPHP::set_cookie(self::$AUTH,authcode($a.$sep.$p,'ENCODE'));
-        	self::$AJAX && iUI::json(array('code'=>1));
-            return $crs;
+            $p = md5($p);
+            $c = self::check($a,$p);
+            if ($c){
+                iDB::query("
+                    UPDATE `#iCMS@__members`
+                    SET `lastip`='".$ip."',
+                    `lastlogintime`='".time()."',
+                    `logintimes`=logintimes+1
+                    WHERE `uid`='".self::$userid."'
+                ");
+                iPHP::set_cookie(self::$AUTH,authcode($a.$sep.$p,'ENCODE'));
+            }
         }
+        return self::gateway($c);
     }
 
-	//登陆页
-	public static function LoginPage(){
-		self::$AJAX && iUI::json(array('code'=>0));
-        iPHP::set_cookie(self::$AUTH,'',-31536000);
-		include self::$LOGIN_PAGE;
-		exit;
+	public static function gateway($s=null){
+        $s OR self::logout();
+        switch (self::$GATEWAY) {
+            case 'ajax':
+                iUI::json(array('code'=>$s));
+            break;
+            case 'bool':
+                return (bool)$s;
+            break;
+            default:
+                if(!$s){
+                    include self::$LOGIN_PAGE;
+                    exit;
+                }
+            break;
+        }
 	}
 	//注销
 	public static function logout(){
