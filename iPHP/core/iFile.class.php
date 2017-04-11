@@ -191,7 +191,7 @@ class iFile {
         if ($rs&&$s=='*') {
             $rs->filepath = $rs->path . $rs->filename . '.' . $rs->ext;
             if ($f == 'ofilename') {
-                $filepath = self::fp($rs->filepath, '+iPATH');
+                $filepath = iFS::fp($rs->filepath, '+iPATH');
                 if (is_file($filepath)) {
                     return $rs;
                 } else {
