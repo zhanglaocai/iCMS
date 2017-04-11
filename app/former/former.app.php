@@ -69,7 +69,7 @@ class formerApp{
             list($variable,$tables,$orig_post,$imap,$tags) = former::post($app);
 
             if(!$variable){
-                iCMS::alert("表单数据处理出错!");
+                iUI::alert("表单数据处理出错!");
             }
             //非自定义应用数据
             if($pri_id){
