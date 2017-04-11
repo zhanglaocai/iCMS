@@ -21,7 +21,7 @@ class QiniuYun
 	{
 		$data = array();
 		$ch   = curl_init();
-		if (class_exists('CURLFile')) {
+		if (class_exists('CURLFile',false)) {
 		    defined('CURLOPT_SAFE_UPLOAD') && curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
 		    $data['file'] = new CURLFile($filePath);
 		} else {
