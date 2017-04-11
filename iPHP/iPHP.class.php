@@ -408,7 +408,7 @@ class iPHP {
 		return round($time_total, 4);
 	}
     public static function check_priv($p,$priv){
-        return is_array($p)?array_intersect((string)$p,$priv):in_array((string)$p,$priv);
+        return is_array($p)?array_intersect((string)$p,(array)$priv):in_array((string)$p,(array)$priv);
     }
 	public static function redirect($url = '') {
 		$url OR $url = iPHP_REFERER;
