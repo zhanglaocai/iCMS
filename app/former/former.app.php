@@ -68,16 +68,16 @@ class formerApp{
 
             list($variable,$tables,$orig_post,$imap,$tags) = former::post($app);
 
-            if(!$variable){
-                iUI::alert("表单数据处理出错!");
-            }
+            // if(!$variable){
+            //     iUI::alert("表单数据处理出错!");
+            // }
             //非自定义应用数据
             if($pri_id){
                 $pri_table = reset($app['table']);
             }
 
             $update = false;
-            foreach ($variable as $table_name => $_data) {
+            if($variable)foreach ($variable as $table_name => $_data) {
                 if(empty($_data)){
                   continue;
                 }

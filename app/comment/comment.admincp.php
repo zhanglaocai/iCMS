@@ -32,7 +32,7 @@ class commentAdmincp{
 		if($_GET['cid']){
             $cid = (int)$_GET['cid'];
             if(isset($_GET['sub'])){
-                $cids  = categoryApp::get_ids($cid,true);
+                $cids  = categoryApp::get_cids($cid,true);
                 array_push ($cids,$cid);
                 $sql.=" AND cid IN(".implode(',', $cids).")";
             }else{

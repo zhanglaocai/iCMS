@@ -386,7 +386,7 @@ class articleAdmincp{
                 $cids = $cid;
             }
             if($_GET['sub'] && $cid){
-                $cids = categoryApp::get_ids($cid,true);
+                $cids = categoryApp::get_cids($cid,true);
                 array_push ($cids,$cid);
             }
             if($_GET['scid'] && $cid){

@@ -312,7 +312,7 @@ class category {
     public static function search_sql($cid,$field='cid'){
         if($cid){
             $cids  = (array)$cid;
-            $_GET['sub'] && $cids+=categoryApp::get_ids($cid,true);
+            $_GET['sub'] && $cids+=categoryApp::get_cids($cid,true);
             $sql= iSQL::in($cids,$field);
         }
         return $sql;
