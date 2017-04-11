@@ -17,10 +17,10 @@ class category {
     //     return self::$instance;
     // }
     public static function appid($appid,$priv=null){
-        $category = new category();
-        $category::$appid = $appid;
-        $priv && $category::$priv = $priv;
-        return $category;
+        $self = new self();
+        $self::$appid = $appid;
+        $priv && $self::$priv = $priv;
+        return $self;
     }
     public static function init_sql($appid=null,$_sql=null){
         self::$appid && $appid = self::$appid;
@@ -247,7 +247,7 @@ class category {
             $C['iurl'] = (array) iURL::get('category',$C);
         }
         $C['url']    = $C['iurl']['href'];
-        $C['link']   = "<a href='{$C['url']}'>{$C['name']}</a>";
+        $C[' ']   = "<a href='{$C['url']}'>{$C['name']}</a>";
         $C['sname']  = $C['subname'];
 
         $C['subid']  = self::get_root($C['cid']);

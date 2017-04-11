@@ -8,6 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 */
 class propAdmincp{
+    public static $app =null;
     public function __construct() {
         $this->pid = (int)$_GET['pid'];
     }
@@ -156,13 +157,18 @@ class propAdmincp{
         $div.= '</ul></div>';
         return $div;
     }
+    public static function app($app) {
+        $self = new self;
+        $self::$app = $app;
+        return $self;
+    }
     public static function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$app = "") {
         $app OR $app = admincp::$APP_NAME;
+        self::$app && $app = self::$app;
         is_array($valArray) OR $valArray  = explode(',', $valArray);
         $opt = array();
         $propArray = iCache::get("prop/{$app}/{$field}");
         // empty($propArray) && $propArray = iCache::get("prop/{$field}");
-
         if($propArray)foreach ((array)$propArray AS $k => $P) {
             if ($out == 'option') {
                 $opt[]="<option value='{$P['val']}'" . (isset($valArray[$P['val']]) ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";
