@@ -397,12 +397,12 @@ class categoryAdmincp {
         category::check_priv($cid,'d','alert');
         $msg    = '请选择要删除的'.$this->category_name.'!';
 
-        if(!$this->is_root($cid)) {
+        if(!category::get_root($cid)) {
             $this->del_content($cid);
             iDB::query("DELETE FROM `#iCMS@__category` WHERE `cid` = '$cid'");
             iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `node` = '$cid' AND `appid` = '".$this->appid."';");
             iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$cid' AND `appid` = '".iCMS_APP_CATEGORY."' ;");
-            $this->cahce_del($cid);
+            category::cahce_del($cid);
             $msg = '删除成功!';
         }else {
             $msg = '请先删除本'.$this->category_name.'下的子'.$this->category_name.'!';

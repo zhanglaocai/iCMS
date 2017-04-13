@@ -17,7 +17,7 @@
 	function load(settings, root, child, container) {
 		$.getJSON(settings.url, {root: root}, function(response) {
 			$("#tree-loading").remove();
-			console.log(typeof(response.code));
+			//console.log(typeof(response.code));
 			if(typeof(response.code)!="undefined"){
 				alert(response.msg);
 				return;
