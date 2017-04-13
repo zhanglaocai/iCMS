@@ -183,8 +183,7 @@ class userAdmincp{
     	$uid===null && $uid=$this->uid;
 		$uid OR iUI::alert('请选择要删除的用户');
 		iDB::query("DELETE FROM `#iCMS@__user` WHERE `uid` = '$uid'");
-        iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$uid' AND `appid` = '".iCMS_APP_USER."' ;");
-
+        iMAP::del_data($uid,iCMS_APP_USER,'prop');
 		$dialog && iUI::success('用户删除完成','js:parent.$("#tr'.$uid.'").remove();');
     }
 }

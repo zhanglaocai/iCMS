@@ -17,7 +17,7 @@ class iMap {
 		self::$table = iPHP_DB_PREFIX_TAG.$table.'_map';
 		self::$field = $field;
 		self::$appid = $appid;
-		return new iMap();
+		return new self();
 	}
 	public static function del($nodes,$iid="0") {
 		$_array   = explode(',',$nodes);
@@ -34,6 +34,15 @@ class iMap {
 			");
 	    }
 	}
+    public static function del_data($iid=null,$appid=null,$table=null,$field='iid'){
+        if($iid && $appid && $table){
+            iDB::query("
+                DELETE FROM `#iCMS@__{$table}_map`
+                WHERE `$field`='$iid'
+                AND `appid`='$appid'
+            ");
+        }
+    }
 	public static function add($nodes,$iid="0") {
 		$_array   = explode(',',$nodes);
 		$_count   = count($_array);

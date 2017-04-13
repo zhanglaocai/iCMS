@@ -400,8 +400,8 @@ class categoryAdmincp {
         if(!category::get_root($cid)) {
             $this->del_content($cid);
             iDB::query("DELETE FROM `#iCMS@__category` WHERE `cid` = '$cid'");
-            iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `node` = '$cid' AND `appid` = '".$this->appid."';");
-            iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$cid' AND `appid` = '".iCMS_APP_CATEGORY."' ;");
+            iMAP::del_data($cid,$this->appid,'category','node');
+            iMAP::del_data($cid,iCMS_APP_CATEGORY,'prop');
             category::cahce_del($cid);
             $msg = '删除成功!';
         }else {

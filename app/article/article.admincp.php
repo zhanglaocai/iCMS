@@ -723,8 +723,8 @@ class articleAdmincp{
             $msg.= tag::del($art['tags'],'name',$id);
         }
 
-        iDB::query("DELETE FROM `#iCMS@__category_map` WHERE `iid` = '$id' AND `appid` = '".self::$appid."';");
-        iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `iid` = '$id' AND `appid` = '".self::$appid."' ;");
+        iMAP::del_data($id,self::$appid,'category');
+        iMAP::del_data($id,self::$appid,'prop');
 
         article::del_comment($id);
         $msg.= self::del_msg('评论数据删除');

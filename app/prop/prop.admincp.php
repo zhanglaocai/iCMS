@@ -71,7 +71,7 @@ class propAdmincp{
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->pid;
     	$id OR iUI::alert('请选择要删除的属性!');
-		iDB::query("DELETE FROM `#iCMS@__prop` WHERE `pid` = '$id';");
+        $this->del($id);
     	$this->cache();
     	$dialog && iUI::success("已经删除!",'url:'.APP_URI);
     }
@@ -202,6 +202,16 @@ class propAdmincp{
         if($appid){
             iDB::query("DELETE FROM `#iCMS@__prop` WHERE `appid` = '".$appid."'");
             iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `appid` = '".$appid."';");
+        }
+    }
+    public static function del($pid=null,$appid=null,$iid=null){
+        if($pid){
+            $appid && $sql = " AND `appid`='{$appid}'";
+            iDB::query("DELETE FROM `#iCMS@__prop` WHERE `pid` = '$pid' {$sql};");
+            $iid && $sql.=" AND iid='$iid'";
+            iDB::query("
+                DELETE FROM `#iCMS@__prop_map`
+                WHERE `node`='$pid' {$sql} ;");
         }
     }
 }
