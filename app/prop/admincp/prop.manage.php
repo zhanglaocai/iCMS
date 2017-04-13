@@ -87,7 +87,7 @@ $(function(){
                 <?php } ?>
                 <a href="<?php echo APP_URI; ?>&do=add&pid=<?php echo $rs[$i]['pid'] ; ?>&act=copy" class="btn btn-small"><i class="fa fa-copy "></i> 复制</a>
                 <a href="<?php echo APP_URI; ?>&do=add&pid=<?php echo $rs[$i]['pid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                <a href="<?php echo APP_FURI; ?>&do=del&id=<?php echo $rs[$i]['pid'] ; ?>" target="iPHP_FRAME" class="del btn btn-danger btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a></td>
+                <a href="<?php echo APP_FURI; ?>&do=del&pid=<?php echo $rs[$i]['pid'] ; ?>" target="iPHP_FRAME" class="del btn btn-danger btn-small" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a></td>
             </tr>
             <?php }  ?>
           </tbody>
