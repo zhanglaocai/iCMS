@@ -161,6 +161,12 @@ class weixinAdmincp{
             iUI::success('更新完成','url:'.APP_URI.'&do=event');
         }
     }
+    public function do_event_del($id = null,$dialog=true){
+      $id===null && $id=$_GET['id'];
+      $id OR iUI::alert('请选择要删除的事件!');
+      iDB::query("DELETE FROM `#iCMS@__weixin_event` WHERE `id` = '$id';");
+      $dialog && iUI::success("已经删除!",'url:'.APP_URI.'&do=event');
+    }
     public function menu_get_type($type,$out='value'){
       $type_map = array(
         'click'              =>array('key','点击事件'),
