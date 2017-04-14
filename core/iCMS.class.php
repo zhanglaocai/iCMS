@@ -23,12 +23,14 @@ class iCMS {
 
         iFS::init(self::$config['FS']);
         iCache::init(self::$config['cache']);
+        iDevice::init(self::$config);
         iURL::init(self::$config['router']);
         iURL::$CONFIG+= array(
             'user_url' => iCMS_USER_URL,
             'api_url'  => iCMS_PUBLIC_URL,
             'tag'      => self::$config['tag'],//标签配置
             'iurl'     => self::$config['iurl'],//应用路由定义
+            'device'   => self::$config['template'],//设备
             'domain'   => array('categoryApp','domain')//绑定域名回调
         );
 	}
@@ -38,7 +40,6 @@ class iCMS {
      * @param string $do 动作名称
      */
     public static function run($app = NULL,$do = NULL,$args = NULL,$prefix="do_") {
-        iDevice::init(self::$config);
         iView::init();
         iView::$apps = self::$config['apps'];
         iView::$func = 'content';
@@ -46,6 +47,7 @@ class iCMS {
             'VERSION' => iCMS_VERSION,
             'API'     => iCMS_API,
             'SAPI'    => iCMS_API_URL,
+            'DEVICE'  => iPHP_DEVICE,
             'CONFIG'  => self::$config,
             'APPID'   => array()
         );
@@ -76,6 +78,7 @@ class iCMS {
         $site['title'] = $site['name'];
         $site['404']   = iPHP_URL_404;
         $site['url']   = iCMS_URL;
+        $site['murl']  = self::$config['template']['mobile']['domain'];
         $site['tpl']   = iPHP_DEFAULT_TPL;
         $site['urls']  = array(
             "tpl"    => iCMS_URL.'/template/'.iPHP_DEFAULT_TPL,
@@ -84,7 +87,7 @@ class iCMS {
             "res"    => iCMS_FS_URL,
             "ui"     => iCMS_PUBLIC_URL.'/ui',
             "avatar" => iCMS_FS_URL.'avatar/',
-            "mobile" => self::$config['template']['mobile']['domain'],
+            "mobile" => $site['murl'],
         );
         iView::assign('site',$site);
         iUI::$dialog['title']  = $site['name'];
