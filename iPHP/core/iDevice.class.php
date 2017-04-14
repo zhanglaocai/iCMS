@@ -19,19 +19,16 @@ class iDevice {
         /**
          * 判断指定设备
          */
-        iPHP::PG('device') && $flag ='device';
+        iPHP::PG('device') && list($device_name, $device_tpl, $domain) = self::check($template['device'],'device');
         /**
          * 无指定设备 判断USER_AGENT
-         *
          */
-        empty($def_tpl) && $flag ='ua';
+        empty($device_tpl) && list($device_name, $device_tpl, $domain) = self::check($template['device'],'ua');
         /**
          * 无指定USER_AGENT  判断域名模板
-         *
          */
-        empty($def_tpl) && $flag ='domain';
-
-        list($device_name, $def_tpl, $domain) = self::check($template['device'], $flag);
+        empty($device_tpl) && list($device_name, $device_tpl, $domain) = self::check($template['device'],'domain');
+        $def_tpl = $device_tpl;
 
         iPHP::$mobile = false;
         if (empty($def_tpl)) {
@@ -48,14 +45,17 @@ class iDevice {
         if (empty($def_tpl)) {
             $device_name = 'desktop';
             $def_tpl     = $template['desktop']['tpl'];
-            $domain      = false;
+            $domain      = $config['router']['url'];
         }
         define('iPHP_DEFAULT_TPL', $def_tpl);
         define('iPHP_MOBILE_TPL', $mobile_tpl);
+        // define('iPHP_DEVICE_TPL', $device_tpl);
         define('iPHP_DEVICE', $device_name);
         define('iPHP_DOMAIN', $domain);
 
-        iPHP_DOMAIN && $config['router'] = str_replace($config['router']['url'], iPHP_DOMAIN, $config['router']);
+        if($domain!=$config['router']['url']){
+            $config['router'] = str_replace($config['router']['url'], $domain, $config['router']);
+        }
         // self::redirect();
     }
     private static function redirect(){
@@ -64,18 +64,16 @@ class iDevice {
         define('iPHP_REQUEST_URI',$_SERVER['REQUEST_URI']);
         define('iPHP_REQUEST_URL',iPHP_REQUEST_HOST.iPHP_REQUEST_URI);
 
-        if(stripos(iPHP_REQUEST_URL, iPHP_HOST) === false){
-            $redirect_url = str_replace(iPHP_REQUEST_HOST,iPHP_HOST, iPHP_REQUEST_URL);
+        if(stripos(iPHP_REQUEST_URL, iPHP_DOMAIN) === false){
+            $redirect_url = str_replace(iPHP_REQUEST_HOST,iPHP_DOMAIN, iPHP_REQUEST_URL);
             header("Expires:1 January, 1970 00:00:01 GMT");
             header("Cache-Control: no-cache");
             header("Pragma: no-cache");
-            // header("X-REDIRECT-REF: ".iPHP_REQUEST_URL);
-            // header("X-iPHP_HOST: ".iPHP_HOST);
-            // header("X-REDIRECT_URL: ".$redirect_url);
-            // header("X-STRIPOS: ".(stripos(iPHP_REQUEST_URL, iPHP_HOST) === false));
-            // iPHP::http_status(301);
-            // exit($redirect_url);
-            // iPHP::redirect($redirect_url);
+            header("X-REDIRECT-REF: ".iPHP_REQUEST_URL);
+            header("X-iPHP-DOMAIN: ".iPHP_DOMAIN);
+            header("X-REDIRECT-URL: ".$redirect_url);
+            iPHP::http_status(301);
+            iPHP::redirect($redirect_url);
         }
     }
     private static function check($deviceArray = null, $flag = false) {
