@@ -166,7 +166,7 @@ class spider_content {
                     echo "\n{$filterMsg}\n";
                     return false;
                 }else{
-                    iPHP::alert($filterMsg);
+                    iUI::alert($filterMsg);
                 }
             }
         }
@@ -180,7 +180,7 @@ class spider_content {
                 echo "\n{$emptyMsg}\n";
                 return false;
             }else{
-                iPHP::alert($emptyMsg);
+                iUI::alert($emptyMsg);
             }
         }
         if ($data['json_decode']) {

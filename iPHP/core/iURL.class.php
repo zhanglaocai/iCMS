@@ -100,6 +100,27 @@ class iURL {
             return $C['rule'][$key];
         }
     }
+    //所有设备网址
+    public static function urls($iurl) {
+        $urls = array();
+        if(empty($iurl)){
+            $router_url = self::$CONFIG['url'];
+            $devices = self::$CONFIG['device'];
+            if($devices['desktop']['domain']){
+                $urls['desktop'] = str_replace($router_url, $devices['desktop']['domain'], $iurl);
+            }
+            if($devices['mobile']['domain']){
+                $urls['mobile'] = str_replace($router_url, $devices['mobile']['domain'], $iurl);
+            }
+            if($devices['device'])foreach ($devices['device'] as $key => $value) {
+                if($value['domain']){
+                    $name = strtolower($value['name']);
+                    $urls[$name] = str_replace($router_url, $value['domain'], $iurl);
+                }
+            }
+        }
+        return $urls;
+    }
     public static function get($uri,$a=array()) {
         $i          = new stdClass();
         $default    = array();

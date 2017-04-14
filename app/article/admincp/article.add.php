@@ -25,7 +25,7 @@ $(function(){
 	});
 
   iCMS.select('pid',"<?php echo $rs['pid']?trim($rs['pid']):0 ; ?>");
-  iCMS.select('cid',"<?php echo $rs['cid']; ?>");
+  iCMS.select('cid',"<?php echo $cid; ?>");
   iCMS.select('scid',"<?php echo trim($rs['scid']);?>");
   iCMS.select('status',"<?php echo $rs['status']; ?>");
   $('#inbox').click(function(){

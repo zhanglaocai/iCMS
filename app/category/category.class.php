@@ -176,6 +176,7 @@ class category {
             $parent[$C['cid']]               = $C['rootid'];
             $rootid[$C['rootid']][$C['cid']] = $C['cid'];
             $app[$C['appid']][$C['cid']]     = $C['cid'];
+            self::cahce_item($C);
         }
 
         foreach ((array)$app as $appid => $value) {
@@ -199,6 +200,10 @@ class category {
         foreach((array)$rs AS $C) {
             $C = self::data($C);
             self::cahce_item($C,'C');
+        }
+
+        foreach((array)$rs AS $C) {
+            iCache::delete('category/'.$C['cid']);
         }
         unset($rootid,$parent,$dir2cid,$hidden,$app,$rs,$C);
 
@@ -245,9 +250,10 @@ class category {
             $C['outurl'] = $C['url'];
         }else{
             $C['iurl'] = (array) iURL::get('category',$C);
+            $C['iurls'] = (array) iURL::urls($C['iurl']);
         }
         $C['url']    = $C['iurl']['href'];
-        $C[' ']   = "<a href='{$C['url']}'>{$C['name']}</a>";
+        $C['link']   = "<a href='{$C['url']}'>{$C['name']}</a>";
         $C['sname']  = $C['subname'];
 
         $C['subid']  = self::get_root($C['cid']);
@@ -287,13 +293,18 @@ class category {
         return $C;
     }
     public static function data_nav($C){
-        $C['nav']      = '';
-        $C['navArray'] = array();
-        self::data_nav_array($C,$C['navArray']);
-        krsort($C['navArray']);
-        foreach ((array)$C['navArray'] as $key => $value) {
-            $C['nav'].="<li><a href='{$value['url']}'>{$value['name']}</a><span class=\"divider\">".iUI::lang('iCMS:navTag')."</span></li>";
+        $nav      = '';
+        $navArray = array();
+        self::data_nav_array($C,$navArray);
+        krsort($navArray);
+        foreach ((array)$navArray as $key => $value) {
+            $nav.="<li>
+            <a href='{$value['url']}'>{$value['name']}</a>
+            <span class=\"divider\">".iUI::lang('iCMS:navTag')."</span>
+            </li>";
         }
+        $C['nav'] = $nav;
+        $C['navArray'] = $navArray;
         return $C;
     }
     public static function data_nav_array($C,&$navArray = array()) {

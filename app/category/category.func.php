@@ -52,7 +52,7 @@ class categoryFunc{
 			//$where_sql.=" AND `cid` IN ($map_ids)";
 			//$where_sql.=" AND `cid` IN ($map_sql)";
 		}
-		$by = $vars['by']=='ASC'?"ASC":"DESC";
+		$by = $vars['by']=='DESC'?"DESC":"ASC";
 
 		switch ($vars['orderby']) {
 			case "hot":		$order_sql=" ORDER BY `count` $by";		break;

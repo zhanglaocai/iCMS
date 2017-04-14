@@ -35,6 +35,8 @@ class configAdmincp{
         $config['router']['dir']    = rtrim($config['router']['dir'],'/').'/';
         $config['FS']['url']        = trim($config['FS']['url'],'/').'/';
         $config['router']['config'] = json_decode(stripcslashes($_POST['config']['router']['config']),true);
+        $config['template']['desktop']['domain'] = $config['router']['url'];
+
         if(json_last_error()){
             $error = json_last_error_msg();
             $error && iUI::alert("REWRITE配置出错 > JSON -{$error}");
