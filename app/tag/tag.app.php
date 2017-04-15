@@ -82,8 +82,8 @@ class tagApp {
             $tag['tag_category'] = categoryApp::get_lite($tag_category);
         }
 
-        $tag['iurl'] = iURL::get('tag', array($tag, $category, $tag_category));
-        $tag['url'] OR $tag['url'] = $tag['iurl']->href;
+        $tag['iurl'] = (array)iURL::get('tag', array($tag, $category, $tag_category));
+        $tag['url'] OR $tag['url'] = $tag['iurl']['href'];
         $tag['link']  = '<a href="'.$tag['url'].'" class="tag" target="_blank">'.$tag['name'].'</a>';
 
         if($category['mode'] && stripos($tag['url'], '.php?')===false){

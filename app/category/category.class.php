@@ -250,8 +250,8 @@ class category {
             $C['outurl'] = $C['url'];
         }else{
             $C['iurl'] = (array) iURL::get('category',$C);
-            $C['iurls'] = (array) iURL::urls($C['iurl']);
         }
+
         $C['url']    = $C['iurl']['href'];
         $C['link']   = "<a href='{$C['url']}'>{$C['name']}</a>";
         $C['sname']  = $C['subname'];

@@ -15,8 +15,8 @@ class iURL {
     public static $ARRAY    = null;
     public static $APP_CONF = null;
 
-    public static function init($config=null){
-        self::$CONFIG = $config;
+    public static function init($config=null,$_config=null){
+        self::$CONFIG = $config+$_config;
     }
 
     public static function router($key, $var = null) {
@@ -100,28 +100,7 @@ class iURL {
             return $C['rule'][$key];
         }
     }
-    //所有设备网址
-    public static function urls($iurl) {
-        $urls = array();
-        if(empty($iurl)){
-            $router_url = self::$CONFIG['url'];
-            $devices = self::$CONFIG['device'];
-            if($devices['desktop']['domain']){
-                $urls['desktop'] = str_replace($router_url, $devices['desktop']['domain'], $iurl);
-            }
-            if($devices['mobile']['domain']){
-                $urls['mobile'] = str_replace($router_url, $devices['mobile']['domain'], $iurl);
-            }
-            if($devices['device'])foreach ($devices['device'] as $key => $value) {
-                if($value['domain']){
-                    $name = strtolower($value['name']);
-                    $urls[$name] = str_replace($router_url, $value['domain'], $iurl);
-                }
-            }
-        }
-        return $urls;
-    }
-    public static function get($uri,$a=array()) {
+   public static function get($uri,$a=array()) {
         $i          = new stdClass();
         $default    = array();
         $category   = array();
@@ -208,6 +187,10 @@ class iURL {
             // call_user_func_array(self::$callback, array($uri,$i,self::$ARRAY,$app_conf));
         }
         $category && $i = self::domain($i,$category['cid'],$router_url);
+        if(self::$CONFIG['device']){
+            $d = call_user_func_array(self::$CONFIG['device'], array($i));
+            $i = (object)array_merge((array)$i,$d);
+        }
         return $i;
     }
     public static function domain($i,$cid,$base_url) {

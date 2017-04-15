@@ -14,50 +14,83 @@
  * @return [type]          [description]
  */
 class iDevice {
+    public static $config   = null;
     public static function init(&$config) {
-        $template = $config['template'];
+        self::$config = $config['template'];
         /**
          * 判断指定设备
          */
-        iPHP::PG('device') && list($device_name, $device_tpl, $domain) = self::check($template['device'],'device');
+        iPHP::PG('device') && list($device_name, $device_tpl, $domain) = self::check(self::$config['device'],'device');
         /**
          * 无指定设备 判断USER_AGENT
          */
-        empty($device_tpl) && list($device_name, $device_tpl, $domain) = self::check($template['device'],'ua');
+        empty($device_tpl) && list($device_name, $device_tpl, $domain) = self::check(self::$config['device'],'ua');
         /**
          * 无指定USER_AGENT  判断域名模板
          */
-        empty($device_tpl) && list($device_name, $device_tpl, $domain) = self::check($template['device'],'domain');
+        empty($device_tpl) && list($device_name, $device_tpl, $domain) = self::check(self::$config['device'],'domain');
         $def_tpl = $device_tpl;
 
         iPHP::$mobile = false;
         if (empty($def_tpl)) {
             //检查是否移动设备
-            if (self::agent($template['mobile']['agent'])) {
+            if (self::agent(self::$config['mobile']['agent'])) {
                 iPHP::$mobile = true;
-                $mobile_tpl   = $template['mobile']['tpl'];
+                $mobile_tpl   = self::$config['mobile']['tpl'];
                 $device_name  = 'mobile';
                 $def_tpl      = $mobile_tpl;
-                $domain       = $template['mobile']['domain'];
+                $domain       = self::$config['mobile']['domain'];
             }
         }
 
         if (empty($def_tpl)) {
             $device_name = 'desktop';
-            $def_tpl     = $template['desktop']['tpl'];
+            $def_tpl     = self::$config['desktop']['tpl'];
             $domain      = $config['router']['url'];
         }
         define('iPHP_DEFAULT_TPL', $def_tpl);
         define('iPHP_MOBILE_TPL', $mobile_tpl);
         // define('iPHP_DEVICE_TPL', $device_tpl);
+        define('iPHP_ROUTER_URL', $config['router']['url']);
         define('iPHP_DEVICE', $device_name);
         define('iPHP_DOMAIN', $domain);
 
-        if($domain!=$config['router']['url']){
-            $config['router'] = str_replace($config['router']['url'], $domain, $config['router']);
-        }
+        iPHP_DOMAIN == iPHP_ROUTER_URL OR self::router($config['router']);
         // self::redirect();
     }
+    public static function router(&$router,$deep=false) {
+        $router = is_array($router) && $deep ?
+                array_map(array(self,'router'), $router) :
+                str_replace(iPHP_ROUTER_URL, iPHP_DOMAIN, $router);
+
+        return $router;
+    }
+    //所有设备网址
+    public static function urls($array) {
+        $array = (array)$array;
+        $urls = array();
+        if($array){
+            $iurl = array(
+                'url' => $array['href']
+            );
+            $array['pageurl'] && $iurl['pageurl'] = $array['pageurl'];
+
+            if(self::$config['desktop']['domain']){
+                $urls['desktop'] = str_replace(iPHP_ROUTER_URL, self::$config['desktop']['domain'], $iurl);
+            }
+            if(self::$config['mobile']['domain']){
+                $urls['mobile'] = str_replace(iPHP_ROUTER_URL, self::$config['mobile']['domain'], $iurl);
+            }
+            if(self::$config['device'])foreach (self::$config['device'] as $key => $value) {
+                if($value['domain']){
+                    $name = strtolower($value['name']);
+                    $urls[$name] = str_replace(iPHP_ROUTER_URL, $value['domain'], $iurl);
+                }
+            }
+        }
+        return $urls;
+    }
+
     private static function redirect(){
         define('iPHP_REQUEST_SCHEME',($_SERVER['SERVER_PORT'] == 443)?'https':'http');
         define('iPHP_REQUEST_HOST',iPHP_REQUEST_SCHEME.'://'.($_SERVER['HTTP_X_HTTP_HOST']?$_SERVER['HTTP_X_HTTP_HOST']:$_SERVER['HTTP_HOST']));

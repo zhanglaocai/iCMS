@@ -118,11 +118,11 @@ class contentApp {
 
         $rs['category'] = categoryApp::get_lite($category);
 
-        $rs['iurl'] = iURL::get($this->app, array($rs, $category));
-        $rs['url'] OR $rs['url'] = $rs['iurl']->href;
+        $rs['iurl'] = (array)iURL::get($this->app, array($rs, $category));
+        $rs['url'] OR $rs['url'] = $rs['iurl']['href'];
         $rs['link'] = '<a href="'.$rs['url'].'" class="'.$this->app.'">'.$rs['title'].'</a>';
 
-        ($tpl && $category['mode'] == '1') && iCMS::redirect_html($rs['iurl']->path, $rs['iurl']->href);
+        ($tpl && $category['mode'] == '1') && iCMS::redirect_html($rs['iurl']['path'], $rs['iurl']['href']);
 
         if($category['mode'] && stripos($rs['url'], '.php?')===false){
             iURL::page_url($rs['iurl']);

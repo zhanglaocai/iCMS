@@ -146,12 +146,11 @@ class articleApp {
 			return false;
 		}
 
-		$_iurlArray = array($article, $category);
-		$article['iurl'] = iURL::get('article', $_iurlArray, $page);
-		$article['url'] = $article['iurl']->href;
+		$article['iurl'] = (array)iURL::get('article', array($article, $category), $page);
+		$article['url'] = $article['iurl']['href'];
 		$article['link'] = "<a href='{$article['url']}'>{$article['title']}</a>";
 
-		($tpl && $category['mode'] == '1') && iCMS::redirect_html($article['iurl']->path, $article['iurl']->href);
+		($tpl && $category['mode'] == '1') && iCMS::redirect_html($article['iurl']['path'], $article['iurl']['href']);
 
 		$article['category'] = categoryApp::get_lite($category);
 
@@ -263,7 +262,7 @@ class articleApp {
 	}
 	public static function page($article,$page,$total,$count,$mode=null){
 		$pageArray = array();
-		$pageurl = $article['iurl']->pageurl;
+		$pageurl = $article['iurl']['pageurl'];
 		if ($total > 1) {
 			$_GLOBALS_iPage = $GLOBALS['iPage'];
 			$mode && iURL::page_url($article['iurl']);

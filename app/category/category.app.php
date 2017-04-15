@@ -97,6 +97,9 @@ class categoryApp{
                 unset($category[$key]);
             }
         }
+        iDevice::router($category);
+        iDevice::router($category['iurl']);
+        iDevice::router($category['navArray'],true);
         return $category;
     }
     public static function get_cids($cid = "0",$all=true,$root_array=null) {

@@ -14,6 +14,8 @@ class iCMS {
 
 	public static function init(){
         self::$config = iPHP::config();
+        iDevice::init(self::$config);
+
         define('iCMS_URL',       self::$config['router']['url']);
         define('iCMS_PUBLIC_URL',self::$config['router']['public']);
         define('iCMS_USER_URL',  self::$config['router']['user']);
@@ -23,16 +25,14 @@ class iCMS {
 
         iFS::init(self::$config['FS']);
         iCache::init(self::$config['cache']);
-        iDevice::init(self::$config);
-        iURL::init(self::$config['router']);
-        iURL::$CONFIG+= array(
+        iURL::init(self::$config['router'],array(
             'user_url' => iCMS_USER_URL,
             'api_url'  => iCMS_PUBLIC_URL,
             'tag'      => self::$config['tag'],//标签配置
             'iurl'     => self::$config['iurl'],//应用路由定义
-            'device'   => self::$config['template'],//设备
+            'device'   => array('iDevice','urls'),//设备网址
             'domain'   => array('categoryApp','domain')//绑定域名回调
-        );
+        ));
 	}
     /**
      * 运行应用程序

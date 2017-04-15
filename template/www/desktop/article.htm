@@ -13,9 +13,9 @@
     </title>
     <meta name="keywords" content="<!--{$article.keywords}-->" />
     <meta name="description" content="<!--{$article.description}-->" />
-    <meta name="mobile-agent" content="format=xhtml;url=<!--{$article.url|replace:$site.url:$site.urls.mobile}-->">
-    <meta name="mobile-agent" content="format=html5;url=<!--{$article.url|replace:$site.url:$site.urls.mobile}-->">
-    <link rel="alternate" media="only screen and(max-width: 640px)" href="<!--{$article.url|replace:$site.url:$site.urls.mobile}-->">
+    <meta name="mobile-agent" content="format=xhtml;url=<!--{$article.iurl.mobile.url}-->">
+    <meta name="mobile-agent" content="format=html5;url=<!--{$article.iurl.mobile.url}-->">
+    <link rel="alternate" media="only screen and(max-width: 640px)" href="<!--{$article.iurl.mobile.url}-->">
     <!--{iCMS:public:ui}-->
 </head>
 
