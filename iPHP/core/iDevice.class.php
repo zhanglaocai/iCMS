@@ -83,7 +83,7 @@ class iDevice {
             }
             if(self::$config['device'])foreach (self::$config['device'] as $key => $value) {
                 if($value['domain']){
-                    $name = strtolower($value['name']);
+                    $name = trim($value['name']);
                     $urls[$name] = str_replace(iPHP_ROUTER_URL, $value['domain'], $iurl);
                 }
             }

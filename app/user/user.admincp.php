@@ -17,10 +17,6 @@ class userAdmincp{
     public function do_config(){
         configAdmincp::app($this->appid);
     }
-    public function _config_filter_open($open){
-
-        return $open;
-    }
     public function do_save_config(){
         foreach ((array)$_POST['config']['open'] as $key => $value) {
             if($value['appid'] && $value['appkey']){
@@ -38,11 +34,9 @@ class userAdmincp{
     public function do_add(){
         if($this->uid) {
             $rs = iDB::row("SELECT * FROM `#iCMS@__user` WHERE `uid`='$this->uid' LIMIT 1;");
-            if($rs){
-                $userdata = iDB::row("SELECT * FROM `#iCMS@__user_data` WHERE `uid`='$this->uid' LIMIT 1;");
-            }
+            $rs && $userdata = iDB::row("SELECT * FROM `#iCMS@__user_data` WHERE `uid`='$this->uid' LIMIT 1;");
         }
-        iPHP::callback(array("formerApp","add"),array($this->appid,$rs,true));
+        iPHP::callback(array("formerApp","add"),array($this->appid,$rs,false));
         include admincp::view("user.add");
     }
     /**
