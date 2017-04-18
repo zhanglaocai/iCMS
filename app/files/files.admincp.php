@@ -78,7 +78,7 @@ class filesAdmincp{
         $ext       = iSecurity::escapeStr($_GET['ext']);
         iFS::check_ext($ext,0) OR iUI::json(array('state'=>'ERROR','msg'=>'不允许的文件类型'));
         iFS::$ERROR_TYPE = true;
-        $_GET['watermark'] OR iFile::$watermark = false;
+        $_GET['watermark'] OR files::$watermark = false;
         $F = iFS::IO($name,$udir,$ext);
         $F ===false && iUI::json(iFS::$ERROR);
         iUI::json(array(
@@ -96,11 +96,11 @@ class filesAdmincp{
      * @return [type] [description]
      */
     public function do_upload(){
-//iFile::$check_data = true;
-    	$_POST['watermark'] OR iFile::$watermark = false;
+//files::$check_data = true;
+    	$_POST['watermark'] OR files::$watermark = false;
         iFS::$ERROR_TYPE = true;
     	if($this->id){
-            iFS::$data = iFile::get('id',$this->id);
+            iFS::$data = files::get('id',$this->id);
             $F = iFS::upload('upfile');
             if($F && $F['size']!=iFS::$data->size){
                 iDB::query("update `#iCMS@__files` SET `size`='".$F['size']."' WHERE `id` = '$this->id'");
@@ -129,16 +129,16 @@ class filesAdmincp{
      * @return [type] [description]
      */
     public function do_download(){
-        iFile::$userid   = false;
+        files::$userid   = false;
         $rs            = iFS::get_filedata('id',$this->id);
         $FileRootPath  = iFS::fp($rs->filepath,"+iPATH");
         iFS::check_ext($rs->filepath,true) OR iUI::alert('文件类型不合法!');
-        iFile::$userid = members::$userid;
+        files::$userid = members::$userid;
         $fileresults   = iHttp::remote($rs->ofilename);
     	if($fileresults){
     		iFS::mkdir(dirname($FileRootPath));
     		iFS::write($FileRootPath,$fileresults);
-            iFile::$watermark = !isset($_GET['unwatermark']);
+            files::$watermark = !isset($_GET['unwatermark']);
             iFS::hook('write',array($FileRootPath,$rs->ext));
 
     		$_FileSize	= strlen($fileresults);

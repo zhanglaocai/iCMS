@@ -40,7 +40,7 @@ class admincp {
 		members::check_login(); //用户登陆验证
 		members::check_priv('ADMINCP','page');//检查是否有后台权限
 
-		iFile::init(array(
+		files::init(array(
 			'userid'    => members::$userid,
 			'watermark' => iCMS::$config['watermark']
 		));

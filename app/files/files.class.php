@@ -37,7 +37,7 @@
  *
  */
 
-class iFile {
+class files {
     public static $TABLE_DATA       = null;
     public static $TABLE_MAP        = null;
     public static $check_data       = true;
@@ -58,25 +58,25 @@ class iFile {
     }
 
     public static function init($vars=null){
-        iFile::config(iFS::$config['table']);
+        files::config(iFS::$config['table']);
 
-        isset($vars['userid']) && iFile::$userid = $vars['userid'];
+        isset($vars['userid']) && files::$userid = $vars['userid'];
 
         iFS::$CALLABLE = array(
-            'insert' => array('iFile','insert'),
-            'update' => array('iFile','update'),
-            'get'    => array('iFile','get'),
-            // 'write'  => array('iFile','cloud_write'),
+            'insert' => array(self,'insert'),
+            'update' => array(self,'update'),
+            'get'    => array(self,'get'),
+            // 'write'  => array(self,'cloud_write'),
             'upload' => array(),
         );
         if (iFS::$config['cloud']['enable'] && self::$cloud_enable) {
-            iCloud::init(iFS::$config['cloud']);
-            iFS::$CALLABLE['upload'][] = array('iFile','cloud_upload');
-            iFS::$CALLABLE['delete']   = array('iCloud','delete');
+            files_cloud::init(iFS::$config['cloud']);
+            iFS::$CALLABLE['upload'][] = array(self,'cloud_upload');
+            iFS::$CALLABLE['delete']   = array(self,'cloud_delete');
         }
         if(self::$watermark){
             $vars['watermark'] && self::$watermark_config = $vars['watermark'];
-            self::$watermark_config && iFS::$CALLABLE['upload'][]= array('iFile','watermark');
+            self::$watermark_config && iFS::$CALLABLE['upload'][]= array('files','watermark');
         }
     }
     public static function watermark($fp,$ext) {
@@ -91,16 +91,20 @@ class iFile {
         }
     }
     public static function cloud_upload($fp,$ext) {
-        iCloud::write($fp);
+        $r = files_cloud::write($fp);
         //不保留本地功能
         if(iFS::$config['cloud']['local']){
             //删除delete hook阻止云端删除动作
             iFS::$CALLABLE['delete'] = null;
             iFS::del($fp);
         }
+        return $r;
+    }
+    public static function cloud_delete($fp) {
+        return files_cloud::delete($fp);
     }
     public static function cloud_write($fp,$data) {
-        iCloud::write($fp);
+        return files_cloud::write($fp);
     }
 
     public static function index_fileid($indexid,$appid='1'){

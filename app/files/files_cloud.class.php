@@ -8,7 +8,7 @@
  * @license http://www.iiiphp.com/license
  * @version 2.0.0
  */
-class iCloud{
+class files_cloud{
     public static $config = null;
     public static $error  = null;
 

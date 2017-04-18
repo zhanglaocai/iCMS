@@ -269,10 +269,9 @@ function _modal_dialog(cancel_text){
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">出 处</span>
-              <input type="text" name="source" class="span6" id="source" value="<?php echo $rs['source'] ; ?>"/>
+              <input type="text" name="source" class="span2" id="source" value="<?php echo $rs['source'] ; ?>"/>
               <?php echo propAdmincp::btn_group("source");?>
             </div>
-            <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">作 者</span>
               <input type="text" name="author" class="span2" id="author" value="<?php echo $rs['author'] ; ?>"/>
               <?php echo propAdmincp::btn_group("author");?>
@@ -378,8 +377,6 @@ function _modal_dialog(cancel_text){
               提取缩略图 </span><span class="add-on wauto">
               <input name="dellink" type="checkbox" id="dellink" value="1"/>
               清除链接 </span>  <span class="add-on wauto">
-              <input name="isredirect" type="checkbox" id="isredirect" value="1" />
-              增强图片下载 </span>
               <?php if(iCMS::$config['watermark']['enable']=="1"){ ?>
               <span class="add-on wauto">
               <input name="iswatermark" type="checkbox" id="iswatermark" value="1" />
