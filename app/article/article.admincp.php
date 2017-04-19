@@ -528,7 +528,6 @@ class articleAdmincp{
 
         $pubdate   = str2time($_POST['pubdate']);
         $postype   = $_POST['postype']?$_POST['postype']:0;
-        isset($_POST['inbox']) && $status = "0";
         $userid OR $userid = members::$userid;
         $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
 

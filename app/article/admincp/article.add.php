@@ -368,9 +368,6 @@ function _modal_dialog(cancel_text){
               <input name="ischapter" type="checkbox" id="ischapter" value="1" <?php if($rs['chapter']) echo 'checked="checked"'  ?>/>
               章节模式</span>
               <span class="add-on wauto">
-              <input name="inbox" type="checkbox" id="inbox" value="1" <?php if($rs['status']=="0")echo 'checked="checked"'  ?>/>
-              存为草稿</span>
-              <span class="add-on wauto">
               <input name="remote" type="checkbox" id="remote" value="1" <?php if(self::$config['remote']=="1")echo 'checked="checked"'  ?>/>
               下载远程图片</span><span class="add-on wauto">
               <input name="autopic" type="checkbox" id="autopic" value="1" <?php if(self::$config['autopic']=="1")echo 'checked="checked"'  ?>/>
