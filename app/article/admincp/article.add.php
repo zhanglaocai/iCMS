@@ -369,15 +369,18 @@ function _modal_dialog(cancel_text){
               章节模式</span>
               <span class="add-on wauto">
               <input name="remote" type="checkbox" id="remote" value="1" <?php if(self::$config['remote']=="1")echo 'checked="checked"'  ?>/>
-              下载远程图片</span><span class="add-on wauto">
+              下载远程图片</span>
+              <span class="add-on wauto">
               <input name="autopic" type="checkbox" id="autopic" value="1" <?php if(self::$config['autopic']=="1")echo 'checked="checked"'  ?>/>
-              提取缩略图 </span><span class="add-on wauto">
+              提取缩略图 </span>
+              <span class="add-on wauto">
               <input name="dellink" type="checkbox" id="dellink" value="1"/>
-              清除链接 </span>  <span class="add-on wauto">
+              清除链接
+              </span>
               <?php if(iCMS::$config['watermark']['enable']=="1"){ ?>
               <span class="add-on wauto">
-              <input name="iswatermark" type="checkbox" id="iswatermark" value="1" />
-              不添加水印</span>
+                <input name="iswatermark" type="checkbox" id="iswatermark" value="1" />不添加水印
+              </span>
               <?php }?>
             </div>
             <div class="clearfloat mb10"></div>

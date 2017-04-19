@@ -176,7 +176,7 @@ class category {
             $parent[$C['cid']]               = $C['rootid'];
             $rootid[$C['rootid']][$C['cid']] = $C['cid'];
             $app[$C['appid']][$C['cid']]     = $C['cid'];
-            self::cahce_item($C);
+            self::cahce_item($C);//临时缓存
         }
 
         foreach ((array)$app as $appid => $value) {
