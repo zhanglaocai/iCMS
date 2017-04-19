@@ -63,16 +63,16 @@ class files {
         isset($vars['userid']) && files::$userid = $vars['userid'];
 
         iFS::$CALLABLE = array(
-            'insert' => array(self,'insert'),
-            'update' => array(self,'update'),
-            'get'    => array(self,'get'),
-            // 'write'  => array(self,'cloud_write'),
+            'insert' => array('files','insert'),
+            'update' => array('files','update'),
+            'get'    => array('files','get'),
+            // 'write'  => array('files','cloud_write'),
             'upload' => array(),
         );
         if (iFS::$config['cloud']['enable'] && self::$cloud_enable) {
             files_cloud::init(iFS::$config['cloud']);
-            iFS::$CALLABLE['upload'][] = array(self,'cloud_upload');
-            iFS::$CALLABLE['delete']   = array(self,'cloud_delete');
+            iFS::$CALLABLE['upload'][] = array('files','cloud_upload');
+            iFS::$CALLABLE['delete']   = array('files','cloud_delete');
         }
         if(self::$watermark){
             $vars['watermark'] && self::$watermark_config = $vars['watermark'];
@@ -92,6 +92,7 @@ class files {
     }
     public static function cloud_upload($fp,$ext) {
         $r = files_cloud::write($fp);
+        var_dump($r);
         //不保留本地功能
         if(iFS::$config['cloud']['local']){
             //删除delete hook阻止云端删除动作
