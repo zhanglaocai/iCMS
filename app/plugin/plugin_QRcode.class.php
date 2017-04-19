@@ -12,12 +12,12 @@ class plugin_QRcode {
      */
     public static function HOOK($content) {
         plugin::library('phpqrcode.php');
-
 		$expires = 86400;
 		header("Cache-Control: maxage=" . $expires);
 		header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
 		header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $expires) . ' GMT');
 		header('Content-type: image/png');
+
 		$filepath = false;
 		if (isset($_GET['cache'])) {
 			$name = substr(md5($content), 8, 16);
@@ -25,9 +25,9 @@ class plugin_QRcode {
 		}
 		is_file($filepath) OR QRcode::png($content, $filepath, 'L', 4, 2);
 		if ($filepath) {
-			$png = readfile($filepath);
-			// exit($png);
+			$content = readfile($filepath);
 		}
-        return $png;
+
+        return $content;
     }
 }
