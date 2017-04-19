@@ -34,7 +34,7 @@ class publicApp {
 
 	public function API_qrcode() {
 		$url = iSecurity::escapeStr($_GET['url']);
-		iPHP::vendor('QRcode', $url);
+		echo iPHP::callback(array("plugin_QRcode","HOOK"),$url);
 	}
 	public static function seccode() {
 		return iView::fetch('iCMS://public.seccode.htm');
