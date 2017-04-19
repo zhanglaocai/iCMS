@@ -326,8 +326,8 @@ class tagAdmincp{
     }
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
-        iMAP::del_data($id,$this->appid,'category');
-        iMAP::del_data($id,$this->appid,'prop');
+        iMap::del_data($id,$this->appid,'category');
+        iMap::del_data($id,$this->appid,'prop');
     	tag::del($id,'id');
     	$dialog && iUI::success("标签删除成功",'js:parent.$("#tr'.$id.'").remove();');
     }

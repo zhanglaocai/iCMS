@@ -722,8 +722,8 @@ class articleAdmincp{
             $msg.= tag::del($art['tags'],'name',$id);
         }
 
-        iMAP::del_data($id,self::$appid,'category');
-        iMAP::del_data($id,self::$appid,'prop');
+        iMap::del_data($id,self::$appid,'category');
+        iMap::del_data($id,self::$appid,'prop');
 
         article::del_comment($id);
         $msg.= self::del_msg('评论数据删除');
