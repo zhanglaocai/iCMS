@@ -8,7 +8,7 @@ defined('iPHP') OR exit('What are you doing?');
 admincp::head();
 ?>
 <script type="text/javascript">
-window.catchRemoteImageEnable = <?php echo iCMS::$config['catch_remote']=="1"?'true':'false';?>;
+window.catchRemoteImageEnable = <?php echo iCMS::$config['article']['catch_remote']?'true':'false';?>;
 </script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.ueditor.js"></script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/ueditor/ueditor.all.min.js"></script>
