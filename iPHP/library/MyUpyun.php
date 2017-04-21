@@ -11,7 +11,7 @@ class MyUpYun extends Upyun
 	
 	public function __construct($conf)
 	{
-		$this->$conf = $conf;
+		$this->conf = $conf;
 		
 		$bucketConfig = new Config($conf['Bucket'], $conf['AccessKey'], $conf['SecretKey']);
 		parent::__construct($bucketConfig);
