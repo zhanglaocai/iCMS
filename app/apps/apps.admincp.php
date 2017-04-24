@@ -54,8 +54,7 @@ class appsAdmincp{
         $status  = (int)$_POST['status'];
 
         $menu = json_decode(stripcslashes($_POST['menu']));
-        $menu = json_encode($menu);
-        $menu = addslashes($menu);
+        $menu = addslashes(cnjson_decode($menu));
 
         $name OR iUI::alert('应用名称不能为空!');
         empty($app) && $app = iPinyin::get($name);
@@ -64,7 +63,7 @@ class appsAdmincp{
         $table_array  = $_POST['table'];
         if($table_array){
           $table_array  = array_filter($table_array);
-          $table  = addslashes(json_encode($table_array));
+          $table  = addslashes(cnjson_decode($table_array));
         }
 
         $config_array = $_POST['config'];
@@ -76,7 +75,7 @@ class appsAdmincp{
           $config_array['iurl'] = json_decode(stripcslashes($config_array['iurl']),true);
         }
         $config_array = array_filter($config_array);
-        $config = addslashes(json_encode($config_array));
+        $config = addslashes(cnjson_decode($config_array));
 
         $fields = '';
         $fieldata = $_POST['fields'];
@@ -100,7 +99,7 @@ class appsAdmincp{
             }
           }
           //字段数据存入数据库
-          $fields = addslashes(json_encode($field_array));
+          $fields = addslashes(cnjson_decode($field_array));
         }
 
         $addtime = time();
@@ -138,7 +137,7 @@ class appsAdmincp{
                 $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
                 // //添加到字段数据里
                 // $field_array = array_merge($field_array,$addons_base_fields);
-                // $array['fields'] = addslashes(json_encode($field_array));
+                // $array['fields'] = addslashes(cnjson_decode($field_array));
               }
               $array['table']  = $table_array;
               $array['config'] = $config_array;
@@ -146,8 +145,8 @@ class appsAdmincp{
               $config_array['template'] = apps_mod::template($array,'array');
               $config_array['iurl']   = apps_mod::iurl($array);
 
-              $array['table'] = addslashes(json_encode($table_array));
-              $array['config'] = addslashes(json_encode($config_array));
+              $array['table'] = addslashes(cnjson_decode($table_array));
+              $array['config'] = addslashes(cnjson_decode($config_array));
               $msg = "应用创建完成!";
             }
 
@@ -201,10 +200,10 @@ class appsAdmincp{
                     $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段
                     $addons_fieldata = $addons_base_fields+$addons_fieldata;
                     $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
-                    $array['table'] = addslashes(json_encode($table_array));
+                    $array['table'] = addslashes(cnjson_decode($table_array));
                     // //添加到字段数据里
                     // $field_array = array_merge($field_array,$addons_base_fields);
-                    // $array['fields'] = addslashes(json_encode($field_array));
+                    // $array['fields'] = addslashes(cnjson_decode($field_array));
                   }
                 }
               }
@@ -212,7 +211,7 @@ class appsAdmincp{
               if($apptype=="2"){ //只删除自定义应用的表
                 //不存在附加表数据 直接删除附加表 返回 table的json值 $table_array为引用参数
                 apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
-                $array['table'] = addslashes(json_encode($table_array));
+                $array['table'] = addslashes(cnjson_decode($table_array));
               }else{
                 if($table_array){
                   $data_tables = next($table_array);
@@ -223,7 +222,7 @@ class appsAdmincp{
                     in_array($union_id ,$data_tables))
                   {
                     apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
-                    $array['table'] = addslashes(json_encode($table_array));
+                    $array['table'] = addslashes(cnjson_decode($table_array));
                   }else{
                     apps_db::alter_table($addons_name,$addons_sql_array);
                   }
