@@ -46,15 +46,15 @@ class files {
     public static $watermark_config = null;
     public static $cloud_enable     = true;
 
-    private static $_data_table     = null;
-    private static $_map_table      = null;
+    public static $_DATA_TABLE     = null;
+    public static $_MAP_TABLE      = null;
 
     public static function config($table = array()) {
         empty($table) && $table = array('files','files_map');
 
         list(self::$TABLE_DATA,self::$TABLE_MAP) = $table;
-        self::$_data_table = iPHP_DB_PREFIX . self::$TABLE_DATA;
-        self::$_map_table  = iPHP_DB_PREFIX . self::$TABLE_MAP;
+        self::$_DATA_TABLE = '`'.iPHP_DB_PREFIX . self::$TABLE_DATA.'`';
+        self::$_MAP_TABLE  = '`'.iPHP_DB_PREFIX . self::$TABLE_MAP.'`';
     }
 
     public static function init($vars=null){
@@ -69,10 +69,9 @@ class files {
             // 'write'  => array('files','cloud_write'),
             'upload' => array(),
         );
-        if (iFS::$config['cloud']['enable'] && self::$cloud_enable) {
-            files_cloud::init(iFS::$config['cloud']);
-            iFS::$CALLABLE['upload'][] = array('files','cloud_upload');
-            iFS::$CALLABLE['delete']   = array('files','cloud_delete');
+
+        if (self::$cloud_enable) {
+            files_cloud::init(iCMS::$config['cloud']);
         }
         if(self::$watermark){
             $vars['watermark'] && self::$watermark_config = $vars['watermark'];
@@ -90,30 +89,19 @@ class files {
             }
         }
     }
-    public static function cloud_upload($fp,$ext) {
-        $r = files_cloud::write($fp);
-        var_dump($r);
-        //不保留本地功能
-        if(iFS::$config['cloud']['local']){
-            //删除delete hook阻止云端删除动作
-            iFS::$CALLABLE['delete'] = null;
-            iFS::del($fp);
-        }
-        return $r;
+    public static function update_size($id,$size='0'){
+        iDB::query("
+            UPDATE ".self::$_DATA_TABLE."
+            SET `size`='$size'
+            WHERE `id` = '$id'
+        ");
     }
-    public static function cloud_delete($fp) {
-        return files_cloud::delete($fp);
-    }
-    public static function cloud_write($fp,$data) {
-        return files_cloud::write($fp);
-    }
-
     public static function index_fileid($indexid,$appid='1'){
-        $rs      = iDB::all("SELECT `fileid` FROM " . self::$_map_table . " WHERE indexid = '{$indexid}'  AND appid = '{$appid}' ");
+        $rs      = iDB::all("SELECT `fileid` FROM " . self::$_MAP_TABLE . " WHERE indexid = '{$indexid}'  AND appid = '{$appid}' ");
         $fileid0 = iSQL::values($rs,'fileid','array',null);
         $result  = array();
         if($fileid0){
-            $rs = iDB::all("SELECT `fileid` FROM " . self::$_map_table . " WHERE `fileid` IN(".implode(',', $fileid0).") and indexid <> '{$indexid}'");
+            $rs = iDB::all("SELECT `fileid` FROM " . self::$_MAP_TABLE . " WHERE `fileid` IN(".implode(',', $fileid0).") and indexid <> '{$indexid}'");
             $fileid1 = iSQL::values($rs,'fileid','array',null);
             if($fileid1){
                 $result  = array_diff((array)$fileid0 , (array)$fileid1);
@@ -128,33 +116,36 @@ class files {
 
         $ids  = iSQL::multi_var($ids,true);
         $sql  = iSQL::in($ids,'id',false,true);
-        $rs   = iDB::all("SELECT * FROM ".self::$_data_table." where {$sql}");
+        $rs   = iDB::all("SELECT * FROM ".self::$_DATA_TABLE." where {$sql}");
         $ret  = array();
         foreach ((array)$rs as $key => $value) {
             $path = self::path($value);
             $filepath = iFS::fp($path,'+iPATH');
-            iFS::del(iFS::fp($filepath,'+iPATH'));
+            iFS::del($filepath);
             $ret[] = $path;
         }
         return $ret;
     }
-    public static function delete_fdb($ids,$indexid,$appid='1'){
+    public static function delete_fdb($ids,$indexid=0,$appid='1'){
         if(empty($ids)) return array();
 
         $ids  = iSQL::multi_var($ids,true);
         $sql  = iSQL::in($ids,'id',false,true);
-        $sql && iDB::query("DELETE FROM ".self::$_data_table." where {$sql}");
-        $msql = iSQL::in($ids,'fileid');
-        $msql && iDB::query("DELETE FROM ".self::$_map_table." where indexid = '{$indexid}'  AND appid = '{$appid}' {$msql}");
+        $sql && iDB::query("DELETE FROM ".self::$_DATA_TABLE." where {$sql}");
+        $msql = iSQL::in($ids,'fileid',false,true);
+        $indexid && $msql.= iSQL::in($indexid,'indexid');
+        $appid && $msql.= iSQL::in($appid,'appid');
+        $msql && iDB::query("DELETE FROM ".self::$_MAP_TABLE." where {$msql}");
+
     }
     public static function del_app_data($appid=null){
         if($appid){
             iDB::query("
-                DELETE FROM ".self::$_data_table." where `id` IN(
-                    SELECT `fileid` FROM ".self::$_map_table." WHERE `appid` = '{$appid}'
+                DELETE FROM ".self::$_DATA_TABLE." where `id` IN(
+                    SELECT `fileid` FROM ".self::$_MAP_TABLE." WHERE `appid` = '{$appid}'
                 )
             ");
-            iDB::query("DELETE FROM ".self::$_map_table." where `appid` = '{$appid}'");
+            iDB::query("DELETE FROM ".self::$_MAP_TABLE." where `appid` = '{$appid}'");
         }
     }
 
@@ -191,7 +182,7 @@ class files {
         }
 
         $sql = self::$userid === false ? '' : " AND `userid`='" . self::$userid . "'";
-        $rs = iDB::row("SELECT {$s} FROM " . self::$_data_table. " WHERE `$f`='$v' {$sql} LIMIT 1");
+        $rs = iDB::row("SELECT {$s} FROM " . self::$_DATA_TABLE. " WHERE `$f`='$v' {$sql} LIMIT 1");
 
         if ($rs&&$s=='*') {
             $rs->filepath = $rs->path . $rs->filename . '.' . $rs->ext;

@@ -166,7 +166,7 @@ class category {
         }
         return $cid;
     }
-    public static function cache($one=false,$appid=null) {
+    public static function cache($appid=null) {
         $sql = self::init_sql($appid);
         $rs  = iDB::all("SELECT * FROM `#iCMS@__category` WHERE {$sql} ORDER BY `sortnum`  ASC");
         $hidden = array();

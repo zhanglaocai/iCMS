@@ -13,31 +13,56 @@ class files_cloud{
     public static $error  = null;
 
     public static function init($config) {
-        self::$config = $config;
-    }
-    public static function sdk($vendor=null) {
-        if($vendor===null) return false;
+        if(!$config['enable']) return false;
 
-        $conf = self::$config['sdk'][$vendor];
+        self::$config = $config;
+        iFS::$CALLABLE['upload'][] = array(__CLASS__,'upload');
+        iFS::$CALLABLE['delete']   = array(__CLASS__,'delete');
+    }
+    public static function sdk($sdk=null) {
+        if($sdk===null) return false;
+
+        $conf = self::$config['sdk'][$sdk];
         if($conf['AccessKey'] && $conf['SecretKey']){
-            iPHP::import(iPHP_LIB.'/'.$vendor.'.php');
-            return new $vendor($conf);
+            $class = 'files_cloud_'.$sdk;
+            return new $class($conf);
         }else{
             return false;
         }
     }
-    public static function write($frp,$local=null){
+    /**
+     * [上传文件]
+     * @param  [type] $fileRootPath  [文件绝对路径]
+     * @param  [type] $ext [description]
+     * @return [type]      [description]
+     */
+    public static function upload($fileRootPath,$ext) {
+        $res = self::upload_file($fileRootPath);
+        //不保留本地功能
+        if(self::$config['local']){
+            //删除delete hook阻止云端删除动作
+            iFS::$CALLABLE['delete'] = null;
+            iFS::del($fileRootPath);
+        }
+        return $res;
+    }
+    /**
+     * [上传文件]
+     * @param  [type] $fileRootPath   [文件绝对路径]
+     * @return [type]        [description]
+     */
+    public static function upload_file($fileRootPath){
         if(!self::$config['enable']) return false;
 
-        foreach ((array)self::$config['sdk'] as $vendor => $conf) {
-            $fp     = ltrim(iFS::fp($frp,'-iPATH'),'/');
-            $client = self::sdk($vendor);
+        foreach ((array)self::$config['sdk'] as $sdk => $conf) {
+            $filePath = ltrim(iFS::fp($fileRootPath,'-iPATH'),'/');
+            $client = self::sdk($sdk);
             if($client){
-                $res    = $client->uploadFile($frp,$conf['Bucket'],$fp);
-                $res    = json_decode($res,true);
+                $res = $client->_upload_file($fileRootPath,$filePath);
+                $res = json_decode($res,true);
                 if($res['error']){
-                    self::$error[$vendor] = array(
-                        'action' => 'write',
+                    self::$error[$sdk] = array(
+                        'action' => 'upload',
                         'code'   => 0,
                         'state'  => 'Error',
                         'msg'    => $res['msg']
@@ -45,21 +70,23 @@ class files_cloud{
                 }
             }
         }
-        // if(self::$config['local']){
-        //     $local[0] && $value = call_user_func_array($local[0],(array)$local[1]);
-        // }
     }
-    public static function delete($frp) {
+    /**
+     * [删除文件]
+     * @param  [type] $fileRootPath   [文件绝对路径]
+     * @return [type]        [description]
+     */
+    public static function delete($fileRootPath) {
         if(!self::$config['enable']) return false;
 
-        foreach ((array)self::$config['sdk'] as $vendor => $conf) {
-            $fp     = ltrim(iFS::fp($frp,'-iPATH'),'/');
-            $client = self::sdk($vendor);
+        foreach ((array)self::$config['sdk'] as $sdk => $conf) {
+            $filePath     = ltrim(iFS::fp($fileRootPath,'-iPATH'),'/');
+            $client = self::sdk($sdk);
             if($client){
-                $res = $client->delete($conf['Bucket'],$fp);
+                $res = $client->_delete_file($filePath);
                 $res = json_decode($res,true);
                 if($res['error']){
-                    self::$error[$vendor] = array(
+                    self::$error[$sdk] = array(
                         'action' => 'delete',
                         'code'   => 0,
                         'state'  => 'Error',

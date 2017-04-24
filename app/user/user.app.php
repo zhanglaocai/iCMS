@@ -630,6 +630,21 @@ class userApp {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
+
+		// if (iCMS::$config['user']['login']['interval']) {
+		// 	$ip = iSecurity::escapeStr(iPHP::get_ip());
+		// 	$logintime = time();
+		// 	$lastlogintime = iDB::value("
+  //               SELECT `lastlogintime`
+  //               FROM `#iCMS@__user`
+  //               WHERE `lastloginip`='$ip'
+  //               ORDER BY uid DESC LIMIT 1;");
+
+		// 	if ($lastlogintime - $logintime > iCMS::$config['user']['login']['interval']) {
+		// 		iUI::code(0, 'user:login:interval', 'username', 'json');
+		// 	}
+		// }
+
 		$remember && user::$cookietime = 14 * 86400;
 		$user = user::login($uname, $pass, (strpos($uname, '@') === false ? 'nk' : 'un'));
 		if ($user === true) {
@@ -666,6 +681,11 @@ class userApp {
 
 	public function ACTION_register() {
 		iCMS::$config['user']['register']['enable'] OR exit(iUI::lang('user:register:forbidden'));
+
+		if (iCMS::$config['user']['register']['seccode']) {
+			$seccode = iSecurity::escapeStr($_POST['seccode']);
+			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
+		}
 
 		$regip = iSecurity::escapeStr(iPHP::get_ip());
 		$regdate = time();
@@ -709,15 +729,10 @@ class userApp {
 		$fwd = iPHP::callback(array("filterApp","run"),array(&$nickname),false);
 		$fwd && iUI::alert('user:register:nickname:filter');
 
-
 		trim($_POST['password']) OR iUI::code(0, 'user:password:empty', 'password', 'json');
 		trim($_POST['rstpassword']) OR iUI::code(0, 'user:password:rst_empty', 'rstpassword', 'json');
 		$password == $rstpassword OR iUI::code(0, 'user:password:unequal', 'password', 'json');
 
-		if (iCMS::$config['user']['register']['seccode']) {
-			$seccode = iSecurity::escapeStr($_POST['seccode']);
-			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
-		}
 		$_setting = array();
 		$_setting['inbox']['receive'] = 'follow';
 		$setting = addslashes(json_encode($_setting));

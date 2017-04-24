@@ -300,7 +300,7 @@ class articleAdmincp{
             }
             $_count = count($rs);
         }
-        include admincp::view("files.manage","admincp");
+        include admincp::view("files.manage","files");
     }
     /**
      * [正文预览]

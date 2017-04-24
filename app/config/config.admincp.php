@@ -59,7 +59,7 @@ class configAdmincp{
         $config['iurl'] = apps::get_iurl();
         self::write($config);
     }
-    public static function head($title=null){
+    public static function head($title=null,$action="config"){
         include admincp::view("config.head","config");
     }
     public static function foot(){
