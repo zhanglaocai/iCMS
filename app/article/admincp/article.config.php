@@ -120,4 +120,10 @@ configAdmincp::head("文章系统设置");
   </div>
 </div>
 <span class="help-inline">开启台 后台输入的文章都将经过关键字过滤</span>
+<div class="clearfloat mb10"></div>
+<div class="input-prepend">
+  <span class="add-on">字符分隔符</span>
+  <input type="text" name="config[clink]" class="span3" id="article_clink" value="<?php echo $config['clink'] ; ?>"/>
+</div>
+<span class="help-inline">文章自定义链接字符分隔符</span>
 <?php configAdmincp::foot();?>

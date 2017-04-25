@@ -553,9 +553,9 @@ class articleAdmincp{
             article::check_title($title) && iUI::alert('该标题的文章已经存在!请检查是否重复');
         }
         $category = category::get($cid);
-        if(strstr($category->rule->article,'{LINK}')!==false){
+        if(strstr($category->rule['article'],'{LINK}')!==false){
             if(empty($clink)){
-                $clink = iPinyin::get($title);
+                $clink = iPinyin::get($title,self::$config['clink']);
             }
             if(empty($aid) && $clink) {
                 article::check_clink($clink) && iUI::alert('该文章自定义链接已经存在!请检查是否重复');
