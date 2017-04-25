@@ -910,7 +910,8 @@ class Parsedown
 
             if (isset($Element['handler']))
             {
-                $markup .= $this->$Element['handler']($Element['text']);
+                // $markup .= $this->$Element['handler']($Element['text']);
+                $markup .= call_user_func_array(array($this,$Element['handler']), array($Element['text']));
             }
             else
             {
