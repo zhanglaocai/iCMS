@@ -148,6 +148,7 @@ class weixinAdmincp{
         $msgtype OR iUI::alert("请选择回复消息的类型");
         $msg OR iUI::alert("请填写回复内容");
 
+        $msg     = stripslashes_deep($msg);
         $msg     = addslashes(json_encode($msg));
         $addtime = time();
         $fields  = array('pid', 'name', 'eventype', 'eventkey', 'msgtype', 'operator', 'msg', 'addtime', 'status');
