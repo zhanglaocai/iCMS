@@ -271,11 +271,15 @@ class categoryAdmincp {
                 }
                 iUI::success('更新完成!','js:1');
             break;
-            case 'name':
+            case 'update':
                 foreach($id_array as $k=>$cid){
-                    $name   = iSecurity::escapeStr($_POST['name'][$cid]);
-                    iDB::query("UPDATE `#iCMS@__category` SET `name` = '$name' WHERE `cid` ='".(int)$cid."' LIMIT 1");
-                    //$this->cahce_item($cid);
+                    $name = iSecurity::escapeStr($_POST['name'][$cid]);
+                    $dir = iSecurity::escapeStr($_POST['dir'][$cid]);
+                    iDB::query("
+                        UPDATE `#iCMS@__category`
+                        SET `name` = '$name',`dir` = '$dir'
+                        WHERE `cid` ='".(int)$cid."' LIMIT 1
+                    ");
                 }
                 iUI::success('更新完成!','js:1');
             break;

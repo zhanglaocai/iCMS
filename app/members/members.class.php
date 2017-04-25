@@ -76,10 +76,13 @@ class members{
                 iPHP::set_cookie(self::$AUTH,authcode($a.$sep.$p,'ENCODE'));
             }
         }
-        return self::gateway($c);
+        return self::result($c);
     }
-
-	public static function gateway($s=null){
+    public static function gateway($way){
+        self::$GATEWAY = $way;
+        return new self();
+    }
+	private static function result($s=null){
         $s OR self::logout();
         switch (self::$GATEWAY) {
             case 'ajax':

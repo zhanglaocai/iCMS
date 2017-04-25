@@ -183,7 +183,8 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
                   propAdmincp::flag($rs[$i]['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);
                 } ?>
               </td>
-              <td><?php echo $rs[$i]['dir'] ; ?></td>
+              <td><input type="text" name="dir[<?php echo $rs[$i]['cid'] ; ?>]" value="<?php echo $rs[$i]['dir'] ; ?>" /></td>
+
               <td><a href="<?php echo APP_DOURI; ?>&rootid=<?php echo $rs[$i]['rootid'] ; ?>"><?php echo  $root?$root->name:'顶级'.$this->category_name ; ?></a></td>
               <td><?php echo $rs[$i]['count'] ; ?></td>
               <td>
@@ -217,11 +218,12 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
                       <li><a data-toggle="batch" data-action="merge"><i class="fa fa-random"></i> 合并<?php echo $this->category_name;?></a></li>
                       <li><a data-toggle="batch" data-action="move"><i class="fa fa-fighter-jet"></i> 移动<?php echo $this->category_name;?></a></li>
                       <li><a data-toggle="batch" data-action="recount"><i class="fa fa-refresh"></i> 更新记录数</a></li>
-                      <li><a data-toggle="batch" data-action="name"><i class="fa fa-info-circle"></i> 更新名称</a></li>
                       <li><a data-toggle="batch" data-action="mkdir"><i class="fa fa-gavel"></i> 重建目录</a></li>
                       <li><a data-toggle="batch" data-action="dir"><i class="fa fa-gavel"></i> 更改目录</a></li>
                       <li><a data-toggle="batch" data-action="status"><i class="fa fa-square"></i> <?php echo $this->category_name;?>状态</a></li>
                       <?php echo $this->batchbtn();?>
+                      <li class="divider"></li>
+                      <li><a data-toggle="batch" data-action="update"><i class="fa fa-check"></i> 更新</a></li>
                       <li class="divider"></li>
                       <li><a data-toggle="batch" data-action="dels"><i class="fa fa-trash-o"></i> 删除</a></li>
                     </ul>

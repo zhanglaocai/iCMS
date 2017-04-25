@@ -6,10 +6,6 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();
-$version_url="http://www.idreamsoft.com/cms/version.php?callback=?"
-."&VERSION=".iCMS_VERSION
-."&RELEASE=".iCMS_RELEASE
-."&GIT_COMMIT=".GIT_COMMIT;
 ?>
 <div class="iCMS-container">
   <div class="row-fluid">
@@ -244,17 +240,6 @@ $version_url="http://www.idreamsoft.com/cms/version.php?callback=?"
     </div>
   </div>
 </div>
-<script type="text/javascript">
-$(function(){
-	window.setTimeout(function(){
-		$.getJSON("<?php echo $version_url ; ?>",
-		    function(o){
-            $('#iCMS_RELEASE').text(o.release);
-            $('#iCMS_GIT').text(o.git);
-		    }
-		);
-	},1000);
-});
-</script>
-<?php iPHP::callback(array('patchAdmincp','check_js'));?>
+<?php iPHP::callback(array('patchAdmincp','check_version'));?>
+<?php iPHP::callback(array('patchAdmincp','check_update'));?>
 <?php admincp::foot();?>

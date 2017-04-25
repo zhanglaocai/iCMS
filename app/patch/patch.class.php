@@ -13,6 +13,7 @@
  * @author coolmoo
  */
 define('PATCH_DIR', iPATH . 'cache/iCMS/patch/');//临时文件夹
+iHttp::$CURLOPT_REFERER = ACP_HOST;
 
 class patch {
 	const PATCH_URL = "http://patch.idreamsoft.com";	//自动更新服务器
@@ -23,7 +24,7 @@ class patch {
 	public static $test = false;
 
 	public static function init($force = false) {
-		$info = self::getVersion($force);
+		$info = self::info($force);
 		if ($info->app == iPHP_APP &&
 			version_compare($info->version, iCMS_VERSION, '>=') &&
 			$info->release > iCMS_RELEASE) {
@@ -33,7 +34,43 @@ class patch {
 			return array(self::$version, self::$release, $info->update, $info->changelog);
 		}
 	}
-	public static function getVersion($force = false) {
+	public static function git($do,$commit_id=null,$type='array') {
+        $commit_id===null && $commit_id = GIT_COMMIT;
+        $last_commit_id = $_GET['last_commit_id'];
+
+		$url = patch::PATCH_URL . '/git?do='.$do
+        ."&VERSION=".iCMS_VERSION
+        ."&RELEASE=".iCMS_RELEASE
+		.'&commit_id=' .$commit_id
+		.'&last_commit_id='.$last_commit_id
+		.'&t=' . time();
+
+		$data = iHttp::remote($url);
+		if($type=='array'){
+			if($data){
+				return json_decode($data,true);
+			}
+			return array();
+		}else{
+			if($data){
+				return $data;
+			}
+			if($type=='json'){
+				return '[]';
+			}
+		}
+	}
+	public static function version($force = false) {
+        $url = self::PATCH_URL."/cms.version?callback=?"
+        ."&VERSION=".iCMS_VERSION
+        ."&RELEASE=".iCMS_RELEASE
+        ."&GIT_COMMIT=".GIT_COMMIT;
+        $json = iHttp::remote($url);
+        if ($json) {
+            echo $json;
+        }
+	}
+	public static function info($force = false) {
 		iFS::mkdir(PATCH_DIR);
 		$tFilePath = PATCH_DIR . 'version.json'; //临时文件夹
 		if (iFS::ex($tFilePath) && time() - iFS::mtime($tFilePath) < 3600 && !$force) {
