@@ -27,6 +27,7 @@ class weixinApp{
     }
     function do_save_config(){
         $setting = iACP::app('setting');
+        $_POST['config'] = stripslashes_deep($_POST['config']);
         $_POST['config'] = array_merge((array)$this->config,(array)$_POST['config']);
         $setting->save($this->appid);
     }

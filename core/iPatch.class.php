@@ -65,7 +65,10 @@ class iPatch {
 		@set_time_limit(0);
 		// Unzip uses a lot of memory
 		@ini_set('memory_limit', '256M');
-		require iPHP_CORE.'/pclzip.class.php';//加载zip操作类
+        if(!class_exists("PclZip")){
+            require_once iPHP_CORE.'/pclzip.class.php';//加载zip操作类
+        }
+
 	    $zipFile	= PATCH_DIR.'/'.self::$zipName;//临时文件
 		$msg		= '正在对 ['.self::$zipName.'] 更新包进行解压缩<iCMS>';
 		$zip		= new PclZip($zipFile);

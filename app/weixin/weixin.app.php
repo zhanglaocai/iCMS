@@ -76,6 +76,7 @@ class weixinApp {
                 if ($event=='subscribe') {
                 	$subscribe_msg = $site_name.' ('.$site_host.') '.$site_desc."\n\n回复:".$site_key.' 将会收到我们最新为您准备的信息';
                 	weixin::$config['subscribe'] && $subscribe_msg = weixin::$config['subscribe'];
+                    $subscribe_msg = str_replace(array('&quot;'), '"', $subscribe_msg);
                 	//$subscribe_msg = str_replace(array('{site.name}'), replace, subject)
 	                weixin::msg_xml($subscribe_msg,$FromUserName,$ToUserName);
                 }
