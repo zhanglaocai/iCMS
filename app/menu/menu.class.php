@@ -20,7 +20,7 @@ class menu {
 	}
 
     public static function mid($vars,$sort=0,$parent=null,$level=0){
-        foreach ($vars as $k => $v) {
+        foreach ((array)$vars as $k => $v) {
             ++$sort;
             $key = $v['id']?$v['id']:$k;
             if(!isset($v['sort'])) $v['sort']= $sort;
