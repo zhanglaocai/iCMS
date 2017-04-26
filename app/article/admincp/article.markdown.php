@@ -89,12 +89,11 @@ $(function(){
     var keyCode = e.keyCode || e.which || e.charCode;
     var ctrlKey = e.ctrlKey || e.metaKey;
     if(ctrlKey && keyCode == 83) {
+        e.preventDefault();
         hotkey = true;
         $("#<?php echo APP_FORMID;?>").submit();
     }
     hotkey = false;
-    e.preventDefault();
-    return false;
   });
 });
 
