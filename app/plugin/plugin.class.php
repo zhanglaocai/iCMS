@@ -6,16 +6,13 @@
  * @author coolmoo <idreamsoft@qq.com>
  */
 class plugin{
-    public static $DIR = iPHP_APP_DIR . '/'.__CLASS__;
-    public static $LIB = iPHP_APP_DIR . '/'.__CLASS__.'/library';
-
     public static function library($file) {
-        $path = self::$LIB.'/'.$file;
+        $path = iPHP_APP_DIR . '/'.__CLASS__.'/library/'.$file;
         iPHP::import($path);
     }
     public static function import($file) {
-        $path = self::$DIR.'/'.$file;
+        $path = iPHP_APP_DIR . '/'.__CLASS__.'/'.$file;
         iPHP::import($path);
     }
-
 }
+
