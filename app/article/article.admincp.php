@@ -637,6 +637,10 @@ class articleAdmincp{
                 ));
                 return;
             }
+            if(isset($_GET['keyCode'])){
+                iUI::success('文章保存成功','url:'.APP_URI."&do=add&id=".$aid);
+            }
+
             $moreBtn = array(
                     array("text" =>"查看该文章","target"=>'_blank',"url"=>$article_url,"close"=>false),
                     array("text" =>"编辑该文章","url"=>APP_URI."&do=add&id=".$aid),
@@ -675,7 +679,9 @@ class articleAdmincp{
                     'indexid' => $aid
                 );
             }
-
+            if(isset($_GET['keyCode'])){
+                iUI::success('文章保存成功');
+            }
             iUI::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$REFERER_URL);
         }
     }
