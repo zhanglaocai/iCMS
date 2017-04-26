@@ -194,7 +194,7 @@ $lock_file = iPATH.'cache/install.lock';
 				<div class="row-fluid">
 					<div class="span4">
 						<img class="marketing-img" src="./img/Development.png">
-						<h2>十年磨一剑,免费且开源。</h2>
+						<h2>十年磨一剑,免费且开源</h2>
 						<p>由艾梦软件历时多年开发，并在实际项目中高效运行。iCMS 项目使用了
 						<a href="http://www.idreamsoft.com/iPHP/" target="_blank">iPHP</a>、
 						<a href="http://github.com/twbs/bootstrap" target="_blank">Bootstrap</a>、
@@ -206,12 +206,12 @@ $lock_file = iPATH.'cache/install.lock';
 					</div>
 					<div class="span4">
 						<img class="marketing-img" src="./img/responsive-design.png">
-						<h2>一套程序、多种设备。</h2>
+						<h2>一套程序,适配多种设备</h2>
 						<p>你的网站能在 <a href="http://www.idreamsoft.com" target="_blank">iCMS</a> 的帮助下通过一套内容管理系统快速、有效适配手机、微信、微信小程序、平板、PC等设备，这一切都是归于 iCMS 多终端适配功能。</p>
 					</div>
 					<div class="span4">
 						<img class="marketing-img" src="./img/Enterprise-Features.jpg">
-						<h2>功能齐全,可自定义</h2>
+						<h2>完整的功能支持</h2>
 						<p><a href="http://www.idreamsoft.com" target="_blank">iCMS</a> 提供了网站运营所需的基本功能。也提供了功能强大标签(TAG)系统、自定义应用、自定义表单、内容多属性多栏目归属、自定义内链、高负载、整合第三方登陆</p>
 					</div>
 				</div>
