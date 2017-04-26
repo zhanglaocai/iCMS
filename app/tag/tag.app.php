@@ -107,7 +107,7 @@ class tagApp {
         }
         return $tag_array;
     }
-    public static function multi($array) {
+    public static function all($array) {
         if(empty($array)){
             return;
         }
@@ -133,42 +133,37 @@ class tagApp {
             if($value){
                 $a = explode(',', $value);
                 foreach ($a as $ak => $av) {
-                    $tMap[$av] = $id;
-                    $tArray[]  = $av;
+                    $tMap[$av][] = 't:'.$id; //self::map 中array_merge 必需以字符串合并 才不会重建索引
+                    $tArray[$av] = $av;
                 }
             }
         }
-        $tagArray = self::multi($tArray);
-        $tagArray = self::map($tagArray,$tMap);
-        $tagArray = self::tags($tagArray,$tkey);
-        return $tagArray;
+        if($tArray){
+            $tagArray = self::all($tArray);
+            $tagArray = self::map($tagArray,$tMap);
+            $tagArray = self::tpl_var($tagArray,$tkey);
+            return $tagArray;
+        }
+        return false;
     }
-    private static function tags($array,$tkey,$id=null){
+    private static function tpl_var($array,$tkey){
         $tArray = array();
-        foreach ((array) $array AS $_id => $tag) {
-            if(isset($tag['id'])){
-                $id===null && $id = $_id;
-                $tArray[$id][$tkey.'_array'][$tag['id']] = $tag;
-                $tArray[$id][$tkey.'_link'].= $tag['link'];
-            }else{
-                $tArray+=(array)self::tags($tag,$tkey,$_id);
+        foreach ((array) $array AS $iid => $tag) {
+            $iid = substr($iid, 2);
+            foreach ($tag as $key => $value) {
+                $tArray[$iid][$tkey.'_array'][$value['id']] = $value;
+                $tArray[$iid][$tkey.'_link'].= $value['link'];
             }
         }
         return $tArray;
     }
     private static function map($tagArray,$tMap){
         $array = array();
-        $map   = $tMap;
         foreach ((array)$tagArray as $tid => $tag) {
-            $id = $tMap[$tag['name']];
-            unset($map[$tag['name']]);
-            $akey = array_search($id, $map);
-            $map = $tMap;
-            if($akey){
-                $array[$id][$tid]= $tag;
-            }else{
-                $array[$id] = $tag;
-            }
+            $iidArray = $tMap[$tag['name']];
+            $a = array_fill_keys($iidArray,array($tid=>$tag));
+            $array = array_merge_recursive($array,$a);
+            unset($a);
         }
         return $array;
     }

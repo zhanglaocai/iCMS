@@ -91,11 +91,7 @@ class categoryApp{
     public static function get_lite($category){
         $keyArray = array('sortnum','password','mode','domain','config','addtime');
         foreach ($keyArray as $i => $key) {
-            if(is_array($category[$key])){
-                $category[$key] = self::get_lite($category[$key]);
-            }else{
-                unset($category[$key]);
-            }
+             unset($category[$key]);
         }
         iDevice::router($category);
         iDevice::router($category['iurl']);

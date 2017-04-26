@@ -241,7 +241,7 @@ class articleAdmincp{
      * [简易编辑]
      * @return [type] [description]
      */
-	public function do_updatetitle(){
+	public function do_edit(){
         $id          = (int)$_POST['id'];
         $cid         = (int)$_POST['cid'];
         $pid         = (int)$_POST['pid'];
@@ -264,7 +264,7 @@ class articleAdmincp{
             $data['pubdate'] = time();
 		}
         article::update($data ,compact('id'));
-		exit('1');
+		iUI::json(array('code'=>1));
 	}
     /**
      * [查找正文图片]
