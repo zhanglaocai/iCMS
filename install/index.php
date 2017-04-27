@@ -18,7 +18,7 @@ $_URI      = $_SERVER['PHP_SELF'];
 $_DIR      = substr(dirname($_URI),0,-8);
 $_DIR      = trim($_DIR,'/').'/';
 $_DIR =='/' OR $_DIR = '/'.$_DIR;
-$_URL      = 'http://'.$_SERVER['HTTP_HOST'].rtrim($_DIR,'/');
+$_URL      =  (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://".$_SERVER['HTTP_HOST'].rtrim($_DIR,'/');
 $lock_file = iPATH.'cache/install.lock';
 ?>
 <!DOCTYPE html>
@@ -345,6 +345,7 @@ $lock_file = iPATH.'cache/install.lock';
 					array('cache','缓存目录'),
 					array('cache/conf','网站配置目录'),
 					array('cache/conf/iCMS','网站配置目录'),
+					array('cache/conf/iCMS/config.php','网站配置文件'),
 					array('cache/iCMS','系统缓存目录'),
 					array('cache/template','模板缓存目录'),
 					array('res','资源上传目录'),

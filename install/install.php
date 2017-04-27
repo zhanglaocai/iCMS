@@ -30,8 +30,11 @@ if($_POST['action']=='install'){
 	define('iPHP_DB_PREFIX',$db_prefix);	// 表名前缀, 同一数据库安装多个请修改此处
     define('iPHP_DB_PREFIX_TAG','#iCMS@__');
 
-	require iPATH.'iPHP/iPHP.php';//iPHP框架文件
+    require_once iPATH.'iPHP/iPHP.php';
     require_once iPHP_CORE.'/iUI.class.php';
+    require_once iPHP_APP_CORE.'/iCMS.class.php';
+
+    iPHP::$apps = iCMS::default_apps();
 
     $router_url     = iSecurity::escapeStr(trim($_POST['ROUTER_URL'],'/'));
     $admin_name     = iSecurity::escapeStr(trim($_POST['ADMIN_NAME']));
