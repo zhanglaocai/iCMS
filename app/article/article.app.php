@@ -126,10 +126,8 @@ class articleApp {
 			strstr($tpl, '.htm') && $article_tpl = $tpl;
 			iView::assign('category', $article['category']);unset($article['category']);
 			iView::assign('article', $article);
-			$html = iView::render($article_tpl, 'article');
-			if (iView::$gateway == "html") {
-				return array($html, $article);
-			}
+			$view = iView::render($article_tpl, 'article');
+			if($view) return array($view,$article);
 
 		} else {
 			return $article;

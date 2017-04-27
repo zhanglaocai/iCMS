@@ -46,7 +46,13 @@ configAdmincp::head("标签系统设置");
 <div class="input-prepend input-append">
   <span class="add-on">标签模板</span>
   <input type="text" name="config[tpl]" class="span4" id="tpl" value="<?php echo $config['tpl'] ; ?>"/>
-<?php echo filesAdmincp::modal_btn('模板','tpl');?></div>
+  <?php echo filesAdmincp::modal_btn('模板','tpl');?>
+</div>
+<div class="clearfloat mb10"></div>
+<div class="input-prepend"> <span class="add-on">TKEY分割符</span>
+  <input type="text" name="config[tkey]" class="span4" id="tkey" value="<?php echo $config['tkey'] ; ?>"/>
+</div>
+<span class="help-inline">留空，按紧凑型生成(pinyin)</span>
 <div class="mt20"></div>
 <div class="alert alert-block">
   此配置为标签的URL默认配置<br />

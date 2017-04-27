@@ -37,7 +37,6 @@ class iView {
         self::$handle->register_block("cache", array("iView", "block_cache"));
         self::$handle->template_callback = array(
             "resource" => array("iView","callback_path"),
-            "output"   => array("iView","callback_output"),
             "func"     => array("iView","callback_func"),
         );
         self::$handle->assign('GET', $_GET);
@@ -152,9 +151,6 @@ class iView {
             iPHP::error_404('Unable to find the template file <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
         }
     }
-    public static function callback_output($html,$file=null){
-        return $html;
-    }
     public static function app_vars($app_name = true, $out = false) {
         $app_name === true && $app_name = iPHP::$app_name;
         $rs = self::get_vars($app_name);
@@ -164,9 +160,7 @@ class iView {
         return self::$handle->get_template_vars($key);
     }
     public static function clear_tpl($file = null) {
-        if(empty(self::$handle)){
-            self::init();
-        }
+        self::$handle OR self::init();
         self::$handle->clear_compiled_tpl($file);
     }
     public static function value($key, $value) {
@@ -182,12 +176,11 @@ class iView {
         self::$handle->clear_assign($key);
     }
     public static function display($tpl) {
+        self::$handle OR self::init();
         self::$handle->display($tpl);
     }
     public static function fetch($tpl) {
-        if(empty(self::$handle)){
-            self::init();
-        }
+        self::$handle OR self::init();
         return self::$handle->fetch($tpl);
     }
     public static function render($tpl, $p = 'index') {

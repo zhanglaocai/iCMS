@@ -79,11 +79,11 @@ class categoryApp{
             $GLOBALS['page']>1 && $tpl='list';
 
             if($category['template']){
-                $html = iView::render($category['template'][$tpl],'category.'.$tpl);
+                $view = iView::render($category['template'][$tpl],'category.'.$tpl);
             }else{
                 iPHP::error_404('找不到该栏目的模板配置,请设置栏目'.$tpl.'模板', 20002);
             }
-            if(iView::$gateway=="html") return array($html,$category);
+            if($view) return array($view,$category);
         }else{
         	return $category;
         }

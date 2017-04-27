@@ -461,7 +461,7 @@ function modal_tplfile(el,a){
             <div class="input-prepend"> <span class="add-on">水印图片文件</span>
               <input type="text" name="config[watermark][img]" class="span3" id="watermark_img" value="<?php echo $config['watermark']['img'] ; ?>"/>
             </div>
-            <span class="help-inline">水印图片存放路径：conf/iCMS/watermark.png， 如果水印图片不存在，则使用文字水印</span>
+            <span class="help-inline">水印图片存放路径：/cache/conf/iCMS/watermark.png， 如果水印图片不存在，则使用文字水印</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">水印文字</span>
               <input type="text" name="config[watermark][text]" class="span3" id="watermark_text" value="<?php echo $config['watermark']['text'] ; ?>"/>
@@ -557,18 +557,13 @@ function modal_tplfile(el,a){
             </div>
           </div>
           <div id="config-other" class="tab-pane hide">
-            <div class="input-prepend"> <span class="add-on">拼音分割符</span>
-              <input type="text" name="config[other][py_split]" class="span3" id="py_split" value="<?php echo $config['other']['py_split'] ; ?>"/>
-            </div>
-            <span class="help-inline">留空，按紧凑型生成(pinyin)</span>
-            <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">侧边栏</span>
               <div class="switch" data-on-label="启用" data-off-label="关闭">
                 <input type="checkbox" data-type="switch" name="config[other][sidebar_enable]" id="other_sidebar_enable" <?php echo $config['other']['sidebar_enable']?'checked':''; ?>/>
               </div>
-            </div>
-            <div class="switch" data-on-label="打开" data-off-label="最小化">
-              <input type="checkbox" data-type="switch" name="config[other][sidebar]" id="other_sidebar" <?php echo $config['other']['sidebar']?'checked':''; ?>/>
+              <div class="switch" data-on-label="打开" data-off-label="最小化">
+                <input type="checkbox" data-type="switch" name="config[other][sidebar]" id="other_sidebar" <?php echo $config['other']['sidebar']?'checked':''; ?>/>
+              </div>
             </div>
             <span class="help-inline">后台侧边栏默认开启,启用后可选择打开或者最小化</span>
             <hr />

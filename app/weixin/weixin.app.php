@@ -202,7 +202,7 @@ class weixinApp {
         // var_dump($event);
         if(is_array($event) &&isset($event['msgtype']) && $event['msgtype']=='tpl'){
             iView::assign('weixin',self::object2array($this->XML));
-            iView::render($event['msg']['Tpl']);
+            iView::display($event['msg']['Tpl']);
             exit;
         }
         weixin::msg_xml($event['msg'],$this->XML->FromUserName,$this->XML->ToUserName);

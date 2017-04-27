@@ -86,10 +86,8 @@ class contentApp {
             iView::assign('app', apps::get_app_lite($this->data));
             iView::assign($this->app, $rs);
             iView::assign('content', $rs);
-            $html = iView::render($app_tpl, $this->app);
-            if (iView::$gateway == "html") {
-                return array($html, $rs);
-            }
+            $view = iView::render($app_tpl, $this->app);
+            if($view) return array($view,$rs);
         } else {
             return $rs;
         }

@@ -84,7 +84,7 @@ class tag {
             }
 
 	    }else {
-			$tkey   = iPinyin::get($name,iCMS::$config['other']['py_split']);
+			$tkey   = iPinyin::get($name,iCMS::$config['tag']['tkey']);
 			$data   = compact(array(
                 'uid', 'cid', 'tcid', 'pid', 'tkey', 'name',
                 'seotitle', 'subtitle', 'keywords', 'description',

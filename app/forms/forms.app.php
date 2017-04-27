@@ -63,10 +63,8 @@ class formsApp {
             $forms_tpl = $forms['tpl'];
             strstr($tpl, '.htm') && $forms_tpl = $tpl;
             iView::assign('forms', $forms);
-            $html = iView::render($forms_tpl, 'article');
-            if (iView::$gateway == "html") {
-                return array($html, $article);
-            }
+            $view = iView::render($forms_tpl, 'article');
+            if($view) return array($view,$forms);
         } else {
             return $forms;
         }

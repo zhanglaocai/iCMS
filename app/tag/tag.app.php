@@ -66,8 +66,8 @@ class tagApp {
             if (strstr($tpl, '.htm')) {
                 return iView::render($tpl, 'tag');
             }
-            $html = iView::render($tag_tpl,'tag');
-            if(iView::$gateway=="html") return array($html,$tag);
+            $view = iView::render($tag_tpl,'tag');
+            if($view) return array($view,$tag);
         }else{
             return $tag;
         }

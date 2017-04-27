@@ -262,14 +262,13 @@ class htmlAdmincp{
 		$htm OR iUI::alert("文章所属栏目URL规则设置问题! 此栏目下的文章不能生成静态,请修改栏目的访问模式和URL规则");
 		$total = $htm[1]['page']['total'];
 		$title = $htm[1]['title'];
-
-		iFS::check_ext($htm[1]['iurl']->path) OR iUI::alert("文件类型不合法,禁止生成!<hr />请更改栏目->URL规则设置->内容规则");
-		iFS::mkdir($htm[1]['iurl']->dir);
-		iFS::write($htm[1]['iurl']->path,$htm[0]);
+		iFS::check_ext($htm[1]['iurl']['path']) OR iUI::alert("文件类型不合法,禁止生成!<hr />请更改栏目->URL规则设置->内容规则");
+		iFS::mkdir($htm[1]['iurl']['dir']);
+		iFS::write($htm[1]['iurl']['path'],$htm[0]);
 		if($total>=2){
 			for($ap=2;$ap<=$total;$ap++){
 				$htm   = $app->article($id,$ap);
-				$fpath = iURL::page_num($htm[1]['iurl']->pagepath,$ap);
+				$fpath = iURL::page_num($htm[1]['iurl']['pagepath'],$ap);
 				iFS::write($fpath,$htm[0]);
 			}
 		}

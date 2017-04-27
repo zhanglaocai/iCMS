@@ -29,8 +29,8 @@ class indexApp {
         if(iView::$gateway=="html" || iCMS::$config['template']['index']['rewrite']){
             iURL::page_url($iurl);
         }
-        $html = iView::render($index_tpl);
-        if(iView::$gateway=="html") return array($html,$iurl);
+        $view = iView::render($index_tpl);
+        if($view) return array($view,$iurl);
     }
     public function domain(){
         $domain = iCMS::$config['category']['domain'];

@@ -613,6 +613,7 @@ class articleAdmincp{
                 'id'      =>$aid,
                 'url'     =>$url,
                 'cid'     =>$cid,
+                'clink'   =>$clink,
                 'pubdate' =>$pubdate
             ),(array)$category))->href;
 

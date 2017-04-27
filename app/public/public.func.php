@@ -7,9 +7,8 @@
  */
 class publicFunc{
 	public static function public_ui($vars=null){
-		$dir = isset($vars['dir'])?$vars['dir'].'/':'';
-		iView::assign("ui",$vars);
-		echo iView::render("iCMS://{$dir}public.ui.htm");
+		iView::assign("public",$vars);
+		iView::display("iCMS://public.ui.htm");
 	}
 	public static function public_seccode($vars=null){
 		echo publicApp::seccode();
