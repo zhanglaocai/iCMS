@@ -20,8 +20,14 @@ $(function(){
       this.id   = this.id.replace("{key}",count);
       this.name = this.name.replace("{key}",count);
     });
-    var fmhref  = $('.files_modal',tdc).attr("href").replace("{key}",count);
-    $('.files_modal',tdc).attr("href",fmhref);
+    var tdid = $('td',tdc).attr("id").replace("{key}",count);
+    $('td',tdc).attr("id",tdid);
+
+    $('.files_modal',tdc).each(function(index, el) {
+      var href = $(this).attr("href").replace("{key}",count);
+      $(this).attr("href",href);
+    });
+
     tdc.appendTo(TD);
     return false;
   });
@@ -35,13 +41,24 @@ $(function(){
   });
 });
 function modal_tplfile(el,a){
-
   if(!el) return;
   if(!a.checked) return;
 
   var e   = $('#'+el)||$('.'+el);
   var def = $("#template_desktop_tpl").val();
   var val = a.value.replace(def+'/', "{iTPL}/");
+  e.val(val);
+  return 'off';
+}
+function modal_tpl_index(el,a){
+  if(!el) return;
+  if(!a.checked) return;
+
+  var e = $('#'+el)||$('.'+el),
+  p = e.parent().parent(),
+  pid = p.attr('id'),
+  dir = $('#'+pid+'_tpl').val(),
+  val = a.value.replace(dir+'/', "{iTPL}/");
   e.val(val);
   return 'off';
 }
@@ -166,99 +183,127 @@ function modal_tplfile(el,a){
                 <input type="checkbox" data-type="switch" name="config[template][index][rewrite]" id="index_rewrite" <?php echo $config['template']['index']['rewrite']?'checked':''; ?>/>
               </div>
             </div>
+            <input type="hidden" name="config[template][index][tpl]" value="<?php echo $config['template']['index']['tpl']?:$config['template']['desktop']['index']; ?>"/>
+            <input type="hidden" name="config[template][index][name]" value="<?php echo $config['template']['index']['name']?:'index' ; ?>"/>
             <span class="help-inline">如果栏目不是动态访问模式,且网站首页有分页 请开启此项</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">首页模板</span>
-              <input type="text" name="config[template][index][tpl]" class="span3" id="template_index_tpl" value="<?php echo $config['template']['index']['tpl'] ; ?>"/>
-              <input type="hidden" name="config[template][index][name]" class="span3" id="index_name" value="<?php echo $config['template']['index']['name']?$config['template']['index']['name']:'index' ; ?>"/>
-              <?php echo filesAdmincp::modal_btn('模板','template_index_tpl','file','tplfile');?>
-            </div>
-            <span class="help-inline">首页默认模板，注：最好使用<span class="label label-inverse">{iTPL}</span>代替模板目录,程序将会自行切换PC端或者移动端</span>
             <div class="clearfloat mb10 solid"></div>
-            <div class="input-prepend"> <span class="add-on">桌面端域名</span>
-              <input type="text" name="config[router][url]" class="span3" value="<?php echo $config['router']['url'] ; ?>"/>
+            <div id="template_desktop">
+              <div class="input-prepend"> <span class="add-on">桌面端域名</span>
+                <input type="text" name="config[router][url]" class="span3" value="<?php echo $config['router']['url'] ; ?>"/>
+              </div>
+              <span class="help-inline">例:<span class="label label-info">http://www.idreamsoft.com</span></span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend input-append"> <span class="add-on">桌面端模板</span>
+                <input type="text" name="config[template][desktop][tpl]" class="span3" id="template_desktop_tpl" value="<?php echo $config['template']['desktop']['tpl'] ; ?>"/>
+                <?php echo filesAdmincp::modal_btn('模板','template_desktop_tpl','dir');?>
+              </div>
+              <span class="help-inline">网站桌面端模板默认模板</span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend input-append"> <span class="add-on">首页模板</span>
+                <input type="text" name="config[template][desktop][index]" class="span3" id="template_desktop_index" value="<?php echo $config['template']['desktop']['index']?:'{iTPL}/index.htm' ; ?>"/>
+                <?php echo filesAdmincp::modal_btn('模板','template_desktop_index','file','tpl_index');?>
+              </div>
+              <span class="help-inline">桌面端默认模板</span>
             </div>
-            <span class="help-inline">例:<span class="label label-info">http://www.idreamsoft.com</span></span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">桌面端模板</span>
-              <input type="text" name="config[template][desktop][tpl]" class="span3" id="template_desktop_tpl" value="<?php echo $config['template']['desktop']['tpl'] ; ?>"/>
-              <?php echo filesAdmincp::modal_btn('模板','template_desktop_tpl','dir');?></div>
-            <span class="help-inline">网站桌面端模板默认模板</span>
             <div class="clearfloat mb10 solid"></div>
-            <div class="input-prepend"> <span class="add-on">移动端识别</span>
-              <input type="text" name="config[template][mobile][agent]" class="span3" id="template_mobile_agent" value="<?php echo $config['template']['mobile']['agent'] ; ?>"/>
+            <div id="template_mobile">
+              <div class="input-prepend"> <span class="add-on">移动端识别</span>
+                <input type="text" name="config[template][mobile][agent]" class="span3" id="template_mobile_agent" value="<?php echo $config['template']['mobile']['agent'] ; ?>"/>
+              </div>
+              <span class="help-inline">请用<span class="label label-info">,</span>分隔 如不启用自动识别请留空</span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend"> <span class="add-on">移动端域名</span>
+                <input type="text" name="config[template][mobile][domain]" class="span3" id="template_mobile_domain" value="<?php echo $config['template']['mobile']['domain'] ; ?>"/>
+              </div>
+              <span class="help-inline">例:<span class="label label-info">http://m.idreamsoft.com</span></span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend input-append"> <span class="add-on">移动端模板</span>
+                <input type="text" name="config[template][mobile][tpl]" class="span3" id="template_mobile_tpl" value="<?php echo $config['template']['mobile']['tpl'] ; ?>"/>
+                <?php echo filesAdmincp::modal_btn('模板','template_mobile_tpl','dir');?>
+              </div>
+              <span class="help-inline">网站移动端模板默认模板,如果不想让程序自行切换请留空</span>
+              <div class="clearfloat mb10"></div>
+              <div class="input-prepend input-append"> <span class="add-on">首页模板</span>
+                <input type="text" name="config[template][mobile][index]" class="span3" id="template_mobile_index" value="<?php echo $config['template']['mobile']['index']?:'{iTPL}/index.htm'; ?>"/>
+                <?php echo filesAdmincp::modal_btn('模板','template_mobile_index','file','tpl_index');?>
+              </div>
+              <span class="help-inline">移动端首页默认模板</span>
             </div>
-            <span class="help-inline">请用<span class="label label-info">,</span>分隔 如不启用自动识别请留空</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">移动端域名</span>
-              <input type="text" name="config[template][mobile][domain]" class="span3" id="template_mobile_domain" value="<?php echo $config['template']['mobile']['domain'] ; ?>"/>
-            </div>
-            <span class="help-inline">例:<span class="label label-info">http://m.idreamsoft.com</span></span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">移动端模板</span>
-              <input type="text" name="config[template][mobile][tpl]" class="span3" id="template_mobile_tpl" value="<?php echo $config['template']['mobile']['tpl'] ; ?>"/>
-              <?php echo filesAdmincp::modal_btn('模板','template_mobile_tpl','dir');?></div>
-            <span class="help-inline">网站移动端模板默认模板,如果不想让程序自行切换请留空</span>
-            <div class="clearfloat mb10"></div>
+            <div class="clearfloat mb10 solid"></div>
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th style="text-align:left"><span class="label label-important">模板优先级为:设备模板 &gt; 移动端模板 &gt; PC端模板</span> <span class="label label-inverse"><i class="icon-warning-sign icon-white"></i> 设备模板和移动端模板 暂时不支持生成静态模式</span></th>
+                  <th style="text-align:left;">
+                    <span class="label label-important fs16">模板优先级为:设备模板 &gt; 移动端模板 &gt; PC端模板</span>
+                    <span class="label label-inverse fs16"><i class="icon-warning-sign icon-white"></i> 设备模板和移动端模板 暂时不支持生成静态模式</span>
+                  </th>
                 </tr>
               </thead>
               <tbody id="template_device">
                 <?php foreach ((array)$config['template']['device'] as $key => $device) {?>
                 <tr class="device">
-                  <td>
+                  <td id="device_<?php echo $key;?>">
                     <div class="input-prepend input-append"> <span class="add-on">设备名称</span>
-                      <input type="text" name="config[template][device][<?php echo $key;?>][name]" class="span3" id="device_name_<?php echo $key;?>" value="<?php echo $device['name'];?>"/>
+                      <input type="text" name="config[template][device][<?php echo $key;?>][name]" class="span3" id="device_<?php echo $key;?>_name" value="<?php echo $device['name'];?>"/>
                       <a class="btn del_device"><i class="fa fa-trash-o"></i> 删除</a>
                     </div>
                     <span class="help-inline"></span>
                     <div class="clearfloat mb10"></div>
                     <div class="input-prepend"> <span class="add-on">设备识别符</span>
-                      <input type="text" name="config[template][device][<?php echo $key;?>][ua]" class="span3" id="device_ua_<?php echo $key;?>" value="<?php echo $device['ua'];?>"/>
+                      <input type="text" name="config[template][device][<?php echo $key;?>][ua]" class="span3" id="device_<?php echo $key;?>_ua" value="<?php echo $device['ua'];?>"/>
                     </div>
                     <span class="help-inline">设备唯一识别符,识别设备的User agent,如果多个请用<span class="label label-info">,</span>分隔.</span>
                     <div class="clearfloat mb10"></div>
                     <div class="input-prepend"> <span class="add-on">访问域名</span>
-                      <input type="text" name="config[template][device][<?php echo $key;?>][domain]" class="span3" id="device_domain_<?php echo $key;?>" value="<?php echo $device['domain'];?>"/>
+                      <input type="text" name="config[template][device][<?php echo $key;?>][domain]" class="span3" id="device_<?php echo $key;?>_domain" value="<?php echo $device['domain'];?>"/>
                     </div>
                     <span class="help-inline"></span>
                     <div class="clearfloat mb10"></div>
                     <div class="input-prepend input-append"> <span class="add-on">设备模板</span>
-                      <input type="text" name="config[template][device][<?php echo $key;?>][tpl]" class="span3" id="device_tpl_<?php echo $key;?>" value="<?php echo $device['tpl'];?>"/>
-                      <?php echo filesAdmincp::modal_btn('模板','device_tpl_'.$key,'dir');?>
+                      <input type="text" name="config[template][device][<?php echo $key;?>][tpl]" class="span3" id="device_<?php echo $key;?>_tpl" value="<?php echo $device['tpl'];?>"/>
+                      <?php echo filesAdmincp::modal_btn('模板',"device_{$key}_tpl",'dir');?>
                     </div>
                     <span class="help-inline">识别到的设备会使用这个模板设置</span>
+                    <div class="clearfloat mb10"></div>
+                    <div class="input-prepend input-append"> <span class="add-on">首页模板</span>
+                      <input type="text" name="config[template][device][<?php echo $key;?>][index]" class="span3" id="device_<?php echo $key;?>_index" value="<?php echo $device['index']?:'{iTPL}/index.htm';?>"/>
+                      <?php echo filesAdmincp::modal_btn('模板',"device_{$key}_index",'file','tpl_index');?>
+                    </div>
+                    <span class="help-inline">设备的首页模板</span>
                   </td>
                 </tr>
                 <?php }?>
               </tbody>
               <tfoot>
               <tr class="hide template_device_clone">
-                <td>
+                <td id="device_{key}">
                   <div class="input-prepend input-append"> <span class="add-on">设备名称</span>
-                    <input type="text" name="config[template][device][{key}][name]" class="span3" id="device_name_{key}" value="" disabled="disabled"/>
+                    <input type="text" name="config[template][device][{key}][name]" class="span3" id="device_{key}_name" value="" disabled="disabled"/>
                     <a class="btn del_device"><i class="fa fa-trash-o"></i> 删除</a>
                   </div>
                   <span class="help-inline"><span class="label label-info">例:iPad</span></span>
                   <div class="clearfloat mb10"></div>
                   <div class="input-prepend"> <span class="add-on">设备识别符</span>
-                    <input type="text" name="config[template][device][{key}][ua]" class="span3" id="device_ua_{key}" value="" disabled="disabled"/>
+                    <input type="text" name="config[template][device][{key}][ua]" class="span3" id="device_{key}_ua" value="" disabled="disabled"/>
                   </div>
                   <span class="help-inline">设备唯一识别符,识别设备的User agent<span class="label label-info">例:iPad</span>,如果多个请用<span class="label label-info">,</span>分隔.</span>
                   <div class="clearfloat mb10"></div>
                   <div class="input-prepend"> <span class="add-on">访问域名</span>
-                    <input type="text" name="config[template][device][{key}][domain]" class="span3" id="device_domain_{key}" value="" disabled="disabled"/>
+                    <input type="text" name="config[template][device][{key}][domain]" class="span3" id="device_{key}_domain" value="" disabled="disabled"/>
                   </div>
                   <span class="help-inline"><span class="label label-info">例:http://ipad.idreamsoft.com</span></span>
                   <div class="clearfloat mb10"></div>
                   <div class="input-prepend input-append"> <span class="add-on">设备模板</span>
-                    <input type="text" name="config[template][device][{key}][tpl]" class="span3" id="device_tpl_{key}" value="" disabled="disabled"/>
-                    <?php echo filesAdmincp::modal_btn('模板','device_tpl_{key}','dir');?>
+                    <input type="text" name="config[template][device][{key}][tpl]" class="span3" id="device_{key}_tpl" value="" disabled="disabled"/>
+                    <?php echo filesAdmincp::modal_btn('模板','device_{key}_tpl','dir');?>
                   </div>
                   <span class="help-inline">识别到的设备会使用这个模板设置</span>
+                  <div class="clearfloat mb10"></div>
+                  <div class="input-prepend input-append"> <span class="add-on">首页模板</span>
+                    <input type="text" name="config[template][device][{key}][index]" class="span3" id="device_{key}_index" value="" disabled="disabled"/>
+                    <?php echo filesAdmincp::modal_btn('模板','device_{key}_index','file','tpl_index');?>
+                  </div>
+                  <span class="help-inline">设备的首页模板</span>
                 </td>
               </tr>
               <tr>
@@ -309,7 +354,7 @@ function modal_tplfile(el,a){
               <div class="clearfloat mb10"></div>
               <div class="input-prepend">
                 <span class="add-on">REWRITE配置</span>
-                <textarea name="config[router][config]" id="router_config" class="span6" style="height:120px;"><?php echo $config['router']['config']?json_encode($config['router']['config']):'' ;?></textarea>
+                <textarea name="config[router][config]" id="router_config" class="span6" style="height:120px;"><?php echo json_encode($config['router']['config'])?:'' ;?></textarea>
               </div>
               <span class="help-inline">REWRITE配置,如果不熟悉请勿修改.敬请等待官方推出相关编辑器</span>
             </div>
@@ -351,7 +396,7 @@ function modal_tplfile(el,a){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append">
               <span class="add-on">分页缓存</span>
-              <input type="text" name="config[cache][page_total]" class="span1" id="page_total" value="<?php echo $config['cache']['page_total']?$config['cache']['page_total']:$config['cache']['time']; ?>"/>
+              <input type="text" name="config[cache][page_total]" class="span1" id="page_total" value="<?php echo $config['cache']['page_total']?:$config['cache']['time']; ?>"/>
               <span class="add-on" style="width:24px;">秒</span>
             </div>
             <span class="help-inline">设置分页总数缓存时间,设置此项分页性能将会有极大的提高.</span>
@@ -689,7 +734,7 @@ index iCMS_article_delta : iCMS_article
             <span class="help-inline">发送邮件的服务器使用的安全协议.默认为空.可选项"ssl" 或者 "tls"</span>
             <div class="clearfloat mt10"></div>
             <div class="input-prepend"> <span class="add-on">SMTP 端口</span>
-              <input type="text" name="config[mail][port]" class="span3" id="mail_port" value="<?php echo $config['mail']['port']?$config['mail']['port']:'25'; ?>"/>
+              <input type="text" name="config[mail][port]" class="span3" id="mail_port" value="<?php echo $config['mail']['port']?:'25'; ?>"/>
             </div>
             <span class="help-inline">发送邮件的服务器的端口,默认:25</span>
             <div class="clearfloat mt10"></div>

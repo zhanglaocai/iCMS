@@ -8,7 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.2.0
 */
-define('GIT_COMMIT', '7ba3bd421f6bb119c59bfc4e396683c001bedb49');
+define('GIT_COMMIT', '58a36074e39b0e0625fe5efc76a74584dd7e6ecf');
 define('GIT_AUTHOR', 'cool.tea');
 define('GIT_EMAIL', 'idreamsoft@qq.com');
-define('GIT_TIME', '1493271634');
+define('GIT_TIME', '1493285878');

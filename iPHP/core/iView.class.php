@@ -124,13 +124,6 @@ class iView {
                 return $_tpl;
             }
 
-            // if (iPHP_DEVICE != 'desktop') {//移动设备
-            //     $_tpl = str_replace($flag, iPHP_MOBILE_TPL, $tpl); // mobile/
-            //     if (@is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
-            //         return $_tpl;
-            //     }
-
-            // }
             $_tpl = str_replace($flag, iPHP_APP, $tpl);
             if (is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
                 return $_tpl;
@@ -139,12 +132,7 @@ class iView {
         } elseif (strpos($tpl, '{iTPL}') !== false) {
             $tpl = str_replace('{iTPL}', iPHP_DEFAULT_TPL, $tpl);
         }
-        // if (iPHP_DEVICE != 'desktop' && strpos($tpl, iPHP_APP) === false) {
-        //     $current_tpl = dirname($tpl);
-        //     if (!in_array($current_tpl, array(iPHP_DEFAULT_TPL, iPHP_MOBILE_TPL))) {
-        //         $tpl = str_replace($current_tpl . '/', iPHP_DEFAULT_TPL . '/', $tpl);
-        //     }
-        // }
+
         if (is_file(iPHP_TPL_DIR . "/" . $tpl)) {
             return $tpl;
         } else {

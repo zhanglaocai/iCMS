@@ -36,9 +36,7 @@ class htmlAdmincp{
     public function do_createIndex(){
         $indexTPL  = iCMS::$config['template']['index']['tpl']	= $this->PG['indexTPL'];
         $indexName = iCMS::$config['template']['index']['name']  = $this->PG['indexName'];
-    	$indexName OR $indexName ="index".iCMS::$config['router']['ext'];
     	iFS::check_ext('.'.iCMS::$config['router']['ext']) OR iUI::alert('文件类型不合法!');
-    	//iCMS::$config['template']['index_mode'] = 1;
 		configAdmincp::update('template');
     	$this->CreateIndex($indexTPL,$indexName);
     }
