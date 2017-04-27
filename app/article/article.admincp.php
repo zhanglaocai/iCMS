@@ -549,18 +549,14 @@ class articleAdmincp{
             // $fwd && iUI::alert('内容中包含被系统屏蔽的字符，请重新填写。');
         }
 
-        if(empty($aid) && self::$config['repeatitle']) {
-            article::check_title($title) && iUI::alert('该标题的文章已经存在!请检查是否重复');
+        if(self::$config['repeatitle']) {
+            article::check($title,$aid,'title') && iUI::alert('该标题的文章已经存在!请检查是否重复');
         }
         $category = category::get($cid);
-        if(strstr($category->rule['article'],'{LINK}')!==false){
-            if(empty($clink)){
-                $clink = iPinyin::get($title,self::$config['clink']);
-            }
-            if(empty($aid) && $clink) {
-                article::check_clink($clink) && iUI::alert('该文章自定义链接已经存在!请检查是否重复');
-            }
+        if(strstr($category->rule['article'],'{LINK}')!==false && empty($clink)){
+            $clink = iPinyin::get($title,self::$config['clink']);
         }
+        $clink && article::check($clink,$aid,'clink') && iUI::alert('该文章自定义链接已经存在!请检查是否重复');
 
 
         if(empty($description) && empty($url)) {

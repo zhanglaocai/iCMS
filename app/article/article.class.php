@@ -37,12 +37,13 @@ class article {
         $count = iDB::value("SELECT count(id) FROM `#iCMS@__article_data` where `aid` = '$aid'");
         iDB::query("UPDATE `#iCMS@__article` SET `chapter`='$count'  WHERE `id` = '$aid'");
     }
-    public static function check_title($title){
-        return iDB::value("SELECT `id` FROM `#iCMS@__article` where `title` = '$title'");
+    public static function check($value,$id=0,$field='title'){
+        $sql = "SELECT `id` FROM `#iCMS@__article` where `{$field}` = '$value'";
+        $id && $sql.=" AND `id` !='$id'";
+        print_r($sql);
+        return iDB::value($sql);
     }
-    public static function check_clink($clink){
-        return iDB::value("SELECT `id` FROM `#iCMS@__article` where `clink` = '$clink'");
-    }
+
     public static function value($field='id',$id=0){
         if(empty($id)){
             return;
