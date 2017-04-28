@@ -437,7 +437,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 		// $foo[$bar]
 		// $foo[5][blah]
 //		$this->_dvar_regexp = '\$[a-zA-Z0-9_]{1,}(?:' . $this->_var_bracket_regexp . ')*(?:' . $this->_var_bracket_regexp . ')*';
-		$this->_dvar_regexp = '\$\w{1,}(?:' . $this->_var_bracket_regexp . ')*(?:\.\$?\w+(?:' . $this->_var_bracket_regexp . ')*)*';
+		$this->_dvar_regexp = '&*\$\w{1,}(?:' . $this->_var_bracket_regexp . ')*(?:\.\$?\w+(?:' . $this->_var_bracket_regexp . ')*)*';
 
 		// matches valid variable syntax:
 		// $foo
@@ -481,30 +481,28 @@ class iTemplateLite_Compiler extends iTemplateLite {
 		// replace all php start and end tags
 //		$file_contents = preg_replace('%(<\?(?!php|=|$))%i', '<?php echo \'\\1\'? >'."\n", $file_contents);
 
-//2007-7-22 23:41 coolmoo add
         /* match anything resembling php tags */
         if (preg_match_all('~(<\?(?:\w+|=)?|\?>|language\s*=\s*[\"\']?\s*php\s*[\"\']?)~is', $file_contents, $sp_match)) {
              /* replace tags with placeholders to prevent recursive replacements */
              $sp_match[1] = array_unique($sp_match[1]);
              /* process each one */
              for ($curr_sp = 0, $for_max2 = count($sp_match[1]); $curr_sp < $for_max2; $curr_sp++) {
-                 if ($this->php_handling == "PHP_PASSTHRU") {
+                if ($this->php_handling == "PHP_PASSTHRU") {
                         /* echo php contents */
                         $file_contents = str_replace($sp_match[1][$curr_sp], '<?php echo \''.str_replace("'", "\'", $sp_match[1][$curr_sp]).'\'; ?>', $file_contents);
-                    } else if ($this->php_handling == "PHP_QUOTE") {
+                } else if ($this->php_handling == "PHP_QUOTE") {
                         /* quote php tags */
                         $file_contents = str_replace($sp_match[1][$curr_sp], htmlspecialchars($sp_match[1][$curr_sp]), $file_contents);
-                    } else if ($this->php_handling == "PHP_REMOVE") {
+                } else if ($this->php_handling == "PHP_REMOVE") {
                         /* remove php tags */
                         $file_contents = str_replace($sp_match[1][$curr_sp], '', $file_contents);
-                    } else {
+                } else {
                         /* PHP_ALLOW, but echo non php starting tags */
                         $sp_match[1][$curr_sp] = preg_replace('~(<\?(?!php|=|$))~i', '<?php echo \'\\1\'?>', $sp_match[1][$curr_sp]);
                         $file_contents = str_replace($sp_match[1][$curr_sp], $sp_match[1][$curr_sp], $file_contents);
-                    }
                 }
             }
-//2007-7-22 23:46
+        }
 		// remove literal blocks
 
 		preg_match_all("!{$ldq}\s*literal\s*{$rdq}(.*?){$ldq}\s*/literal\s*{$rdq}!s", $file_contents, $_match);
@@ -568,8 +566,11 @@ class iTemplateLite_Compiler extends iTemplateLite {
 		// extract the tag command, modifier and arguments
 		preg_match_all('/(?:(' . $this->_var_regexp . '|' . $this->_svar_regexp . '|\/?' . $this->_func_regexp . ')(' . $this->_mod_regexp . '*)(?:\s*[,\.]\s*)?)(?:\s+(.*))?/xs', $tag, $_match);
 
-		if ($_match[1][0][0] == '$' || $_match[1][0][0] == "'" || $_match[1][0][0] == '"' || $_match[1][0][0] == '%'){
+		if ($_match[1][0][0] == '&' || $_match[1][0][0] == '$' || $_match[1][0][0] == "'" || $_match[1][0][0] == '"' || $_match[1][0][0] == '%'){
 			$_result = $this->_parse_variables($_match[1], $_match[2]);
+			if($_match[1][0][0] == '&'){
+				return "<?php $_result; ?>";
+			}
 			return "<?php echo $_result; ?>";
 		}
 		// process a function
@@ -967,7 +968,14 @@ class iTemplateLite_Compiler extends iTemplateLite {
 			if (empty($modifiers[$key])){
 				$_result[]= $this->_parse_variable($tag_variable);
 			}else{
-				$_result[]= $this->_parse_modifier($this->_parse_variable($tag_variable), $modifiers[$key]);
+				$reference = null;
+				if($tag_variable[0] == '&'){
+					$tag_variable = substr($tag_variable, 1);
+					if($tag_variable[0] == '$'){
+						$reference = $this->_compile_variable($tag_variable).' = ';
+					}
+				}
+				$_result[]= $reference.$this->_parse_modifier($this->_parse_variable($tag_variable), $modifiers[$key]);
 			}
 		}
 		return $implode?implode('.', $_result):$_result;
@@ -1119,7 +1127,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 
 		preg_match_all('!\|(@?\w+)((?>:(?:'. $this->_qstr_regexp . '|[^|]+))*)!', '|' . $modifiers, $_match);
 		list(, $_mods, $_args) = $_match;
-		$count_mods            = count($_mods);
+		$count_mods = count($_mods);
 		for ($i = 0, $for_max = $count_mods; $i < $for_max; $i++){
 			preg_match_all('!:(' . $this->_qstr_regexp . '|[^:]+)!', $_args[$i], $_match);
 			$_arg       = $_match[1];
