@@ -81,7 +81,7 @@ $(function(){
               <tr id="tr<?php echo $data['id'] ; ?>">
                 <td><b><?php echo $data['id'] ; ?></b></td>
                 <td>
-                  <b><?php echo ltrim($data['app'],'forms_') ; ?></b>
+                  <b><?php echo forms::short_app($data['app']) ; ?></b>
                 </td>
                 <td>
                   <?php echo $data['name'] ; ?>

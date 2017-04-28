@@ -119,7 +119,8 @@ class formsAdmincp{
           $base_fields  = forms::base_fields_array();
         }
         empty($rs['tpl']) && $rs['tpl'] = '{iTPL}/forms.htm';
-        $rs['app'] = ltrim($rs['app'],'forms_');
+        $rs['app'] = forms::short_app($rs['app']);
+        apps_mod::$base_fields_key = array('id');
         include admincp::view("forms.create");
     }
   /**
@@ -141,7 +142,7 @@ class formsAdmincp{
         $name OR iUI::alert('表单名称不能为空!');
         empty($app) && $app = iPinyin::get($name);
         empty($title) && $title = $name;
-        $app = 'forms_'.ltrim($app,'forms_');
+        $app = 'forms_'.forms::short_app($app);
 
         $table_array  = $_POST['table'];
         if($table_array){

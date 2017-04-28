@@ -10,7 +10,12 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class forms{
-
+    public static function short_app($app){
+        if(strpos($app, 'forms_') !== false) {
+            $app = substr($app,6);
+        }
+        return $app;
+    }
     public static function base_fields_index(){
         return array(
             // 'index_id' =>'KEY `id` (`status`,`id`)',

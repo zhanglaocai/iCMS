@@ -58,13 +58,18 @@ class apps_mod {
             'index_cid_hits'   =>'KEY `cid_hits` (`status`,`cid`,`hits`)'
         );
     }
+    public static $base_fields_key = null;
     public static function base_fields_key($key=null){
-        $array = array('id','cid','ucid','pid','sortnum',
-            'title','editor','userid','pubdate','postime','tpl','hits',
-            'hits_today','hits_yday','hits_week','hits_month',
-            'favorite','comments','good','bad','creative',
-            'weight','mobile','postype','status'
-        );
+        if(self::$base_fields_key===null){
+          $array = array('id','cid','ucid','pid','sortnum',
+              'title','editor','userid','pubdate','postime','tpl','hits',
+              'hits_today','hits_yday','hits_week','hits_month',
+              'favorite','comments','good','bad','creative',
+              'weight','mobile','postype','status'
+          );
+        }else{
+          $array = self::$base_fields_key;
+        }
         if($key){
             return in_array($key, $array);
         }
