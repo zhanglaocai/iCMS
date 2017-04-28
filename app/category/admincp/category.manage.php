@@ -1,9 +1,12 @@
-<?php /**
- * @package iCMS
- * @copyright 2007-2017, iDreamSoft
- * @license http://www.idreamsoft.com iDreamSoft
- * @author coolmoo <idreamsoft@qq.com>
- */
+<?php
+/**
+* iCMS - i Content Management System
+* Copyright (c) 2007-2017 iCMSdev.com. All rights reserved.
+*
+* @author icmsdev <master@icmsdev.com>
+* @site https://www.icmsdev.com
+* @licence https://www.icmsdev.com/LICENSE.html
+*/
 defined('iPHP') OR exit('What are you doing?');
 iPHP::set_cookie(admincp::$APP_NAME.'_tabs',admincp::$APP_DO);
 admincp::head();
@@ -147,7 +150,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
             <a href="javascript:;" class="btn btn-info"><i class="fa fa-angle-double-up"></i> 全部折叠</a>
             <a href="javascript:;" class="btn btn-info"><i class="fa fa-angle-double-down"></i> 全部展开</a>
           </div>
-          <a class="btn btn-success" href="http://www.idreamsoft.com/doc/iCMS/act_rewrite.html" target="_blank"><i class="fa fa-question-circle"></i> 伪静态规则</a>
+          <a class="btn btn-success" href="https://www.icmsdev.com/docs/act_rewrite.html" target="_blank"><i class="fa fa-question-circle"></i> 伪静态规则</a>
         </div>
       </form>
       <?php } ?>

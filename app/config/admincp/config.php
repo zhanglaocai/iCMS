@@ -1,9 +1,12 @@
-<?php /**
- * @package iCMS
- * @copyright 2007-2017, iDreamSoft
- * @license http://www.idreamsoft.com iDreamSoft
- * @author coolmoo <idreamsoft@qq.com>
- */
+<?php
+/**
+* iCMS - i Content Management System
+* Copyright (c) 2007-2017 iCMSdev.com. All rights reserved.
+*
+* @author icmsdev <master@icmsdev.com>
+* @site https://www.icmsdev.com
+* @licence https://www.icmsdev.com/LICENSE.html
+*/
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();
 ?>
@@ -191,7 +194,7 @@ function modal_tpl_index(el,a){
               <div class="input-prepend"> <span class="add-on">桌面端域名</span>
                 <input type="text" name="config[router][url]" class="span3" value="<?php echo $config['router']['url'] ; ?>"/>
               </div>
-              <span class="help-inline">例:<span class="label label-info">http://www.idreamsoft.com</span></span>
+              <span class="help-inline">例:<span class="label label-info">https://www.icmsdev.com</span></span>
               <div class="clearfloat mb10"></div>
               <div class="input-prepend input-append"> <span class="add-on">桌面端模板</span>
                 <input type="text" name="config[template][desktop][tpl]" class="span3" id="template_desktop_tpl" value="<?php echo $config['template']['desktop']['tpl'] ; ?>"/>
@@ -215,7 +218,7 @@ function modal_tpl_index(el,a){
               <div class="input-prepend"> <span class="add-on">移动端域名</span>
                 <input type="text" name="config[template][mobile][domain]" class="span3" id="template_mobile_domain" value="<?php echo $config['template']['mobile']['domain'] ; ?>"/>
               </div>
-              <span class="help-inline">例:<span class="label label-info">http://m.idreamsoft.com</span></span>
+              <span class="help-inline">例:<span class="label label-info">http://m.icmsdev.com</span></span>
               <div class="clearfloat mb10"></div>
               <div class="input-prepend input-append"> <span class="add-on">移动端模板</span>
                 <input type="text" name="config[template][mobile][tpl]" class="span3" id="template_mobile_tpl" value="<?php echo $config['template']['mobile']['tpl'] ; ?>"/>
@@ -291,7 +294,7 @@ function modal_tpl_index(el,a){
                   <div class="input-prepend"> <span class="add-on">访问域名</span>
                     <input type="text" name="config[template][device][{key}][domain]" class="span3" id="device_{key}_domain" value="" disabled="disabled"/>
                   </div>
-                  <span class="help-inline"><span class="label label-info">例:http://ipad.idreamsoft.com</span></span>
+                  <span class="help-inline"><span class="label label-info">例:http://ipad.icmsdev.com</span></span>
                   <div class="clearfloat mb10"></div>
                   <div class="input-prepend input-append"> <span class="add-on">设备模板</span>
                     <input type="text" name="config[template][device][{key}][tpl]" class="span3" id="device_{key}_tpl" value="" disabled="disabled"/>
@@ -348,7 +351,7 @@ function modal_tpl_index(el,a){
                 <input type="checkbox" data-type="switch" name="config[router][rewrite]" id="router_rewrite" <?php echo $config['router']['rewrite']?'checked':''; ?>/>
               </div>
             </div>
-            <a class="btn btn-small btn-success" href="http://www.idreamsoft.com/doc/iCMS/router_config.html" target="_blank"><i class="fa fa-question-circle"></i> 查看帮助</a>
+            <a class="btn btn-small btn-success" href="https://www.icmsdev.com/docs/rewrite.html" target="_blank"><i class="fa fa-question-circle"></i> 查看帮助</a>
             <span class="help-inline">此选项只对以下配置有效</span>
             <div id="router_config_wrap" <?php if(!$config['router']['rewrite']){?>class="hide"<?php }?>>
               <div class="clearfloat mb10"></div>
@@ -418,7 +421,7 @@ function modal_tpl_index(el,a){
             <div class="input-prepend"> <span class="add-on">附件URL</span>
               <input type="text" name="config[FS][url]" class="span4" id="FS_url" value="<?php echo $config['FS']['url'] ; ?>"/>
             </div>
-            <span class="help-inline">如果访问不到,请自行调整.请填写完整的URL例:http://www.idreamsoft.com/res/</span>
+            <span class="help-inline">如果访问不到,请自行调整.请填写完整的URL例:https://www.icmsdev.com/res/</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">文件保存目录</span>
               <input type="text" name="config[FS][dir]" class="span4" id="FS_dir" value="<?php echo $config['FS']['dir'] ; ?>"/>
@@ -457,7 +460,7 @@ function modal_tpl_index(el,a){
               <textarea name="config[thumb][size]" id="thumb_size" class="span6" style="height: 90px;"><?php echo $config['thumb']['size'] ; ?></textarea>
             </div>
             <div class="clearfloat mb10"></div>
-            <span class="help-inline"><a class="btn btn-small btn-success" href="http://www.idreamsoft.com/doc/iCMS/thumb.html" target="_blank"><i class="fa fa-question-circle"></i> 缩略图配置帮助</a>　每行一个尺寸；格式:300x300．没有在本列表中的缩略图尺寸，都将直接返回原图！防止空间被刷暴</span>
+            <span class="help-inline"><a class="btn btn-small btn-success" href="https://www.icmsdev.com/docs/thumb.html" target="_blank"><i class="fa fa-question-circle"></i> 缩略图配置帮助</a>　每行一个尺寸；格式:300x300．没有在本列表中的缩略图尺寸，都将直接返回原图！防止空间被刷暴</span>
           </div>
 
           <div id="config-watermark" class="tab-pane hide">

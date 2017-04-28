@@ -1,9 +1,12 @@
-<?php /**
- * @package iCMS
- * @copyright 2007-2017, iDreamSoft
- * @license http://www.idreamsoft.com iDreamSoft
- * @author coolmoo <idreamsoft@qq.com>
- */
+<?php
+/**
+* iCMS - i Content Management System
+* Copyright (c) 2007-2017 iCMSdev.com. All rights reserved.
+*
+* @author icmsdev <master@icmsdev.com>
+* @site https://www.icmsdev.com
+* @licence https://www.icmsdev.com/LICENSE.html
+*/
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();
 ?>
@@ -165,35 +168,35 @@ admincp::head();
             <tr>
               <td style="width:60px">版权所有</td>
               <td>
-                <a class="btn btn-inverse" href="http://www.idreamsoft.com" target="_blank"><i class="fa fa-copyright"></i> 艾梦软件（iDreamSoft.com）</a>
+                <a class="btn btn-inverse" href="https://www.icmsdev.com" target="_blank"><i class="fa fa-copyright"></i> iCMS（iCMSdev.com）</a>
               </td>
             </tr>
             <tr>
               <td>开 发 者</td>
               <td>
-                <a class="btn" href="http://git.oschina.net/php/icms" target="_blank"><i class="fa fa-github"></i> Git@OSC</a>
                 <a class="btn" href="https://github.com/idreamsoft/iCMS" target="_blank"><i class="fa fa-github"></i> GitHub</a>
+                <a class="btn" href="http://git.oschina.net/php/icms" target="_blank"><i class="fa fa-github"></i> Git@OSC</a>
               </td>
             </tr>
             <tr>
               <td>帮助</td>
-              <td><a class="btn" href="http://www.idreamsoft.com/doc/iCMS/index.html" target="_blank">模版标签说明</a></td>
+              <td><a class="btn" href="https://www.icmsdev.com/docs/" target="_blank">模版标签说明</a></td>
             </tr>
             <tr>
               <td>许可协议</td>
               <td>
-                <a class="btn" href="http://www.idreamsoft.com/doc/iCMS.LGPL.html" target="_blank">LGPL 开源协议</a>
-                <a class="btn btn-danger" href="http://www.idreamsoft.com/service.html" target="_blank"><i class="fa fa-ticket"></i> 商业授权</a>
-                <a class="btn btn-success" href="http://www.idreamsoft.com/donate.html" target="_blank"><i class="fa fa-jpy"></i> 捐赠</a>
+                <a class="btn" href="https://www.icmsdev.com/LICENSE.html" target="_blank">LGPL 开源协议</a>
+                <a class="btn btn-danger" href="https://www.icmsdev.com/service.html" target="_blank"><i class="fa fa-ticket"></i> 商业授权</a>
+                <a class="btn btn-success" href="https://www.icmsdev.com/donate.html" target="_blank"><i class="fa fa-jpy"></i> 捐赠</a>
               </td>
             </tr>
             <tr>
               <td>相关链接</td>
-              <td><a class="btn btn-small" href="http://www.idreamsoft.com" target="_blank">iDreamSoft</a>
-                <a class="btn btn-small" href="http://www.idreamsoft.com/iCMS/" target="_blank">iCMS</a>
-                <a class="btn btn-small" href="http://www.idreamsoft.com/template/" target="_blank">&#x6A21;&#x677F;</a>
-                <a class="btn btn-small" href="http://www.idreamsoft.com/doc" target="_blank">&#x6587;&#x6863;</a>
-                <a class="btn btn-small" href="http://www.idreamsoft.com/feedback/" target="_blank">&#x8BA8;&#x8BBA;&#x533A;</a>
+              <td>
+                <a class="btn btn-small" href="https://www.icmsdev.com" target="_blank">iCMS</a>
+                <a class="btn btn-small" href="https://www.icmsdev.com/template/" target="_blank">模板</a>
+                <a class="btn btn-small" href="https://www.icmsdev.com/docs/" target="_blank">文档</a>
+                <a class="btn btn-small" href="https://www.icmsdev.com/feedback/" target="_blank">讨论区</a>
               </td>
             </tr>
           </table>
@@ -218,7 +221,7 @@ admincp::head();
           <h5>BUG提交</h5>
         </div>
         <div class="widget-content nopadding">
-          <form action="http://www.idreamsoft.com/cms/feedback.php" method="post" class="form-inline" id="iCMS-feedback" target="iPHP_FRAME">
+          <form action="https://www.icmsdev.com/cms/bugs.php" method="post" class="form-inline" id="iCMS-feedback" target="iPHP_FRAME">
             <textarea id="bug_content" name="content" class="tip" title="为了保证效率，请务必描述清楚你的问题，例如包含 iCMS 版本号、服务器操作系统、WEB服务器版本、浏览器版本等必要信息，不合格问题将可能会被无视掉" style="width:95%; height: 160px; margin:4px 0px 4px 10px;padding: 4px;">
   出问题的URL:
   问题描述:

@@ -3,7 +3,7 @@
  * iPHP - i PHP Framework
  * Copyright (c) 2012 iiiphp.com. All rights reserved.
  *
- * @author coolmoo <iiiphp@qq.com>
+ * @author icmsdev <iiiphp@qq.com>
  * @website http://www.iiiphp.com
  * @license http://www.iiiphp.com/license
  * @version 2.0.0
@@ -494,7 +494,10 @@ class iPHP {
 		if (isset($_GET['frame'])) {
 			iUI::$dialog['lock'] = true;
 			$html = str_replace("\n", '<br />', $html);
-			iUI::dialog(array("warning:#:warning-sign:#:{$html}", '系统错误!可发邮件到 idreamsoft@qq.com 反馈错误!我们将及时处理'), 'js:1', 30000000);
+			iUI::dialog(array(
+				"warning:#:warning-sign:#:{$html}",
+				'系统错误!可发邮件到 '.iPHP_APP_MAIL.' 反馈错误!我们将及时处理'
+			), 'js:1', 30000000);
 			exit;
 		}
 		if ($_POST) {
