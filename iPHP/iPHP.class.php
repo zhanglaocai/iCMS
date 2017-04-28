@@ -492,7 +492,7 @@ class iPHP {
 	        exit;
 	    }
 		if (isset($_GET['frame'])) {
-			iUI::$dialog['lock'] = true;
+			iUI::$dialog['modal'] = true;
 			$html = str_replace("\n", '<br />', $html);
 			iUI::dialog(array(
 				"warning:#:warning-sign:#:{$html}",

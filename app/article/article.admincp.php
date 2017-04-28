@@ -645,7 +645,7 @@ class articleAdmincp{
                     array("text" =>"返回文章列表","url"=>$REFERER_URL),
                     array("text" =>"查看网站首页","url"=>iCMS_URL,"target"=>'_blank')
             );
-            iUI::$dialog['lock']	= true;
+            iUI::$dialog['modal'] = true;
             iUI::dialog('success:#:check:#:文章添加完成!<br />10秒后返回文章列表','url:'.$REFERER_URL,10,$moreBtn);
         }else{
             isset($_POST['ischapter']) OR $chapter = 0;
@@ -686,7 +686,7 @@ class articleAdmincp{
         $msg = $this->del($this->id);
         $msg.= $this->del_msg('文章删除完成!');
         $msg.= $this->del_msg('10秒后返回文章列表!');
-        iUI::$dialog['lock'] = true;
+        iUI::$dialog['modal'] = true;
         iUI::dialog($msg,'js:1');
     }
 

@@ -380,10 +380,12 @@ class appsAdmincp{
 
       if($array){
         if($array->premium){
-          iUI::$break               = false;
-          iUI::$dialog['ok']        = true;
-          iUI::$dialog['cancel']    = true;
-          iUI::$dialog['ok:js']     = iUI::$dialog['cancel:js'] = '
+          iUI::$break                = false;
+          iUI::$dialog['quickClose'] = false;
+          iUI::$dialog['modal']      = true;
+          iUI::$dialog['ok']         = true;
+          iUI::$dialog['cancel']     = true;
+          iUI::$dialog['ok:js']      = iUI::$dialog['cancel:js'] = '
             top.clear_pay_notify_timer();
           ';
           iUI::dialog('

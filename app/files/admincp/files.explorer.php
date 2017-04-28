@@ -48,7 +48,7 @@ $(function(){
   		iCMS.dialog({
           follow:this,height:'auto',
           content:document.getElementById('mkdir-box'),
-          lock:false,
+          modal:false,
   		    title: '创建新目录',
           okValue:'创建',
           ok: function () {
