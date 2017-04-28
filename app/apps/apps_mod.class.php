@@ -138,13 +138,14 @@ class apps_mod {
     //     array_push ($table,$union_id,'正文');
     //     return array($name=>$table);
     // }
-    public static function data_create_table($fieldata,$name,$union_id) {
+    public static function data_create_table($fieldata,$name,$union_id,$query=true) {
         $table = apps_db::create_table(
           $name,
           apps_mod::get_field_array($fieldata),//获取字段数组
           array(//索引
             'index_'.$union_id =>'KEY `'.$union_id.'` (`'.$union_id.'`)'
-          )
+          ),
+          $query
         );
         array_push ($table,$union_id,'正文');
         return array($name=>$table);

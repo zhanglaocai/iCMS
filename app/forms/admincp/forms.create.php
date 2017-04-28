@@ -114,6 +114,19 @@ $(function(){
               <span class="help-inline"></span>
             </div>
             <div class="clearfloat mb10"></div>
+            <?php if(empty($this->id)){?>
+            <div class="input-prepend">
+              <span class="add-on">是否同时创建数据表</span>
+              <div class="switch" data-on-label="是" data-off-label="否">
+                <input type="checkbox" data-type="switch" name="create" id="create" <?php echo $rs['create']?'checked':''; ?>/>
+              </div>
+            </div>
+            <span class="help-block">
+              如果选择不同时创建数据表,将只保存表单数据而不创建数据表.需要手工建表<br />
+              一般用于数据表已经存在,只需要简单的查/增/改数据功能
+            </span>
+            <div class="clearfloat mb10"></div>
+            <?php }?>
             <h3 class="title" style="width:620px;">
               <span>数据表</span>
               <button type="button" class="btn btn-link add_table_item">
