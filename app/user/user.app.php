@@ -24,10 +24,8 @@ class userApp {
 		$this->forward OR iPHP::get_cookie('forward');
 		$this->forward OR $this->forward = iCMS_URL;
 		$this->login_uri = user::login_uri();
-		files::init(array(
-			'userid'    => user::$userid,
-			'watermark' => iCMS::$config['watermark']
-		));
+		files::init(array('userid'=> user::$userid));
+
 		iView::assign('forward', $this->forward);
 	}
 	private function __user($userdata = false) {
@@ -455,8 +453,8 @@ class userApp {
 		iUI::success('user:profile:success');
 	}
 	private function __ACTION_profile_custom() {
-		files::$watermark    = false;
-		files::$check_data   = false;
+		files::$watermark_enable = false;
+		files::$check_data       = false;
 		iFS::$CALLABLE['upload'] = null;
 		$dir = get_user_dir(user::$userid, 'coverpic');
 		$filename = user::$userid;
@@ -489,8 +487,8 @@ class userApp {
 		iUI::code(1, 'user:profile:custom', $url, 'json');
 	}
 	private function __ACTION_profile_avatar() {
-		files::$watermark    = false;
-		files::$check_data   = false;
+		files::$watermark_enable = false;
+		files::$check_data       = false;
 		iFS::$CALLABLE['upload'] = null;
 
 		$isBlob = false;

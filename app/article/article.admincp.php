@@ -782,7 +782,7 @@ class articleAdmincp{
             $id = article::data_insert($data);
         }
 
-        $_POST['iswatermark']&& files::$watermark = false;
+        isset($_POST['iswatermark']) && files::$watermark_enable = false;
 
         if(isset($_POST['remote'])){
             $body = $this->remotepic($body,true,$aid);

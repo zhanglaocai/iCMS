@@ -25,19 +25,30 @@ class iPicture {
     * @param  int     $deep   深度，数字越大越模糊
     * @return boolean
     */
-    public static function mosaics($source,$x1, $y1, $x2, $y2, $deep='9'){
-        // 判断原图是否存在
-        if(!file_exists($source)){
-            return false;
-        }
-        // 获取原图信息
-        list($owidth, $oheight, $otype) = @getimagesize($source);
-        // 判断区域是否超出图片
-        if($x1>$owidth || $x1<0 || $x2>$owidth || $x2<0 || $y1>$oheight || $y1<0 || $y2>$oheight || $y2<0){
-            return false;
-        }
-        $source_img = self::imagecreate($otype,$source);
+    // public static function mosaics($source,$x1, $y1, $x2, $y2, $deep='9'){
+    public static function mosaics($source){
+        if(!self::$config['enable']) return false;
 
+        // 获取原图信息
+        $info = self::getinfo($source);
+
+        if(!$info) return false;
+
+        list($source_w, $source_h,$source_type,$source_im) = $info;
+
+        $w    = self::$config['mosaics']['width']?:150;
+        $h    = self::$config['mosaics']['height']?:90;
+        $deep = self::$config['mosaics']['deep']?:9;
+
+        if( ($source_w<$w) || ($source_h<$h) ){
+            // echo "需要加水印的图片的长度或宽度比水印".$label."还小，无法生成水印！";
+            return false;
+        }
+
+        $source_img = self::imagecreate($source_type,$source);
+        list($x1,$y1) = self::getpos($source_w,$source_h,$w,$h);
+        $x2 = $x1+$w;
+        $y2 = $y1+$h;
         // 打马赛克
         for($x=$x1; $x<$x2; $x=$x+$deep){
             for($y=$y1; $y<$y2; $y=$y+$deep){
@@ -46,53 +57,56 @@ class iPicture {
             }
         }
         @unlink($source);
-        self::image($source_img,$otype,$source);
+        self::image($source_img,$source_type,$source);
         //释放内存
-        isset($source_img) && imagedestroy($source_img);
+        // isset($source_img) && imagedestroy($source_img);
         return is_file($source)? true : false;
     }
-
-    public static function watermark($pf) {
-        if(!self::$config['enable']) return;
-
-
-        list($width, $height,$imagetype) = @getimagesize($pf);
-
-
-        if ( $width < self::$config['width'] || $height<self::$config['height'] ) {
-            return FALSE;
-        }
-        $isWaterImage	= FALSE;
-        $formatMsg		= "暂不支持该文件格式，请用图片处理软件将图片转换为GIF、JPG、PNG等格式。";
-        //读取水印文件
-        $waterImgPath	= self::$watermark_dir.'/'.self::$config['img'];
-
-        if(self::$config['img'] && file_exists($waterImgPath)) {
-            list($water_w, $water_h,$water_imagetype) = @getimagesize($waterImgPath);
-            $water_im	 = self::imagecreate($water_imagetype,$waterImgPath);
-            $water_im OR die($formatMsg);
-            $isWaterImage = TRUE;
-        }else {
-            $fontfile	= self::$watermark_dir.'/'.self::$config['font'];
-        }
-
-        //读取背景图片
-        if($pf && file_exists($pf)) {
-        	list($ground_w, $ground_h,$ground_imagetype) = @getimagesize($pf);
-            $ground_info = @getimagesize($pf);
-			$ground_im	 = self::imagecreate($ground_imagetype,$pf);//取得背景图片的格式
-            if(empty($ground_im)){
-                return;
+    public static function getinfo($source) {
+        if($source && file_exists($source)) {
+            list($source_w, $source_h,$source_type) = @getimagesize($source);
+            $source_im = self::imagecreate($source_type,$source);//取得图片资源
+            $formatMsg = "暂不支持该文件格式，请用图片处理软件将图片转换为GIF、JPG、PNG等格式。";
+            if(empty($source_im)){
+                // echo $formatMsg;
+                return false;
             }
         }else {
-            die("需要加水印的图片不存在！");
+            // echo "需要加水印的图片不存在！";
+            return false;
         }
+        return array($source_w, $source_h,$source_type,$source_im);
+    }
+    public static function watermark($source) {
+        if(!self::$config['enable']) return false;
+
+        // 获取原图信息
+        $info = self::getinfo($source);
+
+        if(!$info) return false;
+
+        list($source_w, $source_h,$source_type,$source_im) = $info;
+
+        if ( $source_w < self::$config['width'] || $source_h<self::$config['height'] ) {
+            return false;
+        }
+        //读取水印文件
+        $waterImgPath = self::$watermark_dir.'/'.self::$config['img'];
+        $water_info   = self::getinfo($waterImgPath);
+        if($water_info){
+            list($water_w, $water_h,$water_type,$water_im) = $water_info;
+            $isWaterImage = TRUE;
+        }else{
+            $isWaterImage = FALSE;
+            $fontfile     = self::$watermark_dir.'/'.self::$config['font'];
+        }
+
         //水印位置
         if($isWaterImage){ //图片水印
             $w = $water_w;
             $h = $water_h;
         }else { //文字水印
-            if(self::$config['font']){
+            if($fontfile && file_exists($fontfile)) {
                 $temp = imagettfbbox(self::$config['fontsize'],0,$fontfile,self::$config['text']);//取得使用 TrueType 字体的文本的范围
                 $w = $temp[2] - $temp[6];
                 $h = $temp[3] - $temp[7];
@@ -102,67 +116,21 @@ class iPicture {
                 $h = self::$config['fontsize']+5;
             }
         }
-        if( ($ground_w<$w) || ($ground_h<$h) ){
-            //       echo "需要加水印的图片的长度或宽度比水印".$label."还小，无法生成水印！";
-            return;
+        if( ($source_w<$w) || ($source_h<$h) ){
+            // echo "需要加水印的图片的长度或宽度比水印".$label."还小，无法生成水印！";
+            return false;
         }
-        switch(self::$config['pos']) {
-            case '-1'://自定义
-                $posX = $ground_w - $w-self::$config['x'];
-                $posY = $ground_h - $h-self::$config['y'];
-                break;
-            case 1://1为顶端居左
-                $posX = 0;
-                $posY = 0;
-                break;
-            case 2://2为顶端居中
-                $posX = ($ground_w - $w) / 2;
-                $posY = 0;
-                break;
-            case 3://3为顶端居右
-                $posX = $ground_w - $w;
-                $posY = 0;
-                break;
-            case 4://4为中部居左
-                $posX = 0;
-                $posY = ($ground_h - $h) / 2;
-                break;
-            case 5://5为中部居中
-                $posX = ($ground_w - $w) / 2;
-                $posY = ($ground_h - $h) / 2;
-                break;
-            case 6://6为中部居右
-                $posX = $ground_w - $w;
-                $posY = ($ground_h - $h) / 2;
-                break;
-            case 7://7为底端居左
-                $posX = 0;
-                $posY = $ground_h - $h;
-                break;
-            case 8://8为底端居中
-                $posX = ($ground_w - $w) / 2;
-                $posY = $ground_h - $h;
-                break;
-            case 9://9为底端居右
-                $posX = $ground_w - $w;
-                $posY = $ground_h - $h;
-                break;
-            default://随机
-                $posX = rand(0,($ground_w - $w));
-                $posY = rand($h,($ground_h - $h));
-                break;
-        }
-        $posX = $posX-self::$config['x'];
-        $posY = $posY-self::$config['y'];
+
+        list($posX,$posY) = self::getpos($source_w,$source_h,$w,$h);
 
         //设定图像的混色模式
-        imagealphablending($ground_im, true);
+        imagealphablending($source_im, true);
 
         if($isWaterImage) { //图片水印
         	if(strtolower(substr(strrchr($waterImgPath, "."),1))=='png'){
-	            imagecopy ($ground_im,$water_im,$posX, $posY, 0,0,$water_w,$water_h);
+	            imagecopy ($source_im,$water_im,$posX, $posY, 0,0,$water_w,$water_h);
         	}else{
-				imagecopymerge($ground_im, $water_im, $posX, $posY, 0, 0, $water_w,$water_h,self::$config['transparent']);//拷贝水印到目标文件
+				imagecopymerge($source_im, $water_im, $posX, $posY, 0, 0, $water_w,$water_h,self::$config['transparent']);//拷贝水印到目标文件
         	}
         }else{//文字水印
             self::$config['color'] OR self::$config['color']="#FFFFFF";
@@ -170,25 +138,76 @@ class iPicture {
                 $R = hexdec(substr(self::$config['color'],1,2));
                 $G = hexdec(substr(self::$config['color'],3,2));
                 $B = hexdec(substr(self::$config['color'],5));
-                $textcolor = imagecolorallocate($ground_im, $R, $G, $B);
+                $textcolor = imagecolorallocate($source_im, $R, $G, $B);
             }else {
-                die("水印文字颜色格式不正确！");
+                // die("水印文字颜色格式不正确！");
+                return false;
             }
             if(self::$config['font']) {
-                imagettftext($ground_im,self::$config['fontsize'], 0, $posX, $posY, $textcolor,$fontfile, self::$config['text']);
+                imagettftext($source_im,self::$config['fontsize'], 0, $posX, $posY, $textcolor,$fontfile, self::$config['text']);
             }else {
-                imagestring ($ground_im, self::$config['fontsize'], $posX, $posY, self::$config['text'],$textcolor);
+                imagestring ($source_im, self::$config['fontsize'], $posX, $posY, self::$config['text'],$textcolor);
             }
         }
 
         //生成水印后的图片
-        @unlink($pf);
-        self::image($ground_im,$ground_info[2],$pf);
+        @unlink($source);
+        self::image($source_im,$source_type,$source);
         //释放内存
-        unset($water_info);
-        isset($water_im) && imagedestroy($water_im);
-        unset($ground_info);
-        return is_file($pf)? true : false;
+        unset($info);unset($water_info);
+        unset($source_im);unset($water_im);
+        return is_file($source)? true : false;
+    }
+    public static function getpos($source_w,$source_h,$w,$h) {
+        switch(self::$config['pos']) {
+            case '-1'://自定义
+                $posX = $source_w - $w-self::$config['x'];
+                $posY = $source_h - $h-self::$config['y'];
+                break;
+            case 1://1为顶端居左
+                $posX = 0;
+                $posY = 0;
+                break;
+            case 2://2为顶端居中
+                $posX = ($source_w - $w) / 2;
+                $posY = 0;
+                break;
+            case 3://3为顶端居右
+                $posX = $source_w - $w;
+                $posY = 0;
+                break;
+            case 4://4为中部居左
+                $posX = 0;
+                $posY = ($source_h - $h) / 2;
+                break;
+            case 5://5为中部居中
+                $posX = ($source_w - $w) / 2;
+                $posY = ($source_h - $h) / 2;
+                break;
+            case 6://6为中部居右
+                $posX = $source_w - $w;
+                $posY = ($source_h - $h) / 2;
+                break;
+            case 7://7为底端居左
+                $posX = 0;
+                $posY = $source_h - $h;
+                break;
+            case 8://8为底端居中
+                $posX = ($source_w - $w) / 2;
+                $posY = $source_h - $h;
+                break;
+            case 9://9为底端居右
+                $posX = $source_w - $w;
+                $posY = $source_h - $h;
+                break;
+            default://随机
+                $posX = rand(0,($source_w - $w));
+                $posY = rand($h,($source_h - $h));
+                break;
+        }
+        $posX = $posX-self::$config['x'];
+        $posY = $posY-self::$config['y'];
+        return array($posX,$posY);
     }
     public static function thumbnail($src,$tw="0",$th="0",$scale=true) {
     	if(!self::$config['thumb']['enable']) return;

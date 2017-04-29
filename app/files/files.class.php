@@ -42,7 +42,7 @@ class files {
     public static $TABLE_MAP        = null;
     public static $check_data       = true;
     public static $userid           = false;
-    public static $watermark        = true;
+    public static $watermark_enable = true;
     public static $watermark_config = null;
     public static $cloud_enable     = true;
 
@@ -73,19 +73,24 @@ class files {
         if (self::$cloud_enable) {
             files_cloud::init(iCMS::$config['cloud']);
         }
-        if(self::$watermark){
-            $vars['watermark'] && self::$watermark_config = $vars['watermark'];
-            self::$watermark_config && iFS::$CALLABLE['upload'][]= array('files','watermark');
+        if(self::$watermark_enable){
+            iFS::$CALLABLE['upload'][]= array('files','mark');
         }
     }
-    public static function watermark($fp,$ext) {
-        if (self::$watermark) {
-            $allow_ext = array('jpg', 'jpeg', 'png');
-            $config = self::$watermark_config;
-            $config['allow_ext'] && $allow_ext = explode(',', $config['allow_ext']);
-            if (in_array($ext, $allow_ext)) {
-                iPicture::init($config);
-                iPicture::watermark($fp);
+    public static function mark($fp,$ext=null) {
+        if(!self::$watermark_enable) return;
+
+        self::$watermark_config===null && self::$watermark_config = iCMS::$config['watermark'];
+        $config = self::$watermark_config;
+        $allow_ext = array('jpg', 'jpeg', 'png');
+        $config['allow_ext'] && $allow_ext = explode(',', $config['allow_ext']);
+        $ext OR $ext = iFS::get_ext($fp);
+        if (in_array($ext, $allow_ext)) {
+            iPicture::init($config);
+            if($config['mode']){
+                return iPicture::mosaics($fp);
+            }else{
+                return iPicture::watermark($fp);
             }
         }
     }

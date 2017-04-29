@@ -76,7 +76,7 @@ function callback(obj) {
           <input type="file" name="upfile" class="hide">
           <input type="hidden" name="udir" value="<?php echo $_GET['dir']; ?>">
           <div class="input-prepend input-append"> <span class="add-on">不添加水印</span><span class="add-on">
-            <input type="checkbox" name="watermark" value="0">
+            <input type="checkbox" name="watermark_enable" value="0">
             </span><a id="upload" class="btn btn-primary"><i class="fa fa-upload"></i> 选择文件</a></div>
         </form>
       </div>

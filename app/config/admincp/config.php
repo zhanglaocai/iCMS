@@ -471,7 +471,14 @@ function modal_tpl_index(el,a){
             </div>
             <span class="help-inline">将在上传的图片附件中加上您在下面设置的图片或文字水印</span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">图片尺寸</span><span class="add-on" style="width:24px;">宽度</span>
+            <div class="input-prepend">
+              <span class="add-on">水印模式</span>
+              <div class="switch" data-on-label="马赛克" data-off-label="水印">
+                <input type="checkbox" data-type="switch" name="config[watermark][mode]" id="watermark_mode" <?php echo $config['watermark']['mode']?'checked':''; ?>/>
+              </div>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend input-append"> <span class="add-on">图片尺寸</span><span class="add-on" style="width:24px;">宽度</span>
               <input type="text" name="config[watermark][width]" class="span1" id="watermark_width" value="<?php echo $config['watermark']['width'] ; ?>"/>
               <span class="add-on" style="width:24px;">高度</span>
               <input type="text" name="config[watermark][height]" class="span1" id="watermark_height" value="<?php echo $config['watermark']['height'] ; ?>"/>
@@ -510,11 +517,11 @@ function modal_tpl_index(el,a){
               <input type="text" name="config[watermark][img]" class="span3" id="watermark_img" value="<?php echo $config['watermark']['img'] ; ?>"/>
             </div>
             <span class="help-inline">水印图片存放路径：/cache/conf/iCMS/watermark.png， 如果水印图片不存在，则使用文字水印</span>
-            <div class="clearfloat mb10"></div>
+            <hr />
             <div class="input-prepend"> <span class="add-on">水印文字</span>
               <input type="text" name="config[watermark][text]" class="span3" id="watermark_text" value="<?php echo $config['watermark']['text'] ; ?>"/>
             </div>
-            <span class="help-inline">如果设置为中文,字体文件必需要支持中文字体 ,存放路径：conf/iCMS/</span>
+            <span class="help-inline">如果设置为中文,字体文件必需要支持中文字体 ,存放路径：/cache/conf/iCMS/</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">文字字体</span>
               <input type="text" name="config[watermark][font]" class="span3" id="watermark_font" value="<?php echo $config['watermark']['font'] ; ?>"/>
@@ -532,6 +539,18 @@ function modal_tpl_index(el,a){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">水印透明度</span>
               <input type="text" name="config[watermark][transparent]" class="span3" id="watermark_transparent" value="<?php echo $config['watermark']['transparent'] ; ?>"/>
+            </div>
+            <hr />
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend input-append"> <span class="add-on">马赛克尺寸</span>
+              <span class="add-on" style="width:30px;">宽度</span>
+              <input type="text" name="config[watermark][mosaics][width]" class="span1" id="watermark_mosaics_width" value="<?php echo $config['watermark']['mosaics']['width']?:150 ; ?>"/>
+              <span class="add-on" style="width:30px;">高度</span>
+              <input type="text" name="config[watermark][mosaics][height]" class="span1" id="watermark_mosaics_height" value="<?php echo $config['watermark']['mosaics']['height']?:90 ; ?>"/>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend"> <span class="add-on">马赛克深度</span>
+              <input type="text" name="config[watermark][mosaics][deep]" class="span3" id="watermark_mosaics_deep" value="<?php echo $config['watermark']['mosaics']['deep']?:9 ; ?>"/>
             </div>
             <!--
             <div class="clearfloat mb10"></div>

@@ -208,7 +208,7 @@ class apps_db {
         if($json){
           $tableArray = apps::table_item($json);
           foreach ($tableArray as $key => $value) {
-            $tables[] = $value['table'];
+            self::check_table($value['table']) && $tables[] = $value['table'];
           }
           if($tables){
             $sql = databaseAdmincp::bakuptable($tables,false);
