@@ -108,7 +108,7 @@ class appsAdmincp{
 
         if(empty($id)) {
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iUI::alert('该应用已经存在!');
-            apps_db::check_table(iDB::table($array['app'])) && iUI::alert('['.$array['app'].']数据表已经存在!');
+            iDB::check_table($array['app']) && iUI::alert('['.$array['app'].']数据表已经存在!');
             // iDB::$print_sql = true;
             if($type=='3'){
               $array['fields'] = '';
@@ -116,7 +116,7 @@ class appsAdmincp{
             }else if($type=='2'){
               if($addons_fieldata){
                 $addons_name = apps_mod::data_table_name($array['app']);
-                apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
+                iDB::check_table($addons_name) && iUI::alert('['.$addons_name.']附加表已经存在!');
               }
 
               //创建基本表
@@ -139,6 +139,8 @@ class appsAdmincp{
                 // $field_array = array_merge($field_array,$addons_base_fields);
                 // $array['fields'] = addslashes(cnjson_decode($field_array));
               }
+              $table_array+=apps_meta::table_array($app,true);
+
               $array['table']  = $table_array;
               $array['config'] = $config_array;
 
@@ -188,13 +190,13 @@ class appsAdmincp{
               if($addons_sql_array){
                 //附加表名
                 //检测附加表是否存在
-                if($table_array[$addons_name] && apps_db::check_table(iDB::table($addons_name))){
+                if($table_array[$addons_name] && iDB::check_table($addons_name)){
                   //表存在执行 alter
                   apps_db::alter_table($addons_name,$addons_sql_array);
                 }else{
                   // 不存在 创建
                   if($addons_fieldata){
-                    apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
+                    iDB::check_table($addons_name) && iUI::alert('['.$addons_name.']附加表已经存在!');
                     //有MEDIUMTEXT类型字段创建xxx_data附加表
                     $union_id = apps_mod::data_union_id($array['app']);
                     $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段
@@ -234,6 +236,7 @@ class appsAdmincp{
             $msg = "应用编辑完成!";
         }
         apps::cache();
+        menu::cache();
         iUI::success($msg,'url:'.APP_URI);
     }
 
@@ -367,7 +370,7 @@ class appsAdmincp{
           ") && $check = false;
           if($array->data->tables){
             foreach ($array->data->tables as $table) {
-                apps_db::check_table(iDB::table($table)) && iUI::alert('['.$table.']数据表已经存在!','js:1',1000000);
+                iDB::check_table($table) && iUI::alert('['.$table.']数据表已经存在!','js:1',1000000);
             }
           }
       }
@@ -429,7 +432,7 @@ class appsAdmincp{
         apps::uninstall($app);
         apps::cache();
         menu::cache();
-        iUI::alert('应用已经删除');
+        iUI::alert('应用已经删除','js:1');
       }else{
         iUI::alert('应用已被禁止删除');
       }

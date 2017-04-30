@@ -109,16 +109,13 @@ class apps {
             $sql  = iSQL::in($vars,$field,false,true);
         }
         $data = array();
-        $rs   = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}",OBJECT);
+        $rs   = iDB::all("SELECT * FROM `#iCMS@__apps` where {$sql}");
         if($rs){
-            if($is_multi){
-                $_count = count($rs);
-                for ($i=0; $i < $_count; $i++) {
-                    $data[$rs[$i]->$field]= apps::item($rs[$i]);
-                }
-            }else{
-                $data = apps::item($rs[0]);
+            $_count = count($rs);
+            for ($i=0; $i < $_count; $i++) {
+                $data[$rs[$i][$field]]= apps::item($rs[$i]);
             }
+            $is_multi OR $data = $data[$vars];
         }
         if(empty($data)){
             return;

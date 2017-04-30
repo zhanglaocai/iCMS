@@ -649,7 +649,8 @@ class former {
         $data_post = array();
 
         $field_array = self::fields($app['fields']);
-        $data_table  = next($app['table']);
+        // $data_table  = next($app['table']);
+        $data_table  = apps_mod::get_data_table($app['table']);
         $imap_array  = array();
 
         foreach ($post as $key => $value) {
@@ -694,6 +695,8 @@ class former {
         }else{
             $values = compact('post'); //将表单数据存入数组
         }
+        unset($app['table'][$app['app'].'_meta']);
+
         $tables = array_keys($app['table']);//返回所有表名
         //创建一个数组，用一个表名数组的值作为其键名，表单数据的值作为其值
         $variable = array_combine($tables,$values);

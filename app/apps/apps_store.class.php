@@ -188,7 +188,7 @@ class apps_store {
               if($array['table']){
                 $tableArray = apps::table_item($array['table']);
                 foreach ($tableArray AS $value) {
-                  if(apps_db::check_table($value['table'])){
+                  if(iDB::check_table($value['table'],false)){
                     $_msg = self::msg('检测应用表是否存在',false);
                     return self::msg($_msg.'['.$value['table'].']数据表已经存在');
                   }

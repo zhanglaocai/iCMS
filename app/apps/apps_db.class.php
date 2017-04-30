@@ -208,7 +208,7 @@ class apps_db {
         if($json){
           $tableArray = apps::table_item($json);
           foreach ($tableArray as $key => $value) {
-            self::check_table($value['table']) && $tables[] = $value['table'];
+            iDB::check_table($value['table'],false) && $tables[] = $value['table'];
           }
           if($tables){
             $sql = databaseAdmincp::bakuptable($tables,false);
@@ -291,25 +291,7 @@ class apps_db {
             ($field["auto_increment"] ? auto_increment() : null),
         );
     }
-    public static function check_table($table) {
-        $variable = apps_db::tables_list();
-        foreach ($variable as $key => $value) {
-            $tables_list[$value['TABLE_NAME']] = true;
-        }
-        if($tables_list[$table]){
-            return true;
-        }
-        return false;
-    }
-    /** Get tables list
-    * @return array array($name => $type)
-    */
-    public static function tables_list() {
-        return iDB::all(iDB::version() >= 5
-            ? "SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME"
-            : "SHOW TABLES"
-        );
-    }
+
     /** Count tables in all databases
     * @param array
     * @return array array($db => $tables)

@@ -3,7 +3,7 @@ if($rs['table'])foreach ($rs['table'] as $key => $tval) {
   $tbn = $tval['table'];
 ?>
 <div id="apps-add-<?php echo $key; ?>-field" class="app-table-list tab-pane">
-  <?php if(apps_db::check_table($tbn)){ ?>
+  <?php if(iDB::check_table($tbn,false)){ ?>
   <table class="table table-hover table-bordered">
     <thead>
       <tr>

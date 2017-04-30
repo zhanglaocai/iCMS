@@ -8,11 +8,15 @@
  * Credit:   Taken from the original Smarty
  *           http://smarty.php.net
  */
-function tpl_modifier_default($string, $default = '')
-{
-	if (!isset($string) || $string === ''){
-		return $default;
-	}else{
-		return $string;
-	}
+function tpl_modifier_default($var, $default = '',$empty=true){
+    if($empty){
+        $is = empty($var);
+    }else{
+        $is = (!isset($string) || $string === '');
+    }
+    if ($is){
+        return $default;
+    }else{
+        return $var;
+    }
 }

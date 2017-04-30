@@ -9,6 +9,19 @@
 */
 
 class apps_mod {
+    public static function get_data_table(&$array) {
+        $data_table  = next($array);
+        if($data_table){
+            $primary = $data_table['primary'];
+            if($primary=='data_id'){
+                return $data_table;
+            }else{
+                return self::get_data_table($array);
+            }
+        }else{
+            return false;
+        }
+    }
     public static function data_table_name($name){
       return $name.'_data';
     }
@@ -112,7 +125,7 @@ class apps_mod {
         return $json_array;
     }
     public static function drop_table($addons_fieldata,&$table_array,$addons_name) {
-      if(empty($addons_fieldata) && $table_array[$addons_name] && apps_db::check_table(iDB::table($addons_name))){
+      if(empty($addons_fieldata) && $table_array[$addons_name] && iDB::check_table($addons_name)){
         apps_db::drop_tables(array(iPHP_DB_PREFIX.$addons_name));
         unset($table_array[$addons_name]);
       }

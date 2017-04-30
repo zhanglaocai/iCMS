@@ -190,7 +190,7 @@ class formsAdmincp{
         if(empty($id)) {
             iDB::value("SELECT `id` FROM `#iCMS@__forms` where `app` ='$app'") && iUI::alert('该表单已经存在!');
             if($create){
-              apps_db::check_table(iDB::table($array['app'])) && iUI::alert('['.$array['app'].']数据表已经存在!');
+              iDB::check_table($array['app']) && iUI::alert('['.$array['app'].']数据表已经存在!');
             }
 
             // iDB::$print_sql = true;
@@ -198,7 +198,7 @@ class formsAdmincp{
             if($addons_fieldata){
               $addons_name = apps_mod::data_table_name($array['app']);
               if($create){
-                apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
+                iDB::check_table($addons_name) && iUI::alert('['.$addons_name.']附加表已经存在!');
               }
             }
 
@@ -261,13 +261,13 @@ class formsAdmincp{
               if($addons_sql_array){
                 //附加表名
                 //检测附加表是否存在
-                if($table_array[$addons_name] && apps_db::check_table(iDB::table($addons_name))){
+                if($table_array[$addons_name] && iDB::check_table($addons_name)){
                   //表存在执行 alter
                   apps_db::alter_table($addons_name,$addons_sql_array);
                 }else{
                   // 不存在 创建
                   if($addons_fieldata){
-                    apps_db::check_table(iDB::table($addons_name)) && iUI::alert('['.$addons_name.']附加表已经存在!');
+                    iDB::check_table($addons_name) && iUI::alert('['.$addons_name.']附加表已经存在!');
                     //有MEDIUMTEXT类型字段创建xxx_data附加表
                     $union_id = apps_mod::data_union_id($array['app']);
                     $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段

@@ -96,6 +96,26 @@ class iDB{
     public static function table($name) {
         return self::$config['PREFIX'].str_replace(self::$config['PREFIX_TAG'],'', trim($name));
     }
+    public static function check_table($table,$prefix=true) {
+        $prefix && $table = self::table($table);
+        $variable = self::tables_list();
+        foreach ($variable as $key => $value) {
+            $tables_list[$value['TABLE_NAME']] = true;
+        }
+        if($tables_list[$table]){
+            return true;
+        }
+        return false;
+    }
+    /** Get tables list
+    * @return array array($name => $type)
+    */
+    public static function tables_list() {
+        return iDB::all(iDB::version() >= 5
+            ? "SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME"
+            : "SHOW TABLES"
+        );
+    }
     //  Basic Query - see docs for more detail
     public static function query($query,$QT=NULL) {
         if(empty($query)){

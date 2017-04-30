@@ -34,7 +34,7 @@ class apps_hook {
             if($app['table'] && is_file($path) && method_exists($obj_name,'hooked')){
                 foreach ($app['table'] as $key => $table) {
                     $tbn = $table['table'];
-                    if(apps_db::check_table($tbn)){
+                    if(iDB::check_table($tbn,false)){
                         $option[] = '<optgroup label="'.$table['label'].'表">';
                         $orig_fields  = apps_db::fields($tbn);
                         foreach ((array)$orig_fields as $field => $value) {
