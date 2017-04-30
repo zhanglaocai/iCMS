@@ -38,18 +38,7 @@ class iDB{
     private static $link;
     private static $result;
 
-    public static function connect($flag=null) {
-        extension_loaded('mysql') OR die('您的 PHP 环境看起来缺少 MySQL 数据库部分，这对 iPHP 来说是必须的。');
-
-        defined('iPHP_DB_COLLATE') &&self::$collate = iPHP_DB_COLLATE;
-
-        if(isset($GLOBALS[self::$dbFlag])){
-            self::$link = $GLOBALS[self::$dbFlag];
-            if(self::$link){
-                if(mysql_ping(self::$link))
-                    return self::$link;
-            }
-        }
+    public static function config($config=null) {
         empty(self::$config) && self::$config = array(
             'HOST'       => iPHP_DB_HOST,
             'USER'       => iPHP_DB_USER,
@@ -60,7 +49,21 @@ class iDB{
             'PREFIX'     => iPHP_DB_PREFIX,
             'PREFIX_TAG' => iPHP_DB_PREFIX_TAG
         );
+        $config && self::$config = $config;
+    }
+    public static function connect($flag=null) {
+        extension_loaded('mysql') OR die('您的 PHP 环境看起来缺少 MySQL 数据库部分，这对 iPHP 来说是必须的。');
 
+        defined('iPHP_DB_COLLATE') &&self::$collate = iPHP_DB_COLLATE;
+
+        self::config();
+        if(isset($GLOBALS[self::$dbFlag])){
+            self::$link = $GLOBALS[self::$dbFlag];
+            if(self::$link){
+                if(mysql_ping(self::$link))
+                    return self::$link;
+            }
+        }
         self::$link = @mysql_connect(self::$config['HOST'].':'.self::$config['PORT'], self::$config['USER'], self::$config['PASSWORD'],iPHP_DB_NEW_LINK);
 
         if($flag==='link'){
@@ -94,6 +97,7 @@ class iDB{
         return "'" . mysql_real_escape_string($string, self::$link) . "'";
     }
     public static function table($name) {
+        self::config();
         return self::$config['PREFIX'].str_replace(self::$config['PREFIX_TAG'],'', trim($name));
     }
     public static function check_table($table,$prefix=true) {

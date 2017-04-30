@@ -36,17 +36,7 @@ class iDB {
     private static $last_error ;
     private static $result;
 
-    public static function connect($flag=null) {
-        extension_loaded('mysqli') OR die('您的 PHP 环境看起来缺少 MySQL 数据库部分，这对 iPHP 来说是必须的。');
-
-        if(isset($GLOBALS['iPHP_DB'])){
-            self::$link = $GLOBALS['iPHP_DB'];
-            if(self::$link){
-                if(self::$link->ping())
-                    return self::$link;
-            }
-        }
-
+    public static function config($config=null) {
         empty(self::$config) && self::$config = array(
             'HOST'       => iPHP_DB_HOST,
             'USER'       => iPHP_DB_USER,
@@ -57,7 +47,19 @@ class iDB {
             'PREFIX'     => iPHP_DB_PREFIX,
             'PREFIX_TAG' => iPHP_DB_PREFIX_TAG
         );
+        $config && self::$config = $config;
+    }
+    public static function connect($flag=null) {
+        extension_loaded('mysqli') OR die('您的 PHP 环境看起来缺少 MySQL 数据库部分，这对 iPHP 来说是必须的。');
 
+        self::config();
+        if(isset($GLOBALS['iPHP_DB'])){
+            self::$link = $GLOBALS['iPHP_DB'];
+            if(self::$link){
+                if(self::$link->ping())
+                    return self::$link;
+            }
+        }
         self::$link = new mysqli(self::$config['HOST'], self::$config['USER'], self::$config['PASSWORD'],null,self::$config['PORT']);
         if($flag==='link'){
             return self::$link;
@@ -88,6 +90,7 @@ class iDB {
         return "'" . self::$link->real_escape_string($string) . "'";
     }
     public static function table($name) {
+        self::config();
         return self::$config['PREFIX'].str_replace(self::$config['PREFIX_TAG'],'', trim($name));
     }
     public static function check_table($table,$prefix=true) {
