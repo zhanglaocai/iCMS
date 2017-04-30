@@ -13,9 +13,9 @@ class tag_categoryAdmincp extends categoryAdmincp {
     public function __construct() {
         parent::__construct(iCMS_APP_TAG,'category');
         $this->category_name     = "分类";
-        $this->_app              = 'tags';
+        $this->_app              = 'tag';
         $this->_app_name         = '标签';
-        $this->_app_table        = 'tags';
+        $this->_app_table        = 'tag';
         $this->_app_cid          = 'tcid';
        /**
          *  模板

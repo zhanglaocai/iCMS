@@ -71,7 +71,7 @@ class contentFunc {
         }
 
         if (isset($vars['tids'])) {
-            iMap::init('tags', self::$app['id'],'tags');
+            iMap::init('tag', self::$app['id'],'tags');
             $map_where += iMap::where($vars['tids']);
         }
         if ($vars['keywords']) {
@@ -211,9 +211,15 @@ class contentFunc {
     private static function content_array($vars, $variable) {
         $resource = array();
         if ($variable) {
-            if($vars['data']){
+            $contentApp = new contentApp(self::$app);
+            // if($vars['data']){
+            //     $idArray = iSQL::values($variable,'id','array',null);
+            //     $idArray && $content_data = (array)$contentApp->data($idArray);
+            //     unset($idArray);
+            // }
+            if($vars['meta']){
                 $idArray = iSQL::values($variable,'id','array',null);
-                $idArray && $content_data = (array) contentApp::data($idArray);
+                $idArray && $meta_data = (array)apps_meta::data(self::$app['app'],$idArray);
                 unset($idArray);
             }
             if($vars['tags']){
@@ -222,7 +228,6 @@ class contentFunc {
                 unset($tagArray);
                 $vars['tags'] = false;
             }
-            $contentApp = new contentApp(self::$app);
             foreach ($variable as $key => $value) {
                 $value = $contentApp->value($value,$vars);
 
@@ -235,6 +240,9 @@ class contentFunc {
 
                 if($vars['tags'] && $tags_data){
                     $value+= (array)$tags_data[$value['id']];
+                }
+                if($vars['meta'] && $meta_data){
+                    $value+= (array)$meta_data[$value['id']];
                 }
 
                 if ($vars['page']) {

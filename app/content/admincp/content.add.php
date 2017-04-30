@@ -22,6 +22,7 @@ admincp::head(!$preview);
       <?php } ?>
       <ul class="nav nav-tabs" id="-add-tab">
         <li class="active"><a href="#-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
+        <li><a href="#apps-metadata" data-toggle="tab"><i class="fa fa-sitemap"></i> 动态属性</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -31,6 +32,14 @@ admincp::head(!$preview);
         <div class="tab-content">
           <div id="-add-base" class="tab-pane active">
             <?php echo former::layout();?>
+          </div>
+          <div id="apps-metadata" class="tab-pane hide">
+            <script>
+            $("#cid").on('change', function() {
+              get_category_meta(this.value,"#apps-metadata");
+            });
+            </script>
+            <?php include admincp::view("apps.meta","apps");?>
           </div>
         </div>
         <?php if($preview){?>

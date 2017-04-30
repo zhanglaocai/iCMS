@@ -235,6 +235,7 @@ function _modal_dialog(cancel_text){
         <li class="active"><a href="#article-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
         <li><a href="#article-add-publish" data-toggle="tab"><i class="fa fa-rocket"></i> 发布设置</a></li>
         <li><a href="#article-add-custom" data-toggle="tab"><i class="fa fa-wrench"></i> 自定义</a></li>
+        <li><a href="#apps-metadata" data-toggle="tab"><i class="fa fa-sitemap"></i> 动态属性</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -491,6 +492,14 @@ function _modal_dialog(cancel_text){
           </div>
           <div id="article-add-custom" class="tab-pane hide">
             <?php echo former::layout();?>
+          </div>
+          <div id="apps-metadata" class="tab-pane hide">
+            <script>
+            $("#cid").on('change', function() {
+              get_category_meta(this.value,"#apps-metadata");
+            });
+            </script>
+            <?php include admincp::view("apps.meta","apps");?>
           </div>
         </div>
         <div class="form-actions">

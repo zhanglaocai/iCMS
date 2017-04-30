@@ -26,14 +26,15 @@ class tagAdmincp{
     }
 
     public function do_add(){
-        $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__tags` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
+        $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__tag` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
+        iPHP::callback(array("apps_meta","get"),array($this->appid,$this->id));
         iPHP::callback(array("formerApp","add"),array($this->appid,$rs,true));
         include admincp::view('tag.add');
     }
     public function do_update(){
         if($this->id){
             $data = admincp::update_args($_GET['_args']);
-            $data && iDB::update("tags",$data,array('id'=>$this->id));
+            $data && iDB::update("tag",$data,array('id'=>$this->id));
             tag::cache($this->id,'id');
             iUI::success('操作成功!','js:1');
         }
@@ -75,7 +76,7 @@ class tagAdmincp{
 
         $orderby	= $_GET['orderby']?$_GET['orderby']:"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
-        $total		= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__tags` {$sql}","G");
+        $total		= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__tag` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"个标签");
         $limit  = 'LIMIT '.iUI::$offset.','.$maxperpage;
         if($map_sql||iUI::$offset){
@@ -88,7 +89,7 @@ class tagAdmincp{
                 $limit = 'LIMIT '.$_offset.','.$maxperpage;
             }
             $ids_array = iDB::all("
-                SELECT `id` FROM `#iCMS@__tags` {$sql}
+                SELECT `id` FROM `#iCMS@__tag` {$sql}
                 ORDER BY {$orderby} {$limit}
             ");
             if(isset($_offset)){
@@ -100,7 +101,7 @@ class tagAdmincp{
             $sql   = "WHERE `id` IN({$ids})";
             $limit = '';
         }
-        $rs     = iDB::all("SELECT * FROM `#iCMS@__tags` {$sql} ORDER BY {$orderby} {$limit}");
+        $rs     = iDB::all("SELECT * FROM `#iCMS@__tag` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
         $propArray = propAdmincp::get("pid",null,'array');
     	include admincp::view("tag.manage");
@@ -138,7 +139,7 @@ class tagAdmincp{
                     }
                     $name = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$name);
                     $name = addslashes($name);
-                    if(iDB::value("SELECT `id` FROM `#iCMS@__tags` where `name` = '$name'")){
+                    if(iDB::value("SELECT `id` FROM `#iCMS@__tag` where `name` = '$name'")){
                         $msg['has']++;
                         continue;
                     }
@@ -148,7 +149,7 @@ class tagAdmincp{
                     $status  = '1';
                     $pubdate = time();
                     $data    = compact ($fields);
-                    $id = iDB::insert('tags',$data);
+                    $id = iDB::insert('tag',$data);
 
                     $pid && iMap::init('prop',$this->appid,'pid')->add($pid,$id);
                     iMap::init('category',$this->appid,'cid');
@@ -202,7 +203,7 @@ class tagAdmincp{
         // $cid OR iUI::alert('请选择标签所属栏目！');
 
 		if(empty($id)) {
-            $hasNameId = iDB::value("SELECT `id` FROM `#iCMS@__tags` where `name` = '$name'");
+            $hasNameId = iDB::value("SELECT `id` FROM `#iCMS@__tag` where `name` = '$name'");
             if($hasNameId){
                 if(isset($_POST['spider_update'])){
                     $id = $hasNameId;
@@ -213,7 +214,7 @@ class tagAdmincp{
 		}
 		if(empty($tkey) && $url){
 			$tkey = substr(md5($url),8,16);
-			$hasTkey = iDB::value("SELECT `id` FROM `#iCMS@__tags` where `tkey` = '$tkey'");
+			$hasTkey = iDB::value("SELECT `id` FROM `#iCMS@__tag` where `tkey` = '$tkey'");
             if($hasTkey){
                 if(isset($_POST['spider_check_tkey'])){
                     echo '该自定义链接已经存在!请检查是否重复';
@@ -246,7 +247,7 @@ class tagAdmincp{
             $data['postime']  = $pubdate;
             $data['count']    = '0';
             $data['comments'] = '0';
-            $id = iDB::insert('tags',$data);
+            $id = iDB::insert('tag',$data);
 			tag::cache($id,'id');
 
             iMap::init('prop',$this->appid,'pid');
@@ -263,7 +264,7 @@ class tagAdmincp{
             $data['tkey'] = $tkey;
 
             unset($data['count'],$data['comments']);
-            iDB::update('tags', $data, array('id'=>$id));
+            iDB::update('tag', $data, array('id'=>$id));
 			tag::cache($id,'id');
 
             iMap::init('prop',$this->appid,'pid');
@@ -274,6 +275,7 @@ class tagAdmincp{
             iMap::diff($tcid,$_tcid,$id);
             $msg = '标签更新完成';
 		}
+        iPHP::callback(array("apps_meta","save"),array($this->appid,$id));
         iPHP::callback(array("formerApp","save"),array($this->appid,$id));
         admincp::callback($id,$this);
         if($this->callback['code']){
@@ -285,11 +287,11 @@ class tagAdmincp{
         iUI::success($msg,"url:".APP_URI);
     }
     public function check_tkey(&$tkey,$id=0){
-        $sql = "SELECT count(`id`) FROM `#iCMS@__tags` where `tkey` ='$tkey' ";
+        $sql = "SELECT count(`id`) FROM `#iCMS@__tag` where `tkey` ='$tkey' ";
         $id && $sql.=" AND `id` !='$id'";
         $hasTkey = iDB::value($sql);
         if($hasTkey){
-            $count = iDB::value("SELECT count(`id`) FROM `#iCMS@__tags` where `tkey` LIKE '{$tkey}-%'");
+            $count = iDB::value("SELECT count(`id`) FROM `#iCMS@__tag` where `tkey` LIKE '{$tkey}-%'");
             $tkey = $tkey.'-'.($count+1);
         }
     }
@@ -338,7 +340,7 @@ class tagAdmincp{
         $batch   = $_POST['batch'];
     	switch($batch){
             case 'keywords':
-                $rs = iDB::all("SELECT * FROM `#iCMS@__tags` where `id` IN ($ids)");
+                $rs = iDB::all("SELECT * FROM `#iCMS@__tag` where `id` IN ($ids)");
                 $categoryArray  = category::multi_get($rs,'cid');
                 $tcategoryArray = category::multi_get($rs,'tcid',$this->appid);
                 foreach($rs AS $tag){
@@ -368,8 +370,8 @@ class tagAdmincp{
                 iMap::init('category',$this->appid,'cid');
 		        $cid = (int)$_POST['cid'];
 		        foreach($idArray AS $id) {
-                    $_cid = iDB::value("SELECT `cid` FROM `#iCMS@__tags` where `id` ='$id'");
-                    iDB::update("tags",compact('cid'),compact('id'));
+                    $_cid = iDB::value("SELECT `cid` FROM `#iCMS@__tag` where `id` ='$id'");
+                    iDB::update("tag",compact('cid'),compact('id'));
 		            if($_cid!=$cid) {
                         iMap::diff($cid,$_cid,$id);
                         categoryAdmincp::update_count($_cid,'-');
@@ -383,8 +385,8 @@ class tagAdmincp{
                 iMap::init('category',$this->appid,'cid');
 		        $tcid = (int)$_POST['tcid'];
 		        foreach($idArray AS $id) {
-                    $_tcid = iDB::value("SELECT `tcid` FROM `#iCMS@__tags` where `id` ='$id'");
-                    iDB::update("tags",compact('tcid'),compact('id'));
+                    $_tcid = iDB::value("SELECT `tcid` FROM `#iCMS@__tag` where `id` ='$id'");
+                    iDB::update("tag",compact('tcid'),compact('id'));
 		            if($_tcid!=$tcid) {
                         iMap::diff($tcid,$_tcid,$id);
                         categoryAdmincp::update_count($_tcid,'-');
@@ -397,8 +399,8 @@ class tagAdmincp{
                 iMap::init('prop',$this->appid,'pid');
                 $pid = implode(',', (array)$_POST['pid']);
                 foreach((array)$_POST['id'] AS $id) {
-                    $_pid = iDB::value("SELECT pid FROM `#iCMS@__tags` WHERE `id`='$id'");;
-                    iDB::update("tags",compact('pid'),compact('id'));
+                    $_pid = iDB::value("SELECT pid FROM `#iCMS@__tag` WHERE `id`='$id'");;
+                    iDB::update("tag",compact('pid'),compact('id'));
                     iMap::diff($pid,$_pid,$id);
                 }
                 iUI::success('属性设置完成!','js:1');
@@ -416,9 +418,9 @@ class tagAdmincp{
     				$sql	="`keywords` = '".iSecurity::escapeStr($_POST['mkeyword'])."'";
     			}elseif($_POST['pattern']=='addto') {
 		        	foreach($idArray AS $id){
-                        $keywords = iDB::value("SELECT keywords FROM `#iCMS@__tags` WHERE `id`='$id'");
+                        $keywords = iDB::value("SELECT keywords FROM `#iCMS@__tag` WHERE `id`='$id'");
                         $sql      ="`keywords` = '".($keywords?$keywords.','.iSecurity::escapeStr($_POST['mkeyword']):iSecurity::escapeStr($_POST['mkeyword']))."'";
-				        iDB::query("UPDATE `#iCMS@__tags` SET {$sql} WHERE `id`='$id'");
+				        iDB::query("UPDATE `#iCMS@__tag` SET {$sql} WHERE `id`='$id'");
 		        	}
 		        	iUI::success('关键字更改完成!','js:1');
     			}
@@ -428,9 +430,9 @@ class tagAdmincp{
     				$sql	="`related` = '".iSecurity::escapeStr($_POST['mtag'])."'";
     			}elseif($_POST['pattern']=='addto') {
 		        	foreach($idArray AS $id){
-		        		$keywords	= iDB::value("SELECT related FROM `#iCMS@__tags` WHERE `id`='$id'");
+		        		$keywords	= iDB::value("SELECT related FROM `#iCMS@__tag` WHERE `id`='$id'");
 		        		$sql		="`related` = '".($keywords?$keywords.','.iSecurity::escapeStr($_POST['mtag']):iSecurity::escapeStr($_POST['mtag']))."'";
-				        iDB::query("UPDATE `#iCMS@__tags` SET {$sql} WHERE `id`='$id'");
+				        iDB::query("UPDATE `#iCMS@__tag` SET {$sql} WHERE `id`='$id'");
 		        	}
 		        	iUI::success('相关标签更改完成!','js:1');
     			}
@@ -439,7 +441,7 @@ class tagAdmincp{
                 if(strpos($batch, ':')){
                     $data = admincp::update_args($batch);
                     foreach($idArray AS $id) {
-                        $data && iDB::update("tags",$data,array('id'=>$id));
+                        $data && iDB::update("tag",$data,array('id'=>$id));
                     }
                     iUI::success('操作成功!','js:1');
                 }else{
@@ -447,7 +449,7 @@ class tagAdmincp{
                 }
 
 		}
-        $sql && iDB::query("UPDATE `#iCMS@__tags` SET {$sql} WHERE `id` IN ($ids)");
+        $sql && iDB::query("UPDATE `#iCMS@__tag` SET {$sql} WHERE `id` IN ($ids)");
 		iUI::success('操作成功!','js:1');
 	}
 }

@@ -147,16 +147,12 @@ class user {
 		$data = array();
 		$rs = iDB::all("SELECT * FROM `#iCMS@__user` where {$sql} AND `status`='1'",OBJECT);
 		if($rs){
-			if($is_multi){
-				$_count = count($rs);
-		        for ($i=0; $i < $_count; $i++) {
-		        	if($unpass) unset($rs[$i]->password);
-		        	$data[$rs[$i]->uid]= self::user_item($rs[$i]);
-		        }
-			}else{
-				$data = self::user_item($rs[0]);
-	   			if($unpass) unset($data->password);
-			}
+			$_count = count($rs);
+	        for ($i=0; $i < $_count; $i++) {
+	        	if($unpass) unset($rs[$i]->password);
+	        	$data[$rs[$i]->uid]= self::user_item($rs[$i]);
+	        }
+	        $is_multi OR $data = $data[$uids];
 		}
 		if(empty($data)){
 			return;

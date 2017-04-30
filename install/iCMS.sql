@@ -499,9 +499,9 @@ CREATE TABLE `icms_spider_url` (
   KEY `url` (`url`(255))
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-/*Table structure for table `icms_tags` */
+/*Table structure for table `icms_tag` */
 
-CREATE TABLE `icms_tags` (
+CREATE TABLE `icms_tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uid` int(10) unsigned NOT NULL DEFAULT '0',
   `rootid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -542,9 +542,9 @@ CREATE TABLE `icms_tags` (
   KEY `rootid` (`rootid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-/*Table structure for table `icms_tags_map` */
+/*Table structure for table `icms_tag_map` */
 
-CREATE TABLE `icms_tags_map` (
+CREATE TABLE `icms_tag_map` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `node` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '标签ID',
   `iid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',

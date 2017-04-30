@@ -59,6 +59,7 @@ class categoryAdmincp {
             $rs['rule']     = json_decode($rs['rule'],true);
             $rs['template'] = json_decode($rs['template'],true);
             $rs['config']   = json_decode($rs['config'],true);
+            iPHP::callback(array("apps_meta","get"),array(iCMS_APP_CATEGORY,$this->cid,false));
         }else {
             $rootid = (int)$_GET['rootid'];
             $rootid && category::check_priv($rootid,'a','page');
@@ -143,6 +144,19 @@ class categoryAdmincp {
             }
         }
 
+        //内容元属性
+        if($config['meta']){
+            $meta = array();
+            foreach($config['meta'] AS $mk=>$meta){
+                if($meta['name']){
+                    $meta['key'] OR $meta['key'] = strtolower(iPinyin::get($meta['name']));
+                    preg_match("/[a-zA-Z0-9_\-]/",$meta['key']) OR iUI::alert('只能由英文字母、数字或_-组成(不支持中文),留空则自动以名称拼音填充');
+                    $meta['key'] = trim($meta['key']);
+                    $config['meta'][$mk] = $meta;
+                }
+            }
+        }
+
         $rule     = addslashes(json_encode($rule));
         $template = addslashes(json_encode($template));
         $config   = addslashes(json_encode($config));
@@ -181,6 +195,7 @@ class categoryAdmincp {
                 $data['comments'] = '0';
                 $cid = iDB::insert('category',$data);
                 iDB::update('category', array('sortnum'=>$cid), array('cid'=>$cid));
+                iPHP::callback(array("apps_meta","save"),array(iCMS_APP_CATEGORY,$cid));
                 iPHP::callback(array("formerApp","save"),array(iCMS_APP_CATEGORY,$cid));
                 $pid && iMap::add($pid,$cid);
             }
@@ -193,11 +208,12 @@ class categoryAdmincp {
             $mode=="2" && $this->check_dir($dir,$this->appid,$url,$cid);
             $data['dir'] = $dir;
             iDB::update('category', $data, array('cid'=>$cid));
+            iPHP::callback(array("apps_meta","save"),array(iCMS_APP_CATEGORY,$cid));
             iPHP::callback(array("formerApp","save"),array(iCMS_APP_CATEGORY,$cid));
             iMap::diff($pid,$_pid,$cid);
             $msg = $this->category_name."编辑完成!请记得更新缓存!";
         }
-        //$this->cahce_item($cid);
+        $this->cahce_item($cid);
 
         // $this->config();
 
@@ -418,6 +434,19 @@ class categoryAdmincp {
 		$expanded=$_GET['expanded']?true:false;
 	 	echo $this->tree((int)$_GET["root"],$expanded);
     }
+    /**
+     * [获取内容元属性设置]
+     * @return [type] [description]
+     */
+    public static function do_config_meta($ret=false,$cid=null){
+        $cid===null && $cid = (int)$_GET['cid'];
+        if($cid){
+            $category = category::get($cid);
+            $meta     = $category->config['meta'];
+            if($ret) return $meta;
+            iUI::json($meta);
+        }
+    }
     public function do_cache($dialog=true){
         categoryAdmincp::config();
         $_count = category::cache(true,$this->appid);
@@ -475,6 +504,14 @@ class categoryAdmincp {
         }
         $updateMsg  = $page?true:false;
         iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
+    }
+    public function cahce_item($cid){
+        $C = iDB::row("SELECT * FROM `#iCMS@__category` WHERE `cid`='$cid' LIMIT 1;",ARRAY_A);
+        category::cahce_item($C);
+
+        $C = category::data($C);
+        category::cahce_item($C,'C');
+        iCache::delete('category/'.$C['cid']);
     }
     public function loopurl($total,$_query){
         if ($total>0 && $_GET['page']<$total){
@@ -582,7 +619,7 @@ class categoryAdmincp {
     }
     public function merge($tocid,$cid){
         iDB::query("UPDATE `#iCMS@__".$this->_app_table."` SET `".$this->_app_cid."` ='$tocid' WHERE `".$this->_app_cid."` ='$cid'");
-        iDB::query("UPDATE `#iCMS@__tags` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
+        tag::merge($tocid,$cid);
         //iDB::query("UPDATE `#iCMS@__push` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
         iDB::query("UPDATE `#iCMS@__prop` SET `cid` ='$tocid' WHERE `cid` ='$cid'");
     }

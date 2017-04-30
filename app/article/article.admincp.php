@@ -55,14 +55,16 @@ class articleAdmincp{
                     $bodyArray = explode('#--iCMS.PageBreak--#',$adRs['body']);
                 }
             }
+            iPHP::callback(array("apps_meta","get"),array(self::$appid,$this->id));
         }
 
         $bodyCount = count($bodyArray);
         $bodyCount OR $bodyCount = 1;
         $cid         = empty($rs['cid'])?(int)$_GET['cid']:$rs['cid'];
         $cata_option = category::priv('ca')->select($cid);
+        $cid && $meta_setting = categoryAdmincp::do_config_meta(true,$cid);
 
-        $rs['pubdate']       = get_date($rs['pubdate'],'Y-m-d H:i:s');
+        $rs['pubdate'] = get_date($rs['pubdate'],'Y-m-d H:i:s');
         $rs['markdown'] &&  self::$config['markdown'] = "1";
         if(empty($this->id)){
             $rs['status']  = "1";
@@ -606,7 +608,7 @@ class articleAdmincp{
 
             $url OR $this->article_data($body,$aid,$haspic);
             categoryAdmincp::update_count($cid);
-
+            iPHP::callback(array("apps_meta","save"),array(self::$appid,$aid));
             iPHP::callback(array("formerApp","save"),array(self::$appid,$aid));
 
             $article_url = iURL::get('article',array(array(
@@ -669,6 +671,7 @@ class articleAdmincp{
                 categoryAdmincp::update_count($_cid,'-');
                 categoryAdmincp::update_count($cid);
             }
+            iPHP::callback(array("apps_meta","save"),array(self::$appid,$aid));
             iPHP::callback(array("formerApp","save"),array(self::$appid,$aid));
             if($this->callback['code']){
                 return array(

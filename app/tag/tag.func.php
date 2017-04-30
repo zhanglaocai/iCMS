@@ -19,7 +19,7 @@ class tagFunc{
         }
         if(isset($vars['tcids']) && !isset($vars['tcid'])){
             iMap::init('category',iCMS_APP_TAG,'cid');
-            //$where_sql.= iMap::exists($vars['tcid'],'`#iCMS@__tags`.id'); //map 表大的用exists
+            //$where_sql.= iMap::exists($vars['tcid'],'`#iCMS@__tag`.id'); //map 表大的用exists
             $map_where+=iMap::where($vars['tcid']);
         }
         if(isset($vars['tcid!'])){
@@ -31,7 +31,7 @@ class tagFunc{
         }
         if(isset($vars['pids']) && !isset($vars['pid'])){
             iMap::init('prop',iCMS_APP_TAG,'pid');
-            //$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__tags`.id'); //map 表大的用exists
+            //$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__tag`.id'); //map 表大的用exists
             $map_where+= iMap::where($vars['pids']);
         }
         if(isset($vars['pid!'])){
@@ -90,21 +90,21 @@ class tagFunc{
     	$offset	= 0;
     	$limit  = "LIMIT {$maxperpage}";
     	if($vars['page']){
-    		$total	= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__tags` {$where_sql}",null,iCMS::$config['cache']['page_total']);
+    		$total	= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__tag` {$where_sql}",null,iCMS::$config['cache']['page_total']);
     		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
     		$offset = $multi->offset;
     		$limit  = "LIMIT {$offset},{$maxperpage}";
-            iView::assign("tags_list_total",$total);
+            iView::assign("tag_list_total",$total);
     	}
 
         if($vars['orderby']=='rand'){
-            $ids_array = iSQL::get_rand_ids('#iCMS@__tags',$where_sql,$maxperpage,'id');
+            $ids_array = iSQL::get_rand_ids('#iCMS@__tag',$where_sql,$maxperpage,'id');
         }
 
     	$hash = md5($where_sql.$order_sql.$limit);
 
     	if($vars['cache']){
-    		$cache_name = iPHP_DEVICE.'/tags/'.$hash;
+    		$cache_name = iPHP_DEVICE.'/tag/'.$hash;
             $vars['page'] && $cache_name.= "/".(int)$GLOBALS['page'];
     		$resource = iCache::get($cache_name);
             if($resource){
@@ -113,24 +113,24 @@ class tagFunc{
     	}
         if($map_sql || $offset){
             if($vars['cache']){
-    			$map_cache_name = iPHP_DEVICE.'/tags_map/'.$hash;
+    			$map_cache_name = iPHP_DEVICE.'/tag_map/'.$hash;
     			$ids_array      = iCache::get($map_cache_name);
             }
             if(empty($ids_array)){
-                $ids_array = iDB::all("SELECT `id` FROM `#iCMS@__tags` {$where_sql} {$order_sql} {$limit}");
+                $ids_array = iDB::all("SELECT `id` FROM `#iCMS@__tag` {$where_sql} {$order_sql} {$limit}");
                 $vars['cache'] && iCache::set($map_cache_name,$ids_array,$cache_time);
             }
         }
         if($ids_array){
             $ids       = iSQL::values($ids_array);
             $ids       = $ids?$ids:'0';
-            $where_sql = "WHERE `#iCMS@__tags`.`id` IN({$ids})";
+            $where_sql = "WHERE `#iCMS@__tag`.`id` IN({$ids})";
             $limit     = '';
         }
 
-    	$resource = iDB::all("SELECT * FROM `#iCMS@__tags` {$where_sql} {$order_sql} {$limit}");
+    	$resource = iDB::all("SELECT * FROM `#iCMS@__tag` {$where_sql} {$order_sql} {$limit}");
     	if($resource){
-            $resource = tagFunc::tag_array($vars,$resource);
+            $resource = self::tag_array($vars,$resource);
             $vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
         }
     	return $resource;
@@ -149,8 +149,18 @@ class tagFunc{
                 iUI::warning('iCMS&#x3a;tag&#x3a;array 标签出错! 缺少参数"id"或"name".');
             }
         }
-        if($resource)foreach ($resource as $key => $value) {
-    		$resource[$key] = tagApp::value($value);
+        if($resource){
+            if($vars['meta']){
+                $idArray = iSQL::values($resource,'id','array',null);
+                $idArray && $meta_data = (array)apps_meta::data('tag',$idArray);
+                unset($idArray);
+            }
+            foreach ($resource as $key => $value) {
+                if($vars['meta'] && $meta_data){
+                    $value+= (array)$meta_data[$value['id']];
+                }
+        		$resource[$key] = tagApp::value($value);
+            }
         }
         return $resource;
     }

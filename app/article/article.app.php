@@ -116,6 +116,7 @@ class articleApp {
 			'user' => true,
 		);
 		$article = $this->value($article, $article_data, $vars, $page, $tpl);
+		$article+=(array)apps_meta::data('article',$id);
 		unset($article_data);
 		if ($article === false) {
 			return false;
@@ -250,22 +251,20 @@ class articleApp {
 		);
 		return $article;
 	}
-	public function data($aids=0){
+
+	public static function data($aids=0){
 		if(empty($aids)) return array();
 
 		list($aids,$is_multi)  = iSQL::multi_var($aids);
 		$sql  = iSQL::in($aids,'aid',false,true);
 		$data = array();
-		$rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}",OBJECT);
+		$rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}");
 		if($rs){
-			if($is_multi){
-				$_count = count($rs);
-		        for ($i=0; $i < $_count; $i++) {
-		        	$data[$rs[$i]->aid]= $rs[$i];
-		        }
-			}else{
-				$data = $rs[0];
-			}
+			$_count = count($rs);
+	        for ($i=0; $i < $_count; $i++) {
+	        	$data[$rs[$i]['aid']]= $rs[$i];
+	        }
+	        $is_multi OR $data = $data[$aids];
 		}
         if(empty($data)){
             return;

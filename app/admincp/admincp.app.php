@@ -83,7 +83,7 @@ class admincpApp{
         $ac2 = iDB::value("SELECT count(*) FROM `#iCMS@__article` WHERE `status`='2'");
 
         $ctc = iDB::value("SELECT count(*) FROM `#iCMS@__comment`");
-        $tc  = iDB::value("SELECT count(*) FROM `#iCMS@__tags`");
+        $tc  = iDB::value("SELECT count(*) FROM `#iCMS@__tag`");
         $kc  = iDB::value("SELECT count(*) FROM `#iCMS@__keywords`");
         $pc  = iDB::value("SELECT count(*) FROM `#iCMS@__prop`");
         $uc  = iDB::value("SELECT count(*) FROM `#iCMS@__user`");

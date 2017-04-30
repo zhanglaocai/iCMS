@@ -78,6 +78,7 @@ class contentApp {
         );
         $rs = $this->value($rs,$vars,$page,$tpl);
         $rs = $this->hooked($rs);
+        $rs+=(array)apps_meta::data($this->app,$id);
 
         if ($tpl) {
             iView::clear_tpl();
@@ -297,6 +298,25 @@ class contentApp {
         $option_array && iView::assign('option_array', $rs);
         return $rs;
     }
+    // public static function data($aids=0){
+    //     if(empty($aids)) return array();
+
+    //     list($aids,$is_multi)  = iSQL::multi_var($aids);
+    //     $sql  = iSQL::in($aids,'aid',false,true);
+    //     $data = array();
+    //     $rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}");
+    //     if($rs){
+    //         $_count = count($rs);
+    //         for ($i=0; $i < $_count; $i++) {
+    //             $data[$rs[$i]['aid']]= $rs[$i];
+    //         }
+    //         $is_multi OR $data = $data[$aids];
+    //     }
+    //     if(empty($data)){
+    //         return;
+    //     }
+    //     return $data;
+    // }
     /**
      * [iPHP::run回调]
      * @param  [type] $app [description]

@@ -34,7 +34,7 @@ class tagApp {
     }
     public function tag($val, $field = 'name', $tpl = 'tag') {
         $val OR iPHP::error_404('TAG不能为空', 30002);
-        is_array($val) OR $tag = iDB::row("SELECT * FROM `#iCMS@__tags` where `$field`='$val' AND `status`='1'  LIMIT 1;", ARRAY_A);
+        is_array($val) OR $tag = iDB::row("SELECT * FROM `#iCMS@__tag` where `$field`='$val' AND `status`='1'  LIMIT 1;", ARRAY_A);
 
         if(empty($tag)){
             if($tpl){
@@ -45,6 +45,7 @@ class tagApp {
         }
         $tag = $this->value($tag);
         $tag = $this->hooked($tag);
+        $tag+=(array)apps_meta::data('tag',$tag['id']);
 
         $tag['param'] = array(
             "appid" => $tag['appid'],
@@ -118,7 +119,7 @@ class tagApp {
         if(empty($sql)){
             return;
         }
-        $rs = iDB::all("SELECT * FROM `#iCMS@__tags` where {$sql} AND `status`='1'", ARRAY_A);
+        $rs = iDB::all("SELECT * FROM `#iCMS@__tag` where {$sql} AND `status`='1'", ARRAY_A);
         foreach ((array)$rs as $key => $tag) {
             $tag && $tagArray[$tag['id']] = self::value($tag);
         }

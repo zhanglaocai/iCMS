@@ -114,6 +114,19 @@ $(function() {
         }
         return false;
     });
+//元属性操作
+    doc.on("click",".del_meta",function(){
+        $(this).parent().parent().find('td').remove();
+    });
+    doc.on("click",".add_meta",function(){
+        var tb  = $(this).parent(),tbody=$("tbody",tb),count = $('tr',tbody).length;
+        var ntr = $(".meta_clone",tb).clone(true).removeClass("hide meta_clone");
+        $('input',ntr).removeAttr("disabled").each(function(){
+          this.name = this.name.replace("{key}",count);
+        });
+        ntr.appendTo(tbody);
+        return false;
+    });
 
     $('[data-toggle="modal"]').click(function(event){
         event.preventDefault();
@@ -187,6 +200,30 @@ $(function() {
         return false;
     });
 });
+function get_category_meta(cid,el){
+    $.getJSON(window.iCMS.config.API,
+        {'app':'category','do':'config_meta','cid':cid},
+        function(json){
+            if(!json) return;
+            var tb = $(el),tbody=$("tbody",tb);
+            $.each(json,function(n,v){
+              var id = 'cid_meta_'+cid+'_'+v['key'];
+              if($("#"+id).length>0){
+                  return
+              }
+              var tr    = $(".meta_clone",tb).clone(true).removeClass("hide meta_clone");
+              var count = $('tr',tbody).length;
+              tr.attr('id',id);
+              $('[name="metadata[{key}][name]"]',tr).val(v['name']);
+              $('[name="metadata[{key}][key]"]',tr).val(v['key']).attr('readonly', true);;
+              $('input',tr).removeAttr("disabled").each(function(){
+                this.name = this.name.replace("{key}",count);
+              });
+              tbody.append(tr);
+            });
+        }
+    );
+}
 function mini_tip(){
     var mini = $(document).find(".sidebar-mini");
     $("[data-menu]",mini).tooltip({placement:'right',container:'body'})

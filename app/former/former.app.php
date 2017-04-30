@@ -8,6 +8,7 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class formerApp{
+    public static $primary_id = null;
     public function __construct() {
         $this->appid = iCMS_APP_FORMER;
     }
@@ -108,7 +109,10 @@ class formerApp{
                     iDB::update($table_name, $_data, array($primary=>$id));
                 }
                 $union_id = apps_mod::data_union_id($table_name);
-                empty($_table['union']) && $union_data[$union_id] = $id;
+                if(empty($_table['union'])){
+                    $union_data[$union_id] = $id;
+                    self::$primary_id = $id;
+                }
             }
 
             if($imap)foreach ($imap as $key => $value) {

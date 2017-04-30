@@ -20,17 +20,6 @@ $(function(){
 	iCMS.select('config_send',"<?php echo $rs['config']['send'] ; ?>");
 	iCMS.select('config_examine',"<?php echo $rs['config']['examine'] ; ?>");
 
-	$(document).on("click",".delprop",function(){
-   		$(this).parent().parent().remove();
-	});
-	$(".addprop").click(function(){
-    var href = $(this).attr("href");
-    var tb   = $(href),tbody=$("tbody",tb);
-    var ntr  = $(".aclone",tb).clone(true).removeClass("hide aclone");
-		$('input',ntr).removeAttr("disabled");
-		ntr.appendTo(tbody);
-		return false;
-	});
   $("#mode").change(function(event) {
     if(this.value=="0"){
       $("#mode-box").hide();
@@ -75,6 +64,8 @@ $(function(){
         <li><a href="#category-add-tpl" data-toggle="tab"><i class="fa fa-columns"></i> 模版设置</a></li>
         <li><a href="#category-add-config" data-toggle="tab"><i class="fa fa-cog"></i> 配置</a></li>
         <li><a href="#category-add-custom" data-toggle="tab"><i class="fa fa-wrench"></i> 自定义</a></li>
+        <li><a href="#apps-metadata" data-toggle="tab"><i class="fa fa-sitemap"></i> <?php echo $this->category_name;?>动态属性</a></li>
+        <li><a href="#category-app-meta" data-toggle="tab"><i class="fa fa-sitemap"></i> 内容动态属性</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">
@@ -211,6 +202,38 @@ $(function(){
                 <input type="checkbox" data-type="switch" name="config[examine]" id="config_examine" <?php echo $rs['config']['examine']?'checked':''; ?>/>
               </div>
             </div>
+          </div>
+          <div id="apps-metadata" class="tab-pane hide">
+            <?php include admincp::view("apps.meta","apps");?>
+          </div>
+          <div id="category-app-meta" class="tab-pane hide">
+            <button class="btn btn-inverse add_meta" type="button" href="#category-app-meta"><i class="fa fa-plus-circle"></i> 增加内容动态属性</button>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th class="span3">名称</th>
+                  <th>字段<span class="label label-important">(只能由英文字母、数字或_-组成(不支持中文),留空则自动以名称拼音填充)<span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php if($rs['config']['meta'])foreach((array)$rs['config']['meta'] AS $ckey=>$meta){?>
+                <tr>
+                  <td><input name="config[meta][<?php echo $ckey;?>][name]" type="text" value="<?php echo $meta['name'];?>" class="span3"/></td>
+                  <td><input name="config[meta][<?php echo $ckey;?>][key]" type="text" value="<?php echo $meta['key'];?>" class="span3"/>
+                    <button class="btn btn-small btn-danger del_meta" type="button"><i class="fa fa-trash-o"></i> 删除</button>
+                  </td>
+                </tr>
+                <?php }?>
+              </tbody>
+              <tfoot>
+                <tr class="hide meta_clone">
+                  <td><input name="config[meta][{key}][name]" type="text" disabled="disabled" class="span3" /></td>
+                  <td ><input name="config[meta][{key}][key]" type="text" disabled="disabled" class="span3" />
+                    <button class="btn btn-small btn-danger del_meta" type="button"><i class="fa fa-trash-o"></i> 删除</button>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
           </div>
           <div id="category-add-custom" class="tab-pane hide">
             <?php echo former::layout();?>

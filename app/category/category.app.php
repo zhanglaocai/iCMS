@@ -62,6 +62,7 @@ class categoryApp{
         );
 
         $category = self::hooked($category);
+        $category+=(array)apps_meta::data('category',$cid);
 
         if($tpl) {
             $category['mode'] && iURL::page_url($iurl);
@@ -95,6 +96,7 @@ class categoryApp{
         foreach ($keyArray as $i => $key) {
              unset($category[$key]);
         }
+        // $vars['meta'] && $category+=(array)apps_meta::data('category',$category['cid']);
         iDevice::router($category);
         iDevice::router($category['iurl']);
         iDevice::router($category['navArray'],true);

@@ -89,8 +89,16 @@ class categoryFunc{
 
 		$resource = iDB::all("SELECT `cid` FROM `#iCMS@__category` {$where_sql} {$order_sql} {$limit}");
 		if($resource){
+	        if($vars['meta']){
+	            $cidArray = iSQL::values($resource,'cid','array',null);
+				$cidArray && $meta_data = (array)apps_meta::data('category',$cidArray);
+	            unset($cidArray);
+	        }
 			foreach ($resource as $key => $value) {
 				$cate = categoryApp::get_cahce_cid($value['cid']);
+	            if($vars['meta'] && $meta_data){
+	                $cate+= (array)$meta_data[$value['cid']];
+	            }
 				$cate && $resource[$key] = categoryApp::get_lite($cate);
 			}
 		}

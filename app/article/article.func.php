@@ -60,7 +60,7 @@ class articleFunc{
 		}
 
 		if (isset($vars['tids'])) {
-			iMap::init('tags', iCMS_APP_ARTICLE,'tags');
+			iMap::init('tag', iCMS_APP_ARTICLE,'tags');
 			$map_where += iMap::where($vars['tids']);
 		}
 		if (isset($vars['keywords'])) {
@@ -318,12 +318,19 @@ class articleFunc{
 	            $aidArray && $article_data = (array) articleApp::data($aidArray);
 	            unset($aidArray);
 	        }
+	        if($vars['meta']){
+	            $aidArray = iSQL::values($variable,'id','array',null);
+				$aidArray && $meta_data = (array)apps_meta::data('article',$aidArray);
+	            unset($aidArray);
+	        }
+
 	        if($vars['tags']){
 	            $tagArray = iSQL::values($variable,'tags','array',null,'id');
 				$tagArray && $tags_data = (array)tagApp::multi_tag($tagArray);
 	            unset($tagArray);
 	            $vars['tag'] = false;
 	        }
+
 			foreach ($variable as $key => $value) {
 				$value = articleApp::value($value, false, $vars);
 
@@ -342,6 +349,9 @@ class articleFunc{
 
 	            if($vars['tags'] && $tags_data){
 	                $value+= (array)$tags_data[$value['id']];
+	            }
+	            if($vars['meta'] && $meta_data){
+	                $value+= (array)$meta_data[$value['id']];
 	            }
 
 				if ($vars['page']) {
