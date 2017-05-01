@@ -157,20 +157,22 @@
                                 <li class="media">
                                     <!--{if $content_list.pic.url}-->
                                     <a class="media-object" href="<!--{$content_list.url}-->">
-                                        <img class="r5 lazy" data-src="<!--{$content_list.pic.url}-->" src="<!--{$site.urls.tpl}-->/static/img/loading.gif">
-                                    </a>
+                                            <img class="r5 lazy" data-src="<!--{$content_list.pic.url}-->" src="<!--{$site.urls.tpl}-->/static/img/loading.gif">
+                                        </a>
                                     <!--{/if}-->
                                     <div class="media-body">
                                         <h4 class="media-heading">
-                                        <a href="<!--{$content_list.url}-->" target="_blank"><!--{$content_list.title}--></a>
+                                            <a href="<!--{$content_list.url}-->" target="_blank"><!--{$content_list.title}--></a>
                                         </h4>
+                                        <!--{if $content_list.description}-->
                                         <p class="media-text">
-                                            <!--{$content_list.description|cut:100:'......'}-->
+                                            <!--{$content_list.description|cut:110:'...'}-->
                                             <a href="<!--{$content_list.url}-->" target="_blank" class="blue">[详细]</a>
                                         </p>
+                                        <!--{/if}-->
                                         <div class="media-info">
-                                            <span class="date"><!--{$content_list.pubdate|date:'m月d日'}--></span>
-                                            <span class="category">[<!--{$content_list.category.link}-->]</span>
+                                            <span class="date"><!--{$content_list.pubdate|date:'Y-m-d H:i'}--></span>
+                                            <span class="category">分类：<!--{$content_list.category.link}--></span>
                                             <!--{if $content_list.tags_link}-->
                                             <span class="tags"><!--{$content_list.tags_link}--></span>
                                             <!--{/if}-->
