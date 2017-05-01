@@ -2,8 +2,7 @@
 SQLyog Ultimate v12.09 (64 bit)
 MySQL - 5.5.53 : Database - icms7
 *********************************************************************
-*/
-
+*/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -116,6 +115,14 @@ CREATE TABLE `icms_article_data` (
   KEY `aid` (`aid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+/*Table structure for table `icms_article_meta` */
+
+CREATE TABLE `icms_article_meta` (
+  `id` int(10) unsigned NOT NULL,
+  `data` mediumtext NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 /*Table structure for table `icms_category` */
 
 CREATE TABLE `icms_category` (
@@ -163,6 +170,14 @@ CREATE TABLE `icms_category_map` (
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `idx` (`appid`,`node`,`iid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Table structure for table `icms_category_meta` */
+
+CREATE TABLE `icms_category_meta` (
+  `id` int(10) unsigned NOT NULL,
+  `data` mediumtext NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_comment` */
@@ -552,6 +567,14 @@ CREATE TABLE `icms_tag_map` (
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
   KEY `tid_index` (`appid`,`node`,`iid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Table structure for table `icms_tag_meta` */
+
+CREATE TABLE `icms_tag_meta` (
+  `id` int(10) unsigned NOT NULL,
+  `data` mediumtext NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_user` */
