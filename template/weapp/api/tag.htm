@@ -1,0 +1,33 @@
+{
+"site":<!--{$site|json_encode}-->,
+"tag":<!--{$tag|json_encode}-->,
+"news":[
+<!--{iCMS:article:list loop="true" page="true" row="5" sub="all" sub="true" tids="$tag.id"}-->
+<!--{&$article_list.pubdate|date:"Y-m-d H:i"}-->
+{
+    "id":"<!--{$article_list.id}-->",
+    "title":<!--{$article_list.title|json_encode}-->,
+    "description":<!--{$article_list.description|json_encode}-->,
+    "pic":<!--{$article_list.pic.url|json_encode}-->,
+    "pubdate":<!--{$article_list.pubdate|json_encode}-->,
+    "category":<!--{$article_list.category|json_encode}-->
+}
+<!--{if !$article_list.last}-->,<!--{/if}-->
+<!--{/iCMS}-->
+]
+,"PAGE":<!--{$iCMS.PAGE|keys:"NAV,NEXT,PREV":true|json_encode}-->
+,"hots":[
+<!--{iCMS:article:list loop="true" pic="true" row="8" sub="all" sub="true" tids="$tag.id"}-->
+{
+    "id":"<!--{$article_list.id}-->",
+    "title":<!--{$article_list.title|json_encode}-->,
+    "description":<!--{$article_list.description|json_encode}-->,
+    "pic":<!--{$article_list.pic.url|json_encode}-->
+}
+<!--{if !$article_list.last}-->,<!--{/if}-->
+<!--{/iCMS}-->
+]
+
+}
+
+<!--{clean}-->

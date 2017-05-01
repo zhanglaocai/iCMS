@@ -1,0 +1,8 @@
+<template name="foot">
+  <view class="weui-footer">
+      <view class="weui-footer__links">
+          <navigator url="/pages/index/index" class="weui-footer__link">{{site.title}}</navigator>
+      </view>
+      <view class="weui-footer__text">Copyright © 2008-2016 {{site.url}}</view>
+  </view>
+</template>

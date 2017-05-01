@@ -1,0 +1,28 @@
+/**index.wxss**/
+.container {
+  background-color: #EAEAEA;
+}
+.subcategory {
+  padding-left: 40px;
+}
+.tags {
+  margin-top: 0px;
+  padding: 8px;
+}
+.tags-title {
+  text-align: center;
+  height: 35px;
+  font-size: 11pt;
+  color: #999;
+}
+.tag {
+  color: #00A2EA;
+  border: 1px solid #A0D1E5;
+  padding: 4px 8px;
+  display: inline-block;
+  float: left;
+  margin-right: 5px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  font-size: 11pt;
+}

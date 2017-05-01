@@ -1,0 +1,40 @@
+{
+    "site":<!--{$site|json_encode}-->,
+    "category":[
+    <!--{iCMS:category:list loop="true" stype='top' row="100"}-->
+        {
+            "cid":"<!--{$category_list.cid}-->",
+            "count":<!--{$category_list.count}-->,
+            "name":<!--{$category_list.name|json_encode}-->,
+            "description":<!--{$category_list.description|json_encode}-->,
+            "pic":<!--{$category_list.pic.url|json_encode}-->,
+            "child":[
+                <!--{if $category_list.child}-->
+                    <!--{iCMS:category:list as="subcate" loop="true" stype='sub' row="50" cid="$category_list.cid"}-->
+                    {
+                    "cid":"<!--{$subcate.cid}-->",
+                    "count":<!--{$subcate.count}-->,
+                    "name":<!--{$subcate.name|json_encode}-->,
+                    "description":<!--{$subcate.description|json_encode}-->,
+                    "pic":<!--{$subcate.pic.url|json_encode}-->
+                    }
+                    <!--{if !$subcate.last}-->,<!--{/if}-->
+                    <!--{/iCMS}-->
+                <!--{/if}-->
+            ]
+        }
+    <!--{if !$category_list.last}-->,<!--{/if}-->
+    <!--{/iCMS}-->
+    ],
+    "tags":[
+        <!--{iCMS:tag:list loop="true" row="30" orderby="hot"}-->
+        {
+            "id":"<!--{$tag_list.id}-->",
+            "name":<!--{$tag_list.name|json_encode}-->
+        }
+        <!--{if !$tag_list.last}-->,<!--{/if}-->
+        <!--{/iCMS}-->
+    ]
+}
+
+<!--{clean}-->
