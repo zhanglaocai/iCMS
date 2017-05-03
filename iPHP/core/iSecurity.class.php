@@ -86,7 +86,7 @@ class iSecurity {
 	 * @param $method
 	 * @param $cvtype
 	 */
-	public static function gp($keys, $method = null, $cvtype = 1,$istrim = true) {
+	public static function GP($keys, $method = null, $cvtype = 1,$istrim = true) {
 		!is_array($keys) && $keys = array($keys);
 		foreach ($keys as $key) {
 			if ($key == 'GLOBALS') continue;

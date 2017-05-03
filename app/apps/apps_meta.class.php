@@ -91,7 +91,7 @@ class apps_meta {
         }
     }
     public static function create($table){
-        if(!self::$CREATE_TABLE) return;
+        // if(!self::$CREATE_TABLE) return;
         if(!iDB::check_table($table)){
             iDB::query("
                 CREATE TABLE `#iCMS@__{$table}` (

@@ -118,6 +118,8 @@ if($_POST['action']=='install'){
     }
     configAdmincp::cache();
 
+    iPHP::callback(array("apps","cache"));
+
 //写入数据库配置<hr />开始安装数据库<hr />数据库安装完成<hr />设置超级管理员<hr />更新网站缓存<hr />
 	iFS::write($lock_file,'iCMS.'.time(),false);
 	iFS::rmdir(iPATH.'install');

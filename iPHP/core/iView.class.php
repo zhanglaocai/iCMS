@@ -173,11 +173,25 @@ class iView {
     }
     public static function render($tpl, $p = 'index') {
         $tpl OR iPHP::error_404('Please set the template file', '001', 'TPL');
+        self::receive_tpl($tpl);
         if (self::$gateway == 'html') {
             return self::$handle->fetch($tpl);
         } else {
             self::$handle->display($tpl);
             iPHP::debug_info($tpl);
+        }
+    }
+    public static function receive_tpl(&$iTPL,$tpl=null){
+        $tpl===null && $tpl = iSecurity::escapeStr($_GET['tpl']);
+        if($tpl){
+            $tpl.= '.htm';
+            $tpl = iSecurity::escapeDir(ltrim($tpl,'/'));
+            if(iSecurity::_escapePath($tpl)){
+                $tplpath = iPHP_TPL_DIR . '/' .iPHP_DEFAULT_TPL.'/'.$tpl;
+                if (is_file($tplpath)) {
+                    $iTPL = '{iTPL}/'.$tpl;
+                }
+            }
         }
     }
 }

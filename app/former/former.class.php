@@ -690,14 +690,16 @@ class former {
                 }
             }
         }
+        unset($app['table'][$app['app'].'_meta']);
         if($data_table){
             $values = compact('post','data_post'); //将表单数据存入数组
+            $tables = array_keys($app['table']);//返回所有表名
         }else{
             $values = compact('post'); //将表单数据存入数组
+            $tb = reset($app['table']);
+            $tables = array($tb['name']);
         }
-        unset($app['table'][$app['app'].'_meta']);
 
-        $tables = array_keys($app['table']);//返回所有表名
         //创建一个数组，用一个表名数组的值作为其键名，表单数据的值作为其值
         $variable = array_combine($tables,$values);
 

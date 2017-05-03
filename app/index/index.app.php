@@ -24,16 +24,6 @@ class indexApp {
         $index_name = $a[1]?:iCMS::$config['template']['index']['name'];
         $index_name OR $index_name = 'index';
         $index_tpl  = $a[0]?:iPHP_INDEX_TPL;
-        if($_GET['tpl']){
-            $tpl = iSecurity::escapeStr($_GET['tpl']).'.htm';
-            $tpl = ltrim($tpl,'/');
-            if(iSecurity::_escapePath($tpl)){
-                $tplpath = iPHP_TPL_DIR . "/" .iPHP_DEFAULT_TPL.'/'.$tpl;
-                if (is_file($tplpath)) {
-                    $index_tpl = '{iTPL}/'.$tpl;
-                }
-            }
-        }
         $iurl = iURL::get('index',array('rule'=>$index_name.iCMS::$config['router']['ext']));
         if(iCMS::$config['template']['index']['mode'] && iPHP_DEVICE=="desktop"){
             iCMS::redirect_html($iurl->path,$iurl->href);
