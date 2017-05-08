@@ -8,4 +8,4 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 define('iCMS_VERSION', 'V7.0.0');
-define('iCMS_RELEASE', '20170501');
+define('iCMS_RELEASE', '20170508');
