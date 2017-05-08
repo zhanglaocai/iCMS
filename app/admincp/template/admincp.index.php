@@ -210,7 +210,7 @@ admincp::head();
         </div>
         <div class="widget-content nopadding">
           <p style="text-align: center;">
-            <img src="./app/admincp/ui/iCMS.qrcode.jpg" alt="iCMS 微信公众平台" style="height: 230px">
+            <img src="https://www.icmsdev.com/ui/iCMS.qrcode.png" alt="iCMS 微信公众平台" style="height: 230px">
           </p>
         </div>
       </div>

@@ -692,6 +692,9 @@ class articleAdmincp{
         iUI::$dialog['modal'] = true;
         iUI::dialog($msg,'js:1');
     }
+    public function do_purge(){
+        iUI::success('请自行编写清理代码');
+    }
 
     public static function del_msg($str){
         return iUI::msg('success:#:check:#:'.$str.'<hr />',true);
