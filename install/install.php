@@ -103,6 +103,7 @@ if($_POST['action']=='install'){
 
 //配置程序
     define('iPHP_APP_CONFIG', iFS::path(iPHP_CONF_DIR . '/' . iPHP_APP . '/config.php')); //网站配置文件
+    iPHP::callback(array("apps","cache"));
 
     $config = configAdmincp::get();
     $config['router']['url']    = $router_url;
@@ -117,8 +118,6 @@ if($_POST['action']=='install'){
         config_set($v,$n);
     }
     configAdmincp::cache();
-
-    iPHP::callback(array("apps","cache"));
 
 //写入数据库配置<hr />开始安装数据库<hr />数据库安装完成<hr />设置超级管理员<hr />更新网站缓存<hr />
 	iFS::write($lock_file,'iCMS.'.time(),false);

@@ -1,5 +1,5 @@
 var iCMS = {
-    HOST: 'https://icms7.idreamsoft.com/',
+    HOST: 'https://weapp.icmsdev.com/',
     get: function(url, callback) {
         wx.request({
             url: url,
@@ -17,9 +17,9 @@ var iCMS = {
 module.exports = {
     API: {
         index: iCMS.HOST + "public/api.php?app=index&device=weapp",
-        category: iCMS.HOST + "public/api.php?app=category&device=weapp",
-        tag: iCMS.HOST + "public/api.php?app=tag&device=weapp",
-        article: iCMS.HOST + "public/api.php?app=article&device=weapp"
+        category: iCMS.HOST + "public/api.php?app=category&device=weapp&tpl=category.index",
+        tag: iCMS.HOST + "public/api.php?app=tag&device=weapp&tpl=tag",
+        article: iCMS.HOST + "public/api.php?app=article&device=weapp&tpl=article"
     },
     GET: iCMS.get
 };
