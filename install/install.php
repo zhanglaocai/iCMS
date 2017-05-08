@@ -13,7 +13,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 define('iPHP',TRUE);
 define('iPHP_APP','iCMS'); //应用名
 define('iPHP_APP_MAIL','master@icmsdev.com');
-define('iPATH',dirname(strtr(__FILE__,'\\','/'))."/../");
+define('iPATH',real_path(dirname(strtr(__FILE__,'\\','/'))."/../"));
 
 if($_POST['action']=='install'){
     $db_host     = trim($_POST['DB_HOST']);
@@ -63,6 +63,7 @@ if($_POST['action']=='install'){
 	// @mysql_select_db($db_name,$mysql_link) OR iUI::alert("数据库{$db_name}不存在",'js:top.callback("#DB_NAME");');
     if(isset($_POST['CREATE_DATABASE'])){
         iDB::connect('!select_db');
+        // iDB::query("DROP DATABASE `".iPHP_DB_NAME."`; ");
         iDB::query("CREATE DATABASE `".iPHP_DB_NAME."`CHARACTER SET utf8 COLLATE utf8_general_ci",'get')
         OR
         iUI::alert('数据库创建失败,请确认数据库是否已存在或该用户是否有权限创建数据库','js:top.callback();');
@@ -103,6 +104,15 @@ if($_POST['action']=='install'){
 
 //配置程序
     define('iPHP_APP_CONFIG', iFS::path(iPHP_CONF_DIR . '/' . iPHP_APP . '/config.php')); //网站配置文件
+    iCache::init(array(
+        'engine'     => 'file',
+        'prefix'     => iPHP_APP,
+        'host'       => '',
+        'time'       => '300',
+        'compress'   => '1',
+        'page_total' => '300',
+    ));
+
     iPHP::callback(array("apps","cache"));
 
     $config = configAdmincp::get();
@@ -156,4 +166,25 @@ function run_query($sql) {
         $query = str_replace('`icms_', '`#iCMS@__', $query);
         $query && iDB::query($query);
     }
+}
+function real_path($p = '') {
+    $p = str_replace("\0", '', $p);
+    $end = substr($p, -1);
+    $a = explode('/', $p);
+    $o = array();
+    $c = count($a);
+    for ($i = 0; $i < $c; $i++) {
+        if ($a[$i] == '.' || $a[$i] == '') {
+            continue;
+        }
+
+        if ($a[$i] == '..' && $i > 0 && end($o) != '..') {
+            array_pop($o);
+        } else {
+            $o[] = $a[$i];
+        }
+    }
+    $o[0] == 'http:' && $o[0] = 'http:/';
+
+    return ($p[0] == '/' ? '/' : '') . implode('/', $o) . ($end == '/' ? '/' : '');
 }
