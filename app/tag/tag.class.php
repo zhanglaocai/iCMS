@@ -152,8 +152,8 @@ class tag {
                     $app = apps::get_table(self::$appid);
                     iDB::query("
                         UPDATE `".$app['table']."`
-                        SET `tag`= REPLACE(tag, '$tag->name,',''),
-                        `tag`= REPLACE(tag, ',$tag->name','')
+                        SET `tags`= REPLACE(tags, '$tag->name,',''),
+                        `tags`= REPLACE(tags, ',$tag->name','')
                         WHERE id IN($ids)
                     ");
                 }
