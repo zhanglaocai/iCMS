@@ -106,4 +106,7 @@ class keywordsAdmincp{
         }
         iCache::set(keywordsApp::CACHE_KEY,$array,0);
     }
+    public static function _count(){
+        return iDB::value("SELECT count(*) FROM `#iCMS@__keywords`");
+    }
 }

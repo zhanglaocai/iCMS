@@ -214,4 +214,7 @@ class propAdmincp{
                 WHERE `node`='$pid' {$sql} ;");
         }
     }
+    public static function _count(){
+        return iDB::value("SELECT count(*) FROM `#iCMS@__prop`");
+    }
 }

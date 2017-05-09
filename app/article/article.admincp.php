@@ -956,4 +956,8 @@ class articleAdmincp{
         }
         return false;
     }
+    public static function _count($where=null){
+        $sql = iSQL::where($where,true);
+        return iDB::value("SELECT count(*) FROM `#iCMS@__article` WHERE 1=1 {$sql}");
+    }
 }

@@ -89,4 +89,7 @@ class linksAdmincp{
     		break;
 		}
 	}
+    public static function _count(){
+        return iDB::value("SELECT count(*) FROM `#iCMS@__links`");
+    }
 }

@@ -33,7 +33,7 @@ admincp::head();
         <div class="span3">
           <ul class="site-stats">
             <li><a href="<?php echo __ADMINCP__;?>=article_category"><i class="fa fa-sitemap"></i> <strong><?php echo $acc ; ?></strong> <small>文章栏目</small></a></li>
-            <li><a href="<?php echo __ADMINCP__;?>=tag_category"><i class="fa fa-sitemap"></i> <strong><?php echo $tac ; ?></strong> <small>标签分类</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=tag_category"><i class="fa fa-sitemap"></i> <strong><?php echo $tcc ; ?></strong> <small>标签分类</small></a></li>
             <li><a href="<?php echo __ADMINCP__;?>=apps"><i class="fa fa-sitemap"></i> <strong><?php echo $apc ; ?></strong> <small>应用</small></a></li>
             <li class="divider"></li>
             <li><a href="<?php echo __ADMINCP__;?>=user"><i class="fa fa-user"></i> <strong><?php echo $uc ; ?></strong> <small>用户</small></a></li>
@@ -51,7 +51,7 @@ admincp::head();
         <div class="span3">
           <ul class="site-stats">
             <li><a href="<?php echo __ADMINCP__;?>=tag"><i class="fa fa-tag"></i> <strong><?php echo $tc ; ?></strong> <small>标签</small></a></li>
-            <li><a href="<?php echo __ADMINCP__;?>=comment"><i class="fa fa-comment"></i> <strong><?php echo $ctc ; ?></strong> <small>评论</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=comment"><i class="fa fa-comment"></i> <strong><?php echo $cc ; ?></strong> <small>评论</small></a></li>
             <li><a href="<?php echo __ADMINCP__;?>=keywords"><i class="fa fa-paperclip"></i> <strong><?php echo $kc ; ?></strong> <small>内链</small></a></li>
             <li class="divider"></li>
             <li><a href="<?php echo __ADMINCP__;?>=prop"><i class="fa fa-thumb-tack"></i> <strong><?php echo $pc ; ?></strong> <small>属性</small></a></li>
@@ -63,7 +63,7 @@ admincp::head();
             <li><a href="<?php echo __ADMINCP__;?>=database&do=backup"><i class="fa fa-puzzle-piece"></i> <strong><?php echo count($iTable) ; ?></strong><small>iCMS表</small></a></li>
             <li><a href="<?php echo __ADMINCP__;?>=database&do=backup"><i class="fa fa-puzzle-piece"></i> <strong><?php echo count($oTable) ; ?></strong> <small>其它表</small></a></li>
             <li class="divider"></li>
-            <li><a href="<?php echo __ADMINCP__;?>=files"><i class="fa fa-files-o"></i> <strong><?php echo $fdc ; ?></strong> <small>文件</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=files"><i class="fa fa-files-o"></i> <strong><?php echo $fc ; ?></strong> <small>文件</small></a></li>
           </ul>
         </div>
       </div>

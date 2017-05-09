@@ -120,4 +120,7 @@ class commentAdmincp{
         iPHP::callback(array('apps','update_count'),array($comment->iid,$comment->appid,'comments','-'));
         iPHP::callback(array('user','update_count'),array($comment->userid, 'comments','-'));
     }
+    public static function _count(){
+        return iDB::value("SELECT count(*) FROM `#iCMS@__comment`");
+    }
 }

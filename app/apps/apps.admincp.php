@@ -509,4 +509,7 @@ class appsAdmincp{
           iUI::dialog('<div style="overflow-y: auto;height: 360px;">'.$msg.'</div>','js:1',1000000);
         }
     }
+    public static function _count(){
+        return iDB::value("SELECT count(*) FROM `#iCMS@__apps`");
+    }
 }

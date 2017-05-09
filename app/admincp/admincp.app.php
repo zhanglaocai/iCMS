@@ -74,21 +74,23 @@ class admincpApp{
                 }
             }
         }
-        $acc = iDB::value("SELECT count(*) FROM `#iCMS@__category` WHERE `appid`='".iCMS_APP_ARTICLE."'");
-        $tac = iDB::value("SELECT count(*) FROM `#iCMS@__category` WHERE `appid`='".iCMS_APP_TAG."'");
-        $apc = iDB::value("SELECT count(*) FROM `#iCMS@__apps`");
 
-        $ac  = iDB::value("SELECT count(*) FROM `#iCMS@__article`");
-        $ac0 = iDB::value("SELECT count(*) FROM `#iCMS@__article` WHERE `status`='0'");
-        $ac2 = iDB::value("SELECT count(*) FROM `#iCMS@__article` WHERE `status`='2'");
+        $acc = iPHP::callback(array("categoryAdmincp",  "_count"),array(array('appid'=>iCMS_APP_ARTICLE)));
+        $tcc = iPHP::callback(array("categoryAdmincp",  "_count"),array(array('appid'=>iCMS_APP_TAG)));
+        $apc = iPHP::callback(array("appsAdmincp",      "_count"));
+        $uc  = iPHP::callback(array("userAdmincp",      "_count"));
 
-        $ctc = iDB::value("SELECT count(*) FROM `#iCMS@__comment`");
-        $tc  = iDB::value("SELECT count(*) FROM `#iCMS@__tag`");
-        $kc  = iDB::value("SELECT count(*) FROM `#iCMS@__keywords`");
-        $pc  = iDB::value("SELECT count(*) FROM `#iCMS@__prop`");
-        $uc  = iDB::value("SELECT count(*) FROM `#iCMS@__user`");
-        $fdc = iDB::value("SELECT count(*) FROM `#iCMS@__files`");
-        $lc  = iDB::value("SELECT count(*) FROM `#iCMS@__links`");
+        $ac  = iPHP::callback(array("articleAdmincp",   "_count"));
+        $ac0 = iPHP::callback(array("articleAdmincp",   "_count"),array(array('status'=>'0')));
+        $ac2 = iPHP::callback(array("articleAdmincp",   "_count"),array(array('status'=>'2')));
+        $lc  = iPHP::callback(array("linksAdmincp",     "_count"));
+
+        $tc  = iPHP::callback(array("tagAdmincp",       "_count"));
+        $cc  = iPHP::callback(array("commentAdmincp",   "_count"));
+        $kc  = iPHP::callback(array("keywordsAdmincp",  "_count"));
+        $pc  = iPHP::callback(array("propAdmincp",      "_count"));
+
+        $fc  = iPHP::callback(array("filesAdmincp",     "_count"));
 
     	include admincp::view("admincp.index");
     }

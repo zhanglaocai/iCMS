@@ -381,4 +381,7 @@ class filesAdmincp{
             return $output;
         }
     }
+    public static function _count(){
+        return iDB::value("SELECT count(*) FROM `#iCMS@__files`");
+    }
 }

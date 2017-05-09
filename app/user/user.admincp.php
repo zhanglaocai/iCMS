@@ -180,4 +180,7 @@ class userAdmincp{
         iMap::del_data($uid,iCMS_APP_USER,'prop');
 		$dialog && iUI::success('用户删除完成','js:parent.$("#tr'.$uid.'").remove();');
     }
+    public static function _count(){
+        return iDB::value("SELECT count(*) FROM `#iCMS@__user`");
+    }
 }

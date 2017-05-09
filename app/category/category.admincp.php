@@ -638,7 +638,10 @@ class categoryAdmincp {
         $math=='-' && $sql = " AND `count`>0";
         iDB::query("UPDATE `#iCMS@__category` SET `count` = count".$math."1 WHERE `cid` ='$cid' {$sql}");
     }
-
+    public static function _count($where=null){
+        $sql = iSQL::where($where,true);
+        return iDB::value("SELECT count(*) FROM `#iCMS@__category` WHERE 1=1 {$sql}");
+    }
     public function batchbtn(){
         $ul = '<li><a data-toggle="batch" data-action="mode"><i class="fa fa-cogs"></i> 访问模式</a></li>';
         $ul.='<li class="divider"></li>';

@@ -452,4 +452,7 @@ class tagAdmincp{
         $sql && iDB::query("UPDATE `#iCMS@__tag` SET {$sql} WHERE `id` IN ($ids)");
 		iUI::success('操作成功!','js:1');
 	}
+    public static function _count(){
+        return iDB::value("SELECT count(*) FROM `#iCMS@__tag`");
+    }
 }
