@@ -212,6 +212,7 @@ class spiderAdmincp {
 	 * @return [type] [description]
 	 */
 	public function do_mpublish($pubArray = array()) {
+		@set_time_limit(0);
 		iUI::$break = false;
 		if ($_POST['pub']) {
 			foreach ((array) $_POST['pub'] as $i => $a) {
@@ -224,9 +225,12 @@ class spiderAdmincp {
 			iUI::alert('暂无最新内容', 0, 30);
 		}
 		$_count = count($pubArray);
-		ob_start();
-		ob_end_flush();
-		ob_implicit_flush(1);
+		@header('Cache-Control: no-cache');
+		@header('X-Accel-Buffering: no');
+        ob_start();
+        ob_end_clean() ;
+        ob_end_flush();
+        ob_implicit_flush(true);
 		foreach ((array) $pubArray as $i => $a) {
 			spider::$sid = $a['sid'];
 			spider::$cid = $a['cid'];
@@ -234,26 +238,26 @@ class spiderAdmincp {
 			spider::$rid = $a['rid'];
 			spider::$url = $a['url'];
 			spider::$title = $a['title'];
-			$rs = $this->multipublish();
+			$rs = $this->multipublish($_count,$i+1);
 			$updateMsg = $i ? true : false;
 			$timeout = ($i++) == $_count ? '3' : false;
 			iUI::dialog($rs['msg'], 'js:' . $rs['js'], $timeout, 0, $updateMsg);
-			ob_flush();
 			flush();
+			ob_flush();
 		}
 		iDB::update('spider_project', array('lastupdate' => time()), array('id' => $this->pid));
 		iUI::dialog('success:#:check:#:采集完成!', 0, 3, 0, true);
 	}
-	public function multipublish() {
+	public function multipublish($count,$i) {
 		$a = array();
 		$code = spider::publish('WEB@AUTO');
-
 		if (is_array($code)) {
-			$label = '<span class="label label-success">发布成功!</span>';
+			$label = '内容ID:'.$code['indexid'].' <span class="label label-success">发布成功!</span>';
 		} else {
 			$code == "-1" && $label = '<span class="label label-warning">该URL的文章已经发布过!请检查是否重复</span>';
 		}
-		$a['msg'] = '标题:' . spider::$title . '<br />URL:' . spider::$url . '<br />' . $label . '<hr />';
+		$a['msg'].= "总共{$count}条,当前第{$i}条,剩余".($count-$i)."条<hr />";
+		$a['msg'].= '标题:' . spider::$title . '<br />URL:' . spider::$url . '<br />' . $label . '<hr />';
 		$a['js'] = 'parent.$("#' . md5(spider::$url) . '").remove();';
 		return $a;
 	}

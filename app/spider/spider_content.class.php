@@ -20,6 +20,8 @@ class spider_content {
      * @return [array]           [返回处理结果]
      */
     public static function crawl($html,$data,$rule,$responses) {
+        @set_time_limit(0);
+
         if(trim($data['rule'])===''){
             return '';
         }
@@ -63,12 +65,12 @@ class spider_content {
         if(is_array($html)){
             $content = $html;
         }else{
-            $contentArray       = array();
-            self::$hash         = array();
-            $_content           = spider_content::match($html,$data,$rule);
-            $cmd5               = md5($_content);
-            $contentArray[]     = $_content;
-            self::$hash[$cmd5] = true;
+            $contentArray      = array();
+            self::$hash        = array();
+            $_content          = spider_content::match($html,$data,$rule);
+            $cmd5              = md5($_content);
+            $contentArray[]    = $_content;
+            self::$hash[$cmd5] = spider::$url;
             $data['page'] && self::page_data($html,$data,$rule,$contentArray);
             $content = implode('#--iCMS.PageBreak--#', $contentArray);
             unset($contentArray,$_content);
@@ -308,26 +310,46 @@ class spider_content {
                 }
                 $md5 = md5($phtml);
                 if($pageurl[$md5]){
+                    if (spider::$dataTest) {
+                        echo "<b>{$purl}此分页已采过</b><hr />";
+                    }
+                    continue;
+                }
+                $check_content_code = spider_tools::check_content_code($phtml,'error');
+                if ($check_content_code === false) {
+                    unset($check_content_code,$phtml);
+                    if (spider::$dataTest) {
+                        echo "<b>找到无效分页特征码,中止其它分页采集</b><hr />";
+                    }
                     break;
                 }
-                $check_content = spider_tools::check_content_code($phtml);
-                if ($check_content === false) {
-                    unset($check_content,$phtml);
+
+                $check_content_code = spider_tools::check_content_code($phtml,'right');
+                if ($check_content_code === false) {
+                    unset($check_content_code,$phtml);
+                    if (spider::$dataTest) {
+                        echo "<b>未找到有效分页特征码,中止其它分页采集</b><hr />";
+                    }
                     break;
                 }
 
                 $_content = spider_content::match($phtml,$data,$rule);
                 $cmd5     = md5($_content);
-                if(self::$hash[$cmd5]){
-                    break;
+                $_purl    = self::$hash[$cmd5];
+                if($_purl){
+                    if (spider::$dataTest) {
+                        echo "<b>发现[{$purl}]正文与[{$_purl}]相同,跳过本页采集</b><hr />";
+                    }
+                    continue;
                 }
+
                 $contentArray[]        = $_content;
                 $pageurl[$md5]         = $purl;
-                self::$hash[$cmd5]     = true;
+                self::$hash[$cmd5]     = $purl;
                 spider::$allHtml[$md5] = $phtml;
             }
             gc_collect_cycles();
-            unset($check_content,$phtml);
+            unset($check_content_code,$phtml);
 
             if (spider::$dataTest) {
                 echo "<b>最终分页列表:</b><pre>";

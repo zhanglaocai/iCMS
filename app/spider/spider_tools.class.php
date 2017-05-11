@@ -333,37 +333,30 @@ class spider_tools {
             iPHP::error_throw('charsetTrans failed, no function');
         }
     }
-
-    public static function check_content_code($content) {
-        if (spider::$content_right_code) {
-            if(strpos(spider::$content_right_code, 'DOM::')!==false){
-                iPHP::import(iPHP_LIB.'/phpQuery.php');
-                $doc     = phpQuery::newDocumentHTML($content,'UTF-8');
-                $pq_dom  = str_replace('DOM::','', spider::$content_right_code);
-                $matches = (bool)(string)phpQuery::pq($pq_dom);
-                phpQuery::unloadDocuments($doc->getDocumentID());
-                unset($doc,$content);
-            }else{
-                $matches = strpos($content, spider::$content_right_code);
-                unset($content);
-            }
-	        if ($matches===false) {
+    public static function check_content($content,$code) {
+        if(strpos($code, 'DOM::')!==false){
+            iPHP::import(iPHP_LIB.'/phpQuery.php');
+            $doc     = phpQuery::newDocumentHTML($content,'UTF-8');
+            $pq_dom  = str_replace('DOM::','', $code);
+            $matches = (bool)(string)phpQuery::pq($pq_dom);
+            phpQuery::unloadDocuments($doc->getDocumentID());
+            unset($doc,$content);
+        }else{
+            $matches = strpos($content, $code);
+            unset($content);
+        }
+        return $matches;
+    }
+    public static function check_content_code($content,$type=null) {
+        if (spider::$content_right_code && $type=='right') {
+            $right_code = self::check_content($content,spider::$content_right_code);
+	        if ($right_code===false) {
 	            return false;
 	        }
         }
-        if (spider::$content_error_code) {
-            if(strpos(spider::$content_error_code, 'DOM::')!==false){
-                iPHP::import(iPHP_LIB.'/phpQuery.php');
-                $doc      = phpQuery::newDocumentHTML($content,'UTF-8');
-                $pq_dom   = str_replace('DOM::','', spider::$content_error_code);
-                $_matches = (bool)(string)phpQuery::pq($pq_dom);
-                phpQuery::unloadDocuments($doc->getDocumentID());
-                unset($doc,$content);
-            }else{
-                $_matches = strpos($content, spider::$content_error_code);
-                unset($content);
-            }
-            if ($_matches!==false) {
+        if (spider::$content_error_code && $type=='error') {
+            $error_code = self::check_content($content,spider::$content_error_code);
+            if ($error_code!==false) {
                 return false;
             }
         }

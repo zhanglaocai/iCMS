@@ -74,13 +74,12 @@ class files {
             files_cloud::init(iCMS::$config['cloud']);
         }
         if(self::$watermark_enable){
-            iFS::$CALLABLE['upload'][]= array('files','mark');
+            self::$watermark_config = iCMS::$config['watermark'];
+            iFS::$CALLABLE['upload']['mark']= array('files','mark');
         }
     }
     public static function mark($fp,$ext=null) {
-        if(!self::$watermark_enable) return;
-
-        self::$watermark_config===null && self::$watermark_config = iCMS::$config['watermark'];
+        if(!files::$watermark_enable) return;
         $config = self::$watermark_config;
         $allow_ext = array('jpg', 'jpeg', 'png');
         $config['allow_ext'] && $allow_ext = explode(',', $config['allow_ext']);

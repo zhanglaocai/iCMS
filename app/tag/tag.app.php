@@ -164,9 +164,11 @@ class tagApp {
         $array = array();
         foreach ((array)$tagArray as $tid => $tag) {
             $iidArray = $tMap[$tag['name']];
-            $a = array_fill_keys($iidArray,array($tid=>$tag));
-            $array = array_merge_recursive($array,$a);
-            unset($a);
+            if(is_array($iidArray)){
+                $a = array_fill_keys($iidArray,array($tid=>$tag));
+                $array = array_merge_recursive($array,$a);
+                unset($a);
+            }
         }
         return $array;
     }

@@ -42,7 +42,7 @@ class menu {
 
     public static function get_array($cache=false){
         $variable = array();
-        $rs = apps::get_array(array('!menu'=>'','status'=>'1'),'id,config,menu','app ASC');
+        $rs = apps::get_array(array('!menu'=>'','status'=>'1'),'id,app,name,title,config,menu','app ASC');
         foreach ($rs as $appid=> $app) {
             $menuArray = apps::menu($app);
             $sort = $app['id']*1000;

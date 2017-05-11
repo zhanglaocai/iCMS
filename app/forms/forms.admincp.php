@@ -63,10 +63,22 @@ class formsAdmincp{
         $table       = $table_array['table'];
         $primary     = $table_array['primary'];
 
+        if($this->form['fields']){
+            $fields = former::fields($this->form['fields']);
+        }
+
         $sql = "WHERE 1=1";
 
         if($_GET['keywords']) {
-          $sql.=" AND title REGEXP '{$_GET['keywords']}'";
+          $search = array();
+          if(empty($_GET['sfield'])){
+            foreach ((array)$fields as $fi => $field) {
+              $field['field']=='VARCHAR' && $search[] = $field['id'];
+            }
+            $search && $sql.=" AND CONCAT(".implode(',', $search).") REGEXP '{$_GET['keywords']}'";
+          }else{
+            $sql.=" AND ".$_GET['sfield']." REGEXP '{$_GET['keywords']}'";
+          }
         }
 
         isset($_GET['keywords'])&& $uri.='&keyword='.$_GET['keywords'];
@@ -78,9 +90,6 @@ class formsAdmincp{
 
         $rs = iDB::all("SELECT * FROM `{$table}` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
         $_count = count($rs);
-        if($this->form['fields']){
-            $fields = former::fields($this->form['fields']);
-        }
         include admincp::view('forms.data');
     }
     /**
@@ -303,9 +312,9 @@ class formsAdmincp{
         }
     }
     public function do_iCMS(){
-      // if($_GET['keywords']) {
-		    // $sql=" WHERE `keyword` REGEXP '{$_GET['keywords']}'";
-      // }
+      if($_GET['keywords']) {
+		    $sql=" WHERE CONCAT(app,name,title,description) REGEXP '{$_GET['keywords']}'";
+      }
       $orderby    =$_GET['orderby']?$_GET['orderby']:"id DESC";
       $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:50;
       $total      = iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__forms` {$sql}","G");

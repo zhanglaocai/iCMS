@@ -73,9 +73,17 @@ class apps {
             $value['table'] && iDB::query("DROP TABLE IF EXISTS `".$value['table']."`");
         }
     }
-
+    public static function menu_replace(&$menu,$a,$b){
+        $_name = $b['title']?$b['title']:$b['name'];
+        $menu = str_replace(
+          array('{appid}','{app}','{name}','{sort}'),
+          array($b['id'],$b['app'],$_name,$b['id']*1000),
+          $menu
+        );
+    }
     public static function menu($app){
         $array = $app['menu'];
+        is_array($array) && array_walk($array,array(__CLASS__,'menu_replace'),$app);
         if($app['config']['menu']){
             if($app['config']['menu']!='main'){
                 $json = '[{"id": "'.$app['config']['menu'].'","children":[]}]';

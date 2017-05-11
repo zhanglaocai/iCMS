@@ -227,7 +227,7 @@ class spider_data {
         files::$watermark_config['x']   = iCMS::$config['watermark']['x'];
         files::$watermark_config['y']   = iCMS::$config['watermark']['y'];
         files::$watermark_config['img'] = iCMS::$config['watermark']['img'];
-        files::$watermark_enable = true;
+        files::$watermark_enable        = iCMS::$config['watermark']['enable'];
 
         $rule['fs']['encoding'] && iHttp::$CURLOPT_ENCODING = $rule['fs']['encoding'];
         $rule['fs']['referer']  && iHttp::$CURLOPT_REFERER  = $rule['fs']['referer'];
@@ -240,6 +240,7 @@ class spider_data {
         if($rule['watermark_mode']=="2"){
             files::$watermark_enable = false;
         }
+
         if (spider::$callback['data'] && is_callable(spider::$callback['data'])) {
             $responses = call_user_func_array(spider::$callback['data'],array($responses));
         }

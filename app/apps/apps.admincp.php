@@ -153,15 +153,15 @@ class appsAdmincp{
             }
 
             $id = iDB::insert('apps',$array);
-            if(stripos($array['menu'], '{app}') !== false){
-              $_name = $array['title']?$array['title']:$array['name'];
-              $menu = str_replace(
-                  array('{appid}','{app}','{name}','{sort}'),
-                  array($id,$array['app'],$_name,$id*1000),
-                  $array['menu']
-              );
-              iDB::update('apps', array('menu'=>$menu), array('id'=>$id));
-            }
+            // if(stripos($array['menu'], '{app}') !== false){
+            //   $_name = $array['title']?$array['title']:$array['name'];
+            //   $menu = str_replace(
+            //       array('{appid}','{app}','{name}','{sort}'),
+            //       array($id,$array['app'],$_name,$id*1000),
+            //       $array['menu']
+            //   );
+            //   iDB::update('apps', array('menu'=>$menu), array('id'=>$id));
+            // }
         }else {
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app' AND `id` !='$id'") && iUI::alert('该应用已经存在!');
             $_fields     = iDB::value("SELECT `fields` FROM `#iCMS@__apps` where `id` ='$id'");//json

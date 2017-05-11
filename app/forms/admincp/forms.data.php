@@ -24,18 +24,27 @@ $("#<?php echo APP_FORMID;?>").batch();
     <div class="widget-content">
       <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
-        <input type="hidden" name="do" value="form_manage" />
+        <input type="hidden" name="do" value="data" />
         <input type="hidden" name="form_id" value="<?php echo $this->form_id;?>" />
         <div class="input-prepend input-append">
           <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
           <span class="add-on">条记录</span>
         </div>
+        <div class="input-prepend"> <span class="add-on">查找字段</span>
+          <select name="sfield" id="sfield" class="span3 chosen-select">
+            <option value="">所有字段</option>
+            <?php foreach ($fields as $fi => $field) {?>
+            <option value="<?php echo $field['id']; ?>"><?php echo $field['label']; ?>[<?php echo $field['field']; ?>]</option>
+            <?php } ?>
+          </select>
+        </div>
         <div class="input-prepend input-append">
           <span class="add-on">关键字</span>
           <input type="text" name="keywords" class="span2" id="keywords" value="<?php echo $_GET['keywords'] ; ?>" />
           <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜 索</button>
         </div>
+        <span class="help-inline">默认只查找 varchar 类型字段</span>
       </form>
     </div>
   </div>

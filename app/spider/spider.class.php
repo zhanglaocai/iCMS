@@ -172,7 +172,9 @@ class spider{
         return $msg;
     }
     public static function publish($work = null) {
+        @set_time_limit(0);
         $_POST = spider_data::crawl();
+
         if($_POST===false){
             return false;
         }

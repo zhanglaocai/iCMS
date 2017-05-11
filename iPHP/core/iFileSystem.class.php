@@ -660,13 +660,15 @@ class iFS {
 		}
 	}
 	public static function hook($h,$args) {
-		if(is_array(self::$CALLABLE[$h][0])){
-			foreach (self::$CALLABLE[$h] as $key => $cb) {
+		$call = self::$CALLABLE[$h];
+		is_array($call) && $_call = reset($call);
+		if(is_array($_call)){
+			foreach ($call as $key => $cb) {
 				is_callable($cb) && call_user_func_array($cb, $args);
 			}
 		}else{
-			if (self::$CALLABLE[$h] && is_callable(self::$CALLABLE[$h])) {
-				return call_user_func_array(self::$CALLABLE[$h], $args);
+			if ($call && is_callable($call)) {
+				return call_user_func_array($call, $args);
 			}
 		}
 	}
