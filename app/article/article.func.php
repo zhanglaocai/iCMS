@@ -358,7 +358,12 @@ class articleFunc{
 					$value['page'] = $GLOBALS['page'] ? $GLOBALS['page'] : 1;
 					$value['total'] = $total;
 				}
-				$resource[$key] = $value;
+				if ($vars['archive'] == "date") {
+					$_date = archive_date($value['postime']);
+					$resource[$_date][$key] = $value;
+				} else {
+					$resource[$key] = $value;
+				}
 				unset($variable[$key]);
 			}
 		}
