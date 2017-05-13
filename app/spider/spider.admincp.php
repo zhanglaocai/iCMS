@@ -88,6 +88,11 @@ class spiderAdmincp {
 		iDB::query("delete from `#iCMS@__spider_url` where `id` = '$this->sid';");
 		iUI::success('删除完成', 'js:1');
 	}
+
+	public function do_iCMS($doType = null) {
+		$this->do_manage();
+	}
+
 	/**
 	 * [采集结果管理]
 	 * @return [type] [description]
