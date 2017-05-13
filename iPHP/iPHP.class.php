@@ -342,14 +342,26 @@ class iPHP {
      * @return [type]           [description]
      */
     public static function callback($callback,$value=null,$return=null){
-    	if (stripos($callback[1], '_FALSE') !== false) {
-    		$return = false;
+    	$reference = false;
+    	if(is_array($callback)){
+	    	if (stripos($callback[1], '_FALSE') !== false) {
+	    		$return = false;
+	    	}
+	    	if (stripos($callback[1], '_TRUE') !== false) {
+	    		$return = true;
+	    	}
+	    	//引用变量
+	    	if ($callback[1][0]== '&') {
+	    		$callback[1] = substr($callback[1], 1);
+	    		$reference = true;
+	    	}
     	}
-    	if (stripos($callback[1], '_TRUE') !== false) {
-    		$return = true;
-    	}
-        if (is_callable($callback)) {
-           return call_user_func_array($callback,(array)$value);
+        if (@is_callable($callback)) {
+        	if($reference){
+           		return call_user_func_array($callback,array(&$value));
+        	}else{
+           		return call_user_func_array($callback,(array)$value);
+        	}
         }else{
 	        if($return===null){
 				return $value;

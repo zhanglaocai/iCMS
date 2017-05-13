@@ -8,7 +8,7 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class cacheAdmincp{
-    public $acp = array('configAdmincp','propAdmincp','filterAdmincp','keywordsAdmincp');
+    public $appAdmincp = array('configAdmincp','propAdmincp','filterAdmincp','keywordsAdmincp');
     public function __construct() {
         $this->do_app();
     }
@@ -17,7 +17,7 @@ class cacheAdmincp{
      * @return [type] [description]
      */
     public function do_all(){
-        foreach ($this->acp as $key => $acp) {
+        foreach ($this->appAdmincp as $key => $acp) {
             iPHP::callback(array($acp,'cache'));
         }
         $this->do_menu(false);
@@ -30,9 +30,9 @@ class cacheAdmincp{
      * @return [type] [description]
      */
     public function do_iCMS($dialog=true){
-		if (in_array($_GET['acp'], $this->acp)) {
+		if (in_array($_GET['acp'], $this->appAdmincp)) {
 	    	$acp = $_GET['acp'];
-	    	$acp::cache();
+	    	iPHP::callback(array($acp,'cache'));
 	    	$dialog && iUI::success('更新完成');
 		}
     }
