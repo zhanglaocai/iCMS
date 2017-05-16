@@ -100,16 +100,20 @@ class tagApp {
         $tag['spic'] = filesApp::get_pic($tag['spic']);
         return $tag;
     }
-    public function get_array($tags) {
-        if(empty($tags)){
-            return;
-        }
-        $array  = explode(',', $tags);
-        foreach ($array as $key => $tag) {
-            $tag && $tag_array[$key] = $this->tag($tag,'name',false);
-        }
-        return $tag_array;
+    public static function get_array(&$rs=array(),$fname=null,$key='tags',$value=null,$id='id') {
+            $rs[$key.'_fname'] = $fname;
+            $value===null && $value = $rs[$key];
+            if ($value) {
+                $multi_tag = self::multi_tag(array($rs[$id]=>$value),$key);
+                $rs+=(array)$multi_tag[$rs[$id]];
+            }
+            if(is_array($rs[$key.'_array'])){
+                $tags_fname = array_slice ($rs[$key.'_array'],0,1);
+                $rs[$key.'_fname'] = $tags_fname[0]['name'];
+            }
+            unset($multi_tag, $tags_fname);
     }
+
     public static function all($array) {
         if(empty($array)){
             return;

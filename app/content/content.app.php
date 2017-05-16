@@ -248,20 +248,11 @@ class contentApp {
                     }
                 break;
                 case 'tag':
-                    if ($vars['tag']) {
-                        $tkey = $key.'_array';
-                        $rs[$key.'_fname'] = $category['name'];
-                        // var_dump($rs['id']);
-                        if ($value) {
-                            $multi_tag = tagApp::multi_tag(array($rs['id']=>$value),$key);
-                            // var_dump($multi_tag);
-                            $rs+=(array)$multi_tag[$rs['id']];
-                        }
-                        if(is_array($rs[$tkey])){
-                            $tags_fname = array_slice ($rs[$tkey],0,1);
-                            $rs[$key.'_fname'] = $tags_fname[0]['name'];
-                        }
-                        unset($multi_tag, $tags_fname);
+                    $vars['tag'] && tagApp::get_array($rs,$category['name'],$key,$value);
+                break;
+                case 'editor';
+                    if($value){
+                      $rs[$key.'_pics'] = filesApp::get_content_pics($value,$pic_array);
                     }
                 break;
                 default:

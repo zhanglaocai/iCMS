@@ -9,7 +9,6 @@
 */
 class articleApp {
 	public $methods = array('iCMS', 'article', 'clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
-	public static $pregimg = "/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
 	public static $config  = null;
 	public function __construct() {
 		self::$config = iCMS::$config['article'];
@@ -177,7 +176,7 @@ class articleApp {
 			}
 
 
-			$article['pics'] = self::body_pics($art_data['body'],$pic_array);
+			$article['pics'] = filesApp::get_content_pics($art_data['body'],$pic_array);
 
 			if ($article['chapter']) {
 				$article['body'] = $art_data['body'];
@@ -197,18 +196,7 @@ class articleApp {
 			$pic_array[0] && $article['body'] = self::body_pics_page($pic_array,$article,$page,$total,$next_url);
 		}
 
-		if ($vars['tag']) {
-			$article['tags_fname'] = $category['name'];
-			if ($article['tags']) {
-				$multi_tag = tagApp::multi_tag(array($article['id']=>$article['tags']));
-				$article+=(array)$multi_tag[$article['id']];
-			}
-			if(is_array($article['tags_array'])){
-				$tags_fname            = array_slice ($article['tags_array'],0,1);
-				$article['tags_fname'] = $tags_fname[0]['name'];
-			}
-			unset($multi_tag, $tags_fname);
-		}
+		$vars['tag'] && tagApp::get_array($article,$category['name'],'tags');
 
 		if ($vars['user']) {
 			if ($article['postype']) {
@@ -334,15 +322,7 @@ class articleApp {
 		$chapter && $title = $chapterArray[$pn - 1]['subtitle'];
 		return $title;
 	}
-	public static function body_pics($body,&$pic_array=array()){
-        preg_match_all(self::$pregimg,$body,$pic_array);
-		$array = array_unique($pic_array[1]);
-		$pics =  array();
-		foreach ((array)$array as $key => $_pic) {
-				$pics[$key] = trim($_pic);
-		}
-		return $pics;
-	}
+
 	public static function body_pics_page($pic_array,$article,$page,$total,$next_url){
 		$img_array = array_unique($pic_array[0]);
 		foreach ($img_array as $key => $img) {

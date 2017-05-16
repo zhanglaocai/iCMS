@@ -35,6 +35,6 @@ class plugin_taoke{
             'title' => $title,
             'url' => $url,
         ));
-        return iView::fetch('iCMS://taoke.tpl.htm');
+        return iView::fetch('/tools/taoke.tpl.htm');
     }
 }

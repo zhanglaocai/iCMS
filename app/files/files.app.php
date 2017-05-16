@@ -9,6 +9,7 @@
 */
 class filesApp {
     public $methods = array('iCMS','download');
+    public static $pregimg = "/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
 
     public function do_iCMS(){}
     public function API_iCMS(){}
@@ -36,6 +37,15 @@ class filesApp {
     }
     public function API_download(){
         $this->do_download();
+    }
+    public static function get_content_pics($content,&$pic_array=array()){
+        preg_match_all(self::$pregimg,$content,$pic_array);
+        $array = array_unique($pic_array[1]);
+        $pics =  array();
+        foreach ((array)$array as $key => $_pic) {
+                $pics[$key] = trim($_pic);
+        }
+        return $pics;
     }
     public static function get_url($value,$type='download'){
         $url = iCMS_API.'?app=files&do='.$type.'&file='.$value.'&t='.$_SERVER['REQUEST_TIME'];

@@ -350,18 +350,18 @@ class iPHP {
 	    	if (stripos($callback[1], '_TRUE') !== false) {
 	    		$return = true;
 	    	}
-	    	//引用变量
-	    	if ($callback[1][0]== '&') {
-	    		$callback[1] = substr($callback[1], 1);
-	    		$reference = true;
-	    	}
+	    	// //引用变量
+	    	// if ($callback[1][0]== '&') {
+	    	// 	$callback[1] = substr($callback[1], 1);
+	    	// 	$reference = true;
+	    	// }
     	}
         if (@is_callable($callback)) {
-        	if($reference){
-           		return call_user_func_array($callback,array(&$value));
-        	}else{
+        	// if($reference){
+         //   		return call_user_func_array($callback,array(&$value));
+        	// }else{
            		return call_user_func_array($callback,(array)$value);
-        	}
+        	// }
         }else{
 	        if($return===null){
 				return $value;
