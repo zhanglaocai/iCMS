@@ -85,11 +85,13 @@ function autoformat($html){
     '@<br[^>]*>@is',
     '@<div[^>]*>(.*?)</div>@is','@<p[^>]*>(.*?)</p>@is',
     '@<b[^>]*>(.*?)</b>@is','@<strong[^>]*>(.*?)</strong>@is',
+    '@<h([1-6])[^>]*>(.*?)</h([1-6])>@is',
     '@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is',
     ),array('','','','',
     "\n[br]\n",
     "$1\n","$1\n",
     "[b]$1[/b]","[b]$1[/b]",
+    "[h$1]$2[/h$1]",
     "\n[img]$2[/img]\n",
     ),$html);
 
@@ -124,13 +126,18 @@ function ubb2html($content){
     '@\[br\]@is',
     '@\[img\](.*?)\[/img\]@is',
     '@\[b\](.*?)\[/b\]@is',
+    '@\[h([1-6])\](.*?)\[/h([1-6])\]@is',
     '@\[url=([^\]]+)\](.*?)\[/url\]@is',
     '@\[url=([^\]|#]+)\](.*?)\[/url\]@is',
     '@\[music=(\d+),(\d+)\](.*?)\[/music\]@is',
     '@\[video=(\d+),(\d+)\](.*?)\[/video\]@is',
     ),array(
     '<br />',
-    '<img src="$1" />','<strong>$1</strong>','<a target="_blank" href="$1">$2</a>','$2',
+    '<img src="$1" />',
+    '<strong>$1</strong>',
+    '<h$1>$2</h$1>',
+    '<a target="_blank" href="$1">$2</a>',
+    '$2',
     '<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>',
     '<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="$3" width="$1" height="$2" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true"/>'
     ),$content);

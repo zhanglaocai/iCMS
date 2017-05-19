@@ -448,6 +448,8 @@ class categoryAdmincp {
         }
     }
     public function do_cache($dialog=true){
+        @set_time_limit(0);
+
         categoryAdmincp::config();
         $_count = category::cache(true,$this->appid);
         // if($_count>1000){

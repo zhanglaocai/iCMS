@@ -404,6 +404,7 @@ function _modal_dialog(cancel_text){
                 <input name="iswatermark" type="checkbox" id="iswatermark" value="1" />不添加水印
               </span>
               <?php }?>
+              <a class="btn tip-top" href="<?php echo APP_DOURI; ?>&ui_editor=markdown" title="请先保存数据"><i class="fa fa-edit"></i> 切换到markdown编辑器</a>
             </div>
             <div class="clearfloat mb10"></div>
             <?php for($i=0;$i<$bodyCount;$i++){

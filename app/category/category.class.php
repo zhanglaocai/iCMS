@@ -259,6 +259,12 @@ class category {
         $C['sname']  = $C['subname'];
 
         $C['subid']  = self::get_root($C['cid']);
+        $C['counts'] = $C['count'];
+        foreach ((array)$C['subid'] as $skey => $scid) {
+            $sc = self::cache_get($scid);
+            $C['counts']+=$sc['count'];
+        }
+
         $C['child']  = $C['subid']?true:false;
         $C['subids'] = implode(',',(array)$C['subid']);
 
@@ -272,6 +278,10 @@ class category {
         is_string($C['rule'])    && $C['rule']     = json_decode($C['rule'],true);
         is_string($C['template'])&& $C['template'] = json_decode($C['template'],true);
         is_string($C['config'])  && $C['config']   = json_decode($C['config'],true);
+
+        empty($C['rule'])    && $C['rule'] = array();
+        empty($C['template'])&& $C['template'] = array();
+        empty($C['config'])  && $C['config'] = array();
 
 		return $C;
     }

@@ -225,6 +225,7 @@
                 .replace(/<embed[^>]+class="edui-faked-video"[^"].+src=[" ]?([^"]+)[" ]+width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]?[^>]*>/ig, "[embed video=$2,$3]$1[/embed]")
                 .replace(/<embed[^>]+class="edui-faked-music"[^"].+src=[" ]?([^"]+)[" ]+width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]?[^>]*>/ig, "[embed music=$2,$3]$1[/embed]")
                 .replace(/<video[^>]*?width=[" ]?([^"]\d+)[" ]+height=[" ]?([^"]\d+)[" ]+src=[" ]?([^"]+)[" ]+?[^>]*>*<source src=[" ]?([^"]+)[" ]+type=[" ]?([^"]+)[" ]\/>*<\/video>/img, "[video=$1,$2 type=\"$5\"]$3[/video]")
+                .replace(/<h([1-6])[^>]*>(.*?)<\/h([1-6])>/ig, "[h$1]$2[/h$1]")
                 .replace(/<b[^>]*>(.*?)<\/b>/ig, "[b]$1[/b]")
                 .replace(/<strong[^>]*>(.*?)<\/strong>/ig, "[b]$1[/b]")
                 .replace(/<p[^>]*?>/g, "\n\n")
@@ -239,6 +240,7 @@
             content = content.replace(/\[url=([^\]]+)\]\n(\[img\]\1\[\/img\])\n\[\/url\]/g, "$2")
                 .replace(/\[img\](.*?)\[\/img\]/ig, '<p><img src="$1" /></p>')
                 .replace(/\[b\](.*?)\[\/b\]/ig, '<b>$1</b>')
+                .replace(/\[h([1-6])\](.*?)\[\/h([1-6])\]/ig, '<h$1>$2</h$1>')
                 .replace(/\[url=([^\]|#]+)\](.*?)\[\/url\]/g, '$2')
                 .replace(/\[url=([^\]]+)\](.*?)\[\/url\]/g, '<a target="_blank" href="$1">$2</a>')
                .replace(/\n+/g, "[iCMS.N]");

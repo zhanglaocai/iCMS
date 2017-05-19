@@ -81,7 +81,7 @@ $(function(){
           <?php if(!$rs['table']){?>
           <li id="tab-field"><a href="#apps-add-field" data-toggle="tab"><i class="fa fa-cog"></i> 基础字段</a></li>
           <?php }?>
-          <li id="tab-custom"><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 自定义字段</a></li>
+          <li id="tab-custom"><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 自定义字段编辑</a></li>
         <?php }?>
       </ul>
     </div>

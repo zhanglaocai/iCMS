@@ -74,6 +74,9 @@ class articleAdmincp{
 		}
 
         iPHP::callback(array("formerApp","add"),array(self::$appid,$rs,false));
+        if(isset($_GET['ui_editor'])){
+            self::$config['markdown'] = ($_GET['ui_editor']=='markdown')?"1":"0";
+        }
 
         if(self::$config['markdown']){
             include admincp::view("article.markdown");
