@@ -15,6 +15,9 @@ $unid = uniqid();
   <ul class="dropdown-menu">
     <?php if(members::check_priv('files.add')){?>
     <li><a href="<?php echo __ADMINCP__;?>=files&do=add&from=modal&callback=<?php echo $callback;?>" data-toggle="modal" data-meta='{"width":"300px","height":"80px"}' title="本地上传"><i class="fa fa-upload"></i> 本地上传</a></li>
+    <?php if($multi){?>
+    <li><a href="<?php echo __ADMINCP__;?>=files&do=multi&from=modal&callback=<?php echo $callback;?>" data-toggle="modal" data-meta='{"width":"85%","height":"640px"}' title="多图上传"><i class="fa fa-upload"></i> 多图上传</a></li>
+    <?php }?>
     <?php }?>
     <?php if(members::check_priv('files.browse')){?>
     <li><a href="<?php echo __ADMINCP__;?>=files&do=browse&from=modal&click=file&callback=<?php echo $callback;?>" data-toggle="modal" title="从网站选择"><i class="fa fa-search"></i> 从网站选择</a></li>
@@ -33,13 +36,16 @@ $unid = uniqid();
 </div>
 <script type="text/javascript">
 $(function(){
-    window.modal_<?php echo $callback;?> = function(el,a){
+    window.modal_<?php echo $callback;?> = function(el,a,c){
         var e = $("#<?php echo $callback;?>");
         var name = e.get(0).tagName;
         if(name=='TEXTAREA'){
             e.append(a.value+"\n");
         }else{
             e.val(a.value);
+        }
+        if(c===false){
+            return true;
         }
         window.iCMS_MODAL.destroy();
     }

@@ -310,12 +310,24 @@ $lock_file = iPATH.'cache/install.lock';
 						</tr>
 						<tr>
 							<td>6</td>
-							<td>CURL</td>
+							<td>CURL库</td>
 							<td>支持</td>
 							<td><?php
 								if(function_exists('curl_version')){
 									$curl_version = curl_version();
 									echo $curl_version['version'];
+								}else{
+									echo '<font style="color:red;">× 不支持</font>';
+								}
+							?></td>
+						</tr>
+						<tr>
+							<td>7</td>
+							<td>mbstring</td>
+							<td>支持</td>
+							<td><?php
+								if(function_exists('mb_convert_encoding')){
+									echo mb_internal_encoding();
 								}else{
 									echo '<font style="color:red;">× 不支持</font>';
 								}

@@ -372,7 +372,7 @@ class filesAdmincp{
         return '<a href="'.$href.'" class="btn files_modal" data-toggle="modal" title="选择'.$_title.'"><i class="fa fa-search"></i> 选择</a>';
     }
 
-    public static function pic_btn($callback, $indexid = 0, $title="图片",$ret=false) {
+    public static function pic_btn($callback, $indexid = 0, $title="图片",$ret=false,$multi=false) {
         $ret && ob_start();
         include admincp::view("files.picbtn","files");
         if ($ret) {

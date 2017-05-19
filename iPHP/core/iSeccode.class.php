@@ -64,7 +64,11 @@ class iSeccode {
         header("Expires: 0".PHP_EOL);
         header("Cache-Control: no-cache".PHP_EOL);
         header("Pragma: no-cache".PHP_EOL);
-        @ob_clean();
+        header('X-Accel-Buffering: no');
+        ob_start();
+        ob_end_clean() ;
+        ob_end_flush();
+        ob_implicit_flush(true);
         if(function_exists('imagejpeg')) {
             header('Content-type:image/jpeg'.PHP_EOL);
             $void = imagejpeg(self::$im);
@@ -77,6 +81,8 @@ class iSeccode {
         } else {
             return false;
         }
+        flush();
+        ob_flush();
         imagedestroy(self::$im);
         return $void;
     }
@@ -145,14 +151,14 @@ class iSeccode {
         $font       = array();
         $font_size  = self::$config['size'];
         // $ttfb_box = imagettfbbox($font_size,$angle,$font_file,self::$code[0]);
-	if (function_exists('imagettftext')) {
+	   if (function_exists('imagettftext')) {
 	        for ($i=0; $i < 4; $i++) {
 	            $x          =(self::$config['width']/4)*$i;
 	            $y          = $font_size+rand(0,4);
 	            $angle      = mt_rand(0, 20);
 	            $text_color = imagecolorallocate(self::$im, self::$color[0], self::$color[1], self::$color[2]);
-					imagettftext(self::$im, $font_size, $angle, $x, $y, $text_color, $font_file, self::$code[$i]);
-		}
+				imagettftext(self::$im, $font_size, $angle, $x, $y, $text_color, $font_file, self::$code[$i]);
+            }
     	} else {
     		return false;
         }

@@ -149,7 +149,7 @@ class former {
                     // $form_group.=' input-append';
                     $input  = self::widget('textarea',$attr)->css('height','150px');
                     if(self::$config['gateway']=='admincp'){
-                        $picbtn = filesAdmincp::pic_btn($attr['id'],null,($type=='multi_file'?'文件':'图片'),true);
+                        $picbtn = filesAdmincp::pic_btn($attr['id'],null,($type=='multi_file'?'文件':'图片'),true,true);
                         $script = self::script('$("#'.$attr['id'].'").autoTextarea({maxHeight:300});',true);
                     }
                     $input.= $picbtn;

@@ -150,16 +150,28 @@
         uploader.on('ready', function() {
             window.uploader = uploader;
         });
-        // uploader.on('uploadSuccess', function(a, b, c) {
-        //     // console.log("uploadSuccess",b)
-        // });
+        uploader.on('uploadSuccess', function(a, b) {
+            if(settings.callback['uploadSuccess']){
+                var func = settings.callback['uploadSuccess'];
+                if (typeof(func) === "function") {
+                    func(a,b);
+                }
+            }
+        });
         // uploader.on('uploadComplete', function(a) {
         //     console.log("uploadComplete",a)
         // });
         uploader.on('uploadAccept', function(b, e, c) {
-            if ( e.code==0 ) {
-                iCMS.UI.alert(e.msg);
-                return false;
+            if(settings.callback['uploadAccept']){
+                var func = settings.callback['uploadAccept'];
+                if (typeof(func) === "function") {
+                    func(b, e, c);
+                }
+            }else{
+                if ( e.code==0 ) {
+                    iCMS.UI.alert(e.msg);
+                    return false;
+                }
             }
         });
         // 当有文件添加进来时执行，负责view的创建
