@@ -66,6 +66,7 @@ class tag {
 	}
 	public static function update($name,$uid="0",$iid="0",$cid='0',$tcid='0') {
 	    if(empty($name)) return;
+        $name = trim($name);
         $name = trim($name,"\0\n\r\t\x0B");
 	    $name = htmlspecialchars_decode($name);
 	    $name = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$name);
