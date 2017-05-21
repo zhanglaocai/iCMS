@@ -305,7 +305,7 @@ class formsAdmincp{
 
     public function do_update(){
         if($this->id){
-            $args = admincp::update_args($_GET['_args']);
+            $args = iSQL::update_args($_GET['_args']);
             $args && iDB::update("forms",$args,array('id'=>$this->id));
             apps::cache();
             iUI::success('操作成功!','js:1');

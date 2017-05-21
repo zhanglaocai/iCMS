@@ -8,7 +8,6 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class plugin_textad {
-    public static $pregimg = "/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
     /**
      * [插件:正文插入广告]
      * @param [type] $content [参数]
@@ -19,7 +18,7 @@ class plugin_textad {
         $htmlArray = explode("\n", $html);
         $result  = array();
         //计算长度
-        preg_match_all(self::$pregimg,$content,$img_array);
+        preg_match_all(filesApp::$PREG_IMG,$content,$img_array);
         $len = strlen($content)+(count($img_array[1])*300);
 
         if($len<($pieces*1.5)){

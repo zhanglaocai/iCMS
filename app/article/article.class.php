@@ -8,14 +8,7 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class article {
-    public static $ID = 0;
-
-    public static function select($sql='',$orderby='',$offset=0,$maxperpage=10){
-        $rs = iDB::all("SELECT * FROM `#iCMS@__article` {$sql} order by {$orderby} LIMIT {$offset},{$maxperpage}");
-        //iDB::debug(1);
-        return $rs;
-    }
-    public static function fields($update=false){
+    public static function fields($id=0){
         $fields  = array('cid', 'scid','ucid','pid',
             'title', 'stitle','keywords', 'tags', 'description','source',
             'author', 'editor', 'userid',
@@ -24,7 +17,7 @@ class article {
             'hits','hits_today','hits_yday','hits_week','hits_month','favorite','comments', 'good', 'bad',
             'sortnum','weight', 'postype', 'creative','markdown','tpl','status');
 
-        if(!$update){ //更新
+        if(empty($id)){ //新增
             $_fields = array('mobile','postime');
             $fields  = array_merge ($fields,$_fields);
         }
@@ -110,10 +103,5 @@ class article {
     public static function del_data($id){
         iDB::query("DELETE FROM `#iCMS@__article_data` WHERE `aid`='$id'");
     }
-
-    public static function del_comment($iid){
-        iDB::query("DELETE FROM `#iCMS@__comment` WHERE iid='$iid' and appid='".iCMS_APP_ARTICLE."'");
-    }
-
 }
 

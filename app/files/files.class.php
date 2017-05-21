@@ -49,6 +49,8 @@ class files {
     public static $_DATA_TABLE     = null;
     public static $_MAP_TABLE      = null;
 
+    public static $PREG_IMG        = '@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is';
+
     public static function config($table = array()) {
         empty($table) && $table = array('files','files_map');
 
@@ -227,5 +229,17 @@ class files {
             return iDB::update(self::$TABLE_MAP, $data,$where);
         }
         return iDB::insert(self::$TABLE_MAP, $data,true);
+    }
+
+    public static function set_file_iid($content,$iid,$appid) {
+        if(empty($content)){
+            return;
+        }
+        $content = stripslashes($content);
+        preg_match_all(self::$PREG_IMG, $content, $match);
+        $array  = array_unique($match[1]);
+        foreach ($array as $key => $value) {
+            files::set_map($appid,$iid,$value,'path');
+        }
     }
 }

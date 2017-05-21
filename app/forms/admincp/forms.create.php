@@ -59,7 +59,7 @@ $(function(){
         <?php if(!$rs['table']){?>
         <li><a href="#apps-add-field" data-toggle="tab"><i class="fa fa-cog"></i> 基础字段</a></li>
         <?php }?>
-        <li><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 自定义字段</a></li>
+        <li><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 字段编辑器</a></li>
       </ul>
     </div>
     <div class="widget-content nopadding">

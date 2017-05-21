@@ -9,7 +9,7 @@
 */
 class filesApp {
     public $methods = array('iCMS','download');
-    public static $pregimg = "/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
+    public static $PREG_IMG = "/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
 
     public function do_iCMS(){}
     public function API_iCMS(){}
@@ -39,13 +39,25 @@ class filesApp {
         $this->do_download();
     }
     public static function get_content_pics($content,&$pic_array=array()){
-        preg_match_all(self::$pregimg,$content,$pic_array);
+        preg_match_all(self::$PREG_IMG,$content,$pic_array);
         $array = array_unique($pic_array[1]);
         $pics =  array();
         foreach ((array)$array as $key => $_pic) {
                 $pics[$key] = trim($_pic);
         }
         return $pics;
+    }
+    public static function get_picdata($data,$a=null){
+        $array = array();
+        if($data){
+            //兼容6.0
+            if(stripos($data, 'a:')!== false){
+                $array = unserialize($data);
+            }else{
+                $array = json_decode($data,true);
+            }
+        }
+        return $array;
     }
     public static function get_url($value,$type='download'){
         $url = iCMS_API.'?app=files&do='.$type.'&file='.$value.'&t='.$_SERVER['REQUEST_TIME'];

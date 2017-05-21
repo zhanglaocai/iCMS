@@ -85,7 +85,7 @@ class articleAdmincp{
         }
     }
     public function do_update(){
-    	$data = admincp::update_args($_GET['_args']);
+    	$data = iSQL::update_args($_GET['_args']);
         if($data){
             if(isset($data['pid'])){
                 iMap::init('prop',self::$appid,'pid');
@@ -187,28 +187,28 @@ class articleAdmincp{
     		case 'thumb':
 		        foreach((array)$_POST['id'] AS $id) {
 		            $body	= article::body($id);
-                    $picurl = $this->remotepic($body,'autopic',$id);
+                    $picurl = filesAdmincp::remotepic($body,'autopic',$id);
                     $this->set_pic($picurl,$id);
 		        }
 		        iUI::success('成功提取缩略图!','js:1');
     		break;
     		case 'dels':
     			iUI::$break	= false;
-    			ob_implicit_flush();
+    			iUI::flush_start();
     			$_count	= count($_POST['id']);
 				foreach((array)$_POST['id'] AS $i=>$id) {
-			     	$msg= $this->del($id);
+			     	$msg = $this->del($id);
 			        $msg.= $this->del_msg('文章删除完成!');
 					$updateMsg	= $i?true:false;
 					$timeout	= ($i++)==$_count?'3':false;
 					iUI::dialog($msg,'js:parent.$("#id'.$id.'").remove();',$timeout,0,$updateMsg);
-		        	ob_end_flush();
+		        	iUI::flush();
 	   			}
 	   			iUI::$break	= true;
 				iUI::success('文章全部删除完成!','js:1',3,0,true);
     		break;
     		default:
-				$data = admincp::update_args($batch);
+				$data = iSQL::update_args($batch);
     	}
         $data && article::batch($data,$ids);
 		iUI::success('操作成功!','js:1');
@@ -246,7 +246,7 @@ class articleAdmincp{
      * [简易编辑]
      * @return [type] [description]
      */
-	public function do_edit(){
+     public function do_edit(){
         $id          = (int)$_POST['id'];
         $cid         = (int)$_POST['cid'];
         $pid         = (int)$_POST['pid'];
@@ -341,7 +341,7 @@ class articleAdmincp{
     public function do_manage($stype='normal') {
         $cid = (int)$_GET['cid'];
         $pid = $_GET['pid'];
-        //$stype OR $stype = admincp::$app_do;
+        //$stype OR $stype = admincp::$APP_DO;
         $stype_map = array(
             'inbox'   =>'0',//草稿
             'normal'  =>'1',//正常
@@ -572,7 +572,6 @@ class articleAdmincp{
         (iFS::checkHttp($mpic) && !isset($_POST['mpic_http'])) && $mpic = iFS::http($mpic);
         (iFS::checkHttp($spic) && !isset($_POST['spic_http'])) && $spic = iFS::http($spic);
 
-
         $haspic   = empty($pic)?0:1;
 
         $REFERER_URL = $_POST['REFERER'];
@@ -657,7 +656,7 @@ class articleAdmincp{
 
 	        $tags && tag::diff($tags,$_tags,members::$userid,$aid,$cid);
 
-            $picdata = $this->picdata($pic,$mpic,$spic);
+            $picdata = filesAdmincp::picdata($pic,$mpic,$spic);
 
             article::update(compact($fields),array('id'=>$aid));
             admincp::callback($aid,$this,'primary');
@@ -737,7 +736,7 @@ class articleAdmincp{
         iMap::del_data($id,self::$appid,'category');
         iMap::del_data($id,self::$appid,'prop');
 
-        article::del_comment($id);
+        commentAdmincp::delete($id,self::$appid);
         $msg.= self::del_msg('评论数据删除');
         article::del($id);
         article::del_data($id);
@@ -747,9 +746,7 @@ class articleAdmincp{
         $msg.= self::del_msg('删除完成');
         return $msg;
     }
-    public function chapter_count($aid){
-        article::chapter_count($aid);
-    }
+
     public function article_data($bodyArray,$aid=0,$haspic=0){
         if(isset($_POST['ischapter']) || is_array($_POST['adid'])){
             $adidArray    = $_POST['adid'];
@@ -780,8 +777,6 @@ class articleAdmincp{
             self::$config['autoformat'] && $body = addslashes(autoformat($body));
         }
 
-        article::$ID = $aid;
-
         $fields = article::data_fields($id);
         $data   = compact ($fields);
 
@@ -794,21 +789,21 @@ class articleAdmincp{
         isset($_POST['iswatermark']) && files::$watermark_enable = false;
 
         if(isset($_POST['remote'])){
-            $body = $this->remotepic($body,true,$aid);
-            $body = $this->remotepic($body,true,$aid);
-            $body = $this->remotepic($body,true,$aid);
+            $body = filesAdmincp::remotepic($body,true,$aid);
+            $body = filesAdmincp::remotepic($body,true,$aid);
+            $body = filesAdmincp::remotepic($body,true,$aid);
             if($body && $id){
                 article::data_update(array('body'=>$body),compact('id'));
             }
         }
 
         if(isset($_POST['autopic']) && empty($haspic)){
-            if($picurl = $this->remotepic($body,'autopic',$aid)){
+            if($picurl = filesAdmincp::remotepic($body,'autopic',$aid)){
                 $this->set_pic($picurl,$aid);
                 $haspic = true;
             }
         }
-        $this->body_pic_indexid($body,$aid);
+        files::set_file_iid($body,$aid,self::$appid);
     }
     public static function autodesc($body){
         if(self::$config['autodesc'] && self::$config['descLen']) {
@@ -842,98 +837,28 @@ class articleAdmincp{
             return $description;
         }
     }
-    public function set_pic($picurl,$aid){
+    public function set_pic($picurl,$aid,$key='b'){
         $uri = parse_url(iCMS_FS_URL);
         if (stripos($picurl,$uri['host']) !== false){
-            $picdata = (array)article::value('picdata',$aid);
-            $picdata && $picdata = @unserialize($picdata);
             $pic = iFS::fp($picurl,'-http');
             list($width, $height, $type, $attr) = @getimagesize(iFS::fp($pic,'+iPATH'));
-            $picdata['b'] = array('w'=>$width,'h'=>$height);
-            $picdata = addslashes(serialize($picdata));
-            $haspic  = 1;
-            article::update(compact('haspic','pic','picdata'),array('id'=>$aid));
+
+            $picdata  = article::value('picdata',$aid);
+            $picArray = filesApp::get_picdata($picdata);
+            $picdata  = filesAdmincp::picdata($picArray,array($key=>array('w'=>$width,'h'=>$height)));
+
+            $field = 'pic';
+            if($key=='b'){
+                $haspic = 1;
+            }else{
+                $field = $key.'pic';
+            }
+
+            article::update(compact('haspic',$field,'picdata'),array('id'=>$aid));
             files::set_map(self::$appid,$aid,$pic,'path');
         }
     }
-    public function remotepic($content,$remote = false) {
-        if (!$remote) return $content;
 
-        iFS::$force_ext = "jpg";
-        $content = stripslashes($content);
-        preg_match_all('@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is', $content, $match);
-        $array  = array_unique($match[2]);
-        $uri    = parse_url(iCMS_FS_URL);
-        $fArray = array();
-        foreach ($array as $key => $value) {
-            $value = trim($value);
-            if (stripos($value,$uri['host']) === false){
-                $filepath = iFS::http($value);
-                $rootfilpath = iFS::fp($filepath, '+iPATH');
-                list($owidth, $oheight, $otype) = @getimagesize($rootfilpath);
-
-                if($filepath && !iFS::checkHttp($filepath) && $otype){
-                    $value = iFS::fp($filepath,'+http');
-                }else{
-                    if($this->DELETE_ERROR_PIC){
-                        iFS::del($rootfilpath);
-                        $array[$key]  = $match[0][$key];
-                        $value = '';
-                    }
-                }
-                $fArray[$key] = $value;
-            }else{
-                unset($array[$key]);
-                $rootfilpath = iFS::fp($value, 'http2iPATH');
-                list($owidth, $oheight, $otype) = @getimagesize($rootfilpath);
-                if($this->DELETE_ERROR_PIC && empty($otype)){
-                    iFS::del($rootfilpath);
-                    $array[$key]  = $match[0][$key];
-                    $fArray[$key] = '';
-                }
-            }
-            if($remote==="autopic" && $key==0){
-                return $value;
-            }
-        }
-        if($remote==="autopic" && empty($array)){
-            return;
-        }
-        if($array && $fArray){
-            krsort($array);
-            krsort($fArray);
-            $content = str_replace($array, $fArray, $content);
-        }
-        return addslashes($content);
-    }
-    public function body_pic_indexid($content,$indexid) {
-        if(empty($content)){
-            return;
-        }
-        $content = stripslashes($content);
-        preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
-        $array  = array_unique($match[1]);
-        foreach ($array as $key => $value) {
-            files::set_map(self::$appid,$indexid,$value,'path');
-        }
-    }
-
-    public function picdata($pic='',$mpic='',$spic=''){
-        $picdata = array();
-        if($pic){
-            list($width, $height, $type, $attr) = @getimagesize(iFS::fp($pic,'+iPATH'));
-            $picdata['b'] = array('w'=>$width,'h'=>$height);
-        }
-        if($mpic){
-            list($width, $height, $type, $attr) = @getimagesize(iFS::fp($mpic,'+iPATH'));
-            $picdata['m'] = array('w'=>$width,'h'=>$height);
-        }
-        if($spic){
-            list($width, $height, $type, $attr) = @getimagesize(iFS::fp($spic,'+iPATH'));
-            $picdata['s'] = array('w'=>$width,'h'=>$height);
-        }
-        return $picdata?addslashes(serialize($picdata)):'';
-    }
     public function check_pic($body,$aid=0){
         // global $status;
         // if($status!='1'){

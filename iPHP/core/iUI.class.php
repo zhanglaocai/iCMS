@@ -317,4 +317,15 @@ class iUI {
     public static function check($o) {
         return $o?'<font color="green"><i class="fa fa-check"></i></font>':'<font color="red"><i class="fa fa-times"></i></font>';
     }
+    public static function flush_start() {
+		@header('X-Accel-Buffering: no');
+        ob_start();
+        ob_end_clean() ;
+        ob_end_flush();
+        ob_implicit_flush(true);
+    }
+    public static function flush() {
+		flush();
+		ob_flush();
+    }
 }

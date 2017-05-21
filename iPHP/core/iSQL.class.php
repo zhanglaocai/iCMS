@@ -198,4 +198,15 @@ class iSQL {
         }
         return 'SELECT ' . $_field . ' AS ' . $field . ' FROM ' . implode(',', $_FROM) . ' WHERE ' . implode(' AND ', $_WHERE);
     }
+    public static function update_args($data = '') {
+        $array = array();
+        $dA = explode('_', $data);
+        foreach ((array) $dA as $d) {
+            list($f, $v) = explode(':', $d);
+            $v == 'now' && $v = time();
+            $v = (int) $v;
+            $array[$f] = $v;
+        }
+        return $array;
+    }
 }

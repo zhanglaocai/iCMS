@@ -169,18 +169,6 @@ class admincp {
 		return $path;
 	}
 
-	public static function update_args($data = '') {
-		$array = array();
-		$dA = explode('_', $data);
-		foreach ((array) $dA as $d) {
-			list($f, $v) = explode(':', $d);
-			$v == 'now' && $v = time();
-			$v = (int) $v;
-			$array[$f] = $v;
-		}
-		return $array;
-	}
-
 	public static function head($navbar = true) {
 		$body_class = '';
 		if (iCMS::$config['other']['sidebar_enable']) {

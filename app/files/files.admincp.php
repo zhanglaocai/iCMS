@@ -9,6 +9,8 @@
 */
 class filesAdmincp{
     public static $appid = null;
+    public static $DELETE_ERROR_PIC = false;
+
     public function __construct() {
         self::$appid = iPHP::appid(__CLASS__);
 	    $this->from		= iSecurity::escapeStr($_GET['from']);
@@ -365,6 +367,9 @@ class filesAdmincp{
         $navbar = false;
         include admincp::view("files.explorer");
     }
+    public static function _count(){
+        return iDB::value("SELECT count(*) FROM `#iCMS@__files`");
+    }
     public static function modal_btn($title='',$target='template_index',$click='file',$callback='',$do='seltpl',$from='modal'){
         $href = __ADMINCP__."=files&do={$do}&from={$from}&click={$click}&target={$target}&callback={$callback}";
         $_title=$title.'文件';
@@ -381,7 +386,74 @@ class filesAdmincp{
             return $output;
         }
     }
-    public static function _count(){
-        return iDB::value("SELECT count(*) FROM `#iCMS@__files`");
+    public static function picdata($pic='',$mpic='',$spic=''){
+        if(is_array($pic)){
+            is_array($mpic) && $pic+=$mpic;
+            return addslashes(json_encode($pic));
+        }
+        $picdata = array();
+        if($pic){
+            list($width, $height, $type, $attr) = @getimagesize(iFS::fp($pic,'+iPATH'));
+            $picdata['b'] = array('w'=>$width,'h'=>$height);
+        }
+        if($mpic){
+            list($width, $height, $type, $attr) = @getimagesize(iFS::fp($mpic,'+iPATH'));
+            $picdata['m'] = array('w'=>$width,'h'=>$height);
+        }
+        if($spic){
+            list($width, $height, $type, $attr) = @getimagesize(iFS::fp($spic,'+iPATH'));
+            $picdata['s'] = array('w'=>$width,'h'=>$height);
+        }
+        return $picdata?addslashes(json_encode($picdata)):'';
+    }
+    public static function remotepic($content,$remote = false,$that=null) {
+        if (!$remote) return $content;
+
+        iFS::$force_ext = "jpg";
+        $content = stripslashes($content);
+        preg_match_all(files::$PREG_IMG, $content, $match);
+        $array  = array_unique($match[2]);
+        $uri    = parse_url(iCMS_FS_URL);
+        $fArray = array();
+        foreach ($array as $key => $value) {
+            $value = trim($value);
+            if (stripos($value,$uri['host']) === false){
+                $filepath = iFS::http($value);
+                $rootfilpath = iFS::fp($filepath, '+iPATH');
+                list($owidth, $oheight, $otype) = @getimagesize($rootfilpath);
+
+                if($filepath && !iFS::checkHttp($filepath) && $otype){
+                    $value = iFS::fp($filepath,'+http');
+                }else{
+                    if(self::$DELETE_ERROR_PIC){
+                        iFS::del($rootfilpath);
+                        $array[$key]  = $match[0][$key];
+                        $value = '';
+                    }
+                }
+                $fArray[$key] = $value;
+            }else{
+                unset($array[$key]);
+                $rootfilpath = iFS::fp($value, 'http2iPATH');
+                list($owidth, $oheight, $otype) = @getimagesize($rootfilpath);
+                if(self::$DELETE_ERROR_PIC && empty($otype)){
+                    iFS::del($rootfilpath);
+                    $array[$key]  = $match[0][$key];
+                    $fArray[$key] = '';
+                }
+            }
+            if($remote==="autopic" && $key==0){
+                return $value;
+            }
+        }
+        if($remote==="autopic" && empty($array)){
+            return;
+        }
+        if($array && $fArray){
+            krsort($array);
+            krsort($fArray);
+            $content = str_replace($array, $fArray, $content);
+        }
+        return addslashes($content);
     }
 }

@@ -98,7 +98,7 @@ class commentAdmincp{
 	}
     public function do_update(){
         if($this->id){
-            $data = admincp::update_args($_GET['_args']);
+            $data = iSQL::update_args($_GET['_args']);
             $data && iDB::update("comment",$data,array('id'=>$this->id));
             iUI::success('操作成功!','js:1');
         }
@@ -119,6 +119,9 @@ class commentAdmincp{
         ");
         iPHP::callback(array('apps','update_count'),array($comment->iid,$comment->appid,'comments','-'));
         iPHP::callback(array('user','update_count'),array($comment->userid, 'comments','-'));
+    }
+    public static function delete($iid,$appid){
+        iDB::query("DELETE FROM `#iCMS@__comment` WHERE iid='$iid' and appid='$appid'");
     }
     public static function _count(){
         return iDB::value("SELECT count(*) FROM `#iCMS@__comment`");

@@ -220,15 +220,13 @@ class articleApp {
 			'url' => iCMS_API . "?app=article&do=comment&appid={$article['appid']}&iid={$article['id']}&cid={$article['cid']}",
 			'count' => $article['comments'],
 		);
+		$picArray = array();
+		$article['picdata'] && $picArray = filesApp::get_picdata($article['picdata']);
+		$article['pic']  = filesApp::get_pic($article['pic'], $picArray['b'], filesApp::get_twh($vars['btw'], $vars['bth']));
+		$article['mpic'] = filesApp::get_pic($article['mpic'], $picArray['m'], filesApp::get_twh($vars['mtw'], $vars['mth']));
+		$article['spic'] = filesApp::get_pic($article['spic'], $picArray['s'], filesApp::get_twh($vars['stw'], $vars['sth']));
+		unset($article['picdata'],$picArray);
 
-		if ($article['picdata']) {
-			$picdata = unserialize($article['picdata']);
-		}
-		unset($article['picdata']);
-
-		$article['pic']  = filesApp::get_pic($article['pic'], $picdata['b'], filesApp::get_twh($vars['btw'], $vars['bth']));
-		$article['mpic'] = filesApp::get_pic($article['mpic'], $picdata['m'], filesApp::get_twh($vars['mtw'], $vars['mth']));
-		$article['spic'] = filesApp::get_pic($article['spic'], $picdata['s'], filesApp::get_twh($vars['stw'], $vars['sth']));
 		$article['param'] = array(
 			"appid" => $article['appid'],
 			"iid"   => $article['id'],

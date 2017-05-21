@@ -9,6 +9,9 @@
 */
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();
+$type_3_css = " type_3 ";
+$rs['type']!='3' && $type_3_css.=' hide ';
+
 ?>
 <style type="text/css">
 #field-default .add-on { width: 70px;text-align: right; }
@@ -61,8 +64,13 @@ $(function(){
           td.html('<input type="text" name="table['+key+']['+i+']" class="span2" id="table_'+key+'_'+i+'" value=""/>');
           tr.append(td);
       };
+      tr.append('<td class="type_3"><button class="btn btn-small btn-danger del_table" type="button"><i class="fa fa-trash-o"></i> 删除</button></td>');
       $("#table_list").append(tr);
-  })
+  });
+  var doc = $(document);
+  doc.on("click",".del_table",function(){
+      $(this).parent().parent().remove();
+  });
 })
 </script>
 
@@ -70,7 +78,7 @@ $(function(){
   <div class="widget-box">
     <div class="widget-title">
       <span class="icon"> <i class="fa fa-pencil"></i> </span>
-      <h5 class="brs"><?php echo empty($this->id)?'添加':'修改' ; ?>应用</h5>
+      <h5 class="brs"><?php echo empty($this->id)?'创建':'修改' ; ?>应用</h5>
       <ul class="nav nav-tabs" id="apps-add-tab">
         <li class="active"><a href="#apps-add-base" data-toggle="tab"><i class="fa fa-info-circle"></i> 基本信息</a></li>
         <li><a href="#apps-add-menu" data-toggle="tab"><i class="fa fa-bars"></i> 配置</a></li>
@@ -81,7 +89,7 @@ $(function(){
           <?php if(!$rs['table']){?>
           <li id="tab-field"><a href="#apps-add-field" data-toggle="tab"><i class="fa fa-cog"></i> 基础字段</a></li>
           <?php }?>
-          <li id="tab-custom"><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 自定义字段编辑</a></li>
+          <li id="tab-custom"><a href="#apps-add-custom" data-toggle="tab"><i class="fa fa-cog"></i> 字段编辑器</a></li>
         <?php }?>
       </ul>
     </div>
@@ -156,7 +164,7 @@ $(function(){
             <?php }else{ ?>
               <input name="type" type="hidden" value="<?php echo $rs['type']; ?>" />
             <?php } ?>
-            <span class="help-inline hide type_3">第三方应用类型,仅供用户开发应用添加数据用,此类型不会自动创建相关表,仅添加一条应用数据</span>
+            <span class="help-inline <?php echo $type_3_css;?>">第三方应用类型,仅供用户开发应用添加数据用,此类型不会自动创建相关表,仅添加一条应用数据</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
               <span class="add-on">用户中心</span>
@@ -174,19 +182,35 @@ $(function(){
               <span class="help-inline"></span>
             </div>
             <div class="clearfloat mb10"></div>
-            <h3 class="title" style="width:620px;">
+            <?php //if(empty($this->id)){?>
+            <?php if(false){?>
+            <div class="input-prepend">
+              <span class="add-on">是否同时创建数据表</span>
+              <div class="switch" data-on-label="是" data-off-label="否">
+                <input type="checkbox" data-type="switch" name="create" id="create" <?php echo $rs['create']?'checked':''; ?>/>
+              </div>
+            </div>
+            <span class="help-block">
+              如果选择不同时创建数据表,将只保存应用数据而不创建应用表.需要手工建表<br />
+              一般用于二次开发添加应用.
+            </span>
+            <div class="clearfloat mb10"></div>
+            <?php }?>
+
+            <h3 class="title" style="width:710px;">
               <span>数据表</span>
-              <button type="button" class="btn btn-link add_table_item hide type_3">
+              <button type="button" class="btn btn-link add_table_item <?php echo $type_3_css;?>">
                 <i class="fa fa-plus-square"></i> 添加
               </button>
             </h3>
-            <table class="table table-bordered bordered" style="width:600px;">
+            <table class="table table-bordered bordered" style="width:720px;">
               <thead>
                 <tr>
                   <th style="width:120px;">表名</th>
                   <th>主键</th>
                   <th>关联</th>
                   <th>名称</th>
+                  <th class="<?php echo $type_3_css;?>"></th>
                 </tr>
               </thead>
               <tbody id="table_list">
@@ -197,6 +221,7 @@ $(function(){
                   <td><input type="text" name="table[<?php echo $tkey; ?>][1]" class="span2" id="table_<?php echo $tkey; ?>_1" value="<?php echo $tval['primary'] ; ?>"/></td>
                   <td><input type="text" name="table[<?php echo $tkey; ?>][2]" class="span2" id="table_<?php echo $tkey; ?>_2" value="<?php echo $tval['union'] ; ?>"/></td>
                   <td><input type="text" name="table[<?php echo $tkey; ?>][3]" class="span2" id="table_<?php echo $tkey; ?>_3" value="<?php echo $tval['label'] ; ?>"/></td>
+                  <td class="<?php echo $type_3_css;?>"><button class="btn btn-small btn-danger del_table" type="button"><i class="fa fa-trash-o"></i> 删除</button></td>
                 </tr>
                 <?php } ?>
               <?php }else{ ?>
@@ -242,14 +267,6 @@ $(function(){
         </form>
       </div>
     </div>
-  </div>
-</div>
-<div class="hide">
-  <div id="table_item">
-      <td><input type="text" name="table[~KEY~][0]" class="span2" id="table_~KEY~_0" value=""/></td>
-      <td><input type="text" name="table[~KEY~][1]" class="span2" id="table_~KEY~_1" value=""/></td>
-      <td><input type="text" name="table[~KEY~][2]" class="span2" id="table_~KEY~_2" value=""/></td>
-      <td><input type="text" name="table[~KEY~][3]" class="span2" id="table_~KEY~_3" value=""/></td>
   </div>
 </div>
 <?php include admincp::view("former.editor","former");?>

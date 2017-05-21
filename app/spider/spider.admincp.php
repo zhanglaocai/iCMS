@@ -29,7 +29,7 @@ class spiderAdmincp {
 	 */
 	public function do_update() {
 		if ($this->sid) {
-			$data = admincp::update_args($_GET['_args']);
+			$data = iSQL::update_args($_GET['_args']);
 			$data && iDB::update("spider_url", $data, array('id' => $this->sid));
 		}
 		iUI::success('操作成功!', 'js:1');
@@ -67,7 +67,7 @@ class spiderAdmincp {
 				list($table, $_batch) = explode('#', $batch);
 				if (in_array($table, array('url', 'post', 'project', 'rul'))) {
 					if (strpos($_batch, ':') !== false) {
-						$data = admincp::update_args($_batch);
+						$data = iSQL::update_args($_batch);
 						foreach ($idArray AS $id) {
 							$data && iDB::update("spider_" . $table, $data, array('id' => $id));
 						}
@@ -231,11 +231,7 @@ class spiderAdmincp {
 		}
 		$_count = count($pubArray);
 		@header('Cache-Control: no-cache');
-		@header('X-Accel-Buffering: no');
-        ob_start();
-        ob_end_clean() ;
-        ob_end_flush();
-        ob_implicit_flush(true);
+		iUI::flush_start();
 		foreach ((array) $pubArray as $i => $a) {
 			spider::$sid = $a['sid'];
 			spider::$cid = $a['cid'];
@@ -247,8 +243,7 @@ class spiderAdmincp {
 			$updateMsg = $i ? true : false;
 			$timeout = ($i++) == $_count ? '3' : false;
 			iUI::dialog($rs['msg'], 'js:' . $rs['js'], $timeout, 0, $updateMsg);
-			flush();
-			ob_flush();
+			iUI::flush();
 		}
 		iDB::update('spider_project', array('lastupdate' => time()), array('id' => $this->pid));
 		iUI::dialog('success:#:check:#:采集完成!', 0, 3, 0, true);
