@@ -73,17 +73,20 @@ class apps {
             $value['table'] && iDB::query("DROP TABLE IF EXISTS `".$value['table']."`");
         }
     }
-    public static function menu_replace(&$menu,$a,$b){
+    public static function menu_replace(&$menu,$b){
         $_name = $b['title']?$b['title']:$b['name'];
-        $menu = str_replace(
+        $json = json_encode($menu);
+        $json = str_replace(
           array('{appid}','{app}','{name}','{sort}'),
           array($b['id'],$b['app'],$_name,$b['id']*1000),
-          $menu
+          $json
         );
+        $menu = json_decode($json,true);
     }
     public static function menu($app){
         $array = $app['menu'];
-        is_array($array) && array_walk($array,array(__CLASS__,'menu_replace'),$app);
+        $array && self::menu_replace($array,$app);
+
         if($app['config']['menu']){
             if($app['config']['menu']!='main'){
                 $json = '[{"id": "'.$app['config']['menu'].'","children":[]}]';
@@ -328,7 +331,7 @@ class apps {
         if(is_file($path)){
             $class_methods = get_class_methods($obj_name);
             if($tag){
-                foreach ($class_methods as $key => $value) {
+                foreach ((array)$class_methods as $key => $value) {
                     $tag_array[]= iPHP_APP.':'.str_replace('_', ':', $value);
                 }
                 return $tag_array;
