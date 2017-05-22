@@ -192,13 +192,14 @@ class former {
                         $attr['data-placeholder']= '请选择'.$field['label'].'(可多选)...';
                         $orig = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
                     }
+                    $btn = '<a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.self::$config['app']['app'].'&field='.$name.'" target="_blank">添加'.$field['label'].'</a>';
                     $select = self::widget('select',$attr)->addClass('chosen-select');
                     $option='<option value="0">默认'.$field['label'].'['.$name.'=\'0\']</option>';
                     if(self::$config['gateway']=='admincp'){
                         $option.= propAdmincp::get($name,null,'option',null,self::$config['app']['app']);
                     }
                     $value===null OR $script = self::script('iCMS.FORMER.select("'.$attr['id'].'","'.$value.'");',true);
-                    $input = $select->html($option).$orig;
+                    $input = $select->html($option).$orig.$btn;
                 break;
                 case 'date':
                 case 'datetime':
@@ -570,6 +571,7 @@ class former {
 
         return $javascript;
     }
+    //字段数据输出处理
     public static function de_value($value,$fields,$vArray=null) {
         //字段数据类型
         $field = $fields['field'];
@@ -597,6 +599,7 @@ class former {
 
         return $value;
     }
+    //字段数据输入处理
     public static function en_value($value,$fields) {
         //字段数据类型
         $field = $fields['field'];
@@ -645,7 +648,7 @@ class former {
 
         if(empty($post)) return array(false,false,false);
 
-        $orig_post   = array();
+        $orig_post = array();
         $data_post = array();
 
         $field_array = self::fields($app['fields']);

@@ -35,7 +35,6 @@ class article {
     public static function check($value,$id=0,$field='title'){
         $sql = "SELECT `id` FROM `#iCMS@__article` where `{$field}` = '$value'";
         $id && $sql.=" AND `id` !='$id'";
-        print_r($sql);
         return iDB::value($sql);
     }
 

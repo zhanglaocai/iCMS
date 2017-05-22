@@ -153,7 +153,7 @@ class propAdmincp{
         if($propArray)foreach ((array)$propArray as $prop) {
             $div.= '<li><a href="javascript:;" data-toggle="insert" data-target="#' . $target . '" data-value="' . $prop['val'] . '">' . $prop['name'] . '</a></li>';
         }
-        $div.= '<li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.$app.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
+        $div.= '<li class="divider"></li><li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.$app.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
         $div.= '</ul></div>';
         return $div;
     }
