@@ -101,7 +101,7 @@ class spider_content {
         }
 
         if (spider::$dataTest) {
-            print_r('<b>['.$name.']匹配结果:</b>'.htmlspecialchars($content));
+            print_r('<b>['.$name.']匹配结果:</b><div style="max-height:300px;overflow-y: scroll;">'.htmlspecialchars($content).'</div>');
             echo "<hr />";
         }
 

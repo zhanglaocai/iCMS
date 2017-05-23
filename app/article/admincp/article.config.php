@@ -11,12 +11,20 @@ defined('iPHP') OR exit('What are you doing?');
 configAdmincp::head("文章系统设置");
 ?>
 <div class="input-prepend">
+  <span class="add-on">文章图片标题</span>
+  <div class="switch" data-on-label="启用" data-off-label="关闭">
+    <input type="checkbox" data-type="switch" name="config[img_title]" id="article_img_title" <?php echo $config['img_title']?'checked':''; ?>/>
+  </div>
+</div>
+<span class="help-inline">启用后 可以自定义文章正文内图片的title和alt,关闭后 系统将直接替换成文章标题</span>
+<div class="clearfloat mb10"></div>
+<div class="input-prepend">
   <span class="add-on">文章图片居中</span>
   <div class="switch" data-on-label="启用" data-off-label="关闭">
     <input type="checkbox" data-type="switch" name="config[pic_center]" id="article_pic_center" <?php echo $config['pic_center']?'checked':''; ?>/>
   </div>
 </div>
-<span class="help-inline">启用后文章内的图片会自动居中</span>
+<span class="help-inline">启用后 文章内的图片会自动居中</span>
 <div class="clearfloat mb10"></div>
 <div class="input-prepend">
   <span class="add-on">文章图片链接</span>
@@ -24,7 +32,7 @@ configAdmincp::head("文章系统设置");
     <input type="checkbox" data-type="switch" name="config[pic_next]" id="article_pic_next" <?php echo $config['pic_next']?'checked':''; ?>/>
   </div>
 </div>
-<span class="help-inline">启用后文章内的图片都会带上下一页的链接和点击图片进入下一页的链接</span>
+<span class="help-inline">启用后 文章内的图片都会带上下一页的链接和点击图片进入下一页的链接</span>
 <div class="clearfloat mb10"></div>
 <div class="input-prepend">
   <span class="add-on">文章分页+N</span>

@@ -324,7 +324,11 @@ class articleApp {
 	public static function body_pics_page($pic_array,$article,$page,$total,$next_url){
 		$img_array = array_unique($pic_array[0]);
 		foreach ($img_array as $key => $img) {
-			$img = str_replace('<img', '<img title="' . $article['title'] . '" alt="' . $article['title'] . '"', $img);
+			if(!self::$config['img_title']){
+				$img = preg_replace('@title\s*=\s*(["\']?).*?\\1\s*@is', '', $img);
+				$img = preg_replace('@alt\s*=\s*(["\']?).*?\\1\s*@is', '', $img);
+				$img = str_replace('<img', '<img title="' . addslashes($article['title']) . '" alt="' . addslashes($article['title']) . '"', $img);
+			}
 			if (self::$config['pic_center']) {
                 $img_replace[$key] = '<p class="article_pic">'.$img.'</p>';
 			} else {
