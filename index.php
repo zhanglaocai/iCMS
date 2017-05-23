@@ -7,5 +7,5 @@
 * @site https://www.icmsdev.com
 * @licence https://www.icmsdev.com/LICENSE.html
 */
-require dirname(__file__).'/iCMS.php';
+require dirname(__FILE__).'/iCMS.php';
 iCMS::run();

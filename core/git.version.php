@@ -8,7 +8,7 @@
 * @licence http://www.idreamsoft.com/license.php
 * @version 6.2.0
 */
-define('GIT_COMMIT', 'f79a8560e6956f4cfd657e2959eb040e6c04f05b');
+define('GIT_COMMIT', 'faa6e1e21921f4f1feabe60aa82a333848c3c48b');
 define('GIT_AUTHOR', 'icmsdev');
 define('GIT_EMAIL', 'master@icmsdev.com');
-define('GIT_TIME', '1495421169');
+define('GIT_TIME', '1495508631');

@@ -9,5 +9,5 @@
 */
 define('iPHP_DEBUG', true);
 define('iPHP_WAF_POST',false);
-require dirname(__file__) . '/iCMS.php';
+require dirname(__FILE__) . '/iCMS.php';
 admincp::run();

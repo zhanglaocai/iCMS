@@ -2,11 +2,11 @@
 /**
  * 腾讯云万象图片服务 iPHP接口 统一
  */
-require dirname(__file__) .'/library/Tencentyun/Http.php';
-require dirname(__file__) .'/library/Tencentyun/Conf.php';
-require dirname(__file__) .'/library/Tencentyun/Auth.php';
-require dirname(__file__) .'/library/Tencentyun/ImageV2.php';
-require dirname(__file__) .'/library/Tencentyun/Video.php';
+require dirname(__FILE__) .'/library/Tencentyun/Http.php';
+require dirname(__FILE__) .'/library/Tencentyun/Conf.php';
+require dirname(__FILE__) .'/library/Tencentyun/Auth.php';
+require dirname(__FILE__) .'/library/Tencentyun/ImageV2.php';
+require dirname(__FILE__) .'/library/Tencentyun/Video.php';
 
 class files_cloud_TencentYun {
     public $conf;
@@ -45,7 +45,7 @@ class files_cloud_TencentYun {
         ));
     }
 }
-// require dirname(__file__).'/../../iCMS.php';
+// require dirname(__FILE__).'/../../iCMS.php';
 // $conf = iCMS::$config['cloud']['sdk']['TencentYun'];
 // $cloud = new files_cloud_TencentYun($conf);
 // $filePath = '2017/04-21/20/0c607dc077954c7f7d6f25deb0f34f6f.jpg';

@@ -2,7 +2,7 @@
 /**
  * 七牛云 iPHP接口 统一
  */
-require dirname(__file__) .'/library/QiniuClient.class.php';
+require dirname(__FILE__) .'/library/QiniuClient.class.php';
 
 class files_cloud_QiNiuYun extends QiniuClient{
     public $conf;
@@ -40,7 +40,7 @@ class files_cloud_QiNiuYun extends QiniuClient{
     }
 }
 
-// require dirname(__file__).'/../../iCMS.php';
+// require dirname(__FILE__).'/../../iCMS.php';
 // $conf = iCMS::$config['cloud']['sdk']['QiNiuYun'];
 // $cloud = new files_cloud_QiNiuYun($conf);
 // $filePath = '2017/02-08/23/01b71d15d5bc0de1c15e1beb4be128ea.jpg';

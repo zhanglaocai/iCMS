@@ -3,7 +3,7 @@
  * @author [zhainan13]
  * @source https://github.com/zhainan13/iCMS
  */
-require dirname(__file__) .'/library/UpYun.class.php';
+require dirname(__FILE__) .'/library/UpYun.class.php';
 
 class files_cloud_UpYun extends UpYun {
 	public $conf;
@@ -49,7 +49,7 @@ class files_cloud_UpYun extends UpYun {
 		}
 	}
 }
-// require dirname(__file__).'/../../iCMS.php';
+// require dirname(__FILE__).'/../../iCMS.php';
 // $conf = iCMS::$config['cloud']['sdk']['UpYun'];
 // $cloud = new files_cloud_UpYun($conf);
 // $filePath = '2017/02-08/23/01b71d15d5bc0de1c15e1beb4be128ea.jpg';

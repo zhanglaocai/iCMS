@@ -5,7 +5,7 @@
 // define('ALI_DISPLAY_LOG', 1);
 defined('iPHP') OR exit('What are you doing?');
 
-require dirname(__file__) .'/library/AliYunOSS.class.php';
+require dirname(__FILE__) .'/library/AliYunOSS.class.php';
 
 class files_cloud_AliYunOSS extends ALIOSS{
     public $conf;
@@ -50,7 +50,7 @@ class files_cloud_AliYunOSS extends ALIOSS{
         ));
     }
 }
-// require dirname(__file__).'/../../iCMS.php';
+// require dirname(__FILE__).'/../../iCMS.php';
 // $conf = iCMS::$config['cloud']['sdk']['AliYunOSS'];
 // $cloud = new files_cloud_AliYunOSS($conf);
 // $filePath = '2017/02-08/23/01b71d15d5bc0de1c15e1beb4be128ea.jpg';
