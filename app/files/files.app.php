@@ -9,8 +9,6 @@
 */
 class filesApp {
     public $methods = array('iCMS','download');
-    public static $PREG_IMG = "/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
-
     public function do_iCMS(){}
     public function API_iCMS(){}
 
@@ -39,9 +37,10 @@ class filesApp {
         $this->do_download();
     }
     public static function get_content_pics($content,&$pic_array=array()){
-        preg_match_all(self::$PREG_IMG,$content,$pic_array);
+        $PREG_PIC = "/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
+        preg_match_all($PREG_PIC, $content, $pic_array);
         $array = array_unique($pic_array[1]);
-        $pics =  array();
+        $pics  = array();
         foreach ((array)$array as $key => $_pic) {
                 $pics[$key] = trim($_pic);
         }

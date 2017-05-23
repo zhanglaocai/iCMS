@@ -232,14 +232,17 @@ class files {
     }
 
     public static function set_file_iid($content,$iid,$appid) {
-        if(empty($content)){
-            return;
-        }
+        if(empty($content)) return;
+
         $content = stripslashes($content);
-        preg_match_all(self::$PREG_IMG, $content, $match);
-        $array  = array_unique($match[1]);
+        $array   = self::preg_img($content,$match);
         foreach ($array as $key => $value) {
             files::set_map($appid,$iid,$value,'path');
         }
+    }
+    public static function preg_img($content,&$match) {
+        $match = (array)$match;
+        preg_match_all(self::$PREG_IMG, $content, $match);
+        return array_unique($match[2]);
     }
 }

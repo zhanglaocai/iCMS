@@ -411,10 +411,9 @@ class filesAdmincp{
 
         iFS::$force_ext = "jpg";
         $content = stripslashes($content);
-        preg_match_all(files::$PREG_IMG, $content, $match);
-        $array  = array_unique($match[2]);
-        $uri    = parse_url(iCMS_FS_URL);
-        $fArray = array();
+        $array   = files::preg_img($content,$match);
+        $uri     = parse_url(iCMS_FS_URL);
+        $fArray  = array();
         foreach ($array as $key => $value) {
             $value = trim($value);
             if (stripos($value,$uri['host']) === false){
