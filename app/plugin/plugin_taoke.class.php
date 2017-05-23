@@ -14,6 +14,7 @@ class plugin_taoke{
      * @param [type] $resource [返回替换过的内容]
      */
     public static function HOOK($content,&$resource=null) {
+        plugin::init(__CLASS__);
         preg_match_all('/<[^>]+>((http|https):\/\/(item|detail)\.(taobao|tmall)\.com\/.+)<\/[^>]+>/isU', $content, $taoke_array);
         if ($taoke_array[1]) {
             $tk_array = array_unique($taoke_array[1]);

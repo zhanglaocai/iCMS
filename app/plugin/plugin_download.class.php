@@ -14,6 +14,7 @@ class plugin_download{
      * @param [type] $resource [返回替换过的内容]
      */
     public static function HOOK($content) {
+        plugin::init(__CLASS__);
         preg_match_all('#<a\s*class="attachment".*ext=".*?"\s*fid=".*?"\s*path="(.*?)"\s*href="(.*?)"\s*title=".*?">.*?</a>#is',
             $content, $variable);
         foreach ((array)$variable[1] as $key => $path) {

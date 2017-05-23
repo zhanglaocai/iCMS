@@ -13,7 +13,8 @@ class plugin_QRcode {
      * @param [type] $content  [参数]
      */
     public static function HOOK($content) {
-        plugin::library('phpqrcode.php');
+        plugin::init(__CLASS__);
+        plugin::library('phpqrcode');
 		$expires = 86400;
 		header("Cache-Control: maxage=" . $expires);
 		header('Last-Modified: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');

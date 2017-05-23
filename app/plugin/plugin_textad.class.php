@@ -13,13 +13,14 @@ class plugin_textad {
      * @param [type] $content [参数]
      */
     public static function HOOK($content,&$resource=null){
+        plugin::init(__CLASS__);
         $pieces    = 1000;
         $html      = str_replace('</p>', "</p>\n", $content);
         $htmlArray = explode("\n", $html);
         $result  = array();
         //计算长度
-        preg_match_all(filesApp::$PREG_IMG,$content,$img_array);
-        $len = strlen($content)+(count($img_array[1])*300);
+        $imgs = files::preg_img($content,$pic_array);
+        $len  = strlen($content)+(count($imgs)*300);
 
         if($len<($pieces*1.5)){
             return $content;

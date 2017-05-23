@@ -13,9 +13,9 @@ class plugin_markdown {
      * @param [type] $content  [参数]
      */
     public static function HOOK($content,&$resource=null) {
+        plugin::init(__CLASS__);
         if($resource['markdown']){
-            plugin::library('Parsedown.php');
-
+            plugin::library('Parsedown');
             $Parsedown = new Parsedown();
             $content = str_replace(array(
                 '#--' . iPHP_APP . '.Markdown--#',
