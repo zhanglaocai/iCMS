@@ -171,7 +171,7 @@ class spider_urls {
             }else{
                 $list_area_rule = spider_tools::pregTag($rule['list_area_rule']);
                 if ($list_area_rule) {
-                    preg_match('|' . $list_area_rule . '|is', $html, $matches, $PREG_SET_ORDER);
+                    preg_match('|' . $list_area_rule . '|is', $html, $matches);
                     $list_area = $matches['content'];
                 } else {
                     $list_area = $html;
@@ -191,8 +191,6 @@ class spider_urls {
 
                 preg_match_all('|' . spider_tools::pregTag($rule['list_url_rule']) . '|is', $list_area, $lists, PREG_SET_ORDER);
 
-                $list_area = null;
-                unset($list_area);
                 if ($rule['sort'] == "1") {
                     //arsort($lists);
                 } elseif ($rule['sort'] == "2") {
@@ -205,13 +203,16 @@ class spider_urls {
             if (spider::$ruleTest) {
                 echo '<b>列表区域规则:</b>'.iSecurity::escapeStr($rule['list_area_rule']);
                 echo "<hr />";
-                echo '<b>列表区域抓取结果:</b>'.iSecurity::escapeStr($list_area);
+                echo '<b>列表区域抓取结果:</b><div style="max-height:300px;overflow-y: scroll;">'.iSecurity::escapeStr($list_area).'</div>';
                 echo "<hr />";
                 echo '<b>列表链接规则:</b>'.iSecurity::escapeStr($rule['list_url_rule']);
                 echo "<hr />";
                 echo '<b>网址合成规则:</b>'.iSecurity::escapeStr($rule['list_url']);
                 echo "<hr />";
             }
+            $list_area = null;
+            unset($list_area);
+
             if($prule_list_url){
                 $rule['list_url']   = $prule_list_url;
             }
@@ -310,14 +311,15 @@ class spider_urls {
                             '&title=' . urlencode(spider::$title) .
                             '" target="_blank">测试内容规则</a>) <br />';
                         echo spider::$url . "<br />";
+                        echo $hash . "<br />";
                         unset($value['title'],$value['url']);
                         if($value){
-                            echo '<b>其它采集结果:</b><br />';
+                            echo '<b>其它采集结果:</b>';
                             echo '<pre>';
                             var_dump(array_map('htmlspecialchars', $value));
                             echo '</pre>';
                         }
-                        echo $hash . "<br /><hr />";
+                        echo "<hr />";
                     } else {
                         if(spider::checker($work,$pid,spider::$url,spider::$title)===true||spider::$dataTest){
                             $suData = array(
@@ -384,6 +386,11 @@ class spider_urls {
         $array = array();
         foreach ($lists AS $lkey => $row) {
             $arr = spider_tools::title_url($row,$rule,$url);
+            foreach ((array)$arr as $key => $value) {
+                if(is_numeric($key)){
+                    unset($arr[$key]);
+                }
+            }
             if($arr){
                 $array[$lkey] = $arr;
             }

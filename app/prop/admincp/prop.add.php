@@ -12,8 +12,12 @@ admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
-iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
-iCMS.select('prop-app',"<?php echo $rs['app'] ; ?>");
+  $("#prop-app").on('change', function(evt, params) {
+    var appid = $(this).find('option[value="' + params['selected'] + '"]').attr('appid');
+    $("#appid","#iCMS-prop").val(appid);
+  });
+  iCMS.select('cid',"<?php echo $rs['cid'] ; ?>");
+  iCMS.select('prop-app',"<?php echo $rs['app'] ; ?>");
 });
 </script>
 <div class="iCMS-container">
@@ -24,7 +28,6 @@ iCMS.select('prop-app',"<?php echo $rs['app'] ; ?>");
     <div class="widget-content nopadding">
       <form action="<?php echo APP_FURI; ?>&do=save" method="post" class="form-inline" id="iCMS-prop" target="iPHP_FRAME">
         <input name="pid" type="hidden" value="<?php echo $this->pid ; ?>" />
-        <input name="appid" type="hidden" id="appid" value="<?php echo $rs['appid'];?>"/>
         <div id="<?php echo APP_BOXID;?>" class="tab-content">
           <div class="input-prepend"> <span class="add-on">所属栏目</span>
             <select name="cid" id="cid" class="span3 chosen-select">
@@ -37,17 +40,16 @@ iCMS.select('prop-app',"<?php echo $rs['app'] ; ?>");
           <div class="input-prepend"> <span class="add-on">所属应用</span>
             <select name="app" id="prop-app" class="span3 chosen-select">
               <option value=""> ==== 暂无所属应用 ==== </option>
-              <?php foreach (apps::get_array(array("!table"=>0)) as $key => $value) {?>
+              <?php
+              foreach (apps::get_array(array("!table"=>0)) as $key => $value) {
+                $app_array[$value['app']] = $key;
+              ?>
               <option value="<?php echo $value['app'];?>" appid="<?php echo $key;?>"><?php echo $value['app'];?>:<?php echo $value['name'];?></option>
               <?php }?>
             </select>
           </div>
-          <script>
-            $("#prop-app").on('change', function(evt, params) {
-              var appid = $(this).find('option[value="' + params['selected'] + '"]').attr('appid');
-              $("#appid","#iCMS-prop").val(appid);
-            });
-          </script>
+          <?php empty($rs['appid']) && $rs['appid'] = $app_array[$rs['app']];?>
+          <input name="appid" type="hidden" id="appid" value="<?php echo $rs['appid'];?>"/>
           <span class="help-inline">article:文章 push:推送 category:栏目</span>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend input-append"> <span class="add-on">属性字段</span>
