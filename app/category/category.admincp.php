@@ -122,13 +122,18 @@ class categoryAdmincp {
         if($_rootid_hash){
             $_rootid = authcode($_rootid_hash);
             if($rootid!=$_rootid){
-                iUI::alert('非法数据提交!');
+                return iUI::alert('非法数据提交!');
             }else{
                 category::check_priv($_rootid,'a','alert');
             }
         }
-        ($cid && $cid==$rootid) && iUI::alert('不能以自身做为上级'.$this->category_name);
-        empty($name) && iUI::alert($this->category_name.'名称不能为空!');
+
+        if($cid && $cid==$rootid){
+            return iUI::alert('不能以自身做为上级'.$this->category_name);
+        }
+        if (empty($name)) {
+            return iUI::alert($this->category_name.'名称不能为空!');
+        }
 
         if($mode=="2"){
             foreach ($rule as $key => $value) {
@@ -140,7 +145,9 @@ class categoryAdmincp {
                         $cr_check = false;
                     }
                 }
-                $cr_check && iUI::alert('伪静态模式'.$CR[0].'规则必需要有'.$CR[2].'其中之一');
+                if($cr_check){
+                    return iUI::alert('伪静态模式'.$CR[0].'规则必需要有'.$CR[2].'其中之一');
+                }
             }
         }
 
@@ -150,7 +157,9 @@ class categoryAdmincp {
             foreach($config['meta'] AS $mk=>$meta){
                 if($meta['name']){
                     $meta['key'] OR $meta['key'] = strtolower(iPinyin::get($meta['name']));
-                    preg_match("/[a-zA-Z0-9_\-]/",$meta['key']) OR iUI::alert('只能由英文字母、数字或_-组成(不支持中文),留空则自动以名称拼音填充');
+                    if(!preg_match("/[a-zA-Z0-9_\-]/",$meta['key'])){
+                        return iUI::alert('只能由英文字母、数字或_-组成(不支持中文),留空则自动以名称拼音填充');
+                    }
                     $meta['key'] = trim($meta['key']);
                     $config['meta'][$mk] = $meta;
                 }

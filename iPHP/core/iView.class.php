@@ -35,12 +35,13 @@ class iView {
         self::$handle->register_modifier("random", "random");
         self::$handle->register_modifier("fields", "select_fields");
         self::$handle->register_block("cache", array("iView", "block_cache"));
+        self::$handle->register_block("plugin:check", array("pluginFunc", "plugin_check"));
         self::$handle->template_callback = array(
             "resource" => array("iView","callback_path"),
             "func"     => array("iView","callback_func"),
         );
-        self::$handle->assign('GET', $_GET);
-        self::$handle->assign('POST', $_POST);
+        self::$handle->assign('_GET', $_GET);
+        self::$handle->assign('_POST', $_POST);
         iPHP_TPL_DEBUG && self::$handle->clear_compiled_tpl();
     }
     public static function check_func($app) {
@@ -60,7 +61,7 @@ class iView {
                 $keys     = isset($args['as'])?$args['as']:$args['_app'].'_'.$args['method'];
                 $callback = array($args['_app'].'Func',$args['_app'].'_'.$args['method']);
             }
-            if(!is_callable($callback)){
+            if(!@is_callable($callback)){
                 iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
             }
         }else{

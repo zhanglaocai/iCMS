@@ -527,42 +527,42 @@ class articleAdmincp{
         $creative    = (int)$_POST['creative'];
         $markdown    = (int)$_POST['markdown'];
 
-        empty($title)&& iUI::alert('标题不能为空！');
-        empty($cid)  && iUI::alert('请选择所属栏目');
-        empty($body) && empty($url) && iUI::alert('文章内容不能为空！');
+        if (empty($title)) {
+            return iUI::alert('标题不能为空！');
+        }
+        if (empty($cid)) {
+            return iUI::alert('请选择所属栏目');
+        }
+        if(empty($body) && empty($url)){
+            return iUI::alert('文章内容不能为空！');
+        }
 
         $pubdate   = str2time($_POST['pubdate']);
         $postype   = $_POST['postype']?$_POST['postype']:0;
         $userid OR $userid = members::$userid;
         $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
 
-        if($this->callback['code']){
-            $fwd = iPHP::callback(array("filterApp","run"),array(&$title),false);
-            if($fwd){
-                echo '标题中包含【'.$fwd.'】被系统屏蔽的字符，请重新填写。';
-                return false;
+        if(self::$config['filter'] && is_array(self::$config['filter'])) {
+            foreach (self::$config['filter'] as $fkey => $fvalue) {
+                list($field,$text) = explode(':', $fvalue);
+                if($fwd = iPHP::callback(array("filterApp","run"),array(&${$field}),false)){
+                    return iUI::alert($text.'中包含【'.$fwd.'】被系统屏蔽的字符，请重新填写。');
+                }
             }
         }
 
-        if(self::$config['filter']) {
-            $fwd = iPHP::callback(array("filterApp","run"),array(&$title),false);
-            // filterAdmincp::run($title);
-            $fwd && iUI::alert('标题中包含【'.$fwd.'】被系统屏蔽的字符，请重新填写。');
-            $fwd = iPHP::callback(array("filterApp","run"),array(&$description),false);
-            $fwd && iUI::alert('简介中包含被【'.$fwd.'】系统屏蔽的字符，请重新填写。');
-            // $fwd = filterAdmincp::run($body);
-            // $fwd && iUI::alert('内容中包含被系统屏蔽的字符，请重新填写。');
+        if(self::$config['repeatitle'] && article::check($title,$aid,'title')) {
+            return iUI::alert('该标题的文章已经存在!请检查是否重复');
         }
 
-        if(self::$config['repeatitle']) {
-            article::check($title,$aid,'title') && iUI::alert('该标题的文章已经存在!请检查是否重复');
-        }
         $category = category::get($cid);
         if(strstr($category->rule['article'],'{LINK}')!==false && empty($clink)){
             $clink = iPinyin::get($title,self::$config['clink']);
         }
-        $clink && article::check($clink,$aid,'clink') && iUI::alert('该文章自定义链接已经存在!请检查是否重复');
 
+        if($clink && article::check($clink,$aid,'clink')){
+            return iUI::alert('该文章自定义链接已经存在!请检查是否重复');
+        }
 
         if(empty($description) && empty($url)) {
             $description = $this->autodesc($body);

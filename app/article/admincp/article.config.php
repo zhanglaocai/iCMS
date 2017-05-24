@@ -126,11 +126,21 @@ configAdmincp::head("文章系统设置");
 <div class="clearfloat mb10"></div>
 <div class="input-prepend">
   <span class="add-on">后台文章过滤</span>
-  <div class="switch">
-    <input type="checkbox" data-type="switch" name="config[filter]" id="article_filter" <?php echo $config['filter']?'checked':''; ?>/>
-  </div>
+  <select name="config[filter][]" id="article_filter" class="chosen-select span6" multiple="multiple">
+    <option value="title:标题">标题</option>
+    <option value="description:简介">简介</option>
+    <option value="body:内容">内容</option>
+    <option value="tags:标签">标签</option>
+    <option value="stitle:短标题">短标题</option>
+    <option value="keywords:关键字">关键字</option>
+  </select>
 </div>
-<span class="help-inline">开启台 后台输入的文章都将经过关键字过滤</span>
+<script>
+$(function(){
+  iCMS.select('article_filter',"<?php echo implode(',', (array)$config['filter']);?>");
+})
+</script>
+<span class="help-inline">开启台 后台输入的文章相关字段都将经过关键字过滤</span>
 <div class="clearfloat mb10"></div>
 <div class="input-prepend">
   <span class="add-on">字符分隔符</span>

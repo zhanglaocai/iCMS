@@ -193,13 +193,10 @@ class tagAdmincp{
 
         $uid OR $uid= members::$userid;
 
-        if($callback){
-            if(empty($name)){
-                echo '标签名称不能为空！';
-                return false;
-            }
+        if(empty($name)){
+            return iUI::alert('标签名称不能为空！');
         }
-        $name OR iUI::alert('标签名称不能为空！');
+
         // $cid OR iUI::alert('请选择标签所属栏目！');
 
 		if(empty($id)) {
@@ -208,7 +205,7 @@ class tagAdmincp{
                 if(isset($_POST['spider_update'])){
                     $id = $hasNameId;
                 }else{
-                    iUI::alert('该标签已经存在!请检查是否重复');
+                    return iUI::alert('该标签已经存在!请检查是否重复');
                 }
             }
 		}
@@ -216,12 +213,7 @@ class tagAdmincp{
 			$tkey = substr(md5($url),8,16);
 			$hasTkey = iDB::value("SELECT `id` FROM `#iCMS@__tag` where `tkey` = '$tkey'");
             if($hasTkey){
-                if(isset($_POST['spider_check_tkey'])){
-                    echo '该自定义链接已经存在!请检查是否重复';
-                    return false;
-                }else{
-                    iUI::alert('该自定义链接已经存在!请检查是否重复');
-                }
+                return iUI::alert('该自定义链接已经存在!请检查是否重复');
             }
 		}
 
@@ -295,24 +287,7 @@ class tagAdmincp{
             $tkey = $tkey.'-'.($count+1);
         }
     }
-    public function __callback($id){
-        if ($this->callback['primary']) {
-            $PCB = $this->callback['primary'];
-            $handler = $PCB[0];
-            $params  = (array)$PCB[1]+array('indexid'=>$id);
-            if (is_callable($handler)){
-                call_user_func_array($handler,$params);
-            }
-        }
-        if ($this->callback['data']) {
-            $DCB     = $this->callback['data'];
-            $handler = $DCB[0];
-            $params  = (array)$DCB[1];
-            if (is_callable($handler)){
-                call_user_func_array($handler,$params);
-            }
-        }
-    }
+
     public function check_spider_data(&$data,$old,$key,$value){
         if($old[$key]){
             if($value){

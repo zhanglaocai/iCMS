@@ -90,8 +90,8 @@ class iUI {
 					$lang = iUI::lang($content, false);
 					$lang && $content = $lang;
 				}
+            	$msg.= $content.'</span></div>';
 	        }
-            $msg.= $content.'</span></div>';
 		}
     	if($ret) return $msg;
 		echo $msg;
@@ -123,7 +123,7 @@ class iUI {
 		self::$break && exit();
 	}
 	public static function warning($info) {
-		self::msg('warning:#:warning:#:' . $info);
+		return self::msg('warning:#:warning:#:' . $info);
 	}
 	public static function alert($msg, $js = null, $s = 3) {
 		if (iUI::$dialog['alert'] === 'window') {
@@ -137,7 +137,7 @@ class iUI {
 			'width'      => 360,
 			'height'     => 120,
 		);
-		self::dialog('warning:#:warning:#:' . $msg, $js, $s);
+		return self::dialog('warning:#:warning:#:' . $msg, $js, $s);
 	}
 	public static function success($msg, $js = null, $s = 3) {
 		self::$dialog = array(
@@ -148,7 +148,7 @@ class iUI {
 			'width'      => 360,
 			'height'     => 120,
 		);
-		self::dialog('success:#:check:#:' . $msg, $js, $s);
+		return self::dialog('success:#:check:#:' . $msg, $js, $s);
 	}
 	public static function dialog($info = array(), $js = 'js:', $s = 3, $buttons = null, $update = false) {
 		$info = (array) $info;
@@ -156,7 +156,7 @@ class iUI {
         $content = self::msg($info[0],true);
         if(iPHP_SHELL){
         	echo $content;
-        	return;
+        	return false;
         }
 		$content =
 			'<table class="ui-dialog-table" align="center">'.

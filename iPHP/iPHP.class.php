@@ -329,7 +329,8 @@ class iPHP {
         if($hooks){
             foreach ($hooks as $field => $call) {
                 foreach ($call as $key => $cb) {
-                    $resource[$field] = iPHP::callback($cb,array($resource[$field],&$resource));
+                    $data = iPHP::callback($cb,array($resource[$field],&$resource),'nohook');
+                    $data=='nohook' OR $resource[$field] = $data;
                 }
             }
         }

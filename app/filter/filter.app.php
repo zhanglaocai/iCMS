@@ -19,7 +19,7 @@ class filterApp{
     public static function HOOK_disable_FALSE($content){
         $disable = iCache::get('filter/disable');  //disable禁止
         //禁止关键词
-        $subject = $content;
+        $subject = implode('', (array)$content);
         $pattern = '/(~|`|!|@|\#|\$|%|\^|&|\*|\(|\)|\-|=|_|\+|\{|\}|\[|\]|;|:|"|\'|<|>|\?|\/|,|\.|\s|\n|。|，|、|；|：|？|！|…|-|·|ˉ|ˇ|¨|‘|“|”|々|～|‖|∶|＂|＇|｀|｜|〃|〔|〕|〈|〉|《|》|「|」|『|』|．|〖|〗|【|】|（|）|［|］|｛|｝|°|′|″|＄|￡|￥|‰|％|℃|¤|￠|○|§|№|☆|★|○|●|◎|◇|◆|□|■|△|▲|※|→|←|↑|↓|〓|＃|＆|＠|＾|＿|＼|№|)*/i';
         $subject = preg_replace($pattern, '', $subject);
         foreach ((array)$disable AS $val) {
