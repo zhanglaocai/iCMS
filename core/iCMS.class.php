@@ -90,6 +90,7 @@ class iCMS {
             "ui"     => iCMS_PUBLIC_URL.'/ui',
             "avatar" => iCMS_FS_URL.'avatar/',
             "mobile" => $site['murl'],
+            "desktop" => self::$config['template']['desktop']['domain'],
         );
         if(self::$config['template']['device']){
             foreach (self::$config['template']['device'] as $key => $value) {

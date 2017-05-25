@@ -75,10 +75,9 @@ class articleApp {
 	/**
 	 * [hooked 钩子]
 	 * @param  [type] $data [description]
-	 * @return [type]       [description]
 	 */
-    public static function hooked($data){
-        return iPHP::hook('article',$data,iCMS::$config['hooks']['article']);
+    public static function hooked(&$data){
+    	iPHP::hook('article',$data,iCMS::$config['hooks']['article']);
     }
 	public function article($fvar,$page = 1,$field='id', $tpl = true) {
 		$article = iDB::row("
@@ -116,12 +115,16 @@ class articleApp {
 		);
 		$article = $this->value($article, $article_data, $vars, $page, $tpl);
 		$article+=(array)apps_meta::data('article',$id);
+
+        $app = apps::get_app('article');
+        $app['fields'] && formerApp::data($article['id'],$app,'tag',$article,$vars,$article['category']);
+
 		unset($article_data);
 		if ($article === false) {
 			return false;
 		}
 
-		$article = $this->hooked($article);
+		self::hooked($article);
 
 		if ($tpl) {
 			$article_tpl = empty($article['tpl']) ? $article['category']['template']['article'] : $article['tpl'];

@@ -46,6 +46,8 @@ class appsAdmincp{
     }
 
     public function do_save(){
+        @set_time_limit(0);
+
         $id      = (int)$_POST['_id'];
         $name    = iSecurity::escapeStr($_POST['_name']);
         $title   = iSecurity::escapeStr($_POST['_title']);

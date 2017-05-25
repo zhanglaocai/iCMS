@@ -140,4 +140,152 @@ class formerApp{
             return $update;
         }
     }
+    public static function data($id,$app,$name,&$resource,$vars=null,$category=null){
+        if($app['fields']){
+            $dataFields = array();
+            $field_array = former::fields($app['fields']);
+            foreach ((array)$field_array as $fkey => $fields) {
+                if($fields['field']=='MEDIUMTEXT'){
+                    $dataFields[$fkey] = $fields;
+                }else{
+                   self::vars($fields,$fkey,$resource,$vars,$category,$app);
+                }
+            }
+
+            if($dataFields){
+                $dtn = iDB::table(apps_mod::data_table_name($name));
+                $iDATA = apps_mod::get_data($app,$id,array($dtn));
+                foreach ((array)$dataFields as $fkey => $fields) {
+                    $resource[$fkey] = $iDATA[$fkey];
+                    self::vars($fields,$fkey,$resource,$vars,$category,$app);
+                }
+            }
+        }
+    }
+    public static function vars($field,$key,&$rs,$vars=null,$category=null,$app=null){
+        $option_array = array();
+        $value        = $rs[$key];
+        $values       = array();
+        $nkey         = null;
+        switch ($field['type']) {
+            case 'multi_image':
+                $nkey     = $key.'_array';
+                $valArray = explode("\n", $value);
+                foreach ($valArray as $i => $val) {
+                    $val && $values[$i]= filesApp::get_pic(trim($val));
+                }
+            break;
+            case 'image':
+                $nkey   = $key.'_array';
+                $values = filesApp::get_pic($value);
+            break;
+            case 'file':
+                $nkey = $key.'_file';
+                $pi   = pathinfo($value);
+                $values   = array(
+                    'name' => $pi['filename'],
+                    'ext'  => $pi['extension'],
+                    'dir'  => $pi['dirname'],
+                    'url'  => filesApp::get_url($pi['filename'],'download')
+                );
+            break;
+            case 'multi_file':
+                $nkey = $key.'_file';
+                $valArray = explode("\n", $value);
+                foreach ($valArray as $i => $val) {
+                    if($val){
+                        $pi   = pathinfo($val);
+                        $values[$i]   = array(
+                            'name' => $pi['filename'],
+                            'ext'  => $pi['extension'],
+                            'dir'  => $pi['dirname'],
+                            'url'  => filesApp::get_url($pi['filename'],'download')
+                        );
+                    }
+                }
+            break;
+            case 'category':
+                if($key=='cid'){
+                    continue;
+                }
+                $nkey      = $key.'_category';
+                $_category = categoryApp::get_cahce_cid($value);
+                $values    = categoryApp::get_lite($_category);
+            break;
+            case 'multi_category':
+                $nkey   = $key.'_category';
+                $valArray = explode(",", $value);
+                foreach ($valArray as $i => $val) {
+                    $_category  = categoryApp::get_cahce_cid($val);
+                    $values[$i] = categoryApp::get_lite($_category);
+                }
+            break;
+            case 'userid':
+                if($vars['user']){
+                    $nkey   = $key.'_user';
+                    if ($rs['postype']) {
+                        $values = user::empty_info($value,'###');
+                    } else {
+                        $values = user::info($value);
+                    }
+                }
+            break;
+            case 'multi_prop':
+            case 'prop':
+                if($key=='pid'){
+                    continue;
+                }
+                $nkey   = $key.'_prop';
+                $propArray = propApp::value($key,$_app);
+                // empty($values['prop']) && $propArray = propApp::value($key);
+                if($field['type']=='multi_prop'){
+                    $valArray = explode(",", $value);
+                    if($propArray)foreach ($propArray as $i => $val) {
+                        if(in_array($val['val'], $valArray)){
+                            $values[$val['val']] = $val;
+                        }
+                    }
+                }else{
+                    $values = $propArray[$value];
+                }
+            break;
+            case 'tag':
+                $vars['tag'] && tagApp::get_array($rs,$category['name'],$key,$value);
+            break;
+            case 'editor';
+                if($value){
+                   $rs[$key.'_pics'] = filesApp::get_content_pics($value,$pic_array);
+                }
+            break;
+            default:
+                // $values = $value;
+            break;
+        }
+        if($field['option'] && !in_array($key, array('creative','status'))){
+            $nkey = $key.'_array';
+            $optionArray = explode(";", $field['option']);
+            $valArray = explode(",", $value);
+            foreach ($optionArray as $ok => $val) {
+                $val = trim($val,"\r\n");
+                if($val){
+                    list($opt_text,$opt_value) = explode("=", $val);
+                    $option_array[$key][$opt_value] = $opt_text;
+                    // $values['option'][$opt_value] = $opt_text;
+                    if($field['multiple']){
+                        if(in_array($opt_value, $valArray)){
+                            $values[$opt_value] = $opt_text;
+                        }
+                    }else{
+                        if($opt_value==$value){
+                            $nkey = $key.'_value';
+                            $values = $opt_text;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        $nkey && $rs[$nkey] = $values;
+        $option_array && iView::assign('option_array', $option_array);
+    }
 }

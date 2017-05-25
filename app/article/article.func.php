@@ -268,7 +268,7 @@ class articleFunc{
 	public static function article_data($vars) {
 		$vars['aid'] OR iUI::warning('iCMS&#x3a;article&#x3a;data 标签出错! 缺少"aid"属性或"aid"值为空.');
 		$data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $vars['aid'] . "' LIMIT 1;", ARRAY_A);
-		$article = articleApp::hooked($article);
+		articleApp::hooked($data);
 		return $data;
 	}
 	public static function article_prev($vars) {

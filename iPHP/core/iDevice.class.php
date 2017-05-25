@@ -80,15 +80,15 @@ class iDevice {
             $array['pageurl'] && $iurl['pageurl'] = $array['pageurl'];
 
             if(self::$config['desktop']['domain']){
-                $urls['desktop'] = str_replace(iPHP_ROUTER_URL, self::$config['desktop']['domain'], $iurl);
+                $urls['desktop'] = str_replace(iPHP_DOMAIN, self::$config['desktop']['domain'], $iurl);
             }
             if(self::$config['mobile']['domain']){
-                $urls['mobile'] = str_replace(iPHP_ROUTER_URL, self::$config['mobile']['domain'], $iurl);
+                $urls['mobile'] = str_replace(iPHP_DOMAIN, self::$config['mobile']['domain'], $iurl);
             }
             if(self::$config['device'])foreach (self::$config['device'] as $key => $value) {
                 if($value['domain']){
                     $name = trim($value['name']);
-                    $urls[$name] = str_replace(iPHP_ROUTER_URL, $value['domain'], $iurl);
+                    $urls[$name] = str_replace(iPHP_DOMAIN, $value['domain'], $iurl);
                 }
             }
         }

@@ -100,6 +100,7 @@ class former {
 
     public static function render($app,$rs=null) {
         $fields = self::fields($app['fields'],true);
+        $rs = (array)$rs;
         foreach ($fields as $fkey => $field) {
             $value = $rs[$field['name']];
             $rs===null && $value = null;
@@ -693,16 +694,19 @@ class former {
                 }
             }
         }
-        unset($app['table'][$app['app'].'_meta']);
+        // unset($app['table'][$app['app'].'_meta']);
+        // unset($app['table'][$app['app'].'_map']);
+        $tb = reset($app['table']);
+        $tables = array($tb['name']);
         if($data_table){
             $values = compact('post','data_post'); //将表单数据存入数组
-            $tables = array_keys($app['table']);//返回所有表名
+            array_push($tables,$data_table['name']);//返回表名
         }else{
             $values = compact('post'); //将表单数据存入数组
-            $tb = reset($app['table']);
-            $tables = array($tb['name']);
         }
-
+// print_R($tables);
+// print_R($values);
+// exit;
         //创建一个数组，用一个表名数组的值作为其键名，表单数据的值作为其值
         $variable = array_combine($tables,$values);
 

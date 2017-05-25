@@ -32,9 +32,12 @@ class categoryApp{
      * @param  [type] $data [description]
      * @return [type]       [description]
      */
-    public static function hooked($data){
-        return iPHP::hook('category',$data,iCMS::$config['hooks']['category']);
-    }
+    // public static function hooked(&$data){
+    //     iPHP::hook('category',$data,iCMS::$config['hooks']['category']);
+    // }
+    /**
+     * 该方法超多次调用 禁止SQL查询
+     */
     public static function category($cid,$tpl='index') {
         $category = categoryApp::get_cahce_cid($cid);
         if(empty($category) && $tpl){
@@ -44,8 +47,10 @@ class categoryApp{
         $iurl = $category['iurl'];
         if($tpl){
             if(iView::$gateway=="html"){
-                if(strpos($category['rule']['index'], '{PHP}') !== false||
-                    $category['outurl']||!$category['mode']) return false;
+                $isphp = strpos($category['rule']['index'], '{PHP}');
+                if($isphp !== false||$category['outurl']||!$category['mode']){
+                    return false;
+                }
             }
             $category['outurl'] && iPHP::redirect($category['outurl']);
             $category['mode']=='1' && iCMS::redirect_html($iurl['path'],$iurl['href']);
@@ -61,26 +66,17 @@ class categoryApp{
             "url"    => $category['url']
         );
 
-        $category = self::hooked($category);
-        $category+=(array)apps_meta::data('category',$cid);
+        // self::hooked($category);
 
         if($tpl) {
             $category['mode'] && iURL::page_url($iurl);
-            iView::assign('app', apps::get_app_lite($category['appid']));
+            iView::assign('app', $category['app_lite']);
+            unset($category['app_lite']);
             iView::assign('category',$category);
-            if(isset($_GET['tpl'])){
-                $tpl = iSecurity::escapeStr($_GET['tpl']);
-                if(strpos($tpl, '..') !== false){
-                    exit('what the fuck!!');
-                }else{
-                    $tpl = $tpl.'.htm';
-                }
-            }
             if(strpos($tpl, '.htm')!==false){
             	return iView::render($tpl,'category');
             }
             $GLOBALS['page']>1 && $tpl='list';
-
             if($category['template']){
                 $view = iView::render($category['template'][$tpl],'category.'.$tpl);
             }else{

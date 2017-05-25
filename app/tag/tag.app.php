@@ -29,8 +29,8 @@ class tagApp {
         }
         return $this->tag($val, $field);
     }
-    public function hooked($data){
-        return iPHP::hook('tag',$data,iCMS::$config['hooks']['tag']);
+    public static function hooked(&$data){
+        iPHP::hook('tag',$data,iCMS::$config['hooks']['tag']);
     }
     public function tag($val, $field = 'name', $tpl = 'tag') {
         $val OR iPHP::error_404('TAG不能为空', 30002);
@@ -44,8 +44,12 @@ class tagApp {
             }
         }
         $tag = $this->value($tag);
-        $tag = $this->hooked($tag);
         $tag+=(array)apps_meta::data('tag',$tag['id']);
+
+        $app = apps::get_app('tag');
+        $app['fields'] && formerApp::data($tag['id'],$app,'tag',$tag,$vars,$tag['category']);
+
+        self::hooked($tag);
 
         $tag['param'] = array(
             "appid" => $tag['appid'],
@@ -62,6 +66,7 @@ class tagApp {
             $tag_tpl OR $tag_tpl = iCMS::$config['tag']['tpl'];
             $tag_tpl OR $tag_tpl = '{iTPL}/tag.htm';
 
+            iView::assign('app', apps::get_app_lite($app));
             iView::assign('category',$tag['category']);
             iView::assign('tag_category',$tag['tag_category']);
             unset($tag['category'],$tag['tag_category']);

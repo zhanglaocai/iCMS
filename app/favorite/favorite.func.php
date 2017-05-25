@@ -14,7 +14,7 @@ class favoriteFunc{
 		$maxperpage = isset($vars['row'])?(int)$vars['row']:"10";
 		$where_sql  = "WHERE 1=1 ";
 		isset($vars['userid'])&& $where_sql .= " AND `uid`='".(int)$vars['userid']."' ";
-		isset($vars['fid'])   && $where_sql .= " AND `fid`='".(int)$vars['fid']."' ";
+		isset($vars['id'])   && $where_sql .= " AND `id`='".(int)$vars['id']."' ";
 		isset($vars['mode'])  && $where_sql .= " AND `mode`='".(int)$vars['mode']."'";
 		isset($vars['appid']) && $where_sql .= " AND `appid`='".(int)$vars['appid']."' ";
 

@@ -12,7 +12,11 @@ class contentAdmincp{
     public $app = null;
     public $callback = array();
 
-    public function __construct($data) {
+    public function __construct($data=null) {
+        if($data===null){
+            $id = iSecurity::getGP('appid');
+            $data = apps::get_app($id);
+        }
         $this->app       = $data;
         $this->appid     = $data['id'];
         $_GET['appid'] && $this->appid = (int)$_GET['appid'];

@@ -35,7 +35,6 @@ class iView {
         self::$handle->register_modifier("random", "random");
         self::$handle->register_modifier("fields", "select_fields");
         self::$handle->register_block("cache", array("iView", "block_cache"));
-        self::$handle->register_block("plugin:check", array("pluginFunc", "plugin_check"));
         self::$handle->template_callback = array(
             "resource" => array("iView","callback_path"),
             "func"     => array("iView","callback_func"),

@@ -297,10 +297,10 @@ class spider_tools {
             }else if(strtoupper($encode)!=strtoupper($content_charset)){
                 $encode = $content_charset;
             }
+            if (spider::$dataTest || spider::$ruleTest) {
+                echo '<b>检测http编码:</b>'.$encode . '<br />';
+            }
             if(strtoupper($encode)==$out){
-                if (spider::$dataTest || spider::$ruleTest) {
-                    echo '<b>检测页面编码:</b>'.$encode . '<br />';
-                }
                 return $html;
             }
         }
@@ -310,14 +310,20 @@ class spider_tools {
         if(empty($encode)){
             preg_match('/<meta[^>]*?charset=(["\']?)([a-zA-z0-9\-\_]+)(\1)[^>]*?>/is', $html, $charset);
             $encode = str_replace(array('"',"'"),'', trim($charset[2]));
+            if (spider::$dataTest || spider::$ruleTest) {
+                echo '<b>检测页面编码:</b>'.$encode . '<br />';
+            }
         }
         if(function_exists('mb_detect_encoding') && empty($encode)) {
-            $encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
+            $detect_encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
+            if($detect_encode){
+                $detect_encode = $encode;
+            }
+            if (spider::$dataTest || spider::$ruleTest) {
+                echo '<b>识别页面编码:</b>'.$detect_encode . '<br />';
+            }
         }
 
-        if (spider::$dataTest || spider::$ruleTest) {
-            echo '<b>检测页面编码:</b>'.$encode . '<br />';
-        }
         if(strtoupper($encode)==$out){
             return $html;
         }

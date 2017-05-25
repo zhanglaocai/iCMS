@@ -46,7 +46,7 @@ admincp::head();
         {{if CP_ADD}}
         <a href="<?php echo $this->category_uri;?>&do=add&rootid={{cid}}" class="btn btn-small"><i class="fa fa-plus-square"></i> 子<?php echo $this->category_name;?></a>
         {{/if}}
-        <a href="{{href}}" class="btn btn-small"><i class="fa fa-link"></i> 访问</a>
+        <a href="{{href}}" target="_blank" class="btn btn-small"><i class="fa fa-link"></i> 访问</a>
         <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&do=add&<?php echo $this->_app_cid;?>={{cid}}" class="btn btn-small"><i class="fa fa-edit"></i> 添加<?php echo $this->_app_name;?></a>
         <a href="<?php echo __ADMINCP__;?>=<?php echo $this->_app;?>&<?php echo $this->_app_cid;?>={{cid}}&sub=on" class="btn btn-small"><i class="fa fa-list-alt"></i> <?php echo $this->_app_name;?>管理</a>
         {{if CP_EDIT}}
@@ -153,7 +153,7 @@ iCMS.select('rootid',"<?php echo $_GET['rootid'] ; ?>");
             <a href="javascript:;" class="btn btn-info"><i class="fa fa-angle-double-up"></i> 全部折叠</a>
             <a href="javascript:;" class="btn btn-info"><i class="fa fa-angle-double-down"></i> 全部展开</a>
           </div>
-          <a class="btn btn-success" href="https://www.icmsdev.com/docs/act_rewrite.html" target="_blank"><i class="fa fa-question-circle"></i> 伪静态规则</a>
+          <a class="btn btn-success" href="https://www.icmsdev.com/docs/app-rewrite.html" target="_blank"><i class="fa fa-question-circle"></i> 伪静态规则</a>
         </div>
       </form>
       <?php } ?>

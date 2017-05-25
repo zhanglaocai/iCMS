@@ -192,7 +192,7 @@ class apps_mod {
         }
         return $array;
     }
-    public static function get_data($app,$id) {
+    public static function get_data($app,$id,$filter=null) {
         $data  = array();
         if(empty($id) ){
             return $data;
@@ -202,6 +202,9 @@ class apps_mod {
         foreach ($table as $key => $value) {
             $primary_key = $value['primary'];
             $value['union'] && $primary_key = $value['union'];
+            if($filter && !in_array($value['table'],$filter)){
+              continue;
+            }
             $udata = (array)iDB::row("SELECT * FROM `{$value['table']}` WHERE `{$primary_key}`='$id' LIMIT 1;",ARRAY_A);
             $udata && $data+=$udata;
         }

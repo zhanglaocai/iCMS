@@ -1,4 +1,4 @@
-<button class="btn btn-inverse add_meta" type="button"><i class="fa fa-plus-circle"></i> 增加元属性</button>
+<button class="btn btn-inverse add_meta" type="button"><i class="fa fa-plus-circle"></i> 增加动态属性</button>
 <table class="table table-hover">
   <thead>
     <tr>

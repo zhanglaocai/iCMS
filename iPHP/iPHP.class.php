@@ -325,7 +325,7 @@ class iPHP {
      * @param  [type] $hooks    [钩子]
      * @return [type]           [description]
      */
-    public static function hook($app,$resource=null,$hooks){
+    public static function hook($app,&$resource=null,$hooks=null){
         if($hooks){
             foreach ($hooks as $field => $call) {
                 foreach ($call as $key => $cb) {

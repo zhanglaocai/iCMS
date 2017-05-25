@@ -58,8 +58,8 @@ class contentApp {
     public function do_iCMS($a = null) {
         return $this->content($this->id, isset($_GET['p']) ? (int) $_GET['p'] : 1);;
     }
-    public function hooked($data){
-        return iPHP::hook($this->app,$data,iCMS::$config['hooks'][$this->app]);
+    public function hooked(&$data){
+        iPHP::hook($this->app,$data,iCMS::$config['hooks'][$this->app]);
     }
     public function content($id, $page = 1, $tpl = true) {
         $rs = apps_mod::get_data($this->data,$id);
@@ -77,13 +77,12 @@ class contentApp {
             'user' => true,
         );
         $rs = $this->value($rs,$vars,$page,$tpl);
-        $rs = $this->hooked($rs);
         $rs+=(array)apps_meta::data($this->app,$id);
+        $this->hooked($rs);
 
         if ($tpl) {
-            iView::clear_tpl();
             $app_tpl = empty($rs['tpl']) ? $rs['category']['template'][$this->app] : $rs['tpl'];
-            strstr($tpl, '.htm') && $app_tpl = $tpl;
+            strstr($tpl, '.htm') && $article_tpl = $tpl;
             iView::assign('category', $rs['category']);unset($rs['category']);
             iView::assign('app', apps::get_app_lite($this->data));
             iView::assign($this->app, $rs);
@@ -162,131 +161,8 @@ class contentApp {
         }
         $option_array = array();
         foreach ($fields as $key => $field) {
-            $value  = $rs[$key];
-            $values = array();
-            $nkey   = null;
-            switch ($field['type']) {
-                case 'multi_image':
-                    $nkey     = $key.'_array';
-                    $valArray = explode("\n", $value);
-                    foreach ($valArray as $i => $val) {
-                        $val && $values[$i]= filesApp::get_pic(trim($val));
-                    }
-                break;
-                case 'image':
-                    $nkey   = $key.'_array';
-                    $values = filesApp::get_pic($value);
-                break;
-                case 'file':
-                    $nkey = $key.'_file';
-                    $pi   = pathinfo($value);
-                    $values   = array(
-                        'name' => $pi['filename'],
-                        'ext'  => $pi['extension'],
-                        'dir'  => $pi['dirname'],
-                        'url'  => filesApp::get_url($pi['filename'],'download')
-                    );
-                break;
-                case 'multi_file':
-                    $nkey = $key.'_file';
-                    $valArray = explode("\n", $value);
-                    foreach ($valArray as $i => $val) {
-                        if($val){
-                            $pi   = pathinfo($val);
-                            $values[$i]   = array(
-                                'name' => $pi['filename'],
-                                'ext'  => $pi['extension'],
-                                'dir'  => $pi['dirname'],
-                                'url'  => filesApp::get_url($pi['filename'],'download')
-                            );
-                        }
-                    }
-                break;
-                case 'category':
-                    if($key=='cid'){
-                        continue;
-                    }
-                    $nkey      = $key.'_category';
-                    $_category = categoryApp::get_cahce_cid($value);
-                    $values    = categoryApp::get_lite($_category);
-                break;
-                case 'multi_category':
-                    $nkey   = $key.'_category';
-                    $valArray = explode(",", $value);
-                    foreach ($valArray as $i => $val) {
-                        $_category  = categoryApp::get_cahce_cid($val);
-                        $values[$i] = categoryApp::get_lite($_category);
-                    }
-                break;
-                case 'userid':
-                    if($vars['user']){
-                        $nkey   = $key.'_user';
-                        if ($rs['postype']) {
-                            $values = user::empty_info($value,'###');
-                        } else {
-                            $values = user::info($value);
-                        }
-                    }
-                break;
-                case 'multi_prop':
-                case 'prop':
-                    if($key=='pid'){
-                        continue;
-                    }
-                    $nkey   = $key.'_prop';
-                    $propArray = propApp::value($key,$this->app);
-                    // empty($values['prop']) && $propArray = propApp::value($key);
-                    if($field['type']=='multi_prop'){
-                        $valArray = explode(",", $value);
-                        if($propArray)foreach ($propArray as $i => $val) {
-                            if(in_array($val['val'], $valArray)){
-                                $values[$val['val']] = $val;
-                            }
-                        }
-                    }else{
-                        $values = $propArray[$value];
-                    }
-                break;
-                case 'tag':
-                    $vars['tag'] && tagApp::get_array($rs,$category['name'],$key,$value);
-                break;
-                case 'editor';
-                    if($value){
-                      $rs[$key.'_pics'] = filesApp::get_content_pics($value,$pic_array);
-                    }
-                break;
-                default:
-                    // $values = $value;
-                break;
-            }
-            if($field['option'] && !in_array($key, array('creative','status'))){
-                $nkey = $key.'_array';
-                $optionArray = explode(";", $field['option']);
-                $valArray = explode(",", $value);
-                foreach ($optionArray as $ok => $val) {
-                    $val = trim($val,"\r\n");
-                    if($val){
-                        list($opt_text,$opt_value) = explode("=", $val);
-                        $option_array[$key][$opt_value] = $opt_text;
-                        // $values['option'][$opt_value] = $opt_text;
-                        if($field['multiple']){
-                            if(in_array($opt_value, $valArray)){
-                                $values[$opt_value] = $opt_text;
-                            }
-                        }else{
-                            if($opt_value==$value){
-                                $nkey = $key.'_value';
-                                $values = $opt_text;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            $nkey && $rs[$nkey] = $values;
+            formerApp::vars($field,$key,$rs,$vars,$category,$this->app);
         }
-        // $rs['option_array'] = $option_array;
-        $option_array && iView::assign('option_array', $rs);
         return $rs;
     }
     // public static function data($aids=0){

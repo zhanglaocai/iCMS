@@ -180,16 +180,16 @@ class spider{
         }
         if(spider::$work && $work===null) $work = spider::$work;
 
-        if($work=='shell'){
-           if(empty($_POST['title'])){
-                echo spider::errorlog("标题不能为空\n",$_POST['reurl'],'publish.title');
-                return false;
-           }
-           if(empty($_POST['body'])){
-                echo spider::errorlog("内容不能为空\n",$_POST['reurl'],'publish.body');
-                return false;
-           }
-        }
+        // if($work=='shell'){
+        //    if(empty($_POST['title'])){
+        //         echo spider::errorlog("标题不能为空\n",$_POST['reurl'],'publish.title');
+        //         return false;
+        //    }
+        //    if(empty($_POST['body'])){
+        //         echo spider::errorlog("内容不能为空\n",$_POST['reurl'],'publish.body');
+        //         return false;
+        //    }
+        // }
         $checker = spider::checker($work,spider::$pid,$_POST['reurl'],$_POST['title']);
         if($checker!==true){
             return $checker;
@@ -279,7 +279,10 @@ class spider{
             );
 
             $callback = $app->$fun();
-
+            if(!$callback){
+                echo spider::errorlog("发布失败\n",$_POST['reurl'],'publish.fail');
+                return false;
+            }
         }
         if ($callback['code'] == $success_code) {
             if (spider::$sid) {

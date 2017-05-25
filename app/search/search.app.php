@@ -12,8 +12,8 @@ class searchApp {
 	public function API_iCMS(){
         return $this->search();
 	}
-    // public function hooked($data){
-    //     return iPHP::hook('search',$data,iCMS::$config['hooks']['search']);
+    // public function hooked(&$data){
+    //     iPHP::hook('search',$data,iCMS::$config['hooks']['search']);
     // }
     public function search($tpl=false) {
         $q  = htmlspecialchars(rawurldecode($_GET['q']));

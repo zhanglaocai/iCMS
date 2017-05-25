@@ -26,10 +26,10 @@ var settings = {
     server: '<?php echo APP_URI; ?>&do=upload&format=json',
     callback:{
         "uploadSuccess":function(a,b){
-            console.log(b);
+            // console.log(b);
             if(b.state=='SUCCESS'){
-                var state   = window.top.modal_<?php echo $this->callback;?>('<?php echo $this->target;?>',b,false);
-                console.log(state);
+                var state = window.top.modal_<?php echo $this->callback;?>('<?php echo $this->target;?>',b,false);
+                // console.log(state);
                 if(!state){
                     window.top.iCMS_MODAL.destroy();
                 }

@@ -37,10 +37,17 @@ $unid = uniqid();
 <script type="text/javascript">
 $(function(){
     window.modal_<?php echo $callback;?> = function(el,a,c){
+        console.log(el,a,c,'11111111111111');
+
         var e = $("#<?php echo $callback;?>");
         var name = e.get(0).tagName;
         if(name=='TEXTAREA'){
-            e.append(a.value+"\n");
+            var data = e.val();
+            if(data){
+                e.val(data+"\n"+a.value);
+            }else{
+               e.val(a.value);
+            }
         }else{
             e.val(a.value);
         }

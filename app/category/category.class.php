@@ -275,6 +275,12 @@ class category {
         $C = self::data_parent($C);
         $C = self::data_nav($C);
 
+        $C+=(array)apps_meta::data('category',$C['cid']);
+
+        $app = apps::get_app('category');
+        $app['fields'] && formerApp::data($C['cid'],$app,'category',$C,null,$C);
+        $C['app_lite'] = apps::get_app_lite($app);
+
         is_string($C['rule'])    && $C['rule']     = json_decode($C['rule'],true);
         is_string($C['template'])&& $C['template'] = json_decode($C['template'],true);
         is_string($C['config'])  && $C['config']   = json_decode($C['config'],true);
