@@ -21,18 +21,11 @@ class formerApp{
      */
     public static function add($app,$rs,$union_data=false){
         is_array($app) OR $app = apps::get($app);
-        $data_table_name = apps_mod::data_table_name($app['app']);
         if($app['fields']){
-            $data_table = $app['table'][$data_table_name];
+            $dtn = apps_mod::data_table_name($app['app']);
+            $data_table = $app['table'][$dtn];
             if($data_table){
-                $data_fields = apps_mod::base_fields($app['app']);
-                $primary_key = $data_table['primary'];
-                $union_key   = $data_table['union'];
-                $fpk = $data_fields[$primary_key];
-                $fpk && $app['fields']+= array($primary_key=>$fpk);
-                $fuk = $data_fields[$union_key];
-                $fuk && $app['fields']+= array($union_key=>$fuk);
-
+                former::base_fields_merge($app,$data_table);
                 if($union_data){
                     $table    = reset($app['table']);
                     $id       = $rs[$table['primary']];
@@ -68,7 +61,7 @@ class formerApp{
 
         if($app['fields']){
 
-            list($variable,$tables,$orig_post,$imap,$tags) = former::post($app);
+            list($variable,$tables,$orig_post,$imap,$tags) = former::post_data($app);
 
             // if(!$variable){
             //     iUI::alert("表单数据处理出错!");

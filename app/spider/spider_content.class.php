@@ -27,8 +27,7 @@ class spider_content {
         }
         $name = $data['name'];
         if (spider::$dataTest) {
-            print_r('<b>['.$name.']规则:</b>'.iSecurity::escapeStr($data['rule']));
-            echo "<hr />";
+            echo'<b>['.$name.']规则:</b>'.iSecurity::escapeStr($data['rule'])."<br />";
         }
         /**
          * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
@@ -286,8 +285,8 @@ class spider_content {
 
             if (spider::$dataTest) {
                 echo "<b>内容页网址:</b>".$rule['__url__'] . "<br />";
-                echo "<b>分页:</b>".$rule['page_url'] . "<br />";
-                echo iSecurity::escapeStr($page_url_rule);
+                echo "<b>分页网址提取规则:</b>".iSecurity::escapeStr($page_url_rule). "<br />";
+                echo "<b>分页合成:</b>".$rule['page_url'] . "<br />";
                 echo "<hr />";
             }
             if(spider::$dataTest){
@@ -296,10 +295,20 @@ class spider_content {
                 echo "</pre><hr />";
             }
 
-            spider::$content_right_code = trim($rule['page_url_right']);
+            if($data['page']){
+                spider::$content_right_code = ($data['dom']?'DOM::':'').$data['rule'];
+            }
+            $rule['page_url_right'] && spider::$content_right_code = trim($rule['page_url_right']);
             spider::$content_error_code = trim($rule['page_url_error']);
+            if(spider::$dataTest){
+                echo "<b>有效分页特征码:</b>";
+                echo iSecurity::escapeStr(spider::$content_right_code);
+                echo "<br />";
+                echo "<b>无效分页特征码:</b>";
+                echo iSecurity::escapeStr(spider::$content_error_code);
+                echo "<hr />";
+            }
             spider::$curl_proxy = $rule['proxy'];
-
             $pageurl = array();
 
             foreach ($page_url_array AS $pukey => $purl) {

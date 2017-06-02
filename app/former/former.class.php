@@ -15,7 +15,7 @@ class former {
     public static $validate = null;
     public static $script   = null;
 
-    public static $prefix   = 'iDATA';
+    public static $prefix   = null;
     public static $config   = array();
 
     public static $callback   = array();
@@ -91,6 +91,19 @@ class former {
         }
         return $array;
     }
+    public static function base_fields_merge(&$app, array $data_table) {
+        // if($data_table===null){
+        //     $dtn = apps_mod::data_table_name($app['app']);
+        //     $data_table = $app['table'][$dtn];
+        // }
+        $data_fields = apps_mod::base_fields($app['app']);
+        $primary_key = $data_table['primary'];
+        $union_key   = $data_table['union'];
+        $fpk = $data_fields[$primary_key];
+        $fpk && $app['fields']+= array($primary_key=>$fpk);
+        $fuk = $data_fields[$union_key];
+        $fuk && $app['fields']+= array($union_key=>$fuk);
+    }
 
     public static function widget($name,$attr=null) {
         $widget = new iQuery($name);
@@ -135,8 +148,13 @@ class former {
             $field['label-after']&& $label2 = self::display($field['label-after'],'label2');
 
             $attr = compact(array('id','name','type','class','value'));
-            $attr['id']   = self::$prefix.'_'.$id.'';
-            $attr['name'] = self::$prefix.'['.$name.']';
+            // $attr['id']   = self::$prefix.'_'.$id.'';
+            // $attr['name'] = self::$prefix.'['.$name.']';
+            // $orig_name = self::$prefix.'[_orig_'.$name.']';
+            $attr['id']   = self::id($id);
+            $attr['name'] = self::name($name);
+            $orig_name    = self::name($name,'_orig_');
+
             $field['holder'] && $attr['placeholder'] = $field['holder'];
             self::$template['class']['input'] && $attr['class'].=' '.self::$template['class']['input'];
 
@@ -191,7 +209,7 @@ class former {
                         $attr['name']     = $attr['name'].'[]';
                         $attr['multiple'] = 'true';
                         $attr['data-placeholder']= '请选择'.$field['label'].'(可多选)...';
-                        $orig = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
+                        $orig = self::widget('input',array('type'=>'hidden','name'=>$orig_name,'value'=>$value));
                     }
                     $btn = '<a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.self::$config['app']['app'].'&field='.$name.'" target="_blank">添加'.$field['label'].'</a>';
                     $select = self::widget('select',$attr)->addClass('chosen-select');
@@ -240,7 +258,7 @@ class former {
                 break;
                 case 'tag':
                     $input = $input->attr('type','text')->attr('onkeyup',"javascript:this.value=this.value.replace(/，/ig,',');");
-                    $orig = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
+                    $orig = self::widget('input',array('type'=>'hidden','name'=>$orig_name,'value'=>$value));
                     $input.= $orig;
                 break;
                 case 'number':
@@ -254,7 +272,7 @@ class former {
                 break;
                 case 'editor':
                     if(self::$config['gateway']=='admincp'){
-                        $label         = null;
+                        // $label         = null;
                         $attr['class'] = 'editor-body';
                         $attr['type']  = 'text/plain';
                         $attr['id']    = 'editor-body-'.$attr['id'];
@@ -320,7 +338,7 @@ class former {
                         $attr['name']     = $attr['name'].'[]';
                         $attr['multiple'] = 'true';
                         $attr['data-placeholder']= '请选择'.$field['label'].'(可多选)...';
-                        $orig = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
+                        $orig = self::widget('input',array('type'=>'hidden','name'=>$orig_name,'value'=>$value));
                     }
                     $select = self::widget('select',$attr)->addClass('chosen-select');
                     $option = category::appid(self::$config['app']['id'],'cs')->select();
@@ -336,7 +354,7 @@ class former {
                         $attr['multiple'] = 'true';
                         $attr['name']     = $attr['name'].'[]';
                         $attr['data-placeholder']= '请选择'.$field['label'].'(可多选)...';
-                        $_input = self::widget('input',array('type'=>'hidden','name'=>self::$prefix.'[_orig_'.$name.']','value'=>$value));
+                        $_input = self::widget('input',array('type'=>'hidden','name'=>$orig_name,'value'=>$value));
                     }
                     $input  = self::widget('select',$attr)->addClass('chosen-select');
                     $option = '';
@@ -424,11 +442,32 @@ class former {
             }';
         return $script;
     }
+    public static function id($name,$pre=null) {
+        if(self::$prefix){
+            return self::$prefix.'_'.$pre.$name;
+        }else{
+            return $pre.$name;
+        }
+    }
+    public static function name($name,$pre=null) {
+        if(self::$prefix){
+            return self::$prefix.'['.$pre.$name.']';
+        }else{
+            return $pre.$name;
+        }
+    }
+    public static function post() {
+        if(self::$prefix){
+            return $_POST[self::$prefix];
+        }else{
+            return $_POST;
+        }
+    }
     public static function validate($field_array,$lang='js',$value='') {
         if(empty($field_array['validate'])) return;
 
-        $id    = self::$prefix.'_'.$field_array['id'].'';
-        $name  = self::$prefix.'['.$field_array['name'].']';
+        $id    = self::id($field_array['id']);
+        $name  = self::name($field_array['name']);
         $label = $field_array['label'];
         $type  = $field_array['type'];
         $error = $field_array['error'];
@@ -641,24 +680,35 @@ class former {
     /**
      * 处理表单数据
      * @param  [type] $app [app数据]
-     * @param  [type] $post[表单POST数组]
      * @return [array]     [description]
      */
-    public static function post($app,$post=null) {
-        if($post===null) $post = $_POST[self::$prefix];
+    public static function post_data($app,$post=null) {
 
-        if(empty($post)) return array(false,false,false);
+        if($post===null) $post = self::post();
+        // if($post===null) $post = $_POST;
 
-        $orig_post = array();
-        $data_post = array();
+        if(empty($post)) return array(false,false,false,false,false);
+        // if(empty($_POST)) return array(false,false,false,false,false);
 
-        $field_array = self::fields($app['fields']);
+        $field_post  = array();
+        $orig_post   = $data_post = array();
+        $imap_array  = array();
         // $data_table  = next($app['table']);
         $data_table  = apps_mod::get_data_table($app['table']);
-        $imap_array  = array();
+        $data_table && former::base_fields_merge($app,$data_table);
+        $field_array = self::fields($app['fields']);
 
+        // foreach ($_POST as $key => $value) {
         foreach ($post as $key => $value) {
             $fields = $field_array[$key];
+            //原始数据
+            if(strpos($key,'_orig_')!==false){
+              $orig_post[$key] = $value;
+              continue;
+            }
+            if(empty($fields)){
+                continue;
+            }
             //字段绑定的函数处理
             $fields['func'] && $value = self::func($fields['func'],$value);
             //字段数据处理
@@ -666,7 +716,17 @@ class former {
             //数据验证
             self::validate($fields,'php',$value);
 
-            $post[$key] = $value;
+            $field_post[$key] = $value;
+            // //找查原始数据 并移除当前POST
+            // if(strpos($key,'_orig_')!==false){
+            //   $orig_post[$key] = $value;
+            //   unset($post[$key]);
+            // }
+            //找查MEDIUMTEXT字段 并移除当前POST
+            if($fields['field']=='MEDIUMTEXT'){
+              $data_post[$key] = $value;
+              unset($field_post[$key]);
+            }
 
             if(in_array($fields['type'], array('category','multi_category'))){
                 $imap_array[$key] = array('category',$value);
@@ -675,41 +735,32 @@ class former {
                 $imap_array[$key] = array('prop',$value);
             }
             if(in_array($fields['type'], array('tag'))){
-                $tag_array[$key] = array($value,$post['cid']);
+                $tag_array[$key] = array($value,$field_post['cid']);
             }
-            //找查原始数据 并移除当前POST
-            if(strpos($key,'_orig_')!==false){
-              $orig_post[$key] = $value;
-              unset($post[$key]);
-            }
-            //找查MEDIUMTEXT字段 并移除当前POST
-            if($fields['field']=='MEDIUMTEXT'){
-              $data_post[$key] = $value;
-              unset($post[$key]);
-            }
+
             if($data_table){
                 if($data_table['primary']==$key||$data_table['union']==$key){
                   $data_post[$key] = $value;
-                  unset($post[$key]);
+                  unset($field_post[$key]);
                 }
             }
         }
-        // unset($app['table'][$app['app'].'_meta']);
-        // unset($app['table'][$app['app'].'_map']);
+
         $tb = reset($app['table']);
         $tables = array($tb['name']);
         if($data_table){
-            $values = compact('post','data_post'); //将表单数据存入数组
+            $values = compact('field_post','data_post'); //将表单数据存入数组
             array_push($tables,$data_table['name']);//返回表名
         }else{
-            $values = compact('post'); //将表单数据存入数组
+            $values = compact('field_post'); //将表单数据存入数组
         }
 // print_R($tables);
 // print_R($values);
 // exit;
         //创建一个数组，用一个表名数组的值作为其键名，表单数据的值作为其值
         $variable = array_combine($tables,$values);
-
+// var_dump($variable,$tables,$orig_post,$imap_array,$tag_array);
+// exit;
         /**
          * array(表单数据,表名,_orig_字段数据用于比较);
          */

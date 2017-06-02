@@ -67,7 +67,12 @@ class spider{
             $postArray = array_filter($postArray);
             foreach ($postArray AS $key => $pstr) {
                 list($pkey, $pval) = explode("=", $pstr);
-                $_POST[$pkey] = trim($pval);
+                if(strpos($pkey, '[')!==false && strpos($pkey, ']')!==false){
+                    preg_match('/(.+)\[(.+)\]/', $pkey,$match);
+                    $_POST[$match[1]][$match[2]] = trim($pval);
+                }else{
+                    $_POST[$pkey] = trim($pval);
+                }
             }
             return $postRs;
         }
@@ -204,12 +209,17 @@ class spider{
         $poid = $project['poid'];
         spider::$poid && $poid = spider::$poid;
         $postArgs = spider::postArgs($poid);
+        $appid = $_POST['appid']?:$postArgs->app;
+        $app = apps::get_app($appid);
+
+
 
         if($_GET['indexid']){
-            $aid = (int)$_GET['indexid'];
-            $_POST['aid']  = $aid;
-            $_POST['adid'] = iDB::value("SELECT `id` FROM `#iCMS@__article_data` WHERE aid='$aid'");
+            self::get_data_id((int)$_GET['indexid'],$app);
         }
+        var_dump($_POST);
+        exit;
+
         $title = iSecurity::escapeStr($_POST['title']);
         $url   = iSecurity::escapeStr($_POST['reurl']);
         $hash  = md5($url);
@@ -217,6 +227,7 @@ class spider{
             $spider_url = iDB::row("SELECT `id`,`publish`,`indexid` FROM `#iCMS@__spider_url` where `url`='$url'",ARRAY_A);
             if(empty($spider_url)){
                 $spider_url_data = array(
+                    'appid'   => $app['id'],
                     'cid'     => $project['cid'],
                     'rid'     => spider::$rid,
                     'pid'     => spider::$pid,
@@ -231,9 +242,9 @@ class spider{
                 );
                 $suid = iDB::insert('spider_url',$spider_url_data);
             }else{
+
                 if($spider_url['indexid']){
-                    $_POST['aid']  = $spider_url['indexid'];
-                    $_POST['adid'] = iDB::value("SELECT `id` FROM `#iCMS@__article_data` WHERE aid='".$spider_url['indexid']."'");
+                    self::get_data_id($spider_url['indexid'],$app);
                 }
                 $suid = $spider_url['id'];
             }
@@ -249,12 +260,12 @@ class spider{
         }
 
         iSecurity::_addslashes($_POST);
-        $fun   = $postArgs->fun;
-        $success_code = "1001";
+        $fun    = $postArgs->fun;
+        $return = "1001";
         if(iFS::checkHttp($fun)){
             $json = self::postUrl($fun,$_POST);
             $callback = json_decode ($json,true);
-            if($callback['code']==$success_code){
+            if($callback['code']==$return){
                 $indexid = $callback['indexid'];
                 self::update_spider_url_indexid($suid,$indexid);
                 self::update_spider_url_publish($suid);
@@ -262,7 +273,7 @@ class spider{
         }else{
             $obj = $postArgs->app."Admincp";
             $app = new $obj;
-            $app->callback['code'] = $success_code;
+            $app->callback['code'] = $return;
             /**
              * 主表 回调 更新关联ID
              */
@@ -284,7 +295,7 @@ class spider{
                 return false;
             }
         }
-        if ($callback['code'] == $success_code) {
+        if ($callback['code'] == $return) {
             if (spider::$sid) {
                 $work===NULL && iUI::success("发布成功!",'js:1');
             } else {
@@ -294,6 +305,50 @@ class spider{
         if($work=="shell"||$work=="WEB@AUTO"){
             $callback['work']=$work;
             return $callback;
+        }
+    }
+    public static function callback($obj,$indexid,$type = null) {
+        if ($type === null || $type == 'primary') {
+            if ($obj->callback['primary']) {
+                $PCB = $obj->callback['primary'];
+                $handler = $PCB[0];
+                $params = (array) $PCB[1];
+                $indexid && $params+= array('indexid' => $indexid);
+
+                $obj->callback['return'] = array(
+                    "code" => $obj->callback['code']
+                )+$params;
+                if (is_callable($handler)) {
+                    call_user_func_array($handler, $params);
+                }
+            }
+        }
+        if ($type === null || $type == 'data') {
+            if ($obj->callback['data']) {
+                $DCB = $obj->callback['data'];
+                $handler = $DCB[0];
+                $params = (array) $DCB[1];
+                if (is_callable($handler)) {
+                    call_user_func_array($handler, $params);
+                }
+            }
+        }
+    }
+    public static function get_data_id($indexid,$app) {
+        $data_table = apps_mod::get_data_table($app['table']);
+        if($data_table){
+            $data_id_key = $data_table['primary'];
+            $union_key   = $data_table['union'];
+            $table_name  = $data_table['name'];
+            if($indexid){
+                $_POST[$union_key]   = $indexid;
+                $_POST[$data_id_key] = iDB::value("SELECT `{$data_id_key}` FROM `#iCMS@__{$table_name}` WHERE `{$union_key}`='{$indexid}'");
+            }
+        }else{
+            if($app['app']=='article' && $indexid){
+                $_POST['article_id']  = $indexid;
+                $_POST['data_id'] = iDB::value("SELECT `id` FROM `#iCMS@__article_data` WHERE aid='".$indexid."'");
+            }
         }
     }
     public static function postUrl($url, $data) {

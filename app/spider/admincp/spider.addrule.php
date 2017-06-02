@@ -412,11 +412,11 @@ $(function(){
             </div>
             <div class="clearfloat mb10"></div>
             <hr />
-            <div class="input-prepend input-sp"><span class="add-on">分页有效特征码</span>
+            <div class="input-prepend input-sp"><span class="add-on">有效分页特征码</span>
               <textarea name="rule[page_url_right]" id="page_url_right" class="span6" ><?php echo $rule['page_url_right'] ; ?></textarea>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-sp"><span class="add-on">分页无效特征码</span>
+            <div class="input-prepend input-sp"><span class="add-on">无效分页特征码</span>
               <textarea name="rule[page_url_error]" id="page_url_error" class="span6"><?php echo $rule['page_url_error'] ; ?></textarea>
             </div>
             <div class="clearfloat mb10"></div>

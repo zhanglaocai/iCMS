@@ -133,7 +133,7 @@ function addEditorPage(){
 	$("#editor-wrap-"+index).after(
     '<div id="editor-wrap-'+n+'" class="editor-container">'+
       '<div class="chapter-title hide">'+
-        '<input name="adid[]" id="adid-'+n+'" type="hidden" value="" />'+
+        '<input name="data_id[]" id="data_id-'+n+'" type="hidden" value="" />'+
         '<div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>'+
             '<input type="text"  id="chapter-title-'+n+'" disabled="true" name="chaptertitle[]" class="span6" value="" />'+
         '</div>'+
@@ -252,7 +252,7 @@ function _modal_dialog(cancel_text){
         <input name="_tags" type="hidden" value="<?php echo $rs['tags']; ?>" />
         <input name="_pid" type="hidden" value="<?php echo $rs['pid']; ?>" />
 
-        <input name="aid" type="hidden" value="<?php echo $this->id ; ?>" />
+        <input name="article_id" type="hidden" value="<?php echo $this->id ; ?>" />
         <input name="userid" type="hidden" value="<?php echo $rs['userid'] ; ?>" />
         <input name="postype" type="hidden" value="<?php echo $rs['postype'] ; ?>" />
         <input name="REFERER" type="hidden" value="<?php echo iPHP_REFERER ; ?>" />
@@ -356,7 +356,7 @@ function _modal_dialog(cancel_text){
             <div class="clearfloat mb10"></div>
             <?php if(!$rs['chapter']){?>
             <div class="subtitle-box">
-              <input name="adid" type="hidden" value="<?php echo $adRs['id']; ?>" />
+              <input name="data_id" type="hidden" value="<?php echo $adRs['id']; ?>" />
               <div class="input-prepend "> <span class="add-on">副标题</span>
                   <input type="text" name="subtitle" class="span6" id="subtitle" value="<?php echo $adRs['subtitle'] ; ?>" />
               </div>
@@ -418,7 +418,7 @@ function _modal_dialog(cancel_text){
             ?>
             <div id="editor-wrap-<?php echo $idNum;?>" class="editor-container<?php if($i){ echo ' hide';}?>">
               <div class="chapter-title <?php if(!$rs['chapter']){ echo ' hide';}?>">
-                <input name="adid[]" id="adid-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> type="hidden" value="<?php echo $adIdArray[$i] ; ?>" />
+                <input name="data_id[]" id="data_id-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> type="hidden" value="<?php echo $adIdArray[$i] ; ?>" />
                 <div class="input-prepend">
                   <span class="add-on" style="width:60px;">章节标题</span>
                   <input type="text" id="chapter-title-<?php echo $idNum;?>" <?php if(!$rs['chapter']){ echo ' disabled="true"';}?> name="chaptertitle[]" class="span6" value="<?php echo $cTitArray[$i] ; ?>" />

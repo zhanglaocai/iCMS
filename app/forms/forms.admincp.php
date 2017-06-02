@@ -37,6 +37,11 @@ class formsAdmincp{
       $this->form_id = (int)$_POST['form_id'];
       $this->form_init();
       $update = iPHP::callback(array("formerApp","save"),array($this->form));
+      iPHP::callback(array("spider","callback"),array($this,formerApp::$primary_id));
+
+      if($this->callback['return']){
+          return $this->callback['return'];
+      }
       $REFERER_URL = $_POST['REFERER'];
       if(empty($REFERER_URL)||strstr($REFERER_URL, '=form_save')){
           $REFERER_URL= APP_URI.'&do=form_manage&form_id='.$this->form_id;

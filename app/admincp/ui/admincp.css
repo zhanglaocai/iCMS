@@ -34,6 +34,8 @@ body { background-color: #EDEDED; color: #000; }
 .table tbody .checker { margin-left: 3px !important; }
 .help-inline hr { margin: 2px 0px; }
 .former_hide { display: none !important; }
+.former_editor .add-on{border-radius: 4px 4px 0 0 !important;border-bottom: none;}
+.former_editor .edui-default .edui-editor{border-radius:0 4px 4px 4px !important; }
 
 /* modal */
 .modal { z-index: 9999 !important; margin: 0px !important; display: none; }

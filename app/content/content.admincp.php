@@ -120,6 +120,11 @@ class contentAdmincp{
     public function do_save(){
         $update = iPHP::callback(array("formerApp","save"),array($this->app));
         iPHP::callback(array("apps_meta","save"),array($this->appid,formerApp::$primary_id));
+        iPHP::callback(array("spider","callback"),array($this,formerApp::$primary_id));
+
+        if($this->callback['return']){
+            return $this->callback['return'];
+        }
         // $REFERER_URL = $_POST['REFERER'];
         // if(empty($REFERER_URL)||strstr($REFERER_URL, '=save')){
         // }

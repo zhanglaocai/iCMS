@@ -269,13 +269,12 @@ class tagAdmincp{
 		}
         iPHP::callback(array("apps_meta","save"),array($this->appid,$id));
         iPHP::callback(array("formerApp","save"),array($this->appid,$id));
-        admincp::callback($id,$this);
-        if($this->callback['code']){
-            return array(
-                "code"    => $this->callback['code'],
-                'indexid' => $id
-            );
+        iPHP::callback(array("spider","callback"),array($this,$id));
+
+        if($this->callback['return']){
+            return $this->callback['return'];
         }
+
         iUI::success($msg,"url:".APP_URI);
     }
     public function check_tkey(&$tkey,$id=0){

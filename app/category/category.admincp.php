@@ -225,13 +225,9 @@ class categoryAdmincp {
         $this->cahce_item($cid);
 
         // $this->config();
-
-        admincp::callback($cid,$this);
-        if($this->callback['code']){
-            return array(
-                "code"    => $this->callback['code'],
-                'indexid' => $cid
-            );
+        iPHP::callback(array("spider","callback"),array($this,$cid));
+        if($this->callback['return']){
+            return $this->callback['return'];
         }
 
         iUI::success($msg,'url:'.$this->category_uri);

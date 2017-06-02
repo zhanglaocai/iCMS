@@ -482,7 +482,7 @@ class articleAdmincp{
         include admincp::view("article.manage");
     }
     public function do_save(){
-        $aid         = (int)$_POST['aid'];
+        $aid         = (int)$_POST['article_id'];
         $cid         = (int)$_POST['cid'];
         category::check_priv($cid,($aid?'ce':'ca'),'alert');
 
@@ -592,7 +592,7 @@ class articleAdmincp{
             $mobile  = 0;
 
             $aid  = article::insert(compact($fields));
-            admincp::callback($aid,$this,'primary');
+            iPHP::callback(array("spider","callback"),array($this,$aid,'primary'));
 
             if($tags){
                 if(isset($_POST['tag_status'])){
@@ -625,11 +625,8 @@ class articleAdmincp{
                 baidu_ping($article_url);
             }
 
-            if($this->callback['code']){
-                return array(
-                    "code"    => $this->callback['code'],
-                    'indexid' => $aid
-                );
+            if($this->callback['return']){
+                return $this->callback['return'];
             }
             if($_GET['callback']=='json'){
                 echo json_encode(array(
@@ -659,7 +656,7 @@ class articleAdmincp{
             $picdata = filesAdmincp::picdata($pic,$mpic,$spic);
 
             article::update(compact($fields),array('id'=>$aid));
-            admincp::callback($aid,$this,'primary');
+            $return = iPHP::callback(array("spider","callback"),array($this,$aid,'primary'));
 
             iMap::init('prop',self::$appid,'pid');
             iMap::diff($pid,$_pid,$aid);
@@ -675,11 +672,9 @@ class articleAdmincp{
             }
             iPHP::callback(array("apps_meta","save"),array(self::$appid,$aid));
             iPHP::callback(array("formerApp","save"),array(self::$appid,$aid));
-            if($this->callback['code']){
-                return array(
-                    "code"    => $this->callback['code'],
-                    'indexid' => $aid
-                );
+
+            if($this->callback['return']){
+                return $this->callback['return'];
             }
             if(isset($_GET['keyCode'])){
                 iUI::success('文章保存成功');
@@ -748,8 +743,8 @@ class articleAdmincp{
     }
 
     public function article_data($bodyArray,$aid=0,$haspic=0){
-        if(isset($_POST['ischapter']) || is_array($_POST['adid'])){
-            $adidArray    = $_POST['adid'];
+        if(isset($_POST['ischapter']) || is_array($_POST['data_id'])){
+            $adidArray    = $_POST['data_id'];
             $chaptertitle = $_POST['chaptertitle'];
             $chapter      = count($bodyArray);
             foreach ($bodyArray as $key => $body) {
@@ -759,12 +754,12 @@ class articleAdmincp{
             }
             article::update(compact('chapter'),array('id'=>$aid));
         }else{
-            $adid     = (int)$_POST['adid'];
+            $adid     = (int)$_POST['data_id'];
             $subtitle = iSecurity::escapeStr($_POST['subtitle']);
             $body     = implode('#--iCMS.PageBreak--#',$bodyArray);
             $this->body($body,$subtitle,$aid,$adid,$haspic);
         }
-        admincp::callback($aid,$this,'data');
+        iPHP::callback(array("spider","callback"),array($this,$aid,'data'));
     }
     public function body($body,$subtitle,$aid=0,$id=0,&$haspic=0){
 

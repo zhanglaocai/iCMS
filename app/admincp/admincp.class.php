@@ -210,29 +210,7 @@ class admincp {
 		);
 		iDB::insert("access_log",$access);
 	}
-	public static function callback($id, &$that, $type = null) {
-		if ($type === null || $type == 'primary') {
-			if ($that->callback['primary']) {
-				$PCB = $that->callback['primary'];
-				$handler = $PCB[0];
-				$params = (array) $PCB[1] + array('indexid' => $id);
-				if (is_callable($handler)) {
-					call_user_func_array($handler, $params);
-				}
-			}
-		}
-		if ($type === null || $type == 'data') {
-			if ($that->callback['data']) {
-				$DCB = $that->callback['data'];
-				$handler = $DCB[0];
-				$params = (array) $DCB[1];
-				if (is_callable($handler)) {
-					call_user_func_array($handler, $params);
-				}
-			}
-		}
 
-	}
 	public static function debug_info(){
 		$memory = memory_get_usage();
 		return "使用内存:".iFS::sizeUnit($memory)." 执行时间:".iPHP::timer_stop()."s";
