@@ -217,8 +217,6 @@ class spider{
         if($_GET['indexid']){
             self::get_data_id((int)$_GET['indexid'],$app);
         }
-        var_dump($_POST);
-        exit;
 
         $title = iSecurity::escapeStr($_POST['title']);
         $url   = iSecurity::escapeStr($_POST['reurl']);
