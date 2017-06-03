@@ -769,13 +769,21 @@ class iTemplateLite_Compiler extends iTemplateLite {
 				break;
 			case 'assign':
 				$_args = $this->_parse_arguments($arguments);
-				if (!isset($_args['var'])){
-					$this->trigger_error("missing 'var' attribute in 'assign'", E_USER_ERROR, __FILE__, __LINE__);
+				if(!isset($_args['var']) && !isset($_args['value'])){
+					$code = null;
+					foreach ($_args as $key => $value) {
+						$code.='<?php $this->assign(\'' . $this->_dequote($key) . '\', ' . $value . '); ?>';
+					}
+				}else{
+					if (!isset($_args['var'])){
+						$this->trigger_error("missing 'var' attribute in 'assign'", E_USER_ERROR, __FILE__, __LINE__);
+					}
+					if (!isset($_args['value'])){
+						$this->trigger_error("missing 'value' attribute in 'assign'", E_USER_ERROR, __FILE__, __LINE__);
+					}
+					$code = '<?php $this->assign(\'' . $this->_dequote($_args['var']) . '\', ' . $_args['value'] . '); ?>';
 				}
-				if (!isset($_args['value'])){
-					$this->trigger_error("missing 'value' attribute in 'assign'", E_USER_ERROR, __FILE__, __LINE__);
-				}
-				return '<?php $this->assign(\'' . $this->_dequote($_args['var']) . '\', ' . $_args['value'] . '); ?>';
+				return $code;
 				break;
 			case 'switch':
 				$_args = $this->_parse_arguments($arguments);

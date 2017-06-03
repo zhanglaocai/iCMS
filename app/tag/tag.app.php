@@ -60,6 +60,8 @@ class tagApp {
             "url"   => $tag['url']
         );
 
+        iView::set_iVARS($tag['iurl'],'iURL');
+
         if ($tpl) {
             $tag_tpl = $tag['category']['template']['tag'];
             $tag_tpl OR $tag_tpl = $tag['tag_category']['template']['tag'];

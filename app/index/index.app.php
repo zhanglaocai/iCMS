@@ -24,13 +24,18 @@ class indexApp {
         $index_name = $a[1]?:iCMS::$config['template']['index']['name'];
         $index_name OR $index_name = 'index';
         $index_tpl  = $a[0]?:iPHP_INDEX_TPL;
-        $iurl = iURL::get('index',array('rule'=>$index_name.iCMS::$config['router']['ext']));
-        if(iCMS::$config['template']['index']['mode'] && iPHP_DEVICE=="desktop"){
-            iCMS::redirect_html($iurl->path,$iurl->href);
-        }
+        $rule = '{PHP}';
         if(iView::$gateway=="html" || iCMS::$config['template']['index']['rewrite']){
-            iURL::page_url($iurl);
+            $rule = $index_name.iCMS::$config['router']['ext'];
         }
+        $iurl = (array)iURL::get('index',array('rule'=>$rule));
+        $rule=='{PHP}' OR iURL::page_url($iurl);
+
+        if(iCMS::$config['template']['index']['mode'] && iPHP_DEVICE=="desktop"){
+            iCMS::redirect_html($iurl['path'],$iurl['href']);
+        }
+
+        iView::set_iVARS($iurl,'iURL');
         $view = iView::render($index_tpl);
         if($view) return array($view,$iurl);
     }

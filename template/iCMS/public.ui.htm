@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="<!--{$site.urls.public}-->/css/iCMS.min.css?<!--{$iCMS.NOW}-->" type="text/css" />
 <script>
 iCMS.init({
+    URL: "<!--{$site.url}-->",
     API: "<!--{iCMS:router url='api'}-->",
     UHOME: "<!--{iCMS:router url='uid:home'}-->",
     PUBLIC: "<!--{$site.urls.public}-->",
@@ -33,5 +34,3 @@ iCMS.init({
     },
 });
 </script>
-
-

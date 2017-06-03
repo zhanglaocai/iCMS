@@ -183,7 +183,7 @@ class iPHP {
 				'METHOD' => self::$app_method,
 			),
 		);
-		iView::$handle->_iVARS['SAPI'] .= self::$app_name;
+		iView::$handle->_iVARS['SAPI'].= self::$app_name;
 		iView::$handle->_iVARS += $app_vars;
 
 		if(self::$app===null){

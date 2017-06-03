@@ -11,10 +11,6 @@
     <meta name="mobile-agent" content="format=html5;url=<!--{$forms.iurl.mobile.url}-->">
     <link rel="alternate" media="only screen and(max-width: 640px)" href="<!--{$forms.iurl.mobile.url}-->">
     <!--{iCMS:public:ui}-->
-    <script type="text/javascript">
-    //移动端跳转 域名不一样时才会跳转
-    redirect_to_mobile("<!--{$forms.iurl.mobile.url}-->");
-    </script>
 </head>
 
 <body class="articleApp" i="<!--{$iCMS.APP.NAME}-->">
@@ -77,7 +73,10 @@
                         });
                         </script>
                     </div>
-
+<!--{iCMS:forms:data loop="true" form="$forms"}-->
+<!--{$forms_data.peafhc.name}-->:
+<!--{$forms_data.peafhc.value}--><br />
+<!--{/iCMS}-->
                     <div class="clearfix mb10"></div>
                     <div class="share">
                         <div class="share-icon">

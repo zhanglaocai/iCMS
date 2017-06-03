@@ -79,6 +79,7 @@ class contentApp {
         $rs = $this->value($rs,$vars,$page,$tpl);
         $rs+=(array)apps_meta::data($this->app,$id);
         $this->hooked($rs);
+        iView::set_iVARS($rs['iurl'],'iURL');
 
         if ($tpl) {
             $app_tpl = empty($rs['tpl']) ? $rs['category']['template'][$this->app] : $rs['tpl'];

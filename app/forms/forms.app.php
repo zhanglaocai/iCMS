@@ -52,6 +52,8 @@ class formsApp {
         $forms['fieldArray'] = former::fields($forms['fields']);
         $forms['action'] = iURL::router(array('forms'));
         $forms['url']    = iURL::router(array('forms:id',$forms['id']));
+        $forms['iurl']   = iDevice::urls(array('href'=>$forms['url']));
+        $forms['iurl']['href'] = $forms['url'];
         $forms['result'] = iURL::router(array('forms:result',$forms['id']));
         $forms['link']   = '<a href="'.$forms['url'].'" class="forms" target="_blank">'.$forms['title'].'</a>';
         $forms['pic']    = filesApp::get_pic($forms['pic']);
@@ -60,7 +62,7 @@ class formsApp {
         $forms['layout_id']  = "former_".$forms['id'];
 
         iPHP::set_cookie('token_time', $forms['time'], 600);
-
+        iView::set_iVARS($forms['iurl'],'iURL');
         if ($tpl) {
             $forms_tpl = $forms['tpl'];
             strstr($tpl, '.htm') && $forms_tpl = $tpl;

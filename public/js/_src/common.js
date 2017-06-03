@@ -8,7 +8,7 @@ iCMS.define("common", function() {
             }, 'json');
         },
         vote: function(a, SUCCESS, FAIL) {
-            if (!USER.CHECK.LOGIN()) return;
+            // if (!USER.CHECK.LOGIN()) return;
 
             var vars = iCMS.$v(a,'vote');
             var param = API.param(a);

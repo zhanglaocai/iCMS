@@ -32,6 +32,7 @@ class searchApp {
         $iurl->href.= '?app=search&q='.$q;
         $iurl->pageurl = $iurl->href.'&page={P}';
         iURL::page_url($iurl);
+        iView::set_iVARS($iurl,'iURL');
         iView::assign("search",$search);
         iView::display($tpl,'search');
     }

@@ -44,7 +44,6 @@ class categoryApp{
             iPHP::error_404('找不到该栏目<b>cid:'. $cid.'</b> 请更新栏目缓存或者确认栏目是否存在', 20001);
         }
         if($category['status']==0) return false;
-        $iurl = $category['iurl'];
         if($tpl){
             if(iView::$gateway=="html"){
                 $isphp = strpos($category['rule']['index'], '{PHP}');
@@ -53,7 +52,7 @@ class categoryApp{
                 }
             }
             $category['outurl'] && iPHP::redirect($category['outurl']);
-            $category['mode']=='1' && iCMS::redirect_html($iurl['path'],$iurl['href']);
+            $category['mode']=='1' && iCMS::redirect_html($category['iurl']['path'],$category['iurl']['href']);
         }
 
         $category['param'] = array(
@@ -67,9 +66,9 @@ class categoryApp{
         );
 
         // self::hooked($category);
-
+        iView::set_iVARS($category['iurl'],'iURL');
         if($tpl) {
-            $category['mode'] && iURL::page_url($iurl);
+            $category['mode'] && iURL::page_url($category['iurl']);
             iView::assign('app', $category['app_lite']);
             unset($category['app_lite']);
             iView::assign('category',$category);

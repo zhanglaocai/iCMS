@@ -147,6 +147,22 @@ class iView {
     public static function get_vars($key = null) {
         return self::$handle->get_template_vars($key);
     }
+    public static function set_iVARS($value = null,$key=null,$append=false) {
+        if(is_array($value)){
+            if($key){
+                self::$handle->_iVARS[$key] = $value;
+            }else{
+                self::$handle->_iVARS += $value;
+            }
+        }else{
+            if($append){
+                self::$handle->_iVARS[$key].= $value;
+            }else{
+                self::$handle->_iVARS[$key] = $value;
+            }
+        }
+    }
+
     public static function clear_tpl($file = null) {
         self::$handle OR self::init();
         self::$handle->clear_compiled_tpl($file);

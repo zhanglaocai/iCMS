@@ -125,6 +125,7 @@ class articleApp {
 		}
 
 		self::hooked($article);
+		iView::set_iVARS($article['iurl'],'iURL');
 
 		if ($tpl) {
 			$article_tpl = empty($article['tpl']) ? $article['category']['template']['article'] : $article['tpl'];

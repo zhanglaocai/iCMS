@@ -49,10 +49,10 @@ class htmlAdmincp{
 		$query['indexName']	= $indexName;
 
 		$htm	= iCMS::run('index','iCMS',array(array($indexTPL,$indexName)));
-		$fpath	= iURL::page_num($htm[1]->pagepath);
+		$fpath	= iURL::page_num($htm[1]['pagepath']);
 		$total	= $GLOBALS['iPage']['total'];
 		iFS::check_ext($fpath) OR iUI::alert("文件类型不合法,禁止生成!<hr />请更改系统设置->网站URL->文件后缀");
-		iFS::mkdir($htm[1]->dir);
+		iFS::mkdir($htm[1]['dir']);
 		iFS::write($fpath,$htm[0]);
 		$_total = $total?$total:"1";
 		$msg    = "共<span class='label label-info'>{$_total}</span>页 已生成<span class='label label-info'>".$GLOBALS['page']."</span>页,";

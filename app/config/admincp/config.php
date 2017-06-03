@@ -186,10 +186,10 @@ function modal_tpl_index(el,a){
                 <input type="checkbox" data-type="switch" name="config[template][index][rewrite]" id="index_rewrite" <?php echo $config['template']['index']['rewrite']?'checked':''; ?>/>
               </div>
             </div>
+            <span class="help-inline">如果首页不是动态访问模式,且网站首页有分页 请开启此项</span>
+            <div class="clearfloat mb10 solid"></div>
             <input type="hidden" name="config[template][index][tpl]" value="<?php echo $config['template']['index']['tpl']?:$config['template']['desktop']['index']; ?>"/>
             <input type="hidden" name="config[template][index][name]" value="<?php echo $config['template']['index']['name']?:'index' ; ?>"/>
-            <span class="help-inline">如果栏目不是动态访问模式,且网站首页有分页 请开启此项</span>
-            <div class="clearfloat mb10 solid"></div>
             <div id="template_desktop">
               <div class="input-prepend"> <span class="add-on">桌面端域名</span>
                 <input type="text" name="config[router][url]" class="span3" value="<?php echo $config['router']['url'] ; ?>"/>
@@ -233,12 +233,22 @@ function modal_tpl_index(el,a){
               <span class="help-inline">移动端首页默认模板</span>
             </div>
             <div class="clearfloat mb10 solid"></div>
+            <div class="<?php echo $config['router']['redirect']?'':'hide'; ?> router_redirect">
+              <div class="input-prepend"> <span class="add-on">适配跳转</span>
+                <div class="switch">
+                  <input type="checkbox" data-type="switch" name="config[router][redirect]" id="router_redirect" <?php echo $config['router']['redirect']?'checked':''; ?>/>
+                </div>
+              </div>
+              <span class="help-inline">如果出现循环重定向(跳转)或者已在服务器配置做重定向,请关闭此项.</span>
+              <div class="clearfloat mb10 solid"></div>
+            </div>
             <table class="table table-hover">
               <thead>
                 <tr>
                   <th style="text-align:left;">
                     <span class="label label-important fs16">模板优先级为:设备模板 &gt; 移动端模板 &gt; PC端模板</span>
                     <span class="label label-inverse fs16"><i class="icon-warning-sign icon-white"></i> 设备模板和移动端模板 暂时不支持生成静态模式</span>
+                    <a onclick="javscript:$('.router_redirect').toggle();">适配跳转</a>
                   </th>
                 </tr>
               </thead>

@@ -159,8 +159,8 @@ class iURL {
 
         if($url=='{PHP}'){
             $primary = $app_conf['primary'];
-            empty($href) && $href = $uri.'.php?';
-            $href.= $primary.'='.$array[$primary];
+            empty($href) && $href = $uri.'.php';
+            $primary && $href.= '?'.$primary.'='.$array[$primary];
             if($app_conf['page']){
                 $i->pageurl = $href.'&'.$app_conf['page'].'='.iPHP_PAGE_SIGN;
                 iFS::checkHttp($i->pageurl) OR $i->pageurl = rtrim($router_url,'/').'/'.$i->pageurl;
