@@ -69,6 +69,9 @@ class iPHP {
 			//app.class.php
 			$file OR $file = $name.'.class';
 			$path = iPHP_APP_DIR . '/' . $name . '/' . $file . '.php';
+		}else{
+			// $core===null && $core = iPHP_CORE;
+			$path = iPHP_APP_CORE.'/library/'.$name.'.class.php';
 		}
 		if (file_exists($path)) {
 			$key = str_replace(iPATH, '/', $path);

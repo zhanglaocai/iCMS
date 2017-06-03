@@ -7,5 +7,5 @@
 * @site https://www.icmsdev.com
 * @licence https://www.icmsdev.com/LICENSE.html
 */
-define('iCMS_VERSION', 'V7.0.0');
-define('iCMS_RELEASE', '20170508');
+define('iCMS_VERSION', 'V7.0.1');
+define('iCMS_RELEASE', '20170603');

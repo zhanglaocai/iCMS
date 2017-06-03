@@ -1,8 +1,7 @@
 /*
-SQLyog Ultimate v12.09 (64 bit)
 MySQL - 5.5.53 : Database - icms7
 *********************************************************************
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -497,6 +496,7 @@ CREATE TABLE `icms_spider_rule` (
 
 CREATE TABLE `icms_spider_url` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `appid` int(10) NOT NULL,
   `cid` int(10) unsigned NOT NULL,
   `pid` int(10) unsigned NOT NULL,
   `rid` int(10) unsigned NOT NULL,
