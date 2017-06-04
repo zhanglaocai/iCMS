@@ -67,7 +67,6 @@ class iSeccode {
         header('X-Accel-Buffering: no');
         ob_start();
         ob_end_clean() ;
-        ob_end_flush();
         ob_implicit_flush(true);
         if(function_exists('imagejpeg')) {
             header('Content-type:image/jpeg'.PHP_EOL);
