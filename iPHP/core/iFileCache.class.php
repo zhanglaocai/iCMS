@@ -87,7 +87,7 @@ class iFC {
         @chmod ($fn, 0777);
         return @unlink($fn);
     }
-    private function write($fn,$data,$check=1,$method="wb+",$iflock=1,$chmod=1) {
+    private function write($fn,$data,$check=1,$method="wb+",$iflock=1,$chmod=0) {
         $check && $this->check($fn);
         // @touch($fn);
         $handle = fopen($fn,$method);
@@ -95,7 +95,7 @@ class iFC {
         fwrite($handle,$data);
         // $method=="rb+" && ftruncate($handle,strlen($data));
         fclose($handle);
-        $chmod && @chmod($fn,0777);
+        $chmod && @chmod($fn,0644);
     }
     private function escapeDir($dir) {
         $dir = str_replace(array("'",'#','=','`','$','%','&',';'), '', $dir);

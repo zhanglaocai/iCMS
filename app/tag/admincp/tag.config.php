@@ -59,7 +59,7 @@ configAdmincp::head("标签系统设置");
 <div class="mt20"></div>
 <div class="alert alert-block">
   此配置为标签的URL默认配置<br />
-  标签URL规则优化级
+  标签URL规则优先级
   标签指定URL > 标签分类 > 标签所属栏目 > 默认配置
 </div>
 <?php configAdmincp::foot();?>

@@ -89,7 +89,7 @@ class iFS {
 		return $filedata;
 	}
 
-	public static function write($fn, $data, $check = 1, $method = "wb+", $iflock = 1, $chmod = 1) {
+	public static function write($fn, $data, $check = 1, $method = "wb+", $iflock = 1, $chmod = 0) {
 		$check && self::check($fn);
 		// @touch($fn);
 		$handle = fopen($fn, $method);
@@ -97,7 +97,7 @@ class iFS {
 		fwrite($handle, $data);
 		// $method == "rb+" && ftruncate($handle, strlen($data));
 		fclose($handle);
-		$chmod && @chmod($fn, 0777);
+		$chmod && @chmod($fn, 0644);
 		self::hook('write',array($fn,$data));
 	}
 
@@ -115,9 +115,9 @@ class iFS {
 
 		// Attempting to create the directory may clutter up our display.
 		if (@mkdir($d)) {
-//            $stat = @stat(dirname($d));
-			//            $dir_perms = $stat['mode'] & 0007777;  // Get the permission bits.
-			@chmod($d, 0777);
+			$stat = @stat(dirname($d));
+			$dir_perms = $stat['mode'] & 0007777;  // Get the permission bits.
+			@chmod($d, $dir_perms);
 			return true;
 		} elseif (is_dir(dirname($d))) {
 			return false;
@@ -364,9 +364,9 @@ class iFS {
 
 	public static function save_ufile($tn, $fp) {
 		if (function_exists('move_uploaded_file') && @move_uploaded_file($tn, $fp)) {
-			@chmod($fp, 0777);
+			@chmod($fp, 0644);
 		} elseif (@copy($tn, $fp)) {
-			@chmod($fp, 0777);
+			@chmod($fp, 0644);
 		} elseif (is_readable($tn)) {
 			if ($fp = @fopen($tn, 'rb')) {
 				@flock($fp, 2);
@@ -377,7 +377,7 @@ class iFS {
 				@flock($fp, 2);
 				@fwrite($fp, $filedata);
 				@fclose($fp);
-				@chmod($fp, 0777);
+				@chmod($fp, 0644);
 			} else {
 				return self::_error(array('code' => 0, 'state' => 'Error'));
 			}

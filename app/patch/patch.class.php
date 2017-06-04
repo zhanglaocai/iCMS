@@ -36,14 +36,18 @@ class patch {
 	}
 	public static function git($do,$commit_id=null,$type='array') {
         $commit_id===null && $commit_id = GIT_COMMIT;
+		$_GET['commit_id'] && $commit_id = $_GET['commit_id'];
         $last_commit_id = $_GET['last_commit_id'];
+		$path = $_GET['path'];
 
-		$url = patch::PATCH_URL . '/git?do='.$do
+		$url  = patch::PATCH_URL . '/git?do='.$do
         ."&VERSION=".iCMS_VERSION
         ."&RELEASE=".iCMS_RELEASE
 		.'&commit_id=' .$commit_id
-		.'&last_commit_id='.$last_commit_id
-		.'&t=' . time();
+		.'&last_commit_id='.$last_commit_id;
+
+		$path && $url.='&path=' . urlencode($path);
+		$url.='&t=' . time();
 
 		$data = iHttp::remote($url);
 		if($type=='array'){
@@ -153,6 +157,13 @@ class patch {
 		$msg .= '开始更新程序<iCMS>';
 
 		foreach ($archive_files as $file) {
+		    preg_match('@^app/(\w+)/@', $file['filename'], $match);
+		    if($match[1]){
+		    	if(!apps::check($match[1])){
+		    		$msg .= '应用 ['.$match[1].'] 不存在,跳过['.$file['filename'].']更新<iCMS>';
+		    		continue;
+		    	}
+		    }
 			$folder = $file['folder'] ? $file['filename'] : dirname($file['filename']);
 			$dp = iPATH . $folder;
 			if (!iFS::ex($dp)) {

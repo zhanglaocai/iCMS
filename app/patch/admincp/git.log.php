@@ -25,7 +25,9 @@ admincp::head(false);
       </thead>
       <tbody class="log-list">
         <?php
-            if($log) foreach ($log AS $k => $value) {
+          $uri=$_GET['path']?"&path=".urlencode($_GET['path']):null;
+
+          if($log) foreach ($log AS $k => $value) {
               $commit_id = $value['commit_id'];
         ?>
         <tr id="<?php echo $commit_id; ?>">
@@ -36,10 +38,10 @@ admincp::head(false);
           <td><?php echo date('Y-m-d H:i',$value['info'][2]); ?></td>
           <td>
             <!-- <a href="<?php echo APP_FURI; ?>&do=git_log&commit_id=<?php echo $commit_id; ?>" class="gitlog btn btn-small" title="查看这个版本详细信息"><i class="fa fa-eye"></i> 查看</a> -->
-            <a href="<?php echo APP_FURI; ?>&do=git_show&commit_id=<?php echo $commit_id; ?>&git=true" class="btn btn-info btn-small"
+            <a href="<?php echo APP_FURI; ?>&do=git_show&commit_id=<?php echo $commit_id; ?>&git=true<?php echo $uri;?>" class="btn btn-info btn-small"
               data-toggle="modal" data-target="#iCMS-MODAL" data-meta="{&quot;width&quot;:&quot;85%&quot;,&quot;height&quot;:&quot;450px&quot;}"
               title="查看<?php echo substr($commit_id, 0,16) ; ?>详细信息"><i class="fa fa-eye"></i> 查看</a>
-            <a href="<?php echo APP_FURI; ?>&do=git_download&last_commit_id=<?php echo $commit_id; ?>&release=<?php echo date('Ymd',$value['info'][2]); ?>&git=true" class="btn btn-success btn-small" target="_blank" title="更新到这个版本"><i class="fa fa-check"></i> 更新</a>
+            <a href="<?php echo APP_FURI; ?>&do=git_download&last_commit_id=<?php echo $commit_id; ?>&release=<?php echo date('Ymd',$value['info'][2]); ?>&git=true<?php echo $uri;?>" class="btn btn-success btn-small" target="_blank" title="更新到这个版本"><i class="fa fa-check"></i> 更新</a>
           </td>
         </tr>
         <?php }?>

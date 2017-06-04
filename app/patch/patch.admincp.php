@@ -101,7 +101,7 @@ class patchAdmincp{
      * [查看开发版信息]
      */
     public function do_git_show(){
-    	$log =  patch::git('show',$_GET['commit_id']);
+    	$log =  patch::git('show');
         $type_map = array(
           'D'=>'删除',
           'A'=>'增加',
