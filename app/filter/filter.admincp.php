@@ -26,9 +26,7 @@ class filterAdmincp{
         configAdmincp::save('999999',null,array($this,'cache'));
     }
     public static function cache($config=null){
-        if($config===null){
-            $config  = configAdmincp::app('999999',null,true);
-        }
+        $config===null && $config  = configAdmincp::app('999999','filter',true);
     	iCache::set('filter/array',$config['filter'],0);
     	iCache::set('filter/disable',$config['disable'],0);
     }

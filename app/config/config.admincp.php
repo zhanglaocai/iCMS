@@ -100,9 +100,10 @@ class configAdmincp{
      */
     public static function get($appid = NULL, $name = NULL) {
         if ($name === NULL) {
-            $sql = $appid === NULL?'':" AND `appid`='$appid'";
-            $rs  = iDB::all("SELECT * FROM `#iCMS@__config` WHERE appid< '999999' $sql");
-            foreach ($rs AS $c) {
+            $sql = "appid< '999999'";
+            $appid === NULL OR $sql = " AND `appid`='$appid'";
+            $rs  = iDB::all("SELECT * FROM `#iCMS@__config` WHERE $sql");
+            foreach ((array)$rs AS $c) {
                 $value = $c['value'];
                 // strpos($c['value'], 'a:')===false OR $value = serialize($c['value']);
                 $value = (array)json_decode($value,true);
