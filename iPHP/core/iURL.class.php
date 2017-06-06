@@ -170,6 +170,7 @@ class iURL {
         }else if(strpos($url,'{PHP}')===false) {
         	self::$ARRAY = array($array,$category,$_category);
             $i = self::build($url,$router_dir,$router_url,$category['htmlext']);
+            self::page_sign($i);
 
             $pfile = $i->file;
             if(strpos($pfile,iPHP_PAGE_SIGN)===false) {
@@ -235,19 +236,18 @@ class iURL {
 
         return $i;
     }
-    // public static function page($i) {
-    //     // $i->pfile = $i->file;
-    //     // if(strpos($i->file,iPHP_PAGE_SIGN)===false) {
-    //     //     $i->pfile = $i->name.'_'.iPHP_PAGE_SIGN.$i->ext;
-    //     // }
-    //     // $i->pageurl  = $i->hdir.'/'.$i->pfile ;
-    //     // $i->pagepath = $i->dir.'/'.$i->pfile;
-    //     $i->href = str_replace(iPHP_PAGE_SIGN,1,$i->href);
-    //     $i->path = str_replace(iPHP_PAGE_SIGN,1,$i->path);
-    //     $i->file = str_replace(iPHP_PAGE_SIGN,1,$i->file);
-    //     $i->name = str_replace(iPHP_PAGE_SIGN,1,$i->name);
-    //     return $i;
-    // }
+    public static function page_sign(&$i) {
+        // $i->pfile = $i->file;
+        // if(strpos($i->file,iPHP_PAGE_SIGN)===false) {
+        //     $i->pfile = $i->name.'_'.iPHP_PAGE_SIGN.$i->ext;
+        // }
+        // $i->pageurl  = $i->hdir.'/'.$i->pfile ;
+        // $i->pagepath = $i->dir.'/'.$i->pfile;
+        $i->href = str_replace(iPHP_PAGE_SIGN,1,$i->href);
+        $i->path = str_replace(iPHP_PAGE_SIGN,1,$i->path);
+        $i->file = str_replace(iPHP_PAGE_SIGN,1,$i->file);
+        $i->name = str_replace(iPHP_PAGE_SIGN,1,$i->name);
+    }
     public static function page_num($path, $page = false) {
         $page === false && $page = $GLOBALS['page'];
         if ($page < 2) {
