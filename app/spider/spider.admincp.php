@@ -175,18 +175,28 @@ class spiderAdmincp {
 	 */
     public function do_dropdata() {
         $this->pid OR iUI::alert("请选择要删除的项目");
-
-        // iDB::query("DELETE FROM `#iCMS@__article_data` where `aid` IN(
-        //     SELECT indexid FROM `#iCMS@__spider_url` where `pid` = '$this->pid'
-        // )");
-        // iDB::query("DELETE FROM `#iCMS@__article` where `id` IN(
-        //     SELECT indexid FROM `#iCMS@__spider_url` where `pid` = '$this->pid'
-        // )");
-        $rs      = iDB::all("SELECT indexid FROM `#iCMS@__spider_url` where `pid` = '$this->pid'");
+		$rs      = iDB::all("SELECT `indexid`,`appid`,`pid` FROM `#iCMS@__spider_url` where `pid` = '$this->pid'");
+		$project = spider::project($this->pid);
+		$post    = spider::postArgs($project['poid']);
         $_count  = count($rs);
         for ($i=0; $i <$_count ; $i++) {
-            articleAdmincp::del($rs[$i]['indexid']);
+			$class = $post->app.'Admincp';
+			$delete = 'do_del';
+        	if(@class_exists($class) && @method_exists ($class,'do_del')){
+        		if($post->app=='content'){
+        			$obj = new $class($rs[$i]['appid']);
+        		}elseif($post->app=='forms'){
+        			$obj = new $class();
+        			$delete = 'do_delete';
+        		}else{
+        			$obj = new $class;
+        		}
+        		iPHP::callback(array($obj,$delete),array($rs[$i]['indexid'],false));
+        	}else{
+        		$msg = "未找到内容删除方法,请手动删除内容";
+        	}
         }
+        $msg && iUI::alert($msg);
         iDB::query("DELETE FROM `#iCMS@__spider_url` where `pid` = '$this->pid';");
         iUI::success('所有采集数据删除完成');
     }

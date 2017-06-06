@@ -10,10 +10,11 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class formsAdmincp{
-    public function __construct() {
+    public function __construct($formid=null) {
       $this->appid = iCMS_APP_FORMS;
       $this->id = (int)$_GET['id'];
-      $_GET['form_id'] && $this->form_id = (int)$_GET['form_id'];
+      $formid===null && $formid = iSecurity::getGP('form_id');
+      $this->form_id = (int)$formid;
     }
     public function form_init(){
       $this->form = forms::get($this->form_id);
@@ -106,7 +107,7 @@ class formsAdmincp{
     public function do_delete($id = null,$dialog=true){
       $id===null && $id=$this->id;
       $id OR iUI::alert("请选择要删除的{$this->form['name']}数据");
-      $this->form_id = (int)$_POST['form_id'];
+      // $this->form_id = (int)$_POST['form_id'];
       $this->form_init();
 
       $tables = $this->form['table'];

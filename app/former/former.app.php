@@ -27,8 +27,10 @@ class formerApp{
             if($data_table){
                 former::base_fields_merge($app,$data_table);
                 if($union_data){
-                    $table    = reset($app['table']);
-                    $id       = $rs[$table['primary']];
+                    $primary_key = $data_table['primary'];
+                    $union_key   = $data_table['union'];
+                    $table       = reset($app['table']);
+                    $id          = $rs[$table['primary']];
                     $union_key&& $primary_key = $union_key;
                     $urs = (array)iDB::row("SELECT * FROM `{$data_table['table']}` WHERE `{$primary_key}`='$id' LIMIT 1;",ARRAY_A);
                     $urs && $rs+=$urs;

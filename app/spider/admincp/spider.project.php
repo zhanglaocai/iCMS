@@ -156,7 +156,7 @@ $(function(){
               <td style="text-align: right;">
                 <a href="<?php echo APP_FURI; ?>&do=dropurl&pid=<?php echo $rs[$i]['id']; ?>&type=all" class="btn mt10 btn-warning" target="iPHP_FRAME"  onclick="return confirm('确定要清空数据?');"><i class="fa fa-trash-o"></i> 清空数据</a>
                 <a href="<?php echo APP_FURI; ?>&do=dropurl&pid=<?php echo $rs[$i]['id']; ?>&type=0" class="btn mt10 btn-warning" target="iPHP_FRAME"  onclick="return confirm('确定要清除未发布数据?');"><i class="fa fa-inbox"></i> 清除未发</a>
-                <a href="<?php echo APP_FURI; ?>&do=dropdata&pid=<?php echo $rs[$i]['id']; ?>" class="btn mt10 btn-danger" target="iPHP_FRAME"  onclick="return confirm('确定要删除采集数据，此操作会删除本方案的采集数据，并删除文章?');"><i class="fa fa-trash"></i> 删除所有采集数据</a>
+                <a href="<?php echo APP_FURI; ?>&do=dropdata&pid=<?php echo $rs[$i]['id']; ?>" class="btn mt10 btn-danger" target="iPHP_FRAME"  onclick="return confirm('确定要删除采集数据，此操作会删除本方案的采集数据，并删除内容?');"><i class="fa fa-trash"></i> 删除所有采集数据&内容</a>
                 <a href="<?php echo APP_FURI; ?>&do=delproject&pid=<?php echo $rs[$i]['id']; ?>" target="iPHP_FRAME" class="del btn mt10 btn-danger" title='删除本方案'  onclick="return confirm('确定要删除方案?');"/><i class="fa fa-trash"></i> 删除方案</a>
 		          </td>
 	          </tr>

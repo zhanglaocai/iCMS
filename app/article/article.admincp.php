@@ -682,12 +682,15 @@ class articleAdmincp{
             iUI::success('文章编辑完成!<br />3秒后返回文章列表','url:'.$REFERER_URL);
         }
     }
-    public function do_del(){
-        $msg = $this->del($this->id);
+    public function do_del($id = null,$dialog=true){
+        $id===null && $id=$this->id;
+        $msg = $this->del($id);
         $msg.= $this->del_msg('文章删除完成!');
-        $msg.= $this->del_msg('10秒后返回文章列表!');
-        iUI::$dialog['modal'] = true;
-        iUI::dialog($msg,'js:1');
+        if($dialog){
+            $msg.= $this->del_msg('10秒后返回文章列表!');
+            iUI::$dialog['modal'] = true;
+            iUI::dialog($msg,'js:1');
+        }
     }
     public function do_purge(){
         iUI::success('请自行编写清理代码');

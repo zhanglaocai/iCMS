@@ -16,6 +16,8 @@ class contentAdmincp{
         if($data===null){
             $id = iSecurity::getGP('appid');
             $data = apps::get_app($id);
+        }else if(!is_array($data)){
+            $data = apps::get_app($data);
         }
         $this->app       = $data;
         $this->appid     = $data['id'];

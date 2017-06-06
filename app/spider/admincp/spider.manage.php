@@ -69,7 +69,8 @@ $(function(){
               <th>内容</th>
               <th>栏目</th>
               <th class="span2">采集/发布时间</th>
-              <th>文章ID</th>
+              <th>appid</th>
+              <th>内容ID</th>
               <th>状态/发布</th>
               <th>操作</th>
             </tr>
@@ -92,10 +93,11 @@ $(function(){
                 <br />
                 <?php echo $rs[$i]['pubdate'] ? get_date($rs[$i]['pubdate'], 'Y-m-d H:i') : '未发布' ?>
               </td>
+              <td><?php echo $rs[$i]['appid']; ?></td>
               <td><?php echo $rs[$i]['indexid']; ?></td>
               <td><?php echo $rs[$i]['status']; ?>/<?php echo $rs[$i]['publish']; ?></td>
               <td>
-                <a href="<?php echo __ADMINCP__; ?>=files&indexid=<?php echo $rs[$i]['indexid'] ; ?>&method=database" class="tip-bottom" title="查看文章使用的图片" target="_blank"><i class="fa fa-picture-o"></i></a>
+                <a href="<?php echo __ADMINCP__; ?>=files&indexid=<?php echo $rs[$i]['indexid'] ; ?>&method=database" class="tip-bottom" title="查看内容使用的图片" target="_blank"><i class="fa fa-picture-o"></i></a>
                 <?php if($rs[$i]['indexid']){?>
                 <a href="<?php echo __ADMINCP__; ?>=article&do=add&id=<?php echo $rs[$i]['indexid'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑内容</a>
                   <?php if(empty($rs[$i]['publish'])){?>
@@ -115,7 +117,7 @@ $(function(){
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="8"><div class="pagination pagination-right" style="float:right;"><?php echo iUI::$pagenav; ?></div>
+              <td colspan="9"><div class="pagination pagination-right" style="float:right;"><?php echo iUI::$pagenav; ?></div>
                 <div class="input-prepend input-append mt20"> <span class="add-on">全选
                   <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo APP_BOXID;?>" />
                   </span>
