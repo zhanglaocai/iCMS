@@ -87,7 +87,7 @@ class apps_meta {
         if($check){
             iDB::update($table, array('data'=>$data), array('id'=>$id));
         }else{
-            iDB::insert($table,array('id'=>$id,'data'=>$data));
+            $data && iDB::insert($table,array('id'=>$id,'data'=>$data));
         }
     }
     public static function create($table){

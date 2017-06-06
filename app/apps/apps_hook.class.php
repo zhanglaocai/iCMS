@@ -32,7 +32,7 @@ class apps_hook {
             $option = array();
             list($path,$obj_name)= apps::get_path($app['app'],'app',true);
             if($app['table'] && is_file($path) && method_exists($obj_name,'hooked')){
-                foreach ($app['table'] as $key => $table) {
+                foreach ((array)$app['table'] as $key => $table) {
                     $tbn = $table['table'];
                     if(iDB::check_table($tbn,false)){
                         $option[] = '<optgroup label="'.$table['label'].'表">';
