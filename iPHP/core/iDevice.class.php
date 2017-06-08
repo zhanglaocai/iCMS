@@ -33,8 +33,12 @@ class iDevice {
 
         iPHP::$mobile = false;
         if (empty($device_tpl)) {
-            //检查是否移动设备
-            if (self::agent(self::$config['mobile']['agent'])) {
+            //检查是否移动设备 USER_AGENT 或者 域名
+            $is_m_domain = (
+                self::$config['mobile']['domain']==iPHP_REQUEST_HOST &&
+                self::$config['mobile']['domain']!=$config['router']['url']
+            );
+            if (self::agent(self::$config['mobile']['agent'])||$is_m_domain) {
                 iPHP::$mobile = true;
                 $device_name = 'mobile';
                 $device_tpl  = self::$config['mobile']['tpl'];

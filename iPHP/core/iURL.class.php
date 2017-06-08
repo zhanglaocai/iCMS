@@ -142,11 +142,11 @@ class iURL {
                 $category = (array)$a[1];
                 $i->href  = $array['url'];
                 $url      = self::rule_data($category,$uri);
-                $href     = 'index.php?app='.$uri.'&';
+                $href     = 'index.php?app='.$uri;
             break;
             default:
                 $url  = '{PHP}';
-                $href = 'index.php?app='.$uri.'&';
+                $href = 'index.php?app='.$uri;
             break;
         }
 
@@ -160,9 +160,13 @@ class iURL {
         if($url=='{PHP}'){
             $primary = $app_conf['primary'];
             empty($href) && $href = $uri.'.php';
-            $primary && $href.= '?'.$primary.'='.$array[$primary];
+            if($primary){
+                $href.= (strpos($href,'?')===false)?'?':'&';
+                $href.= $primary.'='.$array[$primary];
+            }
             if($app_conf['page']){
-                $i->pageurl = $href.'&'.$app_conf['page'].'='.iPHP_PAGE_SIGN;
+                $i->pageurl = $href.((strpos($href,'?')===false)?'?':'&');
+                $i->pageurl.= $app_conf['page'].'='.iPHP_PAGE_SIGN;
                 iFS::checkHttp($i->pageurl) OR $i->pageurl = rtrim($router_url,'/').'/'.$i->pageurl;
             }
             iFS::checkHttp($href) OR $href = rtrim($router_url,'/').'/'.$href;
