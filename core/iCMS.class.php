@@ -33,8 +33,10 @@ class iCMS {
             'api_url'  => iCMS_PUBLIC_URL,
             'tag'      => self::$config['tag'],//标签配置
             'iurl'     => self::$config['iurl'],//应用路由定义
-            'device'   => array('iDevice','urls'),//设备网址
-            'domain'   => array('categoryApp','domain')//绑定域名回调
+            'callback'=> array(
+                "domain" => array('categoryApp','domain'),//绑定域名回调
+                'device' => array('iDevice','urls'),//设备网址
+            )
         ));
 	}
     /**

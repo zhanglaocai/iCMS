@@ -145,7 +145,7 @@ class categoryAdmincp {
                         $cr_check = false;
                     }
                 }
-                if($cr_check){
+                if($cr_check && empty($domain)){
                     return iUI::alert('伪静态模式'.$CR[0].'规则必需要有'.$CR[2].'其中之一');
                 }
             }

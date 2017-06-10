@@ -191,19 +191,16 @@ class iURL {
             }
             // call_user_func_array(self::$callback, array($uri,$i,self::$ARRAY,$app_conf));
         }
-        $category && $i = self::domain($i,$category['cid'],$router_url);
-        if(self::$CONFIG['device']){
-            $d = call_user_func_array(self::$CONFIG['device'], array($i));
+        if($category['cid'] && self::$CONFIG['callback']['domain']){
+            $i = call_user_func_array(self::$CONFIG['callback']['domain'], array($i,$category['cid'],$router_url));
+        }
+        if(self::$CONFIG['callback']['device']){
+            $d = call_user_func_array(self::$CONFIG['callback']['device'], array($i));
             $i = (object)array_merge((array)$i,$d);
         }
         return $i;
     }
-    public static function domain($i,$cid,$base_url) {
-        if(self::$CONFIG['domain']){
-            $i = call_user_func_array(self::$CONFIG['domain'], array($i,$cid,$base_url));
-        }
-        return $i;
-    }
+
     public static function build($url,$_dir,$_url,$_ext) {
         if(strpos($url,'{')!==false){
             $url = preg_replace_callback("/\{(.*?)\}/",array(__CLASS__,'rule'),$url);
