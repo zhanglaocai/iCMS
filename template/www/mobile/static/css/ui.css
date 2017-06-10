@@ -104,6 +104,7 @@ article .article_body .content a b { font-size: 14px; }
 article .article_body a:active, article .article_body a:hover, article .article_body a:link, article .article_body a:visited { color: #079CF1; text-decoration: underline; }
 article .article_body a.keyword { text-decoration: none; border-bottom: 1px dotted #079CF1; }
 article .article_body .content h2.subtitle { font-size: 24px; margin-bottom: 20px; color: #333; }
+article .article_body .content video{clear: both;display: block;margin: auto;max-width: 100%;}
 article .article_pagenav { text-align: center; }
 article .pagination a, article .pagination span { padding: 10px; }
 

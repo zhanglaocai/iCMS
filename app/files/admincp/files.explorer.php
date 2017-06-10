@@ -183,7 +183,7 @@ $(function(){
             <?php
             $_count		= count($fileRs);
             for($i=0;$i<$_count;$i++){
-            	$icon	= iFS::icon($fileRs[$i]['name'],'./app/admincp/ui');
+            	$icon	= files::icon($fileRs[$i]['name']);
             ?>
             <tr id="<?php echo md5($fileRs[$i]['path']) ; ?>">
               <td><input type="checkbox" value="<?php echo $fileRs[$i]['path'] ; ?>" url="<?php echo $fileRs[$i]['url'] ; ?>"  data-click="file"/></td>

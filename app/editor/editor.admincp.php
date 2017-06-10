@@ -12,13 +12,16 @@ class editorAdmincp{
 		iFS::$ERROR_TYPE   = 'json';
     }
     public function do_config(){
+        $upload_max_filesize = get_cfg_var('upload_max_filesize');
+        $MaxSize = get_bytes($upload_max_filesize);
+        empty($MaxSize) && $MaxSize = 2097152;
     	$config_json ='
 /* 前后端通信相关的配置,注释只允许使用多行方式 */
 {
     /* 上传图片配置项 */
     "imageActionName": "uploadimage", /* 执行上传图片的action名称 */
     "imageFieldName": "upfile", /* 提交的图片表单名称 */
-    "imageMaxSize": 2048000, /* 上传大小限制，单位B */
+    "imageMaxSize": '.$MaxSize.', /* 上传大小限制，单位B */
     "imageAllowFiles": [".png", ".jpg", ".jpeg", ".gif", ".bmp"], /* 上传图片格式显示 */
     "imageCompressEnable": true, /* 是否压缩图片,默认是true */
     "imageCompressBorder": 1600, /* 图片压缩最长边限制 */
@@ -30,7 +33,7 @@ class editorAdmincp{
     "scrawlActionName": "uploadscrawl", /* 执行上传涂鸦的action名称 */
     "scrawlFieldName": "upfile", /* 提交的图片表单名称 */
     "scrawlPathFormat": "",
-    "scrawlMaxSize": 2048000, /* 上传大小限制，单位B */
+    "scrawlMaxSize": '.$MaxSize.', /* 上传大小限制，单位B */
     "scrawlUrlPrefix": "", /* 图片访问路径前缀 */
     "scrawlInsertAlign": "none",
 
@@ -46,7 +49,7 @@ class editorAdmincp{
     "catcherFieldName": "source", /* 提交的图片列表表单名称 */
     "catcherPathFormat": "",
     "catcherUrlPrefix": "", /* 图片访问路径前缀 */
-    "catcherMaxSize": 2048000, /* 上传大小限制，单位B */
+    "catcherMaxSize": '.$MaxSize.', /* 上传大小限制，单位B */
     "catcherAllowFiles": [".png", ".jpg", ".jpeg", ".gif", ".bmp"], /* 抓取图片格式显示 */
 
     /* 上传视频配置 */
@@ -54,7 +57,7 @@ class editorAdmincp{
     "videoFieldName": "upfile", /* 提交的视频表单名称 */
     "videoPathFormat": "",
     "videoUrlPrefix": "", /* 视频访问路径前缀 */
-    "videoMaxSize": 102400000, /* 上传大小限制，单位B，默认100MB */
+    "videoMaxSize": '.$MaxSize.', /* 上传大小限制，单位B */
     "videoAllowFiles": [
         ".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg",
         ".ogg", ".ogv", ".mov", ".wmv", ".mp4", ".webm", ".mp3", ".wav", ".mid"], /* 上传视频格式显示 */
@@ -64,7 +67,7 @@ class editorAdmincp{
     "fileFieldName": "upfile", /* 提交的文件表单名称 */
     "filePathFormat": "",
     "fileUrlPrefix": "", /* 文件访问路径前缀 */
-    "fileMaxSize": 51200000, /* 上传大小限制，单位B，默认50MB */
+    "fileMaxSize": '.$MaxSize.', /* 上传大小限制，单位B */
     "fileAllowFiles": [
         ".png", ".jpg", ".jpeg", ".gif", ".bmp",
         ".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg",

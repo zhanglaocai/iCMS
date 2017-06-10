@@ -324,28 +324,6 @@ class iFS {
 		return round($filesize, 2) . ' ' . $SU[$n];
 	}
 
-	public static function icon($fn, $icondir = '') {
-		$ext = strtoupper(self::get_ext($fn));
-		$extArray = array(
-			"TXT" => "txt.gif", "XLS" => "xls.gif", "XML" => "xls.gif",
-			"CHM" => "hlp.gif", "HLP" => "hlp.gif",
-			"DOC" => "doc.gif", "PPS" => "ppt.gif", "PPT" => "ppt.gif", "PDF" => "pdf.gif",
-			"MDB" => "mdb.gif",
-			"GIF" => "gif.gif", "JPG" => "jpg.gif", "JPEG" => "jpg.gif", "BMP" => "bmp.gif", "PNG" => "pic.gif",
-			"ASP" => "code.gif", "JSP" => "code.gif", "JS" => "js.gif", "PHP" => "php.gif", "PHP3" => "php.gif", "ASPX" => "code.gif",
-			"HTM" => "htm.gif", "CSS" => "code.gif", "HTML" => "htm.gif", "SHTML" => "htm.gif",
-			"ZIP" => "zip.gif", "RAR" => "rar.gif",
-			"EXE" => "exe.gif",
-			"AVI" => "wmv.gif", "MPG" => "wmv.gif", "MPEG" => "wmv.gif", "ASF" => "mp.gif", "RA" => "rm.gif", "RM" => "rm.gif", "MP3" => "mp3.gif", "MID" => "wmv.gif", "MIDI" => "mid.gif", "WAV" => "audio.gif",
-			"PHPFILE" => "php.gif",
-			"FILE" => "common.gif",
-			"SWF" => "swf.gif",
-		);
-		$src = $extArray[$ext];
-		$src OR $src = "unknow.gif";
-		return '<img border="0" src="' . $icondir . '/fileicons/' . $src . '" align="absmiddle" class="icon">';
-	}
-
 //-----------upload-------------
 	public static function get_dir() {
 		$dir = self::path_join(iPATH, self::$config['dir']);

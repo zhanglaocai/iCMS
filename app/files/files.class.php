@@ -245,4 +245,20 @@ class files {
         preg_match_all(self::$PREG_IMG, $content, $match);
         return array_unique($match[2]);
     }
+    public static function icon($fn, $dir = null) {
+        $ext = strtolower(iFS::get_ext($fn));
+        $iconArray = array(
+        "aac","ace","ai","ain","amr","app","arj","asf","asp","aspx","audio","av","avi","bin","bmp","cab","cad","cat","cdr","chm",
+        "code","com","common","css","cur","dat","db","dll","dmv","doc","dot","dps","dpt","dwg","dxf","emf","eps","et","ett","exe",
+        "fla","flash","ftp","gif","help","hlp","htm","html","icl","ico","image","img","inf","ini","iso","jpeg","jpg","js","m3u",
+        "max","mdb","mde","mht","mid","midi","mov","mp","mp3","mp4","mpeg","mpg","msi","nrg","ocx","ogg","ogm","pdf","php","pic",
+        "png","pot","ppt","psd","pub","qt","ra","ram","rar","rm","rmvb","rtf","swf","tar","tif","tiff","txt","unknow","unknown",
+        "url","vbs","vsd","vss","vst","wav","wave","wm","wma","wmd","wmf","wmv","wps","wpt","xls","xlt","xml","zip");
+        $key = array_search($ext,$iconArray);
+        $src = $ext.'.gif';
+        $key===false && $src = "common.gif";
+        $dir OR $dir = "./app/files/ui";
+        return '<img border="0" src="' . $dir . '/icon/' . $src . '" align="absmiddle" class="icon">';
+    }
+
 }

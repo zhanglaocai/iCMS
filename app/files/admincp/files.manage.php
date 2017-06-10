@@ -120,7 +120,7 @@ $(function(){
               <td><?php echo $rs[$i]['userid'] ; ?></td>
               <?php }?>
               <td>
-                <a href="<?php echo $href; ?>" title="点击查看" target="_blank"><?php echo iFS::icon($filepath,'./app/admincp/ui');?></a>
+                <a href="<?php echo $href; ?>" title="点击查看" target="_blank"><?php echo files::icon($filepath);?></a>
                 <a class="tip" title="<?php echo $filepath ; ?><hr />源文件名:<?php echo $rs[$i]['ofilename'] ; ?>"><?php echo $rs[$i]['filename'].'.'.$rs[$i]['ext']; ?></a>
               </td>
               <td><?php echo iFS::sizeUnit($rs[$i]['size']);?></td>
