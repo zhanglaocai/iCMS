@@ -162,7 +162,7 @@ class propAdmincp{
         $self::$app = $app;
         return $self;
     }
-    public static function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$app = "") {
+    public static function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$app = "",$isopt=true) {
         $app OR $app = admincp::$APP_NAME;
         self::$app && $app = self::$app;
         is_array($valArray) OR $valArray  = explode(',', $valArray);
@@ -171,7 +171,10 @@ class propAdmincp{
         // empty($propArray) && $propArray = iCache::get("prop/{$field}");
         if($propArray)foreach ((array)$propArray AS $k => $P) {
             if ($out == 'option') {
-                $opt[]="<option value='{$P['val']}'" . (isset($valArray[$P['val']]) ? " selected='selected'" : '') . ">{$P['name']}[{$field}='{$P['val']}'] </option>";
+                $optText = "<option value='{$P['val']}'" . (isset($valArray[$P['val']]) ? " selected='selected'" : '') . ">{$P['name']}";
+                $isopt && $optText.= "[{$field}='{$P['val']}']";
+                $optText.= "</option>";
+                $opt[]=$optText;
             } elseif ($out == 'array') {
                 $opt[$P['val']] = $P['name'];
             } elseif ($out == 'text') {

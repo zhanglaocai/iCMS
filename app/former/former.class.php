@@ -213,10 +213,12 @@ class former {
                     }
                     $btn = '<a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.self::$config['app']['app'].'&field='.$name.'" target="_blank">添加'.$field['label'].'</a>';
                     $select = self::widget('select',$attr)->addClass('chosen-select');
-                    $option='<option value="0">默认'.$field['label'].'['.$name.'=\'0\']</option>';
                     if(self::$config['gateway']=='admincp'){
-                        $option.= propAdmincp::get($name,null,'option',null,self::$config['app']['app']);
+                        $option='<option value="0">默认'.$field['label'].'['.$name.'=\'0\']</option>';
+                    }else{
+                        $option='<option value="0">默认'.$field['label'].'</option>';
                     }
+                    $option.= propAdmincp::get($name,null,'option',null,self::$config['app']['app'],self::$config['option']);
                     $value===null OR $script = self::script('iCMS.FORMER.select("'.$attr['id'].'","'.$value.'");',true);
                     $input = $select->html($option).$orig.$btn;
                 break;
@@ -368,7 +370,9 @@ class former {
                             if($val){
                                 list($opt_text,$opt_value) = explode("=", $val);
                                 $opt_value===null && $opt_value = $opt_text;
-                                $option.='<option value="'.$opt_value.'">'.$opt_text.' ['.$name.'="'.$opt_value.'"]</option>';
+                                $option.='<option value="'.$opt_value.'">'.$opt_text;
+                                self::$config['option'] && $option.=' ['.$name.'="'.$opt_value.'"]';
+                                $option.='</option>';
                             }
                         }
                         $input->html($option);

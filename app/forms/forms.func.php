@@ -38,6 +38,7 @@ class formsFunc{
             'nickname' => user::$nickname
         );
         former::$config['gateway'] = 'usercp';
+        former::$config['option'] = $vars['option'];
         former::create($form);
         echo former::layout("#former_".$form['id']);
 	}

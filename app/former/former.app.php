@@ -49,6 +49,7 @@ class formerApp{
                 'nickname' => members::$data->nickname
             );
             former::$config['gateway'] = 'admincp';
+            former::$config['option'] = true;
             former::create($app,$rs);
         }
     }
