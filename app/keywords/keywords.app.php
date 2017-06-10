@@ -48,15 +48,18 @@ class keywordsApp {
 
         // constructing mask(s)...
         foreach ((array)$array as $k=>$v) {
-            $search[$k]  = '@' .preg_quote($v[0],'@') . '@i';
-            $replace[$k] = $v[1];
+            $search[$k]   = '@' .preg_quote($v[0],'@') . '@i';
+            $replace[$k] = "@R_".rand(1,1000).'_'.$k.'@';
+            $replaceArray[$k]  = $v[1];
         }
+
         $content = preg_replace($search, $replace, $content, $limit);
+        $content = str_replace($replace,$replaceArray,$content);
         $content = str_replace($htmA,$htmArray,$content);
         $content = str_replace($linkA,$linkArray,$content);
         unset($linkArray,$linkflip,$linkA);
         unset($htmArray,$htmflip,$htmA);
-        unset($replace,$replaceflip,$replaceA);
+        unset($replace,$replaceArray);
         unset($search,$matches);
         return $content;
     }
