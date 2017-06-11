@@ -548,7 +548,7 @@ class spider_tools {
             $proxy && $options = iNetwork::proxy($options,$proxy);
         }
         if(spider::$PROXY_URL){
-            $options[CURLOPT_URL] = self::$PROXY_URL.urlencode($url);
+            $options[CURLOPT_URL] = spider::$PROXY_URL.urlencode($url);
         }
         $ch = curl_init();
         curl_setopt_array($ch,$options);
