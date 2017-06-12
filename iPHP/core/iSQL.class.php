@@ -200,7 +200,7 @@ class iSQL {
     }
     public static function update_args($data = '') {
         $array = array();
-        $dA = explode('_', $data);
+        $dA = explode(',', $data);
         foreach ((array) $dA as $d) {
             list($f, $v) = explode(':', $d);
             $v == 'now' && $v = time();
