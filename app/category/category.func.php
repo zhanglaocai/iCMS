@@ -43,17 +43,16 @@ class categoryFunc{
 				$where_sql.=" AND `rootid`='$parentid'";
 			break;
 		}
-		if(isset($vars['pids'])){
-			iMap::init('prop',iCMS_APP_CATEGORY,'pid');
-			$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__category`.cid'); //主表小 map表大
-	//		$map_where=iMap::where($vars['pids']); //主表大 map表大
-	//		$map_ids    = iMap::ids($vars['pid']);
-	//		$map_sql    = iMap::sql($vars['pid']); //map 表小的用 in
-	//		$where_sql.=" AND `pid` = '{$vars['pid']}'";
-			//if(empty($map_ids)) return $resource;
-			//$where_sql.=" AND `cid` IN ($map_ids)";
-			//$where_sql.=" AND `cid` IN ($map_sql)";
+
+		if (isset($vars['pid']) && !isset($vars['pids'])) {
+			$where_sql .= iSQL::in($vars['pid'], 'pid');
 		}
+		if (isset($vars['pids']) && !isset($vars['pid'])) {
+			iMap::init('prop', iCMS_APP_CATEGORY,'pid');
+			$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__category`.cid'); //主表小 map表大
+			// $map_where=iMap::where($vars['pids']); //主表大 map表大
+		}
+
 		$by = $vars['by']=='DESC'?"DESC":"ASC";
 
 		switch ($vars['orderby']) {
