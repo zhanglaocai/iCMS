@@ -20,7 +20,7 @@
     <!--{include file="./header.htm"}-->
     <div class="clearfix mb10"></div>
     <div class="body">
-      <!--{if $category.rootid}-->
+      <!--{if $category.rootid||$category.rootid=="0" && !$category.child}-->
         <section class="bg-white" id="article-list">
           <div class="u-ttl">
             <h2><!--{$category.name}--></h2>

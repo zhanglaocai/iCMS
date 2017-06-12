@@ -261,7 +261,7 @@ class iURL {
 
         $iurl = (array)$iurl;
         $GLOBALS['iPage']['url']  = $iurl['pageurl'];
-        $GLOBALS['iPage']['html'] = array(
+        $GLOBALS['iPage']['config'] = array(
             'enable' =>true,
             'index'  =>$iurl['href'],
             'ext'    =>$iurl['ext']

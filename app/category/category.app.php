@@ -8,7 +8,7 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class categoryApp{
-	public $methods	= array('iCMS','category');
+    public $methods = array('iCMS','category');
     public function __construct($appid = iCMS_APP_ARTICLE) {
     	// $this->appid = iCMS_APP_ARTICLE;
     	// $appid && $this->appid = $appid;
@@ -54,7 +54,7 @@ class categoryApp{
             $category['outurl'] && iPHP::redirect($category['outurl']);
             $category['mode']=='1' && iCMS::redirect_html($category['iurl']['path'],$category['iurl']['href']);
         }
-
+        self::router($category);
         $category['param'] = array(
             "sappid" => $category['sappid'],
             "appid"  => $category['appid'],
@@ -64,10 +64,9 @@ class categoryApp{
             "title"  => $category['name'],
             "url"    => $category['url']
         );
-
         // self::hooked($category);
-        iView::set_iVARS($category['iurl'],'iURL');
         if($tpl) {
+            iView::set_iVARS($category['iurl'],'iURL');
             $category['mode'] && iURL::page_url($category['iurl']);
             iView::assign('app', $category['app_lite']);
             unset($category['app_lite']);
@@ -86,15 +85,22 @@ class categoryApp{
         	return $category;
         }
     }
+    public static function router(&$category){
+        if(!$category['iDevice'] && iPHP_DOMAIN != iPHP_ROUTER_URL){
+            iDevice::router($category);
+            iDevice::router($category['iurl']);
+            iDevice::router($category['navArray'],true);
+            $category['parent'] && self::router($category['parent']);
+            $category['iDevice'] = true;
+        }
+    }
     public static function get_lite($category){
         $keyArray = array('sortnum','password','mode','domain','config','addtime');
         foreach ($keyArray as $i => $key) {
              unset($category[$key]);
         }
         // $vars['meta'] && $category+=(array)apps_meta::data('category',$category['cid']);
-        iDevice::router($category);
-        iDevice::router($category['iurl']);
-        iDevice::router($category['navArray'],true);
+        self::router($category);
         return $category;
     }
     public static function get_cids($cid = "0",$all=true,$root_array=null) {

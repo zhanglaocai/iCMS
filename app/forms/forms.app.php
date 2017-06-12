@@ -62,8 +62,8 @@ class formsApp {
         $forms['layout_id']  = "former_".$forms['id'];
 
         iPHP::set_cookie('token_time', $forms['time'], 600);
-        iView::set_iVARS($forms['iurl'],'iURL');
         if ($tpl) {
+            iView::set_iVARS($forms['iurl'],'iURL');
             $forms_tpl = $forms['tpl'];
             strstr($tpl, '.htm') && $forms_tpl = $tpl;
             iView::assign('forms', $forms);

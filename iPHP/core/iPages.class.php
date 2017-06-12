@@ -9,7 +9,7 @@
  * @version 2.0.0
  */
 //$GLOBALS['iPage']['url']="/index_";
-//$GLOBALS['iPage']['html']['enable']=true;
+//$GLOBALS['iPage']['config']['enable']=true;
 class iPages {
 
 	public $page_name  = "page";//page标签，用来控制url页。比如说xxx.php?page=2中的page
@@ -17,6 +17,7 @@ class iPages {
 	public $ajax_fun   = null;   //AJAX动作名
 	public $titles     = array();
 	public $target     = '_self';
+	public $config     = array();
 
 	public $pagebarnum = 8;//控制记录条的个数。
 	public $totalpage  = 0;//总页数
@@ -47,7 +48,7 @@ class iPages {
 		}
 
 		$GLOBALS['iPage']['total'] = (int)$this->totalpage;
-		$this->html = $GLOBALS['iPage']['html'];
+		$this->config = $GLOBALS['iPage']['config'];
 
 		//设置pagename
 		$conf['page_name']&& $this->page_name = $conf['page_name'];
@@ -82,7 +83,7 @@ class iPages {
 		if(in_array($var,get_object_vars($this)))
 	 		return $this->$var;
 		else
-			$this->error(" does not belong to PB_Page!",1003);
+			$this->error("does not belong to PB_Page!",1003);
 	}
 
 	/**
@@ -267,7 +268,7 @@ class iPages {
 	* @return boolean
 	*/
 	public function _set_url($url="",$total_type=null){
-		if($this->html['enable']){
+		if($this->config['enable']){
 			$this->url	= $url;
 		}else{
 			$query = array();
@@ -309,8 +310,11 @@ class iPages {
 	public function get_url($pageno=1){
 		if($this->is_ajax) return (int)$pageno;
 		if($pageno<2){
+			if($this->config['index']){
+				return $this->config['index'];
+			}
 			$url = $this->url;
-			$this->html['enable'] OR $url = str_replace(array('?'.$this->page_name.'={P}','&'.$this->page_name.'={P}'),'',$this->url);
+			$this->config['enable'] OR $url = str_replace(array('?'.$this->page_name.'={P}','&'.$this->page_name.'={P}'),'',$this->url);
 			$url = preg_replace('@&total_num=\d+@is', '', $url);
 			return str_replace(array('_{P}','{P}'),array('',1),$url);
 		}
