@@ -112,6 +112,12 @@ class articleAdmincp{
 		        }
 		        iUI::success('排序已更新!','js:1');
     		break;
+            case 'meta':
+                foreach((array)$_POST['id'] AS $id) {
+                    iPHP::callback(array("apps_meta","save"),array(self::$appid,$id));
+                }
+                iUI::success('添加完成!','js:1');
+            break;
             case 'baiduping':
                 foreach((array)$_POST['id'] AS $id) {
                     $this->do_baiduping($id,false);
@@ -488,6 +494,7 @@ class articleAdmincp{
 
 
         $userid      = (int)$_POST['userid'];
+        $ucid        = (int)$_POST['ucid'];
         $scid        = implode(',', (array)$_POST['scid']);
         $pid         = implode(',', (array)$_POST['pid']);
         $status      = (int)$_POST['status'];
@@ -582,8 +589,6 @@ class articleAdmincp{
         $editor OR	$editor	= empty(members::$data->nickname)?members::$data->username:members::$data->nickname;
 
         $picdata = '';
-        $ucid    = 0;
-
         $fields  = article::fields($aid);
 
         if(empty($aid)) {
@@ -874,7 +879,7 @@ class articleAdmincp{
             if(empty($otype)){
                 // var_dump($filpath,$otype);
                 if($aid){
-                    iDB::update('article',array('status'=>'0'),array('id'=>$aid));
+                    iDB::update('article',array('status'=>'2'),array('id'=>$aid));
                     echo $aid." status:2\n";
                 }
                 return true;

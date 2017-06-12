@@ -254,6 +254,7 @@ function _modal_dialog(cancel_text){
 
         <input name="article_id" type="hidden" value="<?php echo $this->id ; ?>" />
         <input name="userid" type="hidden" value="<?php echo $rs['userid'] ; ?>" />
+        <input name="ucid" type="hidden" value="<?php echo $rs['ucid'] ; ?>" />
         <input name="postype" type="hidden" value="<?php echo $rs['postype'] ; ?>" />
         <input name="REFERER" type="hidden" value="<?php echo iPHP_REFERER ; ?>" />
         <input name="chapter" type="hidden" value="<?php echo $rs['chapter']; ?>" />

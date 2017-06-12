@@ -358,6 +358,7 @@ $(function(){
                       <li><a data-toggle="batch" data-action="weight"><i class="fa fa-cog"></i> 设置置顶权重</a></li>
                       <li><a data-toggle="batch" data-action="keyword"><i class="fa fa-star"></i> 设置关键字</a></li>
                       <li><a data-toggle="batch" data-action="tag"><i class="fa fa-tags"></i> 设置标签</a></li>
+                      <li><a data-toggle="batch" data-action="meta"><i class="fa fa-sitemap"></i> 设置动态属性</a></li>
                       <li class="divider"></li>
                       <?php if(iCMS::$config['api']['baidu']['sitemap']['site'] && iCMS::$config['api']['baidu']['sitemap']['access_token']){ ?>
                       <li><a data-toggle="batch" data-action="baiduping" title="百度站长平台主动推送"><i class="fa fa-send"></i> 百度主动推送</a></li>
@@ -402,6 +403,9 @@ $(function(){
       <select name="scid[]" id="scid" class="span3" multiple="multiple"  data-placeholder="请选择副栏目(可多选)...">
         <?php echo $category_select;?>
       </select>
+    </div>
+    <div id="metaBatch">
+      <?php include admincp::view("apps.meta","apps");?>
     </div>
   </div>
 </div>
