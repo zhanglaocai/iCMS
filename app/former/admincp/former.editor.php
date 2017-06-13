@@ -90,7 +90,7 @@
       <ul class="nav nav-tabs" id="field-tab">
         <li class="active"><a href="#field-tab-0" data-toggle="tab"><i class="fa fa-dashboard"></i> UI</a></li>
         <li><a href="#field-tab-1" data-toggle="tab"><i class="fa fa-check-square-o"></i> 验证</a></li>
-        <li><a href="#field-tab-2" data-toggle="tab"><i class="fa fa-cog"></i> 数据处理</a></li>
+        <!-- <li><a href="#field-tab-2" data-toggle="tab"><i class="fa fa-cog"></i> 数据处理</a></li> -->
         <li><a href="#field-tab-3" data-toggle="tab"><i class="fa fa-info-circle"></i> 提示</a></li>
         <li><a href="#field-tab-5" data-toggle="tab"><i class="fa fa-cog"></i> 优化</a></li>
         <li><a href="#field-tab-6" data-toggle="tab"><i class="fa fa-code"></i> 脚本</a></li>

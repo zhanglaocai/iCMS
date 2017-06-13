@@ -637,7 +637,7 @@ class former {
             }
         }
         //多选字段转换
-        if(isset($fields['multiple'])){
+        if(!empty($fields['multiple'])){
           $value = explode(',',$value);
         }
 
@@ -665,7 +665,7 @@ class former {
           $value = $_SERVER['HTTP_REFERER'];
         }
         //多选字段转换
-        if(isset($fields['multiple'])){
+        if(!empty($fields['multiple'])){
           is_array($value) && $value = implode(',',$value);
         }
 
@@ -776,7 +776,7 @@ class former {
      * @param  [type] $value [description]
      * @return [type]        [description]
      */
-    public static function func($func,$value) {
+    public static function func($func,$value,$type='input') {
         return $value;
     }
     public static function layout($id=null,$func='submit') {
