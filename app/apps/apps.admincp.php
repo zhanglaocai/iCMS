@@ -113,14 +113,14 @@ class appsAdmincp{
 
         if(empty($id)) {
             iDB::value("SELECT `id` FROM `#iCMS@__apps` where `app` ='$app'") && iUI::alert('该应用已经存在!');
-            if($create){
-              iDB::check_table($array['app']) && iUI::alert('['.$array['app'].']数据表已经存在!');
-            }
             // iDB::$print_sql = true;
             if($type=='3'){
               $array['fields'] = '';
               $msg = "应用信息添加完成!";
             }else if($type=='2'){
+              if($create){
+                iDB::check_table($array['app']) && iUI::alert('['.$array['app'].']数据表已经存在!');
+              }
               if($addons_fieldata){
                 $addons_name = apps_mod::data_table_name($array['app']);
                 if($create){

@@ -26,6 +26,9 @@ class categoryFunc{
 		isset($vars['mode']) && $where_sql.= iSQL::in($vars['mode'],'mode');
 		isset($vars['cid']) && !isset($vars['stype']) && $where_sql.= iSQL::in($vars['cid'],'cid');
 		isset($vars['cid!']) && $where_sql.= iSQL::in($vars['cid!'],'cid','not');
+		if($vars['stype']=='sub' && isset($vars['sub'])){
+			$vars['stype']='suball';
+		}
 		switch ($vars['stype']) {
 			case "top":
 				$vars['cid'] && $where_sql.= iSQL::in($vars['cid'],'cid');
@@ -35,7 +38,7 @@ class categoryFunc{
 				$vars['cid'] && $where_sql.= iSQL::in($vars['cid'],'rootid');
 			break;
 			case "suball":
-				$cids = categoryApp::get_cids($vars['cid'],false);
+				$cids = categoryApp::get_cids($vars['cid'],true);
 				$where_sql.= iSQL::in($cids,'cid');
 			break;
 			case "self":

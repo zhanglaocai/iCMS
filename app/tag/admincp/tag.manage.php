@@ -158,7 +158,8 @@ $(function(){
         </thead>
         <tbody>
           <?php
-          $categoryArray  = category::multi_get($rs,'cid');
+          // category::unset_appid();
+          $categoryArray  = category::appid(null)->multi_get($rs,'cid');
           $tcategoryArray = category::multi_get($rs,'tcid',$this->appid);
 
           for($i=0;$i<$_count;$i++){

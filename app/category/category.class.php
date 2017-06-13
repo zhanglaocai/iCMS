@@ -24,6 +24,9 @@ class category {
         $priv && $self::$priv = $priv;
         return $self;
     }
+    public static function unset_appid(){
+        self::$appid = null;
+    }
     public static function init_sql($appid=null,$_sql=null){
         self::$appid && $appid = self::$appid;
 
