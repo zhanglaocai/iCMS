@@ -394,15 +394,27 @@ class category {
             return true;
         }
         if ($p === 'CIDS') {
-            foreach (members::$priv['category'] as $key => $_cid) {
-                if (!strstr($value, ':')) {
-                    self::check_priv($_cid, $act) && $cids[] = $_cid;
+            foreach (members::$priv['category'] as $key => $value) {
+                if (strpos($value, ':') !== false) {
+                    list($cid,$priv) = explode(':', $value);
+                    if($act){
+                        if($priv==$act){
+                            $cids[$cid] = $cid;
+                        }
+                    }
+                    // else{
+                    //     if(self::check_priv($cid, $act)){
+                    //         $cids[$cid] = $cid;
+                    //     }
+                    // }
                 }
             }
             return $cids;
         }
         if(members::$priv['category']){
-            $act && $p = $p . ':' . $act;
+            if($act){
+                strpos($p, ':') === false && $p = $p . ':' . $act;
+            }
             $priv = iPHP::check_priv((string) $p, members::$priv['category']);
         }else{
             $priv = false;

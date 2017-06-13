@@ -17,6 +17,7 @@ defined('iPHP') OR exit('What are you doing?');
 <script id="cpriv_item" type="text/html">
 <div class="input-prepend input-append">
     <span class="add-on">APPID:{{appid}}</span>
+    <span class="add-on">CID:{{cid}}</span>
     <span class="add-on"><b>{{name}}</b></span>
     <span class="add-on"><input type="checkbox" name="config[cpriv][]" value="{{cid}}:s"> 查询</span>
     <span class="add-on"><input type="checkbox" name="config[cpriv][]" value="{{cid}}:a" /> 添加子级</span>

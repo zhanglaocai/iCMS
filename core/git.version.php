@@ -7,7 +7,7 @@
 * @site https://www.icmsdev.com
 * @licence https://www.icmsdev.com/LICENSE.html
 */
-define('GIT_COMMIT', 'c9880e3de4ef81fe533b1bb7d939b907f08145f3');
+define('GIT_COMMIT', 'a6d231cd230d01af43cbfc1929560a6495a8fb12');
 define('GIT_AUTHOR', 'icmsdev');
 define('GIT_EMAIL', 'master@icmsdev.com');
-define('GIT_TIME', '1497259403');
+define('GIT_TIME', '1497319606');
