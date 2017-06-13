@@ -117,7 +117,7 @@ class categoryAdmincp {
         $description  = iSecurity::escapeStr($_POST['description']);
         $rule         = iSecurity::escapeStr($_POST['rule']);
         $template     = iSecurity::escapeStr($_POST['template']);
-        $config       = iSecurity::escapeStr($_POST['config']);
+        $config       = (array)iSecurity::escapeStr($_POST['config']);
 
         if($_rootid_hash){
             $_rootid = authcode($_rootid_hash);

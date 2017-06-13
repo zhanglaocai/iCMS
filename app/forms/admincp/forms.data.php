@@ -80,7 +80,13 @@ $("#<?php echo APP_FORMID;?>").batch();
                     <?php foreach ($fields as $fi => $field) {?>
                     <tr>
                       <td class="span3"><?php echo $field['label'] ; ?></td>
-                      <td><?php echo $value[$field['id']] ; ?></td>
+                      <td>
+                        <?php
+                          $vars = former::de_value($value[$field['id']],$field);
+                          // is_array($vars) && $vars = implode(',', $vars);
+                          print_r($vars);
+                        ?>
+                      </td>
                     </tr>
                     <?php } ?>
                   </tbody>

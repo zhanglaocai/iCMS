@@ -68,7 +68,7 @@ class iSQL {
         }
     }
     public static function in($vars, $field, $not = false, $noand = false, $table = '') {
-        if (is_bool($vars) || empty($vars)) {
+        if (is_bool($vars) || $vars==''||is_null($vars)) {
             return '';
         }
         if (!is_array($vars) && strpos($vars,',') !== false){
