@@ -344,7 +344,7 @@ class articleFunc{
 	            if(($vars['data']||$vars['pics']) && $article_data){
 	                $value['data']  = (array)$article_data[$value['id']];
 	                if($vars['pics']){
-						$value['pics'] = articleApp::body_pics($value['data']['body']);
+						$value['pics'] = filesApp::get_content_pics($value['data']['body']);
 						if(!$value['data']){
 							unset($value['data']);
 						}
