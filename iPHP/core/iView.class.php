@@ -105,10 +105,9 @@ class iView {
      * @return [type]      [description]
      */
     public static function callback_path($tpl,$obj){
-
         $tpl = ltrim($tpl,'/');
-
         strpos($tpl,'..') && iPHP::error_404("The template file path has a '..'");
+
         if(strpos($tpl, 'file::')!==false){
             list($_dir,$tpl)   = explode('||',str_replace('file::','',$tpl));
             $obj->template_dir = $_dir;
@@ -119,15 +118,25 @@ class iView {
 
         $flag = iPHP_APP . ':/';
         if (strpos($tpl, $flag) !== false) {
-            $_tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
-            if (is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
+            // 模板名/$tpl
+            if ($_tpl = self::check_app_tpl($tpl, iPHP_DEFAULT_TPL)){
                 return $_tpl;
             }
-
-            $_tpl = str_replace($flag, iPHP_APP, $tpl);
-            if (is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
+            // iCMS/$tpl
+            if ($_tpl = self::check_app_tpl($tpl, iPHP_APP)) {
                 return $_tpl;
             }
+            // iCMS/设备名/$tpl
+            if ($_tpl = self::check_app_tpl($tpl, iPHP_APP.'/'.iPHP_DEVICE)) {
+                return $_tpl;
+            }
+            // // 其它移动设备$tpl
+            // if(iPHP_MOBILE){
+            //     // iCMS/mobile/$tpl
+            //     if ($_tpl = self::check_app_tpl($tpl, iPHP_APP.'/mobile')) {
+            //         return $_tpl;
+            //     }
+            // }
             $tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
         } elseif (strpos($tpl, '{iTPL}') !== false) {
             $tpl = str_replace('{iTPL}', iPHP_DEFAULT_TPL, $tpl);
@@ -138,6 +147,14 @@ class iView {
         } else {
             iPHP::error_404('Unable to find the template file <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
         }
+    }
+    public static function check_app_tpl($tpl, $dir) {
+        $flag = iPHP_APP.':/';
+        $_tpl = str_replace($flag, $dir, $tpl);
+        if (is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
+            return $_tpl;
+        }
+        return false;
     }
     public static function app_vars($app_name = true, $out = false) {
         $app_name === true && $app_name = iPHP::$app_name;

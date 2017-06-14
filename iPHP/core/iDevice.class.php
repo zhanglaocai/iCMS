@@ -61,6 +61,7 @@ class iDevice {
         define('iPHP_ROUTER_URL', $config['router']['url']);
         define('iPHP_DEVICE', $device_name);
         define('iPHP_DOMAIN', $domain);
+        define('iPHP_MOBILE', iPHP::$mobile);
 
         iPHP_DOMAIN == iPHP_ROUTER_URL OR self::router($config['router']);
         iPHP_DOMAIN == iPHP_ROUTER_URL OR self::router($config['FS']);
