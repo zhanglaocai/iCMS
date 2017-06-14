@@ -272,6 +272,7 @@ class iUI {
 		$conf['lang'] = iUI::lang(iPHP_APP . ':page');
 		$iPages = new iPages($conf);
 		if ($iPages->totalpage > 1) {
+			$iPages->nowindex<1 && $iPages->nowindex =1;
 			$pagenav = $conf['pagenav'] ? strtoupper($conf['pagenav']) : 'NAV';
 			$pnstyle = $conf['pnstyle'] ? $conf['pnstyle'] : 0;
 			iView::$handle->_iVARS['PAGE'] = array(

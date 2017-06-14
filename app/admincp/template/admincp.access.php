@@ -82,6 +82,9 @@ $(function(){
             </tr>
           </tfoot>
         </table>
+        <div class="alert alert-info alert-block ml10 mr10">
+          <p>访问记录无删除功能,如要删除请登陆数据库删除相关信息</p>
+        </div>
     </div>
   </div>
 </div>

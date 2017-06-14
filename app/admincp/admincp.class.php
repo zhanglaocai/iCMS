@@ -136,8 +136,8 @@ class admincp {
 		iPHP::callback(self::$callback['history'],APP_DOURI);
 		//检查URL权限
 		iPHP::callback(self::$callback['priv'],array(APP_DOURI,'page'));
-
-		self::access_log();
+		//默认开启
+		iCMS::$config['debug']['access_log'] OR self::access_log();
 
 		$method = self::$APP_METHOD;
 		$args === null && $args = self::$APP_ARGS;
