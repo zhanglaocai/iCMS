@@ -68,7 +68,7 @@ class iSQL {
         }
     }
     public static function in($vars, $field, $not = false, $noand = false, $table = '') {
-        if (is_bool($vars) || $vars==''||is_null($vars)) {
+        if (is_bool($vars) || (empty($vars) && !is_numeric($vars))) {
             return '';
         }
         if (!is_array($vars) && strpos($vars,',') !== false){
@@ -85,7 +85,7 @@ class iSQL {
                     $vas[] = "'" . addslashes($value) . "'";
                 }
             }
-            $vas  = array_unique($vas);
+            is_array($vas) && $vas  = array_unique($vas);
             $vars = implode(',', $vas);
             $sql  = $not ? " NOT IN ($vars)" : " IN ($vars) ";
         } else {
