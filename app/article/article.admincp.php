@@ -636,7 +636,9 @@ class articleAdmincp{
                 'pubdate' =>$pubdate
             ),(array)$category))->href;
 
-            $status && $msg = $this->do_baiduping($aid,false);
+            if($status && iCMS::$config['api']['baidu']['sitemap']['sync']){
+                $msg = $this->do_baiduping($aid,false);
+            }
 
             if($this->callback['return']){
                 return $this->callback['return'];
