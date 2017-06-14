@@ -62,9 +62,13 @@ class contentFunc {
             }
         }
         if (isset($vars['pid']) && !isset($vars['pids'])) {
+            iSQL::$check_numeric = true;
             $where_sql .= iSQL::in($vars['pid'], 'pid');
         }
-
+        if(isset($vars['pid!'])){
+            iSQL::$check_numeric = true;
+            $where_sql.= iSQL::in($vars['pid!'],'pid','not');
+        }
         if (isset($vars['pids']) && !isset($vars['pid'])) {
             iMap::init('prop', self::$app['id'],'pid');
             $map_where += iMap::where($vars['pids']);

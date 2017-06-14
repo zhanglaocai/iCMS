@@ -26,17 +26,21 @@ class tagFunc{
             $where_sql.= iSQL::in($vars['tcid!'],'tcid','not');
         }
 
-        if(!isset($vars['pids']) && isset($vars['pid'])){
-            $where_sql.= iSQL::in($vars['pid'],'pid');
+        if (isset($vars['pid']) && !isset($vars['pids'])) {
+            iSQL::$check_numeric = true;
+            $where_sql .= iSQL::in($vars['pid'], 'pid');
         }
+        if(isset($vars['pid!'])){
+            iSQL::$check_numeric = true;
+            $where_sql.= iSQL::in($vars['pid!'],'pid','not');
+        }
+
         if(isset($vars['pids']) && !isset($vars['pid'])){
             iMap::init('prop',iCMS_APP_TAG,'pid');
             //$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__tag`.id'); //map 表大的用exists
             $map_where+= iMap::where($vars['pids']);
         }
-        if(isset($vars['pid!'])){
-            $where_sql.= iSQL::in($vars['pid!'],'pid','not');
-        }
+
 
         if(!isset($vars['cids']) && isset($vars['cid'])){
             $cid = explode(',',$vars['cid']);

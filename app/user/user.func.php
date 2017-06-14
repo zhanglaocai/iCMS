@@ -50,9 +50,15 @@ class userFunc{
     	isset($vars['gid'])   && $where_sql.= " AND `gid` ='{$vars['gid']}'";
 
     	isset($vars['type'])  && $where_sql.= " AND `type` ='{$vars['type']}'";
-        if(isset($vars['pid']) && !isset($vars['pids'])){
-            $where_sql.= iSQL::in($vars['pid'],'pid');
+        if (isset($vars['pid']) && !isset($vars['pids'])) {
+            iSQL::$check_numeric = true;
+            $where_sql .= iSQL::in($vars['pid'], 'pid');
         }
+        if(isset($vars['pid!'])){
+            iSQL::$check_numeric = true;
+            $where_sql.= iSQL::in($vars['pid!'],'pid','not');
+        }
+
         if(isset($vars['pids']) && !isset($vars['pid'])){
             iMap::init('prop',iCMS_APP_USER,'pid');
             //$where_sql.= iMap::exists($vars['pid'],'`#iCMS@__user`.uid'); //map 表大的用exists

@@ -9,6 +9,7 @@
  * @version 2.0.0
  */
 class iSQL {
+    public static $check_numeric = false;
     public static function get_rand_ids($table,$where=null,$limit='10',$primary='id'){
         $whereSQL = $where?
             "{$where} AND `{$table}`.`{$primary}` >= rand_id":
@@ -67,9 +68,16 @@ class iSQL {
             return ($and?' AND ':'').implode(' AND ', $wheres);
         }
     }
+
     public static function in($vars, $field, $not = false, $noand = false, $table = '') {
-        if (is_bool($vars) || (empty($vars) && !is_numeric($vars))) {
-            return '';
+        if (is_bool($vars) || empty($vars)) {
+            if(self::$check_numeric){
+                if(!is_numeric($vars)){
+                    return '';
+                }
+            }else{
+                return '';
+            }
         }
         if (!is_array($vars) && strpos($vars,',') !== false){
             $vars = explode(',', $vars);
@@ -98,6 +106,7 @@ class iSQL {
             return $sql;
         }
         $sql = ' AND ' . $sql;
+        self::$check_numeric = false;
         return $sql;
     }
     public static function explode_var($ids,$delimiter=',') {

@@ -120,9 +120,9 @@ class articleAdmincp{
             break;
             case 'baiduping':
                 foreach((array)$_POST['id'] AS $id) {
-                    $this->do_baiduping($id,false);
+                    $msg.= $this->do_baiduping($id,false);
                 }
-                iUI::success('推送完成!','js:1');
+                iUI::success($msg,'js:1');
             break;
     		case 'move':
 		        $_POST['cid'] OR iUI::alert("请选择目标栏目!");
@@ -230,14 +230,24 @@ class articleAdmincp{
         $id OR iUI::alert('请选择要推送的文章!');
         $rs   = article::row($id);
         $C    = category::get($rs['cid']);
-        $iurl = iURL::get('article',array($rs,$C));
-        $url  = $iurl->href;
-        $res  = baidu_ping($url);
-        if($res===true){
-            $dialog && iUI::success('推送完成','js:1');
-        }else{
-            iUI::alert('推送失败！['.$res->message.']','js:1');
+        $iurl = (array)iURL::get('article',array($rs,$C));
+        $urls = array();
+        $urls[] = $iurl['href'];
+        if($iurl['mobile']['url']){
+            $urls[] = $iurl['mobile']['url'];
         }
+        $res = plugin_baidu::ping($urls);
+        // if($iurl['mip']['url']){
+        //     $mip = plugin_baidu::ping($iurl['mip']['url'],'mip');
+        // }
+        if($res===true){
+            $msg = '推送完成';
+            $dialog && iUI::success($msg,'js:1');
+        }else{
+            $msg = '推送失败！['.$res->message.']';
+            $dialog && iUI::alert($msg,'js:1');
+        }
+        if(!$dialog) return $msg.'<br />';
     }
     /**
      * [JSON数据]
@@ -626,9 +636,7 @@ class articleAdmincp{
                 'pubdate' =>$pubdate
             ),(array)$category))->href;
 
-            if($status && iCMS::$config['api']['baidu']['sitemap']['sync']){
-                baidu_ping($article_url);
-            }
+            $status && $msg = $this->do_baiduping($aid,false);
 
             if($this->callback['return']){
                 return $this->callback['return'];
@@ -652,7 +660,7 @@ class articleAdmincp{
                     array("text" =>"查看网站首页","url"=>iCMS_URL,"target"=>'_blank')
             );
             iUI::$dialog['modal'] = true;
-            iUI::dialog('success:#:check:#:文章添加完成!<br />10秒后返回文章列表','url:'.$REFERER_URL,10,$moreBtn);
+            iUI::dialog('success:#:check:#:文章添加完成!<br />10秒后返回文章列表'.$msg,'url:'.$REFERER_URL,10,$moreBtn);
         }else{
             isset($_POST['ischapter']) OR $chapter = 0;
 

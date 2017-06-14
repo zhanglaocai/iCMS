@@ -52,30 +52,6 @@ function small($sfp,$w='',$h='',$scale=true) {
     echo $sfp.'_'.$size.'.jpg';
 }
 
-function baidu_ping($urls) {
-    $site          = iCMS::$config['api']['baidu']['sitemap']['site'];
-    $access_token  = iCMS::$config['api']['baidu']['sitemap']['access_token'];
-    if(empty($site)||empty($access_token)){
-        return false;
-    }
-    $api     ='http://data.zz.baidu.com/urls?site='.$site.'&token='.$access_token;
-    $ch      = curl_init();
-    $options =  array(
-        CURLOPT_URL            => $api,
-        CURLOPT_POST           => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POSTFIELDS     => implode("\n",(array)$urls),
-        CURLOPT_HTTPHEADER     => array('Content-Type: text/plain'),
-    );
-    curl_setopt_array($ch, $options);
-    $result = curl_exec($ch);
-    $json   = json_decode($result);
-    if($json->success){
-        return true;
-    }
-    return $json;
-}
-
 function autoformat($html){
     $html = stripslashes($html);
     $html = preg_replace(array(

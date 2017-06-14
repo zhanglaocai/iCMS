@@ -48,8 +48,13 @@ class categoryFunc{
 		}
 
 		if (isset($vars['pid']) && !isset($vars['pids'])) {
+			iSQL::$check_numeric = true;
 			$where_sql .= iSQL::in($vars['pid'], 'pid');
 		}
+        if(isset($vars['pid!'])){
+            iSQL::$check_numeric = true;
+            $where_sql.= iSQL::in($vars['pid!'],'pid','not');
+        }
 		if (isset($vars['pids']) && !isset($vars['pid'])) {
 			iMap::init('prop', iCMS_APP_CATEGORY,'pid');
 			$where_sql.= iMap::exists($vars['pids'],'`#iCMS@__category`.cid'); //主表小 map表大
