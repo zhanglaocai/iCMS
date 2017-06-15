@@ -1087,14 +1087,17 @@ class iTemplateLite_Compiler extends iTemplateLite {
 				}
 				array_shift($variable);
 			}else{
-				// $_result = "\$this->_iVARS";
-				$this->trigger_error('$' . $var_name.implode('', $variable) . ' is an invalid $'.$this->reserved_template_varname.' reference', E_USER_ERROR, __FILE__, __LINE__);
+				if($variable){
+					$this->trigger_error('$' . $var_name.implode('', $variable) . ' is an invalid $'.$this->reserved_template_varname.' reference', E_USER_ERROR, __FILE__, __LINE__);
+				}else{
+					$_result = "\$this->_iVARS";
+				}
 			}
 		}else{
 			$_result = "\$this->_vars['$var_name']";
 		}
 
-		foreach ($variable as $var){
+		if($variable)foreach ($variable as $var){
 			if ($var[0] == '['){
 				$var = substr($var, 1, -1);
 				if (is_numeric($var)){
@@ -1110,7 +1113,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 				}
 			}else if ($var[0] == '.'){
    				if ($var[0] == '$'){
-	   				$_result .= "[\$this->_TPL['" . substr($var, 2) . "']]";
+	   				$_result .= "[\$this->_vars['" . substr($var, 2) . "']]";
 				}else{
 			   		$_result .= "['" . substr($var, 1) . "']";
 				}
@@ -1119,7 +1122,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 					$this->trigger_error('call to internal object members is not allowed', E_USER_ERROR, __FILE__, __LINE__);
 				}
 				else if (substr($var, 2, 1) == '$'){
-					$_output .= '->{(($var=$this->_TPL[\''.substr($var,3).'\']) && substr($var,0,2)!=\'__\') ? $_var : $this->trigger_error("cannot access property \\"$var\\"")}';
+					$_output .= '->{(($var=$this->_vars [\''.substr($var,3).'\']) && substr($var,0,2)!=\'__\') ? $_var : $this->trigger_error("cannot access property \\"$var\\"")}';
 				}
 			}else{
 				$this->trigger_error('$' . $var_name.implode('', $variable) . ' is an invalid reference', E_USER_ERROR, __FILE__, __LINE__);

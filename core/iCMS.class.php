@@ -38,6 +38,25 @@ class iCMS {
                 'device' => array('iDevice','urls'),//设备网址
             )
         ));
+
+        iView::init(array(
+            'define' => array(
+                'apps' => self::$config['apps'],
+                'func' => 'content',
+            )
+        ));
+        iView::set_iVARS(array(
+            'VERSION' => iCMS_VERSION,
+            'API'     => iCMS_API,
+            'SAPI'    => iCMS_API_URL,
+            'DEVICE'  => iPHP_DEVICE,
+            'CONFIG'  => self::$config,
+            'APPID'   => array()
+        ));
+        foreach ((array)self::$config['apps'] as $_app => $_appid) {
+            iView::$handle->_iVARS['APPID'][strtoupper($_app)] = $_appid;
+        }
+        self::assign_site();
 	}
     /**
      * 运行应用程序
@@ -45,23 +64,7 @@ class iCMS {
      * @param string $do 动作名称
      */
     public static function run($app = NULL,$do = NULL,$args = NULL,$prefix="do_") {
-        iView::init();
-        iView::$apps = self::$config['apps'];
-        iView::$func = 'content';
-        iView::$handle->_iVARS = array(
-            'VERSION' => iCMS_VERSION,
-            'API'     => iCMS_API,
-            'SAPI'    => iCMS_API_URL,
-            'DEVICE'  => iPHP_DEVICE,
-            'CONFIG'  => self::$config,
-            'APPID'   => array()
-        );
-        foreach ((array)self::$config['apps'] as $_app => $_appid) {
-            iView::$handle->_iVARS['APPID'][strtoupper($_app)] = $_appid;
-        }
         self::send_access_control();
-        self::assign_site();
-
         return iPHP::run($app,$do,$args,$prefix);
     }
 

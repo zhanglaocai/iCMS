@@ -11,10 +11,10 @@
 class iView {
     public static $handle  = NULL;
     public static $gateway = null;
-    public static $apps  = array();
-    public static $func  = array();
+    public static $config = array();
 
-    public static function init() {
+    public static function init($config = array()) {
+        self::$config = $config;
         self::$handle = new iTemplateLite();
         self::$handle->debugging    = iPHP_TPL_DEBUGGING;
         self::$handle->template_dir = iPHP_TPL_DIR;
@@ -52,8 +52,12 @@ class iView {
         if($args['method']){
             $callback = array($args['app'].'Func',$args['app'].'_'.$args['method']);
             //自定义APP模板调用 iCMS:test:list 调用 contentFunc
-            if(!self::check_func($args['app']) && self::$apps[$args['app']]){
-                $callback = array(iView::$func.'Func',iView::$func.'_'.$args['method']);
+            if(self::$config['define']){
+                $apps = self::$config['define']['apps'];
+                $func = self::$config['define']['func'];
+                if(!self::check_func($args['app']) && $apps[$args['app']]){
+                    $callback = array($func.'Func',$func.'_'.$args['method']);
+                }
             }
             //自定义APP模板调用 iCMS:content:list app="$app.app"
             if($args['_app']){
