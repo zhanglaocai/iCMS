@@ -128,12 +128,14 @@ class iSecurity {
 			iSecurity::_addslashes($_GET);
 			iSecurity::_addslashes($_COOKIE);
 		}
-		iSecurity::getServer(array('HTTP_REFERER','HTTP_HOST','HTTP_X_FORWARDED_FOR','HTTP_USER_AGENT',
-							'HTTP_CLIENT_IP','HTTP_SCHEME','HTTPS','PHP_SELF','SERVER_PORT',
-							'REQUEST_URI','REQUEST_METHOD','REMOTE_ADDR','SCRIPT_NAME',
-							'SERVER_SOFTWARE','REQUEST_TIME',
-							'X-Requested-With','HTTP_X_REQUESTED_WITH',
-							'QUERY_STRING','argv','argc'));
+		iSecurity::getServer(array(
+			'HTTP_REFERER','HTTP_HOST','HTTP_X_FORWARDED_FOR','HTTP_USER_AGENT',
+			'HTTP_CLIENT_IP','HTTP_SCHEME','HTTPS','PHP_SELF','REMOTE_ADDR',
+			'REQUEST_URI','REQUEST_METHOD','SCRIPT_NAME','REQUEST_TIME',
+			'SERVER_SOFTWARE','SERVER_ADDR','SERVER_PORT',
+			'X-Requested-With','HTTP_X_REQUESTED_WITH',
+			'QUERY_STRING','argv','argc'
+		));
 
 	}
 

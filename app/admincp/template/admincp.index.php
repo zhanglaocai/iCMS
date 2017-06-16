@@ -88,8 +88,8 @@ admincp::head();
           <td><?php $os = explode(" ", php_uname()); echo $os[0];?> &nbsp;内核版本：<?php if('/'==DIRECTORY_SEPARATOR){echo $os[2];}else{echo $os[1];} ?></td>
           <td>WEB服务器版本</td>
           <td><?php echo $_SERVER['SERVER_SOFTWARE'] ; ?></td>
-          <td>服务器端口</td>
-          <td><?php echo getenv(SERVER_PORT) ; ?></td>
+          <td>服务器IP</td>
+          <td><?php echo getenv('SERVER_ADDR').":".getenv('SERVER_PORT') ; ?></td>
         </tr>
         <tr>
           <td>服务器总空间</td>

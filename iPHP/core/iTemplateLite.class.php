@@ -20,10 +20,8 @@ class iTemplateLite {
 	public $php_handling              = "PHP_QUOTE";//2007-7-23 0:01 quote php tags
 	public $default_modifiers         = array();
 	public $debugging                 = false;
-
-	public $_error_reporting          = "<?php defined('iPHP') OR exit('What are you doing?');error_reporting(iPHP_TPL_DEBUG?E_ALL & ~E_NOTICE:0);?>\n";
-
-	public $reserved_template_varname = 'iTPL';
+	public $error_reporting_header 	  = null;
+	public $reserved_template_varname = 'iTemplateLite';
 
 	// private internal variables
 	public $_vars                     = array();	// stores all internal assigned variables
@@ -337,6 +335,10 @@ class iTemplateLite {
 	}
 
 	function _get_plugin_dir($name=null){
+		$path = $this->callback('plugin',array($name,$this));
+		if($path){
+			return $path;
+		}
 		return iTEMPLATE_DIR.$this->plugins_dir.'/'.$name;
 	}
 
@@ -356,9 +358,9 @@ class iTemplateLite {
 	function trigger_error($error_msg, $error_type = E_USER_ERROR, $file = null, $line = null){
 		$info = null;
 		if(isset($file) && isset($line)){
-			$info = ' ('.basename($file).", line $line)";
+			$info = ' (in '.basename($file).", line $line)";
 		}
-		trigger_error('TPL: [in ' . $this->_file . ' line ' . ($this->_linenum-1) . "]: syntax error: $error_msg$info", $error_type);
+		trigger_error('Template Error in <b>' . $this->_file . '</b> line ' . ($this->_linenum) . " [ Error: $error_msg$info ]", $error_type);
 	}
 }
 // class iTemplateLite_Compiler extends iTemplateLite {
@@ -552,8 +554,8 @@ class iTemplateLite_Compiler extends iTemplateLite {
 		// remove unnecessary close/open tags
 		$compiled_text = preg_replace('!\?>\n?<\?php!', "\n", $compiled_text);
 
-//2007-7-29 21:15 error_reporting/function_exists
-		$compiled_text = $this->_error_reporting.$compiled_text;
+//2007-7-29 21:15 error_reporting_header/function_exists
+		$compiled_text = $this->error_reporting_header.$compiled_text;
 
 		return $compiled_text;
 	}
@@ -588,7 +590,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 		switch ($function) {
 			case 'include':
 				$this->internal('compile_include');
-				return $include_file = str_replace($this->_error_reporting, '', compile_include($arguments, $this));
+				return $include_file = str_replace($this->error_reporting_header, '', compile_include($arguments, $this));
 				break;
 			case $this->reserved_template_varname:
 				$_args = $this->_parse_arguments($arguments);

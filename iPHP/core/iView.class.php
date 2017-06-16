@@ -19,8 +19,9 @@ class iView {
         self::$handle->debugging    = iPHP_TPL_DEBUGGING;
         self::$handle->template_dir = iPHP_TPL_DIR;
         self::$handle->compile_dir  = iPHP_TPL_CACHE;
-        self::$handle->reserved_template_varname  = iPHP_APP;
-        self::$handle->left_delimiter = '<!--{';
+        self::$handle->reserved_template_varname = iPHP_APP;
+        self::$handle->error_reporting_header    = "<?php defined('iPHP') OR exit('What are you doing?');error_reporting(iPHP_TPL_DEBUG?E_ALL & ~E_NOTICE:0);?>\n";
+        self::$handle->left_delimiter  = '<!--{';
         self::$handle->right_delimiter = '}-->';
         self::$handle->register_modifier("date", "get_date");
         self::$handle->register_modifier("cut", "csubstr");
@@ -36,8 +37,9 @@ class iView {
         self::$handle->register_modifier("fields", "select_fields");
         self::$handle->register_block("cache", array("iView", "block_cache"));
         self::$handle->template_callback = array(
-            "resource" => array("iView","callback_path"),
+            "resource" => array("iView","callback_resource"),
             "func"     => array("iView","callback_func"),
+            "plugin"   => array("iView","callback_plugin"),
         );
         self::$handle->assign('_GET', $_GET);
         self::$handle->assign('_POST', $_POST);
@@ -82,6 +84,13 @@ class iView {
             $tpl->assign($keys,$callback($args));
         }
     }
+    public static function callback_plugin($name,$tpl) {
+        $path = iPHP_TPL_FUN."/tpl.".$name;
+        if (is_file($path)) {
+            return $path;
+        }
+        return false;
+    }
     public static function block_cache($vars, $content, $tpl) {
         $vars['id'] OR iUI::warning('cache 标签出错! 缺少"id"属性或"id"值为空.');
         $cache_time = isset($vars['time']) ? (int) $vars['time'] : -1;
@@ -108,7 +117,7 @@ class iView {
      * @param  [type] $tpl [description]
      * @return [type]      [description]
      */
-    public static function callback_path($tpl,$obj){
+    public static function callback_resource($tpl,$obj){
         $tpl = ltrim($tpl,'/');
         strpos($tpl,'..') && iPHP::error_404("The template file path has a '..'");
 

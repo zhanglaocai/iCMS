@@ -25,6 +25,6 @@ function template_fetch_compile_include($_templatelite_include_file, $_templatel
 	if ($object->debugging){
 		$object->_templatelite_debug_info[$included_tpls_idx]['exec_time'] = array_sum(explode(' ', microtime())) - $object->_templatelite_debug_info[$included_tpls_idx]['exec_time'];
 	}
-	$object->error && $_compiled_output = str_replace($object->_error_reporting,'',$_compiled_output);
+	$object->error && $_compiled_output = str_replace($object->error_reporting_header,'',$_compiled_output);
 	return $_compiled_output;
 }

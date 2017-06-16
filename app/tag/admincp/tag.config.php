@@ -10,12 +10,12 @@
 defined('iPHP') OR exit('What are you doing?');
 configAdmincp::head("标签系统设置");
 ?>
-<div class="input-prepend">
+<!-- <div class="input-prepend">
   <span class="add-on">标签URL</span>
   <input type="text" name="config[url]" class="span4" id="url" value="<?php echo $config['url'] ; ?>"/>
 </div>
 <span class="help-inline">标签目录访问URL 可绑定域名</span>
-<div class="clearfloat mb10"></div>
+<div class="clearfloat mb10"></div> -->
 <div class="input-prepend input-append">
   <span class="add-on">标签URL规则</span>
   <input type="text" name="config[rule]" class="span4" id="rule" value="<?php echo $config['rule'] ; ?>"/>
@@ -39,13 +39,13 @@ configAdmincp::head("标签系统设置");
   </div>
 </div>
 <div class="help-inline">伪静态模式时规则一定要包含<span class="label label-important">{ID}</span>或<span class="label label-important">{NAME}</span>或<span class="label label-important">{ZH_CN}</span>或<span class="label label-important">{TKEY}</span></div>
-<div class="clearfloat mb10"></div>
+<!-- <div class="clearfloat mb10"></div>
 <div class="input-prepend">
   <span class="add-on">标签目录</span>
   <input type="text" name="config[dir]" class="span4" id="dir" value="<?php echo $config['dir'] ; ?>"/>
 </div>
 <span class="help-inline">存放标签静态页面目录，相对于app目录。可用../表示上级目录</span>
-<div class="clearfloat mb10"></div>
+ --><div class="clearfloat mb10"></div>
 <div class="input-prepend input-append">
   <span class="add-on">标签模板</span>
   <input type="text" name="config[tpl]" class="span4" id="tpl" value="<?php echo $config['tpl'] ; ?>"/>
@@ -59,7 +59,7 @@ configAdmincp::head("标签系统设置");
 <div class="mt20"></div>
 <div class="alert alert-block">
   此配置为标签的URL默认配置<br />
-  标签URL规则优先级
-  标签指定URL > 标签分类 > 标签所属栏目 > 默认配置
+  标签规则优先级
+  标签自定义链接 > 标签分类 > 标签所属栏目 > 标签系统设置
 </div>
 <?php configAdmincp::foot();?>
