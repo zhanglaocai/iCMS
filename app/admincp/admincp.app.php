@@ -74,26 +74,32 @@ class admincpApp{
                 }
             }
         }
-
-        $acc = iPHP::callback(array("categoryAdmincp",  "_count"),array(array('appid'=>iCMS_APP_ARTICLE)));
-        $tcc = iPHP::callback(array("categoryAdmincp",  "_count"),array(array('appid'=>iCMS_APP_TAG)));
-        $apc = iPHP::callback(array("appsAdmincp",      "_count"));
-        $uc  = iPHP::callback(array("userAdmincp",      "_count"));
-
-        $ac  = iPHP::callback(array("articleAdmincp",   "_count"));
-        $ac0 = iPHP::callback(array("articleAdmincp",   "_count"),array(array('status'=>'0')));
-        $ac2 = iPHP::callback(array("articleAdmincp",   "_count"),array(array('status'=>'2')));
-        $lc  = iPHP::callback(array("linksAdmincp",     "_count"));
-
-        $tc  = iPHP::callback(array("tagAdmincp",       "_count"));
-        $cc  = iPHP::callback(array("commentAdmincp",   "_count"));
-        $kc  = iPHP::callback(array("keywordsAdmincp",  "_count"));
-        $pc  = iPHP::callback(array("propAdmincp",      "_count"));
-
-        $fc  = iPHP::callback(array("filesAdmincp",     "_count"));
-
     	include admincp::view("admincp.index");
     }
+    public function do_count(){
+        $counts = array();
+        $counts['acc'] = iPHP::callback(array("categoryAdmincp",  "_count"),array(array('appid'=>iCMS_APP_ARTICLE)));
+        $counts['tcc'] = iPHP::callback(array("categoryAdmincp",  "_count"),array(array('appid'=>iCMS_APP_TAG)));
+        $counts['apc'] = iPHP::callback(array("appsAdmincp",      "_count"));
+        $counts['uc']  = iPHP::callback(array("userAdmincp",      "_count"));
+
+        $counts['lc']  = iPHP::callback(array("linksAdmincp",     "_count"));
+
+        $counts['tc']  = iPHP::callback(array("tagAdmincp",       "_count"));
+        $counts['cc']  = iPHP::callback(array("commentAdmincp",   "_count"));
+        $counts['kc']  = iPHP::callback(array("keywordsAdmincp",  "_count"));
+        $counts['pc']  = iPHP::callback(array("propAdmincp",      "_count"));
+
+        $counts['fc']  = iPHP::callback(array("filesAdmincp",     "_count"));
+        if($_GET['a']=='article'){
+            $counts = array();
+            $counts['ac']  = iPHP::callback(array("articleAdmincp",   "_count"));
+            $counts['ac0'] = iPHP::callback(array("articleAdmincp",   "_count"),array(array('status'=>'0')));
+            $counts['ac2'] = iPHP::callback(array("articleAdmincp",   "_count"),array(array('status'=>'2')));
+        }
+        echo json_encode($counts);
+    }
+
     // 检测函数支持
     public function isfun($fun = ''){
         if (!$fun || trim($fun) == '' || preg_match('~[^a-z0-9\_]+~i', $fun, $tmp)) return '错误';
@@ -113,4 +119,5 @@ class admincpApp{
             break;
         }
     }
+
 }

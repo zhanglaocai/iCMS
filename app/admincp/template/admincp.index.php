@@ -27,34 +27,38 @@ admincp::head();
   <div class="widget-box">
     <div class="widget-title"> <span class="icon"> <i class="fa fa-signal"></i> </span>
       <h5>站点数据统计</h5>
+      <span id="counts" style="display: inline-block;margin-top: 6px; color: #999;">
+        <img src="./app/admincp/ui/img/ajax_loader.gif" width="16" height="16" align="absmiddle">
+        数据统计中,请稍候...
+      </span>
     </div>
     <div class="widget-content">
       <div class="row-fluid">
         <div class="span3">
           <ul class="site-stats">
-            <li><a href="<?php echo __ADMINCP__;?>=article_category"><i class="fa fa-sitemap"></i> <strong><?php echo $acc ; ?></strong> <small>文章栏目</small></a></li>
-            <li><a href="<?php echo __ADMINCP__;?>=tag_category"><i class="fa fa-sitemap"></i> <strong><?php echo $tcc ; ?></strong> <small>标签分类</small></a></li>
-            <li><a href="<?php echo __ADMINCP__;?>=apps"><i class="fa fa-sitemap"></i> <strong><?php echo $apc ; ?></strong> <small>应用</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=article_category"><i class="fa fa-sitemap"></i> <strong id="counts_acc">0</strong> <small>文章栏目</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=tag_category"><i class="fa fa-sitemap"></i> <strong id="counts_tcc">0</strong> <small>标签分类</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=apps"><i class="fa fa-sitemap"></i> <strong id="counts_apc">0</strong> <small>应用</small></a></li>
             <li class="divider"></li>
-            <li><a href="<?php echo __ADMINCP__;?>=user"><i class="fa fa-user"></i> <strong><?php echo $uc ; ?></strong> <small>用户</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=user"><i class="fa fa-user"></i> <strong id="counts_uc">0</strong> <small>用户</small></a></li>
           </ul>
         </div>
         <div class="span3">
           <ul class="site-stats">
-            <li><a href="<?php echo __ADMINCP__;?>=article&do=manage"><i class="fa fa-file-text"></i> <strong><?php echo $ac ; ?></strong> <small>文章总数</small></a></li>
-            <li><a href="<?php echo __ADMINCP__;?>=article&do=inbox"><i class="fa fa-file"></i> <strong><?php echo $ac0 ; ?></strong> <small>草稿</small></a></li>
-            <li><a href="<?php echo __ADMINCP__;?>=article&do=trash"><i class="fa fa-file-o"></i> <strong><?php echo $ac2 ; ?></strong> <small>回收站</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=article&do=manage"><i class="fa fa-file-text"></i> <strong id="counts_ac">0</strong> <small>文章总数</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=article&do=inbox"><i class="fa fa-file"></i> <strong id="counts_ac0">0</strong> <small>草稿</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=article&do=trash"><i class="fa fa-file-o"></i> <strong id="counts_ac2">0</strong> <small>回收站</small></a></li>
             <li class="divider"></li>
-            <li><a href="<?php echo __ADMINCP__;?>=links"><i class="fa fa-heart"></i> <strong><?php echo $lc ; ?></strong> <small>友链</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=links"><i class="fa fa-heart"></i> <strong id="counts_lc">0</strong> <small>友链</small></a></li>
           </ul>
         </div>
         <div class="span3">
           <ul class="site-stats">
-            <li><a href="<?php echo __ADMINCP__;?>=tag"><i class="fa fa-tag"></i> <strong><?php echo $tc ; ?></strong> <small>标签</small></a></li>
-            <li><a href="<?php echo __ADMINCP__;?>=comment"><i class="fa fa-comment"></i> <strong><?php echo $cc ; ?></strong> <small>评论</small></a></li>
-            <li><a href="<?php echo __ADMINCP__;?>=keywords"><i class="fa fa-paperclip"></i> <strong><?php echo $kc ; ?></strong> <small>内链</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=tag"><i class="fa fa-tag"></i> <strong id="counts_tc">0</strong> <small>标签</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=comment"><i class="fa fa-comment"></i> <strong id="counts_cc">0</strong> <small>评论</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=keywords"><i class="fa fa-paperclip"></i> <strong id="counts_kc">0</strong> <small>内链</small></a></li>
             <li class="divider"></li>
-            <li><a href="<?php echo __ADMINCP__;?>=prop"><i class="fa fa-thumb-tack"></i> <strong><?php echo $pc ; ?></strong> <small>属性</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=prop"><i class="fa fa-thumb-tack"></i> <strong id="counts_pc">0</strong> <small>属性</small></a></li>
           </ul>
         </div>
         <div class="span3">
@@ -63,7 +67,7 @@ admincp::head();
             <li><a href="<?php echo __ADMINCP__;?>=database&do=backup"><i class="fa fa-puzzle-piece"></i> <strong><?php echo count($iTable) ; ?></strong><small>iCMS表</small></a></li>
             <li><a href="<?php echo __ADMINCP__;?>=database&do=backup"><i class="fa fa-puzzle-piece"></i> <strong><?php echo count($oTable) ; ?></strong> <small>其它表</small></a></li>
             <li class="divider"></li>
-            <li><a href="<?php echo __ADMINCP__;?>=files"><i class="fa fa-files-o"></i> <strong><?php echo $fc ; ?></strong> <small>文件</small></a></li>
+            <li><a href="<?php echo __ADMINCP__;?>=files"><i class="fa fa-files-o"></i> <strong id="counts_fc">0</strong> <small>文件</small></a></li>
           </ul>
         </div>
       </div>
@@ -243,6 +247,25 @@ admincp::head();
     </div>
   </div>
 </div>
+<script>
+window.setTimeout(function(){
+  $.getJSON('<?php echo iPHP_SELF; ?>?do=count',
+    function(array){
+      $("#counts").hide();
+      $.each(array, function(index, val) {
+          $("#counts_"+index).text(val)
+      });
+    }
+  );
+  $.getJSON('<?php echo iPHP_SELF; ?>?do=count&a=article',
+    function(array){
+      $.each(array, function(index, val) {
+          $("#counts_"+index).text(val)
+      });
+    }
+  );
+},1000);
+</script>
 <?php iPHP::callback(array('patchAdmincp','check_version'));?>
 <?php iPHP::callback(array('patchAdmincp','check_update'));?>
 <?php admincp::foot();?>
