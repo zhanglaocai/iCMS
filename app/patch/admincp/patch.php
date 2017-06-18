@@ -53,7 +53,7 @@ function setIntervals(){
 }
 function clearIntervals(){
 	clearInterval(timer);
-	finish();
+	// finish();
 }
 </script>
 <?php admincp::foot();?>

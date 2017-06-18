@@ -91,15 +91,24 @@ class admincpApp{
         $counts['pc']  = iPHP::callback(array("propAdmincp",      "_count"));
 
         $counts['fc']  = iPHP::callback(array("filesAdmincp",     "_count"));
-        if($_GET['a']=='article'){
-            $counts = array();
+        if($_GET['a']=='article'||$_GET['a']=='all'){
+            $_GET['a']=='all' OR $counts = array();
             $counts['ac']  = iPHP::callback(array("articleAdmincp",   "_count"));
             $counts['ac0'] = iPHP::callback(array("articleAdmincp",   "_count"),array(array('status'=>'0')));
             $counts['ac2'] = iPHP::callback(array("articleAdmincp",   "_count"),array(array('status'=>'2')));
         }
         echo json_encode($counts);
     }
-
+    public function do_version(){
+        echo json_encode(array(
+            'GIT_COMMIT'   => GIT_COMMIT,
+            'GIT_AUTHOR'   => GIT_AUTHOR,
+            'GIT_EMAIL'    => GIT_EMAIL,
+            'GIT_TIME'     => GIT_TIME,
+            'iCMS_VERSION' => iCMS_VERSION,
+            'iCMS_RELEASE' => iCMS_RELEASE
+        ));
+    }
     // 检测函数支持
     public function isfun($fun = ''){
         if (!$fun || trim($fun) == '' || preg_match('~[^a-z0-9\_]+~i', $fun, $tmp)) return '错误';

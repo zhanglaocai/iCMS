@@ -773,7 +773,7 @@ class userApp {
             ");
 		}
 		if ($avatar) {
-			$avatarData = iFS::remote($avatar);
+			$avatarData = iHttp::remote($avatar);
 			if ($avatarData) {
 				$avatarpath = iFS::fp(get_user_pic($uid), '+iPATH');
 				iFS::mkdir(dirname($avatarpath));

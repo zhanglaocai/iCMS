@@ -159,7 +159,7 @@ class patch {
 		foreach ($archive_files as $file) {
 		    preg_match('@^app/(\w+)/@', $file['filename'], $match);
 		    if($match[1]){
-		    	if(!apps::check($match[1])){
+		    	if(!apps::check($match[1]) && $match[1]!='func'){
 		    		$msg .= '应用 ['.$match[1].'] 不存在,跳过['.$file['filename'].']更新<iCMS>';
 		    		continue;
 		    	}
