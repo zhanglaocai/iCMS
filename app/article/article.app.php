@@ -194,7 +194,7 @@ class articleApp {
 			$article['subtitle'] = $art_data['subtitle'];
 			unset($art_data);
 			$total = $count + intval(self::$config['pageno_incr']);
-			$article['page'] = self::page($article,$page,$total,$count,$category['mode']);
+			$article['page'] = iUI::page_content($article,$page,$total,$count,$category['mode']);
 			$article['PAGES'] = $article['page']['PAGES'];unset($article['page']['PAGES']);
 			is_array($article['page']['next'])&& $next_url = $article['page']['next']['url'];
 			$pic_array[0] && $article['body'] = self::body_pics_page($pic_array,$article,$page,$total,$next_url);
@@ -209,8 +209,8 @@ class articleApp {
 				$article['user'] = user::info($article['userid'], $article['author']);
 			}
 		}
-		$article['source'] = self::text2link($article['source']);
-		$article['author'] = self::text2link($article['author']);
+		$article['source'] = text2link($article['source']);
+		$article['author'] = text2link($article['author']);
 
 		$article['hits'] = array(
 			'script' => iCMS_API . '?app=article&do=hits&cid=' . $article['cid'] . '&id=' . $article['id'],
@@ -260,69 +260,6 @@ class articleApp {
             return;
         }
 	   	return $data;
-	}
-	public static function page($article,$page,$total,$count,$mode=null){
-		$pageArray = array();
-		$pageurl = $article['iurl']['pageurl'];
-		if ($total > 1) {
-			$_GLOBALS_iPage = $GLOBALS['iPage'];
-			$mode && iURL::page_url($article['iurl']);
-			$pageconf = array(
-				'page_name' => 'p',
-				'url' => $pageurl,
-				'total' => $total,
-				'perpage' => 1,
-				'nowindex' => (int) $_GET['p'],
-				'lang' => iUI::lang(iPHP_APP . ':page'),
-			);
-			if ($article['chapter']) {
-				foreach ((array) $chapterArray as $key => $value) {
-					$pageconf['titles'][$key + 1] = $value['subtitle'];
-				}
-			}
-			$iPages = new iPages($pageconf);
-			unset($GLOBALS['iPage']);
-			$GLOBALS['iPage'] = $_GLOBALS_iPage;
-			unset($_GLOBALS_iPage);
-
-			$pageArray['list']  = $iPages->list_page();
-			$pageArray['index'] = $iPages->first_page('array');
-			$pageArray['prev']  = $iPages->prev_page('array');
-			$pageArray['next']  = $iPages->next_page('array');
-			$pageArray['endof'] = $iPages->last_page('array');
-			$pagenav = $iPages->show(0);
-			$pagetext = $iPages->show(10);
-		}
-		$article_page = array(
-			'pn'      => $page,
-			'total'   => $total, //总页数
-			'count'   => $count, //实际页数
-			'current' => $page,
-			'nav'     => $pagenav,
-			'pageurl' => $pageurl,
-			'text'    => $pagetext,
-			'PAGES'   => $iPages,
-			'args'    => iSecurity::escapeStr($_GET['pageargs']),
-			'first'   => ($page == "1" ? true : false),
-			'last'    => ($page == $count ? true : false), //实际最后一页
-			'end'     => ($page == $total ? true : false)
-		) + $pageArray;
-		unset($pagenav, $pagetext, $iPages, $pageArray);
-		return $article_page;
-	}
-	public static function text2link($text=null){
-		if (strpos($text, '||') !== false) {
-			list($title, $url) = explode('||', $text);
-			return '<a href="' . $url . '" target="_blank">' . $title . '</a>';
-		}else{
-			return $text;
-		}
-	}
-
-	public function pnTitle($pn, $chapterArray, $chapter) {
-		$title = $pn;
-		$chapter && $title = $chapterArray[$pn - 1]['subtitle'];
-		return $title;
 	}
 
 	public static function body_pics_page($pic_array,$article,$page,$total,$next_url){

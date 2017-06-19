@@ -29,12 +29,11 @@ class iView {
         self::$handle->register_modifier("cnlen", "cstrlen");
         self::$handle->register_modifier("html2txt", "html2text");
         self::$handle->register_modifier("key2num", "key2num");
-        //self::$handle->register_modifier("pinyin","GetPinyin");
         self::$handle->register_modifier("unicode", "get_unicode");
-        //self::$handle->register_modifier("small","gethumb");
-        self::$handle->register_modifier("thumb", "small");
         self::$handle->register_modifier("random", "random");
         self::$handle->register_modifier("fields", "select_fields");
+        self::$handle->register_modifier("pinyin",array("iPinyin", "get"));
+        self::$handle->register_modifier("thumb", array("files", "thumb"));
         self::$handle->register_block("cache", array("iView", "block_cache"));
         self::$handle->template_callback = array(
             "resource" => array("iView","callback_resource"),

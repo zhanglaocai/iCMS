@@ -9,7 +9,7 @@
 */
 
 class apps_meta {
-    public static $CREATE_TABLE = false;
+    public static $CREATE_TABLE = true;
     public static $data = null;
     public static function data($app,$ids){
         if(empty($ids)) return array();

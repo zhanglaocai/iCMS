@@ -28,11 +28,14 @@ $cloud_config_file = filesAdmincp::cloud_config_file();
 <div class="clearfloat mb10"></div>
 <div class="alert" style="width:360px;">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong>注意!</strong> 设置云存储,将会影响文件的上传速度
+  <strong>注意!</strong> 设置云存储,将会影响文件的上传效率
 </div>
+<hr />
+<?php //include admincp::view("remote.config","files"); ?>
 <?php
   foreach ($cloud_config_file as $name =>$path) {
     include admincp::view("cloud_".$name,"files");
+    echo '<hr />';
   }
 ?>
 <?php }?>

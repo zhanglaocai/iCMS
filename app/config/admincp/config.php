@@ -383,204 +383,16 @@ function modal_tpl_index(el,a){
             </div>
           </div>
           <div id="config-cache" class="tab-pane hide">
-            <div class="input-prepend"> <span class="add-on">缓存引擎</span>
-              <select name="config[cache][engine]" id="cache_engine" class="chosen-select">
-                <option value="file">文件缓存 FileCache</option>
-                <option value="memcached">分布式缓存 memcached</option>
-                <option value="redis">分布式缓存 Redis</option>
-              </select>
-            </div>
-            <script>$(function(){iCMS.select('cache_engine',"<?php echo $config['cache']['engine'] ; ?>");});</script>
-            <span class="help-inline">Memcache,Redis 需要服务器支持,如果不清楚请询问管理员,iCMS推荐使用Redis</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">缓存配置</span>
-              <textarea name="config[cache][host]" id="cache_host" class="span6" style="height: 150px;"><?php echo $config['cache']['host'] ; ?></textarea>
-            </div>
-            <span class="help-inline">
-            文件缓存目录:文件层级(data:1) 默认为空<hr />
-            memcached服务器IP:每行一个,带端口. <br />
-            例:127.0.0.1:11211<br />
-            127.0.0.2:11211<hr />
-            Redis UNIX SOCK<br />
-            unix:///tmp/redis.sock@db:1 <br />
-            127.0.0.1:6379@db:1</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">缓存时间</span>
-              <input type="text" name="config[cache][time]" class="span1" id="cache_time" value="<?php echo $config['cache']['time'] ; ?>"/>
-              <span class="add-on" style="width:24px;">秒</span>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">数据压缩</span>
-              <div class="switch">
-                <input type="checkbox" data-type="switch" name="config[cache][compress]" id="cache_compress" <?php echo $config['cache']['compress']?'checked':''; ?>/>
-              </div>
-            </div>
-            <hr />
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append">
-              <span class="add-on">分页缓存</span>
-              <input type="text" name="config[cache][page_total]" class="span1" id="page_total" value="<?php echo $config['cache']['page_total']?:$config['cache']['time']; ?>"/>
-              <span class="add-on" style="width:24px;">秒</span>
-            </div>
-            <span class="help-inline">设置分页总数缓存时间,设置此项分页性能将会有极大的提高.</span>
+            <?php include admincp::view("cache.config","cache");?>
           </div>
           <div id="config-file" class="tab-pane hide">
-            <!--
-            <div class="input-prepend"> <span class="add-on">附件接口</span>
-              <input type="text" name="config[FS][API]" class="span4" id="FS_API" value="<?php echo $config['FS']['API'] ; ?>"/>
-            </div>
-            <span class="help-inline">附件接口URL</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">Token</span>
-              <input type="text" name="config[FS][token]" class="span4" id="FS_token" value="<?php echo $config['FS']['token'] ; ?>"/>
-              <a class="btn" onclick="$('#FS_token').val(iCMS.random(32));"><i class="fa fa-random"></i> 生成随机码</a>
-            </div>
-            <span class="help-inline">该Token会和接口URL中包含的Token进行比对，从而验证安全性</span>
-            <div class="clearfloat mb10"></div>
-            -->
-            <div class="input-prepend"> <span class="add-on">附件URL</span>
-              <input type="text" name="config[FS][url]" class="span4" id="FS_url" value="<?php echo $config['FS']['url'] ; ?>"/>
-            </div>
-            <span class="help-inline">如果访问不到,请自行调整.请填写完整的URL例:https://www.icmsdev.com/res/</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">文件保存目录</span>
-              <input type="text" name="config[FS][dir]" class="span4" id="FS_dir" value="<?php echo $config['FS']['dir'] ; ?>"/>
-            </div>
-            <span class="help-inline">相对于程序根目录</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">目录结构</span>
-              <input type="text" name="config[FS][dir_format]" class="span4" id="FS_dir_format" value="<?php echo $config['FS']['dir_format'] ; ?>"/>
-              <div class="btn-group" to="#FS_dir_format"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
-                <ul class="dropdown-menu">
-                  <li><a href="#Y"><span class="label label-inverse">Y</span> 4位数年份</a></li>
-                  <li><a href="#y"><span class="label label-inverse">y</span> 2位数年份</a></li>
-                  <li><a href="#m"><span class="label label-inverse">m</span> 月份01-12</a></li>
-                  <li><a href="#n"><span class="label label-inverse">n</span> 月份1-12</a></li>
-                  <li><a href="#d"><span class="label label-inverse">n</span> 日期01-31</a></li>
-                  <li><a href="#j"><span class="label label-inverse">j</span> 日期1-31</a></li>
-                  <li class="divider"></li>
-                  <li><a href="#EXT"><span class="label label-inverse">EXT</span> 文件类型</a></li>
-                </ul>
-              </div>
-            </div>
-            <span class="help-inline">为空全部存入同一目录</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">允许上传类型</span>
-              <input type="text" name="config[FS][allow_ext]" class="span4" id="FS_allow_ext" value="<?php echo $config['FS']['allow_ext'] ; ?>"/>
-            </div>
+            <?php include admincp::view("files.config","files");?>
           </div>
           <div id="config-thumb" class="tab-pane hide">
-<!--             <div class="input-prepend"> <span class="add-on">缩略图</span>
-              <div class="switch">
-                <input type="checkbox" data-type="switch" name="config[thumb][enable]" id="thumb_enable" <?php echo $config['thumb']['enable']?'checked':''; ?>/>
-              </div>
-            </div>
-            <div class="clearfloat mb10"></div> -->
-            <div class="input-prepend"> <span class="add-on">缩略图尺寸</span>
-              <textarea name="config[thumb][size]" id="thumb_size" class="span6" style="height: 90px;"><?php echo $config['thumb']['size'] ; ?></textarea>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <span class="help-inline"><a class="btn btn-small btn-success" href="https://www.icmsdev.com/docs/thumb.html" target="_blank"><i class="fa fa-question-circle"></i> 缩略图配置帮助</a>　每行一个尺寸；格式:300x300．没有在本列表中的缩略图尺寸，都将直接返回原图！防止空间被刷暴</span>
+            <?php include admincp::view("thumb.config","files");?>
           </div>
-
           <div id="config-watermark" class="tab-pane hide">
-            <div class="input-prepend"> <span class="add-on">水印</span>
-              <div class="switch">
-                <input type="checkbox" data-type="switch" name="config[watermark][enable]" id="watermark_enable" <?php echo $config['watermark']['enable']?'checked':''; ?>/>
-              </div>
-            </div>
-            <span class="help-inline">将在上传的图片附件中加上您在下面设置的图片或文字水印</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend">
-              <span class="add-on">水印模式</span>
-              <div class="switch" data-on-label="马赛克" data-off-label="水印">
-                <input type="checkbox" data-type="switch" name="config[watermark][mode]" id="watermark_mode" <?php echo $config['watermark']['mode']?'checked':''; ?>/>
-              </div>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">图片尺寸</span><span class="add-on" style="width:24px;">宽度</span>
-              <input type="text" name="config[watermark][width]" class="span1" id="watermark_width" value="<?php echo $config['watermark']['width'] ; ?>"/>
-              <span class="add-on" style="width:24px;">高度</span>
-              <input type="text" name="config[watermark][height]" class="span1" id="watermark_height" value="<?php echo $config['watermark']['height'] ; ?>"/>
-            </div>
-            <span class="help-inline">单位:像素(px) 只对超过程序设置的大小的附件图片才加上水印图片或文字(设置为0不限制)</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">图片类型</span>
-              <input type="text" name="config[watermark][allow_ext]" class="span3" id="watermark_allow_ext" value="<?php echo $config['watermark']['allow_ext'] ; ?>"/>
-            </div>
-            <span class="help-inline">需要添加水印的图片类型(jpg,jpeg,png)  注:当前版本gif动画添加水印将失效</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">水印位置</span>
-              <select name="config[watermark][pos]" id="watermark_pos" class="span3 chosen-select">
-                <option value="0">随机位置</option>
-                <option value="1">顶部居左</option>
-                <option value="2">顶部居中</option>
-                <option value="3">顶部居右</option>
-                <option value="4">中部居左</option>
-                <option value="5">中部居中</option>
-                <option value="6">中部居右</option>
-                <option value="7">底部居左</option>
-                <option value="8">底部居中</option>
-                <option value="9">底部居右</option>
-                <option value="-1">自定义</option>
-              </select>
-            </div>
-            <script>$(function(){iCMS.select('watermark_pos',"<?php echo (int)$config['watermark']['pos'] ; ?>");});</script>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">水印位置偏移</span><span class="add-on" style="width:24px;">X</span>
-              <input type="text" name="config[watermark][x]" class="span1" id="watermark_x" value="<?php echo $config['watermark']['x'] ; ?>"/>
-              <span class="add-on" style="width:24px;">Y</span>
-              <input type="text" name="config[watermark][y]" class="span1" id="watermark_y" value="<?php echo $config['watermark']['y'] ; ?>"/>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">水印图片文件</span>
-              <input type="text" name="config[watermark][img]" class="span3" id="watermark_img" value="<?php echo $config['watermark']['img'] ; ?>"/>
-            </div>
-            <span class="help-inline">水印图片存放路径：/cache/conf/iCMS/watermark.png， 如果水印图片不存在，则使用文字水印</span>
-            <hr />
-            <div class="input-prepend"> <span class="add-on">水印文字</span>
-              <input type="text" name="config[watermark][text]" class="span3" id="watermark_text" value="<?php echo $config['watermark']['text'] ; ?>"/>
-            </div>
-            <span class="help-inline">如果设置为中文,字体文件必需要支持中文字体 ,存放路径：/cache/conf/iCMS/</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">文字字体</span>
-              <input type="text" name="config[watermark][font]" class="span3" id="watermark_font" value="<?php echo $config['watermark']['font'] ; ?>"/>
-            </div>
-            <span class="help-inline">字体文件</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">水印文字字体大小</span>
-              <input type="text" name="config[watermark][fontsize]" class="span3" id="watermark_fontsize" value="<?php echo $config['watermark']['fontsize'] ; ?>"/>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">水印文字颜色</span>
-              <input type="text" name="config[watermark][color]" class="span3" id="watermark_color" value="<?php echo $config['watermark']['color'] ; ?>"/>
-            </div>
-            <span class="help-inline">例#000000 长度必须7位</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">水印透明度</span>
-              <input type="text" name="config[watermark][transparent]" class="span3" id="watermark_transparent" value="<?php echo $config['watermark']['transparent'] ; ?>"/>
-            </div>
-            <hr />
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend input-append"> <span class="add-on">马赛克尺寸</span>
-              <span class="add-on" style="width:30px;">宽度</span>
-              <input type="text" name="config[watermark][mosaics][width]" class="span1" id="watermark_mosaics_width" value="<?php echo $config['watermark']['mosaics']['width']?:150 ; ?>"/>
-              <span class="add-on" style="width:30px;">高度</span>
-              <input type="text" name="config[watermark][mosaics][height]" class="span1" id="watermark_mosaics_height" value="<?php echo $config['watermark']['mosaics']['height']?:90 ; ?>"/>
-            </div>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">马赛克深度</span>
-              <input type="text" name="config[watermark][mosaics][deep]" class="span3" id="watermark_mosaics_deep" value="<?php echo $config['watermark']['mosaics']['deep']?:9 ; ?>"/>
-            </div>
-            <!--
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">缩略图水印</span>
-              <div class="switch">
-                <input type="checkbox" data-type="switch" name="config[watermark][thumb]" id="watermark_thumb" <?php echo $config['watermark']['thumb']?'checked':''; ?>/>
-              </div>
-            </div>
-            <span class="help-inline">开启时缩略图也会打上水印</span>
-            -->
+            <?php include admincp::view("watermark.config","files");?>
           </div>
           <div id="config-time" class="tab-pane hide">
             <div class="clearfloat mb10"></div>
@@ -673,18 +485,6 @@ function modal_tpl_index(el,a){
               </div>
             </div>
             <span class="help-inline">启用文章发布时同步推送 如果发布文章无法正常返回 建议关闭</span>
-
-
-            <!--
-            <hr />
-            <h3 class="title">淘宝联盟</h3>
-            <span class="help-inline">申请地址:https://www.alimama.com/</span>
-            <div class="clearfloat"></div>
-            <div class="input-prepend"> <span class="add-on">广告位PID</span>
-              <input type="text" name="config[api][taoke][pid]" class="span3" id="taoke_pid" value="<?php echo $config['api']['taoke']['pid'] ; ?>"/>
-            </div>
-            <span class="help-inline">广告位PID/推广单元PID,例:mm_xxxxxxxx_xxxxxxx_xxxxxxxx</span>
-            -->
           </div>
           <div id="config-patch" class="tab-pane hide">
             <div class="input-prepend"> <span class="add-on">系统更新</span>
@@ -697,112 +497,11 @@ function modal_tpl_index(el,a){
             <script>$(function(){iCMS.select('system_patch',"<?php echo (int)$config['system']['patch'] ; ?>");});</script>
           </div>
           <div id="config-grade" class="tab-pane hide">
-            <div class="input-prepend"> <span class="add-on">sphinx服务器</span>
-              <input type="text" name="config[sphinx][host]" class="span3" id="sphinx_host" value="<?php echo $config['sphinx']['host'] ; ?>"/>
-            </div>
-            <span class="help-inline">UNIX SOCK:unix:///tmp/sphinx.sock<br />
-            HOST:127.0.0.1:9312</span>
-            <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">sphinx 索引</span>
-              <input type="text" name="config[sphinx][index]" class="span3" id="sphinx_index" value="<?php echo $config['sphinx']['index'] ; ?>"/>
-            </div>
-            <span class="help-inline"></span>
-            <div class="clearfloat mb10"></div>
-            <h3 class="title">sphinx 配置示例</h3>
-            <pre>
-source iCMS_article
-{
-  type    = mysql
-  sql_host  = localhost
-  sql_user  = root
-  sql_pass  = 123456
-  sql_db    = iCMS
-  sql_port  = 3306  # optional, default is 3306
-  sql_query_pre =  SET NAMES utf8
-  sql_query_pre   = REPLACE INTO icms_sph_counter SELECT 1, MAX(id) FROM icms_article
-
-  sql_query = SELECT a.id, a.cid,a.userid, a.comments, a.pubdate,a.hits_today, a.hits_yday, a.hits_week, a.hits_month,a.hits, a.haspic, a.title, a.keywords, a.tags, a.status FROM icms_article a,icms_category c WHERE a.cid=c.cid AND a.status ='1' AND a.id<=( SELECT max_doc_id FROM icms_sph_counter WHERE counter_id=1 )
-  sql_attr_uint   = cid
-  sql_attr_uint   = userid
-  sql_attr_uint   = comments
-  sql_attr_uint   = hits
-  sql_attr_uint   = hits_week
-  sql_attr_uint   = hits_month
-  sql_attr_uint   = status
-  sql_attr_timestamp  = pubdate
-  sql_attr_bool   = haspic
-
-  sql_ranged_throttle = 0
-  sql_query_info    = SELECT * FROM icms_article WHERE id=$id
-
-}
-source iCMS_article_delta : iCMS_article
-{
-  sql_query_pre =  SET NAMES utf8
-  sql_query = SELECT a.id, a.cid,a.userid, a.comments, a.pubdate,a.hits_today, a.hits_yday, a.hits_week, a.hits_month,a.hits, a.haspic, a.title, a.keywords, a.tags, a.status FROM icms_article a,icms_category c WHERE a.cid=c.cid AND a.status ='1' AND a.id>( SELECT max_doc_id FROM icms_sph_counter WHERE counter_id=1 )
-}
-index iCMS_article
-{
-  source      = iCMS_article
-  path      = /var/sphinx/iCMS_article
-        docinfo                 = extern
-        mlock                   = 0
-        morphology              = none
-        min_word_len            = 1
-        charset_type            = utf-8
-        min_prefix_len          = 0
-        html_strip              = 1
-        charset_table           = 0..9, A..Z->a..z, _, a..z, U+410..U+42F->U+430..U+44F, U+430..U+44F
-        ngram_len               = 1
-        ngram_chars             = U+3000..U+2FA1F
-}
-index iCMS_article_delta : iCMS_article
-{
-  source  = iCMS_article_delta
-  path  = /var/sphinx/iCMS_article_delta
-}
-##sphinx使用问题,请自行Google上百度一下
-          </pre>
+            <?php include admincp::view("config.grade","config");?>
           </div>
           <div id="config-mail" class="tab-pane hide">
-            <div class="input-prepend"> <span class="add-on">SMTP 主机</span>
-              <input type="text" name="config[mail][host]" class="span3" id="mail_host" value="<?php echo $config['mail']['host']; ?>"/>
-            </div>
-            <span class="help-inline">发送邮件的服务器.例如:smtp.qq.com</span>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">安全协议</span>
-              <input type="text" name="config[mail][secure]" class="span3" id="mail_secure" value="<?php echo $config['mail']['secure']; ?>"/>
-            </div>
-            <span class="help-inline">发送邮件的服务器使用的安全协议.默认为空.可选项"ssl" 或者 "tls"</span>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">SMTP 端口</span>
-              <input type="text" name="config[mail][port]" class="span3" id="mail_port" value="<?php echo $config['mail']['port']?:'25'; ?>"/>
-            </div>
-            <span class="help-inline">发送邮件的服务器的端口,默认:25</span>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">SMTP 账号</span>
-              <input type="text" name="config[mail][username]" class="span3" id="mail_username" value="<?php echo $config['mail']['username']; ?>"/>
-            </div>
-            <span class="help-inline">登陆邮件的服务器的账号</span>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">账号密码</span>
-              <input type="text" name="config[mail][password]" class="span3" id="mail_password" value="<?php echo $config['mail']['password']; ?>"/>
-            </div>
-            <span class="help-inline">登陆邮件的服务器的账号密码</span>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">发送账号</span>
-              <input type="text" name="config[mail][setfrom]" class="span3" id="mail_setfrom" value="<?php echo $config['mail']['setfrom']; ?>"/>
-            </div>
-            <span class="help-inline">用于发送邮件的账号</span>
-            <div class="clearfloat mt10"></div>
-            <div class="input-prepend"> <span class="add-on">联系Email</span>
-              <input type="text" name="config[mail][replyto]" class="span3" id="mail_replyto" value="<?php echo $config['mail']['replyto']; ?>"/>
-            </div>
-            <span class="help-inline">用于邮件中回复Email的账号</span>
-            <div class="clearfloat mt10"></div>
-
+            <?php include admincp::view("config.email","config");?>
           </div>
-
         </div>
         <div class="form-actions">
           <button class="btn btn-primary btn-large" type="submit"><i class="fa fa-check"></i> 保 存</button>

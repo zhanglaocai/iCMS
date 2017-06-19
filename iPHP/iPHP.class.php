@@ -145,7 +145,7 @@ class iPHP {
 		}
 	}
 	public static function run($app = NULL, $do = NULL, $args = NULL, $prefix = "do_") {
-		empty($app) && $app = iSecurity::escapeStr($_GET['app']); //单一入口
+		empty($app) && $app = iSecurity::escapeStr(iSecurity::getGP('app')); //单一入口
 		if (empty($app)) {
 			$fi = iFS::name(iPHP_SELF);
 			$app = $fi['name'];

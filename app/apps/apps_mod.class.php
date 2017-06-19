@@ -248,6 +248,9 @@ class apps_mod {
             'tag'      => array('rule'=>'3','primary'=>'id'),
         );
         $router = $array[$rs['app']];
+        if(empty($router) && $rs['config']['iurl']){
+          $router = $rs['config']['iurl'];
+        }
       }
       return $router;
     }

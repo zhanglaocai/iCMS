@@ -22,7 +22,7 @@ class iCMS {
         define('iCMS_URL',       self::$config['router']['url']);
         define('iCMS_PUBLIC_URL',self::$config['router']['public']);
         define('iCMS_USER_URL',  self::$config['router']['user']);
-        define('iCMS_FS_URL',    self::$config['FS']['url']);
+        define('iCMS_FS_URL',    iFS::url(self::$config['FS']['url']));
         define('iCMS_API',       iCMS_PUBLIC_URL.'/api.php');
         define('iCMS_API_URL',   iCMS_API.'?app=');
 

@@ -289,6 +289,55 @@ class iUI {
 		}
 		return $iPages;
 	}
+    public static function page_content($content,$page,$total,$count,$mode=null){
+        $pageArray = array();
+        $pageurl = $content['iurl']['pageurl'];
+        if ($total > 1) {
+            $_GLOBALS_iPage = $GLOBALS['iPage'];
+            $mode && iURL::page_url($content['iurl']);
+            $pageconf = array(
+                'page_name' => 'p',
+                'url'       => $pageurl,
+                'total'     => $total,
+                'perpage'   => 1,
+                'nowindex'  => (int) $_GET['p'],
+                'lang'      => iUI::lang(iPHP_APP . ':page'),
+            );
+            if ($content['chapter']) {
+                foreach ((array) $chapterArray as $key => $value) {
+                    $pageconf['titles'][$key + 1] = $value['subtitle'];
+                }
+            }
+            $iPages = new iPages($pageconf);
+            unset($GLOBALS['iPage']);
+            $GLOBALS['iPage'] = $_GLOBALS_iPage;
+            unset($_GLOBALS_iPage);
+
+            $pageArray['list']  = $iPages->list_page();
+            $pageArray['index'] = $iPages->first_page('array');
+            $pageArray['prev']  = $iPages->prev_page('array');
+            $pageArray['next']  = $iPages->next_page('array');
+            $pageArray['endof'] = $iPages->last_page('array');
+            $pagenav = $iPages->show(0);
+            $pagetext = $iPages->show(10);
+        }
+        $content_page = array(
+            'pn'      => $page,
+            'total'   => $total, //总页数
+            'count'   => $count, //实际页数
+            'current' => $page,
+            'nav'     => $pagenav,
+            'pageurl' => $pageurl,
+            'text'    => $pagetext,
+            'PAGES'   => $iPages,
+            'args'    => iSecurity::escapeStr($_GET['pageargs']),
+            'first'   => ($page == "1" ? true : false),
+            'last'    => ($page == $count ? true : false), //实际最后一页
+            'end'     => ($page == $total ? true : false)
+        ) + $pageArray;
+        unset($pagenav, $pagetext, $iPages, $pageArray);
+        return $content_page;
+    }
     public static function permission($p = '', $ret = 'alert') {
     	$msg = "您没有[$p]的访问权限!";
     	if(iPHP_SHELL){

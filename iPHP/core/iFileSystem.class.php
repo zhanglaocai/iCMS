@@ -25,7 +25,19 @@ class iFS {
 	public static function config($config) {
 		self::$config = array_merge(self::$config, $config);
 	}
-
+	public static function url($urls=null) {
+		$urls===null && $urls = self::$config['url'];
+		return trim($urls);
+		//
+		$urlArray = explode("\n", $urls);
+		$_count = count($urlArray);
+		if($_count==1){
+			return trim($urls);
+		}else{
+			$key = array_rand($urlArray,1);
+			return trim($urlArray[$key]);
+		}
+	}
 	public static function ex($f) {
 		return @stat($f) === false ? false : true;
 	}
@@ -536,34 +548,36 @@ class iFS {
 
 	public static function fp($f, $m = '+http', $_config = null) {
 		$config = $_config ? $_config : self::$config;
+		$url = self::url();
 		switch ($m) {
-		case '+http':
-			$fp = rtrim($config['url'], '/') . '/' . ltrim($f, '/');
-			break;
-		case '-http':
-			$fp = str_replace($config['url'], '', $f);
-			break;
-		case 'http2iPATH':
-			$f = str_replace($config['url'], '', $f);
-			$fp = self::path_join(iPATH, $config['dir'], '/') . ltrim($f, '/');
-			break;
-		case 'iPATH2http':
-			$f = str_replace(self::path_join(iPATH, $config['dir']), '', $f);
-			$fp = $config['url'] . $f;
-			break;
-		case '+iPATH':
-			$fp = self::path_join(iPATH, $config['dir'], '/') . ltrim($f, '/');
-			break;
-		case '-iPATH':
-			$fp = str_replace(self::path_join(iPATH, $config['dir']), '', $f);
-			break;
+			case '+http':
+				$fp = rtrim($url, '/') . '/' . ltrim($f, '/');
+				break;
+			case '-http':
+				$fp = str_replace($url, '', $f);
+				break;
+			case 'http2iPATH':
+				$f = str_replace($url, '', $f);
+				$fp = self::path_join(iPATH, $config['dir'], '/') . ltrim($f, '/');
+				break;
+			case 'iPATH2http':
+				$f = str_replace(self::path_join(iPATH, $config['dir']), '', $f);
+				$fp = $url . $f;
+				break;
+			case '+iPATH':
+				$fp = self::path_join(iPATH, $config['dir'], '/') . ltrim($f, '/');
+				break;
+			case '-iPATH':
+				$fp = str_replace(self::path_join(iPATH, $config['dir']), '', $f);
+				break;
 		}
 		return $fp;
 	}
 	public static function filename($path) {
 		$path = trim($path);
 		if(self::checkHttp($path)){
-			$uri  = parse_url(self::$config['url']);
+			$url = self::url();
+			$uri = parse_url($url);
 			if (stripos($path,$uri['host']) !== false){
 				$path = self::fp($path,'-http');
 			}else{
