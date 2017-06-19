@@ -169,12 +169,13 @@ class filesAdmincp{
         iFS::check_ext($rs->filepath,true) OR iUI::alert('文件类型不合法!');
         files::$userid = members::$userid;
         $fileresults   = iHttp::remote($rs->ofilename);
+
     	if($fileresults){
+            iFS::$CALLABLE['write'] = array('files_cloud','upload');
+
     		iFS::mkdir(dirname($FileRootPath));
     		iFS::write($FileRootPath,$fileresults);
             files::$watermark_enable = !isset($_GET['unwatermark']);
-            iFS::hook('write',array($FileRootPath,$rs->ext));
-
     		$_FileSize	= strlen($fileresults);
     		if($_FileSize!=$rs->size){
                 files::update_size($this->id,_FileSize);

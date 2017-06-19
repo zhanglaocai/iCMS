@@ -135,7 +135,10 @@ $(function(){
                   <ul class="dropdown-menu">
                     <?php
                     foreach (iCMS::$config['cloud']['sdk'] as $sdk => $value) {
-                      $href = $value['domain'].'/'.ltrim($filepath,'/');
+                      if(empty($value['AccessKey'])|| empty($value['SecretKey'])){
+                        continue;
+                      }
+                      $href = rtrim($value['domain'],'/').'/'.ltrim($filepath,'/');
                       iFS::checkHttp($href) OR $href = 'http://'.trim($href);
                     ?>
                     <li><a href="<?php echo $href; ?>" data-toggle="modal" title="查看<?php echo $sdk; ?>"><i class="fa fa-eye"></i> <?php echo $sdk; ?></a></li>

@@ -41,8 +41,10 @@ class files_cloud{
         //不保留本地功能
         if(self::$config['local']){
             //删除delete hook阻止云端删除动作
+            $cb = iFS::$CALLABLE['delete'];
             iFS::$CALLABLE['delete'] = null;
             iFS::del($fileRootPath);
+            iFS::$CALLABLE['delete'] = $cb;
         }
         return $res;
     }
