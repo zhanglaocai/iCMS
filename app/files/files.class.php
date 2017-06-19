@@ -60,7 +60,7 @@ class files {
     }
 
     public static function init($vars=null){
-        files::config(iFS::$config['table']);
+        files::config();
 
         isset($vars['userid']) && files::$userid = $vars['userid'];
 

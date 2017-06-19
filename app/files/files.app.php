@@ -8,13 +8,60 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class filesApp {
-    public $methods = array('iCMS','download');
+    public $methods = array('iCMS','download','remote_save','remote_delete');
     public function do_iCMS(){}
     public function API_iCMS(){}
 
+    public function remote_auth(){
+        $conf = iFS::$config['remote'];
+        if($conf['enable'] && $_POST['AccessKey']==$conf['AccessKey'] &&
+            $_POST['SecretKey']==$conf['SecretKey']){
+            return true;
+        }else{
+            $array = array('error'=> 1,'msg' => 'auth error');
+            echo json_encode($array);
+            return false;
+        }
+    }
+    public function ACTION_remote_save(){
+        if(!$this->remote_auth()){
+            return false;
+        }
+        $key  = iSecurity::escapeStr($_POST['key']);
+        $path = iSecurity::escapeStr($_POST['path']);
+        $info = pathinfo($path);
+        $dir  = $info['dirname'];
+        $name = $info['filename'];
+        $ext  = $info['extension'];
+        $F = iFS::upload($key,$dir,$name,$ext);
+        if($F===false){
+            $array = array(
+                'error'=> 1,
+                'msg' => iFS::$ERROR
+            );
+        }else{
+            $array = array(
+                'error'=> 0,
+                'msg' => $F
+            );
+        }
+        echo json_encode($array);
+    }
+    public function ACTION_remote_delete(){
+        if(!$this->remote_auth()){
+            return false;
+        }
+        $path = iSecurity::escapeStr($_POST['path']);
+        $FileRootPath = iFS::fp($path,'+iPATH');
+        $array = array('error'=>'1','msg'=>'delete error');
+        if(iFS::rm($FileRootPath)){
+            $array = array('error'=>'0','msg'=>'delete success');
+        }
+        echo json_encode($array);
+    }
     public function do_download(){
         $filename = iSecurity::escapeStr($_GET['file']);
-        files::config(iFS::$config['table']);
+        files::config();
         $data = files::get('filename',$filename);
         $url  = iFS::fp($data->filepath, '+http');
         $path = iFS::fp($data->filepath, '+iPATH');

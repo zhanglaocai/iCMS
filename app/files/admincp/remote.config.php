@@ -18,8 +18,8 @@ defined('iPHP') OR exit('What are you doing?');
     <span class="help-inline">远程附件接口URL</span>
     <div class="clearfloat mb10"></div>
     <div class="input-prepend">
-        <span class="add-on">Bucket</span>
-        <input type="text" name="config[sdk][remote][Bucket]" class="span4" id="cloud_remote_Bucket" value="<?php echo $config['sdk']['remote']['Bucket'] ; ?>"/>
+        <span class="add-on">domain</span>
+        <input type="text" name="config[sdk][remote][domain]" class="span4" id="cloud_remote_domain" value="<?php echo $config['sdk']['remote']['domain'] ; ?>"/>
     </div>
     <span class="help-inline">空间名称</span>
     <div class="clearfloat mb10"></div>

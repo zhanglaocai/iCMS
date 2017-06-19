@@ -16,8 +16,8 @@ $cloud_config_file = filesAdmincp::cloud_config_file();
   <div class="switch">
     <input type="checkbox" data-type="switch" name="config[enable]" id="cloud_enable" <?php echo $config['enable']?'checked':''; ?>/>
   </div>
-  <span class="help-inline">使用云存储后,相关管理请到云存储管理</span>
 </div>
+<span class="help-inline">使用云存储后,相关管理请到云存储管理</span>
 <div class="clearfloat mb10"></div>
 <div class="input-prepend"> <span class="add-on">不保留本地</span>
   <div class="switch">
@@ -31,7 +31,7 @@ $cloud_config_file = filesAdmincp::cloud_config_file();
   <strong>注意!</strong> 设置云存储,将会影响文件的上传效率
 </div>
 <hr />
-<?php //include admincp::view("remote.config","files"); ?>
+<?php include admincp::view("remote.config","files"); ?>
 <?php
   foreach ($cloud_config_file as $name =>$path) {
     include admincp::view("cloud_".$name,"files");

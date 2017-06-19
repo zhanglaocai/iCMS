@@ -55,3 +55,22 @@ defined('iPHP') OR exit('What are you doing?');
     <div class="input-prepend"> <span class="add-on">允许上传类型</span>
         <input type="text" name="config[FS][allow_ext]" class="span4" id="FS_allow_ext" value="<?php echo $config['FS']['allow_ext'] ; ?>" />
     </div>
+    <hr />
+    <div class="input-prepend"> <span class="add-on">远程附件</span>
+      <div class="switch">
+        <input type="checkbox" data-type="switch" name="config[FS][remote][enable]" id="FS_remote_enable" <?php echo $config['FS']['remote']['enable']?'checked':''; ?>/>
+      </div>
+    </div>
+    <span class="help-inline">开启后,可接受其它iCMS程序上传/删除附件</span>
+    <div class="clearfloat mb10"></div>
+    <div class="input-prepend">
+        <span class="add-on">AccessKey</span>
+        <input type="text" name="config[FS][remote][AccessKey]" class="span4" id="FS_remote_AccessKey" value="<?php echo $config['FS']['remote']['AccessKey'] ; ?>"/>
+    </div>
+    <span class="help-inline">该AccessKey会和接口URL中包含的Token进行比对，从而验证安全性</span>
+    <div class="clearfloat mb10"></div>
+    <div class="input-prepend">
+        <span class="add-on">SecretKey</span>
+        <input type="text" name="config[FS][remote][SecretKey]" class="span4" id="FS_remote_SecretKey" value="<?php echo $config['FS']['remote']['SecretKey'] ; ?>"/>
+    </div>
+    <span class="help-inline">该SecretKey会和接口URL中包含的Token进行比对，从而验证安全性</span>

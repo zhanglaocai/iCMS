@@ -77,7 +77,7 @@ class iFS {
 		}
 	}
 	public static function del($fn, $check = 1) {
-		self::rm($fn, $check);
+		return self::rm($fn, $check);
 	}
     public static function rm($fn, $check = 1) {
 		$check && self::check($fn);
