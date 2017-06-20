@@ -93,7 +93,7 @@ class categoryAdmincp {
         include admincp::view($this->_view_add,$this->_view_tpl_dir);
     }
     public function do_save(){
-        $appid        = $this->appid;
+        $appid        = $this->appid===null?(int)$_POST['appid']:$this->appid;
         $cid          = (int)$_POST['cid'];
         $rootid       = (int)$_POST['rootid'];
         $status       = (int)$_POST['status'];

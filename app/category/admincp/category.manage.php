@@ -34,6 +34,9 @@ admincp::head();
         {{if pid}}
         <span class="label label-inverse">pid:{{pid}}</span>
         {{/if}}
+        <?php if($this->appid===null){?>
+          <span class="label label-inverse">appid:{{appid}}</span>
+        <?php }?>
         {{if mode && domain}}
         <span class="label label-important">绑定域名</span>
         {{/if}}

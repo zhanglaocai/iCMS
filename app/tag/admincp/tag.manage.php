@@ -180,8 +180,16 @@ $(function(){
         <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $rs[$i]['id'] ; ?>" data-toggle="modal" title="预览"><img src="<?php echo iFS::fp($rs[$i]['pic']); ?>" style="height:120px;"/></a>
         <?php } ?>
           </td>
-          <td><a href="<?php echo APP_DOURI; ?>&cid=<?php echo $rs[$i]['cid'] ; ?><?php echo $uri ; ?>"><?php echo $C['name'] ; ?></a></td>
-          <td><a href="<?php echo APP_DOURI; ?>&tcid=<?php echo $rs[$i]['tcid'] ; ?><?php echo $uri ; ?>"><?php echo $TC['name'] ; ?></a></td>
+          <td>
+            <a href="<?php echo APP_DOURI; ?>&cid=<?php echo $rs[$i]['cid'] ; ?><?php echo $uri ; ?>"><?php echo $C['name'] ; ?></a>
+            <a href="<?php echo __ADMINCP__; ?>=article_category&do=add&cid=<?php echo $rs[$i]['cid']; ?>" target="_blank"><i class="fa fa-edit"></i></a>
+          </td>
+          <td>
+            <?php if($rs[$i]['tcid']){ ?>
+            <a href="<?php echo APP_DOURI; ?>&tcid=<?php echo $rs[$i]['tcid'] ; ?><?php echo $uri ; ?>"><?php echo $TC['name'] ; ?></a>
+            <a href="<?php echo __ADMINCP__; ?>=tag_category&do=add&cid=<?php echo $rs[$i]['tcid']; ?>" target="_blank"><i class="fa fa-edit"></i></a>
+            <?php } ?>
+          </td>
           <td><?php $rs[$i]['pid'] && propAdmincp::flag($rs[$i]['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?></td>
           <td><?php echo $rs[$i]['count']; ?></td>
           <td><?php echo get_date($rs[$i]['pubdate'],'Y-m-d H:i');?><br /><?php echo get_date($rs[$i]['postime'],'Y-m-d H:i');?></td>

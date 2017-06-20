@@ -12,7 +12,8 @@ admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
-	iCMS.select('pid',"<?php echo $rs['pid']?$rs['pid']:0 ; ?>");
+  iCMS.select('pid',"<?php echo $rs['pid']?$rs['pid']:0 ; ?>");
+  iCMS.select('appid',"<?php echo $rs['appid']?$rs['appid']:0 ; ?>");
 	iCMS.select('mode',"<?php echo $rs['mode'] ; ?>");
   iCMS.select('status',"<?php echo $rs['status'] ; ?>");
 
@@ -96,6 +97,17 @@ $(function(){
               </select>
             </div>
             <div class="clearfloat mb10"></div>
+            <?php if($this->appid===null){?>
+            <div class="input-prepend"> <span class="add-on">所属应用</span>
+              <select name="appid" id="appid" class="chosen-select span6" data-placeholder="请选择<?php echo $this->category_name;?>所属应用...">
+                <option value="0">无应用[appid='0']</option>
+              <?php foreach (apps::get_array(array("!table"=>0)) as $key => $value) {?>
+              <option value="<?php echo $value['id'];?>"><?php echo $value['app'];?>:<?php echo $value['name'];?> [appid=<?php echo $value['id'];?>]</option>
+              <?php }?>
+              </select>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <?php }?>
             <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>名称</span>
               <?php if(empty($this->cid)){?>
               <textarea name="name" id="name" class="span6" style="height: 150px;width:600;"><?php echo $rs['name'] ; ?></textarea>

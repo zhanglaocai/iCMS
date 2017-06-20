@@ -136,7 +136,11 @@ class spider_content {
             unset($img_match,$_img_array,$_img_urls,$_img_src);
         }
         if ($data['trim']) {
-            $content = str_replace('&nbsp;','',trim($content));
+            if(is_array($content)){
+                $content = array_map('trim', $content);
+            }else{
+                $content = str_replace('&nbsp;','',trim($content));
+            }
         }
         if ($data['capture']) {
             $content && $content = spider_tools::remote($content);
@@ -195,7 +199,9 @@ class spider_content {
             }
             return (array)$content;
         }
-
+        if($data['implode'] && is_array($content)){
+            $content = implode('', $content);
+        }
         return $content;
     }
     public static function page_data($html,$data,$rule,&$contentArray){
