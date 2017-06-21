@@ -14,7 +14,7 @@ defined('iPHP') OR exit('What are you doing?');
 ?>
 <div class="input-prepend input-append">
   <span class="add-on"><?php echo $value[0];?>规则</span>
-  <input type="text" name="rule[<?php echo $key;?>]" class="span5" id="<?php echo $rule_id;?>" value="<?php echo $rs['rule'][$key]?$rs['rule'][$key]:$value[1]; ?>"/>
+  <input type="text" name="rule[<?php echo $key;?>]" class="span5" id="<?php echo $rule_id;?>" value="<?php echo isset($rs['rule'][$key])?$rs['rule'][$key]:$value[1]; ?>"/>
   <div class="btn-group"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-question-circle"></i> 帮助</a>
     <ul class="dropdown-menu category_rule">
       <li><a href="{CID}" data-toggle="insertContent" data-target="#<?php echo $rule_id;?>"><span class="label label-important">{CID}</span> <?php echo $this->category_name;?>ID</a></li>
