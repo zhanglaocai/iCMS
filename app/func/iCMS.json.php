@@ -14,21 +14,11 @@ function iCMS_json($vars){
 		return false;
 	}
     $hash = md5($json);
-	if($url){
-        $json = iHttp::remote($url);
-        $resource = json_decode($json,true);
-        if(json_last_error()){
-            $error = json_last_error_msg();
-            print_r("JSON -{$error}");
-            return;
-        }
-        $hash = md5($url);
-	}
-
+    $url && $hash = md5($url);
     $cache_time = isset($vars['time']) ? (int) $vars['time'] : -1;
 
 	if($vars['cache']){
-		$cache_name = iPHP_DEVICE.'/json/'.$hash;
+		$cache_name = 'json/'.$hash;
         $vars['page'] && $cache_name.= "/".(int)$GLOBALS['page'];
 		$resource = iCache::get($cache_name);
         if($resource){
@@ -36,8 +26,14 @@ function iCMS_json($vars){
         }
 	}
 
-	if($resource){
-        $vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
+    $url && $json = iHttp::remote($url);
+    $resource = json_decode($json,true);
+    if(json_last_error()){
+        $error = json_last_error_msg();
+        print_r("JSON -{$error}");
+        return array();
     }
+    $vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
+
 	return $resource;
 }
