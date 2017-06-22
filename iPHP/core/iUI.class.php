@@ -102,11 +102,13 @@ class iUI {
 		switch ($type) {
 			case 'js':
 				$act && $code = $act;
-				$act == "0" && $code = 'iTOP.history.go(-1);';
+                $act == "-1" && $code = 'iTOP.history.go(-1);';
+                $act == "0" && $code = '';
 				$act == "1" && $code = 'iTOP.location.href=iTOP.location.href;';
 			break;
 			case 'url':
-				$act == "1" && $act = iPHP_REFERER;
+                $act == "-1" && $act = iPHP_REFERER;
+                $act == "1" && $act = iPHP_REFERER;
 				$code = "iTOP.location.href='" . $act . "';";
 			break;
 			case 'src':
@@ -215,12 +217,13 @@ class iUI {
 		self::$dialog['ok'] && $options[] = 'okValue: "确 定",ok: function(){'.self::$dialog['ok:js'].'}';
 		self::$dialog['cancel'] && $options[] = 'cancelValue: "取 消",cancel: function(){'.self::$dialog['cancel:js'].'}';
 
-		$dialog = 'var iTOP = window.top,';
+		$dialog = '';
 		if ($update) {
-			$dialog .= "d = iTOP.dialog.get('iPHP-DIALOG');";
+			// $dialog .= "d = iTOP.dialog.get('iPHP-DIALOG');";
 			$auto_func = $func;
 		} else {
-			$dialog .= 'options = {' . implode(',', $options) . '},d = iTOP.' . iPHP_APP . '.UI.dialog(options);';
+            $dialog.= 'var iTOP = window.top,';
+			$dialog.= 'options = {' . implode(',', $options) . '},d = iTOP.' . iPHP_APP . '.UI.dialog(options);';
 			// if(self::$dialog_lock){
 			// 	$dialog.='d.showModal();';
 			// }else{

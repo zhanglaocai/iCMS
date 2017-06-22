@@ -87,10 +87,10 @@ class filesAdmincp{
             $ids = $ids ? $ids : '0';
             $sql.= "AND `id` IN({$ids})";
         }
-        isset($_GET['type'])  && $sql.=" AND `type`='".(int)$_GET['type']."'";
+        isset($_GET['type']) && $_GET['type']!='-1'  && $sql.=" AND `type`='".(int)$_GET['type']."'";
 
-        $_GET['starttime']  && $sql.=" AND `time`>=UNIX_TIMESTAMP('".$_GET['starttime']." 00:00:00')";
-        $_GET['endtime'] 	&& $sql.=" AND `time`<=UNIX_TIMESTAMP('".$_GET['endtime']." 23:59:59')";
+        $_GET['starttime'] && $sql.=" AND `time`>='".str2time($_GET['starttime'].(strpos($_GET['starttime'],' ')!==false?'':" 00:00:00"))."'";
+        $_GET['endtime']   && $sql.=" AND `time`<='".str2time($_GET['endtime'].(strpos($_GET['endtime'],' ')!==false?'':" 23:59:59"))."'";
 
         isset($_GET['userid']) 	&& $uri.='&userid='.(int)$_GET['userid'];
 

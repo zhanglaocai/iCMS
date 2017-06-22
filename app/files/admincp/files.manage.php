@@ -65,6 +65,7 @@ $(function(){
         </div>
         <div class="input-prepend"> <span class="add-on">类型</span>
           <select name="type" id="type" class="span2 chosen-select">
+            <option value="-1">所有</option>
             <option value="0">上传</option>
             <option value="1">远程下载</option>
             <option value="3">数据流</option>

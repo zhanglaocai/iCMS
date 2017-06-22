@@ -137,7 +137,7 @@ class apps_hook {
     public static function get_app_priv(){
         $privArray = array();
         foreach (apps::get_array(array("status"=>'1')) as $key => $value) {
-            list($path,$obj_name)= apps::get_path($value['app'],'Admincp',true);
+            list($path,$obj_name)= apps::get_path($value['app'],'admincp',true);
             $apriv = array();
             if(is_file($path)||$value['apptype']=="2"||$value['app']=="admincp"){
                 if($value['apptype']=="2"){
