@@ -143,7 +143,7 @@ class apps {
     }
     public static function get_array($vars,$field="*",$orderby=''){
         $sql = iSQL::where($vars,false);
-        $orderby && $sql.= 'order by '.$orderby;
+        $sql.= 'order by '.($orderby?$orderby:'id ASC');
         $rs  = iDB::all("SELECT {$field} FROM `#iCMS@__apps` where {$sql}",OBJECT);
         $_count = count($rs);
         for ($i=0; $i < $_count; $i++) {
