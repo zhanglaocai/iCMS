@@ -31,10 +31,14 @@ class formerApp{
                     $union_key   = $data_table['union'];
                     $table       = reset($app['table']);
                     $id          = $rs[$table['primary']];
-                    $union_key&& $primary_key = $union_key;
-                    $urs = (array)iDB::row("SELECT * FROM `{$data_table['table']}` WHERE `{$primary_key}`='$id' LIMIT 1;",ARRAY_A);
-                    $urs && $rs+=$urs;
+                    $id_key      = $union_key;
+                    // $union_key && $id_key = $union_key;
+                    $urs = (array)iDB::row("SELECT * FROM `{$data_table['table']}` WHERE `{$id_key}`='$id' LIMIT 1;",ARRAY_A);
+                    $rs[$primary_key] = 0;
+                    $rs = array_merge($rs,$urs);
+                    $union_key && $rs[$union_key] = $id;
                 }
+
             }
             former::$template['class'] = array(
                 'group'    => 'input-prepend input-append',
@@ -76,9 +80,9 @@ class formerApp{
 
             $update = false;
             if($variable)foreach ($variable as $table_name => $_data) {
-                if(empty($_data)){
-                  continue;
-                }
+                // if(empty($_data)){
+                //   continue;
+                // }
                 // if($data && $table_name==$pri_table['name']){
                 //     $data = array_merge($data,$_data);
                 //     continue;
@@ -98,11 +102,13 @@ class formerApp{
 
                 $id = $_data[$primary];
                 unset($_data[$primary]);//主键不更新
-                if(empty($id)){ //主键值为空
-                    $id = iDB::insert($table_name,$_data);
-                }else{
-                    $update = true;
-                    iDB::update($table_name, $_data, array($primary=>$id));
+                if($_data){
+                    if(empty($id)){ //主键值为空
+                        $id = iDB::insert($table_name,$_data);
+                    }else{
+                        $update = true;
+                        iDB::update($table_name, $_data, array($primary=>$id));
+                    }
                 }
                 $union_id = apps_mod::data_union_id($table_name);
                 if(empty($_table['union'])){
@@ -110,7 +116,6 @@ class formerApp{
                     self::$primary_id = $id;
                 }
             }
-
             if($imap)foreach ($imap as $key => $value) {
                 iMap::init($value[0],$app['id'],$key);
                 if($update){
