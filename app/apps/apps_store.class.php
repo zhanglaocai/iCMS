@@ -34,6 +34,8 @@ class apps_store {
         if (iFS::ex(self::$zipFile) && (filemtime(self::$zipFile)-time()<3600)) {
             return $msg;
         }
+        iHttp::$CURLOPT_TIMEOUT        = 60;
+        iHttp::$CURLOPT_CONNECTTIMEOUT = 10;
         $FileData = iHttp::remote($url);
         if ($FileData) {
             iFS::mkdir(STORE_DIR);

@@ -369,6 +369,9 @@ class appsAdmincp{
       $key   = md5(iPHP_KEY.$host.$time);
       $array = compact(array('sid','key','host','time'));
       $url   = apps_store::STORE_URL.'/store.get?'.http_build_query($array);
+
+      iHttp::$CURLOPT_TIMEOUT        = 60;
+      iHttp::$CURLOPT_CONNECTTIMEOUT = 10;
       $json  = iHttp::remote($url);
       $array = json_decode($json);
 
@@ -404,6 +407,7 @@ class appsAdmincp{
           iUI::dialog('
             此'.$title.'为付费版,请先付费后安装!<br />
             请使用微信扫描下面二维码<br />
+            在未提示完成前请务刷新页面.
             <p style="text-align: center;">
             <img alt="模式一扫码支付"
             src="http://paysdk.weixin.qq.com/example/qrcode.php?data='.$array->pay.'"/>
