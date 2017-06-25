@@ -163,7 +163,7 @@ $(function(){
               <tr>
                 <td colspan="7">
                   <div class="pagination pagination-right" style="float:right;"><?php echo iUI::$pagenav ; ?></div>
-                  <div class="input-prepend input-append mt20">
+<!--                   <div class="input-prepend input-append mt20">
                     <span class="add-on">全选
                       <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo APP_BOXID;?>" />
                     </span>
@@ -174,7 +174,7 @@ $(function(){
                         <li><a data-toggle="batch" data-action="dels"><i class="fa fa-trash-o"></i> 删除</a></li>
                       </ul>
                     </div>
-                  </div>
+                  </div> -->
                 </td>
               </tr>
             </table>
