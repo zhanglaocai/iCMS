@@ -144,11 +144,14 @@ class categoryApp{
             }
         }
         if($domain){
-            if(iFS::checkHttp($domain)){
-                $i->href    = str_replace($base_url, $domain, $i->href);
-                $i->hdir    = str_replace($base_url, $domain, $i->hdir);
-                $i->pageurl = str_replace($base_url, $domain, $i->pageurl);
-            }
+            $urls = parse_url($base_url);
+            $urls['scheme'].='://';
+            iFS::checkHttp($domain) OR $domain = $urls['scheme'].$domain;
+
+            $i->href    = str_replace($base_url, $domain, $i->href);
+            $i->hdir    = str_replace($base_url, $domain, $i->hdir);
+            $i->pageurl = str_replace($base_url, $domain, $i->pageurl);
+
         }
         return $i;
     }
