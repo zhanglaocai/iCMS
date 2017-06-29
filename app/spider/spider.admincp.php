@@ -92,7 +92,53 @@ class spiderAdmincp {
 	public function do_iCMS($doType = null) {
 		$this->do_manage();
 	}
+	/**
+	 * [采集错误结果管理]
+	 * @return [type] [description]
+	 */
+	public function do_error() {
+		$sql = " WHERE 1=1";
+		$_GET['pid'] && $sql .= " AND `pid` ='" . (int) $_GET['pid'] . "'";
+		$_GET['rid'] && $sql .= " AND `rid` ='" . (int) $_GET['rid'] . "'";
+		$days = $_GET['days'] ? $_GET['days'] : "7";
+		$days && $sql.=" AND `addtime`>".strtotime('-'.$days.' day');
+		$ruleArray = $this->rule_opt(0, 'array');
+		// $postArray = $this->post_opt(0, 'array');
+		// $orderby = $_GET['orderby'] ? $_GET['orderby'] : "id DESC";
+		$maxperpage = $_GET['perpage'] > 0 ? (int) $_GET['perpage'] : 100;
+		// $total = iCMS::page_total_cache( "SELECT count(*) FROM `#iCMS@__spider_error` {$sql}", "G");
+		// iUI::pagenav($total, $maxperpage, "个网页");
+		// $rs = iDB::all("SELECT * FROM `#iCMS@__spider_error` {$sql} order by {$orderby} LIMIT " . iUI::$offset . " , {$maxperpage}");
+		$rs = iDB::all("
+		    SELECT
+		      `pid`,`rid`,COUNT(id) AS ct,group_concat(`date`,',')
+		    FROM
+		      `#iCMS@__spider_error`
+		    {$sql}
+		    GROUP BY pid DESC
+		    ORDER BY ct DESC, `date` DESC
+		    LIMIT {$maxperpage}
+		");
+		$_count = count($rs);
+		include admincp::view("spider.error");
+	}
+    public function do_view_error(){
+        $date = $_GET['date'];
+        $date && $sql.=" AND `date`='$date'";
 
+		$days = $_GET['days'] ? $_GET['days'] : "7";
+		$days && $sql.=" AND `addtime`>".strtotime('-'.$days.' day');
+
+		$rs = iDB::all("
+		    SELECT
+		      *
+		    FROM
+		      `#iCMS@__spider_error`
+			where pid='$this->pid' {$sql};
+		");
+
+        include admincp::view("spider.error.view");
+    }
 	/**
 	 * [采集结果管理]
 	 * @return [type] [description]
