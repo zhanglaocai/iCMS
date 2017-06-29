@@ -47,7 +47,7 @@ class spider_data {
         }
 
         if (spider::$dataTest) {
-            echo "<b>抓取规则信息</b><pre>";
+            echo "<b>抓取规则信息</b><pre style='max-height:300px;overflow-y: scroll;'>";
             print_r(iSecurity::escapeStr($ruleA));
             print_r(iSecurity::escapeStr($project));
             echo "</pre><hr />";

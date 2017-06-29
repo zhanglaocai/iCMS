@@ -241,8 +241,18 @@ class spider_tools {
                 $content = preg_replace('|' . self::pregTag($rule) . '|is','', $content);
             }
         }
-        $NOT && $content = self::data_check_result($NOT,'NOT::');
-        $NEED&& $content = self::data_check_result($NEED,'NEED::');
+        if($NOT){
+            $content = self::data_check_result($NOT,'NOT::');
+            if($content === null){
+                return null;
+            }
+        }
+        if($NEED){
+            $content = self::data_check_result($NEED,'NEED::');
+            if($content === null){
+                return null;
+            }
+        }
         unset($NOT,$NEED);
         return $content;
     }
@@ -330,7 +340,7 @@ class spider_tools {
         if(strtoupper($encode)=='GB2312'){
             $encode = 'GBK';
         }
-        $html = preg_replace('/(<meta[^>]*?charset=(["\']?))[a-z\d_\-]*(\2[^>]*?>)/is', "\\1$out\\3", $html,1);
+        $html = preg_replace('/(<meta[^>]*?charset=(["\']?))[a-zA-z0-9\-\_]*(\2[^>]*?>)/is', "\\1$out\\3", $html,1);
         if (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($html,$out,$encode);
         } elseif (function_exists('iconv')) {
@@ -555,7 +565,7 @@ class spider_tools {
         $responses = curl_exec($ch);
         $info = curl_getinfo($ch);
         if (spider::$dataTest || spider::$ruleTest) {
-            echo "<b>{$url} 头信息:</b><pre>";
+            echo "<b>{$url} 头信息:</b><pre style='max-height:90px;overflow-y: scroll;'>";
             print_r($info);
             echo '</pre><hr />';
             if($_GET['breakinfo']){
