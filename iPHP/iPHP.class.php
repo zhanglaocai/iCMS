@@ -271,7 +271,7 @@ class iPHP {
 		$value = rawurlencode($value);
 		$life = ($life ? $life : iPHP_COOKIE_TIME);
 		$name = iPHP_COOKIE_PRE . '_' . $name;
-		$_COOKIE[$name] = $value;
+		// $_COOKIE[$name] = $value;
 		$timestamp = time();
 		$life = $life > 0 ? $timestamp + $life : ($life < 0 ? $timestamp - 31536000 : 0);
 		$path = $httponly && PHP_VERSION < '5.2.0' ? $cookiepath . '; HttpOnly' : $cookiepath;

@@ -231,7 +231,7 @@ class user {
 		if((int)$userid===(int)$_userid && $nickname===$_nickname){
 			self::$userid   = (int)$_userid;
 			self::$nickname = $_nickname;
-			$u = array('userid'=>self::$userid,'nickname'=>self::$nickname);
+			$u = array('uid'=>self::$userid,'userid'=>self::$userid,'nickname'=>self::$nickname);
 			if($unpw){
 				$u['username'] = $_username;
 				$u['password'] = $_password;

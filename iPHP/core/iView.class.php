@@ -95,7 +95,6 @@ class iView {
         $cache_time = isset($vars['time']) ? (int) $vars['time'] : -1;
         $cache_name = iPHP_DEVICE . '/block_cache/' . $vars['id'];
         $cache = iCache::get($cache_name);
-
         if (empty($cache)) {
             if ($content === null) {
                 return false;
@@ -107,9 +106,7 @@ class iView {
             $tpl->assign($vars['assign'], $cache);
             return true;
         }
-        if ($content === null) {
-            return $cache;
-        }
+        return $cache;
     }
     /**
      * 模板路径
