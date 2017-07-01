@@ -56,7 +56,7 @@
                                 <!--{/iCMS}-->
                             </div>
                             <ul class="media-list">
-                                <!--{iCMS:content:list app="$app.app" loop="true" page="true" tags="true" sub="all" row="12" cid="$category.cid"}-->
+                                <!--{iCMS:content:list loop="true" page="true" tags="true" sub="all" row="12" cid="$category.cid"}-->
                                 <li class="media">
                                     <!--{if $content_list.pic.url}-->
                                     <a class="media-object" href="<!--{$content_list.url}-->">
@@ -103,7 +103,7 @@
                     </div>
                     <div class="mod-content">
                         <ul class="rank-list" id="rank-week">
-                            <!--{iCMS:content:list app="$app.app" loop="true" row="10" sub="all" orderby="week" cid="$category.cid"}-->
+                            <!--{iCMS:content:list loop="true" row="10" sub="all" orderby="week" cid="$category.cid"}-->
                             <li>
                                 <em class="no<!--{$content_list.rownum}-->"><!--{$content_list.rownum}--></em>
                                 <a href="<!--{$content_list.url}-->" target="_blank">
@@ -113,7 +113,7 @@
                             <!--{/iCMS}-->
                         </ul>
                         <ul class="rank-list hide" id="rank-momth">
-                            <!--{iCMS:content:list app="$app.app" loop="true" row="10" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
+                            <!--{iCMS:content:list loop="true" row="10" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
                             <li>
                                 <em class="no<!--{$content_list.rownum}-->"><!--{$content_list.rownum}--></em>
                                 <a href="<!--{$content_list.url}-->" target="_blank">
@@ -151,7 +151,7 @@
                         </div>
                     </div>
                     <div class="mod-content">
-                        <!--{iCMS:content:list app="$app.app" loop="true" pic="true" sub="all" row="8" cid="$category.cid"}-->
+                        <!--{iCMS:content:list loop="true" pic="true" sub="all" row="8" cid="$category.cid"}-->
                         <div class="pictxt-list <!--{cycle values='fl,fr'}-->">
                             <a href="<!--{$content_list.url}-->" target="_blank">
                                 <span class="pictxt-img">

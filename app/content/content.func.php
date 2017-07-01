@@ -9,17 +9,32 @@
 */
 
 class contentFunc {
-    public static $app = null;
-    public static $table = null;
+    public static $apps    = null; //应用信息接口
+    public static $app     = null;
+    public static $table   = null;
     public static $primary = null;
-    private static function data($vars){
-        self::$app     = apps::get_app($vars['app']);
+    /**
+    * 已在 categoryApp contentApp 设置数据回调,
+    * 在应用范围内可以不用设置 app="应用名/应用ID"
+    **/
+    public static function set_apps($value=null) {
+        self::$apps = $value;
+    }
+    private static function data($vars,$func='list'){
+
+        if((empty($vars['app'])||$vars['app']=='content') && self::$apps){
+            $vars['app'] = self::$apps['app'];
+        }
+
+        self::$app = apps::get_app($vars['app']);
+        self::$app OR iUI::warning('iCMS&#x3a;content&#x3a;'.$func.' 标签出错! 缺少参数"app"或"app"值为空.');
+
         self::$table   = apps::get_table(self::$app);
         self::$primary = self::$table['primary'];
     }
 
     public static function content_list($vars) {
-        self::data($vars);
+        self::data($vars,'list');
 
         if ($vars['loop'] === "rel" && empty($vars['id'])) {
             return false;
@@ -181,7 +196,7 @@ class contentFunc {
         return contentFunc::content_next($vars);
     }
     public static function content_next($vars) {
-        self::data($vars);
+        self::data($vars,'next');
 
         empty($vars['order']) && $vars['order'] = 'n';
 

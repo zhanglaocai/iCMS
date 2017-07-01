@@ -282,7 +282,8 @@ class category {
 
         $app = apps::get_app('category');
         $app['fields'] && formerApp::data($C['cid'],$app,'category',$C,null,$C);
-        $C['app_lite'] = apps::get_app_lite($app);
+        $C['app'] = apps::get_app_lite($app);
+        $C['apps'] = apps::get_app_lite($C['appid']);
 
         is_string($C['rule'])    && $C['rule']     = json_decode($C['rule'],true);
         is_string($C['template'])&& $C['template'] = json_decode($C['template'],true);

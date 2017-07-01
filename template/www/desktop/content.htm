@@ -88,12 +88,12 @@
                         </script>
                     </div>
                     <div class="article-like" data-param='<!--{$content.param|json_encode}-->'>
-                        <a i="vote:<!--{$app.app}-->:good" class="like-btn">
+                        <a i="vote:<!--{$apps.app}-->:good" class="like-btn">
                             <i class="like-icon up"></i>
                             <span i="vote_good_num" class="like-num"><!--{$content.good}--></span>
                             <span class="like-txt">赞</span>
                         </a>
-                        <a i="vote:<!--{$app.app}-->:bad" class="like-btn">
+                        <a i="vote:<!--{$apps.app}-->:bad" class="like-btn">
                             <i class="like-icon down"></i>
                             <span i="vote_bad_num" class="like-num"><!--{$content.bad}--></span>
                             <span class="like-txt">踩</span>
@@ -102,13 +102,13 @@
                     <div class="clearfix"></div>
                     <div class="article-prevnext mt10">
                         <p class="prev"><b>上一篇:</b>
-                            <!--{iCMS:content:prev app="$app.app" cid="$content.cid" id="$content.id"}-->
+                            <!--{iCMS:content:prev cid="$content.cid" id="$content.id"}-->
                             <a href="<!--{$content_prev.url}-->" class="prev" target="_self">
                                 <!--{$content_prev.title}-->
                             </a>
                         </p>
                         <p class="next">
-                            <!--{iCMS:content:next app="$app.app" cid="$content.cid" id="$content.id"}-->
+                            <!--{iCMS:content:next cid="$content.cid" id="$content.id"}-->
                             <a href="<!--{$content_next.url}-->" class="next" target="_self">
                                 <!--{$content_next.title}-->
                             </a><b>:下一篇</b></p>
@@ -116,10 +116,10 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="related">
-                    <h3><i class="line"></i>更多 <b><!--{$category.link}--></b> 相关<!--{$app.name}-->：</h3>
+                    <h3><i class="line"></i>更多 <b><!--{$category.link}--></b> 相关<!--{$apps.name}-->：</h3>
                     <div class="related-left">
                         <ul>
-                            <!--{iCMS:content:list app="$app.app" loop='true' row='9' cid="$category.cid"}-->
+                            <!--{iCMS:content:list loop='true' row='9' cid="$category.cid"}-->
                             <li>
                                 <a href="<!--{$content_list.url}-->">
                                     <!--{$content_list.title}-->
@@ -160,7 +160,7 @@
                     </div>
                     <div class="mod-content">
                         <ul class="rank-list" id="rank-week">
-                            <!--{iCMS:content:list app="$app.app" loop="true" row="10" sub="all" orderby="week" cid="$category.cid"}-->
+                            <!--{iCMS:content:list loop="true" row="10" sub="all" orderby="week" cid="$category.cid"}-->
                             <li>
                                 <em class="no<!--{$content_list.rownum}-->"><!--{$content_list.rownum}--></em>
                                 <a href="<!--{$content_list.url}-->" target="_blank">
@@ -170,7 +170,7 @@
                             <!--{/iCMS}-->
                         </ul>
                         <ul class="rank-list hide" id="rank-momth">
-                            <!--{iCMS:content:list app="$app.app" loop="true" row="10" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
+                            <!--{iCMS:content:list loop="true" row="10" sub="all" orderby="comment" startdate="-7 day" cid="$category.cid"}-->
                             <li>
                                 <em class="no<!--{$content_list.rownum}-->"><!--{$content_list.rownum}--></em>
                                 <a href="<!--{$content_list.url}-->" target="_blank">
@@ -208,7 +208,7 @@
                         </div>
                     </div>
                     <div class="mod-content">
-                        <!--{iCMS:content:list app="$app.app" loop="true" pic="true" sub="all" row="8" cid="$category.cid"}-->
+                        <!--{iCMS:content:list loop="true" pic="true" sub="all" row="8" cid="$category.cid"}-->
                         <div class="pictxt-list <!--{cycle values='fl,fr'}-->">
                             <a href="<!--{$content_list.url}-->" target="_blank">
                                 <span class="pictxt-img">

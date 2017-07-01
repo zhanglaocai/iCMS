@@ -10,7 +10,7 @@
 class contentApp {
     public $methods = array('iCMS', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
     public $appid   = null;
-    public $app     = null;
+    public $app     = null; //应用名
     public $table   = null;
 
     public function __construct($data) {
@@ -84,8 +84,12 @@ class contentApp {
             iView::set_iVARS($rs['iurl'],'iURL');
             $app_tpl = empty($rs['tpl']) ? $rs['category']['template'][$this->app] : $rs['tpl'];
             strstr($tpl, '.htm') && $article_tpl = $tpl;
+            $apps = apps::get_app_lite($this->data);
+            //自定义应用模板信息
+            $apps['type']=="2" && iPHP::callback(array("contentFunc","set_apps"),array($apps));
+
             iView::assign('category', $rs['category']);unset($rs['category']);
-            iView::assign('app', apps::get_app_lite($this->data));
+            iView::assign('apps', $apps);
             iView::assign($this->app, $rs);
             iView::assign('content', $rs);
             $view = iView::render($app_tpl, $this->app);
