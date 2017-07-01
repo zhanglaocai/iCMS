@@ -13,6 +13,7 @@ class spider_urls {
     public static $urls = null;
 
     public static function crawl($work = NULL,$pid = NULL,$_rid = NULL,$_urls=null,$callback=null) {
+        @set_time_limit(0);
         $pid === NULL && $pid = spider::$pid;
 
         if ($pid) {

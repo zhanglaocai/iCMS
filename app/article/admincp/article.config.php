@@ -147,4 +147,19 @@ $(function(){
   <input type="text" name="config[clink]" class="span3" id="article_clink" value="<?php echo $config['clink'] ; ?>"/>
 </div>
 <span class="help-inline">文章自定义链接字符分隔符</span>
+<div class="clearfloat mb10"></div>
+<div class="input-prepend">
+  <span class="add-on">emoji表情转换</span>
+  <select name="config[emoji]" id="article_emoji" class="chosen-select span3">
+    <option value="">不转换</option>
+    <option value="unicode">unicode</option>
+    <option value="clean">清除</option>
+  </select>
+</div>
+<script>
+$(function(){
+  iCMS.select('article_emoji',"<?php echo $config['article_emoji'];?>");
+})
+</script>
+<span class="help-inline">文章内容出现emoji表情,会出现内容被截断的数据,可选相关处理方法</span>
 <?php configAdmincp::foot();?>

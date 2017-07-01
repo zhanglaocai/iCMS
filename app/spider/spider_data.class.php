@@ -12,7 +12,7 @@ defined('iPHP') OR exit('What are you doing?');
 class spider_data {
 
     public static function crawl($_pid = NULL,$_rid = NULL,$_url = NULL,$_title = NULL) {
-        ini_get('safe_mode') OR set_time_limit(0);
+        @set_time_limit(0);
         $sid = spider::$sid;
         if ($sid) {
             $sRs   = iDB::row("SELECT * FROM `#iCMS@__spider_url` WHERE `id`='$sid' LIMIT 1;");

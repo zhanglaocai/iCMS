@@ -81,6 +81,10 @@ class spider_tools {
                         $dom_key  = 'title';
                         $dom_rule = 'text';
                     }
+                    if($dom_rule=='@title'){
+                        $dom_key  = 'title';
+                        $dom_rule = 'title';
+                    }
                     if($dom_rule=='text'){
                         $content = $DOM->text();
                     }else{

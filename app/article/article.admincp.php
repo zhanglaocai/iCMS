@@ -790,6 +790,14 @@ class articleAdmincp{
         }else{
             self::$config['autoformat'] && $body = addslashes(autoformat($body));
         }
+        if(self::$config['emoji']=='unicode'){
+            $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','\\\\\ud$1',json_encode($body));
+            $body = json_decode($body);
+            $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','\\\\\ud$1',$body);
+        }else if(self::$config['emoji']=='clean'){
+            $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','',json_encode($body));
+            $body = json_decode($body);
+        }
 
         $fields = article::data_fields($id);
         $data   = compact ($fields);

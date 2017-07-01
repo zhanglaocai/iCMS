@@ -26,14 +26,14 @@ admincp::head(false);
       <tr>
         <td><?php echo $value['id'];?></td>
         <td>
-          <?php echo $value['url'];?>
+          <?php echo $value['url'];?>(<?php echo $value['ct'];?>)
           <br />
-          <a class="btn btm-small" href="<?php echo __ADMINCP__; ?>=spider&do=testdata&url=<?php echo urlencode($value['url']);?>&rid=<?php echo $value['rid'];?>&pid=<?php echo $value['pid'];?>" target="_blank">测试网址</a>
+          <a class="btn btn-small" href="<?php echo __ADMINCP__; ?>=spider&do=testdata&url=<?php echo urlencode($value['url']);?>&rid=<?php echo $value['rid'];?>&pid=<?php echo $value['pid'];?>" target="_blank">测试网址</a>
           <a href="<?php echo __ADMINCP__; ?>=spider&do=testrule&rid=<?php echo $value['rid']; ?>" class="btn btn-small" data-toggle="modal" title="测试规则"><i class="fa fa-keyboard-o"></i> 测试规则</a>
           <a href="<?php echo __ADMINCP__; ?>=spider&do=addrule&rid=<?php echo $value['rid']; ?>" class="btn btn-small" target="_blank"><i class="fa fa-edit"></i> 编辑规则</a>
         </td>
-        <td><?php echo $value['msg'];?></td>
-        <td><?php echo $value['type'];?></td>
+        <td><?php echo str_replace(',', '<br />', $value['msg']);?></td>
+        <td><?php echo str_replace(',', '<br />', $value['type']);?></td>
         <td><?php echo date("Y-m-d H:i:s",$value['addtime']);?></td>
       </tr>
       <?php }?>

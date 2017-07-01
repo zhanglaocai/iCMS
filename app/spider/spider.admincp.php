@@ -111,7 +111,7 @@ class spiderAdmincp {
 		// $rs = iDB::all("SELECT * FROM `#iCMS@__spider_error` {$sql} order by {$orderby} LIMIT " . iUI::$offset . " , {$maxperpage}");
 		$rs = iDB::all("
 		    SELECT
-		      `pid`,`rid`,COUNT(id) AS ct,group_concat(`date`,',')
+		      `pid`,`rid`,COUNT(id) AS ct,`date`
 		    FROM
 		      `#iCMS@__spider_error`
 		    {$sql}
@@ -130,15 +130,28 @@ class spiderAdmincp {
 		$days && $sql.=" AND `addtime`>".strtotime('-'.$days.' day');
 
 		$rs = iDB::all("
-		    SELECT
-		      *
+		    SELECT *,
+		    	COUNT(id) AS ct,
+		    	group_concat(`msg`) as `msg`,
+		    	group_concat(`type`) as `type`
 		    FROM
 		      `#iCMS@__spider_error`
-			where pid='$this->pid' {$sql};
+			where pid='$this->pid' {$sql}
+			GROUP by url
+			ORDER BY id DESC
 		");
 
         include admincp::view("spider.error.view");
     }
+	/**
+	 * [删除错误信息]
+	 * @return [type] [description]
+	 */
+	public function do_del_error() {
+		$this->pid OR iUI::alert("请选择要删除的项目");
+		iDB::query("delete from `#iCMS@__spider_error` where `pid` = '$this->pid';");
+		iUI::success('删除完成', 'js:1');
+	}
 	/**
 	 * [采集结果管理]
 	 * @return [type] [description]
