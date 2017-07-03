@@ -362,7 +362,13 @@ class spider_tools {
             phpQuery::unloadDocuments($doc->getDocumentID());
             unset($doc,$content);
         }else{
-            $matches = strpos($content, $code);
+            $_code = spider_tools::pregTag($code);
+            if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $_code)) {
+                preg_match('|' . $_code . '|is', $content, $_matches, PREG_SET_ORDER);
+                $matches = $_matches['content'];
+            }else{
+                $matches = strpos($content, $code);
+            }
             unset($content);
         }
         return $matches;

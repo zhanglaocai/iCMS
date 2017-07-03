@@ -466,7 +466,7 @@ class spider_content {
                         $content = implode('#--iCMS.PageBreak--#', $conArray);
                         unset($conArray,$match_hash);
                     } else {
-                        preg_match('|' . $data_rule . '|is', $html, $matches, $PREG_SET_ORDER);
+                        preg_match('|' . $data_rule . '|is', $html, $matches);
                         $content = $matches['content'];
                     }
                 } else {
