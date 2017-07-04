@@ -37,9 +37,9 @@
               //表单检查不通过
               if (checkform) return false;
               param.gender = $('input[name="gender"]:checked', register).val();
-              <!--{if $user}-->
+              <!--{if $user.openid}-->
               //绑定账号 接收用户信息
-              param.OPENID = <!--{$user|json_encode}-->;
+              param.openid = "<!--{$user.openid}-->";
               <!--{/if}-->
               <!--{if $iCMS.CONFIG.user.register.seccode }-->
                   //检查验证码
