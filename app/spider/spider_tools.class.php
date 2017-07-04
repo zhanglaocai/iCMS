@@ -389,7 +389,7 @@ class spider_tools {
         return true;
     }
     public static function mkurls($url,$format,$begin,$num,$step,$zeroize,$reverse) {
-        $urls = "";
+        $urls = array();
         $start = (int)$begin;
         if($format==0){
             $num = $num-1;

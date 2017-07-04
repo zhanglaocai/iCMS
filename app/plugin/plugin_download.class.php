@@ -15,13 +15,12 @@ class plugin_download{
      */
     public static function HOOK($content) {
         plugin::init(__CLASS__);
-        preg_match_all('#<a\s*class="attachment".*ext=".*?"\s*fid=".*?"\s*path="(.*?)"\s*href="(.*?)"\s*title=".*?">.*?</a>#is',
-            $content, $variable);
+        preg_match_all('#<a\s*class="attachment".*?href=["|\'](.*?)["|\'].*?</a>#is',$content, $variable);
         foreach ((array)$variable[1] as $key => $path) {
            $urlArray[$key]= filesApp::get_url(basename($path));
         }
         if($urlArray){
-            $content = str_replace($variable[2], $urlArray, $content);
+            $content = str_replace($variable[1], $urlArray, $content);
         }
         return $content;
     }

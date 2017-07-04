@@ -60,11 +60,15 @@ class filesApp {
         echo json_encode($array);
     }
     public function do_download(){
-        $filename = iSecurity::escapeStr($_GET['file']);
+        $f = iSecurity::escapeStr($_GET['file']);
+        $filename = pathinfo($f,PATHINFO_FILENAME);
         files::config();
         $data = files::get('filename',$filename);
         $url  = iFS::fp($data->filepath, '+http');
         $path = iFS::fp($data->filepath, '+iPATH');
+        if(!is_file($path)){
+            exit("文件不存在!");
+        }
         self::attachment($path,$data->ofilename);
     }
     public static function attachment($path,$filename=null){

@@ -139,10 +139,10 @@ $(function(){
                       if(empty($value['AccessKey'])|| empty($value['SecretKey'])){
                         continue;
                       }
-                      $href = rtrim($value['domain'],'/').'/'.ltrim($filepath,'/');
-                      iFS::checkHttp($href) OR $href = 'http://'.trim($href);
+                      $cloud_href = rtrim($value['domain'],'/').'/'.ltrim($filepath,'/');
+                      iFS::checkHttp($cloud_href) OR $cloud_href = 'http://'.trim($cloud_href);
                     ?>
-                    <li><a href="<?php echo $href; ?>" data-toggle="modal" title="查看<?php echo $sdk; ?>"><i class="fa fa-eye"></i> <?php echo $sdk; ?></a></li>
+                    <li><a href="<?php echo $cloud_href; ?>" data-toggle="modal" title="查看<?php echo $sdk; ?>"><i class="fa fa-eye"></i> <?php echo $sdk; ?></a></li>
                     <?php }?>
                     <li><a href="<?php echo $href; ?>" data-toggle="modal" title="查看"><i class="fa fa-eye"></i> 本地</a></li>
                   </ul>
