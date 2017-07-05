@@ -347,9 +347,7 @@ class apps {
 	}
 
     public static function get_app_lite($data=null) {
-        if(!is_array($data)){
-            $data = apps::get_app($data);
-        }
+        is_array($data) OR $data = apps::get_app($data);
         unset($data['table'],$data['config'],$data['fields'],$data['menu']);
         return $data;
     }

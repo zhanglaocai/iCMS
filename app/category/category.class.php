@@ -219,9 +219,7 @@ class category {
         return iCache::get('category/'.$fix.$cid);
     }
     public static function cahce_item($C=null,$fix=null){
-        if(!is_array($C)){
-            $C = iDB::row("SELECT * FROM `#iCMS@__category` where `cid`='$C' LIMIT 1;",ARRAY_A);
-        }
+        is_array($C) OR $C = iDB::row("SELECT * FROM `#iCMS@__category` where `cid`='$C' LIMIT 1;",ARRAY_A);
         iCache::set('category/'.$fix.$C['cid'],$C,0);
     }
 
@@ -283,7 +281,7 @@ class category {
         $app = apps::get_app('category');
         $app['fields'] && formerApp::data($C['cid'],$app,'category',$C,null,$C);
         $C['app'] = apps::get_app_lite($app);
-        $C['apps'] = apps::get_app_lite($C['appid']);
+        $C['appid'] && $C['apps'] = apps::get_app_lite($C['appid']);
 
         is_string($C['rule'])    && $C['rule']     = json_decode($C['rule'],true);
         is_string($C['template'])&& $C['template'] = json_decode($C['template'],true);
