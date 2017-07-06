@@ -137,6 +137,9 @@ class members{
         }else{
             //一般用于判断菜单权限
             $priv = iPHP::check_priv($p,self::$priv['menu']);
+            if (!$priv){
+                $priv = iPHP::check_priv($p,self::$priv['app']);
+            }
         }
 
         $priv OR self::permission($p, $ret);
