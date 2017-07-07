@@ -14,8 +14,7 @@ admincp::head();
   <div class="row-fluid">
     <div class="span12 center" style="text-align: center;">
       <ul class="quick-actions">
-        <li><a href="javascript:;" class="tip" title="开发中..."><i class="icon-calendar"></i>日程管理</a></li>
-        <li><a href="<?php echo __ADMINCP__; ?>=article"><i class="icon-survey"></i>文章管理</a></li>
+        <li><a href="<?php echo __ADMINCP__; ?>=article&do=manage"><i class="icon-survey"></i>文章管理</a></li>
         <li><a href="<?php echo __ADMINCP__; ?>=tag"><i class="icon-tag"></i>标签管理</a></li>
         <li><a href="<?php echo __ADMINCP__; ?>=spider&do=project"><i class="icon-download"></i>采集管理</a></li>
         <li><a href="<?php echo __ADMINCP__; ?>=user"><i class="icon-people"></i>用户管理</a></li>

@@ -108,10 +108,10 @@
                         $(window).keydown(function(event) {
                             switch (event.keyCode) {
                                 case 37:
-                                    window.location.href = '<!--{$article.page.prev}-->';
+                                    window.location.href = '<!--{$article.page.prev.url}-->';
                                     break;
                                 case 39:
-                                    window.location.href = '<!--{$article.page.next}-->';
+                                    window.location.href = '<!--{$article.page.next.url}-->';
                                     break;
                             }
                         });

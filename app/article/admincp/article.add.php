@@ -126,7 +126,7 @@ function addEditorPage(){
 	$("#editor-wrap-"+index).after(
     '<div id="editor-wrap-'+n+'" class="editor-container">'+
       '<div class="chapter-title hide">'+
-        '<input name="data_id[]" id="data_id-'+n+'" type="hidden" value="" />'+
+        '<input name="data_id[]" id="data_id-'+n+'" type="hidden" disabled="true" value="" />'+
         '<div class="input-prepend"> <span class="add-on" style="width:60px;">章节标题</span>'+
             '<input type="text"  id="chapter-title-'+n+'" disabled="true" name="chaptertitle[]" class="span6" value="" />'+
         '</div>'+
@@ -244,6 +244,7 @@ function _modal_dialog(cancel_text){
         <input name="_scid" type="hidden" value="<?php echo $rs['scid']; ?>" />
         <input name="_tags" type="hidden" value="<?php echo $rs['tags']; ?>" />
         <input name="_pid" type="hidden" value="<?php echo $rs['pid']; ?>" />
+        <input name="_data_id" type="hidden" value='<?php echo $adIdArray?json_encode($adIdArray):''; ?>' />
 
         <input name="article_id" type="hidden" value="<?php echo $this->id ; ?>" />
         <input name="userid" type="hidden" value="<?php echo $rs['userid'] ; ?>" />

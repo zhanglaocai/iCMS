@@ -292,7 +292,7 @@ class iUI {
 		}
 		return $iPages;
 	}
-    public static function page_content($content,$page,$total,$count,$mode=null){
+    public static function page_content($content,$page,$total,$count,$mode=null,$chapterArray=null){
         $pageArray = array();
         $pageurl = $content['iurl']['pageurl'];
         if ($total > 1) {

@@ -771,6 +771,16 @@ class articleAdmincp{
                 $subtitle = iSecurity::escapeStr($chaptertitle[$key]);
                 $this->body($body,$subtitle,$aid,$adid,$haspic);
             }
+            if($_POST['_data_id']){
+                $_data_id = stripslashes($_POST['_data_id']);
+                $_data_id = json_decode($_data_id,true);
+                if($_data_id){
+                    $diff = array_diff_values($adidArray,$_data_id);
+                    if($diff['-'])foreach ($diff['-'] as $_i => $_id) {
+                        article::del_data($_id,'id');
+                    }
+                }
+            }
             article::update(compact('chapter'),array('id'=>$aid));
         }else{
             $adid     = (int)$_POST['data_id'];

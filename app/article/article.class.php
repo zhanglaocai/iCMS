@@ -99,8 +99,8 @@ class article {
     public static function del($id){
         iDB::query("DELETE FROM `#iCMS@__article` WHERE id='$id'");
     }
-    public static function del_data($id){
-        iDB::query("DELETE FROM `#iCMS@__article_data` WHERE `aid`='$id'");
+    public static function del_data($id,$f='aid'){
+        iDB::query("DELETE FROM `#iCMS@__article_data` WHERE `$f`='$id'");
     }
 }
 
