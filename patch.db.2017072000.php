@@ -4,6 +4,14 @@ if(!defined('iPHP')){
     require (dirname(__file__).'/iCMS.php');
     echo patch_db_2017072000();
 }
+if (!function_exists('cnjson_encode')) {
+    function cnjson_encode(){
+        $json = json_encode($array);
+        $json = preg_replace_callback('/\\\\u([0-9a-f]{4})/i','unicode_convert_encoding',$json);
+        return $json;
+    }
+}
+
 function patch_db_2017072000(){
     $variable = apps::get_array(array('status'=>'1'));
     $msg = '';
