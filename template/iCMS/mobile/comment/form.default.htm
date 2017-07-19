@@ -56,8 +56,8 @@
                 function(ret) {
                     $(".empty",".comment-list-wrap").remove();
                     //加载评论列表模板
-                    iCOMMENT.widget('item',function (tmpl) {
-                       iCOMMENT._widget.item = tmpl;
+                    iCOMMENT.template('item',function (tmpl) {
+                       iCOMMENT.widget.item = tmpl;
                     });
                     var $list = $(".comment-list-wrap");
                     iCOMMENT.list($list, param.iid, ret.forward,'append');

@@ -9,11 +9,16 @@
 */
 
 class apps_mod {
+    const DATA_TABLE_NAME  = '_cdata';
+    const DATA_PRIMARY_KEY = 'cdata_id';
+    const DATA_UNION_KEY   = '_id';
+    public static $base_fields_key = null;
+
     public static function get_data_table(&$array) {
         $data_table  = next($array);
         if($data_table){
             $primary = $data_table['primary'];
-            if($primary=='data_id'){
+            if($primary==self::DATA_PRIMARY_KEY){
                 return $data_table;
             }else{
                 return self::get_data_table($array);
@@ -23,10 +28,10 @@ class apps_mod {
         }
     }
     public static function data_table_name($name){
-      return $name.'_data';
+      return $name.self::DATA_TABLE_NAME;
     }
-    public static function data_union_id($name){
-      return $name.'_id';
+    public static function data_union_key($name){
+      return $name.self::DATA_UNION_KEY;
     }
     public static function base_fields_array(){
       $sql = implode(",\n", self::base_fields_sql());
@@ -71,7 +76,6 @@ class apps_mod {
             'index_cid_hits'   =>'KEY `cid_hits` (`status`,`cid`,`hits`)'
         );
     }
-    public static $base_fields_key = null;
     public static function base_fields_key($key=null){
         if(self::$base_fields_key===null){
           $array = array('id','cid','ucid','pid','sortnum',
@@ -88,10 +92,11 @@ class apps_mod {
         }
         return $array;
     }
-    public static function base_fields($name=null,$primary='data_') {
-      $a[$primary.'id'] = "id=".$primary."id&label=附加表id&comment=主键%20自增ID&field=PRIMARY&name=".$primary."id&default=&type=PRIMARY&len=10&";
+    public static function data_base_fields($name=null) {
+      $primary_key = self::DATA_PRIMARY_KEY;
+      $a[$primary_key] = "id=".$primary_key."&label=附加表id&comment=主键%20自增ID&field=PRIMARY&name=".$primary_key."&default=&type=PRIMARY&len=10&";
       if($name){
-        $union_id = $name.'_id';
+        $union_id = self::data_union_key($name);
         $a[$union_id] = "id=".$union_id."&label=关联内容ID&comment=内容ID%20关联".$name."表&field=INT&name=".$union_id."&default=&type=union&len=10";
       }
       return $a;
@@ -147,15 +152,6 @@ class apps_mod {
      * @param  [type] $name     [description]
      * @return [type]           [description]
      */
-    // public static function data_create_table($fieldata,$name,$union_id) {
-    //     $table = apps_db::create_table(
-    //       $name,
-    //       apps_mod::get_field_array($fieldata),//获取字段数组
-    //       false,'data_id',true
-    //     );
-    //     array_push ($table,$union_id,'正文');
-    //     return array($name=>$table);
-    // }
     public static function data_create_table($fieldata,$name,$union_id,$query=true) {
         $table = apps_db::create_table(
           $name,

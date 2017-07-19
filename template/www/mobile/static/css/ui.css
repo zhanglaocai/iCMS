@@ -98,6 +98,7 @@ article .article-tags a { font-size: 16px; padding: 0 8px; }
 article .article-tags a { color: #428bca; text-decoration: underline; }
 article .article_body { clear: both; font-size: 16px; line-height: 32px; color: #1a1a1a; }
 article .article_body .content p { margin: 5px 0px; text-indent: 2em; }
+article .article_body .content p img{max-width: 90%;}
 article .article_body .content a b { font-size: 14px; }
 
 /*article .article_body .content img{width: 300px}*/

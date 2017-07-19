@@ -52,6 +52,15 @@ $(function(){
           <span class="add-on">-</span>
           <input type="text" class="ui-datepicker" name="endtime" value="<?php echo $_GET['endtime'] ; ?>" placeholder="结束时间" />
           <span class="add-on"><i class="fa fa-calendar"></i></span> </div>
+        <div class="input-prepend"> <span class="add-on">类型</span>
+          <select name="type" id="type" class="span2 chosen-select">
+            <option value="-1">所有</option>
+            <option value="0">上传</option>
+            <option value="1">远程下载</option>
+            <option value="3">数据流</option>
+          </select>
+        </div>
+        <div class="clearfloat mb10"></div>
         <div class="input-prepend"> <span class="add-on">查找方式</span>
           <select name="st" id="st" class="span2 chosen-select">
             <option value="filename">文件名</option>
@@ -63,17 +72,8 @@ $(function(){
             <option value="ext">后缀名</option>
           </select>
         </div>
-        <div class="input-prepend"> <span class="add-on">类型</span>
-          <select name="type" id="type" class="span2 chosen-select">
-            <option value="-1">所有</option>
-            <option value="0">上传</option>
-            <option value="1">远程下载</option>
-            <option value="3">数据流</option>
-          </select>
-        </div>
-        <div class="clearfloat mb10"></div>
         <div class="input-prepend input-append"> <span class="add-on">关键字</span>
-          <input type="text" name="keywords" class="span6" id="keywords" value="<?php echo $_GET['keywords'] ; ?>" />
+          <input type="text" name="keywords" class="span5" id="keywords" value="<?php echo $_GET['keywords'] ; ?>" />
           <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
           <span class="add-on">条记录</span>
@@ -127,9 +127,6 @@ $(function(){
               <td><?php echo iFS::sizeUnit($rs[$i]['size']);?></td>
               <td><?php echo get_date($rs[$i]['time'],'Y-m-d H:s');?></td>
               <td>
-                <?php if($widget['index']){?>
-                <a class="btn btn-small" href="<?php echo __ADMINCP__;?>=files&do=index&fid=<?php echo $rs[$i]['id'] ; ?>"><i class="fa fa-search"></i> 关联</a>
-                <?php }?>
                 <?php if(iCMS::$config['cloud']['sdk']){?>
                 <div class="btn-group">
                   <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 查看</a>

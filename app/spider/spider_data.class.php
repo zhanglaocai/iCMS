@@ -206,7 +206,7 @@ class spider_data {
         if(isset($responses['title']) && empty($responses['title'])){
             $responses['title'] = $responses['__title__'];
         }
-        spider::$allHtml = null;
+        spider::$allHtml = array();
         unset($html);
 
         gc_collect_cycles();

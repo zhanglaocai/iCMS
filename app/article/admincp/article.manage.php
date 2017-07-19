@@ -102,10 +102,6 @@ $(function(){
       <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <input type="hidden" name="do" value="<?php echo admincp::$APP_DO;?>" />
-        <?php if(isset($_GET['pt'])){ ?>
-        <input type="hidden" name="pt" value="<?php echo $_GET['pt'] ; ?>" />
-        <?php } ?>
-
         <input type="hidden" name="userid" value="<?php echo $_GET['userid'] ; ?>" />
         <div class="input-prepend"> <span class="add-on">文章属性</span>
           <select name="pid" id="pid" class="span2 chosen-select">
@@ -249,7 +245,7 @@ $(function(){
                   </a>
                  </div>
                 <div class="row-actions">
-                  <a href="<?php echo __ADMINCP__; ?>=files&indexid=<?php echo $value['id'] ; ?>&method=database" class="tip-bottom" title="查看文章图片库" target="_blank"><i class="fa fa-picture-o"></i></a>
+                  <a href="<?php echo __ADMINCP__; ?>=files&indexid=<?php echo $value['id'] ; ?>&appid=<?php echo self::$appid;?>&method=database" class="tip-bottom" title="查看文章图片库" target="_blank"><i class="fa fa-picture-o"></i></a>
                   <a href="<?php echo APP_URI; ?>&do=findpic&id=<?php echo $value['id'] ; ?>" class="tip-bottom" title="查找文章所有图片" target="_blank"><i class="fa fa-picture-o"></i></a>
                   <?php if($value['postype']=="0"){ ?>
                   <a href="<?php echo APP_URI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:1" class="tip-bottom" target="iPHP_FRAME" title="通过审核"><i class="fa fa-check-circle"></i></a>
@@ -404,9 +400,9 @@ $(function(){
         <?php echo $category_select;?>
       </select>
     </div>
-    <div id="metaBatch">
-      <?php include admincp::view("apps.meta","apps");?>
-    </div>
+  </div>
+  <div id="metaBatch">
+    <?php include admincp::view("apps.meta","apps");?>
   </div>
 </div>
 <?php admincp::foot();?>

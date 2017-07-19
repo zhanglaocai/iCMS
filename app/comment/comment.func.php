@@ -56,9 +56,6 @@ class commentFunc{
 		if(!iCMS::$config['comment']['enable']){
 			return;
 		}
-		if(iCMS::$config['comment']['plugin']['changyan']['enable']){
-			return;
-		}
 
 		// if(!isset($vars['ref'])){
 		// 	$_vars = iView::app_vars(true);
@@ -93,7 +90,10 @@ class commentFunc{
 
 		$vars['pid'] && $where_sql .=" AND `pid`='".(int)$vars['pid']."'";
 		$vars['iid'] && $where_sql .=" AND `iid`='".(int)$vars['iid']."'";
-		$vars['id']  && $where_sql .=" AND `id`='".(int)$vars['id']."'";
+		if($vars['id']){
+			$where_sql .=" AND `id`='".(int)$vars['id']."'";
+			$vars['page'] = false;
+		}
 
 		$maxperpage	= isset($vars['row'])?(int)$vars['row']:"10";
 		$cache_time	= isset($vars['time'])?(int)$vars['time']:-1;
@@ -188,16 +188,7 @@ class commentFunc{
 		if(!iCMS::$config['comment']['enable']){
 			return;
 		}
-		// if(!iCMS::$hooks['enable_comment']){
-		// 	iUI::warning('此页面禁止调用 iCMS&#x3a;comment&#x3a;form 标签！');
-		// }
-		if(iCMS::$config['comment']['plugin']['changyan']['enable']|| $vars['display']==="changyan"){
-			iCMS::$config['comment']['plugin']['changyan']['appid'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appid"或"appid"值为空.');
-			iCMS::$config['comment']['plugin']['changyan']['appkey'] OR iUI::warning('iCMS&#x3a;comment&#x3a;form 标签出错! 畅言评论插件缺少参数"appkey"或"appkey"值为空.');
 
-			iView::display('iCMS://comment/changyan.htm');
-			return;
-		}
 		if(!isset($vars['ref'])){
 			$_vars = iView::app_vars(true);
 			$vars  = array_merge($vars,$_vars);

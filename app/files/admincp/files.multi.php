@@ -17,7 +17,7 @@ var settings = {
         label: '点击选择图片'
     },
     fileVal:'upfile',
-    formData: {"watermark":<?php echo iCMS::$config['watermark']['enable']?'true':'false'; ?>,"udir":"<?php echo $_GET['dir']; ?>"},
+    formData: {"udir":"<?php echo $_GET['dir']; ?>"},
     dnd: '#dndArea',
     paste: '#uploader',
     swf: './app/admincp/ui/webuploader/Uploader.swf',
@@ -37,6 +37,13 @@ var settings = {
                 return iCMS.alert(b.state);
             }
 
+        },
+        "startUpload":function(uploader){
+            var formData  = uploader.option( 'formData');
+            var checked = $("#unwatermark").prop("checked");
+            if(!checked) formData['unwatermark'] = true;
+            uploader.option( 'formData', formData);
+            return false;
         }
     },
     // runtimeOrder: 'flash',
@@ -53,6 +60,7 @@ var settings = {
     fileSizeLimit: 200 * 1024 * 1024,    // 200 M
     fileSingleSizeLimit: 50 * 1024 * 1024    // 50 M
 }
+
 </script>
 <link rel="stylesheet" href="./app/admincp/ui/webuploader/webuploader.css" type="text/css" />
 <link rel="stylesheet" href="./app/admincp/ui/webuploader/style.css" type="text/css" />
@@ -83,7 +91,7 @@ var settings = {
                 <div class="btns">
                     <div class="input-prepend"><span class="add-on">水印</span>
                       <div class="switch" data-on-label="添加" data-off-label="不添加">
-                        <input type="checkbox" data-type="switch" name="watermark" id="watermark" <?php echo iCMS::$config['watermark']['enable']?'checked':''; ?>/>
+                        <input type="checkbox" data-type="switch" name="unwatermark" id="unwatermark" <?php echo iCMS::$config['watermark']['enable']?'checked':''; ?>/>
                       </div>
                     </div>
                     <div id="filePicker2"></div>

@@ -8,7 +8,8 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class propAdmincp{
-    public static $app =null;
+    public static $app   = null;
+    public static $field = null;
     public function __construct() {
         $this->pid = (int)$_GET['pid'];
     }
@@ -49,11 +50,22 @@ class propAdmincp{
 		}else{
 	        iDB::value("SELECT `pid` FROM `#iCMS@__prop` where `app` ='$app' AND `val` ='$val' AND `field` ='$field' AND `cid` ='$cid'") && iUI::alert('该类型属性值已经存在!请另选一个');
             $nameArray = explode("\n",$name);
-            foreach($nameArray AS $nkey=>$_name){
-                $_name  = trim($_name);
-                if(empty($_name)) continue;
-                $data['name'] = $_name;
-                $data['val']  = $nkey+1;
+            if(count($nameArray)>1){
+                foreach($nameArray AS $nkey=>$_name){
+                    $_name  = trim($_name);
+                    if(empty($_name)) continue;
+
+                    if(strpos($_name,':')!==false){
+                        list($data['name'],$data['val']) = explode(':', $_name);
+                    }else{
+                        $data['name'] = $_name;
+                        $data['val']  = $nkey+1;
+                    }
+                    $val=='{@NAME@}' && $data['val']  = $data['name'];
+
+                    iDB::insert('prop',$data);
+                }
+            }else{
                 iDB::insert('prop',$data);
             }
 	        $msg="新属性添加完成!";
@@ -143,18 +155,51 @@ class propAdmincp{
     		iCache::set('prop/'.$k,$a,0);
     	}
     }
-    public static function btn_group($field, $app = null,$target = null){
+    public static function btn_add($title,$field=null,$app = null,$text='<i class="fa fa-plus"></i>'){
         $app OR $app = admincp::$APP_NAME;
-        $propArray = iCache::get("prop/{$app}/{$field}");
+        $field OR $field = self::$field;
+        $text OR $text = $title;
+        return '<a class="btn tip-right" href="'.__ADMINCP__.
+        '=prop&do=add&_app='.$app.
+        '&field='.$field.'" target="_blank" title="'.$title.'">'.$text.'</a>';
+    }
+    public static function btn_group($field,$target = null, $app = null){
+        self::$field = $field;
+        $app OR $app = admincp::$APP_NAME;
         $target OR $target = $field;
-        $div = '<div class="btn-group">'.
-        '<a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>'.
-        '<ul class="dropdown-menu">';
+        $propArray = iCache::get("prop/{$app}/{$field}");
+        $div = '<div class="btn-group">';
+        $div.= '<a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span> 选择</a>';
+        $div.= '<ul class="dropdown-menu">';
         if($propArray)foreach ((array)$propArray as $prop) {
-            $div.= '<li><a href="javascript:;" data-toggle="insert" data-target="#' . $target . '" data-value="' . $prop['val'] . '">' . $prop['name'] . '</a></li>';
+            $div.= '<li><a href="javascript:;" data-toggle="insert"
+                    data-target="#' . $target . '"
+                    data-value="' . $prop['val'] . '">' . $prop['name'] . '</a>
+                    </li>';
         }
-        $div.= '<li class="divider"></li><li><a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.$app.'&field='.$field.'" target="_blank">添加常用属性</a></li>';
-        $div.= '</ul></div>';
+        $div.= '<li class="divider"></li>';
+        $div.= '<li>';
+        $div.= self::btn_add('添加常用属性',$field,$app,null);
+        // $div.= '<a class="btn tip-right" href="'.__ADMINCP__.'=prop&do=add&_app='.$app.'&field='.$field.'" target="_blank" title="添加常用属性"><i class="fa fa-plus"></i>常用属性</a>';
+        $div.= '</li></ul>';
+        $div.= '</div>';
+        return $div;
+    }
+    public static function select($field,$target = null,$class='span3',$title='请选择或填写',$app = null){
+        self::$field = $field;
+        $app OR $app = admincp::$APP_NAME;
+        $target OR $target = $field;
+        $propArray = iCache::get("prop/{$app}/{$field}");
+
+        $div = '<select data-toggle="select_insert"
+                data-target="#' . $target . '"
+                class="chosen-select '.$class.'"
+                data-placeholder="'.$title.'">';
+        $div.= '<option></option>';
+        if($propArray)foreach ((array)$propArray as $prop) {
+            $div.= '<option value="'.$prop['val'].'">' . $prop['name'] . '</option>';
+        }
+        $div.= '</select>';
         return $div;
     }
     public static function app($app) {
@@ -163,6 +208,7 @@ class propAdmincp{
         return $self;
     }
     public static function get($field, $valArray = NULL,/*$default=array(),*/$out = 'option', $url="",$app = "",$isopt=true) {
+        self::$field = $field;
         $app OR $app = admincp::$APP_NAME;
         self::$app && $app = self::$app;
         is_array($valArray) OR $valArray  = explode(',', $valArray);
@@ -171,15 +217,18 @@ class propAdmincp{
         // empty($propArray) && $propArray = iCache::get("prop/{$field}");
         if($propArray)foreach ((array)$propArray AS $k => $P) {
             if ($out == 'option') {
-                $optText = "<option value='{$P['val']}'" . (isset($valArray[$P['val']]) ? " selected='selected'" : '') . ">{$P['name']}";
-                $isopt && $optText.= "[{$field}='{$P['val']}']";
+                $optText = "<option value='{$P['val']}'";
+                array_search($P['val'], $valArray)!==FALSE && $optText.= " selected='selected'";
+                $optText.= "title='{$field}={$P['val']}']";
+                $optText.= ">{$P['name']}";
+                // $isopt && $optText.= "[{$field}='{$P['val']}']";
                 $optText.= "</option>";
                 $opt[]=$optText;
             } elseif ($out == 'array') {
                 $opt[$P['val']] = $P['name'];
             } elseif ($out == 'text') {
                 // if (array_search($P['val'],$valArray)!==FALSE) {
-                if(isset($valArray[$P['val']])){
+                if(array_search($P['val'], $valArray)!==FALSE){
                     $flag = '<i class="fa fa-flag"></i> '.$P['name'];
                     $opt[]= ($url?'<a href="'.str_replace('{PID}',$P['val'],$url).'">'.$flag.'</a>':$flag).'<br />';
                 }

@@ -206,8 +206,7 @@
           <span class="fb-icon fb-icon-richtext"></span>
           <p>编辑器</p>
         </li>
-        <span class="help-inline">* 此标签下的字段会独立创建data表</span>
-        <span class="help-inline">* <span class="label label-important">文章系统</span> <span class="label label-important">用户系统</span> 无法使用附加字段</span>
+        <span class="help-inline">* 此标签下的字段会独立创建cdata表</span>
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>

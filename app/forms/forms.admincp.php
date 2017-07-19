@@ -162,13 +162,13 @@ class formsAdmincp{
         $table_array  = $_POST['table'];
         if($table_array){
           $table_array  = array_filter($table_array);
-          $table  = addslashes(cnjson_decode($table_array));
+          $table  = addslashes(cnjson_encode($table_array));
         }
 
         $config_array = $_POST['config'];
         if($config_array){
           $config_array = array_filter($config_array);
-          $config       = addslashes(cnjson_decode($config_array));
+          $config       = addslashes(cnjson_encode($config_array));
         }
 
         $fields   = '';
@@ -193,7 +193,7 @@ class formsAdmincp{
             }
           }
           //字段数据存入数据库
-          $fields = addslashes(cnjson_decode($field_array));
+          $fields = addslashes(cnjson_encode($field_array));
         }
 
         iFS::$force_ext = "jpg";
@@ -230,20 +230,20 @@ class formsAdmincp{
 
             //有MEDIUMTEXT类型字段就创建xxx_data附加表
             if($addons_fieldata){
-              $union_id = apps_mod::data_union_id($array['app']);//关联基本表id
-              $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段
+              $union_id = apps_mod::data_union_key($array['app']);//关联基本表id
+              $addons_base_fields = apps_mod::data_base_fields($array['app']);//xxx_data附加表的基础字段
               $addons_fieldata = $addons_base_fields+$addons_fieldata;
               $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id,$create);
               // //添加到字段数据里
               // $field_array = array_merge($field_array,$addons_base_fields);
-              // $array['fields'] = addslashes(cnjson_decode($field_array));
+              // $array['fields'] = addslashes(cnjson_encode($field_array));
             }
 
             $array['table']  = $table_array;
             $array['config'] = $config_array;
 
-            $array['table'] = addslashes(cnjson_decode($table_array));
-            $array['config'] = addslashes(cnjson_decode($config_array));
+            $array['table'] = addslashes(cnjson_encode($table_array));
+            $array['config'] = addslashes(cnjson_encode($config_array));
 
             $id = iDB::insert('forms',$array);
 
@@ -284,14 +284,14 @@ class formsAdmincp{
                   if($addons_fieldata){
                     iDB::check_table($addons_name) && iUI::alert('['.$addons_name.']附加表已经存在!');
                     //有MEDIUMTEXT类型字段创建xxx_data附加表
-                    $union_id = apps_mod::data_union_id($array['app']);
-                    $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段
+                    $union_id = apps_mod::data_union_key($array['app']);
+                    $addons_base_fields = apps_mod::data_base_fields($array['app']);//xxx_data附加表的基础字段
                     $addons_fieldata = $addons_base_fields+$addons_fieldata;
                     $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
-                    $array['table'] = addslashes(cnjson_decode($table_array));
+                    $array['table'] = addslashes(cnjson_encode($table_array));
                     // //添加到字段数据里
                     // $field_array = array_merge($field_array,$addons_base_fields);
-                    // $array['fields'] = addslashes(cnjson_decode($field_array));
+                    // $array['fields'] = addslashes(cnjson_encode($field_array));
                   }
                 }
               }
@@ -299,7 +299,7 @@ class formsAdmincp{
                 //删除自定义表单的表
                 //不存在附加表数据 直接删除附加表 返回 table的json值 $table_array为引用参数
                 apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
-                $array['table'] = addslashes(cnjson_decode($table_array));
+                $array['table'] = addslashes(cnjson_encode($table_array));
             }
 
             iDB::update('forms', $array, array('id'=>$id));
@@ -365,6 +365,20 @@ class formsAdmincp{
       $forms = forms::get($id);
       forms::delete($this->id);
       $dialog && iUI::success("表单已经删除!",'url:'.APP_URI);
+    }
+    public function do_cache($dialog=true){
+        @set_time_limit(0);
+
+        $rs = iDB::all("SELECT * FROM `#iCMS@__forms`");
+        foreach((array)$rs AS $a) {
+          $a = apps::item($a);
+          $appid_array[$a['id']] = $a;
+          $app_array[$a['app']]  = $a;
+          iCache::set('forms/'.$a['id'],$a,0);
+        }
+      iCache::set('forms/idarray',  $appid_array,0);
+      iCache::set('forms/array',$app_array,0);
+      $dialog && iUI::success('更新完成');
     }
     /**
      * [本地安装表单]

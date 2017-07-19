@@ -127,7 +127,7 @@ class configAdmincp{
     public static function set($value, $name, $appid, $cache = false) {
         $cache && iCache::set('config/' . $name, $value, 0);
         // is_array($value) && $value = addslashes(serialize($value));
-        is_array($value) && $value = addslashes(cnjson_decode($value));
+        is_array($value) && $value = addslashes(cnjson_encode($value));
         $check  = iDB::value("SELECT `name` FROM `#iCMS@__config` WHERE `appid` ='$appid' AND `name` ='$name'");
         $fields = array('appid','name','value');
         $data   = compact ($fields);

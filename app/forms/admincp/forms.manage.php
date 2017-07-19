@@ -13,6 +13,7 @@ admincp::head();
 <style>
 .app_list_desc{font-size: 12px;color: #666;}
 .nopadding .tab-content{padding: 0px;}
+.solid{border-bottom: 1px solid #ddd;}
 </style>
 <script type="text/javascript">
 $(function(){
@@ -65,8 +66,7 @@ $(function(){
             <thead>
               <tr>
                 <th style="width:40px;">ID</th>
-                <th>标识</th>
-                <th class="span3">名称</th>
+                <th>标识/名称</th>
                 <th>数据表</th>
                 <th>操作</th>
               </tr>
@@ -81,14 +81,15 @@ $(function(){
               <tr id="tr<?php echo $data['id'] ; ?>">
                 <td><b><?php echo $data['id'] ; ?></b></td>
                 <td>
-                  <b><?php echo forms::short_app($data['app']) ; ?></b>
-                </td>
-                <td>
-                  <?php echo $data['name'] ; ?>
+                  <b><?php echo forms::short_app($data['app']) ; ?></b>/<?php echo $data['name'] ; ?>
                   <p class="app_list_desc"><?php echo $config['info'] ; ?></p>
                   <?php if($config['iFormer']){ ?>
                     <span class="label label-info">可自定义</span>
                   <?php }?>
+                    <div class="solid clearfix mt5"></div>
+                    <a href="<?php echo $data['url'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 表单</a>
+                    <a href="<?php echo APP_URI; ?>&do=data&form_id=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 数据</a>
+                    <a href="<?php echo APP_URI; ?>&do=submit&form_id=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-edit"></i> 添加</a>
                 </td>
                 <td>
                   <?php if(is_array($table)){ ?>
@@ -120,12 +121,9 @@ $(function(){
                   ?>
                 </td>
                   <td>
-                    <a href="<?php echo $data['url'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 表单</a>
-                    <a href="<?php echo APP_URI; ?>&do=data&form_id=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 数据</a>
-                    <a href="<?php echo APP_URI; ?>&do=submit&form_id=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-edit"></i> 添加</a>
-                    <div class="clearfix mt5"></div>
                     <a href="<?php echo APP_URI; ?>&do=create&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
                     <a href="<?php echo APP_URI; ?>&do=pack&id=<?php echo $data['id'] ; ?>" class="btn btn-small"><i class="fa fa-download"></i> 打包</a>
+                    <div class="clearfix mt5"></div>
                     <?php if($data['status']){?>
                     <a href="<?php echo APP_URI; ?>&do=update&_args=status:0&id=<?php echo $data['id'] ; ?>" target="iPHP_FRAME" class="btn btn-small btn-warning" onclick="return confirm('关闭表单不会删除数据，但表单将不可用\n确定要关闭表单?');"><i class="fa fa-close"></i> 关闭</a>
                     <?php }else{?>
@@ -136,7 +134,7 @@ $(function(){
                 <?php }  ?>
               </tbody>
               <tr>
-                <td colspan="7">
+                <td colspan="5">
                   <div class="pagination pagination-right" style="float:right;"><?php echo iUI::$pagenav ; ?></div>
                   <div class="input-prepend input-append mt20">
                     <span class="add-on">全选

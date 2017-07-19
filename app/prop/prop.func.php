@@ -9,8 +9,8 @@
 */
 class propFunc{
 	public static function prop_array($vars){
-		$field	= $vars['field'];
-        $sapp    = $vars['sapp'];
+        $field    = $vars['field'];
+        $sapp     = $vars['sapp'];
         $variable = propApp::value($field,$sapp);
 
         $offset = $vars['start']?$vars['start']:0;

@@ -96,7 +96,7 @@ class former {
         //     $dtn = apps_mod::data_table_name($app['app']);
         //     $data_table = $app['table'][$dtn];
         // }
-        $data_fields = apps_mod::base_fields($app['app']);
+        $data_fields = apps_mod::data_base_fields($app['app']);
         $primary_key = $data_table['primary'];
         $union_key   = $data_table['union'];
         $fpk = $data_fields[$primary_key];
@@ -197,7 +197,8 @@ class former {
                     // $form_group.=' input-append';
                     $input->attr('type','text');
                     if(self::$config['gateway']=='admincp'){
-                        $prop = propAdmincp::btn_group($name,self::$config['app']['app'],$attr['id']);
+                        $prop = propAdmincp::btn_group($name,$attr['id'],self::$config['app']['app']);
+                        $prop.= propAdmincp::btn_add('添加'.$field['label'],$name,self::$config['app']['app']);
                     }
                     $input.= $prop;
                 break;
@@ -211,7 +212,7 @@ class former {
                         $attr['data-placeholder']= '请选择'.$field['label'].'(可多选)...';
                         $orig = self::widget('input',array('type'=>'hidden','name'=>$orig_name,'value'=>$value));
                     }
-                    $btn = '<a class="btn" href="'.__ADMINCP__.'=prop&do=add&_app='.self::$config['app']['app'].'&field='.$name.'" target="_blank">添加'.$field['label'].'</a>';
+                    $btn = propAdmincp::btn_add('添加'.$field['label'],$name,self::$config['app']['app']);
                     $select = self::widget('select',$attr)->addClass('chosen-select');
                     if(self::$config['gateway']=='admincp'){
                         $option='<option value="0">默认'.$field['label'].'['.$name.'=\'0\']</option>';

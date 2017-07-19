@@ -73,16 +73,11 @@ class articleAdmincp{
             $rs['userid']  = members::$userid;
 		}
 
-        iPHP::callback(array("formerApp","add"),array(self::$appid,$rs,false));
+        iPHP::callback(array("formerApp","add"),array(self::$appid,$rs,true));
         if(isset($_GET['ui_editor'])){
             self::$config['markdown'] = ($_GET['ui_editor']=='markdown')?"1":"0";
         }
-
-        if(self::$config['markdown']){
-            include admincp::view("article.markdown");
-        }else{
-            include admincp::view("article.add");
-        }
+        include admincp::view("article.add");
     }
     public function do_update(){
     	$data = iSQL::update_args($_GET['_args']);
@@ -583,7 +578,13 @@ class articleAdmincp{
         }
 
         if(empty($description) && empty($url)) {
-            $description = $this->autodesc($body);
+            if($_POST['markdown']){
+                $md_body = iPHP::callback(array("plugin_markdown","HOOK"),array(implode('', (array)$body),&$_POST));
+                empty($md_body) && $md_body = $body;
+                $description = $this->autodesc($md_body);
+            }else{
+                $description = $this->autodesc($body);
+            }
         }
 
         (iFS::checkHttp($pic)  && !isset($_POST['pic_http']))  && $pic  = iFS::http($pic);
@@ -667,7 +668,7 @@ class articleAdmincp{
         }else{
             isset($_POST['ischapter']) OR $chapter = 0;
 
-	        $tags && tag::diff($tags,$_tags,members::$userid,$aid,$cid);
+	        ($tags||$_tags) && tag::diff($tags,$_tags,members::$userid,$aid,$cid);
 
             $picdata = filesAdmincp::picdata($pic,$mpic,$spic);
 
@@ -771,16 +772,6 @@ class articleAdmincp{
                 $subtitle = iSecurity::escapeStr($chaptertitle[$key]);
                 $this->body($body,$subtitle,$aid,$adid,$haspic);
             }
-            if($_POST['_data_id']){
-                $_data_id = stripslashes($_POST['_data_id']);
-                $_data_id = json_decode($_data_id,true);
-                if($_data_id){
-                    $diff = array_diff_values($adidArray,$_data_id);
-                    if($diff['-'])foreach ($diff['-'] as $_i => $_id) {
-                        article::del_data($_id,'id');
-                    }
-                }
-            }
             article::update(compact('chapter'),array('id'=>$aid));
         }else{
             $adid     = (int)$_POST['data_id'];
@@ -799,14 +790,6 @@ class articleAdmincp{
             $body = $body;
         }else{
             self::$config['autoformat'] && $body = addslashes(autoformat($body));
-        }
-        if(self::$config['emoji']=='unicode'){
-            $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','\\\\\ud$1',json_encode($body));
-            $body = json_decode($body);
-            $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','\\\\\ud$1',$body);
-        }else if(self::$config['emoji']=='clean'){
-            $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','',json_encode($body));
-            $body = json_decode($body);
         }
 
         $fields = article::data_fields($id);
@@ -839,15 +822,15 @@ class articleAdmincp{
     }
     public static function autodesc($body){
         if(self::$config['autodesc'] && self::$config['descLen']) {
-            is_array($body) && $bodyText   = implode("\n",$body);
-            $bodyText   = str_replace('#--iCMS.PageBreak--#',"\n",$bodyText);
-            $bodyText   = str_replace('</p><p>', "</p>\n<p>", $bodyText);
+            is_array($body) && $body = implode("\n",$body);
+            $bodyText = str_replace('#--iCMS.PageBreak--#',"\n",$body);
+            $bodyText = str_replace('</p><p>', "</p>\n<p>", $bodyText);
 
             $textArray = explode("\n", $bodyText);
             $pageNum   = 0;
             $resource  = array();
             foreach ($textArray as $key => $p) {
-                $text      = preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$p);
+                $text = preg_replace(array('/<[\/\!]*?[^<>]*?>/is','/\s*/is'),'',$p);
                 // $pageLen   = strlen($resource);
                 // $output    = implode('',array_slice($textArray,$key));
                 // $outputLen = strlen($output);
@@ -865,6 +848,7 @@ class articleAdmincp{
             $description = csubstr($description,self::$config['descLen']);
             $description = addslashes(trim($description));
             $description = str_replace('#--iCMS.PageBreak--#','',$description);
+            $description = preg_replace('/^[\s|\n|\t]{2,}/m','',$description);
             unset($bodyText);
             return $description;
         }

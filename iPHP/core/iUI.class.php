@@ -32,7 +32,7 @@ class iUI {
 
 		if (!is_file($path)) {
 			if ($throw) {
-				iPHP::error_throw($fname . ' not exist', 0015);
+				iPHP::error_throw($app . ' language file ('.$fname.') not exist', 0015);
 			} else {
 				return $string;
 			}

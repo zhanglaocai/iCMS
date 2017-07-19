@@ -79,11 +79,12 @@ $(function(){
             </div>
             <span class="help-inline">本标签所属的标签分类</span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">标签属性</span>
+            <div class="input-prepend input-append"> <span class="add-on">标签属性</span>
               <select name="pid[]" id="pid" class="chosen-select span6" multiple="multiple" data-placeholder="请选择标签属性(可多选)...">
                 <option value="0">普通标签[pid='0']</option>
                 <?php echo propAdmincp::get("pid") ; ?>
               </select>
+              <?php echo propAdmincp::btn_add('添加常用属性');?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">父标签ID</span>

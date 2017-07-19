@@ -17,18 +17,17 @@ class contentFunc {
     * 已在 categoryApp contentApp 设置数据回调,
     * 在应用范围内可以不用设置 app="应用名/应用ID"
     **/
-    public static function set_apps($value=null) {
+    public static function __set_apps($value=null) {
         self::$apps = $value;
     }
     private static function data($vars,$func='list'){
-
         if((empty($vars['app'])||$vars['app']=='content') && self::$apps){
             $vars['app'] = self::$apps['app'];
         }
-
         self::$app = apps::get_app($vars['app']);
-        self::$app OR iUI::warning('iCMS&#x3a;content&#x3a;'.$func.' 标签出错! 缺少参数"app"或"app"值为空.');
-
+        if(empty(self::$app)||$vars['app']=='content'){
+            iUI::warning('iCMS&#x3a;content&#x3a;'.$func.' 标签出错! 缺少参数"app"或"app"值为空.');
+        }
         self::$table   = apps::get_table(self::$app);
         self::$primary = self::$table['primary'];
     }

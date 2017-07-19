@@ -69,7 +69,7 @@ class categoryApp{
             iView::set_iVARS($category['iurl'],'iURL');
             $category['mode'] && iURL::page_url($category['iurl']);
             if($category['apps']['type']=="2"){ //自定义应用模板信息
-                iPHP::callback(array("contentFunc","set_apps"),array($category['apps']));
+                iPHP::callback(array("contentFunc","__set_apps"),array($category['apps']));
             }
             iView::assign('apps', $category['apps']); //绑定的应用信息
             iView::assign('app', $category['app']);//category 信息

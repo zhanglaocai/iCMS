@@ -59,7 +59,7 @@ class appsAdmincp{
         $create  = true;
 
         $menu = json_decode(stripcslashes($_POST['menu']));
-        $menu = addslashes(cnjson_decode($menu));
+        $menu = addslashes(cnjson_encode($menu));
 
         $name OR iUI::alert('应用名称不能为空!');
         empty($app) && $app = iPinyin::get($name);
@@ -68,7 +68,7 @@ class appsAdmincp{
         $table_array  = $_POST['table'];
         if($table_array){
           $table_array  = array_filter($table_array);
-          $table  = addslashes(cnjson_decode($table_array));
+          $table  = addslashes(cnjson_encode($table_array));
         }
 
         $config_array = $_POST['config'];
@@ -80,7 +80,7 @@ class appsAdmincp{
           $config_array['iurl'] = json_decode(stripcslashes($config_array['iurl']),true);
         }
         $config_array = array_filter($config_array);
-        $config = addslashes(cnjson_decode($config_array));
+        $config = addslashes(cnjson_encode($config_array));
 
         $fields = '';
         $fieldata = $_POST['fields'];
@@ -104,7 +104,7 @@ class appsAdmincp{
             }
           }
           //字段数据存入数据库
-          $fields = addslashes(cnjson_decode($field_array));
+          $fields = addslashes(cnjson_encode($field_array));
         }
 
         $addtime = time();
@@ -141,13 +141,13 @@ class appsAdmincp{
 
               //有MEDIUMTEXT类型字段就创建xxx_data附加表
               if($addons_fieldata){
-                $union_id = apps_mod::data_union_id($array['app']);//关联基本表id
-                $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段
+                $union_id = apps_mod::data_union_key($array['app']);//关联基本表id
+                $addons_base_fields = apps_mod::data_base_fields($array['app']);//xxx_data附加表的基础字段
                 $addons_fieldata = $addons_base_fields+$addons_fieldata;
                 $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id,$create);
                 // //添加到字段数据里
                 // $field_array = array_merge($field_array,$addons_base_fields);
-                // $array['fields'] = addslashes(cnjson_decode($field_array));
+                // $array['fields'] = addslashes(cnjson_encode($field_array));
               }
               $table_array+=apps_meta::table_array($app,true);
 
@@ -157,8 +157,8 @@ class appsAdmincp{
               $config_array['template'] = apps_mod::template($array,'array');
               $config_array['iurl']   = apps_mod::iurl($array);
 
-              $array['table'] = addslashes(cnjson_decode($table_array));
-              $array['config'] = addslashes(cnjson_decode($config_array));
+              $array['table'] = addslashes(cnjson_encode($table_array));
+              $array['config'] = addslashes(cnjson_encode($config_array));
               $msg = "应用创建完成!";
             }
 
@@ -208,14 +208,14 @@ class appsAdmincp{
                   if($addons_fieldata){
                     iDB::check_table($addons_name) && iUI::alert('['.$addons_name.']附加表已经存在!');
                     //有MEDIUMTEXT类型字段创建xxx_data附加表
-                    $union_id = apps_mod::data_union_id($array['app']);
-                    $addons_base_fields = apps_mod::base_fields($array['app']);//xxx_data附加表的基础字段
+                    $union_id = apps_mod::data_union_key($array['app']);
+                    $addons_base_fields = apps_mod::data_base_fields($array['app']);//xxx_data附加表的基础字段
                     $addons_fieldata = $addons_base_fields+$addons_fieldata;
                     $table_array += apps_mod::data_create_table($addons_fieldata,$addons_name,$union_id);
-                    $array['table'] = addslashes(cnjson_decode($table_array));
+                    $array['table'] = addslashes(cnjson_encode($table_array));
                     // //添加到字段数据里
                     // $field_array = array_merge($field_array,$addons_base_fields);
-                    // $array['fields'] = addslashes(cnjson_decode($field_array));
+                    // $array['fields'] = addslashes(cnjson_encode($field_array));
                   }
                 }
               }
@@ -223,18 +223,18 @@ class appsAdmincp{
               if($apptype=="2"){ //只删除自定义应用的表
                 //不存在附加表数据 直接删除附加表 返回 table的json值 $table_array为引用参数
                 apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
-                $array['table'] = addslashes(cnjson_decode($table_array));
+                $array['table'] = addslashes(cnjson_encode($table_array));
               }else{
                 if($table_array){
                   $data_tables = next($table_array);
-                  $union_id = apps_mod::data_union_id($array['app']);
+                  $union_id = apps_mod::data_union_key($array['app']);
                   //判断是否自动生成的表
                   if(is_array($data_tables) &&
-                    in_array("data_id" ,$data_tables) &&
+                    in_array(apps_mod::DATA_PRIMARY_KEY ,$data_tables) &&
                     in_array($union_id ,$data_tables))
                   {
                     apps_mod::drop_table($addons_fieldata,$table_array,$addons_name);
-                    $array['table'] = addslashes(cnjson_decode($table_array));
+                    $array['table'] = addslashes(cnjson_encode($table_array));
                   }else{
                     apps_db::alter_table($addons_name,$addons_sql_array);
                   }
@@ -318,14 +318,9 @@ class appsAdmincp{
      */
     public function do_template(){
       $title = '模板';
+      $json = self::get_store_json('template');
+      $json && $data = json_decode($json,true);
       include admincp::view("apps.store");
-    }
-    /**
-     * [模板市场数据]
-     * @return [type] [description]
-     */
-    public function do_template_json(){
-      echo $this->do_store_json('template');
     }
     /**
      * [从模板市场安装模板]
@@ -347,28 +342,43 @@ class appsAdmincp{
      */
     public function do_store($name=null){
       $title = '应用';
+      // $variable = apps::get_array(array('status'=>'1','type'=>'3'));
+      // foreach ($variable as $key => $value) {
+      //   empty($value['config']) && $value['config'] = array();
+      //   $rs[$value['app']] = array(
+      //     'id'      =>$value['id'],
+      //     'addtime' =>(int)$value['addtime'],
+      //     'uptime'  =>$value['config']['uptime'],
+      //     'version' =>$value['config']['version'],
+      //   );
+      // }
+      $json = self::get_store_json();
+      $json && $data = json_decode($json,true);
+
       include admincp::view("apps.store");
     }
     /**
      * [应用市场数据]
      * @return [type] [description]
      */
-    public function do_store_json($name='store'){
+    public function get_store_json($name='store'){
       $url  = apps_store::STORE_URL.'/'.$name.'.json';
-      $json = iHttp::remote($url);
-      echo $json;
+      return iHttp::remote($url);
+    }
+    public function do_store_update($type='app',$title='应用'){
+
     }
     /**
      * [从应用市场安装应用]
      * @return [type] [description]
      */
-    public function do_store_install($type='app',$title='应用'){
+    public function do_store_install($type='app',$title='应用',$update=false){
       $sid   = $_GET['sid'];
       $time  = time();
       $host  = $_SERVER['HTTP_HOST'];
       $key   = md5(iPHP_KEY.$host.$time);
-      $array = compact(array('sid','key','host','time'));
-      $url   = apps_store::STORE_URL.'/store.get?'.http_build_query($array);
+      $query = compact(array('sid','key','host','time'));
+      $url   = apps_store::STORE_URL.'/store.get?'.http_build_query($query);
 
       iHttp::$CURLOPT_TIMEOUT        = 60;
       iHttp::$CURLOPT_CONNECTTIMEOUT = 10;
@@ -404,19 +414,30 @@ class appsAdmincp{
           iUI::$dialog['ok:js']      = iUI::$dialog['cancel:js'] = '
             top.clear_pay_notify_timer();
           ';
-          iUI::dialog('
-            此'.$title.'为付费版,请先付费后安装!<br />
-            请使用微信扫描下面二维码<br />
-            在未提示完成前请务刷新页面.
-            <p style="text-align: center;">
-            <img alt="模式一扫码支付"
-            src="http://paysdk.weixin.qq.com/example/qrcode.php?data='.$array->pay.'"/>
-            </p>
+          iUI::dialog('<div class="alert alert-info" style="font-size:16px;">
+            此'.$title.'为付费版,需要付费后才能安装!<br />
+            请使用微信扫一扫,扫描下面二维码支付.<br />
+            支付完成后,在未提示安装完成前,请勿刷新或关闭页面.<br />
+            <p class="mt10" style="text-align: center;">
+            <img class="r5" src="http://paysdk.weixin.qq.com/example/qrcode.php?data='.$array->pay.'" width="150"/><br />
+            (使用微信扫一扫)
+            </p></div><hr />
+            <p class="gray">如有问题请联系:<i class="fa fa-envelope"></i> support@iCMSdev.com</p>
           ','js:1',1000000);
           echo '<script type="text/javascript">
-            top.pay_notify("'.$key.'","'.$sid.'","'.$array->app.'","'.$array->name.'",d);
+            var j = '.json_encode(array($key,$sid,$array->app,$array->name,$array->version)).';
+            top.pay_notify(j,d);
           </script>';
         }else{
+          // iDB::insert("apps_store",array(
+          //   'name'    =>$array->app,
+          //   'version' =>$array->version,
+          //   'data'    =>json_encode($query),
+          //   'addtime' =>time(),
+          //   'uptime'  =>time(),
+          //   'type'    =>$type=='app'?0:1,
+          //   'status'  =>0,
+          // ));
           $this->setup_zip($array->url,$array->app,$array->name,null,$type);
         }
       }
@@ -426,13 +447,27 @@ class appsAdmincp{
      * @return [type] [description]
      */
     public function do_store_premium_install($type='app'){
-      $url    = $_GET['url'];
-      $sapp   = $_GET['sapp'];
-      $name   = $_GET['name'];
-      $key    = $_GET['key'];
-      $sid    = $_GET['sid'];
-      $array  = compact(array('sid','key'));
-      $zipurl = $url.'?'.http_build_query($array);
+      $url     = $_GET['url'];
+      $sapp    = $_GET['sapp'];
+      $name    = $_GET['name'];
+      $key     = $_GET['key'];
+      $sid     = $_GET['sid'];
+      $version = $_GET['version'];
+      $query   = compact(array('sid','key'));
+      $zipurl  = $url.'?'.http_build_query($query);
+
+      $host  = $_SERVER['HTTP_HOST'];
+      $time  = time();
+      $array = compact(array('sid','key','host','time'));
+      // iDB::insert("apps_store",array(
+      //   'name'    =>$name,
+      //   'version' =>$version,
+      //   'data'    =>json_encode($array),
+      //   'addtime' =>time(),
+      //   'uptime'  =>time(),
+      //   'type'    =>$type=='app'?0:1,
+      //   'status'  =>0,
+      // ));
       $this->setup_zip($zipurl,$sapp,$name,$key.'.zip',$type);
     }
 

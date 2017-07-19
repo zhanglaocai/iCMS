@@ -211,6 +211,7 @@ body.articleApp { }
 
 /*.article-wrap .article-body p.imgFix{padding-bottom: 20px; display: block;}*/
 .article-wrap .article-body p { margin: 0; padding: 0; margin-top: 8px; word-wrap: break-word; text-indent: 2em; font-size: 14px; line-height: 1.75; }
+.article-wrap .article-body p img{max-width: 90%;}
 .article-wrap .article-body p strong { font-weight: bold; font-size: 16px; }
 .article-wrap .article-body a { text-decoration: none; }
 .article-wrap .article-body a.keyword { border-bottom: 1px dotted #87B32E; color: #87B32E }

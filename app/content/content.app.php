@@ -86,7 +86,7 @@ class contentApp {
             strstr($tpl, '.htm') && $article_tpl = $tpl;
             $apps = apps::get_app_lite($this->data);
             //自定义应用模板信息
-            $apps['type']=="2" && iPHP::callback(array("contentFunc","set_apps"),array($apps));
+            $apps['type']=="2" && iPHP::callback(array("contentFunc","__set_apps"),array($apps));
 
             iView::assign('category', $rs['category']);unset($rs['category']);
             iView::assign('apps', $apps);

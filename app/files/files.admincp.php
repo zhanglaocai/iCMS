@@ -46,6 +46,12 @@ class filesAdmincp{
      */
 	public function do_add(){
 		$this->id && $rs = iFS::get_filedata('id',$this->id);
+        $href = '###';
+        if($rs){
+            $filepath = $rs->path.$rs->filename.'.'.$rs->ext;
+            $href     = iFS::fp($filepath,"+http");
+        }
+
 		include admincp::view("files.add");
 	}
     /**
@@ -60,6 +66,7 @@ class filesAdmincp{
         stristr($this->upload_max_filesize,'m') && $file_size_limit    = $file_size_limit*1024;
 		include admincp::view("files.multi");
 	}
+
 	public function do_iCMS(){
     	$sql='WHERE 1=1 ';
         if($_GET['keywords']) {
@@ -81,7 +88,10 @@ class filesAdmincp{
         if($_GET['indexid'] ||($_GET['st']=="indexid" && $_GET['keywords'])){
             $_GET['indexid'] && $indexid = (int)$_GET['indexid'];
             $_GET['keywords'] && $indexid = (int)$_GET['keywords'];
+            $_GET['appid'] && $appid = (int)$_GET['appid'];
             $msql = iSQL::in($indexid,'indexid',false,true);
+            $appid && $msql.= iSQL::in($appid,'appid',false);
+
             $msql && $fids_array = iDB::all("SELECT `fileid` FROM ".files::$_MAP_TABLE." WHERE {$msql}");
             $ids = iSQL::values($fids_array,'fileid');
             $ids = $ids ? $ids : '0';
@@ -108,12 +118,12 @@ class filesAdmincp{
      * @return [type] [description]
      */
     public function do_IO(){
+        files::$watermark_enable = $_GET['watermark'];
         $udir      = iSecurity::escapeStr($_GET['udir']);
         $name      = iSecurity::escapeStr($_GET['name']);
         $ext       = iSecurity::escapeStr($_GET['ext']);
         iFS::check_ext($ext,0) OR iUI::json(array('state'=>'ERROR','msg'=>'不允许的文件类型'));
         iFS::$ERROR_TYPE = true;
-        $_GET['watermark'] OR files::$watermark_enable = false;
         $F = iFS::IO($name,$udir,$ext);
         $F ===false && iUI::json(iFS::$ERROR);
         iUI::json(array(
@@ -131,7 +141,7 @@ class filesAdmincp{
      * @return [type] [description]
      */
     public function do_upload(){
-    	isset($_POST['watermark_enable']) && files::$watermark_enable = false;
+        files::$watermark_enable = !isset($_POST['unwatermark']);
         iFS::$ERROR_TYPE = true;
     	if($this->id){
             iFS::$data = files::get('id',$this->id);

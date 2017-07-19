@@ -10,20 +10,40 @@
 defined('iPHP') OR exit('What are you doing?');
 admincp::head();
 ?>
+<?php if(self::$config['markdown']){?>
+<link rel="stylesheet" href="./app/admincp/ui/editor.md/css/editormd.min.css" />
+<style>
+.editormd-menu>li{padding: 0px;margin-top: 4px;}
+.editormd-form input[type=text], .editormd-form input[type=number]{height: 36px;}
+.editormd-form input[type=number]{width: 45px !important;}
+.editormd-dialog-footer{padding: 0px;}
+.editormd-form input[type=text], .editormd-form input[type=number]{color: #999 !important;border:1px solid #ddd;}
+.editormd-dialog-container .editormd-btn, .editormd-dialog-container button, .editormd-dialog-container input[type=submit], .editormd-dialog-footer .editormd-btn, .editormd-dialog-footer button, .editormd-dialog-footer input[type=submit], .editormd-form .editormd-btn, .editormd-form button, .editormd-form input[type=submit]{padding: 1px 2px;}
+</style>
+<script type="text/javascript" charset="utf-8" src="./app/admincp/ui/editor.md/editormd.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.editormd.js"></script>
+<?php }else{?>
 <script type="text/javascript">
 window.catchRemoteImageEnable = <?php echo iCMS::$config['article']['catch_remote']?'true':'false';?>;
 </script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/iCMS.ueditor.js"></script>
 <script type="text/javascript" charset="utf-8" src="./app/admincp/ui/ueditor/ueditor.all.min.js"></script>
+<?php }?>
+
 <script type="text/javascript">
+<?php if(self::$config['markdown']){?>
+  var iEditor = iCMS.editormd;
+<?php }else{?>
+  var iEditor = iCMS.editor;
+<?php }?>
 $(function(){
   $("#title").focus();
 
-  iCMS.editor.create('editor-body-1');
+  iEditor.create('editor-body-1');
 	$(".editor-page").change(function(){
 		$(".editor-container").hide();
 		$("#editor-wrap-"+this.value).show();
-    iCMS.editor.create('editor-body-'+this.value).focus();
+    iEditor.create('editor-body-'+this.value).focus();
 		$(".editor-page").val(this.value).trigger("chosen:updated");
 	});
 
@@ -67,8 +87,12 @@ $(function(){
 			return false;
 		}
 		if($("#url").val()==''){
-			var n=$(".editor-page:eq(0) option:first").val(),ed = iCMS.editor.get('editor-body-'+n);
-			if(!ed.hasContents()){
+			var n=$(".editor-page:eq(0) option:first").val(),ed = iEditor.get('editor-body-'+n);
+      <?php if(self::$config['markdown']){?>
+        if(!ed.getMarkdown()){
+      <?php }else{?>
+        if(!ed.hasContents()){
+      <?php }?>
         ed.focus();
 				iCMS.alert("第"+n+"页内容不能为空!");
 				$('#editor-wrap-'+n).show();
@@ -95,11 +119,14 @@ $(function(){
 });
 
 function mergeEditorPage(){
+  <?php if(self::$config['markdown']){?>
+    return;
+  <?php }?>
   var html = [];
   $(".editor-container").each(function(n,a){
     var eid = a.id.replace('editor-wrap-','editor-body-');
-    if(iCMS.editor.container[eid]){
-        iCMS.editor.container[eid].destroy();
+    if(iEditor.container[eid]){
+        iEditor.container[eid].destroy();
     }
     var content = $("textarea",this).val();
     content && html.push(content);
@@ -116,7 +143,7 @@ function mergeEditorPage(){
     width: "100%",
     height: '500px'
   });
-  iCMS.editor.create(neid).focus();
+  iEditor.create(neid).focus();
   $(".editor-page").html('<option value="1">第 1 页</option>').val(1).trigger("chosen:updated");
 }
 function addEditorPage(){
@@ -132,11 +159,17 @@ function addEditorPage(){
         '</div>'+
         '<div class="clearfloat mb10"></div>'+
       '</div>'+
+<?php if(self::$config['markdown']){?>
+      '<div id="editor-body-'+n+'">'+
+        '<textarea type="text/plain" name="body[]"></textarea>'+
+      '</div>'+
+<?php }else{?>
       '<textarea type="text/plain" id="editor-body-'+n+'" name="body[]"></textarea>'+
+<?php }?>
     '</div>'
   );
 	$(".editor-page").append('<option value="'+n+'">第 '+n+' 页</option>').val(n).trigger("chosen:updated");
-	iCMS.editor.create('editor-body-'+n).focus();
+	iEditor.create('editor-body-'+n).focus();
   var checkedStatus = $('#ischapter').prop("checked");
   subtitleToggle (checkedStatus);
 }
@@ -164,18 +197,18 @@ function delEditorPage(){
     var index = p.val();
 	}
   s.remove();
-  iCMS.editor.destroy('editor-body-'+i);
+  iEditor.destroy('editor-body-'+i);
   $("#editor-body-"+i).remove();
   $("#editor-wrap-"+i).remove();
 
 	$(".editor-page").val(index).trigger("chosen:updated");
 	$("#editor-wrap-"+index).show();
-	iCMS.editor.eid	= 'editor-body-'+index;
-	iCMS.editor.get('editor-body-'+index).focus();
+	iEditor.eid	= 'editor-body-'+index;
+	iEditor.get('editor-body-'+index).focus();
 }
 function modal_picture(el,a){
   if(!a.checked) return;
-  var ed = iCMS.editor.get(),
+  var ed = iEditor.get(),
   url = $(a).attr("url");
   // if(a.checked){
   var imgObj  = {};
@@ -201,7 +234,7 @@ function modal_sweditor(el){
   fileType = e.attr('_fileType'),
   original = e.attr('_original'),
   url      = e.attr('url'),
-  ed       = iCMS.editor.get();
+  ed       = iEditor.get();
 
   if(url=='undefined') return;
   var html = '<p class="attachment icon_'+fileType+'"><a href="'+url+'" target="_blank">' + original + '</a></p>';
@@ -260,7 +293,7 @@ function _modal_dialog(cancel_text){
                 <?php echo $cata_option;?>
               </select>
             </div>
-            <div class="input-prepend"> <span class="add-on">状 态</span>
+            <div class="input-prepend input-append"> <span class="add-on">状 态</span>
               <select name="status" id="status" class="chosen-select span3">
                 <option value="0"> 草稿 [status='0']</option>
                 <option value="1"> 正常 [status='1']</option>
@@ -269,6 +302,7 @@ function _modal_dialog(cancel_text){
                 <option value="4"> 未通过 [status='4']</option>
                 <?php echo propAdmincp::get("status") ; ?>
               </select>
+              <?php echo propAdmincp::btn_add('添加状态');?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">副栏目</span>
@@ -277,11 +311,12 @@ function _modal_dialog(cancel_text){
               </select>
             </div>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on">属 性</span>
+            <div class="input-prepend input-append"> <span class="add-on">属 性</span>
               <select name="pid[]" id="pid" class="chosen-select span6" multiple="multiple">
                 <option value="0">普通文章[pid='0']</option>
                 <?php echo propAdmincp::get("pid") ; ?>
               </select>
+              <?php echo propAdmincp::btn_add('添加常用属性');?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">标 题</span>
@@ -376,10 +411,14 @@ function _modal_dialog(cancel_text){
                 <div class="btn-group">
                   <button type="button" class="btn" onclick="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</button>
                   <button type="button" class="btn" onclick="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</button>
+                <?php if(!self::$config['markdown']){?>
                   <button type="button" class="btn" onclick="javascript:mergeEditorPage();"><i class="fa fa-align-justify"></i> 合并编辑</button>
-                  <button type="button" class="btn" onclick="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</button>
-                  <button type="button" class="btn" onclick="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</button>
-                  <button type="button" class="btn" onclick="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</button>
+                <?php }?>
+                  <button type="button" class="btn" onclick="javascript:iEditor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</button>
+                  <button type="button" class="btn" onclick="javascript:iEditor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</button>
+                <?php if(!self::$config['markdown']){?>
+                  <button type="button" class="btn" onclick="javascript:iEditor.cleanup();"><i class="fa fa-magic"></i> 自动排版</button>
+                <?php }?>
                 </div>
               </div>
               <!--div class="btn-group">
@@ -406,7 +445,11 @@ function _modal_dialog(cancel_text){
                 <input name="iswatermark" type="checkbox" id="iswatermark" value="1" />不添加水印
               </span>
               <?php }?>
+        <?php if(self::$config['markdown']){?>
+              <a class="btn tip-top" href="<?php echo buildurl(null,array('ui_editor'=>'ueditor')); ?>" title="请先保存数据"><i class="fa fa-edit"></i> 切换到ueditor编辑器</a>
+        <?php }else{?>
               <a class="btn tip-top" href="<?php echo buildurl(null,array('ui_editor'=>'markdown')); ?>" title="请先保存数据"><i class="fa fa-edit"></i> 切换到markdown编辑器</a>
+        <?php }?>
             </div>
             <div class="clearfloat mb10"></div>
             <?php for($i=0;$i<$bodyCount;$i++){
@@ -421,7 +464,13 @@ function _modal_dialog(cancel_text){
                 </div>
                 <div class="clearfloat mb10"></div>
               </div>
+        <?php if(self::$config['markdown']){?>
+              <div id="editor-body-<?php echo $idNum;?>">
+                <textarea type="text/plain" name="body[]"><?php echo $bodyArray[$i];?></textarea>
+              </div>
+        <?php }else{?>
               <textarea type="text/plain" id="editor-body-<?php echo $idNum;?>" name="body[]"><?php echo $bodyArray[$i];?></textarea>
+        <?php }?>
             </div>
             <?php }?>
 
@@ -435,10 +484,14 @@ function _modal_dialog(cancel_text){
               <div class="btn-group">
                 <button type="button" class="btn" onclick="javascript:addEditorPage();"><i class="fa fa-file-o"></i> 新增一页</button>
                 <button type="button" class="btn" onclick="javascript:delEditorPage();"><i class="fa fa-times-circle"></i> 删除当前页</button>
+              <?php if(!self::$config['markdown']){?>
                 <button type="button" class="btn" onclick="javascript:mergeEditorPage();"><i class="fa fa-align-justify"></i> 合并分页</button>
-                <button type="button" class="btn" onclick="javascript:iCMS.editor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</button>
-                <button type="button" class="btn" onclick="javascript:iCMS.editor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</button>
-                <button type="button" class="btn" onclick="javascript:iCMS.editor.cleanup();"><i class="fa fa-magic"></i> 自动排版</button>
+              <?php }?>
+                <button type="button" class="btn" onclick="javascript:iEditor.insPageBreak();"><i class="fa fa-ellipsis-h"></i> 插入分页符</button>
+                <button type="button" class="btn" onclick="javascript:iEditor.delPageBreakflag();"><i class="fa fa-ban"></i> 删除分页符</button>
+              <?php if(!self::$config['markdown']){?>
+                <button type="button" class="btn" onclick="javascript:iEditor.cleanup();"><i class="fa fa-magic"></i> 自动排版</button>
+              <?php }?>
               </div>
             </div>
           </div>

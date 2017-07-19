@@ -150,6 +150,14 @@
         uploader.on('ready', function() {
             window.uploader = uploader;
         });
+        uploader.on('startUpload', function() {
+            if(settings.callback['startUpload']){
+                var func = settings.callback['startUpload'];
+                if (typeof(func) === "function") {
+                    func(uploader);
+                }
+            }
+        });
         uploader.on('uploadSuccess', function(a, b) {
             if(settings.callback['uploadSuccess']){
                 var func = settings.callback['uploadSuccess'];
@@ -490,9 +498,6 @@
                     break;
 
                 case 'startUpload':
-                    var formData  = uploader.option( 'formData');
-                    formData['watermark'] = $("#watermark").prop("checked");
-                    uploader.option( 'formData', formData);
                     setState( 'uploading' );
                     break;
 

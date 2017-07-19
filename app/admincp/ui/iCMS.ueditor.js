@@ -117,49 +117,49 @@
     //编辑器初始化完成后是否进入源码模式，默认为否。
     //,sourceEditorFirst:false
     };
-})();
 
-iCMS.editor = {
-    eid:'ueditor',
-    container:[],
-    get:function(eid) {
-        if(eid) this.eid = eid;
-        var ed  = this.container[this.eid]||this.create();
-        return ed;
-    },
-    create:function(eid) {
-        if(eid) this.eid = eid;
-        var ed = UE.getEditor(this.eid);
-        this.container[this.eid] = ed;
-        return ed;
-    },
-    destroy:function(eid) {
-        eid = eid||this.eid;
-        setTimeout(function(){
-            UE.delEditor(eid);
-        },200);
-        this.container[eid] = null;
-    },
-    insPageBreak:function (argument) {
-        var ed = this.get();
-        ed.execCommand('pagebreak');
-        ed.focus();
-    },
-    delPageBreakflag:function() {
-        var ed = this.get(), html = ed.getContent();
-        html = html.replace(/#--iCMS.PageBreak--#/g, '');
-        ed.setContent(html);
-        ed.focus();
-    },
-    cleanup:function() {
-        if($.isEmptyObject(this.container)){
-            iCMS.UI.alert("没找到可用编辑器");
-        }else{
+    iCMS.editor = {
+        eid:'ueditor',
+        container:[],
+        get:function(eid) {
+            if(eid) this.eid = eid;
+            var ed  = this.container[this.eid]||this.create();
+            return ed;
+        },
+        create:function(eid,config) {
+            if(eid) this.eid = eid;
+            var ed = UE.getEditor(this.eid,config);
+            this.container[this.eid] = ed;
+            return ed;
+        },
+        destroy:function(eid) {
+            eid = eid||this.eid;
+            setTimeout(function(){
+                UE.delEditor(eid);
+            },200);
+            this.container[eid] = null;
+        },
+        insPageBreak:function (argument) {
+            var ed = this.get();
+            ed.execCommand('pagebreak');
+            ed.focus();
+        },
+        delPageBreakflag:function() {
             var ed = this.get(), html = ed.getContent();
-            html = iCMS.format(html);
+            html = html.replace(/#--iCMS.PageBreak--#/g, '');
             ed.setContent(html);
             ed.focus();
+        },
+        cleanup:function() {
+            if($.isEmptyObject(this.container)){
+                iCMS.UI.alert("没找到可用编辑器");
+            }else{
+                var ed = this.get(), html = ed.getContent();
+                html = iCMS.format(html);
+                ed.setContent(html);
+                ed.focus();
+            }
         }
-    }
-};
+    };
 
+})();

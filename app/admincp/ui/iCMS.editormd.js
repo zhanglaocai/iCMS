@@ -40,50 +40,53 @@
                 //this.resize("100%", 640);
             }
     };
+    editormd.katexURL  = {
+        css : "//cdn.bootcss.com/KaTeX/0.7.1/katex.min",
+        js  : "//cdn.bootcss.com/KaTeX/0.7.1/katex.min"
+    };
+    iCMS.editormd = {
+        eid:'meditor',
+        container:[],
+        get:function(eid) {
+            if(eid) this.eid = eid;
+            var ed  = this.container[this.eid]||this.create();
+            return ed;
+        },
+        create:function(eid) {
+            if(eid) this.eid = eid;
+            var ed  = editormd(this.eid, window.MD_CONFIG);
+            this.container[this.eid] = ed;
+            return ed;
+        },
+        destroy:function(eid) {
+            eid = eid||this.eid;
+            setTimeout(function(){
+                this.get(eid).editor.remove();
+            },200);
+            this.container[eid] = null;
+        },
+        insPageBreak:function (argument) {
+        var ed = this.get();
+            ed.insertValue("\n#--iCMS.PageBreak--#\n");
+            ed.focus();
+        },
+        delPageBreakflag:function() {
+            var ed = this.get(), html = ed.getMarkdown();
+            html = html.replace(/#--iCMS\.PageBreak--#/g, '');
+            ed.setMarkdown(html);
+            ed.focus();
+        },
+        cleanup:function(eid) {
+            // if(eid){
+            //     var ed = editormd('iCMS-editor-'+eid, MD_CONFIG)
+            // }else{
+            //     var ed = this.container[this.id];
+            // }
+            // var html = iCMS.format(ed.getMarkdown());
+            // ed.setMarkdown(html);
+            // //ed.execCommand("autoTypeset");
+            // ed.focus();
+        },
+    };
 })();
-
-iCMS.editor = {
-    eid:'meditor',
-    container:[],
-    get:function(eid) {
-        if(eid) this.eid = eid;
-        var ed  = this.container[this.eid]||this.create();
-        return ed;
-    },
-    create:function(eid) {
-        if(eid) this.eid = eid;
-        var ed  = editormd(this.eid, window.MD_CONFIG);
-        this.container[this.eid] = ed;
-        return ed;
-    },
-    destroy:function(eid) {
-        eid = eid||this.eid;
-        setTimeout(function(){
-            this.get(eid).editor.remove();
-        },200);
-        this.container[eid] = null;
-    },
-    insPageBreak:function (argument) {
-    var ed = this.get();
-        ed.insertValue("\n#--iCMS.PageBreak--#\n");
-        ed.focus();
-    },
-    delPageBreakflag:function() {
-        var ed = this.get(), html = ed.getMarkdown();
-        html = html.replace(/#--iCMS\.PageBreak--#/g, '');
-        ed.setMarkdown(html);
-        ed.focus();
-    },
-    cleanup:function(eid) {
-        // if(eid){
-        //     var ed = editormd('iCMS-editor-'+eid, MD_CONFIG)
-        // }else{
-        //     var ed = this.container[this.id];
-        // }
-        // var html = iCMS.format(ed.getMarkdown());
-        // ed.setMarkdown(html);
-        // //ed.execCommand("autoTypeset");
-        // ed.focus();
-    },
-};
 

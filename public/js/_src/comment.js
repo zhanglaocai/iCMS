@@ -3,47 +3,49 @@ iCMS.define("comment", function() {
 
     $COMMENT = {
         seccode:iCMS.CONFIG.COMMENT.seccode,
-        _widget:{
-            like_text:'<span class="text-num" i="tip:1 人觉得这个很赞"><em>1</em> <span>赞</span></span>',
-            load_more:'<a href="javascript:;" class="load-more" i="comment_load"><span class="text">显示全部评论</a>',
+        widget:{
+            like:'<span class="text-num" i="tip:1 人觉得这个很赞"><em>1</em> <span>赞</span></span>',
+            more:'<a href="javascript:;" class="load-more" i="comment_load"><span class="text">显示全部评论</a>',
             spinner:$('<div class="commentApp-spinner">正在加载，请稍等 <i class="spinner-lightgray"></i></div>'),
-            _form:$('<div class="commentApp-form">'+
-                    '<div class="commentApp-ipt">' +
-                        '<input i="comment_content" class="commentApp-textarea form-control" type="text" placeholder="写下你的评论…">' +
-                    '</div>' +
-                    '<div class="cmt-command">' +
-                        '<div class="cmt-seccode">' +
-                            '<input type="text" maxlength="4" i="comment_seccode" class="commentApp-seccode form-control" placeholder="验证码">'+
-                            '<span class="public_seccode">'+
-                                '<img src="'+API.url('public', "&do=seccode")+'" alt="验证码" class="seccode-img r3" title="点击更换验证码图片"/>'+
-                                '<a href="javascript:;" class="seccode-text" style="float: none">换一张</a>'+
-                            '</span>'+
-                        '</div>' +
-                        '<a href="javascript:;" i="comment_put" class="btn btn-primary">评论</a>' +
-                        '<a href="javascript:;" i="comment_close"  class="cmt-command-cancel">取消</a>' +
-                    '</div>'+
-                    '<div class="clearfix"></div>' +
-                '</div>'),
             item:null,
         },
         page_no:{},
-        page_total:{}
+        page_total:{},
+        container:{}
     };
 
     return $.extend($COMMENT, {
-        widget:function (name,func) {
+        template:function (name,func) {
+            if($COMMENT.container[name]){
+                return func($COMMENT.container[name]);
+            }
             $.get(API.url('comment'),'&do=widget&name='+name,
                 function(tpl){
+                    $COMMENT.container[name] = tpl;
                     func(tpl)
                 }
             )
         },
-        form:function () {
-            var form = $COMMENT._widget._form.clone();
-            if($COMMENT.seccode=="0"){
-                $('.cmt-seccode',form).remove();
-            }
-            return form;
+        miniForm:function (callback) {
+
+            $COMMENT.template('mini.form',function (f) {
+
+                var $f = $(f);
+
+                $f.on('focus', '[i="comment_content"]', function(event) {
+                    event.preventDefault();
+                    $f.addClass('expanded');
+                }).on('click', '[i="comment_close"]', function(event) {
+                    event.preventDefault();
+                    $f.removeClass('expanded');
+                    $('[i="comment_content"]', $f).val("");
+                });
+
+                if(callback){
+                    utils.__callback (callback,$f);
+                }
+
+            });
         },
         page:function(pn, a,func) {
             var $this = $(a),
@@ -62,7 +64,6 @@ iCMS.define("comment", function() {
             var me = this,
                 item = $(a).parent().parent(),
                 param = API.param($(a)),
-                form  = $COMMENT.form(),
                 caf = $('.commentApp-form', item);
             if (caf.length > 0) {
                 caf.remove();
@@ -71,17 +72,18 @@ iCMS.define("comment", function() {
             $('.commentApp-form','.commentApp-list').remove();
             $('.commentApp-form').removeClass('expanded');
 
-            form.addClass('expanded');
-            $(a).parent().after(form);
+            $COMMENT.miniForm(function($f){
+                $f.addClass('expanded');
+                $('[i="comment_close"]', $f).click(function(event) {
+                    event.preventDefault();
+                    var $c = $('[i="comment_content"]', $f);
+                    $c.data('param', param).focus();
+                    $c.val("");
+                    $f.remove();
+                    //$COMMENT.iframe_height('list');
+                });
 
-            var comment_content = $('[i="comment_content"]', form);
-            comment_content.data('param', param).focus();
-
-            $('[i="comment_close"]', form).click(function(event) {
-                event.preventDefault();
-                comment_content.val("");
-                form.remove();
-                //$COMMENT.iframe_height('list');
+                $(a).parent().after($f);
             });
         },
         like:function (a,SUCCESS, FAIL) {
@@ -96,7 +98,7 @@ iCMS.define("comment", function() {
                     num = parseInt(num) + 1;
                     $('[i="comment_up"]', p).text(num);
                 } else {
-                    p.append($COMMENT._widget.like_text);
+                    p.append($COMMENT.widget.like);
                 }
             };
 
@@ -168,7 +170,7 @@ iCMS.define("comment", function() {
                     page: $COMMENT.page_no[iid]
                 },
                 function(json) {
-                    $COMMENT._widget.spinner.remove();
+                    $COMMENT.widget.spinner.remove();
                     if (!json){
                         return false;
                     }
@@ -177,7 +179,7 @@ iCMS.define("comment", function() {
                     }
 
                     $.each(json, function(i, data) {
-                        var item = $.parseTmpl($COMMENT._widget.item,data);
+                        var item = $.parseTmpl($COMMENT.widget.item,data);
                         if(type=="after"){
                             $list.after(item);
                         }else if(type=="before"){
@@ -191,7 +193,7 @@ iCMS.define("comment", function() {
                     if(!id){
                         $(".load-more",container).remove();
                         if ($COMMENT.page_no[iid] < $COMMENT.page_total[iid]) {
-                            $list.after($COMMENT._widget.load_more);
+                            $list.after($COMMENT.widget.more);
                         }
                     }
                 }, 'json');
@@ -211,7 +213,6 @@ iCMS.define("comment", function() {
             var $spike = $('<i class="commentApp-icon comment-spike-icon commentApp-bubble"></i>'),
                 $wrap = $('<div class="commentApp-wrap">'),
                 $list = $('<div class="commentApp-list">'),
-                $form  = $COMMENT.form();
                 iid   = param['iid'];
 
             var pos = $this.position();
@@ -219,32 +220,28 @@ iCMS.define("comment", function() {
                 || /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
 
             $spike.css({'left':_isMobile?event.offsetX:pos.left,'display':'inline'});
-            $form.addClass('commentApp-wrap-ft');
-            $wrap.html($COMMENT._widget.spinner);
-            $wrap.append($spike, $list, $form);
+
+
+            $wrap.html($COMMENT.widget.spinner);
+            $wrap.append($spike, $list);
+
+            $COMMENT.miniForm(function($f){
+                $f.addClass('commentApp-wrap-ft');
+                $wrap.append($f);
+            });
+
             p.after($wrap);
 
             //加载评论列表模板
-            $COMMENT.widget('item',function (tmpl) {
-               $COMMENT._widget.item = tmpl;
+            $COMMENT.template('item',function (tmpl) {
+               $COMMENT.widget.item = tmpl;
+                //加载评论
+                $COMMENT.page_no[iid]    = 0;
+                $COMMENT.page_total[iid] = 0;
+                $COMMENT.list($wrap,iid);
             });
-            //加载评论
-            $COMMENT.page_no[iid]    = 0;
-            $COMMENT.page_total[iid] = 0;
-            $COMMENT.list($wrap,iid);
 
             //----------绑定事件----------------
-            $form.on('focus', '[i="comment_content"]', function(event) {
-                event.preventDefault();
-                var pp = $(this).parent().parent();
-                $('.commentApp-form').not(pp).remove();
-                pp.addClass('expanded');
-            }).on('click', '[i="comment_close"]', function(event) {
-                event.preventDefault();
-                var pp = $(this).parent().parent();
-                pp.removeClass('expanded');
-                $('[i="comment_content"]', pp).val("");
-            });
             //加载更多
             $wrap.on('click', '[i="comment_load"]', function(event) {
                 event.preventDefault();
@@ -254,9 +251,9 @@ iCMS.define("comment", function() {
             //提交评论
             .on('click', '[i="comment_put"]', function(event) {
                 event.preventDefault();
-                var that = $(this),_form = that.parent().parent();
+                var that = $(this),tpp = that.parent().parent();
 
-                $COMMENT.add(_form,param,
+                $COMMENT.add(tpp,param,
                     function(ret){
                         var count = parseInt($('[i="comment_num"]', $this).text());
                         $('[i="comment_num"]', $this).text(count + 1);

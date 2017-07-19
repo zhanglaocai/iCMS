@@ -52,11 +52,12 @@ $(function(){
             </div>
             <?php }?>
             <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">属 性</span>
+            <div class="input-prepend input-append"> <span class="add-on">属 性</span>
               <select name="pid[]" id="pid" class="chosen-select span6" multiple="multiple">
                 <option value="0">普通用户[pid='0']</option>
                 <?php echo propAdmincp::get("pid") ; ?>
               </select>
+              <?php echo propAdmincp::btn_add('添加常用属性');?>
             </div>
             <?php if($this->uid){;?>
             <div class="clearfloat mb10"></div>
@@ -69,6 +70,7 @@ $(function(){
             <div class="input-prepend"> <span class="add-on"> 账号</span>
               <input type="text" name="user[username]" class="span3" id="username" value="<?php echo $rs->username ; ?>"/>
             </div>
+            <span class="help-inline">用户邮箱</span>
             <div class="clearfix mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on"> 密码</span>
               <input type="text" name="user[password]" class="span3" id="password" value=""/>

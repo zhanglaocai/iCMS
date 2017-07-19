@@ -46,7 +46,10 @@ function callback(obj) {
         <tbody>
           <tr>
             <td style="width:69px;">文 件 名</td>
-            <td><?php echo $rs->filename; ?>.<?php echo $rs->ext; ?></td>
+            <td>
+              <?php echo $rs->filename; ?>.<?php echo $rs->ext; ?>
+              <a class="btn btn-mini" href="<?php echo $href; ?>" target="_blank"><i class="fa fa-eye"></i> 查看</a>
+            </td>
           </tr>
           <tr>
             <td>文件路径</td>
@@ -76,7 +79,7 @@ function callback(obj) {
           <input type="file" name="upfile" class="hide">
           <input type="hidden" name="udir" value="<?php echo $_GET['dir']; ?>">
           <div class="input-prepend input-append"> <span class="add-on">不添加水印</span><span class="add-on">
-            <input type="checkbox" name="watermark_enable" value="0">
+            <input type="checkbox" name="unwatermark" value="1">
             </span><a id="upload" class="btn btn-primary"><i class="fa fa-upload"></i> 选择文件</a></div>
         </form>
       </div>

@@ -28,17 +28,10 @@ admincp::head(false);
   <span class="span2 uneditable-input savetodir hide"></span>
   <hr />
   <div class="input-prepend input-append">
-    <span class="add-on">添加水印</span>
-    <div class="switch">
-      <input type="checkbox" data-type="switch" id="watermark"/>
-    </div>
-  </div>
-  <div class="clearfloat mb10"></div>
-    <div class="input-prepend input-append">
     <span class="add-on"><input type="radio" class="radio" name='fna' value="co" checked/></span>
     <span class="add-on">覆盖原文件</span>
   </div>
-    <div class="input-prepend input-append">
+  <div class="input-prepend input-append">
     <span class="add-on"><input type="radio" class="radio" name='fna' value="mv"/></span>
     <span class="add-on">重命名</span>
   </div>
@@ -52,8 +45,15 @@ admincp::head(false);
   </div>
   <div class="clearfloat mb10"></div>
   <div class="input-prepend input-append">
+    <span class="add-on">是否添加水印</span>
+    <div class="switch" data-on-label="是" data-off-label="否">
+      <input type="checkbox" data-type="switch" id="watermark"/>
+    </div>
+  </div>
+  <div class="clearfloat mb10"></div>
+  <div class="input-prepend input-append">
     <span class="add-on">保存后关闭对话框</span>
-    <div class="switch">
+    <div class="switch" data-on-label="保留" data-off-label="关闭">
       <input type="checkbox" data-type="switch" id="close_modal"/>
     </div>
   </div>

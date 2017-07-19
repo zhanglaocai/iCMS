@@ -332,7 +332,9 @@ class apps {
             $class_methods = get_class_methods($obj_name);
             if($tag){
                 foreach ((array)$class_methods as $key => $value) {
-                    $tag_array[]= iPHP_APP.':'.str_replace('_', ':', $value);
+                    if(strpos($value, '__') === false){
+                        $tag_array[]= iPHP_APP.':'.str_replace('_', ':', $value);
+                    }
                 }
                 return $tag_array;
             }else{
@@ -367,9 +369,10 @@ class apps {
         }else{
             $rs = self::get_app($app);
         }
+
         $table = $rs['table'];
-        $master && $table = reset($rs['table']);
-       	return $table;
+        $master && is_array($rs['table']) && $table = reset($rs['table']);
+       	return (array)$table;
 	}
 	public static function get_label($appid=0){
         $rs = self::get_app($appid);

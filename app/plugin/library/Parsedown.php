@@ -121,7 +121,7 @@ class Parsedown
 
         foreach ($lines as $line)
         {
-            if (chop($line) === '')
+            if (rtrim($line) === '')
             {
                 if (isset($CurrentBlock))
                 {
@@ -515,15 +515,17 @@ class Parsedown
                 ),
             );
 
-            if($name === 'ol') 
+            if($name === 'ol')
             {
                 $listStart = stristr($matches[0], '.', true);
-                
+
                 if($listStart !== '1')
                 {
                     $Block['element']['attributes'] = array('start' => $listStart);
                 }
             }
+
+            $this->checkbox($matches[2],$attributes);
 
             $Block['li'] = array(
                 'name' => 'li',
@@ -532,7 +534,7 @@ class Parsedown
                     $matches[2],
                 ),
             );
-
+            $attributes && $Block['li']['attributes'] = $attributes;
             $Block['element']['text'] []= & $Block['li'];
 
             return $Block;
@@ -554,6 +556,8 @@ class Parsedown
 
             $text = isset($matches[1]) ? $matches[1] : '';
 
+            $this->checkbox($text,$attributes);
+
             $Block['li'] = array(
                 'name' => 'li',
                 'handler' => 'li',
@@ -561,12 +565,12 @@ class Parsedown
                     $text,
                 ),
             );
+            $attributes && $Block['li']['attributes'] = $attributes;
 
             $Block['element']['text'] []= & $Block['li'];
 
             return $Block;
         }
-
         if ($Line['text'][0] === '[' and $this->blockReference($Line))
         {
             return $Block;
@@ -665,7 +669,7 @@ class Parsedown
             return;
         }
 
-        if (chop($Line['text'], $Line['text'][0]) === '')
+        if (rtrim($Line['text'], $Line['text'][0]) === '')
         {
             $Block['element']['name'] = $Line['text'][0] === '=' ? 'h1' : 'h2';
 
@@ -803,7 +807,7 @@ class Parsedown
             return;
         }
 
-        if (strpos($Block['element']['text'], '|') !== false and chop($Line['text'], ' -:|') === '')
+        if (strpos($Block['element']['text'], '|') !== false and rtrim($Line['text'], ' -:|') === '')
         {
             $alignments = array();
 
@@ -1454,7 +1458,16 @@ class Parsedown
     }
 
     # ~
-
+    protected function checkbox(&$text,&$attributes)
+    {
+        if(strpos($text,'[x]')!==false||strpos($text,'[ ]')!==false){
+            $attributes = array("style"=>"list-style: none;");
+            $text = str_replace(array('[x]','[ ]'), array(
+                '<input type="checkbox" checked="true" disabled="true">',
+                '<input type="checkbox">',
+            ), $text);
+        }
+    }
     protected function li($lines)
     {
         $markup = $this->lines($lines);

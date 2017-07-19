@@ -99,6 +99,7 @@ class apps_store {
                 $msg.= self::msg('安装文件 [' . $fp . ']',true);
             }
         }
+
         return array($msg,true);
     }
     public static function install() {
@@ -196,6 +197,14 @@ class apps_store {
                   }
                 }
               }
+              if($array['config']){
+                $config = json_decode($array['config'],true);
+              }else{
+                $config = array();
+              }
+              $config['uptime'] = time();
+
+              $array['config']  = json_encode($config);
               $array['addtime'] = time();
               $array = array_map('addslashes', $array);
               self::$test OR self::$app_id = iDB::insert("apps",$array);

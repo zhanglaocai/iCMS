@@ -36,7 +36,7 @@ class userAdmincp{
             $rs = iDB::row("SELECT * FROM `#iCMS@__user` WHERE `uid`='$this->uid' LIMIT 1;");
             $rs && $userdata = iDB::row("SELECT * FROM `#iCMS@__user_data` WHERE `uid`='$this->uid' LIMIT 1;");
         }
-        iPHP::callback(array("formerApp","add"),array($this->appid,$rs,false));
+        iPHP::callback(array("formerApp","add"),array($this->appid,(array)$rs,true));
         include admincp::view("user.add");
     }
     /**

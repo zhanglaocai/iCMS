@@ -118,7 +118,7 @@ $(function() {
             var me = this;
             $COMMENT.create(me);
             //加载评论框模板
-            // $COMMENT.widget('form',function (tmpl) {
+            // $COMMENT.template('form',function (tmpl) {
             //     $COMMENT._widget._form = $(tmpl);
             // });
         });

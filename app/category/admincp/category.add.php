@@ -90,11 +90,12 @@ $(function(){
             </div>
             <span class="help-inline">本<?php echo $this->category_name;?>的上级<?php echo $this->category_name;?>或<?php echo $this->category_name;?></span>
             <div class="clearfloat mb10"></div>
-            <div class="input-prepend"> <span class="add-on"><?php echo $this->category_name;?>属性</span>
+            <div class="input-prepend input-append"> <span class="add-on"><?php echo $this->category_name;?>属性</span>
               <select name="pid[]" id="pid" class="chosen-select span6" data-placeholder="请选择<?php echo $this->category_name;?>属性..." multiple="multiple">
                 <option value="0">普通<?php echo $this->category_name;?>[pid='0']</option>
                 <?php echo propAdmincp::app('category')->get("pid") ; ?>
               </select>
+              <?php echo propAdmincp::btn_add('添加常用属性');?>
             </div>
             <div class="clearfloat mb10"></div>
             <?php if($this->appid===null){?>

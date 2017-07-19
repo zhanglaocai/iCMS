@@ -110,7 +110,7 @@ class formerApp{
                         iDB::update($table_name, $_data, array($primary=>$id));
                     }
                 }
-                $union_id = apps_mod::data_union_id($table_name);
+                $union_id = apps_mod::data_union_key($table_name);
                 if(empty($_table['union'])){
                     $union_data[$union_id] = $id;
                     self::$primary_id = $id;

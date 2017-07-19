@@ -17,13 +17,18 @@ $(function() {
             $("#"+el).val(va).trigger("chosen:updated");
         },
         checked: function(el,v){
-            if(v){
-                var va = v.split(',');
+            if(typeof(v)==="undefined"){
+                $(el).prop("checked",true);
+            }else{
+                var va;
+                if($.isArray(v)){
+                    va = v
+                }else{
+                    va = v.split(',');
+                }
                 $.each(va, function(i,val){
                     $(el+'[value="'+val+'"]').prop("checked", true);
                 })
-            }else{
-                $(el).prop("checked",true);
             }
             $.uniform.update(el);
         },
@@ -73,6 +78,15 @@ $(function() {
                 $(this).closest('.checker > span').addClass('checked');
             }
         });
+    });
+    doc.on("change",'[data-toggle="select_insert"]',function() {
+        var a = $(this),value = this.value,
+        target = a.attr('data-target');
+        if(value.indexOf('URL::')==-1){
+            $(target).val(value);
+        }else{
+            window.location.href = value.replace('URL::','');
+        }
     });
     doc.on("click",'[data-toggle="insert"]',function() {
         var a = $(this), data = a.data('insert'),

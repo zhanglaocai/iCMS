@@ -167,21 +167,26 @@ function modal_tplfile(e,a){
       <form action="<?php echo APP_FURI; ?>&do=event_save" method="post" class="form-inline" id="iCMS-event" target="iPHP_FRAME">
         <input name="id" type="hidden" value="<?php echo $id ; ?>" />
         <div id="event-add" class="tab-content">
-          <div class="input-prepend">
+          <div class="input-prepend input-append">
             <span class="add-on">属性</span>
             <select name="pid" id="pid" class="chosen-select span3">
-              <option value="0">普通事件[pid='0']</option>
-              <?php echo propAdmincp::get("pid",$rs['pid']) ; ?>
+              <option></option>
+              <?php echo propAdmincp::get("pid") ; ?>
             </select>
+            <?php echo propAdmincp::btn_add('添加常用属性');?>
           </div>
+          <script>$(function(){iCMS.select('pid',"<?php echo $rs['pid'];?>");})</script>
           <div class="clearfloat mb10"></div>
-          <div class="input-prepend">
+          <div class="input-prepend input-append">
             <span class="add-on">状态</span>
             <select name="status" id="status" class="chosen-select span3">
               <option value="1">正常[status='1']</option>
               <option value="0">草稿[status='0']</option>
+              <?php echo propAdmincp::get("status");?>
             </select>
+            <?php echo propAdmincp::btn_add('添加状态');?>
           </div>
+          <script>$(function(){iCMS.select('status',"<?php echo $rs['status'];?>");})</script>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend">
             <span class="add-on">事件类型</span>

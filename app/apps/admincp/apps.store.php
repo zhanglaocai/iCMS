@@ -19,14 +19,15 @@ $(function(){
   $("#<?php echo APP_FORMID;?>").batch();
 });
 var pay_notify_timer;
-function pay_notify (key,sid,app,name,d) {
+function pay_notify (j,d) {
   pay_notify_timer = window.setInterval(function(){
     $.getJSON(
-      "<?php echo apps_store::STORE_URL;?>/store.pay.notify?callback=?",{key,sid,name},
+      "<?php echo apps_store::STORE_URL;?>/store.pay.notify?callback=?",
+      {key:j[0],sid:j[1],name:j[3]},
       function(o){
           //console.log(o);
           if(o.code=="1" && o.url && o.t){
-            $("#iPHP_FRAME").attr("src","<?php echo APP_URI;?>&do=<?php echo admincp::$APP_DO; ?>_premium_install&url="+o.url+'&sapp='+app+'&name='+name+'&key='+key+'&sid='+sid)
+            $("#iPHP_FRAME").attr("src","<?php echo APP_URI;?>&do=<?php echo admincp::$APP_DO; ?>_premium_install&url="+o.url+'&sapp='+j[2]+'&name='+j[3]+'&key='+j[0]+'&sid='+j[1]+'&version='+j[4])
             clear_pay_notify_timer();
             d.close().remove();
           }else if(o.code=="2"){
@@ -72,15 +73,72 @@ function clear_pay_notify_timer () {
     </div>
     <div class="widget-content">
       <form action="<?php echo APP_FURI; ?>&do=batch" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
-            <div class="row" id="store-container">
-
-
-            </div>
+          <div class="row" id="store-container">
+            <?php
+            foreach ((array)$data as $key => $value) {
+              $is_update = false;
+              $has = $rs[$value['app']];
+              $version = preg_replace('/^[a-zA-Z]+/', '', $has['version']);
+              if($has && version_compare($value['version'],$version,'>')){
+                $is_update = true;
+              }
+            ?>
+              <div id="store-item-<?php echo $value['app'];?>" class="store-item span4">
+                <div class="item-head">
+                  <?php if($value['pic']){?>
+                    <p style="background:url('<?php echo $value['pic'];?>') center center"></p>
+                  <?php }else{ ?>
+                    <h3><?php echo $value['name'];?></h3>
+                  <?php } ?>
+                </div>
+                <div class="item-author">
+                  <p class="avatar"><img src="<?php echo $value['avatar'];?>" /></p>
+                  <p class="name">
+                    <b>@<?php echo $value['author'];?></b>
+                    <span class="version">版本:<?php echo $value['version'];?></span>
+                    <span class="size">大小:<?php echo $value['size'];?></span>
+                  </p>
+                </div>
+                <div class="item-description">
+                    <?php if($value['premium']){?>
+                      <span class="label label-important">付费<?php echo $title;?></span>
+                      <span class="label label-success">价格:<?php echo $value['price'];?> <i class="fa fa-rmb"></i></span>
+                    <?php } ?>
+                    <p>
+                    <?php echo $value['description'];?>
+                    <?php if($value['demo']){?>
+                      <a class="demo" href="<?php echo $value['demo'];?>" target="_blank">&gt;&gt;演示</a>
+                    <?php } ?>
+                    </p>
+                </div>
+                <div class="item-action">
+                  <?php if($has){?>
+                    <?php if($is_update){?>
+                    <a title="当版本:<?php echo $has['version'];?>" href="<?php echo APP_FURI; ?>&do=<?php echo admincp::$APP_DO; ?>_update&sid=<?php echo $value['id'];?>" target="iPHP_FRAME" class="btn btn-large btn-success tip-top">
+                      <i class="fa fa-repeat"></i> 可更新
+                    </a>
+                    <?php }else{ ?>
+                    <a href="<?php echo APP_FURI; ?>&do=uninstall&id=<?php echo $has['id'];?>" target="iPHP_FRAME" class="btn btn-large btn-danger" title="永久删除" onclick="return confirm('卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n卸载应用会清除应用所有数据！\n确定要卸载?\n确定要卸载?\n确定要卸载?');"><i class="fa fa-trash-o"></i> 卸载</a>
+                    <?php } ?>
+                  <?php }else{ ?>
+                  <a href="<?php echo APP_FURI; ?>&do=<?php echo admincp::$APP_DO; ?>_install&sid=<?php echo $value['id'];?>" target="iPHP_FRAME" class="btn btn-large btn-primary">
+                    <i class="fa fa-download"></i>
+                    <?php if($value['premium']){?>
+                    付费安装
+                    <?php }else{ ?>
+                    立即安装
+                    <?php } ?>
+                  </a>
+                  <?php } ?>
+                </div>
+                <div class="clearfloat"></div>
+              </div>
+            <?php } ?>
+          </div>
           <div class="clearfloat"></div>
       </form>
     </div>
   </div>
-  <script type="text/javascript" src="./app/admincp/ui/template-3.0.js"></script>
 <style>
 #store-container{margin-left: -15px;}
 .store-item{margin-left: 15px; border: 1px solid #CDCDCD; border-radius: 5px;padding: 8px;margin-bottom: 10px;height: 300px;background-color: #fff;}
@@ -103,58 +161,5 @@ function clear_pay_notify_timer () {
   .store-item{width: 22%;}
 }
 </style>
-<script id="store-item" type="text/html">
-{{each data as value i}}
-  <div id="store-item-{{value.app}}" class="store-item span4">
-    <div class="item-head">
-      {{if value.pic}}
-        <p style="background:url('{{value.pic}}') center center"></p>
-      {{else}}
-        <h3>{{value.name}}</h3>
-      {{/if}}
-    </div>
-    <div class="item-author">
-      <p class="avatar"><img src="{{value.avatar}}" /></p>
-      <p class="name">
-        <b>@{{value.author}}</b>
-        <span class="version">版本:{{value.version}}</span>
-        <span class="size">大小:{{value.size}}</span>
-      </p>
-    </div>
-    <div class="item-description">
-        {{if value.premium}}
-          <span class="label label-important">付费<?php echo $title;?></span>
-          <span class="label label-success">价格:{{value.price}} <i class="fa fa-rmb"></i></span>
-        {{/if}}
-        <p>
-        {{value.description}}
-        {{if value.demo}}
-          <a class="demo" href="{{value.demo}}" target="_blank">&gt;&gt;演示</a>
-        {{/if}}
-        </p>
-    </div>
-    <div class="item-action">
-      <a href="<?php echo APP_FURI; ?>&do=<?php echo admincp::$APP_DO; ?>_install&sid={{value.id}}" target="iPHP_FRAME" class="btn btn-large btn-success">
-        <i class="fa fa-download"></i>
-        {{if value.premium}}
-        付费安装
-        {{else}}
-        立即安装
-        {{/if}}
-      </a>
-    </div>
-    <div class="clearfloat"></div>
-  </div>
-{{/each}}
-</script>
-<script type="text/javascript">
-$(function(){
-$.getJSON("<?php echo APP_URI; ?>&do=<?php echo admincp::$APP_DO; ?>_json",
-        function(json){
-            var html = template('store-item', {"data":json});
-            $("#store-container").html(html);
-        }
-    );
-});
-</script>
-  <?php admincp::foot();?>
+
+<?php admincp::foot();?>
