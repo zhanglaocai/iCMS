@@ -117,7 +117,7 @@ class articleApp {
 		$article+=(array)apps_meta::data('article',$id);
 
         $app = apps::get_app('article');
-        $app['fields'] && formerApp::data($article['id'],$app,'tag',$article,$vars,$article['category']);
+        $app['fields'] && formerApp::data($article['id'],$app,'article',$article,$vars,$article['category']);
 
 		unset($article_data);
 		if ($article === false) {
