@@ -105,8 +105,6 @@ class iURL {
         $default    = array();
         $category   = array();
         $array      = (array)$a;
-        $router_url = self::$CONFIG['url'];
-        $router_dir = self::$CONFIG['dir'];
         $app_conf   = self::$CONFIG['iurl'][$uri];
 
         switch($app_conf['rule']) {
@@ -156,6 +154,8 @@ class iURL {
             $router_url = $default['url'];
             empty($url) && $url = $default['rule'];
         }
+        empty($router_url) && $router_url = self::$CONFIG['url'];
+        empty($router_dir) && $router_dir = self::$CONFIG['dir'];
 
         if($url=='{PHP}'){
             $primary = $app_conf['primary'];
