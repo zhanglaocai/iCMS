@@ -79,9 +79,9 @@ $(function(){
               <td class="sortnum"><input type="text" name="sortnum[<?php echo $rs[$i]['pid'] ; ?>]" value="<?php echo $rs[$i]['sortnum'] ; ?>" tid="<?php echo $rs[$i]['pid'] ; ?>"/></td>
               <td><?php echo $rs[$i]['val'] ; ?></td>
               <td><?php echo $rs[$i]['name'] ; ?></td>
-              <td><a href="<?php echo APP_DOURI; ?>&field=<?php echo $rs[$i]['field'] ; ?><?php echo $uri ; ?>"><?php echo $rs[$i]['field'] ; ?></a></td>
-              <td><a href="<?php echo APP_DOURI; ?>&_app=<?php echo $rs[$i]['app'] ; ?><?php echo $uri ; ?>"><?php echo $rs[$i]['app'] ; ?></a></td>
-              <td><a href="<?php echo APP_DOURI; ?>&cid=<?php echo $rs[$i]['cid'] ; ?><?php echo $uri ; ?>"><?php echo $C['name'] ; ?></a></td>
+              <td><a href="<?php echo admincp::uri(array("field"=>$rs[$i]['field']),$uriArray); ?>"><?php echo $rs[$i]['field'] ; ?></a></td>
+              <td><a href="<?php echo admincp::uri(array("_app"=>$rs[$i]['app']),$uriArray); ?>"><?php echo $rs[$i]['app'] ; ?></a></td>
+              <td><a href="<?php echo admincp::uri(array("cid"=>$rs[$i]['cid']),$uriArray); ?>"><?php echo $C['name'] ; ?></a></td>
               <td><?php if($rs[$i]['status']=="1"){ ?>
                 <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $rs[$i]['pid'] ; ?>&_args=status:0" class="btn btn-small" target="iPHP_FRAME"><i class="fa fa-power-off"></i> 禁用</a>
                 <?php } ?>

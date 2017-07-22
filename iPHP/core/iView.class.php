@@ -42,7 +42,11 @@ class iView {
         );
         self::$handle->assign('_GET', $_GET);
         self::$handle->assign('_POST', $_POST);
+        self::set_template_dir(iPHP_TPL_DIR);
         iPHP_TPL_DEBUG && self::$handle->clear_compiled_tpl();
+    }
+    public static function set_template_dir($dir) {
+        self::$handle->template_dir = $dir;
     }
     public static function check_func($app) {
         $path = iPHP_APP_DIR . '/' . $app . '/' . $app . '.func.php';
@@ -65,7 +69,7 @@ class iView {
                 $keys     = isset($args['as'])?$args['as']:$args['_app'].'_'.$args['method'];
                 $callback = array($args['_app'].'Func',$args['_app'].'_'.$args['method']);
             }
-            if(!@is_callable($callback)){
+            if(!@is_callable($callback) && strpos($callback[1], '__')===false){
                 iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
             }
         }else{
@@ -78,9 +82,20 @@ class iView {
         }
 
         if(is_array($callback)){
+            strpos($callback[1], '__')!==false && $callback = array('iView','callback_func_proxy');
             $tpl->assign($keys,call_user_func_array($callback, array($args)));
         }else{
             $tpl->assign($keys,$callback($args));
+        }
+    }
+    public static function callback_func_proxy($vars=null){
+        $func = 'func';
+        $vars['func'] && $func = $vars['func'];
+        $callback = array($vars['app'].$vars['method'],'func');
+        if(@is_callable($callback)){
+            call_user_func_array($callback, array($vars));
+        }else{
+            // iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
         }
     }
     public static function callback_plugin($name,$tpl) {

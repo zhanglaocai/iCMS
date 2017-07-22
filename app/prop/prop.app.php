@@ -18,9 +18,8 @@ class propApp {
         return $propArray;
 	}
     public static function url($url,$value=null) {
-        $url = $url?$url:$_SERVER['REQUEST_URI'];
         $query = array();
         $query[$value['field']] = $value['val'];
-        return buildurl($url,$query);
+        return buildurl($query,$url);
     }
 }

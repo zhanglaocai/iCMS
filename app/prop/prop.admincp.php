@@ -57,11 +57,13 @@ class propAdmincp{
 
                     if(strpos($_name,':')!==false){
                         list($data['name'],$data['val']) = explode(':', $_name);
+                        empty($data['val']) && $data['val'] = $nkey+1;
                     }else{
-                        $data['name'] = $_name;
-                        $data['val']  = $nkey+1;
+                        $data['name'] = $data['val'] = $_name;
                     }
-                    $val=='{@NAME@}' && $data['val']  = $data['name'];
+                    $data['sortnum'] = $nkey;
+
+                    // ($val=='{@NAME@}'||empty($val)) && $data['val']  = $data['name'];
 
                     iDB::insert('prop',$data);
                 }
@@ -119,13 +121,13 @@ class propAdmincp{
 //        }
 
         $_GET['field']&& $sql.=" AND `field`='".$_GET['field']."'";
-        $_GET['field']&& $uri.='&field='.$_GET['field'];
+        $_GET['field']&& $uriArray['field'] = $_GET['field'];
 
         $_GET['_app'] && $sql.=" AND `app`='".$_GET['_app']."'";
-        $_GET['_app'] && $uri.='&app='.$_GET['_app'];
+        $_GET['_app'] && $uriArray['_app'] = $_GET['_app'];
 
         $_GET['cid']  && $sql.=" AND `cid`='".$_GET['cid']."'";
-        $_GET['cid']  && $uri.='&cid='.$_GET['cid'];
+        $_GET['cid']  && $uriArray['cid'] = $_GET['cid'];
 
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
         $total		= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__prop` {$sql}","G");
@@ -134,6 +136,7 @@ class propAdmincp{
         $_count = count($rs);
     	include admincp::view("prop.manage");
     }
+
     public function do_cache(){
         $this->cache();
         iUI::success('缓存更新完成!','js:1');

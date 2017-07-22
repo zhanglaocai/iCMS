@@ -210,7 +210,10 @@ class admincp {
 		);
 		iDB::insert("access_log",$access);
 	}
-
+    public static function uri($q,$a){
+        $query = array_merge((array)$a,(array)$q);
+        return buildurl($query,APP_DOURI);
+    }
 	public static function debug_info(){
 		$memory = memory_get_usage();
 		return "使用内存:".iFS::sizeUnit($memory)." 执行时间:".iPHP::timer_stop()."s";

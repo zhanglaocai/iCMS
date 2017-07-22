@@ -8,45 +8,50 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class content {
-    public static $table = null;
+    public static $app       = null;
+    public static $table     = null;
+    public static $primary   = null;
     public static $union_key = null;
 
     public static function count_sql($sql=''){
         return "SELECT count(*) FROM `".self::$table."` {$sql}";
     }
     public static function check($value,$id=0,$field='title'){
-        $sql = "SELECT `id` FROM `".self::$table."` where `{$field}` = '$value'";
-        $id && $sql.=" AND `id` !='$id'";
+        $sql = "SELECT `".self::$primary."` FROM `".self::$table."` where `{$field}` = '$value'";
+        $id && $sql.=" AND `".self::$primary."` !='$id'";
         return iDB::value($sql);
     }
 
-    public static function value($field='id',$id=0){
+    public static function value($field=null,$id=0){
         if(empty($id)){
             return;
         }
-        return iDB::value("SELECT {$field} FROM `".self::$table."` WHERE `id`='$id';");
+        $field===null && $field = self::$primary;
+        return iDB::value("SELECT {$field} FROM `".self::$table."` WHERE `".self::$primary."`='$id';");
     }
     public static function row($id=0,$field='*',$sql=''){
-        return iDB::row("SELECT {$field} FROM `".self::$table."` WHERE `id`='$id' {$sql} LIMIT 1;",ARRAY_A);
+        return iDB::row("SELECT {$field} FROM `".self::$table."` WHERE `".self::$primary."`='$id' {$sql} LIMIT 1;",ARRAY_A);
     }
-    public static function data($id=0,$adid=0,$userid=0){
+    public static function data($id=0,$cdid=0,$userid=0){
         $userid && $sql = " AND `userid`='$userid'";
-        $rs    = iDB::row("SELECT * FROM `".self::$table."` WHERE `id`='$id' {$sql} LIMIT 1;",ARRAY_A);
+        $rs    = iDB::row("SELECT * FROM `".self::$table."` WHERE `".self::$primary."`='$id' {$sql} LIMIT 1;",ARRAY_A);
         if($rs){
-            $aid   = $rs['id'];
-            $adsql = "SELECT * FROM `".self::$table."_cdata` WHERE `".self::$union_key."`='$aid'";
-            $adid && $adsql.= " AND `id`='{$adid}'";
+            $id = $rs['id'];
+            $data_table = apps_mod::data_table_name(self::$app);
+            $cdsql = "SELECT * FROM `".$data_table."` WHERE `".self::$union_key."`='$id'";
+            $cdid && $cdsql.= " AND `".apps_mod::DATA_PRIMARY_KEY."`='{$cdid}'";
 
             if($rs['chapter']){
-                $adrs  = iDB::all($adsql,ARRAY_A);
+                $cdrs  = iDB::all($cdsql,ARRAY_A);
             }else{
-                $adrs  = iDB::row($adsql,ARRAY_A);
+                $cdrs  = iDB::row($cdsql,ARRAY_A);
             }
         }
-        return array($rs,$adrs);
+        return array($rs,$cdrs);
     }
     public static function body($id=0){
-        $body = iDB::value("SELECT * FROM `".self::$table."_cdata` WHERE `".self::$union_key."`='$id'");
+        $data_table = apps_mod::data_table_name(self::$app);
+        $body = iDB::value("SELECT * FROM `".$data_table."` WHERE `".self::$union_key."`='$id'");
         return $body;
     }
 
@@ -57,13 +62,13 @@ class content {
         foreach ( array_keys($data) as $k ){
             $bits[] = "`$k` = '$data[$k]'";
         }
-        iDB::query("UPDATE `".self::$table."` SET " . implode( ', ', $bits ) . " WHERE `id` IN ($ids)");
+        iDB::query("UPDATE `".self::$table."` SET " . implode( ', ', $bits ) . " WHERE `".self::$primary."` IN ($ids)");
     }
     public static function insert($data){
-        return iDB::insert(self::$table,$data);
+        return iDB::insert(self::$app,$data);
     }
     public static function update($data,$where){
-        return iDB::update(self::$table,$data,$where);
+        return iDB::update(self::$app,$data,$where);
     }
 // --------------------------------------------------
     public static function data_fields($update=false){
@@ -72,17 +77,21 @@ class content {
         return $fields;
     }
     public static function data_insert($data){
-        return iDB::insert(self::$table.'_cdata',$data);
+        $data_table = apps_mod::data_table_name(self::$app);
+        return iDB::insert($data_table,$data);
     }
     public static function data_update($data,$where){
-        return iDB::update(self::$table.'_cdata',$data,$where);
+        $data_table = apps_mod::data_table_name(self::$app);
+        return iDB::update($data_table,$data,$where);
     }
 
     public static function del($id){
-        iDB::query("DELETE FROM `".self::$table."` WHERE id='$id'");
+        iDB::query("DELETE FROM `".self::$table."` WHERE `".self::$primary."`='$id'");
     }
-    public static function del_cdata($id,$f='aid'){
-        iDB::query("DELETE FROM `".self::$table."_cdata` WHERE `$f`='$id'");
+    public static function del_cdata($id,$f=null){
+        $data_table = apps_mod::data_table_name(self::$app);
+        $f===null && $f = self::$union_key;
+        iDB::query("DELETE FROM `".$data_table."` WHERE `$f`='$id'");
     }
 }
 

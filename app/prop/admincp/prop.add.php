@@ -55,24 +55,27 @@ $(function(){
             <input type="text" name="field" class="span4" id="field" value="<?php echo $rs['field'];?>"/>
           </div>
           <div class="clearfloat mb10"></div>
-          <div class="input-prepend"> <span class="add-on">属性名称</span>
+          <div class="input-prepend">
             <?php if($this->pid){?>
+              <span class="add-on">属性名称</span>
               <input type="text" name="name" class="span4" id="name" value="<?php echo $rs['name'];?>"/>
             <?php }else{?>
-            <textarea name="name" id="name" class="span4" style="height: 150px;"><?php echo $rs['name'] ; ?></textarea>
+              <span class="add-on">属性数据</span>
+              <textarea name="name" id="name" class="span4" style="height: 150px;"><?php echo $data ; ?></textarea>
             <?php }?>
           </div>
 
-          <p class="help-inline">可填写中文 <?php if(!$this->pid){?><br />
-            批量添加格式:
+          <p class="help-inline">可填写中文 <br />
+            <?php if(!$this->pid){?>
+            批量添加格式:<br />
             <span class="label label-important">名称:值</span><br />
+            <span class="label label-important">名称:</span>(属性值将按序号填充)<br />
+            <span class="label label-important">名称</span>(属性值将用名称填充)<br />
             每行一个
-            <br />
-            如果只填写名称,值将按序号填充<br />
-            当属性值为<span class="label label-info">{@NAME@}</span>时,值将用对应名称填充
             <?php }?>
           </p>
           <div class="clearfloat mb10"></div>
+          <?php if($this->pid){?>
           <div class="input-prepend"> <span class="add-on">属 性 值</span>
             <input type="text" name="val" class="span4" id="val" value="<?php echo $rs['val'];?>"/>
           </div>
@@ -83,6 +86,7 @@ $(function(){
           <div class="input-prepend"> <span class="add-on">属性排序</span>
             <input type="text" name="sortnum" class="span4" id="sortnum" value="<?php echo $rs['sortnum'];?>"/>
           </div>
+          <?php }?>
           <div class="clearfloat mb10"></div>
           <div class="alert alert-block">
             <h4>注意事项</h4>

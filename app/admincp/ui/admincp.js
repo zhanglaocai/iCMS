@@ -13,7 +13,12 @@ var chosen_config = {
 $(function() {
     var _iCMS = {
         select: function(el, v) {
-            var va = v.split(',');
+            var va;
+            if($.isArray(v)){
+                va = v
+            }else{
+                va = v.split(',');
+            }
             $("#"+el).val(va).trigger("chosen:updated");
         },
         checked: function(el,v){

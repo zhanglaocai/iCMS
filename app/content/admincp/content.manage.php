@@ -182,7 +182,7 @@ $(function(){
             $categoryArray  = category::multi_get($rs,'cid');
 
             foreach ((array)$rs as $key => $value) {
-              $id           = $value[$this->primary];
+              $id           = $value[content::$primary];
               $C            = (array)$categoryArray[$value['cid']];
               $iurl         = iURL::get($this->app['app'],array($value,$C));
               $value['url'] = $iurl->href;
@@ -230,7 +230,7 @@ $(function(){
                   <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $id ; ?>&_args=status:1" target="iPHP_FRAME" class="tip-bottom" title="从回收站恢复"/><i class="fa fa-reply-all"></i></a>
                   <?php } ?>
                 </div>
-                <?php if($value['pic'] && self::$config['showpic']){ ?>
+                <?php if($value['pic'] && $this->config['showpic']){ ?>
                 <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $id ; ?>" data-toggle="modal" title="预览"><img src="<?php echo iFS::fp($value['pic'],'+http'); ?>" style="height:120px;"/></a>
                 <?php } ?>
               </td>

@@ -8,12 +8,13 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class contentAdmincp{
-    public $appid    = null;
-    public $app      = null;
-    public $callback = array();
-    public $table    = null;
-    public $primary  = null;
-    public $union_key  = null;
+    public $appid     = null;
+    public $app       = null;
+    public $callback  = array();
+    public $table     = null;
+    public $primary   = null;
+    public $union_key = null;
+    public $config    = null;
 
     public function __construct($data=null) {
         if($data===null){
@@ -26,17 +27,19 @@ class contentAdmincp{
         $this->appid     = $data['id'];
         $_GET['appid'] && $this->appid = (int)$_GET['appid'];
 
-        $table_array   = apps::get_table($this->app);
-        $this->table   = $table_array['table'];
-        $this->primary = $table_array['primary'];
-        $this->union_key = apps_mod::data_union_key($this->app['app']);
+        $table_array        = apps::get_table($this->app);
+        content::$app       = $this->app['app'];
+        content::$table     = $table_array['table'];
+        content::$primary   = $table_array['primary'];
+        content::$union_key = apps_mod::data_union_key($this->app['app']);
+        unset($table_array);
 
         $this->id        = (int)$_GET['id'];
         $this->_postype  = '1';
         $this->_status   = '1';
-        content::$table     = $this->table;
-        content::$union_key = $this->union_key;
-        category::$appid    = $this->appid;
+        $this->config    = iCMS::$config[$this->app['app']];
+
+        category::$appid     = $this->appid;
     }
     public function do_config(){
         configAdmincp::app($this->appid);
@@ -315,7 +318,7 @@ class contentAdmincp{
         isset($_GET['cid'])    && $uri_array['cid']     = $_GET['cid'];
         $uri_array  && $uri = http_build_query($uri_array);
 
-        $orderby    = $_GET['orderby']?$_GET['orderby']:"{$this->primary} DESC";
+        $orderby    = $_GET['orderby']?$_GET['orderby']:content::$primary." DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
 
         if($map_where){
@@ -323,7 +326,7 @@ class contentAdmincp{
             $sql     = ",({$map_sql}) map {$sql} AND `id` = map.`iid`";
         }
 
-        $total      = iCMS::page_total_cache("SELECT count(*) FROM `{$this->table}` {$sql}","G");
+        $total = iCMS::page_total_cache("SELECT count(*) FROM `".content::$table."` {$sql}","G");
         iUI::pagenav($total,$maxperpage,"条记录");
 
         $limit = 'LIMIT '.iUI::$offset.','.$maxperpage;
@@ -339,7 +342,7 @@ class contentAdmincp{
             }
         // if($map_sql){
             $ids_array = iDB::all("
-                SELECT `id` FROM `{$this->table}` {$sql}
+                SELECT `id` FROM `".content::$table."` {$sql}
                 ORDER BY {$orderby} {$limit}
             ");
             if(isset($_offset)){
@@ -352,13 +355,13 @@ class contentAdmincp{
             $sql = "WHERE `id` IN({$ids})";
             // }else{
                 // $sql = ",(
-                    // SELECT `id` AS aid FROM `{$this->table}` {$sql}
+                    // SELECT `id` AS aid FROM `".content::$table."` {$sql}
                     // ORDER BY {$orderby} {$limit}
                 // ) AS art WHERE `id` = art.aid ";
             // }
             $limit = '';
         }
-        $rs = iDB::all("SELECT * FROM `{$this->table}` {$sql} ORDER BY {$orderby} {$limit}");
+        $rs = iDB::all("SELECT * FROM `".content::$table."` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
         $propArray = propAdmincp::get("pid",null,'array');
         include admincp::view('content.manage');

@@ -23,6 +23,6 @@ class publicFunc{
 		$query = array('app'=>'public','do'=>'qrcode','url'=>$data);
 		isset($vars['cache']) && $query['cache'] = true;
 		$url = iURL::router('api');
-		echo buildurl($url,$query);
+		echo buildurl($query,$url);
 	}
 }
