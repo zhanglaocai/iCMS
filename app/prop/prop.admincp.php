@@ -262,11 +262,12 @@ class propAdmincp{
     public static function del($pid=null,$appid=null,$iid=null){
         if($pid){
             $appid && $sql = " AND `appid`='{$appid}'";
+            $rs = iDB::row("SELECT * FROM `#iCMS@__prop` WHERE `pid`='$pid' {$sql} LIMIT 1;");
             iDB::query("DELETE FROM `#iCMS@__prop` WHERE `pid` = '$pid' {$sql};");
+
             $iid && $sql.=" AND iid='$iid'";
-            iDB::query("
-                DELETE FROM `#iCMS@__prop_map`
-                WHERE `node`='$pid' {$sql} ;");
+            iDB::query("DELETE FROM `#iCMS@__prop_map` WHERE `node`='$pid' {$sql} ;");
+            iCache::delete('prop/'.$rs->field);
         }
     }
     public static function _count(){

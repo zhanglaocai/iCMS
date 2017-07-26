@@ -95,7 +95,7 @@ class tag {
 	    }else {
 			$tkey   = iPinyin::get($name,iCMS::$config['tag']['tkey']);
 			$data   = compact(array(
-                'uid', 'cid', 'tcid', 'pid', 'tkey', 'name',
+                'uid', 'cid', 'tcid', 'pid', 'tkey', 'name', 'field',
                 'seotitle', 'subtitle', 'keywords', 'description',
                 'haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl',
                 'sortnum', 'pubdate', 'postime', 'status'
@@ -107,6 +107,7 @@ class tag {
             $data['pubdate'] = time();
             $data['postime'] = $data['pubdate'];
             $data['status']  = self::$add_status;
+            $data['field']   = self::$field;
 
 			$tid = iDB::insert('tag',$data);
 	    }

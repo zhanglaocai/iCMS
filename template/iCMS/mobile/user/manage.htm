@@ -4,10 +4,11 @@
     <title><!--{$site.title}-->_<!--{$site.seotitle}--></title>
     <meta name="keywords" content="<!--{$site.keywords}-->" />
     <meta name="description" content="<!--{$site.description}-->"/>
+    <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/user.css" type="text/css" />
     <!--{iCMS:public:ui}-->
   </head>
   <body class="userApp">
-    <!--{include file="./navbar.htm"}-->
+    <!--{include file="./user.header.htm" import="true"}-->
     <div class="userApp-wrap">
         <div class="contents manage_<!--{$pg}-->">
             <form action="<!--{iCMS:router url='user'}-->" method="post" target="iCMS_FRAME">

@@ -17,7 +17,7 @@ class propApp {
 		$propArray && sort($propArray);
         return $propArray;
 	}
-    public static function url($url,$value=null) {
+    public static function url($value,$url=null) {
         $query = array();
         $query[$value['field']] = $value['val'];
         return buildurl($query,$url);

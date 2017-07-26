@@ -11,8 +11,8 @@
     <meta name="keywords" content="<!--{$site.keywords}-->" />
     <meta name="description" content="<!--{$site.description}-->" />
     <meta name="mobile-agent" content="format=html5;url=<!--{$site.url}-->" />
+    <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/user.css" type="text/css" />
     <!--{iCMS:public:ui}-->
-    <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/passport.css" type="text/css" />
     <script>
     //初始化登录接口
     $(function() {
@@ -84,7 +84,7 @@
 
 <body class="userApp passport">
     <div class="login-wrap">
-        <!--{include file="./passport.head.htm" import="true"}-->
+        <!--{include file="./user.header.htm" import="true"}-->
         <div class="passport-wrap">
             <div class="passport-main">
                 <h1>
@@ -147,6 +147,4 @@
         </div>
         <!--{include file="iCMS://footer.htm"}-->
     </body>
-
-
 </html>

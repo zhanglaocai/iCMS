@@ -4,6 +4,7 @@
     <title><!--{if $user}-->欢迎加入<!--{else}-->新用户注册<!--{/if}--> <!--{$site.title}-->_<!--{$site.seotitle}--></title>
     <meta name="keywords" content="<!--{$site.keywords}-->" />
     <meta name="description" content="<!--{$site.description}-->"/>
+    <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/user.css" type="text/css" />
     <!--{iCMS:public:ui}-->
     <script>
       //初始化注册接口
@@ -180,7 +181,7 @@
     </script>
   </head>
   <body class="userApp passport">
-    <!--{include file="./navbar.htm"}-->
+    <!--{include file="./user.header.htm" import="true"}-->
     <div class="container">
       <div id="register-box" class="wrapper">
         <div class="logo">

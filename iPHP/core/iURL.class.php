@@ -176,16 +176,16 @@ class iURL {
             $i = self::build($url,$router_dir,$router_url,$category['htmlext']);
             self::page_sign($i);
 
-            $pfile = $i->file;
-            if(strpos($pfile,iPHP_PAGE_SIGN)===false) {
-                $pfile = $i->name.'_'.iPHP_PAGE_SIGN.$i->ext;
-            }
             if($purl){
                 $ii = self::build($purl,$router_dir,$router_url,$category['htmlext']);
                 $i->pageurl  = $ii->href;
                 $i->pagepath = $ii->path;
                 unset($ii);
             }else{
+                $pfile = $i->file;
+                if(strpos($pfile,iPHP_PAGE_SIGN)===false) {
+                    $pfile = $i->name.'_'.iPHP_PAGE_SIGN.$i->ext;
+                }
                 $i->pageurl  = $i->hdir.'/'.$pfile ;
                 $i->pagepath = $i->dir.'/'.$pfile;
             }

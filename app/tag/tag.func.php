@@ -14,6 +14,9 @@ class tagFunc{
         if(isset($vars['rootid'])){
             $where_sql.= " AND `rootid`='".(int)$vars['rootid']."'";
         }
+        if(isset($vars['field'])){
+            $where_sql.= " AND `field`='".$vars['field']."'";
+        }
         if(!isset($vars['tcids']) && isset($vars['tcid'])){
             $where_sql.= iSQL::in($vars['tcid'],'tcid');
         }

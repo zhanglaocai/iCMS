@@ -1,6 +1,4 @@
 $(function() {
-    //图片延迟加载
-    $("img.lazy").lazyload();
     //图片切换
     $(".carousel-box").slider({
         left_btn: '#carousel-left',
@@ -24,123 +22,156 @@ $(function() {
             return false;
         }
     });
-    //验证码
-    doc.on('click', ".seccode-img,.seccode-text", function(event) {
-        event.preventDefault();
-        iCMS.UI.seccode();
-    });
-    //user模块
-    iCMS.run('user', function($USER) {
-        //定义登陆事件
-        // $USER.LOGIN = function () {}
-        //
-        //用户状态
-        $USER.STATUS({},
-            //登陆后事件
-            function($info) {
-                iCMS.$('user_nickname').text($info.nickname);
-                iCMS.$('user_avatar').attr("src",$info.avatar).show();
-                iCMS.$('login').hide();
-                iCMS.$('profile').show();
-            },
-            //未登陆事件
-            function(f) {
-                // console.log(f)
-            }
-        );
-        //点击退出登陆
-        doc.on('click', "[i='logout']", function(event) {
-            event.preventDefault();
-            $USER.LOGOUT({
-                'forward': window.top.location.href
-            },
-            //退出成功事件
-            function(s) {
-                window.top.location.reload();
-            });
-        });
-        //点击关注
-        doc.on('click', "[i^='follow']", function(event) {
-            event.preventDefault();
-            $USER.FOLLOW(this,
-                //关注成功
-                function(ret,$param){
-                    if(ret.code){
-                        var show = ($param.follow == '1' ? '0' : '1');
-                        $("[i='follow:"+$param.uid+":"+$param.follow+"']").hide();
-                        $("[i='follow:"+$param.uid+":"+show+"']").show();
-                    }
-                },
-                //关注失败
-                function (ret) {
-                    iCMS.UI.alert(ret.msg);
-                }
-            );
-        });
-        //点击私信
-        doc.on('click', '[i^="pm"]', function(event) {
-            event.preventDefault();
-            $USER.PM(this);
-        });
-        //点击举报
-        doc.on('click', '[i="report"]', function(event) {
-            event.preventDefault();
-            $USER.REPORT(this);
-        });
-        //用户信息浮层
-        $USER.UCARD();
-    });
-    //通用事件
-    iCMS.run('common', function($COMMON) {
-        //点赞
-        doc.on('click', '[i^="vote:"]', function(event) {
-            event.preventDefault();
-            var me = this;
-            $COMMON.vote(this,
-                //点赞成功后
-                function(ret,param) {
-                       var numObj = iCMS.$('vote_'+param['type']+'_num',me),
-                           count = parseInt(numObj.text());
-                        numObj.text(count + 1);
-                }
-            );
-        });
-        //收藏
-        doc.on('click', '[i^="favorite:"]', function(event) {
-            event.preventDefault();
-            $COMMON.favorite(this);
-        });
-    });
-    //用户主页评论
-    iCMS.run('comment', function($COMMENT) {
-        doc.on('click', '[i="comment:article"]', function(event) {
-            event.preventDefault();
-            var me = this;
-            $COMMENT.create(me);
-            //加载评论框模板
-            // $COMMENT.template('form',function (tmpl) {
-            //     $COMMENT._widget._form = $(tmpl);
-            // });
-        });
-    });
 });
-//user模块API
-var iUSER = iCMS.run('user');
-//comment模块API
-// var iCOMMENT = iCMS.run('comment');
 
-function imgFix (im, x, y) {
-    x = x || 99999
-    y = y || 99999
-    im.removeAttribute("width");
-    im.removeAttribute("height");
-    if (im.width / im.height > x / y && im.width > x) {
-        im.height = im.height * (x / im.width)
-        im.width  = x
-        im.parentNode.style.height = im.height * (x / im.width) + 'px';
-    } else if (im.width / im.height <= x / y && im.height > y) {
-        im.width  = im.width * (y / im.height)
-        im.height = y
-        im.parentNode.style.height = y + 'px';
+(function($) {
+    $.fn.slider = function(options) {
+        var defaults = {
+            left_btn: '#slider-left',
+            right_btn: '#slider-right',
+            num_btn: "#slider-btn",
+            classname: "active",
+            item: "li",
+            time: 3000,
+            sync: null
+        }
+        var options = $.extend(defaults, options);
+        return this.each(function() {
+            var a = $(this),
+                b = $(options.num_btn),
+                l = $(options.left_btn),
+                r = $(options.right_btn),
+                current = 0,
+                timeOut = null,
+                auto = true,
+                len = $(options.item, a).length;
+
+            if (options.sync) {
+                var s = $(options.sync);
+            }
+            if (l) {
+                $(l).click(function(event) {
+                    event.preventDefault();
+                    clearTimeout(timeOut);
+                    current--;
+                    show(current);
+                }).mouseout(function() {
+                    Timeout();
+                });
+            }
+            if (r) {
+                $(r).click(function(event) {
+                    event.preventDefault();
+                    clearTimeout(timeOut);
+                    current++;
+                    start(current);
+                }).mouseout(function() {
+                    Timeout();
+                });
+            }
+            start();
+            overout($(options.item, a));
+
+            if (options.sync) {
+                overout($(options.item, s));
+            }
+            if (b) {
+                $(options.item, b).each(function(i) {
+                    overout($(this), i);
+                });
+            }
+
+            function Timeout() {
+                timeOut = setTimeout(function() {
+                    current++;
+                    // console.log(current);
+                    start(current);
+                }, options.time);
+            }
+
+            function overout(that, i) {
+                that.mouseover(function() {
+                    clearTimeout(timeOut);
+                    if (typeof i !== "undefined") {
+                        show(i);
+                    }
+                }).mouseout(function() {
+                    Timeout();
+                })
+            }
+
+            function start() {
+                show(current);
+                Timeout();
+            }
+
+            function show(i) {
+                if (i >= len) {
+                    i = 0;
+                }
+                if (i < 0) {
+                    i = len - 1;
+                }
+                current = i;
+                if (options.sync) {
+                    $(options.item, s).hide().eq(i).fadeIn();
+                }
+                $(options.item, a).hide().eq(i).fadeIn();
+
+                if (b) {
+                    $(options.item, b)
+                        .removeClass(options.classname)
+                        .eq(i)
+                        .addClass(options.classname);
+                }
+            }
+        });
     }
-}
+})(jQuery);
+
+
+(function($) {
+    $.fn.tabs = function(options) {
+        var defaults = {
+            item: ".tabs-pane",
+            action: 'mouseover'
+        }
+        var options = $.extend(defaults, options);
+        var container = $(this);
+        $('[data-toggle="tab"]', container).each(function(i) {
+            if (options.action == 'click') {
+                $(this).click(function(event) {
+                    event.preventDefault();
+                    show(this)
+                });
+            }
+            if (options.action == 'mouseover') {
+                $(this).mouseover(function(event) {
+                    event.preventDefault();
+                    show(this)
+                });
+            }
+        });
+
+        function show(that) {
+            var a = $(that)
+              , target = a.attr('date-target');
+            $(options.item, container).hide();
+            $(target, container).show();
+            $('[data-toggle="tab"]', container).parent().removeClass('active');
+            a.parent().addClass('active');
+        }
+    }
+})(jQuery);
+
+/*!
+ * Bootstrap v3.3.7 (http://getbootstrap.com)
+ * Copyright 2011-2017 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+/*!
+ * Generated using the Bootstrap Customizer (http://getbootstrap.com/customize/?id=31a3ec205b40c7d146ef3d3c7e0706de)
+ * Config saved to config.json and https://gist.github.com/31a3ec205b40c7d146ef3d3c7e0706de
+ */
+if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires jQuery");+function(t){"use strict";var e=t.fn.jquery.split(" ")[0].split(".");if(e[0]<2&&e[1]<9||1==e[0]&&9==e[1]&&e[2]<1||e[0]>3)throw new Error("Bootstrap's JavaScript requires jQuery version 1.9.1 or higher, but lower than version 4")}(jQuery),+function(t){"use strict";function e(e){var n=e.attr("data-target");n||(n=e.attr("href"),n=n&&/#[A-Za-z]/.test(n)&&n.replace(/.*(?=#[^\s]*$)/,""));var a=n&&t(n);return a&&a.length?a:e.parent()}function n(n){n&&3===n.which||(t(i).remove(),t(r).each(function(){var a=t(this),i=e(a),r={relatedTarget:this};i.hasClass("open")&&(n&&"click"==n.type&&/input|textarea/i.test(n.target.tagName)&&t.contains(i[0],n.target)||(i.trigger(n=t.Event("hide.bs.dropdown",r)),n.isDefaultPrevented()||(a.attr("aria-expanded","false"),i.removeClass("open").trigger(t.Event("hidden.bs.dropdown",r)))))}))}function a(e){return this.each(function(){var n=t(this),a=n.data("bs.dropdown");a||n.data("bs.dropdown",a=new s(this)),"string"==typeof e&&a[e].call(n)})}var i=".dropdown-backdrop",r='[data-toggle="dropdown"]',s=function(e){t(e).on("click.bs.dropdown",this.toggle)};s.VERSION="3.3.7",s.prototype.toggle=function(a){var i=t(this);if(!i.is(".disabled, :disabled")){var r=e(i),s=r.hasClass("open");if(n(),!s){"ontouchstart"in document.documentElement&&!r.closest(".navbar-nav").length&&t(document.createElement("div")).addClass("dropdown-backdrop").insertAfter(t(this)).on("click",n);var o={relatedTarget:this};if(r.trigger(a=t.Event("show.bs.dropdown",o)),a.isDefaultPrevented())return;i.trigger("focus").attr("aria-expanded","true"),r.toggleClass("open").trigger(t.Event("shown.bs.dropdown",o))}return!1}},s.prototype.keydown=function(n){if(/(38|40|27|32)/.test(n.which)&&!/input|textarea/i.test(n.target.tagName)){var a=t(this);if(n.preventDefault(),n.stopPropagation(),!a.is(".disabled, :disabled")){var i=e(a),s=i.hasClass("open");if(!s&&27!=n.which||s&&27==n.which)return 27==n.which&&i.find(r).trigger("focus"),a.trigger("click");var o=" li:not(.disabled):visible a",l=i.find(".dropdown-menu"+o);if(l.length){var d=l.index(n.target);38==n.which&&d>0&&d--,40==n.which&&d<l.length-1&&d++,~d||(d=0),l.eq(d).trigger("focus")}}}};var o=t.fn.dropdown;t.fn.dropdown=a,t.fn.dropdown.Constructor=s,t.fn.dropdown.noConflict=function(){return t.fn.dropdown=o,this},t(document).on("click.bs.dropdown.data-api",n).on("click.bs.dropdown.data-api",".dropdown form",function(t){t.stopPropagation()}).on("click.bs.dropdown.data-api",r,s.prototype.toggle).on("keydown.bs.dropdown.data-api",r,s.prototype.keydown).on("keydown.bs.dropdown.data-api",".dropdown-menu",s.prototype.keydown)}(jQuery);

@@ -7,8 +7,8 @@
     <meta name="description" content="<!--{$site.description}-->"/>
     <meta name="mobile-agent" content="format=xhtml;url=<!--{$site.urls.mobile}-->">
     <meta name="mobile-agent" content="format=html5;url=<!--{$site.urls.mobile}-->"/>
+    <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/user.css" type="text/css" />
     <!--{iCMS:public:ui}-->
-    <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/passport.css" type="text/css" />
     <script>
     $(function(){
       var findpwd = $("#findpwd-box");
@@ -66,8 +66,8 @@
     </script>
   </head>
   <body class="userApp passport">
+    <!--{include file="./user.header.htm" import="true"}-->
     <div class="findpwd-wrap">
-      <!--{include file="./passport.head.htm" import="true"}-->
       <div class="passport-wrap">
         <div class="passport-main">
           <h1>找回密码</h1>

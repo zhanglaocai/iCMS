@@ -143,7 +143,7 @@ class commentFunc{
 	            	$rkey = array_search (0,$ridArray);
 	            	unset($ridArray[$rkey]);
 	            }
-	            $ridArray && $reply_array = comment_array(array('id'=>$ridArray));
+	            $ridArray && $reply_array = self::comment_array(array('id'=>$ridArray));
 	        }
 			$ln = ($pgconf['nowindex']-1)<0?0:$pgconf['nowindex']-1;
 

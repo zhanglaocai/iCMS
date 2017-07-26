@@ -4,10 +4,11 @@
     <title><!--{$user.nickname}-->的<!--{$site.title}-->_<!--{$site.seotitle}--></title>
     <meta name="keywords" content="<!--{$site.keywords}-->" />
     <meta name="description" content="<!--{$user.nickname}-->的<!--{$site.title}-->"/>
+    <link rel="stylesheet" href="<!--{$site.urls.tpl}-->/static/css/user.css" type="text/css" />
     <!--{iCMS:public:ui}-->
   </head>
   <body class="userApp">
-    <!--{include file="./navbar.htm"}-->
+    <!--{include file="./user.header.htm" import="true"}-->
     <div class="body">
       <div class="wrapper" id="userApp-home">
         <div class="userApp_header">

@@ -162,7 +162,7 @@ class articleApp {
 			return false;
 		}
 
-		$article['iurl'] = (array)iURL::get('article', array($article, $category), $page);
+		$article['iurl'] = (array)iURL::get('article', array($article, $category));
 		$article['url'] = $article['iurl']['href'];
 		$article['link'] = "<a href='{$article['url']}'>{$article['title']}</a>";
 
