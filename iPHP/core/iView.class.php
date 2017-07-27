@@ -91,11 +91,11 @@ class iView {
     public static function callback_func_proxy($vars=null){
         $func = 'func';
         $vars['func'] && $func = $vars['func'];
-        $callback = array($vars['app'].$vars['method'],'func');
+        $callback = array($vars['app'].$vars['method'],$func);
         if(@is_callable($callback)){
             call_user_func_array($callback, array($vars));
         }else{
-            // iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
+            iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
         }
     }
     public static function callback_plugin($name,$tpl) {
