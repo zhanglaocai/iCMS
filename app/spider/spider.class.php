@@ -17,7 +17,7 @@ class spider{
     public static $url      = null;
     public static $work     = false;
     public static $urlslast = null;
-    public static $allHtml  = null;
+    public static $allHtml  = array();
 
 	public static $dataTest = false;
 	public static $ruleTest = false;

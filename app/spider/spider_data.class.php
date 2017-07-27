@@ -72,9 +72,9 @@ class spider_data {
 //          return false;
 //      }
 //      $content        = $http['content'];
-        spider::$allHtml = "";
-        $rule['__url__']    = spider::$url;
-        $responses['reurl'] = spider::$url;
+        spider::$allHtml        = array();
+        $rule['__url__']        = spider::$url;
+        $responses['reurl']     = spider::$url;
         $responses['__title__'] = $title;
         foreach ((array)$dataArray AS $key => $data) {
 
