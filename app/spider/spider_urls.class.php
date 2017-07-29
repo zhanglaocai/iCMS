@@ -142,7 +142,9 @@ class spider_urls {
             }
             $html = spider_tools::remote($url);
             if(empty($html)){
-                echo spider::errorlog("采集列表内容为空!\n",$url,'url.empty',array('pid'=>$pid,'sid'=>$sid,'rid'=>$rid));
+                $msg = "采集列表内容为空!\n";
+                $msg.= var_export(spider_tools::$curl_info,true);
+                echo spider::errorlog($msg,$url,'url.empty',array('pid'=>$pid,'sid'=>$sid,'rid'=>$rid));
                 continue;
             }
             if($rule['mode']=="2"){
@@ -256,24 +258,29 @@ class spider_urls {
                         continue;
                     }
                     $hash  = md5(spider::$url);
-                    echo "title:".spider::$title."\n";
-                    echo "url:".spider::$url."\n";
+                    echo "\033[32m开始采集...\033[0m\n";
+                    echo "\033[36mtitle:\033[0m".spider::$title."\n";
+                    echo "\033[36murl:\033[0m".spider::$url."\n";
                     spider::$rid = $rid;
                     $checker = spider::checker($work,$pid,spider::$url,spider::$title);
                     if($checker===true){
-                        echo "开始采集....";
+                        $wait = 3;
+                        $wait_start = time();
                         $callback  = spider::publish("shell");
                         if ($callback['code'] == "1001") {
                             $pubCount[$url]['success']++;
                             $pubAllCount['success']++;
-                            echo "....√\n";
+                            $wait+= time()-$wait_start;
+                            echo "\033[32m采集完成并发布成功".str_repeat('.',$wait)."√\033[0m\n";
                             if($project['sleep']){
-                                echo "sleep:".$project['sleep']."s\n";
                                 if($rule['mode']!="2"){
                                     unset($lists[$lkey]);
                                 }
                                 gc_collect_cycles();
-                                sleep($project['sleep']);
+
+                                $usleep = $project['sleep']*1000;
+                                echo "\033[31m暂停".($project['sleep']/1000)."秒后继续\033[0m\n\n";
+                                usleep($usleep); //1000000 = 1s
                             }else{
                                 //sleep(1);
                             }

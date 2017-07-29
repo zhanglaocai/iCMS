@@ -629,7 +629,7 @@ class spiderAdmincp {
 		$poid = iSecurity::escapeStr($_POST['poid']);
 		$poid = iSecurity::escapeStr($_POST['poid']);
 		$checker = iSecurity::escapeStr($_POST['checker']);
-		$self = isset($_POST['self']) ? '1' : '0';
+		$self = (int) $_POST['self'];
 		$sleep = (int) $_POST['sleep'];
 		$auto = iSecurity::escapeStr($_POST['auto']);
 		$psleep = (int) $_POST['psleep'];

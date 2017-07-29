@@ -16,6 +16,7 @@ admincp::head();
 <script>
 $(function(){
   iCMS.select('checker',"<?php echo $rs['checker']; ?>");
+  iCMS.select('self',"<?php echo (int)$rs['self']; ?>");
   var box = document.getElementById("mkurls");
   $('#makeurls').click(function(){
       iCMS.dialog({title:'添加采集地址',
@@ -211,10 +212,12 @@ $(function(){
             </select>
           </div>
           <div class="clearfloat mb10"></div>
-          <div class="input-prepend input-append"><span class="add-on">检查范围</span>
-            <span class="add-on">仅限本方案
-            <input name="self" type="checkbox" id="self" value="1" <?php if($rs['self']) echo 'checked="checked"'  ?>/>
-              </span>
+          <div class="input-prepend"><span class="add-on">检查范围</span>
+            <select name="self" id="self" class="chosen-select span3">
+              <option value="0">全部</option>
+              <option value="1">仅限本方案</option>
+              <option value="2">仅限本规则</option>
+            </select>
           </div>
           <div class="clearfloat mb10"></div>
           <div class="input-prepend"><span class="add-on">自动采集</span>
@@ -226,7 +229,7 @@ $(function(){
           <div class="clearfloat mb10"></div>
           <div class="input-prepend input-append"><span class="add-on">单条间隔</span>
             <input type="text" name="sleep" class="span1" id="sleep" value="<?php echo $rs['sleep']; ?>"/>
-            <span class="add-on">秒</span>
+            <span class="add-on">毫秒</span>
           </div>
           <span class="help-inline">单条数据采集的间隔 (自动采集)</span>
           <div class="clearfloat mb10"></div>

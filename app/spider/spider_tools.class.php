@@ -11,6 +11,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 class spider_tools {
     public static $listArray = array();
+    public static $curl_info = array();
 
     /**
      * 在数据项里调用之前采集的数据[DATA@name][DATA@name.key]
@@ -543,7 +544,7 @@ class spider_tools {
             $uri = parse_url($url);
             spider::$referer = $uri['scheme'] . '://' . $uri['host'];
         }
-
+        self::$curl_info = array();
         $options = array(
             CURLOPT_URL                  => $url,
             CURLOPT_ENCODING             => spider::$encoding,
@@ -574,6 +575,7 @@ class spider_tools {
         curl_setopt_array($ch,$options);
         $responses = curl_exec($ch);
         $info = curl_getinfo($ch);
+        self::$curl_info = $info;
         if (spider::$dataTest || spider::$ruleTest) {
             echo "<b>{$url} 头信息:</b><pre style='max-height:90px;overflow-y: scroll;'>";
             print_r($info);

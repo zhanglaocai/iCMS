@@ -48,7 +48,7 @@ class spider{
     public static function rule($id) {
         $rs = iDB::row("SELECT * FROM `#iCMS@__spider_rule` WHERE `id`='$id' LIMIT 1;", ARRAY_A);
         $rs['rule'] && $rs['rule'] = stripslashes_deep(unserialize($rs['rule']));
-        $rs['user_agent'] OR $rs['user_agent'] = "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)";
+        $rs['rule']['user_agent'] OR $rs['rule']['user_agent'] = "Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)";
         spider::$useragent = $rs['rule']['user_agent'];
         spider::$encoding  = $rs['rule']['curl']['encoding'];
         spider::$referer   = $rs['rule']['curl']['referer'];
@@ -106,13 +106,20 @@ class spider{
                     $msg   = $label.'该网址和标题的文章已经发布过!请检查是否重复';
                 break;
             }
-            $project['self'] && $sql.=" AND `pid`='".$pid."'";
+            switch ($project['self']) {
+                case '1':
+                    $sql.=" AND `pid`='".$pid."'";
+                break;
+                case '2':
+                    $sql.=" AND `rid`='".spider::$rid."'";
+                break;
+            }
 
             $checker = iDB::value("SELECT `id` FROM `#iCMS@__spider_url` where $sql AND `publish` in(1,2)");
             if($checker){
                 $work===NULL && iUI::alert($msg, 'js:parent.$("#' . $hash . '").remove();');
                 if($work=='shell'){
-                    echo $msg."\n";
+                    echo "\n\033[35m".$msg."\033[0m\n\n";
                     return false;
                 }
                 if($work=="WEB@AUTO"){

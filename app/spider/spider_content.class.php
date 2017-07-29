@@ -177,9 +177,7 @@ class spider_content {
         }
         if ($data['empty']) {
             $empty = html2text($content);
-            $empty = str_replace(array('&nbsp;','　'), '', $empty);
-            $empty = preg_replace(array('/\s*/','/\r*/','/\n*/'), '', $empty);
-            $empty = trim($empty);
+            $empty = self::real_empty($empty);
             if(empty($empty)){
                 $emptyMsg = '['.$name.']规则设置了不允许为空.当前抓取结果为空!请检查,规则是否正确!';
                 if(spider::$dataTest){
@@ -383,6 +381,12 @@ class spider_content {
                 $contentArray[] = spider_content::match($phtml,$data,$rule);
             }
         }
+    }
+    public static function real_empty($text){
+        $text = str_replace(array('&nbsp;','　'), '', $text);
+        $text = preg_replace(array('/\s*/','/\r*/','/\n*/'), '', $text);
+        $text = trim($text);
+        return $text;
     }
     public static function match($html,$data,$rule){
         $match_hash = array();

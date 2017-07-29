@@ -58,6 +58,7 @@ class spider_data {
         $html      = spider_tools::remote($url);
         if(empty($html)){
             $msg = '错误:001..采集 ' . $url . '文件内容为空!请检查采集规则';
+            $msg.= var_export(spider_tools::$curl_info,true);
             if(spider::$work=='shell'){
                 echo spider::errorlog("{$msg}\n",$url,'data.empty',array('pid'=>$pid,'sid'=>$sid,'rid'=>$rid));
                 return false;
