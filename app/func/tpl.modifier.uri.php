@@ -2,6 +2,6 @@
 /*
  * Template Lite plugin
  */
-function tpl_modifier_uri($url,$uri){
-    return buildurl($uri,$url);
+function tpl_modifier_uri($query,$url=null){
+    return iURL::make($query,$url);
 }

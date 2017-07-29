@@ -222,7 +222,7 @@ class propAdmincp{
             if ($out == 'option') {
                 $optText = "<option value='{$P['val']}'";
                 array_search($P['val'], $valArray)!==FALSE && $optText.= " selected='selected'";
-                $optText.= "title='{$field}={$P['val']}']";
+                $optText.= "title='{$field}={$P['val']}'";
                 $optText.= ">{$P['name']}";
                 // $isopt && $optText.= "[{$field}='{$P['val']}']";
                 $optText.= "</option>";

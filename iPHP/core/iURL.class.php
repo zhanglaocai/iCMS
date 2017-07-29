@@ -198,6 +198,7 @@ class iURL {
             $d = call_user_func_array(self::$CONFIG['callback']['device'], array($i));
             $i = (object)array_merge((array)$i,$d);
         }
+        $i->url = $i->href;
         return $i;
     }
 
@@ -266,5 +267,46 @@ class iURL {
             'index'  =>$iurl['href'],
             'ext'    =>$iurl['ext']
         );
+    }
+    public static function make($QS=null,$url=null) {
+        $url OR $url = $_SERVER["REQUEST_URI"];
+        $parse  = parse_url($url);
+        parse_str($parse['query'], $query);
+
+        $output = (array)$QS;
+        is_array($QS) OR parse_str($QS, $output);
+        foreach ($output as $key => $value) {
+            //这个null是字符
+            if($value==='null'||$value===null){
+                unset($output[$key]);
+                unset($query[$key]);
+            }
+        }
+        $query = array_merge((array)$query,(array)$output);
+        if(strpos($parse['path'],'.php')!==false) {
+            $parse['query'] = http_build_query($query);
+        }else{
+            $path = '';
+            foreach ($query as $key => $value) {
+                $path.= $key.'-'.$value;
+            }
+            var_dump($parse);
+            $parse['path'].= $path;
+
+        }
+        $nurl = self::glue($parse);
+        return $nurl?$nurl:$url;
+    }
+    public static function glue($parsed) {
+        if (!is_array($parsed)) return false;
+
+        $uri = isset($parsed['scheme']) ? $parsed['scheme'].':'.((strtolower($parsed['scheme']) == 'mailto') ? '':'//'): '';
+        $uri.= isset($parsed['user']) ? $parsed['user'].($parsed['pass']? ':'.$parsed['pass']:'').'@':'';
+        $parsed['host']    && $uri.= $parsed['host'];
+        $parsed['port']    && $uri.= ':'.$parsed['port'];
+        $parsed['path']    && $uri.= $parsed['path'];
+        $parsed['query']   && $uri.= '?'.$parsed['query'];
+        $parsed['fragment']&& $uri.= '#'.$parsed['fragment'];
+        return $uri;
     }
 }

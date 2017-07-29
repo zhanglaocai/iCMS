@@ -148,6 +148,7 @@ $(function(){
             <th>ID</th>
             <th>排序</th>
             <th>标签</th>
+            <th>来源字段</th>
             <th>栏目</th>
             <th>分类</th>
             <th>属性</th>
@@ -180,6 +181,7 @@ $(function(){
         <a href="<?php echo APP_URI; ?>&do=preview&id=<?php echo $rs[$i]['id'] ; ?>" data-toggle="modal" title="预览"><img src="<?php echo iFS::fp($rs[$i]['pic']); ?>" style="height:120px;"/></a>
         <?php } ?>
           </td>
+            <td><a href="<?php echo APP_DOURI; ?>&field=<?php echo $rs[$i]['field'] ; ?><?php echo $uri ; ?>"><?php echo $rs[$i]['field'] ; ?></a></td>
           <td>
             <a href="<?php echo APP_DOURI; ?>&cid=<?php echo $rs[$i]['cid'] ; ?><?php echo $uri ; ?>"><?php echo $C['name'] ; ?></a>
             <a href="<?php echo __ADMINCP__; ?>=article_category&do=add&cid=<?php echo $rs[$i]['cid']; ?>" target="_blank"><i class="fa fa-edit"></i></a>
@@ -209,7 +211,7 @@ $(function(){
 
         <tfoot>
           <tr>
-            <td colspan="10"><div class="pagination pagination-right" style="float:right;"><?php echo iUI::$pagenav ; ?></div>
+            <td colspan="11"><div class="pagination pagination-right" style="float:right;"><?php echo iUI::$pagenav ; ?></div>
               <div class="input-prepend input-append mt20"> <span class="add-on">全选
                 <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo APP_BOXID;?>" />
                 </span>

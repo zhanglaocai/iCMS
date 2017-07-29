@@ -274,7 +274,7 @@ class iPages {
 			$query = array();
 			$total_type ==="G" && $query['total_num'] = $this->total;
 			$query[$this->page_name] ="---PN---";
-			$this->url = buildurl($query,$url);
+			$this->url = iURL::make($query,$url);
 			$this->url = str_replace('---PN---','{P}',$this->url);
 		}
 	}

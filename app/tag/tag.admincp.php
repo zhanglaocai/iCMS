@@ -60,6 +60,7 @@ class tagAdmincp{
         $_GET['post_endtime']   && $sql.=" AND `postime`<='".str2time($_GET['post_endtime'].(strpos($_GET['post_endtime'],' ')!==false?'':" 23:59:59"))."'";
 
         isset($_GET['pic']) && $sql.=" AND `haspic` ='".($_GET['pic']?1:0)."'";
+        $_GET['field'] && $sql.=" AND `field` ='".$_GET['field']."'";
         if(isset($_GET['pid']) && $pid!='-1'){
             $uri_array['pid'] = $pid;
             if($_GET['pid']==0){

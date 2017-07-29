@@ -166,7 +166,7 @@ class tagFunc{
                 if($vars['meta'] && $meta_data){
                     $value+= (array)$meta_data[$value['id']];
                 }
-        		$resource[$key] = tagApp::value($value);
+        		$resource[$key] = tagApp::value($value,$vars);
             }
         }
         return $resource;

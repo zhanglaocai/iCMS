@@ -187,6 +187,11 @@ class spider{
         @set_time_limit(0);
         $_POST = spider_data::crawl();
 
+        foreach ((array)$_POST as $key => $value) {
+            if($value===null){
+                return null;
+            }
+        }
         if($_POST===false){
             return false;
         }

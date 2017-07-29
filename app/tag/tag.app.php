@@ -82,7 +82,7 @@ class tagApp {
             return $tag;
         }
     }
-    public static function value($tag) {
+    public static function value($tag,$vars=null) {
         if($tag['cid']){
             $category        = categoryApp::category($tag['cid'],false);
             $tag['category'] = categoryApp::get_lite($category);
@@ -93,6 +93,16 @@ class tagApp {
         }
 
         $tag['iurl'] = (array)iURL::get('tag', array($tag, $category, $tag_category));
+        if($vars['url']=='self'){
+            $fkey = 'tids';
+            $vars['field'] && $fkey = $vars['field'];
+            $nurl = iURL::make(array($fkey=>$tag['id']),null);
+            $tag['iurl']['href'] = $nurl;
+            $tag['iurl']['url'] = $nurl;
+            foreach ($tag['iurl'] as $key => $value) {
+                is_array($value) && $tag['iurl'][$key]['url'] = $nurl;
+            }
+        }
         $tag['url'] OR $tag['url'] = $tag['iurl']['href'];
         $tag['link']  = '<a href="'.$tag['url'].'" class="tag" target="_blank">'.$tag['name'].'</a>';
 

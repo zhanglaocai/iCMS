@@ -129,7 +129,8 @@ class spider_data {
                 }
             }
             $content = spider_content::crawl($content_html,$data,$rule,$responses);
-            if($content === false){
+            if($content === null){
+                $responses[$key] = null;
                 continue;
             }
             unset($content_html);

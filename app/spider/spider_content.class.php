@@ -169,15 +169,15 @@ class spider_content {
                 if(spider::$work){
                     echo spider::errorlog($filterMsg,$rule['__url__'],'content.filter');
                     echo "\n{$filterMsg}\n";
-                    return false;
+                    return null;
                 }else{
                     iUI::alert($filterMsg);
                 }
             }
         }
         if ($data['empty']) {
-            $empty = html2text($content);
-            $empty = self::real_empty($empty);
+            // $empty = html2text($content);
+            $empty = self::real_empty($content);
             if(empty($empty)){
                 $emptyMsg = '['.$name.']规则设置了不允许为空.当前抓取结果为空!请检查,规则是否正确!';
                 if(spider::$dataTest){
@@ -186,7 +186,7 @@ class spider_content {
                 if(spider::$work){
                     echo spider::errorlog($emptyMsg,$rule['__url__'],'content.empty');
                     echo "\n{$emptyMsg}\n";
-                    return false;
+                    return null;
                 }else{
                     iUI::alert($emptyMsg);
                 }
@@ -384,7 +384,7 @@ class spider_content {
     }
     public static function real_empty($text){
         $text = str_replace(array('&nbsp;','　'), '', $text);
-        $text = preg_replace(array('/\s*/','/\r*/','/\n*/'), '', $text);
+        $text = preg_replace(array('/\s*/','/\r*/','/\n*/','@<p[^>]*>\s*<br[^>]*>\s*</p>@','@<(\w+)>\s*<\$1>@'), '', $text);
         $text = trim($text);
         return $text;
     }

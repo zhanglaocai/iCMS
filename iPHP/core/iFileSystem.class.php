@@ -206,7 +206,7 @@ class iFS {
 			return false;
 		}
 
-		$url = buildurl('dir');
+		$url = iURL::make('dir');
 		if ($handle = opendir($iDir_PATH)) {
 			while (false !== ($rs = readdir($handle))) {
 				// print_r('$rs='.$rs."\n");

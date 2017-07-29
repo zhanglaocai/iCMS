@@ -212,7 +212,7 @@ class admincp {
 	}
     public static function uri($q,$a){
         $query = array_merge((array)$a,(array)$q);
-        return buildurl($query,APP_DOURI);
+        return iURL::make($query,APP_DOURI);
     }
 	public static function debug_info(){
 		$memory = memory_get_usage();

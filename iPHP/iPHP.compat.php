@@ -60,30 +60,6 @@ function sortnum($a, $b){
     }
     return ($a["sortnum"] < $b["sortnum"]) ? -1 : 1;
 }
-function buildurl($QS='',$url=null) {
-	$url	OR $url	= $_SERVER["REQUEST_URI"];
-	$urlA	= parse_url($url);
-	parse_str($urlA['query'], $query1);
-    $query2 = $QS;
-    is_array($QS) OR parse_str($QS, $query2);
-	$query         = array_merge($query1,$query2);
-	$urlA['query'] = http_build_query($query);
-	$nurl = glue_url($urlA);
-	return $nurl?$nurl:$url;
-}
-function glue_url($parsed) {
-    if (!is_array($parsed)) return false;
-
-	$uri = isset($parsed['scheme']) ? $parsed['scheme'].':'.((strtolower($parsed['scheme']) == 'mailto') ? '':'//'): '';
-	$uri.= isset($parsed['user']) ? $parsed['user'].($parsed['pass']? ':'.$parsed['pass']:'').'@':'';
-	$uri.= isset($parsed['host']) ? $parsed['host'] : '';
-	$uri.= isset($parsed['port']) ? ':'.$parsed['port'] : '';
-	$uri.= isset($parsed['path']) ? $parsed['path'] : '';
-	$uri.= isset($parsed['query']) ? '?'.$parsed['query'] : '';
-	$uri.= isset($parsed['fragment']) ? '#'.$parsed['fragment'] : '';
-	return $uri;
-}
-
 
 function bitscale($a) {
 	$a['th']==0 && $a['th']=9999;

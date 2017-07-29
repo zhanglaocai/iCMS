@@ -20,6 +20,6 @@ class propApp {
     public static function url($value,$url=null) {
         $query = array();
         $query[$value['field']] = $value['val'];
-        return buildurl($query,$url);
+        return iURL::make($query,$url);
     }
 }

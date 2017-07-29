@@ -47,7 +47,7 @@ class searchFunc{
         }
         $query['q'] = $q;
         $url = iURL::router('api');
-        $url = buildurl($query,$url);
+        $url = iURL::make($query,$url);
         if($vars['ret']){
             return $url;
         }

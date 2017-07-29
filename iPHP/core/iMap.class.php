@@ -12,11 +12,14 @@ class iMap {
 	public static $table = 'prop';
 	public static $field  = null;
 	public static $appid = '1';
+	public static $where = array();
+	public static $stack = array();
 
 	public static function init($table = 'prop',$appid='1',$field = null){
 		self::$table = iPHP_DB_PREFIX_TAG.$table.'_map';
 		self::$field = $field;
 		self::$appid = $appid;
+		++self::$stack[$table];
 		return new self();
 	}
 	public static function del($nodes,$iid="0") {
@@ -102,9 +105,15 @@ class iMap {
 		if(!is_array($nodes) && strstr($nodes, ',')){
 			$nodes = explode(',', $nodes);
 		}
+		self::$where[self::$table]['field'][] = self::$field;
+		self::$where[self::$table]['node'][]  = $nodes;
+		$field  =  array_unique ( self::$where[self::$table]['field'] );
+		$nodes  =  array_unique ( self::$where[self::$table]['node'] );
+
+
 		$where_sql = iSQL::in(self::$appid,'appid',false,true,self::$table);
 		$where_sql.= iSQL::in($nodes,'node',false,false,self::$table);
-		$where_sql.= iSQL::in(self::$field,'field',false,false,self::$table);
+		$where_sql.= iSQL::in($field,'field',false,false,self::$table);
 		return array(self::$table=>$where_sql);
 	}
 
@@ -125,6 +134,18 @@ class iMap {
 
 		$sql = self::sql($nodes)." AND iid =".$iid;
 		return ' AND exists ('.$sql.')';
+	}
+	public static function distinct($table,$f='id'){
+		foreach (self::$stack as $key => $value) {
+			if($value>1){
+				self::$stack = array();
+				return ' DISTINCT `'.$table.'`.`'.$f.'` AS _'.$f.', ';
+			}
+		}
+	}
+	public static function reset(){
+		self::$stack = array();
+		self::$stack = array();
 	}
 	public static function multi($nodes=0,$iid=''){
 

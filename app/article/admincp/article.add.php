@@ -446,9 +446,9 @@ function _modal_dialog(cancel_text){
               </span>
               <?php }?>
         <?php if(self::$config['markdown']){?>
-              <a class="btn tip-top" href="<?php echo buildurl(array('ui_editor'=>'ueditor')); ?>" title="请先保存数据"><i class="fa fa-edit"></i> 切换到ueditor编辑器</a>
+              <a class="btn tip-top" href="<?php echo iURL::make('ui_editor=ueditor'); ?>" title="请先保存数据"><i class="fa fa-edit"></i> 切换到ueditor编辑器</a>
         <?php }else{?>
-              <a class="btn tip-top" href="<?php echo buildurl(array('ui_editor'=>'markdown')); ?>" title="请先保存数据"><i class="fa fa-edit"></i> 切换到markdown编辑器</a>
+              <a class="btn tip-top" href="<?php echo iURL::make('ui_editor=markdown'); ?>" title="请先保存数据"><i class="fa fa-edit"></i> 切换到markdown编辑器</a>
         <?php }?>
             </div>
             <div class="clearfloat mb10"></div>
