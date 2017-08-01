@@ -61,6 +61,8 @@ class members{
         if(empty($a) && empty($p)) {
             $auth       = iPHP::get_cookie(self::$AUTH);
             list($a,$p) = explode($sep,authcode($auth,'DECODE'));
+            $a = addslashes($a);
+            $p = addslashes($p);
             $c = self::check($a,$p);
         }else {
             $p = md5($p);
