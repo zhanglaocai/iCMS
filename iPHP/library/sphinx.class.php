@@ -16,7 +16,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // PHP version of Sphinx searchd client (PHP API)
 /////////////////////////////////////////////////////////////////////////////
-//assert_options(ASSERT_ACTIVE, 0);
+//@assert_options(@ASSERT_ACTIVE, 0);
 /// known searchd commands
 define ( "SEARCHD_COMMAND_SEARCH",	0 );
 define ( "SEARCHD_COMMAND_EXCERPT",	1 );
@@ -117,7 +117,7 @@ define ( "SPH_GROUPBY_ATTRPAIR",	5 );
 /// pack 64-bit signed
 function sphPackI64 ( $v )
 {
-	assert ( is_numeric($v) );
+	@assert ( is_numeric($v) );
 
 	// x64
 	if ( PHP_INT_SIZE>=8 )
@@ -166,12 +166,12 @@ function sphPackI64 ( $v )
 /// pack 64-bit unsigned
 function sphPackU64 ( $v )
 {
-	assert ( is_numeric($v) );
+	@assert ( is_numeric($v) );
 
 	// x64
 	if ( PHP_INT_SIZE>=8 )
 	{
-		assert ( $v>=0 );
+		@assert ( $v>=0 );
 
 		// x64, int
 		if ( is_int($v) )
@@ -492,7 +492,7 @@ class SphinxClient
 	/// set searchd host name (string) and port (integer)
 	function SetServer ( $host, $port = 0 )
 	{
-		assert ( is_string($host) );
+		@assert ( is_string($host) );
 		if ( $host[0] == '/')
 		{
 			$this->_host = 'unix://' . $host;
@@ -504,7 +504,7 @@ class SphinxClient
 			return;
 		}
 
-		assert ( is_int($port) );
+		@assert ( is_int($port) );
 		$this->_host = $host;
 		$this->_port = $port;
 		$this->_path = '';
@@ -514,7 +514,7 @@ class SphinxClient
 	/// set server connection timeout (0 to remove)
 	function SetConnectTimeout ( $timeout )
 	{
-		assert ( is_numeric($timeout) );
+		@assert ( is_numeric($timeout) );
 		$this->_timeout = $timeout;
 	}
 
@@ -696,11 +696,11 @@ class SphinxClient
 	/// and optionally set max-matches and cutoff limits
 	function SetLimits ( $offset, $limit, $max=0, $cutoff=0 )
 	{
-		assert ( is_int($offset) );
-		assert ( is_int($limit) );
-		assert ( $offset>=0 );
-		assert ( $limit>0 );
-		assert ( $max>=0 );
+		@assert ( is_int($offset) );
+		@assert ( is_int($limit) );
+		@assert ( $offset>=0 );
+		@assert ( $limit>0 );
+		@assert ( $max>=0 );
 		$this->_offset = $offset;
 		$this->_limit = $limit;
 		if ( $max>0 )
@@ -713,15 +713,15 @@ class SphinxClient
 	/// integer, 0 means "do not limit"
 	function SetMaxQueryTime ( $max )
 	{
-		assert ( is_int($max) );
-		assert ( $max>=0 );
+		@assert ( is_int($max) );
+		@assert ( $max>=0 );
 		$this->_maxquerytime = $max;
 	}
 
 	/// set matching mode
 	function SetMatchMode ( $mode )
 	{
-		assert ( $mode==SPH_MATCH_ALL
+		@assert ( $mode==SPH_MATCH_ALL
 			|| $mode==SPH_MATCH_ANY
 			|| $mode==SPH_MATCH_PHRASE
 			|| $mode==SPH_MATCH_BOOLEAN
@@ -734,7 +734,7 @@ class SphinxClient
 	/// set ranking mode
 	function SetRankingMode ( $ranker )
 	{
-		assert ( $ranker==SPH_RANK_PROXIMITY_BM25
+		@assert ( $ranker==SPH_RANK_PROXIMITY_BM25
 			|| $ranker==SPH_RANK_BM25
 			|| $ranker==SPH_RANK_NONE
 			|| $ranker==SPH_RANK_WORDCOUNT
@@ -745,15 +745,15 @@ class SphinxClient
 	/// set matches sorting mode
 	function SetSortMode ( $mode, $sortby="" )
 	{
-		assert (
+		@assert (
 			$mode==SPH_SORT_RELEVANCE ||
 			$mode==SPH_SORT_ATTR_DESC ||
 			$mode==SPH_SORT_ATTR_ASC ||
 			$mode==SPH_SORT_TIME_SEGMENTS ||
 			$mode==SPH_SORT_EXTENDED ||
 			$mode==SPH_SORT_EXPR );
-		assert ( is_string($sortby) );
-		assert ( $mode==SPH_SORT_RELEVANCE || strlen($sortby)>0 );
+		@assert ( is_string($sortby) );
+		@assert ( $mode==SPH_SORT_RELEVANCE || strlen($sortby)>0 );
 
 		$this->_sort = $mode;
 		$this->_sortby = $sortby;
@@ -763,9 +763,9 @@ class SphinxClient
 	/// DEPRECATED; use SetFieldWeights() instead
 	function SetWeights ( $weights )
 	{
-		assert ( is_array($weights) );
+		@assert ( is_array($weights) );
 		foreach ( $weights as $weight )
-			assert ( is_int($weight) );
+			@assert ( is_int($weight) );
 
 		$this->_weights = $weights;
 	}
@@ -773,11 +773,11 @@ class SphinxClient
 	/// bind per-field weights by name
 	function SetFieldWeights ( $weights )
 	{
-		assert ( is_array($weights) );
+		@assert ( is_array($weights) );
 		foreach ( $weights as $name=>$weight )
 		{
-			assert ( is_string($name) );
-			assert ( is_int($weight) );
+			@assert ( is_string($name) );
+			@assert ( is_int($weight) );
 		}
 		$this->_fieldweights = $weights;
 	}
@@ -785,11 +785,11 @@ class SphinxClient
 	/// bind per-index weights by name
 	function SetIndexWeights ( $weights )
 	{
-		assert ( is_array($weights) );
+		@assert ( is_array($weights) );
 		foreach ( $weights as $index=>$weight )
 		{
-			assert ( is_string($index) );
-			assert ( is_int($weight) );
+			@assert ( is_string($index) );
+			@assert ( is_int($weight) );
 		}
 		$this->_indexweights = $weights;
 	}
@@ -798,9 +798,9 @@ class SphinxClient
 	/// only match records if document ID is beetwen $min and $max (inclusive)
 	function SetIDRange ( $min, $max )
 	{
-		assert ( is_numeric($min) );
-		assert ( is_numeric($max) );
-		assert ( $min<=$max );
+		@assert ( is_numeric($min) );
+		@assert ( is_numeric($max) );
+		@assert ( $min<=$max );
 		$this->_min_id = $min;
 		$this->_max_id = $max;
 	}
@@ -809,14 +809,14 @@ class SphinxClient
 	/// only match records where $attribute value is in given set
 	function SetFilter ( $attribute, $values, $exclude=false )
 	{
-		assert ( is_string($attribute) );
-		assert ( is_array($values) );
-		assert ( count($values) );
+		@assert ( is_string($attribute) );
+		@assert ( is_array($values) );
+		@assert ( count($values) );
 
 		if ( is_array($values) && count($values) )
 		{
 			foreach ( $values as $value )
-				assert ( is_numeric($value) );
+				@assert ( is_numeric($value) );
 
 			$this->_filters[] = array ( "type"=>SPH_FILTER_VALUES, "attr"=>$attribute, "exclude"=>$exclude, "values"=>$values );
 		}
@@ -826,10 +826,10 @@ class SphinxClient
 	/// only match records if $attribute value is beetwen $min and $max (inclusive)
 	function SetFilterRange ( $attribute, $min, $max, $exclude=false )
 	{
-		assert ( is_string($attribute) );
-		assert ( is_numeric($min) );
-		assert ( is_numeric($max) );
-		assert ( $min<=$max );
+		@assert ( is_string($attribute) );
+		@assert ( is_numeric($min) );
+		@assert ( is_numeric($max) );
+		@assert ( $min<=$max );
 
 		$this->_filters[] = array ( "type"=>SPH_FILTER_RANGE, "attr"=>$attribute, "exclude"=>$exclude, "min"=>$min, "max"=>$max );
 	}
@@ -838,10 +838,10 @@ class SphinxClient
 	/// only match records if $attribute value is beetwen $min and $max (inclusive)
 	function SetFilterFloatRange ( $attribute, $min, $max, $exclude=false )
 	{
-		assert ( is_string($attribute) );
-		assert ( is_float($min) );
-		assert ( is_float($max) );
-		assert ( $min<=$max );
+		@assert ( is_string($attribute) );
+		@assert ( is_float($min) );
+		@assert ( is_float($max) );
+		@assert ( $min<=$max );
 
 		$this->_filters[] = array ( "type"=>SPH_FILTER_FLOATRANGE, "attr"=>$attribute, "exclude"=>$exclude, "min"=>$min, "max"=>$max );
 	}
@@ -851,10 +851,10 @@ class SphinxClient
 	/// latitude and longitude must be in radians
 	function SetGeoAnchor ( $attrlat, $attrlong, $lat, $long )
 	{
-		assert ( is_string($attrlat) );
-		assert ( is_string($attrlong) );
-		assert ( is_float($lat) );
-		assert ( is_float($long) );
+		@assert ( is_string($attrlat) );
+		@assert ( is_string($attrlong) );
+		@assert ( is_float($lat) );
+		@assert ( is_float($long) );
 
 		$this->_anchor = array ( "attrlat"=>$attrlat, "attrlong"=>$attrlong, "lat"=>$lat, "long"=>$long );
 	}
@@ -862,9 +862,9 @@ class SphinxClient
 	/// set grouping attribute and function
 	function SetGroupBy ( $attribute, $func, $groupsort="@group desc" )
 	{
-		assert ( is_string($attribute) );
-		assert ( is_string($groupsort) );
-		assert ( $func==SPH_GROUPBY_DAY
+		@assert ( is_string($attribute) );
+		@assert ( is_string($groupsort) );
+		@assert ( $func==SPH_GROUPBY_DAY
 			|| $func==SPH_GROUPBY_WEEK
 			|| $func==SPH_GROUPBY_MONTH
 			|| $func==SPH_GROUPBY_YEAR
@@ -879,15 +879,15 @@ class SphinxClient
 	/// set count-distinct attribute for group-by queries
 	function SetGroupDistinct ( $attribute )
 	{
-		assert ( is_string($attribute) );
+		@assert ( is_string($attribute) );
 		$this->_groupdistinct = $attribute;
 	}
 
 	/// set distributed retries count and delay
 	function SetRetries ( $count, $delay=0 )
 	{
-		assert ( is_int($count) && $count>=0 );
-		assert ( is_int($delay) && $delay>=0 );
+		@assert ( is_int($count) && $count>=0 );
+		@assert ( is_int($delay) && $delay>=0 );
 		$this->_retrycount = $count;
 		$this->_retrydelay = $delay;
 	}
@@ -896,7 +896,7 @@ class SphinxClient
 	/// PHP specific; needed for group-by-MVA result sets that may contain duplicate IDs
 	function SetArrayResult ( $arrayresult )
 	{
-		assert ( is_bool($arrayresult) );
+		@assert ( is_bool($arrayresult) );
 		$this->_arrayresult = $arrayresult;
 	}
 
@@ -905,9 +905,9 @@ class SphinxClient
 	/// $values must be a hash that maps document IDs to attribute values
 	function SetOverride ( $attrname, $attrtype, $values )
 	{
-		assert ( is_string ( $attrname ) );
-		assert ( in_array ( $attrtype, array ( SPH_ATTR_INTEGER, SPH_ATTR_TIMESTAMP, SPH_ATTR_BOOL, SPH_ATTR_FLOAT, SPH_ATTR_BIGINT ) ) );
-		assert ( is_array ( $values ) );
+		@assert ( is_string ( $attrname ) );
+		@assert ( in_array ( $attrtype, array ( SPH_ATTR_INTEGER, SPH_ATTR_TIMESTAMP, SPH_ATTR_BOOL, SPH_ATTR_FLOAT, SPH_ATTR_BIGINT ) ) );
+		@assert ( is_array ( $values ) );
 
 		$this->_overrides[$attrname] = array ( "attr"=>$attrname, "type"=>$attrtype, "values"=>$values );
 	}
@@ -915,7 +915,7 @@ class SphinxClient
 	/// set select-list (attributes or expressions), SQL-like syntax
 	function SetSelect ( $select )
 	{
-		assert ( is_string ( $select ) );
+		@assert ( is_string ( $select ) );
 		$this->_select = $select;
 	}
 
@@ -949,7 +949,7 @@ class SphinxClient
 	/// and return the search results
 	function Query ( $query, $index="*", $comment="" )
 	{
-		assert ( empty($this->_reqs) );
+		@assert ( empty($this->_reqs) );
 
 		$this->AddQuery ( $query, $index, $comment );
 		$results = $this->RunQueries ();
@@ -1015,7 +1015,7 @@ class SphinxClient
 					break;
 
 				default:
-					assert ( 0 && "internal error: unhandled filter type" );
+					@assert ( 0 && "internal error: unhandled filter type" );
 			}
 			$req .= pack ( "N", $filter["exclude"] );
 		}
@@ -1064,8 +1064,8 @@ class SphinxClient
 			$req .= pack ( "NN", $entry["type"], count($entry["values"]) );
 			foreach ( $entry["values"] as $id=>$val )
 			{
-				assert ( is_numeric($id) );
-				assert ( is_numeric($val) );
+				@assert ( is_numeric($id) );
+				@assert ( is_numeric($val) );
 
 				$req .= sphPackU64 ( $id );
 				switch ( $entry["type"] )
@@ -1287,10 +1287,10 @@ class SphinxClient
 	/// an array of snippets on success
 	function BuildExcerpts ( $docs, $index, $words, $opts=array() )
 	{
-		assert ( is_array($docs) );
-		assert ( is_string($index) );
-		assert ( is_string($words) );
-		assert ( is_array($opts) );
+		@assert ( is_array($docs) );
+		@assert ( is_string($index) );
+		@assert ( is_string($words) );
+		@assert ( is_array($opts) );
 
 		$this->_MBPush ();
 
@@ -1339,7 +1339,7 @@ class SphinxClient
 		$req .= pack ( "N", count($docs) );
 		foreach ( $docs as $doc )
 		{
-			assert ( is_string($doc) );
+			@assert ( is_string($doc) );
 			$req .= pack ( "N", strlen($doc) ) . $doc;
 		}
 
@@ -1392,9 +1392,9 @@ class SphinxClient
 	/// an array of words on success
 	function BuildKeywords ( $query, $index, $hits )
 	{
-		assert ( is_string($query) );
-		assert ( is_string($index) );
-		assert ( is_bool($hits) );
+		@assert ( is_string($query) );
+		@assert ( is_string($index) );
+		@assert ( is_bool($hits) );
 
 		$this->_MBPush ();
 
@@ -1484,28 +1484,28 @@ class SphinxClient
 	function UpdateAttributes ( $index, $attrs, $values, $mva=false )
 	{
 		// verify everything
-		assert ( is_string($index) );
-		assert ( is_bool($mva) );
+		@assert ( is_string($index) );
+		@assert ( is_bool($mva) );
 
-		assert ( is_array($attrs) );
+		@assert ( is_array($attrs) );
 		foreach ( $attrs as $attr )
-			assert ( is_string($attr) );
+			@assert ( is_string($attr) );
 
-		assert ( is_array($values) );
+		@assert ( is_array($values) );
 		foreach ( $values as $id=>$entry )
 		{
-			assert ( is_numeric($id) );
-			assert ( is_array($entry) );
-			assert ( count($entry)==count($attrs) );
+			@assert ( is_numeric($id) );
+			@assert ( is_array($entry) );
+			@assert ( count($entry)==count($attrs) );
 			foreach ( $entry as $v )
 			{
 				if ( $mva )
 				{
-					assert ( is_array($v) );
+					@assert ( is_array($v) );
 					foreach ( $v as $vv )
-						assert ( is_int($vv) );
+						@assert ( is_int($vv) );
 				} else
-					assert ( is_int($v) );
+					@assert ( is_int($v) );
 			}
 		}
 

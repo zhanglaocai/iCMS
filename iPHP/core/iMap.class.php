@@ -9,11 +9,12 @@
  * @version 2.0.0
  */
 class iMap {
-	public static $table = 'prop';
-	public static $field  = null;
-	public static $appid = '1';
-	public static $where = array();
-	public static $stack = array();
+	public static $table    = 'prop';
+	public static $field    = null;
+	public static $appid    = '1';
+	public static $where    = array();
+	public static $stack    = array();
+	public static $distinct = false;
 
 	public static function init($table = 'prop',$appid='1',$field = null){
 		self::$table = iPHP_DB_PREFIX_TAG.$table.'_map';
@@ -107,9 +108,9 @@ class iMap {
 		}
 		self::$where[self::$table]['field'][] = self::$field;
 		self::$where[self::$table]['node'][]  = $nodes;
-		$field  =  array_unique ( self::$where[self::$table]['field'] );
-		$nodes  =  array_unique ( self::$where[self::$table]['node'] );
 
+		$field = array_unique(self::$where[self::$table]['field']);
+		$nodes = array_unique(self::$where[self::$table]['node']);
 
 		$where_sql = iSQL::in(self::$appid,'appid',false,true,self::$table);
 		$where_sql.= iSQL::in($nodes,'node',false,false,self::$table);
@@ -136,16 +137,24 @@ class iMap {
 		return ' AND exists ('.$sql.')';
 	}
 	public static function distinct($table,$f='id'){
-		foreach (self::$stack as $key => $value) {
+		if(self::$distinct){
+			return self::distinct_sql($table,$f);
+		}
+		if(is_array(self::$stack))foreach (self::$stack as $key => $value) {
 			if($value>1){
-				self::$stack = array();
-				return ' DISTINCT `'.$table.'`.`'.$f.'` AS _'.$f.', ';
+				return self::distinct_sql($table,$f);
 			}
 		}
+		return null;
+	}
+	public static function distinct_sql($table,$f='id'){
+		self::reset();
+		return ' DISTINCT `'.$table.'`.`'.$f.'` AS _'.$f.', ';
 	}
 	public static function reset(){
-		self::$stack = array();
-		self::$stack = array();
+		self::$where    = array();
+		self::$stack    = array();
+		self::$distinct = false;
 	}
 	public static function multi($nodes=0,$iid=''){
 

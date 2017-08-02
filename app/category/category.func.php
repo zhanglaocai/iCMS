@@ -16,10 +16,10 @@ class categoryFunc{
 		$row        = isset($vars['row'])?(int)$vars['row']:"100";
 		$cache_time = isset($vars['time'])?(int)$vars['time']:"-1";
 		$status     = isset($vars['status'])?(int)$vars['status']:"1";
-		$maxperpage	= isset($vars['row'])?(int)$vars['row']:"10";
-		$where_sql  =" WHERE `status`='$status'";
+		$maxperpage = isset($vars['row'])?(int)$vars['row']:"10";
+		$where_sql  = " WHERE `status`='$status'";
 		$resource   = array();
-
+		iMap::reset();
 		// isset($vars['appid']) OR $vars['appid'] = iCMS_APP_ARTICLE;
 
 		isset($vars['appid']) && $where_sql.= iSQL::in($vars['appid'],'appid');

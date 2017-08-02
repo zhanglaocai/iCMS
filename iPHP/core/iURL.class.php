@@ -284,14 +284,12 @@ class iURL {
         }
         $query = array_merge((array)$query,(array)$output);
         $parse['query'] = http_build_query($query);
-        // if(strpos($parse['path'],'.php')!==false) {
-        //     $parse['query'] = http_build_query($query);
-        // }else{
+        // if(strpos($parse['path'],'.php')===false) {
         //     $path = '';
         //     foreach ($query as $key => $value) {
         //         $path.= $key.'-'.$value;
         //     }
-        //     $parse['path'].= $path;
+        //     $parse['path'].= $path.self::$CONFIG['ext'];
         // }
         $nurl = self::glue($parse);
         return $nurl?$nurl:$url;

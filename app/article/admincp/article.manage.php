@@ -21,6 +21,7 @@ $(function(){
 	<?php } ?>
 
   iCMS.select('status',"<?php echo isset($_GET['status'])?$_GET['status']:$this->_status ; ?>");
+  iCMS.select('pt',"<?php echo isset($_GET['pt'])?$_GET['pt']:$this->_postype ; ?>");
 	<?php if($_GET['orderby']){ ?>
 	iCMS.select('orderby',"<?php echo $_GET['orderby'] ; ?>");
 	<?php } ?>
@@ -165,6 +166,14 @@ $(function(){
           <span class="add-on"><i class="fa fa-calendar"></i></span>
         </div>
         <div class="clearfloat mb10"></div>
+        <div class="input-prepend"> <span class="add-on">发布类型</span>
+          <select name="pt" id="pt" class="chosen-select span2">
+            <option value="all"> 全部 </option>
+            <option value="0"> 用户 [postype='0']</option>
+            <option value="1"selected='selected'> 管理 [postype='1']</option>
+            <?php echo propAdmincp::get("postype") ; ?>
+          </select>
+        </div>
         <div class="input-prepend"> <span class="add-on">状 态</span>
           <select name="status" id="status" class="chosen-select span3">
             <option value="0"> 草稿 [status='0']</option>
@@ -287,21 +296,21 @@ $(function(){
               <td><?php if($value['pubdate']) echo get_date($value['pubdate'],'Y-m-d H:i');?><br />
                 <?php if($value['postime']) echo get_date($value['postime'],'Y-m-d H:i');?></td>
               <td>
-                <a href="<?php echo APP_DOURI; ?>&cid=<?php echo $value['cid'] ; ?>&<?php echo $uri ; ?>"><?php echo $C['name'] ; ?></a><br />
+                <a href="<?php echo admincp::uri("cid=".$value['cid'],$uriArray); ?>"><?php echo $C['name'] ; ?></a><br />
                 <?php
                  if($value['scid']){
                    $scid_array = explode(',', $value['scid']);
                    foreach ($scid_array as $scidk => $scid) {
                       $scva = $scategoryArray[$scid];
                       if($scid!=$value['cid']){
-                        echo '<a href="'.APP_DOURI.'&cid='.$scid.'&'.$uri.'">'.$scva->name.'</a><br />';
+                        echo '<a href="'.admincp::uri("cid=".$value['scid'],$uriArray).'">'.$scva->name.'</a><br />';
                       }
                    }
                  }
                 ?>
-                <?php $value['pid'] && propAdmincp::flag($value['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?>
+                <?php $value['pid'] && propAdmincp::flag($value['pid'],$propArray,admincp::uri("pid={PID}",$uriArray));?>
               </td>
-              <td><a href="<?php echo APP_DOURI; ?>&userid=<?php echo $value['userid'] ; ?>&<?php echo $uri ; ?>"><?php echo $value['editor'] ; ?></a><br /><?php echo $value['author'] ; ?></td>
+              <td><a href="<?php echo admincp::uri("userid=".$value['userid'],$uriArray); ?>"><?php echo $value['editor'] ; ?></a><br /><?php echo $value['author'] ; ?></td>
               <td>
                 <a class="tip" href="javascript:;" title="
                 总点击:<?php echo $value['hits'] ; ?><br />

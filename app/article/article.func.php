@@ -13,9 +13,11 @@ class articleFunc{
 		if ($vars['loop'] === "rel" && empty($vars['id'])) {
 			return false;
 		}
-		$resource = array();
+		iMap::reset();
+
+		$resource  = array();
 		$map_where = array();
-		$status = '1';
+		$status    = '1';
 		isset($vars['status']) && $status = (int) $vars['status'];
 		$where_sql = "WHERE `status`='{$status}'";
 		$vars['call'] == 'user' && $where_sql .= " AND `postype`='0'";

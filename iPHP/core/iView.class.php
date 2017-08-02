@@ -77,7 +77,8 @@ class iView {
             function_exists($callback) OR require_once(iPHP_TPL_FUN."/".iPHP_APP.".".$args['app'].".php");
         }
         if(isset($args['vars'])){
-            $vars = $args['vars'];unset($args['vars']);
+            $vars = $args['vars'];
+            unset($args['vars'],$vars['loop'],$vars['page']);
             $args = array_merge($args,$vars);
         }
 

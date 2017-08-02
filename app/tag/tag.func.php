@@ -9,6 +9,8 @@
 */
 class tagFunc{
     public static function tag_list($vars){
+        iMap::reset();
+
     	$where_sql ="WHERE status='1' ";
     	$map_where = array();
         if(isset($vars['rootid'])){

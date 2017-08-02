@@ -211,7 +211,9 @@ class admincp {
 		iDB::insert("access_log",$access);
 	}
     public static function uri($q,$a){
-        $query = array_merge((array)$a,(array)$q);
+    	$qs = $q;
+    	is_array($q) OR parse_str($q, $qs);
+        $query = array_merge((array)$a,(array)$qs);
         return iURL::make($query,APP_DOURI);
     }
 	public static function debug_info(){

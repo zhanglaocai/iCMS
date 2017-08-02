@@ -37,7 +37,7 @@ class propAdmincp{
 		($field=='pid'&& !is_numeric($val)) && iUI::alert('pid字段的值只能用数字');
         $field OR iUI::alert('属性字段不能为空!');
         $name OR iUI::alert('属性名称不能为空!');
-        $app OR iUI::alert('所属应用不能为空!');
+        // $app OR iUI::alert('所属应用不能为空!');
 
 		$field=='pid' && $val=(int)$val;
 
@@ -144,17 +144,22 @@ class propAdmincp{
     public static function cache(){
     	$rs	= iDB::all("SELECT * FROM `#iCMS@__prop`");
     	foreach((array)$rs AS $row) {
-            $type_field_id[$row['app'].'/'.$row['field']][$row['pid']] =
-            $type_field_val[$row['app']][$row['field']][$row['val']]   = $row;
+            if($row['app']){
+                $app_field_id[$row['app'].'/'.$row['field']][$row['pid']] =
+                $app_field_val[$row['app']][$row['field']][$row['val']]   = $row;
+            }else{
+                $app_field_id[$row['field'].'/pid'][$row['pid']]  =
+                $app_field_val[$row['field']][$row['val']] = $row;
+            }
     	}
-        // var_dump($type_field_id);
-        // var_dump($type_field_val);
-        // prop/article/author
-        foreach((array)$type_field_id AS $key=>$a){
+        // prop/article/author=>pid
+        // prop/author/pid
+        foreach((array)$app_field_id AS $key=>$a){
             iCache::set('prop/'.$key,$a,0);
         }
         // prop/article
-    	foreach((array)$type_field_val AS $k=>$a){
+        // prop/author
+    	foreach((array)$app_field_val AS $k=>$a){
     		iCache::set('prop/'.$k,$a,0);
     	}
     }

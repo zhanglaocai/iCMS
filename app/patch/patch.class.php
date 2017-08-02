@@ -25,9 +25,12 @@ class patch {
 
 	public static function init($force = false) {
 		$info = self::info($force);
+		$git_time = defined('GIT_TIME')?date("Ymd",GIT_TIME):0;
 		if ($info->app == iPHP_APP &&
 			version_compare($info->version, iCMS_VERSION, '>=') &&
-			$info->release > iCMS_RELEASE) {
+			$info->release > iCMS_RELEASE &&
+			$info->release > $git_time )
+		{
 			self::$version = $info->version;
 			self::$release = $info->release;
 			self::$zipName = 'iCMS.' . self::$version . '.patch.' . self::$release . '.zip';

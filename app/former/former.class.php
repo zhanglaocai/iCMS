@@ -1,4 +1,4 @@
-<?php
+s<?php
 /**
  * iPHP - i PHP Framework
  * Copyright (c) 2012 iiiphp.com. All rights reserved.
@@ -439,7 +439,7 @@ class former {
     }
     public static function js_test($id,$label,$msg,$pattern) {
         $script = '
-            var '.$id.'_msg = "'.$msg.'",pattern = '.$pattern.';
+            var '.$id.'_msg = "'.$msg.'",pattern = "'.$pattern.'";
             if(!pattern.test('.$id.'_value)){
                 iCMS.UI.alert('.$id.'_error||"['.$label.'],"+'.$id.'_msg+",请重新填写!");
                 '.$id.'.focus();
@@ -594,7 +594,7 @@ class former {
 
                 break;
                 case 'defined':
-                    $field_array['defined'] && $code = $field_array['defined'];
+                    $field_array['defined'] && $code = stripcslashes($field_array['defined']);
                 break;
                 default:
                     # code...
@@ -612,7 +612,7 @@ class former {
             }
         }
         self::$validate.= $javascript;
-        self::$script.= self::script($field_array['javascript']);
+        self::$script.= self::script(stripcslashes($field_array['javascript']));
 
         return $javascript;
     }

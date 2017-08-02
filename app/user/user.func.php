@@ -41,9 +41,10 @@ class userFunc{
     }
 
     public static function user_list($vars=null){
+        iMap::reset();
+
     	$maxperpage = isset($vars['row'])?(int)$vars['row']:"100";
     	$cache_time	= isset($vars['time'])?(int)$vars['time']:"-1";
-
         $where_sql	= "WHERE `status`='1'";
 
     	isset($vars['userid'])&& $where_sql.=" AND `uid`='{$vars['userid']}'";

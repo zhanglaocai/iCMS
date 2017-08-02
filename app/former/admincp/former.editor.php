@@ -183,7 +183,17 @@
               <span class="add-on">代码</span>
               <textarea name="defined" id="iFormer-defined" class="span6" style="height:60px;"></textarea>
             </div>
-            <span class="help-inline">可以自己填写提交时数据验证代码(javascript)</span>
+            <span class="help-inline">
+              可以自己填写提交时数据验证代码(javascript) <br />
+              注:该代码将会包含在表单的submit事件里<br />
+              <code>
+                $(表单ID).submit(function(){
+                  .....
+                  验证代码
+                  .....
+                })
+              </code>
+            </span>
           </div>
         </div>
         <div id="field-tab-2" class="tab-pane">

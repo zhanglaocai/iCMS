@@ -106,7 +106,7 @@ class articleAdmincp{
                     article::update(compact('sortnum'),compact('id'));
 		        }
 		        iUI::success('排序已更新!','js:1');
-    		break;
+            break;
             case 'meta':
                 foreach((array)$_POST['id'] AS $id) {
                     iPHP::callback(array("apps_meta","save"),array(self::$appid,$id));
@@ -438,12 +438,11 @@ class articleAdmincp{
         $_GET['post_endtime']   && $sql.=" AND `postime`<='".str2time($_GET['post_endtime'].(strpos($_GET['post_endtime'],' ')!==false?'':" 23:59:59"))."'";
         isset($_GET['pic'])&& $sql.=" AND `haspic` ='".($_GET['pic']?1:0)."'";
 
-        isset($_GET['userid']) && $uri_array['userid']  = (int)$_GET['userid'];
-        isset($_GET['keyword'])&& $uri_array['keyword'] = $_GET['keyword'];
-        isset($_GET['tag'])    && $uri_array['tag']	    = $_GET['tag'];
-        isset($_GET['pt'])     && $uri_array['pt']      = $_GET['pt'];
-        isset($_GET['cid'])    && $uri_array['cid']     = $_GET['cid'];
-		$uri_array	&& $uri = http_build_query($uri_array);
+        isset($_GET['userid']) && $uriArray['userid']  = (int)$_GET['userid'];
+        isset($_GET['keyword'])&& $uriArray['keyword'] = $_GET['keyword'];
+        isset($_GET['tag'])    && $uriArray['tag']     = $_GET['tag'];
+        isset($_GET['pt'])     && $uriArray['pt']      = $_GET['pt'];
+        isset($_GET['cid'])    && $uriArray['cid']     = $_GET['cid'];
 
         $orderby    = $_GET['orderby']?$_GET['orderby']:"id DESC";
         $maxperpage = $_GET['perpage']>0?(int)$_GET['perpage']:20;
@@ -555,7 +554,7 @@ class articleAdmincp{
         $userid OR $userid = members::$userid;
         $tags && $tags = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$tags);
 
-        if(self::$config['filter'] && is_array(self::$config['filter'])) {
+        if(self::$config['filter'] && is_array(self::$config['filter']) && !isset($_POST['nofilter'])) {
             foreach (self::$config['filter'] as $fkey => $fvalue) {
                 list($field,$text) = explode(':', $fvalue);
                 if($fwd = iPHP::callback(array("filterApp","run"),array(&${$field}),false)){
@@ -772,6 +771,16 @@ class articleAdmincp{
                 $subtitle = iSecurity::escapeStr($chaptertitle[$key]);
                 $this->body($body,$subtitle,$aid,$adid,$haspic);
             }
+            if($_POST['_data_id']){
+                $_data_id = stripslashes($_POST['_data_id']);
+                $_data_id = json_decode($_data_id,true);
+                if($_data_id){
+                    $diff = array_diff_values($adidArray,$_data_id);
+                    if($diff['-'])foreach ($diff['-'] as $_i => $_id) {
+                        article::del_data($_id,'id');
+                    }
+                }
+            }
             article::update(compact('chapter'),array('id'=>$aid));
         }else{
             $adid     = (int)$_POST['data_id'];
@@ -790,6 +799,14 @@ class articleAdmincp{
             $body = $body;
         }else{
             self::$config['autoformat'] && $body = addslashes(autoformat($body));
+        }
+        if(self::$config['emoji']=='unicode'){
+            $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','\\\\\ud$1',json_encode($body));
+            $body = json_decode($body);
+            $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','\\\\\ud$1',$body);
+        }else if(self::$config['emoji']=='clean'){
+            $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','',json_encode($body));
+            $body = json_decode($body);
         }
 
         $fields = article::data_fields($id);
@@ -822,9 +839,9 @@ class articleAdmincp{
     }
     public static function autodesc($body){
         if(self::$config['autodesc'] && self::$config['descLen']) {
-            is_array($body) && $body = implode("\n",$body);
-            $bodyText = str_replace('#--iCMS.PageBreak--#',"\n",$body);
-            $bodyText = str_replace('</p><p>', "</p>\n<p>", $bodyText);
+            is_array($body) && $bodyText   = implode("\n",$body);
+            $bodyText   = str_replace('#--iCMS.PageBreak--#',"\n",$bodyText);
+            $bodyText   = str_replace('</p><p>', "</p>\n<p>", $bodyText);
 
             $textArray = explode("\n", $bodyText);
             $pageNum   = 0;

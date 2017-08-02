@@ -503,17 +503,20 @@ var iFormer = {
         iFormer.sort_select($fbox);
 
         for(var name in obj) {
-            console.log(name);
+
             // if(i=='func'){
             //     continue;
             // }
+            if(name=='javascript'){
+                obj[name] = obj[name].replace(/\\(['|"])/g,"$1");
+            }
             var ifn = $("#iFormer-"+name, $fbox);
             // console.log(i,obj[name],typeof(obj[name]));
             // if(typeof(obj[name])==='object'){
             if(ifn.hasClass('chosen-select')){
                 // ifn.trigger("chosen:updated");
                 // 多选排序
-                console.log(ifn);
+                // console.log(ifn);
                 if(ifn.attr('multiple')){
                     ifn.setSelectionOrder(obj[name], true);
                 }else{
@@ -543,12 +546,21 @@ var iFormer = {
             $.each(obj['validate'], function(i, v) {
                 if ($("#iFormer-validate-"+v).length > 0 ) {
                     $("#iFormer-validate-"+v).show();
-                    $.each(obj[v], function(index, val) {
-                        $('[name="'+v+'['+index+']"]').val(val);
-                    });
+                    if($.isArray(obj[v])){
+                        $.each(obj[v], function(index, val) {
+                            $('[name="'+v+'['+index+']"]').val(val);
+                        });
+                    }else{
+                        if(v=='defined'){
+                            obj[v] = obj[v].replace(/\\(['|"])/g,"$1");
+                        }
+                        $('[name="'+v+'"]').val(obj[v]);
+                    }
+
                 }
             });
         }
+
         $("#iFormer-label-after-wrap", $fbox).hide();
 
         if(obj['label-after']){
