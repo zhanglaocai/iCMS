@@ -1,4 +1,4 @@
-s<?php
+<?php
 /**
  * iPHP - i PHP Framework
  * Copyright (c) 2012 iiiphp.com. All rights reserved.
