@@ -409,7 +409,7 @@ CREATE TABLE `icms_prop` (
 
 CREATE TABLE `icms_prop_map` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `node` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'pid',
+  `node` varchar(255) NOT NULL DEFAULT '' COMMENT 'pid',
   `iid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '内容ID',
   `field` varchar(255) NOT NULL DEFAULT '' COMMENT '字段',
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
@@ -525,6 +525,7 @@ CREATE TABLE `icms_tag` (
   `pid` varchar(255) NOT NULL DEFAULT '',
   `tkey` varchar(255) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
+  `field` varchar(255) NOT NULL DEFAULT '',
   `seotitle` varchar(255) NOT NULL DEFAULT '',
   `subtitle` varchar(255) NOT NULL DEFAULT '',
   `keywords` varchar(255) NOT NULL DEFAULT '',
@@ -566,7 +567,7 @@ CREATE TABLE `icms_tag_map` (
   `field` varchar(255) NOT NULL DEFAULT '' COMMENT '字段',
   `appid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '应用ID',
   PRIMARY KEY (`id`),
-  KEY `tid_index` (`appid`,`node`,`iid`)
+  KEY `tid_index` (`appid`,`node`,`field`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_tag_meta` */
@@ -606,7 +607,7 @@ CREATE TABLE `icms_user` (
   `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '用户类型',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '账号状态',
   PRIMARY KEY (`uid`),
-  UNIQUE KEY `username` (`nickname`),
+  UNIQUE KEY `username` (`username`),
   KEY `email` (`username`),
   KEY `nickname` (`nickname`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
