@@ -518,7 +518,7 @@ class iPHP {
 		}
 		if ($_POST) {
 	        if(iPHP::is_ajax()){
-	            $array = array('code'=>'0','msg'=>$html);
+	            $array = array('code'=>0,'msg'=>$html);
 	            echo json_encode($array);
 	        }else{
 	            $html = str_replace(array("\r", "\\", "\"", "\n", "<b>", "</b>", "<pre style='font-size: 14px;'>", "</pre>"), array(' ', "\\\\", "\\\"", '\n', ''), $html);

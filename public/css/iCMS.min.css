@@ -321,7 +321,7 @@ p.click2next,p.article_pic{text-indent:0px!important;text-align:center;}
 /* ===========commentApp=========== */
 
 /* icon */
-.commentApp-icon{width:16px;height:16px;background-image:url(../ui/sprites-1.9.2.png);background-repeat:no-repeat;display:inline-block;vertical-align:middle}
+.iCMS_icon,.commentApp-icon{width:16px;height:16px;background-image:url(../ui/sprites-1.9.2.png);background-repeat:no-repeat;display:inline-block;vertical-align:middle}
 .comment-like-icon{background-position:-222px -92px}
 .comment-reply-icon{background-position:-250px -92px}
 .comment-report-icon{background-position:-71px -183px}

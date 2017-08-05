@@ -165,6 +165,10 @@ class admincp {
 				$APP_TPL = iPHP_APP_DIR.'/'.$app.'/admincp';
 			}
 		}
+		$_path = $APP_TPL . '/' . $p . '.def.php';
+		if(file_exists($_path)){
+			return $_path;
+		}
 		$path = $APP_TPL . '/' . $p . '.php';
 		return $path;
 	}

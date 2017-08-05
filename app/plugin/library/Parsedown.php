@@ -19,6 +19,8 @@ class Parsedown
 
     const version = '1.6.0';
 
+    public $htmlspecialchars = true;
+
     # ~
 
     function text($text)
@@ -342,7 +344,7 @@ class Parsedown
     {
         $text = $Block['element']['text']['text'];
 
-        $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+        $this->htmlspecialchars && $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
 
         $Block['element']['text']['text'] = $text;
 
@@ -457,7 +459,7 @@ class Parsedown
     {
         $text = $Block['element']['text']['text'];
 
-        $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+        $this->htmlspecialchars && $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
 
         $Block['element']['text']['text'] = $text;
 
@@ -515,10 +517,10 @@ class Parsedown
                 ),
             );
 
-            if($name === 'ol') 
+            if($name === 'ol')
             {
                 $listStart = stristr($matches[0], '.', true);
-                
+
                 if($listStart !== '1')
                 {
                     $Block['element']['attributes'] = array('start' => $listStart);
@@ -1074,7 +1076,7 @@ class Parsedown
         if (preg_match('/^('.$marker.'+)[ ]*(.+?)[ ]*(?<!'.$marker.')\1(?!'.$marker.')/s', $Excerpt['text'], $matches))
         {
             $text = $matches[2];
-            $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+            $this->htmlspecialchars && $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
             $text = preg_replace("/[ ]*\n/", ' ', $text);
 
             return array(
@@ -1464,7 +1466,7 @@ class Parsedown
                 '<input type="checkbox" disabled="">',
             ), $markup);
         }
-	
+
         return $markup;
     }
     # ~

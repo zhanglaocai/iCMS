@@ -17,6 +17,7 @@ class plugin_markdown {
         if($resource['markdown']){
             plugin::library('Parsedown');
             $Parsedown = new Parsedown();
+            isset($resource['htmlspecialchars']) && $Parsedown->htmlspecialchars = false;
             $content = str_replace(array(
                 '#--' . iPHP_APP . '.Markdown--#',
                 '#--' . iPHP_APP . '.PageBreak--#',
