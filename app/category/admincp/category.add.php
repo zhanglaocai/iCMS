@@ -75,8 +75,8 @@ $(function(){
         <input name="_pid" type="hidden" value="<?php echo $rs['pid']  ; ?>" />
         <div id="category-add" class="tab-content">
           <div id="category-add-base" class="tab-pane active">
-            <div class="input-prepend input-append"> <span class="add-on">上级<?php echo $this->category_name;?></span>
-              <?php if(category::check_priv($rootid,'a') && empty($rootid)) {   ?>
+            <div class="input-prepend"> <span class="add-on">上级<?php echo $this->category_name;?></span>
+              <?php if(category::check_priv($rootid,'a')||empty($rootid)) {   ?>
               <select name="rootid" class="span6 chosen-select">
                 <option value="0">======顶级<?php echo $this->category_name;?>=====</option>
                 <?php echo category::priv('a')->select($rootid,0,1,true);?>

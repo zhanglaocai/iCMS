@@ -141,6 +141,11 @@ class iView {
 
         strpos($tpl,'./') !==false && $tpl = str_replace('./',dirname($obj->_file).'/',$tpl);
 
+        $rtpl = self::tpl_exists($tpl);
+        $rtpl === false && iPHP::error_404('Unable to find the template file <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
+        return $rtpl;
+    }
+    public static function tpl_exists($tpl) {
         $flag = iPHP_APP . ':/';
         if (strpos($tpl, $flag) !== false) {
             // 模板名/$tpl
@@ -170,7 +175,7 @@ class iView {
         if (is_file(iPHP_TPL_DIR . "/" . $tpl)) {
             return $tpl;
         } else {
-            iPHP::error_404('Unable to find the template file <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
+            return false;
         }
     }
     public static function check_app_tpl($tpl, $dir) {

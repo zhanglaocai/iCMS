@@ -82,6 +82,8 @@ class files {
     }
     public static function mark($fp,$ext=null) {
         if(!files::$watermark_enable) return;
+        if(!self::$watermark_config['enable']) return;
+
         $config = self::$watermark_config;
         $allow_ext = array('jpg', 'jpeg', 'png');
         $config['allow_ext'] && $allow_ext = explode(',', $config['allow_ext']);

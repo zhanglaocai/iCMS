@@ -63,8 +63,9 @@ class tagApp {
         iView::set_iVARS($tag['iurl'],'iURL');
 
         if ($tpl) {
-            $tag_tpl = $tag['category']['template']['tag'];
+            $tag_tpl = $tag['tpl'];
             $tag_tpl OR $tag_tpl = $tag['tag_category']['template']['tag'];
+            $tag_tpl OR $tag_tpl = $tag['category']['template']['tag'];
             $tag_tpl OR $tag_tpl = iCMS::$config['tag']['tpl'];
             $tag_tpl OR $tag_tpl = '{iTPL}/tag.htm';
 
