@@ -534,6 +534,10 @@ class Parsedown
                     $matches[2],
                 ),
             );
+            if (preg_match('/^\[[\s|x]\]/',$matches[2]))
+            {
+                $Block['li']['attributes'] = array('class' => 'md_checkbox');
+            }
 
             $Block['element']['text'] []= & $Block['li'];
 
@@ -563,6 +567,11 @@ class Parsedown
                     $text,
                 ),
             );
+	    
+            if (preg_match('/^\[[\s|x]\]/',$text))
+            {
+                $Block['li']['attributes'] = array('class' => 'md_checkbox');
+            }
 
             $Block['element']['text'] []= & $Block['li'];
 

@@ -128,7 +128,7 @@ class categoryApp{
         return $cids;
     }
     public static function get_cahce_cid($cid="0") {
-        return iCache::get('category/C'.$cid);;
+        return iCache::get('category/C'.$cid);
     }
     public static function get_cahce($key=null,$value=null){
         if($value){

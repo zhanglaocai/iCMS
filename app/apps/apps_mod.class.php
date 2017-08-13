@@ -195,7 +195,7 @@ class apps_mod {
         }
 
         $table = $app['table'];
-        foreach ($table as $key => $value) {
+        foreach ((array)$table as $key => $value) {
             $primary_key = $value['primary'];
             $value['union'] && $primary_key = $value['union'];
             if($filter && !in_array($value['table'],$filter)){

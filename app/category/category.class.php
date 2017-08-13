@@ -173,20 +173,33 @@ class category {
     }
     public static function cache($appid=null) {
         $sql = self::init_sql($appid);
-        $rs  = iDB::all("SELECT * FROM `#iCMS@__category` WHERE {$sql} ORDER BY `sortnum`  ASC");
+        $rs  = iDB::all("SELECT * FROM `#iCMS@__category` WHERE {$sql}");
+        foreach((array)$rs AS $C) {
+            self::cahce_item($C);//临时缓存
+        }
+
+        foreach((array)$rs AS $C) {
+            $C = self::data($C);
+            self::cahce_item($C,'C');
+        }
+
+        foreach((array)$rs AS $C) {
+            iCache::delete('category/'.$C['cid']);
+        }
+        unset($rs,$C);
+        self::cache_common();
+        gc_collect_cycles();
+    }
+    public static function cache_common() {
+        $rs  = iDB::all("SELECT `cid`,`rootid`,`dir`,`status`,`domain` FROM `#iCMS@__category`");
         $hidden = array();
         foreach((array)$rs AS $C) {
             $C['status'] OR $hidden[]        = $C['cid'];
             $dir2cid[$C['dir']]              = $C['cid'];
             $parent[$C['cid']]               = $C['rootid'];
             $rootid[$C['rootid']][$C['cid']] = $C['cid'];
-            $app[$C['appid']][$C['cid']]     = $C['cid'];
-            self::cahce_item($C);//临时缓存
         }
 
-        foreach ((array)$app as $appid => $value) {
-            iCache::set('category/appid.'.$appid,$value,0);
-        }
         iCache::set('category/dir2cid',$dir2cid,0);
         iCache::set('category/hidden', $hidden,0);
         iCache::set('category/rootid',$rootid,0);
@@ -199,22 +212,9 @@ class category {
                 $root && $domain_rootid+= array_fill_keys($root, $C['cid']);
             }
         }
-
-        iCache::set('category/domain_rootid',$domain_rootid,0);unset($domain_rootid,$root);
-
-        foreach((array)$rs AS $C) {
-            $C = self::data($C);
-            self::cahce_item($C,'C');
-        }
-
-        foreach((array)$rs AS $C) {
-            iCache::delete('category/'.$C['cid']);
-        }
-        unset($rootid,$parent,$dir2cid,$hidden,$app,$rs,$C);
-
-        gc_collect_cycles();
+        iCache::set('category/domain_rootid',$domain_rootid,0);
+        unset($rootid,$parent,$dir2cid,$hidden,$rs,$domain_rootid,$root);
     }
-
     public static function cache_get($cid="0",$fix=null) {
         return iCache::get('category/'.$fix.$cid);
     }
