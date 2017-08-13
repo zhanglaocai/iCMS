@@ -18,6 +18,7 @@ $(function() {
             //登陆后事件
             function($info) {
                 iCMS.$('user_nickname').text($info.nickname);
+                iCMS.$('user_message_num').text($info.message_num);
                 iCMS.$('user_avatar').attr("src",$info.avatar).show();
                 iCMS.$('login').hide();
                 iCMS.$('profile').show();

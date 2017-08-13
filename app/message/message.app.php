@@ -7,9 +7,55 @@
 * @site https://www.icmsdev.com
 * @licence https://www.icmsdev.com/LICENSE.html
 */
-class messageApp {
-	public $methods = array('iCMS','pm');
 
+class messageApp {
+    public $methods = array('iCMS','pm','manage');
+
+    public static function API_iCMS() {
+    }
+    public static function set_read($id,$userid) {
+        if($id && $userid){
+           $readtime = time();
+            return iDB::query("
+                UPDATE `#iCMS@__message`
+                SET `readtime` ='{$readtime}'
+                WHERE (`userid` = '{$userid}' OR (`userid` = '".message::SYS_UID."' AND `friend` = '{$userid}'))
+                AND `id`='{$id}';
+            ");
+        }
+    }
+    public static function set_status($id,$userid,$friend=0,$status=0) {
+        if ($friend) {
+            return iDB::query("
+                UPDATE `#iCMS@__message`
+                SET `status` ='{$status}'
+                WHERE `userid` = '{$userid}'
+                AND `friend`='{$friend}';
+            ");
+        } else{
+            $id && iDB::query("
+                UPDATE `#iCMS@__message`
+                SET `status` ='{$status}'
+                WHERE (`userid` = '{$userid}' OR (`userid` = '".message::SYS_UID."' AND `friend` = '{$userid}'))
+                AND `id`='{$id}';
+            ");
+        }
+    }
+    public static function API_manage() {
+        $act = $_POST['act'];
+        $id  = (int) $_POST['id'];
+        if ($act == "read") {
+            $id OR iUI::code(0, 'iCMS:error', 0, 'json');
+            self::set_read($id,user::$userid);
+            iUI::code(1, 0, 0, 'json');
+        }
+        if ($act == "del") {
+            $id OR iUI::code(0, 'iCMS:error', 0, 'json');
+            $user = (int) $_POST['user'];
+            self::set_status($id,user::$userid,$user);
+            iUI::code(1, 0, 0, 'json');
+        }
+    }
     public function ACTION_pm() {
         user::get_cookie() OR iUI::code(0, 'iCMS:!login', 0, 'json');
 
@@ -41,5 +87,12 @@ class messageApp {
         $data = compact($fields);
         message::send($data, 1);
         iUI::code(1, 'iCMS:pm:success', $id, 'json');
+    }
+    public static function _count($userid=null) {
+        return iDB::value("
+            SELECT count(id)  FROM `#iCMS@__message`
+            WHERE (`userid` = '{$userid}' OR (`userid` = '".message::SYS_UID."' AND `friend` = '{$userid}'))
+            AND `readtime` ='0'
+        ");
     }
 }

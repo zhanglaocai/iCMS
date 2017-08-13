@@ -138,12 +138,12 @@ class user {
 		$category = iDB::row("SELECT * FROM `#iCMS@__user_category` where `cid`='".(int)$cid."' AND `appid`='".$appid."' limit 1");
 		return (array)$category;
 	}
-	public static function get($uids=0,$unpass=true){
+	public static function get($uids=0,$unpass=true,$field='uid'){
 		if(empty($uids)) return array();
 
 		list($uids,$is_multi)  = iSQL::multi_var($uids);
 
-    	$sql = iSQL::in($uids,'uid',false,true);
+    	$sql = iSQL::in($uids,$field,false,true);
 		$data = array();
 		$rs = iDB::all("SELECT * FROM `#iCMS@__user` where {$sql} AND `status`='1'",OBJECT);
 		if($rs){

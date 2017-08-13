@@ -94,6 +94,9 @@ class userApp {
 			$funname = '__API_manage_' . $pg;
 			$class_methods = get_class_methods(__CLASS__);
 			in_array($funname, $class_methods) && $this->$funname();
+			iView::assign('manage', array(
+				'url' => iURL::router('user:'.$pg, '?&'),
+			));
 			iView::assign('pg', $pg);
 			iView::assign('pg_file', "./manage/$pg.htm");
 			iView::display("iCMS://user/manage.htm");
@@ -332,29 +335,7 @@ class userApp {
 		}
 	}
 	private function __ACTION_manage_message() {
-		$act = iSecurity::escapeStr($_POST['act']);
-		if ($act == "del") {
-			$id = (int) $_POST['id'];
-			$id OR iUI::code(0, 'iCMS:error', 0, 'json');
-
-			$user = (int) $_POST['user'];
-			if ($user) {
-				iDB::query("
-                    UPDATE `#iCMS@__message`
-                    SET `status` ='0'
-                    WHERE `userid` = '" . user::$userid . "'
-                    AND `friend`='" . $user . "';
-                ");
-			} elseif ($id) {
-				iDB::query("
-                    UPDATE `#iCMS@__message`
-                    SET `status` ='0'
-                    WHERE `userid` = '" . user::$userid . "'
-                    AND `id`='$id';
-                ");
-			}
-			iUI::code(1, 0, 0, 'json');
-		}
+		messageApp::API_manage();
 	}
 	public function API_profile() {
 		$pgArray = array('base', 'avatar', 'setpassword', 'bind', 'custom');
@@ -923,12 +904,14 @@ class userApp {
 		$user = user::status();
 		if ($user) {
 			$array = array(
-				'code' => 1,
-				'uid' => $user->uid,
-				'url' => $user->url,
-				'avatar' => $user->avatar,
-				'nickname' => $user->nickname,
+				'code'        => 1,
+				'uid'         => $user->uid,
+				'url'         => $user->url,
+				'avatar'      => $user->avatar,
+				'nickname'    => $user->nickname,
+				'message_num' => messageApp::_count($user->uid),
 			);
+
 			iUI::json($array);
 		} else {
 			user::logout();
@@ -1131,5 +1114,36 @@ class userApp {
 				exit;
 			}
 		}
+	}
+	public static function at_user_list($content) {
+		return self::at($content);
+	}
+	public static function at_content($content) {
+		return self::at($content,false);
+	}
+	public static function at($content,$user=true) {
+		preg_match_all('/@(.+?[^@])\s/is', str_replace('@', "\n@", $content), $matches);
+		$user_list = array_unique($matches[1]);
+		if($user_list){
+			foreach ($user_list as $key => $nk) {
+				$userArray[$key] = array('nickname'=>$nk);
+				if(!$user){
+					$search[$nk]  = '@'.$nk;
+					$replace[$nk] = '@'.$nk;
+				}
+			}
+			$values = iSQL::values($userArray,'nickname','array',null);
+			$values && $user_data = (array) user::get($values,true,'nickname');
+			foreach ((array)$user_data as $key => $value) {
+				if(!$user){
+					$U = user::info($value->uid, $value->nickname);
+					$replace[$value->nickname] = $U['at'];
+				}else{
+					$remindUser[$value->uid] = $value->nickname;
+				}
+			}
+			!$user && $content = str_replace($search, $replace, $content);
+		}
+		return $user?$remindUser:$content;
 	}
 }

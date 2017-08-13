@@ -8,18 +8,21 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class message{
+    const SYS_UID = 0;//系统信息 UID
+    const SYS_NAME = "系统信息";
+
     public static $type_map = array(
         '0'=>'系统信息',
         '1'=>'私信',
         '2'=>'提醒',
         '3'=>'留言',
     );
-	//type: 0 系统 1 用户对话 2 @ 3留言
+    //1 私信
 	public static function send($a = array(
 			"send_uid"    => 0,"send_name"   => NULL,
 			"receiv_uid"  => 0,"receiv_name" => NULL,
 			"content"     => NULL
-		),$type=1){
+		),$type=1,$is_html=false){
 
 		// $userid = (int)$a['userid'];
 		// $friend = (int)$a['friend'];
@@ -30,6 +33,8 @@ class message{
 		$receiv_name = iSecurity::escapeStr($a['receiv_name']);
 
 		$content  = iSecurity::escapeStr($a['content']);
+		$is_html && $content  = $a['content'];
+
 		$sendtime = time();
 		if($send_uid && $send_uid==$receiv_uid && !$a['self']){
 			return;
@@ -47,20 +52,25 @@ class message{
 			iDB::insert('message',$data);
 		}
 	}
-	//2 @/评论
-	public static function at($a){
-		self::send($a,2);
+
+	// public static function at($a){
+	// 	self::send($a,2);
+	// }
+
+	//2 提醒
+	public static function remind($a){
+		$a['send_uid']  = message::SYS_UID;
+		$a['send_name'] = message::SYS_NAME;
+		self::send($a,2,true);
 	}
-	//0 系统
-	public static function sys($a){
-		$type = 1;
-		if(empty($a['receiv_uid'])){
-			$a['receiv_uid']  = "0";
-			$a['receiv_name'] = "@所有人";
-			$type = 0;
-		}
-		$a['send_uid']    = "10000";
-		$a['send_name']   = "系统信息";
-		self::send($a,$type);
+	//0 通告
+	public static function announce($a){
+		// if(empty($a['receiv_uid'])){
+		$a['receiv_uid']  = "0";
+		$a['receiv_name'] = "@所有人";
+		// }
+		$a['send_uid']  = message::SYS_UID;
+		$a['send_name'] = message::SYS_NAME;
+		self::send($a,0,true);
 	}
 }

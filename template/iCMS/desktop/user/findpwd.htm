@@ -46,7 +46,7 @@
         iCMS.run('passport', function($PASSPORT) {
             //成功 事件绑定
             $PASSPORT.SUCCESS = function(s) {
-              iUI.alert(s.msg);
+              iCMS.UI.alert(s.msg);
             }
             //失败 事件绑定
             $PASSPORT.FAIL = function(f) {
