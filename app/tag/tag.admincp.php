@@ -27,6 +27,9 @@ class tagAdmincp{
 
     public function do_add(){
         $this->id && $rs = iDB::row("SELECT * FROM `#iCMS@__tag` WHERE `id`='$this->id' LIMIT 1;",ARRAY_A);
+        if(empty($rs)){
+            $rs['status'] = '0';
+        }
         iPHP::callback(array("apps_meta","get"),array($this->appid,$this->id));
         iPHP::callback(array("formerApp","add"),array($this->appid,$rs,true));
         include admincp::view('tag.add');
