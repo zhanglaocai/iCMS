@@ -126,8 +126,9 @@ class tagApp {
                 $rs+=(array)$multi_tag[$rs[$id]];
             }
             if(is_array($rs[$key.'_array'])){
-                $tags_fname = array_slice ($rs[$key.'_array'],0,1);
-                $rs[$key.'_fname'] = $tags_fname[0]['name'];
+                $tags_fname = reset($rs[$key.'_array']);
+                $rs[$key.'_fname'] = $tags_fname['name'];
+                $rs[$key.'_ftid']  = $tags_fname['id'];
             }
             unset($multi_tag, $tags_fname);
     }

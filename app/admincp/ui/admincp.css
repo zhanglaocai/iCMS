@@ -27,7 +27,7 @@ body { background-color: #EDEDED; color: #000; }
 /*.has-switch label{background-image: none!important;}*/
 .switch-left, .switch-right { padding-left: 15px; padding-right: 15px; }
 .input-append input:last-child, .input-append select:last-child { -webkit-border-radius: 0 4px 4px 0 !important; -moz-border-radius: 0 4px 4px 0 !important; border-radius: 0 4px 4px 0 !important; }
-
+.ui-datepicker{width: 140px;}
 /* bootstrap admincp */
 .table th { background: #fafafa url("img/table_head.gif") repeat-x 0 100%; }
 .table td { background-color: #fff; }

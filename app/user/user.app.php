@@ -985,9 +985,9 @@ class userApp {
 		$this->auth OR iUI::code(0, 'iCMS:!login', 0, 'json');
 		//iCMS::$config['FS']['allow_ext'] = 'gif,jpg,jpeg,png';
 		$F = iFS::upload('upfile');
-		// $F['path'] && $url = iFS::fp($F['path'], '+http');
 		iUI::js_callback(array(
-			'url' => $F['path'],
+			'url'  => iFS::fp($F['path'], '+http'),
+			'path' => $F['path'],
 			'code' => $F['code'],
 		));
 	}

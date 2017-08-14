@@ -104,14 +104,16 @@ $(function(){
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <input type="hidden" name="do" value="<?php echo admincp::$APP_DO;?>" />
         <input type="hidden" name="userid" value="<?php echo $_GET['userid'] ; ?>" />
-        <div class="input-prepend"> <span class="add-on">文章属性</span>
+        <div class="input-prepend">
+          <span class="add-on">文章属性</span>
           <select name="pid" id="pid" class="span2 chosen-select">
             <option value="-1">所有文章</option>
             <option value="0">普通文章[pid='0']</option>
             <?php echo propAdmincp::get("pid") ; ?>
           </select>
         </div>
-        <div class="input-prepend input-append"> <span class="add-on">栏目</span>
+        <div class="input-prepend input-append">
+          <span class="add-on">栏目</span>
           <select name="cid" id="cid" class="chosen-select" style="width: 230px;">
             <option value="0">所有栏目</option>
             <?php echo $category_select = category::priv('cs')->select() ; ?>
@@ -121,10 +123,59 @@ $(function(){
           副栏目 </span>
           <span class="add-on tip" title="选中查询此栏目下面所有的子栏目,包含本栏目">
           <input type="checkbox" name="sub" id="sub"/>
-          子栏目 </span> </div>
-        <div class="input-prepend"> <span class="add-on">排序</span>
+          子栏目 </span>
+        </div>
+        <div class="input-prepend input-append">
+          <span class="add-on">无缩略图
+          <input type="radio" name="pic" class="checkbox spic" value="0"/>
+          </span>
+          <span class="add-on">缩略图
+          <input type="radio" name="pic" class="checkbox spic" value="1"/>
+          </span> </div>
+        <div class="clearfloat mb10"></div>
+        <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i> 发布时间</span>
+          <input type="text" class="ui-datepicker" name="starttime" value="<?php echo $_GET['starttime'] ; ?>" placeholder="开始时间" />
+          <span class="add-on">-</span>
+          <input type="text" class="ui-datepicker" name="endtime" value="<?php echo $_GET['endtime'] ; ?>" placeholder="结束时间" />
+          <span class="add-on"><i class="fa fa-calendar"></i></span>
+        </div>
+        <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i> 添加时间</span>
+          <input type="text" class="ui-datepicker" name="post_starttime" value="<?php echo $_GET['post_starttime'] ; ?>" placeholder="开始时间" />
+          <span class="add-on">-</span>
+          <input type="text" class="ui-datepicker" name="post_endtime" value="<?php echo $_GET['post_endtime'] ; ?>" placeholder="结束时间" />
+          <span class="add-on"><i class="fa fa-calendar"></i></span>
+        </div>
+        <div class="clearfloat mb10"></div>
+        <div class="input-prepend">
+          <span class="add-on">发布类型</span>
+          <select name="pt" id="pt" class="chosen-select span3">
+            <option value=""></option>
+            <option value="0"> 用户 [postype='0']</option>
+            <option value="1"selected='selected'> 管理 [postype='1']</option>
+            <?php echo propAdmincp::get("postype") ; ?>
+          </select>
+        </div>
+        <div class="input-prepend">
+          <span class="add-on">状 态</span>
+          <select name="status" id="status" class="chosen-select span3">
+            <option value="0"> 草稿 [status='0']</option>
+            <option value="1"selected='selected'> 正常 [status='1']</option>
+            <option value="2"> 回收站 [status='2']</option>
+            <option value="3"> 待审核 [status='3']</option>
+            <option value="4"> 未通过 [status='4']</option>
+            <?php echo propAdmincp::get("status") ; ?>
+          </select>
+        </div>
+        <div class="clearfloat mb10"></div>
+        <div class="input-prepend input-append">
+          <span class="add-on">每页</span>
+          <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
+          <span class="add-on">条记录</span>
+        </div>
+        <div class="input-prepend">
+          <span class="add-on">排序</span>
           <select name="orderby" id="orderby" class="span2 chosen-select">
-            <option value="">默认排序</option>
+            <option value=""></option>
             <optgroup label="降序">
             <option value="id DESC">ID[降序]</option>
             <option value="hits DESC">点击[降序]</option>
@@ -147,47 +198,8 @@ $(function(){
             </optgroup>
           </select>
         </div>
-        <div class="input-prepend input-append"> <span class="add-on">无缩略图
-          <input type="radio" name="pic" class="checkbox spic" value="0"/>
-          </span> <span class="add-on">缩略图
-          <input type="radio" name="pic" class="checkbox spic" value="1"/>
-          </span> </div>
-        <div class="clearfloat mb10"></div>
-        <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i> 发布时间</span>
-          <input type="text" class="ui-datepicker" name="starttime" value="<?php echo $_GET['starttime'] ; ?>" placeholder="开始时间" />
-          <span class="add-on">-</span>
-          <input type="text" class="ui-datepicker" name="endtime" value="<?php echo $_GET['endtime'] ; ?>" placeholder="结束时间" />
-          <span class="add-on"><i class="fa fa-calendar"></i></span>
-        </div>
-        <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i> 添加时间</span>
-          <input type="text" class="ui-datepicker" name="post_starttime" value="<?php echo $_GET['post_starttime'] ; ?>" placeholder="开始时间" />
-          <span class="add-on">-</span>
-          <input type="text" class="ui-datepicker" name="post_endtime" value="<?php echo $_GET['post_endtime'] ; ?>" placeholder="结束时间" />
-          <span class="add-on"><i class="fa fa-calendar"></i></span>
-        </div>
-        <div class="clearfloat mb10"></div>
-        <div class="input-prepend"> <span class="add-on">发布类型</span>
-          <select name="pt" id="pt" class="chosen-select span2">
-            <option value="all"> 全部 </option>
-            <option value="0"> 用户 [postype='0']</option>
-            <option value="1"selected='selected'> 管理 [postype='1']</option>
-            <?php echo propAdmincp::get("postype") ; ?>
-          </select>
-        </div>
-        <div class="input-prepend"> <span class="add-on">状 态</span>
-          <select name="status" id="status" class="chosen-select span3">
-            <option value="0"> 草稿 [status='0']</option>
-            <option value="1"selected='selected'> 正常 [status='1']</option>
-            <option value="2"> 回收站 [status='2']</option>
-            <option value="3"> 待审核 [status='3']</option>
-            <option value="4"> 未通过 [status='4']</option>
-            <?php echo propAdmincp::get("status") ; ?>
-          </select>
-        </div>
-        <div class="input-prepend input-append"> <span class="add-on">每页</span>
-          <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
-          <span class="add-on">条记录</span> </div>
-        <div class="input-prepend"> <span class="add-on">查找方式</span>
+        <div class="input-prepend input-append">
+          <span class="add-on">查找方式</span>
           <select name="st" id="st" class="chosen-select" style="width:120px;">
             <option value="title">标题</option>
             <option value="tag">标签</option>
@@ -197,8 +209,7 @@ $(function(){
             <option value="tkd">标题/关键字/简介</option>
             <option value="pic">缩略图</option>
           </select>
-        </div>
-        <div class="input-prepend input-append"> <span class="add-on">关键字</span>
+          <span class="add-on">关键字</span>
           <input type="text" name="keywords" class="span3" id="keywords" value="<?php echo $_GET['keywords'] ; ?>" />
           <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜 索</button>
         </div>
@@ -344,7 +355,8 @@ $(function(){
           <tfoot>
             <tr>
               <td colspan="8"><div class="pagination pagination-right" style="float:right;"><?php echo iUI::$pagenav ; ?></div>
-                <div class="input-prepend input-append mt20"> <span class="add-on">全选
+                <div class="input-prepend input-append mt20">
+                  <span class="add-on">全选
                   <input type="checkbox" class="checkAll checkbox" data-target="#<?php echo APP_BOXID;?>" />
                   </span>
                   <div class="btn-group dropup" id="iCMS-batch"> <a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"><i class="fa fa-wrench"></i> 批 量 操 作 </a><a class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1"> <span class="caret"></span></a>
@@ -382,19 +394,24 @@ $(function(){
   </div>
 </div>
 <div id="ed-box" class="hide">
-  <div class="input-prepend"> <span class="add-on">栏 目</span> <span id="edcid"></span> </div>
+  <div class="in
+  put-prepend"> <span class="add-on">栏 目</span> <span id="edcid"></span> </div>
   <div class="clearfloat mb10"></div>
-  <div class="input-prepend"> <span class="add-on">属 性</span> <span id="edpid"></span> </div>
+  <div class="in
+  put-prepend"> <span class="add-on">属 性</span> <span id="edpid"></span> </div>
   <div class="clearfloat mb10"></div>
-  <div class="input-prepend"> <span class="add-on">标 题</span>
+  <div class="input-prepend">
+    <span class="add-on">标 题</span>
     <input type="text" class="span6" id="edtitle"/>
   </div>
   <div class="clearfloat mb10"></div>
-  <div class="input-prepend"> <span class="add-on">出 处</span>
+  <div class="input-prepend">
+    <span class="add-on">出 处</span>
     <input type="text" class="span6" id="edsource"/>
   </div>
   <div class="clearfloat mb10"></div>
-  <div class="input-prepend"> <span class="add-on">标 签</span>
+  <div class="input-prepend">
+   <span class="add-on">标 签</span>
     <input type="text" class="span6" id="edtags"/>
   </div>
   <div class="clearfloat mb10"></div>

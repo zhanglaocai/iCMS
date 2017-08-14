@@ -26,29 +26,30 @@ class propAdmincp{
         include admincp::view("prop.add");
     }
     public function do_save(){
-        $pid   = (int)$_POST['pid'];
-        $cid   = (int)$_POST['cid'];
-        $field = iSecurity::escapeStr($_POST['field']);
-        $app   = iSecurity::escapeStr($_POST['app']);
-        $val   = iSecurity::escapeStr($_POST['val']);
+        $pid     = (int)$_POST['pid'];
+        $cid     = (int)$_POST['cid'];
+        $field   = iSecurity::escapeStr($_POST['field']);
+        $app     = iSecurity::escapeStr($_POST['app']);
+        $val     = iSecurity::escapeStr($_POST['val']);
         $sortnum = (int)$_POST['sortnum'];
-        $name = $_POST['name'];
+        $name    = $_POST['name'];
 
-		($field=='pid'&& !is_numeric($val)) && iUI::alert('pid字段的值只能用数字');
         $field OR iUI::alert('属性字段不能为空!');
         $name OR iUI::alert('属性名称不能为空!');
         // $app OR iUI::alert('所属应用不能为空!');
-
-		$field=='pid' && $val=(int)$val;
 
         $fields = array('rootid','cid','field','app','sortnum', 'name', 'val');
         $data   = compact ($fields);
 
 		if($pid){
+            if ($field=='pid'&& !is_numeric($data['val'])){
+                iUI::alert('pid字段的值只能用数字');
+            }
+            $field=='pid' && $data['val'] = (int)$data['val'];
+
             iDB::update('prop', $data, array('pid'=>$pid));
-			$msg="属性更新完成!";
+			$msg = "属性更新完成!";
 		}else{
-	        iDB::value("SELECT `pid` FROM `#iCMS@__prop` where `app` ='$app' AND `val` ='$val' AND `field` ='$field' AND `cid` ='$cid'") && iUI::alert('该类型属性值已经存在!请另选一个');
             $nameArray = explode("\n",$name);
             if(count($nameArray)>1){
                 foreach($nameArray AS $nkey=>$_name){
@@ -63,14 +64,34 @@ class propAdmincp{
                     }
                     $data['sortnum'] = $nkey;
 
-                    // ($val=='{@NAME@}'||empty($val)) && $data['val']  = $data['name'];
-
-                    iDB::insert('prop',$data);
+                    if ($field=='pid'&& !is_numeric($data['val'])){
+                        iUI::alert('pid字段的值只能用数字');
+                    }
+                    $check = iDB::value("
+                        SELECT `pid` FROM `#iCMS@__prop`
+                        WHERE `app` ='$app'
+                        AND `val` ='".$data['val']."'
+                        AND `field` ='$field'
+                        AND `cid` ='$cid'
+                    ");
+                    if($check){
+                        $msg.= '该['.$data['val'].']属性值已经存在!请另选一个<br />';
+                    }else{
+                        iDB::insert('prop',$data);
+                        $msg.= '['.$data['val'].']新属性添加完成!';
+                    }
                 }
             }else{
+                iDB::value("
+                    SELECT `pid` FROM `#iCMS@__prop`
+                    WHERE `app` ='$app'
+                    AND `val` ='$val'
+                    AND `field` ='$field'
+                    AND `cid` ='$cid'
+                ") && iUI::alert('该类型属性值已经存在!请另选一个');
                 iDB::insert('prop',$data);
+                $msg = "新属性添加完成!";
             }
-	        $msg="新属性添加完成!";
 		}
 		$this->cache();
         iUI::success($msg,'url:'.APP_URI);
