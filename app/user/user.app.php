@@ -911,8 +911,9 @@ class userApp {
 				'nickname'    => $user->nickname,
 				'message_num' => messageApp::_count($user->uid),
 			);
-
-			iUI::json($array);
+			iView::assign('data', $array);
+			iView::display('iCMS://user/api.data.htm');
+			// iUI::json($array);
 		} else {
 			user::logout();
 			iUI::code(0, 0, $this->forward, 'json');

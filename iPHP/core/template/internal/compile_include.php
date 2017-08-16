@@ -24,14 +24,19 @@ function compile_include($arguments, &$object){
 		if (is_bool($arg_value)){
 			$arg_value = $arg_value ? 'true' : 'false';
 		}
-		$arg_list[] = "'$arg_name' => $arg_value";
+		if(isset($assign_var)){
+			$arg_list[] = "'$arg_name' => $arg_value";
+		}else{
+			$object->_vars[$arg_name] = $object->_dequote($arg_value);
+		}
 	}
+
 	$object->_include_file = true;
 	if (isset($assign_var)){
-		$output = '<?php $_templatelite_tpl_vars = $this->_vars;\n$this->_include_file = true;' .
+		$output = '<?php $_templatelite_tpl_vars = $this->_vars; $this->_include_file = true;' .
 			"\$this->assign(" . $assign_var . ", \$this->_fetch_compile_include(" . $include_file . ", array(".implode(',', (array)$arg_list).")));\n" .
 			"\$this->_vars = \$_templatelite_tpl_vars;\n" .
-			"$this->_include_file = false;unset(\$_templatelite_tpl_vars);\n" .
+			"\$this->_include_file = false;unset(\$_templatelite_tpl_vars);\n" .
 			' ?>';
 	}else{
 		$include_file = $object->_dequote($include_file);

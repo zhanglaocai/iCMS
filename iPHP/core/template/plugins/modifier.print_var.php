@@ -4,18 +4,18 @@
  * Smarty plugin
  * -------------------------------------------------------------
  * Type:     modifier
- * Name:     debug_print_var
+ * Name:    _print_var
  * Purpose:  formats variable contents for display in the console
  * -------------------------------------------------------------
  */
-function tpl_modifier_debug_print_var($var, $depth = 0, $length = 40)
+function tpl_modifier_print_var($var, $depth = 0, $length = 40)
 {
     if (is_array($var))
 	{
         $results = "<b>Array (".count($var).")</b>";
         foreach ($var as $curr_key => $curr_val)
 		{
-            $return = tpl_modifier_debug_print_var($curr_val, $depth+1, $length);
+            $return = tpl_modifier_print_var($curr_val, $depth+1, $length);
             $results .= "<br>&nbsp;&nbsp;&nbsp;&nbsp;".str_repeat('&nbsp;&nbsp;', $depth*2)."<b>$curr_key</b> =&gt; $return";
         }
         return $results;
@@ -26,7 +26,7 @@ function tpl_modifier_debug_print_var($var, $depth = 0, $length = 40)
         $results = "<b>".get_class($var)." Object (".count($object_vars).")</b>";
         foreach ($object_vars as $curr_key => $curr_val)
 		{
-            $return = tpl_modifier_debug_print_var($curr_val, $depth+1, $length);
+            $return = tpl_modifier_print_var($curr_val, $depth+1, $length);
             $results .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;'.str_repeat('&nbsp;&nbsp;', $depth*2)."<b>$curr_key</b> =&gt; $return";
         }
         return $results;

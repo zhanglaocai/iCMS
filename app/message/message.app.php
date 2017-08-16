@@ -92,7 +92,7 @@ class messageApp {
         return iDB::value("
             SELECT count(id)  FROM `#iCMS@__message`
             WHERE (`userid` = '{$userid}' OR (`userid` = '".message::SYS_UID."' AND `friend` = '{$userid}'))
-            AND `readtime` ='0'
+            AND `readtime` ='0' AND `status` ='1'
         ");
     }
 }

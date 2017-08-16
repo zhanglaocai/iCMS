@@ -1,7 +1,7 @@
 iCMS.define("ui",{
-        dialog: function(opts) {
+        dialog: function(opts, callback) {
             var dialog = iCMS.require("ui.dialog");
-            return dialog(opts);
+            return dialog(opts, callback);
         },
         success: function(msg, callback) {
             this.alert(msg, true, callback);

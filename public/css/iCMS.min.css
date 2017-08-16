@@ -138,6 +138,10 @@ del{text-decoration:line-through;padding:3px 0;background:#f5dfdf;color:#ac1414}
 .fs16{font-size:16px;}
 .fs12{font-size:12px;}
 .label{font-size:12px;line-height:1.6;}
+.badge-red { background-color: rgba(249, 0, 0, 0.76); }
+.badge-blue { background-color: rgb(33, 150, 243); }
+.badge-green { background-color: rgb(76, 175, 80); }
+.badge-purple { background-color: rgb(121, 134, 203); }
 
 /* former */
 .former_hide{display:none!important;}

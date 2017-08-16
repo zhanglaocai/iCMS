@@ -52,20 +52,40 @@ class iView {
         $path = iPHP_APP_DIR . '/' . $app . '/' . $app . '.func.php';
         return is_file($path);
     }
+    /**
+     * iCMS:app:method
+     * iCMS:func
+     * iCMS:aaaApp:method
+     */
     public static function callback_func($args,$tpl) {
         $keys = isset($args['as'])?$args['as']:$args['app'].($args['method']?'_'.$args['method']:'');
+        //iCMS:app:method >> appFunc::app_method
         if($args['method']){
             $callback = array($args['app'].'Func',$args['app'].'_'.$args['method']);
-            //自定义APP模板调用 iCMS:test:list 调用 contentFunc
+            if(strpos($args['app'], 'App')!==false){
+                //iCMS:aaaApp:method >> aaaApp::method
+                //$aaaApp_method
+                $callback = array($args['app'],$args['method']);
+            }
+            if(strpos($args['app'], 'Class')!==false){
+                //iCMS:aaaClass:method >> aaa::method
+                ////$aaaClass_method
+                $callback = array(substr($args['app'], 0,-5),$args['method']);
+            }
+            //自定义APP模板调用
+            //iCMS:content:list app="test" >> iCMS:test:list >> contentFunc::content_list
             if(self::$config['define']){
                 $apps = self::$config['define']['apps'];
                 $func = self::$config['define']['func'];
                 if(!self::check_func($args['app']) && $apps[$args['app']]){
+                    // 判断 app/test/test.func.php 是否存在 的自定义APP
+                    // 不存在调用 contentFunc::content_list
                     $callback = array($func.'Func',$func.'_'.$args['method']);
                 }
             }
-            //自定义APP模板调用 iCMS:content:list app="$app.app"
+
             if($args['_app']){
+                //iCMS:app:method _app="aaa" >> aaaFunc::aaa_method
                 $keys     = isset($args['as'])?$args['as']:$args['_app'].'_'.$args['method'];
                 $callback = array($args['_app'].'Func',$args['_app'].'_'.$args['method']);
             }
@@ -73,6 +93,7 @@ class iView {
                 iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
             }
         }else{
+            //iCMS:func >> iCMS_func
             $callback = iPHP_APP.'_' . $args['app'];
             function_exists($callback) OR require_once(iPHP_TPL_FUN."/".iPHP_APP.".".$args['app'].".php");
         }
@@ -83,12 +104,19 @@ class iView {
         }
 
         if(is_array($callback)){
+            // iCMS:app:_method >> app_method::func
+            // iCMS:app:_method func='aaa' >> app_method::aaa
             strpos($callback[1], '__')!==false && $callback = array('iView','callback_func_proxy');
+
             $tpl->assign($keys,call_user_func_array($callback, array($args)));
         }else{
             $tpl->assign($keys,$callback($args));
         }
     }
+    /**
+     * iCMS:app:_method >> app_method::func
+     * iCMS:app:_method func='aaa' >> app_method::aaa
+     */
     public static function callback_func_proxy($vars=null){
         $func = 'func';
         $vars['func'] && $func = $vars['func'];
