@@ -20,8 +20,8 @@ class iDB{
     public static $show_trace = false;
     public static $show_errors = false;
     public static $show_explain = false;
-    public static $trace_info;
     public static $num_queries = 0;
+    public static $trace_info;
     public static $last_query;
     public static $col_info;
     public static $backtrace;
@@ -29,13 +29,13 @@ class iDB{
     public static $last_result;
     public static $num_rows;
     public static $insert_id;
+    public static $link;
     public static $config = null;
     public static $dbFlag = 'iPHP_DB';
 
     private static $collate;
     private static $time_start;
     private static $last_error ;
-    private static $link;
     private static $result;
 
     public static function config($config=null) {
@@ -52,7 +52,7 @@ class iDB{
         $config && self::$config = $config;
     }
     public static function connect($flag=null) {
-        extension_loaded('mysql') OR die('您的 PHP 环境看起来缺少 MySQL 数据库部分，这对 iPHP 来说是必须的。');
+        extension_loaded('mysql') OR self::bail('mysql extension is missing. Please check your PHP configuration');
 
         defined('iPHP_DB_COLLATE') &&self::$collate = iPHP_DB_COLLATE;
 
@@ -70,7 +70,7 @@ class iDB{
             return self::$link;
         }
 
-        self::$link OR self::bail("<h1>数据库连接失败</h1><p>请检查 <em><strong>config.php</strong></em> 的配置是否正确!</p><ul><li>请确认主机支持MySQL?</li><li>请确认用户名和密码正确?</li><li>请确认主机名正确?(一般为localhost)</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
+        self::$link OR self::bail();
 
         $GLOBALS[self::$dbFlag] = self::$link;
         self::pre_set();
@@ -86,7 +86,7 @@ class iDB{
     public static function select_db($var=false) {
         $sel = @mysql_select_db(self::$config['DB'], self::$link);
         if($var) return $sel;
-        $sel OR self::bail("<h1>数据库连接失败</h1><p>我们能连接到数据库服务器（即数据库用户名和密码正确） ，但是不能链接到<em><strong> ".iPHP_DB_NAME." </strong></em>数据库.</p><ul><li>你确定<em><strong> ".iPHP_DB_NAME." </strong></em>存在?</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
+        $sel OR self::bail();
     }
     // ==================================================================
     /** Quote string to use in SQL
@@ -106,6 +106,7 @@ class iDB{
         foreach ($variable as $key => $value) {
             $tables_list[$value['TABLE_NAME']] = true;
         }
+        $table = strtolower($table);
         if($tables_list[$table]){
             return true;
         }
@@ -397,7 +398,7 @@ class iDB{
         // Make sure the server has MySQL 4.0
         $mysql_version = preg_replace('|[^0-9\.]|', '', @mysql_get_server_info(self::$link));
         if ( version_compare($mysql_version, '4.0.0', '<') ){
-            self::bail('database_version<strong>ERROR</strong> iPHP requires MySQL 4.0.0 or higher');
+            self::bail('mysql version error,iPHP requires MySQL 4.0.0 or higher');
         }else{
             return $mysql_version;
         }
@@ -459,10 +460,10 @@ class iDB{
     public static function print_error($error = '') {
         if(!self::$show_errors) return;
         self::$last_error = mysql_error(self::$link);
-        $error OR $error      = self::$last_error;
+        $error OR $error = self::$last_error;
 
-        $error    = htmlspecialchars($error, ENT_QUOTES);
-        $query  = htmlspecialchars(self::$last_query, ENT_QUOTES);
+        $error = htmlspecialchars($error, ENT_QUOTES);
+        $query = htmlspecialchars(self::$last_query, ENT_QUOTES);
         // Is error output turned on or not..
         if ($error) {
             self::bail("<strong>iDB error:</strong> [$error]<br /><code>$query</code>");
@@ -488,9 +489,9 @@ class iDB{
      * Wraps fatal errors in a nice header and footer and dies.
      * @param string $message
      */
-    public static function bail($message){ // Just wraps errors in a nice header and footer
+    public static function bail($message=null){ // Just wraps errors in a nice header and footer
         if(!self::$show_errors) return;
-
+        empty($message) && $message = mysql_error();
         trigger_error($message,E_USER_ERROR);
     }
 }

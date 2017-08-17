@@ -58,11 +58,6 @@ class iPHP {
 			$path = iPHP_APP_DIR . '/' . $app . '/' . $file . '.php';
 		}else if (strncmp('i', $name, 1) === 0) {
 			//iclass.class.php
-			$map = array(
-				'iFS' => "iFileSystem",
-				'iDB' => version_compare(PHP_VERSION,'5.5','>=')?'iMysqli':'iMysql'
-			);
-			$map[$name] && $name = $map[$name];
 			$core===null && $core = iPHP_CORE;
 			$path = $core.'/'.$name.'.class.php';
 		}else if(array_key_exists($name,(array)iPHP::$apps)){

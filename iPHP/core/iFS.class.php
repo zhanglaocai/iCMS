@@ -67,7 +67,7 @@ class iFS {
 	}
 
 	public static function check($fn) {
-		strpos($fn, '..') !== false && exit('What are you doing?');
+		strpos($fn, '..') !== false && trigger_error('What are you doing?',E_USER_ERROR);
 	}
 	public static function checkHttp($url) {
 		if (stripos($url, 'http://') === false && stripos($url, 'https://') === false) {

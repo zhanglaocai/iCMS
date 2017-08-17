@@ -68,7 +68,7 @@ class iCache {
 					require_once iPHP_CORE . '/iFileCache.class.php';
 					list($dirs, $level) = explode(':', self::$config['host']);
 					$level OR $level = 0;
-					self::$handle = new iFC(array(
+					self::$handle = new iFileCache(array(
 						'dirs' => $dirs,
 						'level' => $level,
 						'compress' => self::$config['compress'],
@@ -118,7 +118,7 @@ class iCache {
 
 	public static function file_cache() {
 		require_once iPHP_CORE . '/iFileCache.class.php';
-		return new iFC(array(
+		return new iFileCache(array(
 			'dirs' => '',
 			'level' => 0,
 			'compress' => 1,

@@ -179,6 +179,9 @@ class iHttp{
                 $proxy = self::proxy_test();
                 $proxy && $options = self::proxy($options, $proxy);
             }
+            if (defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')){
+                $options[CURLOPT_IPRESOLVE] = CURL_IPRESOLVE_V4;
+            }
             $ch = curl_init();
             curl_setopt_array($ch, $options);
             $responses = curl_exec($ch);

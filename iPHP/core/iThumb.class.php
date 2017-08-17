@@ -39,7 +39,7 @@ class iThumb {
      * @return [image]        [缩略图资源]
      */
     public static function make($path,$tw=1,$th=1){
-        strpos($path,'..') === false OR exit('What are you doing?');
+        strpos($path,'..') === false OR trigger_error('What are you doing?',E_USER_ERROR);
 
         $srcPath   = self::$RES_PATH.$path;
         $thumb_path = $srcPath.'_'.$tw.'x'.$th.'.jpg';
@@ -195,7 +195,7 @@ class iThumb {
         return $dirPath.$fileName.'.jpg';
     }
     private static function check($fn) {
-        strpos($fn,'..')!==false && exit('What are you doing?');
+        strpos($fn,'..')!==false && trigger_error('What are you doing?',E_USER_ERROR);
     }
     private function delete($fn) {
         self::check($fn);

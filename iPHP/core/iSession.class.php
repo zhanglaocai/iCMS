@@ -29,7 +29,7 @@ class iSession {
         }
 
         if(defined('iDB')){
-            exit("iSession requires iDB class");
+            trigger_error('iSession requires iDB class',E_USER_ERROR)
         }
         return true;
     }

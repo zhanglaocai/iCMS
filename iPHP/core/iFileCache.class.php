@@ -8,7 +8,7 @@
  * @license http://www.iiiphp.com/license
  * @version 2.0.0
  */
-class iFC {
+class iFileCache {
 	protected $_cache_sock;
 	protected $_have_zlib;
 	protected $_compress_enable;
@@ -80,7 +80,7 @@ class iFC {
 		return $dirPath.$key.'.php';
    	}
     private function check($fn) {
-        strpos($fn,'..')!==false && exit('What are you doing?');
+        strpos($fn,'..')!==false && trigger_error('What are you doing?',E_USER_ERROR);
     }
     private function del($fn,$check=1) {
         $check && $this->check($fn);
@@ -143,7 +143,7 @@ class iFC {
 }
 
 
-//$c = new iFC(array(
+//$c = new iFileCache(array(
 //				'dirs'=>"cache_dir_1",
 //				'level'=>"1",
 //		));

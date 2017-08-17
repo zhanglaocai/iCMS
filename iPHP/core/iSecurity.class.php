@@ -147,7 +147,7 @@ class iSecurity {
 	 */
 	public static function escapePath($fileName, $ifCheck = true) {
 		if (!iSecurity::_escapePath($fileName, $ifCheck)) {
-			exit('Access Denied');
+			trigger_error('What are you doing?',E_USER_ERROR);
 		}
 		return $fileName;
 	}
@@ -222,7 +222,7 @@ class iSecurity {
 				iSecurity::checkVar($var[$key]);
 			}
 		} elseif (str_replace(array('<iframe','<meta','<script'), '', $var) != $var) {
-			die('XXS');
+			trigger_error('XXS',E_USER_ERROR);
 		}else{
 			$var = str_replace(array('..',')','<','='), array('&#46;&#46;','&#41;','&#60;','&#61;'), $var);
 		}

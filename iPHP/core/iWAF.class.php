@@ -43,11 +43,7 @@ class iWAF {
 	public static function check($str,$v){
 		foreach($v as $key=>$value){
 			if (preg_match("/".$value."/is",$str)==1||preg_match("/".$value."/is",urlencode($str))==1){
-				if(@is_callable(array("iPHP","error_throw"))){
-					iPHP::error_throw("安全提示:当前操作可能存在某种危险代码", 'WAF');
-				}else{
-					exit("WAF:what the fuck!!");
-				}
+				trigger_error('iWAF安全提示:当前操作可能存在某种危险代码',E_USER_ERROR);
 			}
 		}
 	}

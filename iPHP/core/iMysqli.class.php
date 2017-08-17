@@ -30,6 +30,7 @@ class iDB {
     public static $insert_id;
     public static $link;
     public static $config = null;
+    public static $dbFlag = 'iPHP_DB';
 
     private static $collate;
     private static $time_start;
@@ -50,11 +51,11 @@ class iDB {
         $config && self::$config = $config;
     }
     public static function connect($flag=null) {
-        extension_loaded('mysqli') OR die('您的 PHP 环境看起来缺少 MySQL 数据库部分，这对 iPHP 来说是必须的。');
+        extension_loaded('mysqli') OR self::bail('mysqli extension is missing. Please check your PHP configuration');
 
         self::config();
-        if(isset($GLOBALS['iPHP_DB'])){
-            self::$link = $GLOBALS['iPHP_DB'];
+        if(isset($GLOBALS[self::$dbFlag])){
+            self::$link = $GLOBALS[self::$dbFlag];
             if(self::$link){
                 if(self::$link->ping())
                     return self::$link;
@@ -64,9 +65,10 @@ class iDB {
         if($flag==='link'){
             return self::$link;
         }
-        self::$link->connect_errno && self::bail("<h1>数据库连接失败</h1><p>请检查 <em><strong>config.php</strong></em> 的配置是否正确!</p><ul><li>请确认主机支持MySQL?</li><li>请确认用户名和密码正确?</li><li>请确认主机名正确?(一般为localhost)</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
 
-        $GLOBALS['iPHP_DB'] = self::$link;
+        self::$link->connect_errno && self::bail('Connect Error ('.self::$link->connect_errno.') '.self::$link->connect_error);
+
+        $GLOBALS[self::$dbFlag] = self::$link;
         self::pre_set();
         if($flag===null){
             self::select_db();
@@ -79,7 +81,7 @@ class iDB {
     public static function select_db($var=false) {
         $sel = self::$link->select_db(self::$config['DB']);
         if($var) return $sel;
-        $sel OR self::bail("<h1>数据库连接失败</h1><p>我们能连接到数据库服务器（即数据库用户名和密码正确） ，但是不能链接到<em><strong> ".iPHP_DB_NAME." </strong></em>数据库.</p><ul><li>你确定<em><strong> ".iPHP_DB_NAME." </strong></em>存在?</li></ul><p>如果你不确定这些情况,请询问你的主机提供商.如果你还需要帮助你可以随时浏览 <a href='http://www.iiiphp.com'>iPHP 支持论坛</a>.</p>");
+        $sel OR self::bail('Connect Error ('.self::$link->errno.') '.self::$link->error);
     }
     // ==================================================================
     /** Quote string to use in SQL
@@ -160,10 +162,11 @@ class iDB {
             self::$show_trace && self::backtrace($query);
         }
 
+        self::$show_trace && self::timer_start();
+
 	   if($QT=='get') return $result;
 
         $QH = strtoupper(substr($query,0,strpos($query, ' ')));
-
         if (in_array($QH,array('INSERT','DELETE','UPDATE','REPLACE','SET','CREATE','DROP','ALTER'))) {
             // Take note of the insert_id
             if (in_array($QH,array("INSERT","REPLACE"))) {
@@ -190,11 +193,13 @@ class iDB {
                 $store = null;
                 // Log number of rows the query returned
                 self::$num_rows = $num_rows;
+
                 // Return number of rows selected
                 $return_val = $num_rows;
             }
         }
         $result = null;
+
         return $return_val;
     }
     public static function get($output = OBJECT) {
@@ -390,7 +395,7 @@ class iDB {
         $mysql_version = preg_replace('|[^0-9\.]|', '', self::$link->server_info);
 
         if ( version_compare($mysql_version, '4.0.0', '<') ){
-            self::bail('database_version<strong>ERROR</strong>: iPHP %s requires MySQL 4.0.0 or higher');
+            self::bail('mysql version error,iPHP requires MySQL 4.0.0 or higher');
         }else{
             return $mysql_version;
         }
@@ -429,9 +434,7 @@ class iDB {
     // ==================================================================
     public static function show_explain(){
         if(!self::$show_explain) return;
-
         $query = self::$last_query;
-
         $explain = self::row('EXPLAIN EXTENDED '.$query);
         $explain && $explain->query = $query;
         if(self::$show_explain=='print'){
@@ -484,9 +487,9 @@ class iDB {
      * Wraps fatal errors in a nice header and footer and dies.
      * @param string $message
      */
-    public static function bail($message){ // Just wraps errors in a nice header and footer
+    public static function bail($message=null){ // Just wraps errors in a nice header and footer
         if(!self::$show_errors) return;
-
+        empty($message) && $message = 'mysql Error ('.self::$link->errno.') '.self::$link->error;
         trigger_error($message,E_USER_ERROR);
     }
 }
