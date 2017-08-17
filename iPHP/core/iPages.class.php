@@ -195,7 +195,7 @@ class iPages {
 	* @return string
 	*/
 	public function select($style='page_select'){
-		$return='<select class="'.$style.'" name="Page_Select" onchange="window.location.href=this.value">';
+		$return='<span class="'.$style.'">'.$this->lang['di'].'<select name="Page_Select" onchange="window.location.href=this.value">';
 		for($i=1;$i<=$this->totalpage;$i++){
 			$url = $this->get_url($i);
 			$pnt = $this->get_title($i);
@@ -205,7 +205,7 @@ class iPages {
 				$return.='<option value="'.$url.'">'.$pnt.'</option>';
 			}
 		}
-		$return.='</select>';
+		$return.='</select>'.$this->lang['unit'].'</span>';
 		return $return;
 	}
 
@@ -227,10 +227,10 @@ class iPages {
 	public function show($mode=0){
 		switch ($mode){
 			case '1':
-				return $this->prev_page().$this->nowbar().$this->next_page().$this->lang['di'].$this->select().$this->lang['unit'];
+				return $this->prev_page().$this->nowbar().$this->next_page().$this->select();
 				break;
 			case '2':
-				return $this->first_page().$this->prev_page().$this->nowbar().$this->next_page().$this->last_page().$this->lang['di'].$this->select().$this->lang['unit'];
+				return $this->first_page().$this->prev_page().$this->nowbar().$this->next_page().$this->last_page().$this->select();
 				break;
 			case '3':
 				return $this->first_page().$this->prev_page().$this->nowbar().$this->next_page().$this->last_page();

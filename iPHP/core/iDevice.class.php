@@ -101,7 +101,7 @@ class iDevice {
     }
 
     private static function redirect(){
-        if(stripos(iPHP_REQUEST_URL, iPHP_DOMAIN) === false){
+        if(stripos(iPHP_REQUEST_URL, iPHP_DOMAIN) === false && !iPHP_SHELL){
             $redirect_url = str_replace(iPHP_REQUEST_HOST,iPHP_DOMAIN, iPHP_REQUEST_URL);
             header("Expires:1 January, 1970 00:00:01 GMT");
             header("Cache-Control: no-cache");
