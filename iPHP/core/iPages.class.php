@@ -195,7 +195,7 @@ class iPages {
 	* @return string
 	*/
 	public function select($style='page_select'){
-		$return='<span class="'.$style.'">'.$this->lang['di'].'<select name="Page_Select" onchange="window.location.href=this.value">';
+		$return='<select class="'.$style.'" name="Page_Select" onchange="window.location.href=this.value">';
 		for($i=1;$i<=$this->totalpage;$i++){
 			$url = $this->get_url($i);
 			$pnt = $this->get_title($i);
@@ -205,10 +205,16 @@ class iPages {
 				$return.='<option value="'.$url.'">'.$pnt.'</option>';
 			}
 		}
-		$return.='</select>'.$this->lang['unit'].'</span>';
+		$return.='</select>';
 		return $return;
 	}
-
+	public function select_wrap($style='page_select'){
+		return '<span class="'.$style.'">'.
+		$this->lang['di'].
+		$this->select().
+		$this->lang['unit'].
+		'</span>';
+	}
 	/**
 	* 获取mysql 语句中limit需要的值
 	*
@@ -227,10 +233,10 @@ class iPages {
 	public function show($mode=0){
 		switch ($mode){
 			case '1':
-				return $this->prev_page().$this->nowbar().$this->next_page().$this->select();
+				return $this->prev_page().$this->nowbar().$this->next_page().$this->select_wrap();
 				break;
 			case '2':
-				return $this->first_page().$this->prev_page().$this->nowbar().$this->next_page().$this->last_page().$this->select();
+				return $this->first_page().$this->prev_page().$this->nowbar().$this->next_page().$this->last_page().$this->select_wrap();
 				break;
 			case '3':
 				return $this->first_page().$this->prev_page().$this->nowbar().$this->next_page().$this->last_page();

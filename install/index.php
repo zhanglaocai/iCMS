@@ -292,8 +292,18 @@ $lock_file = iPATH.'cache/install.lock';
 						<tr>
 							<td>4</td>
 							<td>MySQL数据库</td>
-							<td>推荐 MySQL 5.1以上</td>
-							<td>MySQL</td>
+							<td>推荐 MySQL 5.6以上</td>
+							<td>
+								<?php
+									if(version_compare(PHP_VERSION,'5.5','>=') && extension_loaded('mysqli')){
+										echo 'MySQL';
+									}elseif(extension_loaded('mysql')){
+										echo 'MySQL';
+									}else{
+										echo '<font style="color:red;">× 不支持</font>';
+									}
+								?>
+							</td>
 						</tr>
 						<tr>
 							<td>5</td>

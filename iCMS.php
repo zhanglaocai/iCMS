@@ -9,7 +9,7 @@
 */
 define('iPHP',TRUE);
 define('iPHP_APP','iCMS'); //应用名
-define('iPHP_APP_MAIL','master@icmsdev.com');
+define('iPHP_APP_MAIL','support@iCMSdev.com');
 define('iPATH',dirname(strtr(__FILE__,'\\','/'))."/");
 //框架初始化
 require iPATH.'config.php';			//框架初始化配置

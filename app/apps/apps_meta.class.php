@@ -38,11 +38,15 @@ class apps_meta {
         if($metadata){
             $_metadata = array();
             foreach($metadata AS $mdk=>$md){
-                if($md['name']){
-                    $md['key'] OR $md['key'] = strtolower(iPinyin::get($md['name']));
-                    preg_match("/[a-zA-Z0-9_\-]/",$md['key']) OR iUI::alert('只能由英文字母、数字或_-组成,不支持中文');
-                    $md['key'] = trim($md['key']);
+                if(is_array($md)){
+                    if($md['name']){
+                        $md['key'] OR $md['key'] = strtolower(iPinyin::get($md['name']));
+                        preg_match("/[a-zA-Z0-9_\-]/",$md['key']) OR iUI::alert('只能由英文字母、数字或_-组成,不支持中文');
+                        $md['key'] = trim($md['key']);
+                    }
                     $_metadata[$md['key']] = $md;
+                }else{
+                    $_metadata[$mdk] = array('name'=>$mdk,'key'=>$mdk,'value'=>$md);
                 }
             }
             $metadata = addslashes(json_encode($_metadata));

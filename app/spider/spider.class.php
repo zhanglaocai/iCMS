@@ -174,7 +174,7 @@ class spider{
             'sid'     => (int)spider::$sid,
             'pid'     => (int)spider::$pid,
             'url'     => ($url?$url:spider::$url),
-            'msg'     => $msg,
+            'msg'     => addslashes($msg),
             'date'    => date("Y-m-d"),
             'addtime' => time(),
             'type'    => $type
