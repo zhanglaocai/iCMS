@@ -11,7 +11,7 @@ class files_cloud_AliYunOSS extends ALIOSS{
     public $conf;
     public function __construct($conf){
         $this->conf = $conf;
-        parent::__construct($conf['AccessKey'],$conf['SecretKey'],$conf['EndPoint']);
+        parent::__construct($conf['AccessKey'],$conf['SecretKey'],$conf['domain']);
         $this->set_debug_mode(FALSE);
     }
    /**

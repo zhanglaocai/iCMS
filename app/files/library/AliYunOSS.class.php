@@ -1658,9 +1658,11 @@ class ALIOSS{
 		if($this->enable_domain_style){
 			$hostname = $this->vhost ? $this->vhost : (($options[self::OSS_BUCKET] =='')?$this->hostname:($options[self::OSS_BUCKET].'.').$this->hostname);
 		}else{
-			$hostname = (isset($options[self::OSS_BUCKET]) && ''!==$options[self::OSS_BUCKET])?$this->hostname.'/'.$options[self::OSS_BUCKET]:$this->hostname;
+			// $hostname = (isset($options[self::OSS_BUCKET]) && ''!==$options[self::OSS_BUCKET])?$this->hostname.'/'.$options[self::OSS_BUCKET]:$this->hostname;
+			$hostname = $this->hostname;
 		}
 
+		$msg .= "--HOSTNAME:----------------------------------------------\n".$hostname."\n";
 
 		//请求参数
 		$resource = '';

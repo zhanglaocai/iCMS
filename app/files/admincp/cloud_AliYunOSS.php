@@ -20,12 +20,6 @@ defined('iPHP') OR exit('What are you doing?');
   <span class="help-inline">OSS外网域名</span>
   <div class="clearfloat mb10"></div>
   <div class="input-prepend">
-    <span class="add-on">EndPoint</span>
-    <input type="text" name="config[sdk][AliYunOSS][EndPoint]" class="span4" id="cloud_AliYunOSS_EndPoint" value="<?php echo $config['sdk']['AliYunOSS']['EndPoint'] ; ?>"/>
-  </div>
-  <span class="help-inline">外网EndPoint 具体参照 <a href="https://help.aliyun.com/document_detail/31837.html?spm=iCMS" target="_blank">OSS开通Region和Endpoint对照表</a></span>
-  <div class="clearfloat mb10"></div>
-  <div class="input-prepend">
     <span class="add-on">Bucket</span>
     <input type="text" name="config[sdk][AliYunOSS][Bucket]" class="span4" id="cloud_AliYunOSS_Bucket" value="<?php echo $config['sdk']['AliYunOSS']['Bucket'] ; ?>"/>
   </div>
