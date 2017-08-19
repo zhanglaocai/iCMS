@@ -187,6 +187,8 @@ class spider{
         @set_time_limit(0);
         $_POST = spider_data::crawl();
 
+        spider_tools::listItemCache($_POST['reurl'],'delete');
+
         foreach ((array)$_POST as $key => $value) {
             if($value===null){
                 return null;

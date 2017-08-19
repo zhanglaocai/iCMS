@@ -19,11 +19,21 @@ class spider_tools {
     public static function getDATA($responses,$content){
         preg_match_all('#\[DATA@(.*?)\]#is', $content,$data_match);
         $_data_replace = array();
+        if(strpos($content, 'DATA@list:')!==false){
+            $listData = spider_tools::listItemCache($responses['reurl']);
+        }
         foreach ((array)$data_match[1] as $_key => $_name) {
             $_nameKeys = explode('.', $_name);
-            $_content  = $responses[$_nameKeys[0]];
-            if(count($_nameKeys)>1) foreach ((array)$_nameKeys as $kk => $nk) {
-                $kk && $_content = $_content[$nk];
+            if(strpos($_name, 'list:')!==false){
+                $_name    = str_replace('list:','',$_name);
+                $_content = $listData[$_name];
+            }else{
+                $_content  = $responses[$_nameKeys[0]];
+            }
+            if(count($_nameKeys)>1){
+                foreach ((array)$_nameKeys as $kk => $nk) {
+                    $kk && $_content = $_content[$nk];
+                }
             }
             $_data_replace[$_key]=$_content;
         }
@@ -50,7 +60,19 @@ class spider_tools {
             return $DOM[$selector]->$fun();
         }
     }
-    public static function title_url($row,$rule,$baseUrl=null){
+    public static function listItemCache($url,$data=null){
+        $ckey = 'list/'.substr(md5($url), 8,16);
+        if($data=='delete'){
+            return iCache::delete('spider/'.$ckey);
+        }
+        if($data){
+            iCache::delete('spider/'.$ckey);
+            iCache::set('spider/'.$ckey,$data,86400);
+        }else{
+            return iCache::get('spider/'.$ckey);
+        }
+    }
+    public static function listItemData($row,$rule,$baseUrl=null){
 
         $responses = array();
         if(strpos($rule['list_url_rule'], '<%url%>')!==false){
@@ -66,6 +88,7 @@ class spider_tools {
                 if(empty($dom_rule)){
                     continue;
                 }
+                //pic@@DOM::img@src
                 if(strpos($dom_rule, '@@')!==false){
                     list($dom_key,$dom_rule) = explode("@@", $dom_rule);
                 }
@@ -104,6 +127,9 @@ class spider_tools {
             $url = str_replace('AUTO::','',$url);
             $url = spider_tools::url_complement($baseUrl,$url);
         }
+
+        iFS::checkHttp($url) OR $url = spider_tools::url_complement($baseUrl,$url);
+
         if($rule['list_url_clean']){
             $url = spider_tools::dataClean($rule['list_url_clean'],$url);
             if($url===null){
@@ -112,18 +138,9 @@ class spider_tools {
         }
         $title = preg_replace('/<[\/\!]*?[^<>]*?>/is', '', $title);
 
-        // unset($responses['title'],$responses['url']);
         $responses['title'] = $title;
         $responses['url'] = $url;
 
-        // if($responses){
-        //     foreach ($responses as $key => $value) {
-        //         if(!is_numeric($key) && strpos($key, 'var_')===false){
-        //             spider_tools::$listArray[$key] = $value;
-        //         }
-        //     }
-        //     unset($responses);
-        // }
         return $responses;
     }
 
@@ -344,6 +361,9 @@ class spider_tools {
         }
         if(strtoupper($encode)=='GB2312'){
             $encode = 'GBK';
+        }
+        if (spider::$dataTest || spider::$ruleTest) {
+            echo '<b>页面编码不一致,进行转码['.$encode.'=>'.$out.']</b><br />';
         }
         $html = preg_replace('/(<meta[^>]*?charset=(["\']?))[a-zA-z0-9\-\_]*(\2[^>]*?>)/is', "\\1$out\\3", $html,1);
         if (function_exists('mb_convert_encoding')) {
@@ -577,7 +597,8 @@ class spider_tools {
         $info = curl_getinfo($ch);
         self::$curl_info = $info;
         if (spider::$dataTest || spider::$ruleTest) {
-            echo "<b>{$url} 头信息:</b><pre style='max-height:90px;overflow-y: scroll;'>";
+            echo "<b>{$url} 请求信息:</b>";
+            echo "<pre style='max-height:90px;overflow-y: scroll;'>";
             print_r($info);
             echo '</pre><hr />';
             if($_GET['breakinfo']){

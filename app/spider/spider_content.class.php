@@ -481,7 +481,7 @@ class spider_content {
                         $content = $matches['content'];
                     }
                 } else {
-                    $content = $data_rule;
+                    $content = $data['rule'];
                 }
             }
         }

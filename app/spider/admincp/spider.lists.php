@@ -31,7 +31,7 @@ $(function() {
             <th><i class="fa fa-arrows-v"></i></th>
             <th>标题</th>
             <th>网址</th>
-            <th>操作</th>
+            <th style="width: 200px;">操作</th>
           </tr>
         </thead>
   <?php if($listsArray) foreach ($listsArray AS $furl => $lists) {?>

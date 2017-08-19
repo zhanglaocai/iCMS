@@ -220,7 +220,7 @@ class spider_urls {
                 $rule['list_url']   = $prule_list_url;
             }
 
-            $urlsData = self::title_url_array($lists,$rule,$url);
+            $urlsData = self::lists_item_data($lists,$rule,$url);
 
             if (spider::$callback['urls'] && is_callable(spider::$callback['urls'])) {
                 $urlsData = call_user_func_array(spider::$callback['urls'],array($urlsData,$url));
@@ -390,18 +390,21 @@ class spider_urls {
             break;
         }
     }
-    public static function title_url_array($lists,$rule,$url){
+    public static function lists_item_data($lists,$rule,$url){
         $array = array();
         foreach ($lists AS $lkey => $row) {
-            $arr = spider_tools::title_url($row,$rule,$url);
-            foreach ((array)$arr as $key => $value) {
+            $cache = array();
+            $data = spider_tools::listItemData($row,$rule,$url);
+            foreach ((array)$data as $key => $value) {
                 if(is_numeric($key)){
-                    unset($arr[$key]);
+                    unset($data[$key]);
+                }
+                if(strpos($key, 'var_')===false && $key!='title' && $key!='url'){
+                    $cache[$key] = $value;
                 }
             }
-            if($arr){
-                $array[$lkey] = $arr;
-            }
+            $data['url'] && $cache && spider_tools::listItemCache($data['url'],$cache);
+            $data && $array[$lkey] = $data;
         }
         return $array;
     }
