@@ -152,7 +152,8 @@ class userApp {
 		$cid_array = (array) $_POST['_cid'];
 		foreach ($name_array as $cid => $name) {
 			$name = iSecurity::escapeStr($name);
-			iDB::update("user_category", array('name' => $name),
+			iDB::update("user_category",
+				array('name' => $name),
 				array(
 					'cid' => $cid,
 					'uid' => user::$userid,
@@ -161,8 +162,10 @@ class userApp {
 			);
 		}
 		foreach ($cid_array as $key => $_cid) {
+			$_cid = (int) $_cid;
 			if (!$name_array[$_cid]) {
-				iDB::update("article", array('ucid' => '0'),
+				iDB::update("article",
+					array('ucid' => '0'),
 					array('userid' => user::$userid)
 				);
 				iDB::query("
@@ -237,9 +240,7 @@ class userApp {
 		$fwd = iPHP::callback(array("filterApp","run"),array(&$body),false);
 		$fwd && iUI::alert('user:publish:filter_body');
 
-		if (empty($description)) {
-			$description = articleAdmincp::autodesc($body);
-		}
+		empty($description) && $description = articleAdmincp::autodesc($body);
 
 		$pubdate = time();
 		$postype = "0";
@@ -273,10 +274,13 @@ class userApp {
 				'3' => 'user:article:add_examine',
 			);
 		} else {
-			if (article::update(compact($fields),
-				array('id' => $aid, 'userid' => user::$userid))) {
-				article::data_update(compact($data_fields), array('aid' => $aid));
-			}
+			$update = article::update(
+				compact($fields),
+				array('id' => $aid, 'userid' => user::$userid)
+			);
+
+			$update && article::data_update(compact($data_fields), array('aid' => $aid));
+
 			iMap::init('category', iCMS_APP_ARTICLE,'cid');
 			iMap::diff($cid, $_cid, $aid);
 			if ($ucid != $_ucid) {
@@ -381,7 +385,7 @@ class userApp {
 		$personstyle   = iSecurity::escapeStr($_POST['personstyle']);
 		$slogan        = iSecurity::escapeStr($_POST['slogan']);
 		$meta          = iSecurity::escapeStr($_POST['meta']);
-		$setting       = $_POST['setting'];
+		$setting       = iSecurity::escapeStr($_POST['setting']);
 
 		($personstyle == iUI::lang('user:profile:personstyle')) && $personstyle = "";
 		($slogan == iUI::lang('user:profile:slogan')) && $slogan = "";
@@ -405,7 +409,11 @@ class userApp {
 		if ($setting) {
 			$setting = array_merge((array)$this->me->setting,(array)$setting);
 			$setting = json_encode($setting);
-			iDB::update('user', array('setting' => $setting), array('uid' => user::$userid));
+
+			iDB::update('user',
+				array('setting' => $setting),
+				array('uid' => user::$userid)
+			);
 		}
 
 		$uid = iDB::value("
@@ -451,7 +459,6 @@ class userApp {
 		if (empty($F)) {
 			iUI::code(0, 'user:iCMS:error', 0, 'json');
 		}
-		$F OR iUI::code(0, 'user:iCMS:error', 0, 'json');
 
 		if($isBlob){
 			//在cropper.min.js 没有找到更好的解决办法前只能先用PHP强制生成
@@ -484,6 +491,7 @@ class userApp {
 		if (empty($F)) {
 			iUI::code(0, 'user:iCMS:error', 0, 'json');
 		}
+
 		if($isBlob){
 			//在cropper.min.js 没有找到更好的解决办法前只能先用PHP强制生成
 			require iPHP_CORE.'/Gmagick.class.php';
@@ -536,6 +544,7 @@ class userApp {
 				iUI::code(0, 'user:findpwd:error', 'uname', 'json');
 			}
 			list($uid, $username, $password, $timeline) = explode(USER_AUTHASH, $authcode);
+			$uid = (int)$uid;
 			$now = time();
 			if ($now - $timeline > 86400) {
 				iUI::code(0, 'user:findpwd:error', 'time', 'json');
@@ -630,11 +639,11 @@ class userApp {
 		$user = user::login($uname, $pass, (strpos($uname, '@') === false ? 'nk' : 'un'));
 		if ($user === true) {
 			if ($openid) {
-				iDB::query("
-                    INSERT INTO `#iCMS@__user_openid`
-                           (`uid`, `openid`, `platform`)
-                    VALUES ('" . user::$userid . "', '$openid', '$platform');
-                ");
+				iDB::insert('user_openid',array(
+					'uid'      => user::$userid,
+					'openid'   => $openid,
+					'platform' => $platform,
+				));
 			}
 			iUI::code(1, 0, $this->forward, 'json');
 		} else {
@@ -676,7 +685,8 @@ class userApp {
                 SELECT `regdate`
                 FROM `#iCMS@__user`
                 WHERE `regip`='$regip'
-                ORDER BY uid DESC LIMIT 1;");
+                ORDER BY uid DESC LIMIT 1;
+            ");
 
 			if ($ip_regdate - $regdate > iCMS::$config['user']['register']['interval']) {
 				iUI::code(0, 'user:register:interval', 'username', 'json');
@@ -697,7 +707,7 @@ class userApp {
 		$province = iSecurity::escapeStr($_POST['province']);
 		$city = iSecurity::escapeStr($_POST['city']);
 
-		$agreement = $_POST['agreement'];
+		$agreement = iSecurity::escapeStr($_POST['agreement']);
 
 		$username OR iUI::code(0, 'user:register:username:empty', 'username', 'json');
 		preg_match("/^[\w\-\.]+@[\w\-]+(\.\w+)+$/i", $username) OR iUI::code(0, 'user:register:username:error', 'username', 'json');
@@ -736,8 +746,7 @@ class userApp {
 		$uid = iDB::insert('user', $data);
 
 		user::set_cookie(
-			$username,
-			$password,
+			$username,$password,
 			array('uid' => $uid,
 				'username' => $username,
 				'nickname' => $nickname,
@@ -747,11 +756,11 @@ class userApp {
 
 		if ($openid) {
 			$platform = $type;
-			iDB::query("
-                INSERT INTO `#iCMS@__user_openid`
-                       (`uid`, `openid`, `platform`)
-                VALUES ('$uid', '$openid', '$platform');
-            ");
+			iDB::insert('user_openid',array(
+				'uid'      => $uid,
+				'openid'   => $openid,
+				'platform' => $platform,
+			));
 		}
 		if ($avatar) {
 			$avatarData = iHttp::remote($avatar);

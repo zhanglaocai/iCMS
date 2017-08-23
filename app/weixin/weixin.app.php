@@ -31,9 +31,12 @@ class weixinApp {
             ob_start();
             iDB::$show_errors = true;
         }
+        if(empty(weixin::$config['token'])){
+            trigger_error('TOKEN is empty',E_USER_ERROR);
+        }
 
         if ($_GET["api_token"]!=weixin::$config['token']) {
-            throw new Exception('TOKEN is error!');
+            trigger_error('TOKEN is error!',E_USER_ERROR);
         }
 
         if($_GET["echostr"] && !$_GET['msg_signature']){
@@ -216,15 +219,15 @@ class weixinApp {
     }
     public function api_log(){
         $data = array(
-            'ToUserName'   => $this->XML->ToUserName,
-            'FromUserName' => $this->XML->FromUserName,
-            'CreateTime'   => $this->XML->CreateTime,
+            'ToUserName'   => addslashes($this->XML->ToUserName),
+            'FromUserName' => addslashes($this->XML->FromUserName),
+            'CreateTime'   => addslashes($this->XML->CreateTime),
             'content'      => $this->XML->Content,
             'dayline'      => get_date(null,'Y-m-d H:i:s'),
         );
         $array  = self::object2array($this->XML);
         unset($array['ToUserName'],$array['FromUserName'],$array['CreateTime']);
-        $data['content'] = json_encode($array);
+        $data['content'] = addslashes(json_encode($array));
         iDB::insert('weixin_api_log',$data);
     }
     public static function DEBUG($output=null,$name='debug'){

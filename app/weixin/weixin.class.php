@@ -259,6 +259,7 @@ class weixin {
     public static  function input($input=null){
         $input===null && $input = file_get_contents("php://input");
         if ($input){
+            libxml_disable_entity_loader(true);
             return simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
         }else{
             return false;

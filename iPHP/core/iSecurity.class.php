@@ -205,10 +205,12 @@ class iSecurity {
 	            $string[$key] = iSecurity::escapeStr($val);
 	        }
 	    } else {
-			$string = str_replace(array('%00','\\0',"\0","\x0B"), '', $string); //modified@2010-7-5
-			$string = str_replace(array('&', '"',"'", '<', '>'), array('&amp;', '&quot;','&#039;', '&lt;', '&gt;'), $string);
-			$string = preg_replace('/&amp;((#(\d{3,5}|x[a-fA-F0-9]{4})|[a-zA-Z][a-z0-9]{2,5});)/', '&\\1',$string);
+	        $string = str_replace(array("\0","\x0B", "%00"), '', $string);
+			$string = str_replace(array('&', '"',"'"), array('&amp;', '&quot;','&#039;'), $string);
 	    	$string = str_replace('\\\\', '&#92;', $string);
+	        $string = str_replace(array("%3C", '<'), '&lt;', $string);
+	        $string = str_replace(array("%3E", '>'), '&gt;', $string);
+			$string = preg_replace('/&amp;((#(\d{3,5}|x[a-fA-F0-9]{4})|[a-zA-Z][a-z0-9]{2,5});)/', '&\\1',$string);
 	    }
 	    return $string;
 	}
@@ -241,6 +243,8 @@ class iSecurity {
 					$array[$key] = addslashes($value);
 				}
 			}
+		}else{
+			$array = addslashes($array);
 		}
 	}
 

@@ -73,7 +73,7 @@ $lock_file = iPATH.'cache/install.lock';
 				var action = $(this).attr('data-toggle');
 				install[action]();
 			});
-			<?php if($_GET['step']){?>
+			<?php if($_GET['step'] && !file_exists($lock_file)){?>
 				$(".step").hide();
 				$("#step<?php echo $_GET['step'];?>").show();
 				$('body').animate({
@@ -211,7 +211,7 @@ $lock_file = iPATH.'cache/install.lock';
 					</div>
 				</div>
 			</div>
-
+			<?php if(!file_exists($lock_file)){ ?>
 			<div class="license well hide step" id="step1">
 				<h1>iCMS使用许可协议</h1>
 				<p></p>
@@ -501,6 +501,7 @@ $lock_file = iPATH.'cache/install.lock';
 					<a href="../index.php" class="btn btn-large btn-block btn-primary" target="_blank">网站首页 »</a>
 				</div>
 			</div>
+			<?php };?>
 		</div>
 		<iframe class="hide" id="iCMS_FRAME" name="iCMS_FRAME"></iframe>
 		<footer class="footer">
