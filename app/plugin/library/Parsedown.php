@@ -567,7 +567,7 @@ class Parsedown
                     $text,
                 ),
             );
-	    
+
             if (preg_match('/^\[[\s|x]\]/',$text))
             {
                 $Block['li']['attributes'] = array('class' => 'md_checkbox');
@@ -1208,6 +1208,7 @@ class Parsedown
             'attributes' => array(
                 'href' => null,
                 'title' => null,
+                'target' => '_blank',
             ),
         );
 
@@ -1362,6 +1363,7 @@ class Parsedown
                     'text' => $matches[0][0],
                     'attributes' => array(
                         'href' => $matches[0][0],
+                        'target' => '_blank',
                     ),
                 ),
             );
@@ -1383,6 +1385,7 @@ class Parsedown
                     'text' => $url,
                     'attributes' => array(
                         'href' => $url,
+                        'target' => '_blank',
                     ),
                 ),
             );

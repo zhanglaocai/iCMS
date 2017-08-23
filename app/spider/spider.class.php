@@ -307,11 +307,17 @@ class spider{
                 return false;
             }
         }
-        if ($callback['code'] == $return) {
+        if ($callback['code'] == $return && $work===NULL) {
             if (spider::$sid) {
-                $work===NULL && iUI::success("发布成功!",'js:1');
+                iUI::success("发布成功!",'js:1');
             } else {
-                $work===NULL && iUI::success("发布成功!", 'js:parent.$("#' . $hash . '").remove();');
+                iUI::success("发布成功!", 'js:parent.$("#' . $hash . '").remove();');
+            }
+        }
+        if (spider::$callback['save'] && is_callable(spider::$callback['save'])) {
+            $ret = call_user_func_array(spider::$callback['save'],array($callback,$_POST));
+            if($ret['callback']){
+                return $ret;
             }
         }
         if($work=="shell"||$work=="WEB@AUTO"){

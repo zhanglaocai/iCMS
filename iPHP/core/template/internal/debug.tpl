@@ -20,7 +20,7 @@
 	<!--{foreach key=key value=vars from=$_debug_keys}-->
 	<tr>
 		<td width="120px"><font color="blue">{$<!--{$_debug_keys[$key]}-->}</font></td>
-		<td><font color="green"><!--{$_debug_vals[$key]|debug_print_var}--></font></td>
+		<td><font color="green"><!--{$_debug_vals[$key]|print_var}--></font></td>
 	</tr>
 	<!--{foreachelse}-->
 	<tr><td colspan="2"><i>No template variables assigned</i></td></tr>

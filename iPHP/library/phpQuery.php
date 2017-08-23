@@ -266,6 +266,7 @@ class DOMDocumentWrapper {
 		$this->isHTML = true;
 		if (!isset($this->isDocumentFragment))
 			$this->isDocumentFragment = self::isDocumentFragmentHTML($markup);
+
 		$charset = null;
 		$documentCharset = $this->charsetFromHTML($markup);
 		if (phpQuery::$debug)
@@ -466,9 +467,14 @@ class DOMDocumentWrapper {
 	protected function contentTypeFromHTML($markup) {
 		$matches = array();
 		// find meta tag
-		preg_match('@<meta[^>]+http-equiv\\s*=\\s*(["|\'])Content-Type\\1([^>]+?)>@i',
-			$markup, $matches
-		);
+        preg_match('/<meta[^>]*?charset=(["\']?)([a-zA-z0-9\-\_]+)(\1)[^>]*?>/is',
+        	$markup, $matches
+        );
+        if(empty($matches[2])){
+			preg_match('@<meta[^>]+http-equiv\\s*=\\s*(["|\'])Content-Type\\1([^>]+?)>@i',
+				$markup, $matches
+			);
+        }
 		if (! isset($matches[0]))
 			return array(null, null);
 		// get attr 'content'

@@ -15,6 +15,8 @@ class plugin_markdown {
     public static function HOOK($content,&$resource=null) {
         plugin::init(__CLASS__);
         if($resource['markdown']){
+            $content = plugin_download::markdown($content);
+
             plugin::library('Parsedown');
             $Parsedown = new Parsedown();
             isset($resource['htmlspecialchars']) && $Parsedown->htmlspecialchars = false;

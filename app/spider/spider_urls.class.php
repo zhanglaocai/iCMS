@@ -173,7 +173,7 @@ class spider_urls {
                 //echo 'list:getDocumentID:'.$lists->getDocumentID()."\n";
             }else{
                 $list_area_rule = spider_tools::pregTag($rule['list_area_rule']);
-                if ($list_area_rule) {
+                if ($list_area_rule && $rule['list_area_rule']!='<%content%>') {
                     preg_match('|' . $list_area_rule . '|is', $html, $matches);
                     $list_area = $matches['content'];
                 } else {
@@ -396,7 +396,7 @@ class spider_urls {
             $cache = array();
             $data = spider_tools::listItemData($row,$rule,$url);
             foreach ((array)$data as $key => $value) {
-                if(is_numeric($key)){
+                if(is_numeric($key)|| strpos($key, 'var_')!==false){
                     unset($data[$key]);
                 }
                 if(strpos($key, 'var_')===false && $key!='title' && $key!='url'){

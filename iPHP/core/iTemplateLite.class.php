@@ -280,31 +280,31 @@ class iTemplateLite {
 			if($ret==='code') return $compile_code;
 			file_put_contents($compile_file,$compile_code);
 		}
+
 		if($ret==='file') return $compile_file;
 
-		if($ret || $this->_plugins['output']){
-			ob_start();
-			$ob_start = true;
-		}
+		ob_start();
 		include $compile_file;
-		if ($ob_start) {
-			$output = ob_get_contents();
-			ob_end_clean();
-			$this->_run_output($output,$compile_file);
-			if($ret){
-				return $output;
-			}else{
-				echo $output;
-			}
+		$output = ob_get_contents();
+		ob_end_clean();
+
+		$this->_plugins['output'] && $this->_run_output($output,$compile_file);
+
+		if($ret){
+			return $output;
+		}else{
+			echo $output;
 		}
+
 	}
 
 	function _run_output(&$content,$file){
 		if(!$this->_plugins['output']) return;
 
 		foreach ((array)$this->_plugins['output'] as $key => $value) {
-			require_once $this->_get_plugin_dir('output.'.$key.'.php');
-			call_user_func_array($value, array(&$content,&$this));
+			if(@is_callable($value)){
+				call_user_func_array($value, array(&$content,&$this));
+			}
 		}
 	}
 	function _run_modifier(){
@@ -542,13 +542,9 @@ class iTemplateLite_Compiler extends iTemplateLite {
 		$compiled_text .= $text[$i];
 
 		foreach ($this->_require_stack as $key => $value){
-			if($value[0]=='output'){
-				$this->register_output($value[1], $value[2]);
-			}else{
-				$compiled_text = '<?php require_once \''. $this->_get_plugin_dir($key). '\';'
-				.'$this->register_' . $value[0] . '("' . $value[1] . '", "' . $value[2] . '"); ?>'
-				.$compiled_text;
-			}
+			$compiled_text = '<?php require_once \''. $this->_get_plugin_dir($key). '\';'
+			.'$this->register_' . $value[0] . '("' . $value[1] . '", "' . $value[2] . '"); ?>'
+			.$compiled_text;
 		}
 
 		// remove unnecessary close/open tags
@@ -836,6 +832,7 @@ class iTemplateLite_Compiler extends iTemplateLite {
 	}
 	function _compile_custom_output($function, $arguments, &$_result){
 		if ($function = $this->_plugin_exists($function, "output")){
+			$_result = '<?php ' . $function($_result, $this) . ' ?>';
 			return true;
 		}else{
 			return false;

@@ -384,8 +384,8 @@ class spider_tools {
             unset($doc,$content);
         }else{
             $_code = spider_tools::pregTag($code);
-            if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $_code)) {
-                preg_match('|' . $_code . '|is', $content, $_matches, PREG_SET_ORDER);
+            if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $code)) {
+                preg_match('|' . $_code . '|is', $content, $_matches);
                 $matches = $_matches['content'];
             }else{
                 $matches = strpos($content, $code);

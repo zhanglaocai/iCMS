@@ -107,11 +107,19 @@ class spider_content {
         if ($data['cleanbefor']) {
             $content = spider_tools::dataClean($data['cleanbefor'], $content);
         }
-
+        if ($data['trim']) {
+            if(is_array($content)){
+                $content = array_map('trim', $content);
+            }else{
+                $content = str_replace('&nbsp;','',trim($content));
+            }
+        }
         if ($data['json_decode']) {
             $content = json_decode($content,true);
         }
-
+        if ($data['htmlspecialchars_decode']) {
+            $content = htmlspecialchars_decode($content);
+        }
         if(!is_array($content)){
             $content = stripslashes($content);
         }
@@ -135,13 +143,7 @@ class spider_content {
             }
             unset($img_match,$_img_array,$_img_urls,$_img_src);
         }
-        if ($data['trim']) {
-            if(is_array($content)){
-                $content = array_map('trim', $content);
-            }else{
-                $content = str_replace('&nbsp;','',trim($content));
-            }
-        }
+
         if ($data['capture']) {
             $content && $content = spider_tools::remote($content);
         }
@@ -176,8 +178,8 @@ class spider_content {
             }
         }
         if ($data['empty']) {
-            // $empty = html2text($content);
-            $empty = self::real_empty($content);
+            $empty = $content;
+            is_array($content) OR $empty = self::real_empty($content);
             if(empty($empty)){
                 $emptyMsg = '['.$name.']规则设置了不允许为空.当前抓取结果为空!请检查,规则是否正确!';
                 if(spider::$dataTest){

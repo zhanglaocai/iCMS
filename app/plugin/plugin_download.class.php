@@ -24,4 +24,27 @@ class plugin_download{
         }
         return $content;
     }
+    public static function markdown($content) {
+        preg_match_all('/!\[.*?\]\((.+)\)/', $content, $matches);
+        $img_ext = array('jpg', 'jpeg', 'png', 'webp', 'gif');
+
+        foreach ((array)$matches[1] as $key => $url) {
+            $path = iFS::fp($url,'-http');
+            // $rootpath = iFS::fp($url,'http2iPATH');
+            // list($w,$h,$type) = @getimagesize($rootpath);
+            // if(empty($type)){
+            $ext = iFS::get_ext($path);
+            if (!in_array($ext, $img_ext)) {
+                $name = basename($path);
+                $durl = filesApp::get_url($name);
+                $replace[$key] = '<a class="attachment" href="'.$durl.'" target="_blank" title="点击下载">'.$name.'</a>';
+                $search [$key] = $matches[0][$key];
+            }
+        }
+
+        if($replace && $search){
+            $content = str_replace($search, $replace, $content);
+        }
+        return $content;
+    }
 }

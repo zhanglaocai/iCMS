@@ -394,11 +394,9 @@ $(function(){
   </div>
 </div>
 <div id="ed-box" class="hide">
-  <div class="in
-  put-prepend"> <span class="add-on">栏 目</span> <span id="edcid"></span> </div>
+  <div class="input-prepend"> <span class="add-on">栏 目</span> <span id="edcid"></span> </div>
   <div class="clearfloat mb10"></div>
-  <div class="in
-  put-prepend"> <span class="add-on">属 性</span> <span id="edpid"></span> </div>
+  <div class="input-prepend"> <span class="add-on">属 性</span> <span id="edpid"></span> </div>
   <div class="clearfloat mb10"></div>
   <div class="input-prepend">
     <span class="add-on">标 题</span>
