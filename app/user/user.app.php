@@ -314,8 +314,14 @@ class userApp {
 		if (in_array($act, $actArray)) {
 			$id = (int) $_POST['id'];
 			$id OR iUI::code(0, 'iCMS:error', 0, 'json');
+			$sql = null;
+			if($act == "renew"){
+				$sql = "`status` ='1'";
+				$cid = article::value('cid',$id);
+				$C = categoryApp::get_cahce_cid($cid);
+				$C['config']['examine'] && $sql = "`status` ='3'";
+			}
 			$act == "delete" && $sql = "`status` ='2',`postype`='3'";
-			$act == "renew" && $sql = "`status` ='1'";
 			$act == "trash" && $sql = "`status` ='2'";
 			$sql && iDB::query("
                 UPDATE `#iCMS@__article`

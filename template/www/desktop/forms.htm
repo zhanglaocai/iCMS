@@ -37,8 +37,10 @@
                     </div>
                     <div class="clearfix"></div>
                     <div class="form-body">
+                        <iframe class="hide" id="iForms_FRAME" name="iForms_FRAME"></iframe>
                         <!--自定义表单的表单-->
-                        <form id="<!--{$forms.layout_id}-->" class="form-inline">
+                        <form action="<!--{$forms.action}-->" id="<!--{$forms.layout_id}-->"
+                             class="form-inline" method="post" target="iForms_FRAME">
                             <!--以下三个hidden 是必需的 否则提交会出错 -->
                             <input name="action" type="hidden" value="save" />
                             <input name="form_id" type="hidden" value="<!--{$forms.id}-->" />

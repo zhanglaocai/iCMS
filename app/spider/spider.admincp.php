@@ -572,8 +572,8 @@ class spiderAdmincp {
 		if ($_GET['rid']) {
 			$sql .= " AND `rid` ='" . (int) $_GET['rid'] . "'";
 		}
-		if ($_GET['auto']) {
-			$sql .= " AND `auto` ='1'";
+		if (isset($_GET['auto'])) {
+			$sql .= " AND `auto` ='".$_GET['auto']."'";
 		}
 		if ($_GET['poid']) {
 			$sql .= " AND `poid` ='" . (int) $_GET['poid'] . "'";

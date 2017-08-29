@@ -36,16 +36,19 @@ $(function(){
           </select>
           <span class="add-on">
           <input type="checkbox" name="sub" id="sub"/>
-          子栏目 </span> </div>
+          子栏目 </span>
+        </div>
         <div class="input-prepend input-append"><span class="add-on"><i class="fa fa-calendar"></i></span>
           <input type="text" class="ui-datepicker" name="starttime" value="<?php echo $_GET['starttime']; ?>" placeholder="开始时间" />
           <span class="add-on">-</span>
           <input type="text" class="ui-datepicker" name="endtime" value="<?php echo $_GET['endtime']; ?>" placeholder="结束时间" />
-          <span class="add-on"><i class="fa fa-calendar"></i></span> </div>
+          <span class="add-on"><i class="fa fa-calendar"></i></span>
+        </div>
         <div class="input-prepend input-append"> <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $_GET['perpage'] ? $_GET['perpage'] : 20; ?>" style="width:36px;"/>
-          <span class="add-on">条记录</span> </div>
-    <div class="clearfloat mb10"></div>
+          <span class="add-on">条记录</span>
+        </div>
+        <div class="clearfloat mb10"></div>
         <div class="input-prepend input-append"> <span class="add-on">关键字</span>
           <input type="text" name="keywords" class="span2" id="keywords" value="<?php echo $_GET['keywords']; ?>" />
           <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜 索</button>

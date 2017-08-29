@@ -190,7 +190,8 @@ class spider{
         spider_tools::listItemCache($_POST['reurl'],'delete');
 
         foreach ((array)$_POST as $key => $value) {
-            if($value===null){
+            if($value===null && $key!='__title__'){
+                echo spider::errorlog("publish:$key:null\n",$_POST['reurl'],"publish:$key:null");
                 return null;
             }
         }
@@ -232,8 +233,8 @@ class spider{
             self::get_data_id((int)$_GET['indexid'],$app);
         }
 
-        $title = iSecurity::escapeStr($_POST['title']);
-        $url   = iSecurity::escapeStr($_POST['reurl']);
+        $title = addslashes($_POST['title']);
+        $url   = addslashes($_POST['reurl']);
         $hash  = md5($url);
         if(empty(spider::$sid)){
             $spider_url = iDB::row("SELECT `id`,`publish`,`indexid` FROM `#iCMS@__spider_url` where `url`='$url'",ARRAY_A);
@@ -243,8 +244,8 @@ class spider{
                     'cid'     => $project['cid'],
                     'rid'     => spider::$rid,
                     'pid'     => spider::$pid,
-                    'title'   => addslashes($title),
-                    'url'     => addslashes($url),
+                    'title'   => $title,
+                    'url'     => $url,
                     'hash'    => $hash,
                     'status'  => '1',
                     'addtime' => time(),

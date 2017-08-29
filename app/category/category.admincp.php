@@ -71,7 +71,7 @@ class categoryAdmincp {
                 'config' => array(
                     'ucshow'  => '1',
                     'send'    => '1',
-                    'examine' => '0',
+                    'examine' => '1',
                 ),
                 'sortnum'   => '0',
                 'mode'      => '0',

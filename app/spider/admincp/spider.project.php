@@ -21,8 +21,8 @@ $(function(){
 	<?php if($_GET['sub']=="on"){ ?>
 	iCMS.checked('#sub');
 	<?php } ?>
-  <?php if($_GET['auto']){ ?>
-  iCMS.checked('.auto');
+  <?php if (isset($_GET['auto'])) { ?>
+  iCMS.checked('[name="auto"][value="<?php echo $_GET['auto'];?>"]');
   <?php } ?>
   $("#<?php echo APP_FORMID;?>").batch({
     poid:function(){
@@ -89,13 +89,19 @@ $(function(){
           <input type="text" class="ui-datepicker" name="endtime" value="<?php echo $_GET['endtime'] ; ?>" placeholder="结束时间" />
           <span class="add-on"><i class="fa fa-calendar"></i></span>
         </div>
-        <div class="input-prepend input-append"><span class="add-on">自动执行</span>
-          <span class="add-on">
-            <input type="radio" name="auto" class="checkbox auto" value="1"/>
-          </span> </div>
+        <div class="input-prepend input-append">
+          <span class="add-on">是否为自动采集</span>
+          <span class="add-on">是
+            <input type="radio" name="auto" class="radio" value="1"/>
+          </span>
+          <span class="add-on">否
+            <input type="radio" name="auto" class="radio" value="0"/>
+          </span>
+        </div>
         <div class="input-prepend input-append"> <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $_GET['perpage'] ? $_GET['perpage'] : 20; ?>" style="width:36px;"/>
-          <span class="add-on">条记录</span> </div>
+          <span class="add-on">条记录</span>
+        </div>
         <div class="input-prepend input-append"> <span class="add-on">关键字</span>
           <input type="text" name="keywords" class="span2" id="keywords" value="<?php echo $_GET['keywords']; ?>" />
           <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> 搜 索</button>
