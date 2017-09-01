@@ -214,6 +214,11 @@ class iSecurity {
 	    }
 	    return $string;
 	}
+	public static function html_decode($string) {
+		$string = htmlspecialchars_decode($string);
+		$string = str_replace('&#92;', '\\', $string);
+		return $string;
+	}
 	/**
 	 * 变量检查
 	 * @param $var

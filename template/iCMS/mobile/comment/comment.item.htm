@@ -1,9 +1,9 @@
 <div class="commentApp-item" data-id="<!--{$comment_list.id}-->">
-    <a title="<!--{$comment_list.user.name}-->" i="ucard:<!--{$comment_list.userid}-->" class="cmt-item-link-avatar" href="<!--{$comment_list.user.url}-->">
-        <img src="<!--{$comment_list.user.avatar}-->" class="cmt-item-img-avatar" onerror="iUSER.NOAVATAR(this);">
+    <a title="<!--{$comment_list.user.name}-->" i="ucard:<!--{$comment_list.userid}-->" class="comment-link-avatar" href="<!--{$comment_list.user.url}-->">
+        <img src="<!--{$comment_list.user.avatar}-->" class="comment-img-avatar" onerror="iUSER.NOAVATAR(this);">
     </a>
-    <div class="commentApp-content-wrap">
-        <div class="commentApp-content-hd">
+    <div class="comment-content-wrap">
+        <div class="comment-content-hd">
             <a i="ucard:<!--{$comment_list.userid}-->" href="<!--{$comment_list.user.url}-->" target="_blank" class="zg-link">
                 <!--{$comment_list.user.name}-->
             </a>
@@ -21,25 +21,26 @@
                 <em>楼</em>
             </span>
         </div>
-        <div class="commentApp-content">
+        <div class="comment-content">
             <!--{$comment_list.content}-->
         </div>
-        <div class="commentApp-content-ft" data-param='<!--{$comment_list.param|json_encode}-->'>
-            <span class="date"><!--{$comment_list.addtime|format_date}--></span>
-            <a href="javascript:;" i="comment_reply" class="commentApp-op-link">
-                <i class="commentApp-icon comment-reply-icon"></i>回复
+        <div class="comment-content-ft" data-param='<!--{$comment_list.param|json_encode}-->'>
+            <span class="comment-date"><!--{$comment_list.addtime|format_date}--></span>
+            <a href="javascript:;" i="comment_like">
+                <span i="comment_up_label" class="label label-info <!--{if !$comment_list.up}-->hide<!--{/if}-->">
+                    <i class="fa fa-thumbs-up"></i>
+                    <em i="comment_up_num"><!--{$comment_list.up}--></em>
+                    <em>赞</em>
+                </span>
             </a>
-            <a href="javascript:;" i="comment_like" class="commentApp-op-link">
-                <i class="commentApp-icon comment-like-icon"></i>赞
+            <a href="javascript:;" i="comment_reply" class="comment-op-link">
+                <i class="ui-icon ui-reply-icon"></i>回复
             </a>
-            <!--{if $comment_list.up!='0'}-->
-            <span class="text-num" i="tip:<!--{$comment_list.up}--> 人觉得这个很赞">
-                <em i="comment_up"><!--{$comment_list.up}--></em>
-                <em>赞</em>
-            </span>
-            <!--{/if}-->
-            <a href="javascript:;" i="report" class="commentApp-op-link" data-param='{"appid":"<!--{$iCMS.APPID.COMMENT}-->"}'>
-                <i class="commentApp-icon comment-report-icon"></i>举报
+            <a href="javascript:;" i="comment_like" class="comment-op-link">
+                <i class="ui-icon ui-like-icon"></i>赞
+            </a>
+            <a href="javascript:;" i="report" class="comment-op-link" data-param='{"appid":"<!--{$iCMS.APPID.COMMENT}-->","iid":"<!--{$comment_list.id}-->"}'>
+                <i class="ui-icon ui-report-icon"></i>举报
             </a>
         </div>
     </div>

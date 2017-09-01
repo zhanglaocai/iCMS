@@ -264,24 +264,20 @@ class files {
     }
     public static function thumb($sfp,$w='',$h='',$scale=true) {
         if(empty($sfp)){
-            echo iCMS_FS_URL.'1x1.gif';
-            return;
+            return iCMS_FS_URL.'1x1.gif';
         }
         if(strpos($sfp,'_')!==false){
-            if(preg_match('|.+\d+x\d+\.jpg$|is', $sfp)!=0){
-                echo $sfp;
-                return;
+            if(preg_match('|.+\d+x\d+\.jpg$|is', $sfp)){
+                return $sfp;
             }
         }
         $uri = parse_url(iCMS_FS_URL);
         if(stripos($sfp,$uri['host']) === false){
-            echo $sfp;
-            return;
+            return $sfp;
         }
 
         if(empty(iCMS::$config['thumb']['size'])){
-            echo $sfp;
-            return;
+            return $sfp;
         }
 
         $size_map = explode("\n", iCMS::$config['thumb']['size']);
@@ -289,20 +285,17 @@ class files {
         $size_map = array_flip($size_map);
         $size     = $w.'x'.$h;
         if(!isset($size_map[$size])){
-            echo $sfp;
-            return;
+            return $sfp;
         }
 
         if(iCMS::$config['FS']['yun']['enable']){
             if(iCMS::$config['FS']['yun']['sdk']['QiNiuYun']['Bucket']){
-                echo $sfp.'?imageView2/1/w/'.$w.'/h/'.$h;
-                return;
+                return $sfp.'?imageView2/1/w/'.$w.'/h/'.$h;
             }
             if(iCMS::$config['FS']['yun']['sdk']['TencentYun']['Bucket']){
-                echo $sfp.'?imageView2/2/w/'.$w.'/h/'.$h;
-                return;
+                return $sfp.'?imageView2/2/w/'.$w.'/h/'.$h;
             }
         }
-        echo $sfp.'_'.$size.'.jpg';
+        return $sfp.'_'.$size.'.jpg';
     }
 }

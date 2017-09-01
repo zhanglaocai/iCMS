@@ -19,7 +19,7 @@ $(function() {
             function($info) {
                 iCMS.$('user_nickname').text($info.nickname);
                 iCMS.$('user_message_num').text($info.message_num);
-                iCMS.$('user_avatar').attr("src",$info.avatar).show();
+                iCMS.$('user_avatar').attr("src", $info.avatar).show();
                 iCMS.$('login').hide();
                 iCMS.$('profile').show();
             },
@@ -32,27 +32,27 @@ $(function() {
         doc.on('click', "[i='logout']", function(event) {
             event.preventDefault();
             $USER.LOGOUT({
-                'forward': window.top.location.href
-            },
-            //退出成功事件
-            function(s) {
-                window.top.location.reload();
-            });
+                    'forward': window.top.location.href
+                },
+                //退出成功事件
+                function(s) {
+                    window.top.location.reload();
+                });
         });
         //点击关注
         doc.on('click', "[i^='follow']", function(event) {
             event.preventDefault();
             $USER.FOLLOW(this,
                 //关注成功
-                function(ret,$param){
-                    if(ret.code){
+                function(ret, $param) {
+                    if (ret.code) {
                         var show = ($param.follow == '1' ? '0' : '1');
-                        $("[i='follow:"+$param.uid+":"+$param.follow+"']").hide();
-                        $("[i='follow:"+$param.uid+":"+show+"']").show();
+                        $("[i='follow:" + $param.uid + ":" + $param.follow + "']").hide();
+                        $("[i='follow:" + $param.uid + ":" + show + "']").show();
                     }
                 },
                 //关注失败
-                function (ret) {
+                function(ret) {
                     iCMS.UI.alert(ret.msg);
                 }
             );
@@ -78,10 +78,10 @@ $(function() {
             var me = this;
             $COMMON.vote(this,
                 //点赞成功后
-                function(ret,param) {
-                       var numObj = iCMS.$('vote_'+param['type']+'_num',me),
-                           count = parseInt(numObj.text());
-                        numObj.text(count + 1);
+                function(ret, param) {
+                    var numObj = iCMS.$('vote_' + param['type'] + '_num', me),
+                        count = parseInt(numObj.text());
+                    numObj.text(count + 1);
                 }
             );
         });
@@ -91,23 +91,35 @@ $(function() {
             $COMMON.favorite(this);
         });
     });
-    //用户主页评论
+    //评论
     iCMS.run('comment', function($COMMENT) {
-        doc.on('click', '[i="comment:article"]', function(event) {
-            event.preventDefault();
-            var me = this;
-            $COMMENT.create(me);
-            //加载评论框模板
-            // $COMMENT.template('form',function (tmpl) {
-            //     $COMMENT._widget._form = $(tmpl);
-            // });
-        });
+        doc.on('click', '[i^="comment:"]', function(event) {
+                event.preventDefault();
+                //内容列表快速评论
+                $COMMENT.create(this);
+            })
+            //回复评论
+            .on('click', '[i="comment_reply"]', function(event) {
+                event.preventDefault();
+                $COMMENT.reply(this);
+            })
+            //赞评论
+            .on('click', '[i="comment_like"]', function(event) {
+                event.preventDefault();
+                $COMMENT.like(this);
+            })
+            // 取消表单
+            .on('click', '[i="comment_cancel"]', function(event) {
+                event.preventDefault();
+                var $f = $(this).parent().parent();
+                $f.removeClass('expanded');
+                iCMS.$('comment_content',$f).val("");
+            });
     });
 });
+
 //user模块API
 var iUSER = iCMS.run('user');
-//comment模块API
-// var iCOMMENT = iCMS.run('comment');
 
 function imgFix (im, x, y) {
     x = x || 99999

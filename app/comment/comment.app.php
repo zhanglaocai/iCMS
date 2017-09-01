@@ -42,15 +42,20 @@ class commentApp {
 	}
 
 	public function API_like() {
-		// user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
+		if ($this->config['like']['login']){
+			user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
+		}
+		empty($this->config['like']['time']) && $this->config['like']['time'] = 86400;
 
 		$this->id OR iUI::code(0, 'iCMS:article:empty_id', 0, 'json');
-		$lckey = 'like_comment_' . $this->id;
-		$like = iPHP::get_cookie($lckey);
-		$like && iUI::code(0, 'iCMS:comment:!like', 0, 'json');
+		if ($this->config['like']['time']){
+			$lckey = 'like_comment_' . $this->id;
+			$like = iPHP::get_cookie($lckey);
+			$like && iUI::code(0, 'iCMS:comment:!like', 0, 'json');
+		}
 		//$ip = iPHP::get_ip();
 		iDB::query("UPDATE `#iCMS@__comment` SET `up`=up+1 WHERE `id`='$this->id'");
-		iPHP::set_cookie($lckey, $_SERVER['REQUEST_TIME'], 86400);
+		$this->config['like']['time'] && iPHP::set_cookie($lckey, $_SERVER['REQUEST_TIME'], $this->config['like']['time']);
 		iUI::code(1, 'iCMS:comment:like', 0, 'json');
 	}
 	public function API_json() {

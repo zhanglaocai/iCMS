@@ -10,3 +10,13 @@ window.iCMS = $.extend(window.iCMS,{
         iCMS.alert      = iCMS.UI.alert;
     }
 });
+
+(function($) {
+    $.fn.param = function() {
+        return window.iCMS.API.param(this);
+    }
+})(jQuery);
+
+// function $i(i,doc) {
+//     return window.iCMS.$(i,doc);
+// }

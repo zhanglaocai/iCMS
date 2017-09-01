@@ -108,12 +108,22 @@ article .article_body .content h2.subtitle { font-size: 24px; margin-bottom: 20p
 article .article_body .content video{clear: both;display: block;margin: auto;max-width: 100%;}
 article .article_pagenav { text-align: center; }
 article .pagination a, article .pagination span { padding: 10px; }
-
+.article-like {float: left; }
+.article-like .like-btn { position: relative; display: block; text-decoration: none; text-align: left; color: #fff; background: #fff; font-size: 16px; line-height: 25px;border: 1px solid #ddd; border-radius: 5px; padding: 5px; float: left; margin-right: 10px; }
+.article-like .like-icon { position: absolute; top: 2px; left: 10px; width: 27px; height: 27px; display: block; }
+.article-like .like-num { margin-left: 35px; color: #369; }
+.article-like .like-txt { color: #666; }
+.article-like .up { background: url(../img/up.png) no-repeat; }
+.article-like .down { background: url(../img/down.png) no-repeat; top: 6px; }
+.article-like .favorite-btn { position: relative; display: block; text-decoration: none; text-align: left; color: #fff; background: #fff; font-size: 16px; line-height: 25px;border: 1px solid #ddd; border-radius: 5px; padding: 5px; float: left; margin-right: 10px; }
+.article-like .favorite-num { margin-left: 35px; color: #369; }
+.article-like .favorite-icon {position: absolute; top: 2px; left: 10px; width: 27px; height: 27px; display: block;  background: url(../img/favorite.png) no-repeat; top: 6px; _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled='true', sizingMethod='scale', src='../img/favorite.png'); _background: none; }
+.article-like .favorite-txt { color: #666; }
 /* ===========comment-list=========== */
 #comment-list .commentApp-pagenav { margin: 10px auto; }
 #comment-list .cmt-item-img-avatar { width: 30px; height: 30px; }
 #comment-list .commentApp-content-wrap { margin-left: 40px; }
-
+#comment-list .comment-item.empty{font-size: 12px;color: #999;padding-left: 10px;}
 
 /* ===========comment-form=========== */
 #comment-form { border-top: 1px solid #eaeaea; }

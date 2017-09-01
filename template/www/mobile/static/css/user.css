@@ -15,11 +15,11 @@
 #userApp-home .userApp_day .date .mon{font-size:16px;}
 #userApp-home .userApp_day .content{margin-left:100px;}
 #userApp-home .userApp_day .content .artlist{margin-bottom:5px;}
-#userApp-home .userApp_day .content .thumb{float:left;width:90px;height:90px;overflow:hidden;margin-right:8px;}
+#userApp-home .userApp_day .content .thumb{float:left;max-width:90px;height:90px;overflow:hidden;margin-right:8px;}
 #userApp-home .userApp_day .content .thumb img{height:90px;}
 #userApp-home .userApp_day .content .title{margin-right:5px;}
 #userApp-home .userApp_day .content .title a{display:block;}
-#userApp-home .userApp_day .content .title.npic{background-color:#e8e7e7;padding:4px 8px;}
+#userApp-home .userApp_day .content .title.npic{background-color:#efefef;padding:4px 8px;}
 #userApp-home #infscr-loading{padding:5px 20px;}
 #userApp-home .commentApp-wrap{margin:10px 5px 0 0px;}
 #userApp-home .article_action{font-size:12px;}

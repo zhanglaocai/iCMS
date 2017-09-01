@@ -174,8 +174,11 @@ class commentFunc{
 					"appid"  => $value['appid'],
 					"iid"    => $value['iid'],
 					"id"     => $value['id'],
+					"cid"    => $value['cid'],
 					"userid" => $value['userid'],
 					"name"   => $value['username'],
+					'suid'   => $value['userid'],
+					'title'  => $value['title'],
 		        );
 				$resource[$key] = $value;
 			}

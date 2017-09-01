@@ -1,105 +1,76 @@
 iCMS.define("comment", function() {
-    var API = iCMS.require("api"),UI = iCMS.require("ui"),USER = iCMS.require("user"),utils = iCMS.require("utils"),
+    var API = iCMS.require("api"),
+        UI = iCMS.require("ui"),
+        USER = iCMS.require("user"),
+        utils = iCMS.require("utils"),
 
-    $COMMENT = {
-        seccode:iCMS.CONFIG.COMMENT.seccode,
-        widget:{
-            like:'<span class="text-num" i="tip:1 人觉得这个很赞"><em>1</em> <span>赞</span></span>',
-            more:'<a href="javascript:;" class="load-more" i="comment_load"><span class="text">显示全部评论</a>',
-            spinner:$('<div class="commentApp-spinner">正在加载，请稍等 <i class="spinner-lightgray"></i></div>'),
-            item:null,
-        },
-        page_no:{},
-        page_total:{},
-        container:{}
-    };
+        $COMMENT = {
+            seccode: iCMS.CONFIG.COMMENT.seccode,
+            page_no: {},
+            page_total: {},
+            options: {
+                more: '<a href="javascript:;" class="load-more" i="comment_load"><span class="text">显示全部评论</a>',
+                spinner: $('<div class="commentApp-spinner">正在加载，请稍等...... <i class="spinner-lightgray"></i></div>'),
+                up_label: 'comment_up_label',
+                up_num: 'comment_up_num',
+                list: 'comment_list',
+                form: 'comment_form',
+            },
+            cache: {}
+        };
 
     return $.extend($COMMENT, {
-        template:function (name,func) {
-            if($COMMENT.container[name]){
-                return func($COMMENT.container[name]);
+        setopt: function(options) {
+            $COMMENT.options = $.extend($COMMENT.options, options);
+            return this;
+        },
+        template: function(name, func) {
+            if ($COMMENT.cache[name]) {
+                if (typeof(func) === "function") {
+                    return func($COMMENT.cache[name]);
+                } else {
+                    return $COMMENT.cache[name];
+                }
             }
-            $.get(API.url('comment'),'&do=widget&name='+name,
-                function(tpl){
-                    $COMMENT.container[name] = tpl;
-                    func(tpl)
+            $.get(API.url('comment'), '&do=widget&name=' + name,
+                function(tpl) {
+                    $COMMENT.cache[name] = tpl;
+                    if (typeof(func) === "function") {
+                        func(tpl)
+                    }
                 }
             )
         },
-        miniForm:function (callback) {
-
-            $COMMENT.template('mini.form',function (f) {
-
+        miniForm: function(callback) {
+            $COMMENT.template('mini.form', function(f) {
                 var $f = $(f);
-
                 $f.on('focus', '[i="comment_content"]', function(event) {
                     event.preventDefault();
                     $f.addClass('expanded');
-                }).on('click', '[i="comment_close"]', function(event) {
+                }).on('click', '[i="comment_cancel"]', function(event) {
                     event.preventDefault();
                     $f.removeClass('expanded');
-                    $('[i="comment_content"]', $f).val("");
+                    $('[i="comment_content"]', $f).val('');
                 });
-
-                if(callback){
-                    utils.__callback (callback,$f);
+                if (callback) {
+                    utils.__callback(callback, $f);
                 }
-
             });
         },
-        page:function(pn, a,func) {
-            var $this = $(a),
-                p = $this.parent(),
-                pp = p.parent(),
-                query = p.attr('data-query'),
-                url = iCMS.CONFIG.API+'?'+query+'&pn='+pn;
-
-            $.get(url,function(ret){
-                utils.__callback (func,ret);
-            });
-        },
-        reply:function (a) {
+        like: function(a, SUCCESS, FAIL) {
             if (!USER.CHECK.LOGIN()) return;
 
             var me = this,
-                item = $(a).parent().parent(),
-                param = API.param($(a)),
-                caf = $('.commentApp-form', item);
-            if (caf.length > 0) {
-                caf.remove();
-                return false;
-            }
-            $('.commentApp-form','.commentApp-list').remove();
-            $('.commentApp-form').removeClass('expanded');
+                $this = $(a),
+                opt = $COMMENT.options,
+                param = API.param($this);
 
-            $COMMENT.miniForm(function($f){
-                $f.addClass('expanded');
-                $('[i="comment_close"]', $f).click(function(event) {
-                    event.preventDefault();
-                    var $c = $('[i="comment_content"]', $f);
-                    $c.data('param', param).focus();
-                    $c.val("");
-                    $f.remove();
-                    //$COMMENT.iframe_height('list');
-                });
-
-                $(a).parent().after($f);
-            });
-        },
-        like:function (a,SUCCESS, FAIL) {
-            if (!USER.CHECK.LOGIN()) return;
-
-            var me=this,$this = $(a),param = API.param($this);
-
-            me.SUCCESS = function (ret,param) {
-                var p = $this.parent(),
-                    num = $('[i="comment_up"]', p).text();
-                if (num) {
-                    num = parseInt(num) + 1;
-                    $('[i="comment_up"]', p).text(num);
-                } else {
-                    p.append($COMMENT.widget.like);
-                }
+            me.SUCCESS = function(ret, p) {
+                var c = $this.parent();
+                var num = iCMS.$(opt.up_num, c).text();
+                num = parseInt(num) + 1;
+                iCMS.$(opt.up_label, c).show();
+                iCMS.$(opt.up_num, c).text(num);
             };
 
             param["do"] = 'like';
@@ -107,11 +78,70 @@ iCMS.define("comment", function() {
                 utils.callback(ret, SUCCESS, FAIL, me);
             }, 'json');
         },
-        add:function ($form,param,SUCCESS, FAIL) {
+        reply: function(a) {
             if (!USER.CHECK.LOGIN()) return;
+
+            var me = this,
+                item = $(a).parent().parent(),
+                caf = $('.commentApp-form', item);
+            if (caf.length > 0) {
+                caf.remove();
+                return false;
+            }
+
+            $('.commentApp-form', '.commentApp-list').remove();
+            $('.commentApp-form').removeClass('expanded');
+
+            var param = $(a).param();
+
+            $COMMENT.miniForm(function($f) {
+                $f.on('click', '[i="comment_cancel"]', function(event) {
+                        event.preventDefault();
+                        iCMS.$('comment_content', $f)
+                            .data('param', param)
+                            .focus()
+                            .val("");
+                        $f.remove();
+                    })
+                    //回复评论事件绑定
+                    .on('click', '[i="comment_add"]', function(event) {
+                        event.preventDefault();
+                        $COMMENT.options.list = item.parent();
+                        $COMMENT.add(param, $f,null,'after');
+                    })
+                    .addClass('expanded');
+
+                $(a).parent().after($f);
+            });
+        },
+        add: function(param, container, SUCCESS,listype) {
+            //设置表单容器
+            $COMMENT.options.form = container;
+            //提交表单
+            $COMMENT.post(param,
+                function(ret) {
+                    if (typeof(SUCCESS) === 'function') {
+                        SUCCESS(ret);
+                    }
+                    //加载评论列表模板
+                    $COMMENT.template('item');
+                    $(".commentApp-item.empty").remove();
+                    $COMMENT.getlist(param.iid, ret.forward, (listype||'append'));
+                },
+                function(ret) {
+                    UI.alert(ret.msg);
+                }
+            );
+        },
+        post: function(param, SUCCESS, FAIL, container) {
+            if (!USER.CHECK.LOGIN()) return;
+
             var me = this;
-            if($COMMENT.seccode=="1"){
-                var comment_seccode = $('[i="comment_seccode"]', $form);
+            var opt = $COMMENT.options;
+            container = container || iCMS.$(opt.form);
+
+            if ($COMMENT.seccode == "1") {
+                var comment_seccode = iCMS.$('comment_seccode', container);
                 param.seccode = comment_seccode.val();
                 if (!param.seccode) {
                     comment_seccode.focus();
@@ -119,17 +149,17 @@ iCMS.define("comment", function() {
                 }
             }
 
-            var comment_content = $('[i="comment_content"]', $form);
+            var comment_content = iCMS.$('comment_content', container);
             param.content = comment_content.val();
             if (!param.content) {
                 comment_content.focus();
                 return false;
             }
-           var refresh = function (ret) {
-                if(ret.forward!='seccode'){
+            var refresh = function(ret) {
+                if (ret.forward != 'seccode') {
                     comment_content.val('');
                 }
-                if(typeof(comment_seccode)!=="undefined"){
+                if (typeof(comment_seccode) !== "undefined") {
                     comment_seccode.val('');
                     UI.seccode();
                 }
@@ -137,69 +167,77 @@ iCMS.define("comment", function() {
 
             var _param = comment_content.data('param');
 
-            if(typeof(_param)!=="undefined"){
+            if (typeof(_param) !== "undefined") {
                 param = $.extend(param, _param);
             }
 
-            param.action  = 'add';
+            param.action = 'add';
             $.post(API.url('comment'), param, function(ret) {
                 refresh(ret);
                 utils.callback(ret, SUCCESS, FAIL, me);
             }, 'json');
         },
-        list:function (container,iid,id,type) {
-            if(!id){
+        page: function(pn, a, func) {
+            var $this = $(a),
+                p = $this.parent(),
+                pp = p.parent(),
+                query = p.attr('data-query'),
+                url = iCMS.CONFIG.API + '?' + query + '&pn=' + pn;
+
+            $.get(url, function(ret) {
+                utils.__callback(func, ret);
+            });
+        },
+        getlist: function(iid, id, type, container) {
+            if (!id) {
                 $COMMENT.page_no[iid]++;
-                if($COMMENT.page_total[iid]){
+                if ($COMMENT.page_total[iid]) {
                     if ($COMMENT.page_no[iid] > $COMMENT.page_total[iid]) {
-                       return false;
+                        return false;
                     }
                 }
             }
-            if(type){
-                var $list = container;
-            }else{
-                var $list = $('.commentApp-list',container);
-            }
+            var opt = $COMMENT.options;
+            container = container || iCMS.$(opt.list);
 
-            $.get(API.url('comment'),{
+            $.get(API.url('comment'), {
                     'do': 'json',
                     'iid': iid,
-                    'id': (id||0),
+                    'id': (id || 0),
                     'by': 'ASC',
                     page: $COMMENT.page_no[iid]
                 },
                 function(json) {
-                    $COMMENT.widget.spinner.remove();
-                    if (!json){
+                    $COMMENT.options.spinner.remove();
+
+                    if (!json) {
                         return false;
                     }
-                    if(!id){
+                    if (!id) {
                         $COMMENT.page_total[iid] = json[0].page.total;
                     }
 
                     $.each(json, function(i, data) {
-                        var item = $.parseTmpl($COMMENT.widget.item,data);
-                        if(type=="after"){
-                            $list.after(item);
-                        }else if(type=="before"){
-                            $list.before(item);
-                        }else if(type=="append"){
-                            $list.append(item);
-                        }else{
-                            $list.append(item);
+                        var item = $.parseTmpl($COMMENT.cache['item'], data);
+                        USER.UCARD(item);
+                        if (type == "after") {
+                            container.after(item);
+                        } else if (type == "before") {
+                            container.before(item);
+                        } else {
+                            container.append(item);
                         }
                     });
-                    if(!id){
-                        $(".load-more",container).remove();
+                    if (!id) {
+                        iCMS.$("comment_load").remove();
                         if ($COMMENT.page_no[iid] < $COMMENT.page_total[iid]) {
-                            $list.after($COMMENT.widget.more);
+                            container.after(opt.more);
                         }
                     }
                 }, 'json');
         },
-
         create: function(a) {
+
             var $this = $(a),
                 p = $this.parent(),
                 pp = p.parent(),
@@ -210,78 +248,55 @@ iCMS.define("comment", function() {
                 return false;
             }
 
-            var $spike = $('<i class="commentApp-icon comment-spike-icon commentApp-bubble"></i>'),
+            $('.commentApp-wrap').remove();
+
+            var $spike = $('<i class="ui-icon comment-spike-icon commentApp-bubble"></i>'),
                 $wrap = $('<div class="commentApp-wrap">'),
                 $list = $('<div class="commentApp-list">'),
-                iid   = param['iid'];
+                iid = param['iid'];
 
             var pos = $this.position();
-            var _isMobile = 'createTouch' in document && !('onmousemove' in document)
-                || /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
+            var _isMobile = 'createTouch' in document && !('onmousemove' in document) ||
+                /(iPhone|iPad|iPod)/i.test(navigator.userAgent);
 
-            $spike.css({'left':_isMobile?event.offsetX:pos.left,'display':'inline'});
+            $spike.css({ 'left': _isMobile ? event.offsetX : pos.left, 'display': 'inline' });
 
-
-            $wrap.html($COMMENT.widget.spinner);
+            $wrap.html($COMMENT.options.spinner);
             $wrap.append($spike, $list);
 
-            $COMMENT.miniForm(function($f){
+            $COMMENT.options.list = $list;
+
+            $COMMENT.miniForm(function($f) {
                 $f.addClass('commentApp-wrap-ft');
                 $wrap.append($f);
+
+                //提交评论
+                $f.on('click', '[i="comment_add"]', function(event) {
+                    event.preventDefault();
+                    $COMMENT.add(param, $f,
+                        function(ret) {
+                            var count = parseInt(iCMS.$('comment_num', $this).text());
+                            iCMS.$('comment_num', $this).text(count + 1);
+                        }
+                    );
+                });
             });
 
             p.after($wrap);
 
             //加载评论列表模板
-            $COMMENT.template('item',function (tmpl) {
-               $COMMENT.widget.item = tmpl;
+            $COMMENT.template('item', function(tmpl) {
                 //加载评论
-                $COMMENT.page_no[iid]    = 0;
+                $COMMENT.page_no[iid] = 0;
                 $COMMENT.page_total[iid] = 0;
-                $COMMENT.list($wrap,iid);
+                $COMMENT.getlist(iid);
             });
-
-            //----------绑定事件----------------
             //加载更多
             $wrap.on('click', '[i="comment_load"]', function(event) {
                 event.preventDefault();
-                $(".load-more", $list).remove();
-                $COMMENT.list($wrap,iid);
-            })
-            //提交评论
-            .on('click', '[i="comment_put"]', function(event) {
-                event.preventDefault();
-                var that = $(this),tpp = that.parent().parent();
-
-                $COMMENT.add(tpp,param,
-                    function(ret){
-                        var count = parseInt($('[i="comment_num"]', $this).text());
-                        $('[i="comment_num"]', $this).text(count + 1);
-                        var itemp = that.parents('.commentApp-item');
-                        if(itemp.length){
-                            var type = 'after';
-                        }else{
-                            var itemp = that.parents(".commentApp-wrap");
-                            var type = null;
-                        }
-                        $COMMENT.list(itemp,iid,ret.forward,type);
-                    },
-                    function (ret) {
-                        UI.alert(ret.msg);
-                    }
-                )
-            })
-            //回复评论
-            .on('click', '[i="comment_reply"]', function(event) {
-                event.preventDefault();
-                $COMMENT.reply(this);
-            })
-            //赞评论
-            .on('click', '[i="comment_like"]', function(event) {
-                event.preventDefault();
-                $COMMENT.like(this);
+                $list.append($COMMENT.options.spinner);
+                $COMMENT.getlist(iid);
             });
-            //------------
         }
     });
 });
