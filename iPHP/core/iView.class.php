@@ -10,8 +10,9 @@
  */
 class iView {
     public static $handle  = NULL;
+    public static $app     = null;
     public static $gateway = null;
-    public static $config = array();
+    public static $config  = array();
 
     public static function init($config = array()) {
         self::$config = $config;
@@ -180,6 +181,12 @@ class iView {
             if ($_tpl = self::check_app_tpl($tpl, iPHP_DEFAULT_TPL)){
                 return $_tpl;
             }
+            // testApp/$tpl
+            if(self::$app){
+                if ($_tpl = self::check_app_tpl($tpl, self::$app.'App')) {
+                    return $_tpl;
+                }
+            }
             // iCMS/$tpl
             if ($_tpl = self::check_app_tpl($tpl, iPHP_APP)) {
                 return $_tpl;
@@ -196,8 +203,16 @@ class iView {
             //     }
             // }
             $tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
+            // return self::check_app_tpl($tpl, iPHP_DEFAULT_TPL);
         } elseif (strpos($tpl, '{iTPL}') !== false) {
-            $tpl = str_replace('{iTPL}', iPHP_DEFAULT_TPL, $tpl);
+            $flag = '{iTPL}';
+            // testApp/$tpl
+            if(self::$app){
+                if ($_tpl = self::check_app_tpl($tpl, self::$app.'App',$flag)) {
+                    return $_tpl;
+                }
+            }
+            $tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
         }
 
         if (is_file(iPHP_TPL_DIR . "/" . $tpl)) {
@@ -206,11 +221,11 @@ class iView {
             return false;
         }
     }
-    public static function check_app_tpl($tpl, $dir) {
-        $flag = iPHP_APP.':/';
-        $_tpl = str_replace($flag, $dir, $tpl);
-        if (is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
-            return $_tpl;
+    public static function check_app_tpl($tpl, $dir,$flag=null) {
+        $flag===null && $flag = iPHP_APP.':/';
+        $tpl = str_replace($flag, $dir, $tpl);
+        if (is_file(iPHP_TPL_DIR . "/" . $tpl)) {
+            return $tpl;
         }
         return false;
     }
@@ -262,8 +277,9 @@ class iView {
         self::$handle OR self::init();
         return self::$handle->fetch($tpl);
     }
-    public static function render($tpl, $p = 'index') {
+    public static function render($tpl, $app = 'index') {
         $tpl OR iPHP::error_404('Please set the template file', '001', 'TPL');
+        $app && self::$app = $app;
         self::receive_tpl($tpl);
         if (self::$gateway == 'html') {
             return self::$handle->fetch($tpl);

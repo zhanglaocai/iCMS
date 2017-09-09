@@ -73,17 +73,19 @@ class categoryApp{
             if($category['apps']['type']=="2"){ //自定义应用模板信息
                 iPHP::callback(array("contentFunc","__set_apps"),array($category['apps']));
             }
+            $view_app = "category";
+            $category['apps']['app'] && $view_app = $category['apps']['app'];
             iView::assign('apps', $category['apps']); //绑定的应用信息
             iView::assign('app', $category['app']);//category 信息
             unset($category['app'],$category['apps']);
             iView::assign('category',$category);
             if(strpos($tpl, '.htm')!==false){
-            	return iView::render($tpl,'category');
+            	return iView::render($tpl,$view_app);
             }
             $GLOBALS['page']>1 && $is_list = true;
             $is_list && $tpl='list';
             if($category['template']){
-                $view = iView::render($category['template'][$tpl],'category.'.$tpl);
+                $view = iView::render($category['template'][$tpl],$view_app);
             }else{
                 iPHP::error_404('找不到该栏目的模板配置,请设置栏目'.$tpl.'模板', 20002);
             }

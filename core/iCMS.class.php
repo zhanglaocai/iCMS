@@ -88,14 +88,15 @@ class iCMS {
         $site['murl']  = self::$config['template']['mobile']['domain'];
         $site['tpl']   = iPHP_DEFAULT_TPL;
         $site['urls']  = array(
-            "tpl"    => iCMS_URL.'/template/'.iPHP_DEFAULT_TPL,
-            "public" => iCMS_PUBLIC_URL,
-            "user"   => iCMS_USER_URL,
-            "res"    => iCMS_FS_URL,
-            "ui"     => iCMS_PUBLIC_URL.'/ui',
-            "avatar" => iCMS_FS_URL.'avatar/',
-            "mobile" => $site['murl'],
-            "desktop" => self::$config['template']['desktop']['domain'],
+            "template" => iCMS_URL.'/template',
+            "tpl"      => iCMS_URL.'/template/'.iPHP_DEFAULT_TPL,
+            "public"   => iCMS_PUBLIC_URL,
+            "user"     => iCMS_USER_URL,
+            "res"      => iCMS_FS_URL,
+            "ui"       => iCMS_PUBLIC_URL.'/ui',
+            "avatar"   => iCMS_FS_URL.'avatar/',
+            "mobile"   => $site['murl'],
+            "desktop"  => self::$config['template']['desktop']['domain'],
         );
         if(self::$config['template']['device']){
             foreach (self::$config['template']['device'] as $key => $value) {

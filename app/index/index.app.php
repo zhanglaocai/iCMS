@@ -36,7 +36,7 @@ class indexApp {
         }
 
         iView::set_iVARS($iurl,'iURL');
-        $view = iView::render($index_tpl);
+        $view = iView::render($index_tpl,'index');
         if($view) return array($view,$iurl);
     }
     public function domain(){

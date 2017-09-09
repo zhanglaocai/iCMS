@@ -20,6 +20,7 @@ $(function(){
   <?php } ?>
 
 	$("#<?php echo APP_FORMID;?>").batch();
+
   $(".view_reply").popover({
     html:true,
     content:function(){
@@ -27,9 +28,11 @@ $(function(){
       $.get('<?php echo APP_URI; ?>&do=get_reply',{'id': a.attr('data-id')},
         function(html) {
           update_popover(html,a);
-      });
+        }
+      );
       return '<p><img src="./app/admincp/ui/img/ajax_loader.gif" /></p>';
-  }});
+    }
+  });
 });
 function update_popover(html,a){
   $('.popover-content','.popover').html(html);

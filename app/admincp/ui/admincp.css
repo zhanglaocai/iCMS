@@ -320,7 +320,7 @@ ul#icons li { cursor: pointer; float: left; list-style: none outside none; margi
 .recent-posts li.viewall a, .recent-comments li.viewall a, .recent-users li.viewall a { padding: 5px; text-align: center; display: block; color: #888888; }
 .recent-posts li.viewall a:hover, .recent-comments li.viewall a:hover, .recent-users li.viewall a:hover { background-color: #eeeeee; }
 .recent-posts li:last-child, .recent-comments li:last-child, .recent-users li:last-child { border-bottom: none !important; }
-.recent-comments p { margin: 10px; }
+.recent-comments p { margin: 10px; min-height: 31px;}
 .user-thumb { float: left; width: 50px; }
 .user-thumb .avatar { background: none repeat scroll 0 0 #FFFFFF; border: 1px solid #B6BCBF; display: block; height: 50px; margin-right: 10px; margin-top: 5px; padding: 2px; width: 50px; }
 .user-info { color: #666666; }

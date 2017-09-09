@@ -68,16 +68,19 @@ class tagApp {
             $tag_tpl OR $tag_tpl = $tag['category']['template']['tag'];
             $tag_tpl OR $tag_tpl = iCMS::$config['tag']['tpl'];
             $tag_tpl OR $tag_tpl = '{iTPL}/tag.htm';
+            $view_app = "tag";
+            $tag['category']['apps']['app'] && $view_app = $tag['category']['apps']['app'];
 
+            iView::assign('apps', $tag['category']['apps']); //绑定的应用信息
             iView::assign('app', apps::get_app_lite($app));
             iView::assign('category',$tag['category']);
             iView::assign('tag_category',$tag['tag_category']);
             unset($tag['category'],$tag['tag_category']);
             iView::assign("tag", $tag);
             if (strstr($tpl, '.htm')) {
-                return iView::render($tpl, 'tag');
+                return iView::render($tpl, $view_app);
             }
-            $view = iView::render($tag_tpl,'tag');
+            $view = iView::render($tag_tpl,$view_app);
             if($view) return array($view,$tag);
         }else{
             return $tag;
