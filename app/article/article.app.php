@@ -114,15 +114,15 @@ class articleApp {
 			'user' => true,
 		);
 		$article = $this->value($article, $article_data, $vars, $page, $tpl);
-		$article+=(array)apps_meta::data('article',$id);
+		if ($article === false) {
+			return false;
+		}
 
+		$article+=(array)apps_meta::data('article',$id);
         $app = apps::get_app('article');
         $app['fields'] && formerApp::data($article['id'],$app,'article',$article,$vars,$article['category']);
 
 		unset($article_data);
-		if ($article === false) {
-			return false;
-		}
 
 		self::hooked($article);
 
@@ -132,6 +132,7 @@ class articleApp {
 			strstr($tpl, '.htm') && $article_tpl = $tpl;
 			iView::assign('category', $article['category']);unset($article['category']);
 			iView::assign('article', $article);
+
 			$view = iView::render($article_tpl, 'article');
 			if($view) return array($view,$article);
 

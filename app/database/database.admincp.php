@@ -104,7 +104,7 @@ class databaseAdmincp {
 			$bakuptable = $this->bakuptable($tableA);
 			$bdir = get_date(0, "Y-m-d-His") . '~' . random(10);
 		}
-		$updateMsg = ($step == 1 ? false : true);
+		$updateMsg = ($step == 1 ? false : 'FRAME');
 		$f_num = ceil($step / 2);
 		$filename = 'iCMS_' . $random . '_' . $f_num . '.sql';
 		$step++;
@@ -196,7 +196,7 @@ class databaseAdmincp {
 			);
 			$dtime = 5;
 		}
-		$updateMsg = ($i == 1 ? false : true);
+		$updateMsg = ($i == 1 ? false : 'FRAME');
 		iUI::dialog($msg, $loopurl ? "src:" . $loopurl : 'js:1', $dtime, $moreBtn, $updateMsg);
 	}
 	/**

@@ -475,7 +475,12 @@ class spider_tools {
         }else{
             if ($href[0]=='/'){
                 $base_uri  = parse_url($baseUrl);
-                $base_host = $base_uri['scheme'].'://'.$base_uri['host'];
+                if($href[1]=='/'){
+                    $base_host = $base_uri['scheme'].':/';
+                }else{
+                    $base_host = $base_uri['scheme'].'://'.$base_uri['host'];
+                }
+
                 return $base_host.'/'.ltrim($href,'/');
             }else{
                 if(substr($baseUrl, -1)!='/'){

@@ -200,6 +200,7 @@ body.articleApp { }
 .article-wrap .markdown table tr:nth-child(2n){background:#eee;}
 /*.article-wrap .article-body p.imgFix{padding-bottom: 20px; display: block;}*/
 .article-wrap .article-body p { margin: 0; padding: 0; margin-top: 8px; word-wrap: break-word; text-indent: 2em; font-size: 14px; line-height: 1.75; }
+.article-wrap .article-body p br{display: none;}
 .article-wrap .article-body p img{max-width: 90%;}
 .article-wrap .article-body p strong { font-weight: bold; font-size: 16px; }
 .article-wrap .article-body a {text-decoration: none;color: #337ab7;border-bottom: 1px dotted #337ab7; }

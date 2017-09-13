@@ -43,11 +43,11 @@ class commentFunc{
 		unset($vars['method'],$vars['_display']);
 		$vars['query'] = http_build_query($vars);
 		$vars['param'] = array(
-			'suid'  => $vars['suid'],
-			'iid'   => $vars['iid'],
-			'cid'   => $vars['cid'],
-			'appid' => $vars['appid'],
-			'title' => $vars['title'],
+			'suid'  => (int)$vars['suid'],
+			'iid'   => (int)$vars['iid'],
+			'cid'   => (int)$vars['cid'],
+			'appid' => (int)$vars['appid'],
+			'title' => iSecurity::escapeStr($vars['title']),
 		);
 		iView::assign('comment_vars',$vars);
 		iView::display("iCMS://comment/{$tpl}.htm");
@@ -171,14 +171,14 @@ class commentFunc{
 				}
 		        $value['param'] = array(
 					"sappid" => iCMS_APP_COMMENT,
-					"appid"  => $value['appid'],
-					"iid"    => $value['iid'],
-					"id"     => $value['id'],
-					"cid"    => $value['cid'],
-					"userid" => $value['userid'],
-					"name"   => $value['username'],
-					'suid'   => $value['userid'],
-					'title'  => $value['title'],
+					"appid"  => (int)$value['appid'],
+					"iid"    => (int)$value['iid'],
+					"id"     => (int)$value['id'],
+					"cid"    => (int)$value['cid'],
+					"userid" => (int)$value['userid'],
+					"name"   => iSecurity::escapeStr($value['username']),
+					'suid'   => (int)$value['userid'],
+					'title'  => iSecurity::escapeStr($value['title']),
 		        );
 				$resource[$key] = $value;
 			}
@@ -210,11 +210,11 @@ class commentFunc{
 			default:
 				isset($vars['_display']) && $vars['display'] = $vars['_display'];
 				$vars['param'] = array(
-					'suid'  => $vars['suid'],
-					'iid'   => $vars['iid'],
-					'cid'   => $vars['cid'],
-					'appid' => $vars['appid'],
-					'title' => $vars['title'],
+					'suid'  => (int)$vars['suid'],
+					'iid'   => (int)$vars['iid'],
+					'cid'   => (int)$vars['cid'],
+					'appid' => (int)$vars['appid'],
+					'title' => iSecurity::escapeStr($vars['title']),
 				);
 				$tpl = 'form.default';
 				break;

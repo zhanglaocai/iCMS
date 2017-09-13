@@ -87,6 +87,7 @@ class iCMS {
         $site['url']   = iCMS_URL;
         $site['murl']  = self::$config['template']['mobile']['domain'];
         $site['tpl']   = iPHP_DEFAULT_TPL;
+        $site['page']  = isset($_GET['p'])?(int)$_GET['p']:(int)$_GET['page'];
         $site['urls']  = array(
             "template" => iCMS_URL.'/template',
             "tpl"      => iCMS_URL.'/template/'.iPHP_DEFAULT_TPL,

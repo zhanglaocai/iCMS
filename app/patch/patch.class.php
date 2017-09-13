@@ -121,7 +121,6 @@ class patch {
 
 		$msg .= '解压完成<iCMS>';
 		$msg .= '开始测试目录权限<iCMS>';
-		$bakDir = iPATH . self::$release . 'bak';
 		$update = true;
 		if (!iFS::checkdir(iPATH)) {
 			$update = false;
@@ -152,13 +151,15 @@ class patch {
 			$msg = str_replace(iPATH,'iPHP://',$msg);
 			return $msg;
 		}
-		//测试通过！
-		self::$next = true;
-		iFS::mkdir($bakDir);
 		$msg .= '权限测试通过<iCMS>';
+		//测试通过！
 		$msg .= '备份目录创建完成<iCMS>';
+		$bakdir = iPATH.'.backup/patch.'.self::$release;
+		iFS::mkdir($bakdir);
+
 		$msg .= '开始更新程序<iCMS>';
 
+		self::$next = true;
 		foreach ($archive_files as $file) {
 		    preg_match('@^app/(\w+)/@', $file['filename'], $match);
 		    if($match[1]){
@@ -175,7 +176,7 @@ class patch {
 			}
 			if (empty($file['folder'])) {
 				$fp = iPATH . $file['filename'];
-				$bfp = $bakDir . '/' . $file['filename'];
+				$bfp = $bakdir . '/' . $file['filename'];
 				iFS::mkdir(dirname($bfp));
 				if (iFS::ex($fp)) {
 					$msg .= '备份 [' . $fp . '] 文件 到 [' . $bfp . ']<iCMS>';
@@ -186,7 +187,10 @@ class patch {
 				$msg .= '[' . $fp . '] 更新完成!<iCMS>';
 			}
 		}
-		$msg .= '清除临时文件!<iCMS>注:原文件备份在 [' . $bakDir . '] 目录<iCMS>如没有特殊用处请删除此目录!<iCMS>';
+		$msg .= '清除临时文件!<iCMS>';
+		$msg .= '注:原文件备份在 [' . $bakdir . '] 目录<iCMS>';
+		$msg .= '如没有特殊用处请删除此目录!<iCMS>';
+
 		iFS::rmdir(PATCH_DIR, true, 'version.txt');
         $msg = str_replace(iPATH,'iPHP://',$msg);
 		return $msg;
@@ -219,7 +223,7 @@ class patch {
 				}else{
 					$msg = '[patch.db.'.$key.']升级出错!<iCMS>找不到升级程序<iCMS>';
 				}
-				iFS::del($updateFile);
+				iFS::del($file);
 			}
 		}else {
 			$msg = '升级顺利完成!';

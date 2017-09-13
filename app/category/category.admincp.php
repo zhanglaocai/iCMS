@@ -509,7 +509,7 @@ class categoryAdmincp {
             $dtime = 5;
             $msg.="<hr />已全部生成完成<hr />总共用时<span class='label label-info'>".$query["alltime"]."</span>秒";
         }
-        $updateMsg  = $page?true:false;
+        $updateMsg  = $page?'FRAME':false;
         iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
     public function cahce_item($cid){

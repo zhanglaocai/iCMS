@@ -168,10 +168,10 @@ class iUI {
 			'</table>';
 		$content = str_replace(array("\n","\r","\\"), array('','',"\\\\"), $content);
 		$content = addslashes($content);
-
+        $dialog_id = self::$dialog['id'] ? self::$dialog['id'] : 'iPHP-DIALOG';
 		$options = array(
 			"time:null","api:'iPHP'",
-			"id:'" . (self::$dialog['id'] ? self::$dialog['id'] : 'iPHP-DIALOG'). "'",
+			"id:'" . $dialog_id. "'",
 			"title:'" . (self::$dialog['title'] ? self::$dialog['title'] : iPHP_APP) . " - {$title}'",
 			"modal:" . (self::$dialog['modal'] ? 'true' : 'false'),
 			"width:'" . (self::$dialog['width'] ? self::$dialog['width'] : 'auto') . "'",
@@ -192,13 +192,17 @@ class iUI {
 			// $buttons OR $options[] = $ok
 			$auto_func = $func . 'd.close().remove();';
 		}
+        $IS_FRAME = false;
 		if (is_array($buttons)) {
 			$okbtn = "{value:'确 定',callback:function(){" . $func . "},autofocus: true}";
 			foreach ($buttons as $key => $val) {
 				$val['id'] && $id = "id:'" . $val['id'] . "',";
 				$val['js'] && $func = $val['js'] . ';';
 				$val['url'] && $func = "iTOP.location.href='{$val['url']}';";
-				$val['src'] && $func = "iTOP.$('#iPHP_FRAME').attr('src','{$val['src']}');return false;";
+                if($val['src']){
+                    $func = "iTOP.$('#iPHP_FRAME').attr('src','{$val['src']}');return false;";
+                    $IS_FRAME = true;
+                }
 				$val['target'] && $func = "iTOP.window.open('{$val['url']}','_blank');";
                 if($val['close']===false){
                     $func.= "return false;";
@@ -218,8 +222,10 @@ class iUI {
 		self::$dialog['cancel'] && $options[] = 'cancelValue: "取 消",cancel: function(){'.self::$dialog['cancel:js'].'}';
 
 		$dialog = '';
-		if ($update) {
-			// $dialog .= "d = iTOP.dialog.get('iPHP-DIALOG');";
+        if ($update) {
+            if($update==='FRAME'||$IS_FRAME){
+                $dialog = 'var iTOP = window.top,d = iTOP.dialog.get("'.$dialog_id.'");';
+            }
 			$auto_func = $func;
 		} else {
             $dialog.= 'var iTOP = window.top,';

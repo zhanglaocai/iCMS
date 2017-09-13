@@ -85,7 +85,7 @@ class htmlAdmincp{
 			$dtime = 5;
 	        $msg.="<hr />已全部生成完成<hr />总共用时<span class='label label-info'>".$query["alltime"]."</span>秒";
         }
-		$updateMsg = $this->page?true:false;
+		$updateMsg = $this->page?'FRAME':false;
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
     /**
@@ -173,10 +173,10 @@ class htmlAdmincp{
         	}elseif($k==$len){
         		$msg.="<hr />所有栏目生成完成";
         	}
-			$k>0 && $updateMsg	= true;
+			$k>0 && $updateMsg	= 'FRAME';
         }
         if($k==0){
-			$updateMsg = $this->page?true:false;
+			$updateMsg = $this->page?'FRAME':false;
 		}
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:"",$dtime,$moreBtn,$updateMsg);
     }
@@ -253,7 +253,7 @@ class htmlAdmincp{
 	        $dtime		= 5;
 	        $msg.="<hr />已全部生成完成<hr />总共用时<span class='label label-info'>".$query["alltime"]."</span>秒";
         }
-		$updateMsg	= $this->page?true:false;
+		$updateMsg	= $this->page?'FRAME':false;
 		iUI::dialog($msg,$loopurl?"src:".$loopurl:'',$dtime,$moreBtn,$updateMsg);
     }
     public function Article($id){
