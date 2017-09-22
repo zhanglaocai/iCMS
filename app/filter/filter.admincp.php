@@ -15,7 +15,7 @@ class filterAdmincp{
         $this->do_config();
     }
     public function do_config(){
-        configAdmincp::app('999999');
+        configAdmincp::app('999999','filter');
     }
     public function do_save_config(){
         $filter  = explode("\n",$_POST['config']['filter']);
@@ -23,10 +23,10 @@ class filterAdmincp{
         $_POST['config']['filter']  = array_unique($filter);
         $_POST['config']['disable'] = array_unique($disable);
 
-        configAdmincp::save('999999',null,array($this,'cache'));
+        configAdmincp::save('999999','filter',array($this,'cache'));
     }
     public static function cache($config=null){
-        $config===null && $config  = configAdmincp::app('999999','filter',true);
+        $config===null && $config  = configAdmincp::get('999999','filter');
     	iCache::set('filter/array',$config['filter'],0);
     	iCache::set('filter/disable',$config['disable'],0);
     }

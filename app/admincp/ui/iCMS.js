@@ -73,10 +73,10 @@
               title:title
             }).tooltip('show');
         },
-        success: function(msg,callback) {
-            window.top.iCMS.alert(msg,true,callback);
+        success: function(msg,callback,t) {
+            return window.top.iCMS.alert(msg,true,callback,t);
         },
-        alert: function(msg,ok,callback) {
+        alert: function(msg,ok,callback,t) {
             var opts = ok ? {
                 label: 'success',
                 icon: 'check'
@@ -89,8 +89,8 @@
             opts.content = msg;
             opts.height  = 150;
             opts.modal   = true;
-            opts.time    = 3000;
-            window.top.iCMS.dialog(opts,callback);
+            opts.time    = t||3000;
+            return window.top.iCMS.dialog(opts,callback);
         },
         dialog: function(options,callback) {
             var defaults = {
@@ -162,7 +162,7 @@
             function __callback(type){
                 window.clearTimeout(timeOutID);
                 if (typeof(callback) === "function") {
-                    callback(type);
+                    callback(type,d);
                 }
             }
             function __msg(content){

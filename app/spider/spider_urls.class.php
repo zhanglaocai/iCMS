@@ -56,6 +56,11 @@ class spider_urls {
         }
 
         foreach ($_urlsArray AS $_key => $_url) {
+            $_url = trim($_url);
+            if(empty($_url)){
+                continue;
+            }
+
             $_url      = htmlspecialchars_decode($_url);
             $_urlsList = array();
             /**

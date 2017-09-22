@@ -23,7 +23,7 @@ class linksFunc{
 			$iscache= false;
 			$rs 	= '';
 		}else{
-			$cacheName	= 'links/'.md5($sql);
+			$cacheName	= 'links/'.md5($where);
 			$rs			= iCache::get($cacheName);
 		}
 		if(empty($rs)){

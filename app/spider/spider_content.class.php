@@ -197,7 +197,7 @@ class spider_content {
         }
 
         if (spider::$callback['content'] && is_callable(spider::$callback['content'])) {
-            $content = call_user_func_array(spider::$callback['content'],array($content));
+            $content = call_user_func_array(spider::$callback['content'],array($content,$data));
         }
 
         if($data['array']){

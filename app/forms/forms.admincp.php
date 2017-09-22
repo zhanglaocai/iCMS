@@ -428,15 +428,4 @@ class formsAdmincp{
       $app_table_file && iFS::rm($app_table_file);
       iFS::rmdir($remove_path);
     }
-    public function setup_zipurl($url,$name,$zipname=null){
-          // apps_store::$test = true;
-        $msg = apps_store::download($url,$name,$zipname);
-        $msg.= apps_store::install();
-        $msg = str_replace('<iCMS>', '<br />', $msg);
-        if(apps_store::$app_id){
-          iUI::dialog($msg,'url:'.APP_URI."&do=add&id=".apps_store::$app_id,10);
-        }else{
-          iUI::dialog($msg,'js:1',3);
-        }
-    }
 }

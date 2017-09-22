@@ -85,7 +85,7 @@ class categoryAdmincp {
                 $rs['config']   = json_decode($rootRs['config'],true);
 	        }
             if($default){
-                $rs = array_merge($rs,$default);
+                $rs = array_merge($rs,(array)$default);
             }
         }
 

@@ -178,37 +178,37 @@ class iView {
         $flag = iPHP_APP . ':/';
         if (strpos($tpl, $flag) !== false) {
             // 模板名/$tpl
-            if ($_tpl = self::check_app_tpl($tpl, iPHP_DEFAULT_TPL)){
+            if ($_tpl = self::check_tpl($tpl, iPHP_DEFAULT_TPL)){
                 return $_tpl;
             }
             // testApp/$tpl
             if(self::$app){
-                if ($_tpl = self::check_app_tpl($tpl, self::$app.'App')) {
+                if ($_tpl = self::check_tpl($tpl, self::$app.'App')) {
                     return $_tpl;
                 }
             }
             // iCMS/$tpl
-            if ($_tpl = self::check_app_tpl($tpl, iPHP_APP)) {
+            if ($_tpl = self::check_tpl($tpl, iPHP_APP)) {
                 return $_tpl;
             }
             // iCMS/设备名/$tpl
-            if ($_tpl = self::check_app_tpl($tpl, iPHP_APP.'/'.iPHP_DEVICE)) {
+            if ($_tpl = self::check_tpl($tpl, iPHP_APP.'/'.iPHP_DEVICE)) {
                 return $_tpl;
             }
             // // 其它移动设备$tpl
             // if(iPHP_MOBILE){
             //     // iCMS/mobile/$tpl
-            //     if ($_tpl = self::check_app_tpl($tpl, iPHP_APP.'/mobile')) {
+            //     if ($_tpl = self::check_tpl($tpl, iPHP_APP.'/mobile')) {
             //         return $_tpl;
             //     }
             // }
             $tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
-            // return self::check_app_tpl($tpl, iPHP_DEFAULT_TPL);
+            // return self::check_tpl($tpl, iPHP_DEFAULT_TPL);
         } elseif (strpos($tpl, '{iTPL}') !== false) {
             $flag = '{iTPL}';
             // testApp/$tpl
             if(self::$app){
-                if ($_tpl = self::check_app_tpl($tpl, self::$app.'App',$flag)) {
+                if ($_tpl = self::check_tpl($tpl, self::$app.'App',$flag)) {
                     return $_tpl;
                 }
             }
@@ -221,11 +221,18 @@ class iView {
             return false;
         }
     }
-    public static function check_app_tpl($tpl, $dir,$flag=null) {
+    public static function check_tpl($tpl, $dir=null,$flag=null) {
         $flag===null && $flag = iPHP_APP.':/';
-        $tpl = str_replace($flag, $dir, $tpl);
+        $dir && $tpl = str_replace($flag, $dir, $tpl);
         if (is_file(iPHP_TPL_DIR . "/" . $tpl)) {
             return $tpl;
+        }
+        return false;
+    }
+    public static function check_dir($name) {
+        $dir = iPHP_TPL_DIR . "/" . $name;
+        if (is_dir($dir)) {
+            return $dir;
         }
         return false;
     }
