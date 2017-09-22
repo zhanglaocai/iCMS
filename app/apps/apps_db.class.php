@@ -204,6 +204,15 @@ class apps_db {
          $query && iDB::query($sql);
          return array($name,$PRIMARY);
     }
+    public static function bakuptable($tabledb,$exists=true) {
+        foreach ($tabledb as $table) {
+            $exists && $creattable .= "DROP TABLE IF EXISTS `$table`;\n";
+            $CreatTable = iDB::row("SHOW CREATE TABLE $table", ARRAY_A);
+            $CreatTable['Create Table'] = str_replace($CreatTable['Table'], $table, $CreatTable['Create Table']);
+            $creattable .= $CreatTable['Create Table'] . ";\n\n";
+        }
+        return $creattable;
+    }
     public static function create_table_sql($json) {
         if($json){
           $tableArray = apps::table_item($json);
@@ -211,7 +220,7 @@ class apps_db {
             iDB::check_table($value['table'],false) && $tables[] = $value['table'];
           }
           if($tables){
-            $sql = databaseAdmincp::bakuptable($tables,false);
+            $sql = self::bakuptable($tables,false);
             $sql = preg_replace('/\sAUTO_INCREMENT=\d+/is', '', $sql);
             $sql = str_replace('`'.iPHP_DB_PREFIX, '`'.iPHP_DB_PREFIX_TAG, $sql);
             return $sql;

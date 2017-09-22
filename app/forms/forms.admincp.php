@@ -132,6 +132,7 @@ class formsAdmincp{
           $rs['fields'] = forms::base_fields_json();
           $rs['fields'] = json_decode($rs['fields'],true);
           $base_fields  = forms::base_fields_array();
+          $rs['config']['enable'] = "1";
         }
         empty($rs['tpl']) && $rs['tpl'] = '{iTPL}/forms.htm';
         $rs['app'] = forms::short_app($rs['app']);

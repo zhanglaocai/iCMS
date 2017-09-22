@@ -107,6 +107,14 @@ $(function(){
             <span class="help-inline">表单提交完成提示语</span>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend">
+              <span class="add-on">用户提交</span>
+              <div class="switch" data-on-label="启用" data-off-label="禁用">
+                <input type="checkbox" data-type="switch" name="config[enable]" id="config_enable" <?php echo $rs['config']['enable']?'checked':''; ?>/>
+              </div>
+              <span class="help-inline"></span>
+            </div>
+            <div class="clearfloat mb10"></div>
+            <div class="input-prepend">
               <span class="add-on">表单状态</span>
               <div class="switch" data-on-label="启用" data-off-label="禁用">
                 <input type="checkbox" data-type="switch" name="status" id="status" <?php echo $rs['status']?'checked':''; ?>/>

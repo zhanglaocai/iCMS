@@ -396,6 +396,14 @@ class apps {
         $v_list == 0 && iPHP::error_throw($zip->errorInfo(true)); //如果有误，提示错误信息。
         return $zipFile;
     }
+    public static function get_git_version($app){
+        $verArray = array();
+        $ver_file = apps::get_path($app,'version');
+        if(@is_file($ver_file)){
+            $verArray = include $ver_file;
+        }
+        return $verArray;
+    }
     public static function update_count($id,$appid=0,$field,$math='+',$count=1){
         $rs = self::get_app($appid);
         $tables = reset($rs['table']);
@@ -409,6 +417,18 @@ class apps {
                     WHERE `".$tables['primary']."` = '$id' {$sql}
                 ");
             }
+        }
+    }
+    public static function update_config($appid,$values=null){
+        $rs = apps::get($appid);
+        $config = array();
+        $rs['config'] && $config = $rs['config'];
+        if($values){
+            $config = array_merge($config,(array)$values);
+            iDB::update("apps",
+                array('config'=>addslashes(json_encode($config))),
+                array('id'=>$appid)
+            );
         }
     }
 }

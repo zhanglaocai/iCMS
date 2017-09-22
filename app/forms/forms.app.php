@@ -23,14 +23,26 @@ class formsApp {
         $token  = $_POST['token'];
         list($_formid,$_time) = explode("#", authcode($token));
         if($_formid==$formid && $_time==$time){
-            $formsAdmincp = new formsAdmincp();
-            $ret   = $formsAdmincp->do_savedata(false);
-            $forms = $formsAdmincp->form;
-            iPHP::set_cookie('token_time','',-31536000);
-            $array = array('code'=>1,'msg'=>$forms['config']['success']);
+            $active = true;
+            $forms  = forms::get($formid);
+            if(empty($forms)||empty($forms['status'])){
+                $array = array('code'=>0,'msg'=>'找不到相关表单<b>ID:' . $formid . '</b>');
+                $active = false;
+            }
+            if(empty($forms['config']['enable'])){
+                $array = array('code'=>0,'msg'=>'该表单设置不允许用户提交!');
+                $active = false;
+            }
+            if($active){
+                $formsAdmincp = new formsAdmincp();
+                $ret   = $formsAdmincp->do_savedata(false);
+                iPHP::set_cookie('token_time','',-31536000);
+                $array = array('code'=>1,'msg'=>$forms['config']['success']);
+            }
         }else{
             $array = array('code'=>0,'msg'=>'提交出错!');
         }
+
         if(iPHP::is_ajax()){
             echo json_encode($array);
         }else{
@@ -48,6 +60,9 @@ class formsApp {
         if(empty($forms)||empty($forms['status'])){
             iPHP::error_404('找不到相关表单<b>ID:' . $formid . '</b>', 10001);
         }
+        // if(empty($forms['config']['enable'])){
+        //     iPHP::error_404('该表单设置不允许用户提交', 10002);
+        // }
 
         $forms['fieldArray'] = former::fields($forms['fields']);
         $forms['action'] = iURL::router(array('forms'));
