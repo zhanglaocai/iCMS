@@ -494,16 +494,28 @@ class appsAdmincp{
       }
 
       if($type=='app'){
-          iDB::value("
+          $appid = iDB::value("
             SELECT `id` FROM `#iCMS@__apps`
             WHERE `app` ='".$store['app']."'
-          ") && iUI::alert($store['name'].'['.$store['app'].'] 应用已存在','js:1',1000000);
+          ");
+          if($appid){
+            apps_store::config(array(
+                'appid'    => $appid,
+                'app'      => $store['app'],
+                'git_sha'  => $store['git_sha'],
+                'git_time' => $store['git_time'],
+                'version'  => $store['version'],
+                'authkey'  => $store['authkey'],
+            ),$sid);
+            iUI::alert($store['name'].'['.$store['app'].'] 应用已存在','js:1',1000000);
+          }
 
-          if($store['data']->tables){
-            foreach ($store['data']->tables as $table) {
+          if($store['data']['tables']){
+            foreach ($store['data']['tables'] as $table) {
                 iDB::check_table($table) && iUI::alert('['.$table.']数据表已经存在!','js:1',1000000);
             }
           }
+
           $path = iPHP_APP_DIR.'/'.$store['app'];
           if(iFS::checkDir($path)){
             $ptext = str_replace(iPATH,'iPHP://',$path);
@@ -517,6 +529,14 @@ class appsAdmincp{
       if($type=='template'){
         $path = iPHP_TPL_DIR.'/'.$store['app'];
         if(iFS::checkDir($path)){
+          apps_store::config(array(
+              'appid'    => null,
+              'app'      => $store['app'],
+              'git_sha'  => $store['git_sha'],
+              'git_time' => $store['git_time'],
+              'version'  => $store['version'],
+              'authkey'  => $store['authkey'],
+          ),$sid);
           $ptext = str_replace(iPATH,'iPHP://',$path);
           iUI::alert(
             $store['name'].'['.$store['app'].'] <br /> 模板['.$ptext.']目录已存在,<br />程序无法继续安装',

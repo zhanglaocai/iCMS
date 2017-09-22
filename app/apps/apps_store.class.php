@@ -506,10 +506,13 @@ class apps_store {
             iCache::del($cacheid);
 
             $data['addtime']  = time();
-            $data['git_sha']  = $store['git_sha'];
-            $data['git_time'] = $store['git_time'];
-            $data['version']  = $store['version'];
-            $store['authkey'] && $data['authkey']  = $store['authkey'];
+            if($store){
+                $data['git_sha']  = $store['git_sha'];
+                $data['git_time'] = $store['git_time'];
+                $data['version']  = $store['version'];
+                $store['authkey'] && $data['authkey']  = $store['authkey'];
+            }
+
             $_GET['transaction_id'] && $data['transaction_id']  = $_GET['transaction_id'];
 
             $config[$sid] && $array = $config[$sid];
