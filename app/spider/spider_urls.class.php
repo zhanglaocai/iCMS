@@ -176,6 +176,15 @@ class spider_urls {
 
                 // $lists = $list_area;
                 //echo 'list:getDocumentID:'.$lists->getDocumentID()."\n";
+            }elseif($rule['mode']=="3"){
+                $list_area = json_decode($html,true);
+                if($rule['list_area_rule']){
+                    $list_area_rule = explode('->', $rule['list_area_rule']);
+                    $level = 0;
+                    $lists = spider_tools::array_filter_key($list_area,$list_area_rule,$level);
+                }else{
+                    $lists = $list_area;
+                }
             }else{
                 $list_area_rule = spider_tools::pregTag($rule['list_area_rule']);
                 if ($list_area_rule && $rule['list_area_rule']!='<%content%>') {
@@ -211,7 +220,15 @@ class spider_urls {
             if (spider::$ruleTest) {
                 echo '<b>列表区域规则:</b>'.iSecurity::escapeStr($rule['list_area_rule']);
                 echo "<hr />";
-                echo '<b>列表区域抓取结果:</b><div style="max-height:300px;overflow-y: scroll;">'.iSecurity::escapeStr($list_area).'</div>';
+                echo '<b>列表区域抓取结果:</b><div style="max-height:300px;overflow-y: scroll;">';
+                if(is_array($list_area)){
+                    echo "<pre>";
+                    var_export($list_area);
+                    echo "</pre>";
+                }else{
+                    echo iSecurity::escapeStr($list_area);
+                }
+                echo '</div>';
                 echo "<hr />";
                 echo '<b>列表链接规则:</b>'.iSecurity::escapeStr($rule['list_url_rule']);
                 echo "<hr />";

@@ -490,7 +490,7 @@ class appsAdmincp{
       }
 
       if($store['iCMS_GIT_TIME'] && $store['iCMS_GIT_TIME']>GIT_TIME){
-        iUI::alert('该应用要求iCMS版本[git:'.get_date($store['iCMS_GIT_TIME'],'Y-m-d H:i').']以上版本','js:1',1000000);
+        iUI::alert('该应用要求iCMS版本更新到<br />[git:'.get_date($store['iCMS_GIT_TIME'],'Y-m-d H:i').']以上版本','js:1',1000000);
       }
 
       if($type=='app'){

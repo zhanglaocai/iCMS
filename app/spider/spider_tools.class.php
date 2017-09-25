@@ -72,13 +72,28 @@ class spider_tools {
             return iCache::get('spider/'.$ckey);
         }
     }
-    public static function listItemData($row,$rule,$baseUrl=null){
-
+    public static function listItemData($data,$rule,$baseUrl=null){
         $responses = array();
+
         if(strpos($rule['list_url_rule'], '<%url%>')!==false){
-            $responses = $row;
-        }else if(is_object($row)){
-            $DOM = phpQuery::pq($row);
+            $responses = $data;
+        }elseif($rule['mode']=="3"){
+            $list_url_rule = explode("\n", $rule['list_url_rule']);
+            foreach ($list_url_rule as $key => $value) {
+                $key_rule = trim($value);
+                if(empty($key_rule)){
+                    continue;
+                }
+                $rkey = $key_rule;
+                $dkey = $key_rule;
+                if(strpos($key_rule, '@@')!==false){
+                    list($rkey,$dkey) = explode("@@", $key_rule);
+                }
+                $data[$dkey] && $responses[$rkey] = $data[$dkey];
+            }
+        }elseif($rule['mode']=="2"){
+        // }else if(is_object($data)){
+            $DOM = phpQuery::pq($data);
 
             $dom_key_map = array('title','url');
             $list_url_rule = explode("\n", $rule['list_url_rule']);
@@ -679,4 +694,20 @@ class spider_tools {
 	    $convmap = array(0x0, 0x10000, 0, 0xfffff);
 	    return mb_decode_numericentity($entity, $convmap, 'UTF-8');
 	}
+    public static function array_filter_key($array,$filter,$level){
+        $_filter = $filter[$level];unset($filter[$level]);
+        foreach ($array as $key => $value) {
+            if($key==$_filter){
+                if(empty($filter)){
+                    return $value;
+                }else{
+                    ++$level;
+                    return spider_tools::array_filter_key($value,$filter,$level);
+                }
+            }else{
+
+            }
+        }
+
+    }
 }

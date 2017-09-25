@@ -233,7 +233,8 @@ class iPHP {
 		);
 	}
 	public static function PG($key) {
-		return isset($_POST[$key]) ? $_POST[$key] : $_GET[$key];
+		$value = isset($_POST[$key]) ? $_POST[$key] : $_GET[$key];
+		return iSecurity::escapeStr($value);
 	}
 	// 获取客户端IP
 	public static function get_ip($format = 0) {
@@ -255,7 +256,7 @@ class iPHP {
 			}
 			return sprintf('%03d%03d%03d', $ips[0], $ips[1], $ips[2]);
 		} else {
-			return $ip;
+			return iSecurity::escapeStr($ip);
 		}
 	}
 	//设置COOKIE

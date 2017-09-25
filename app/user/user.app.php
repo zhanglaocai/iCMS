@@ -12,21 +12,19 @@ defined('iPHP') OR exit('What are you doing?');
 class userApp {
 	public $methods = array('iCMS', 'home', 'favorite', 'article', 'publish', 'manage', 'profile', 'data', 'hits', 'check', 'follow', 'follower', 'fans', 'login', 'findpwd', 'logout', 'register', 'add_category', 'upload', 'uploadpic', 'mobileUp','config', 'uploadvideo', 'uploadimage', 'catchimage', 'report', 'fav_category', 'ucard', 'pm');
 	public $openid = null;
-	public $user = array();
-	public $me = array();
-	private $auth = false;
+	public $user   = array();
+	public $me     = array();
+	public $config = array();
+	private $auth  = false;
 
 	public function __construct() {
+		$this->forward();
 		$this->auth = user::get_cookie();
 		$this->uid = (int) $_GET['uid'];
 		$this->ajax = (bool) $_GET['ajax'];
-		$this->forward = iSecurity::escapeStr($_GET['forward']);
-		$this->forward OR iPHP::get_cookie('forward');
-		$this->forward OR $this->forward = iCMS_URL;
 		$this->login_uri = user::login_uri();
 		files::init(array('userid'=> user::$userid));
-
-		iView::assign('forward', $this->forward);
+		$this->config = iCMS::$config['user'];
 	}
 	private function __user($userdata = false) {
 		$status = array('logined' => false, 'followed' => false, 'isme' => false);
@@ -40,7 +38,7 @@ class userApp {
 		}
 		$this->me = user::status(); //判断是否登陆
 		if (empty($this->me) && empty($this->user)) {
-			iPHP::set_cookie('forward', '', -31536000);
+			$this->forward('CLEAR');
 			iPHP::redirect($this->login_uri);
 		}
 
@@ -207,19 +205,19 @@ class userApp {
 			iFS::check_ext($pic) OR iUI::alert('iCMS:file:failure');
 		}
 
-		if (iCMS::$config['user']['post']['seccode']) {
+		if ($this->config['post']['seccode']) {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iSeccode::check($seccode, true) OR iUI::alert('iCMS:seccode:error');
 		}
 
-		if (iCMS::$config['user']['post']['interval']) {
+		if ($this->config['post']['interval']) {
 			$last_postime = iDB::value("
                 SELECT MAX(postime)
                 FROM `#iCMS@__article`
                 WHERE userid='" . user::$userid . "' LIMIT 1;
             ");
 
-			if ($_SERVER['REQUEST_TIME'] - $last_postime < iCMS::$config['user']['post']['interval']) {
+			if ($_SERVER['REQUEST_TIME'] - $last_postime < $this->config['post']['interval']) {
 				iUI::alert('user:publish:interval');
 			}
 		}
@@ -414,7 +412,7 @@ class userApp {
 		}
 		if ($setting) {
 			$setting = array_merge((array)$this->me->setting,(array)$setting);
-			$setting = json_encode($setting);
+			$setting = addslashes(json_encode($setting));
 
 			iDB::update('user',
 				array('setting' => $setting),
@@ -613,7 +611,7 @@ class userApp {
 		}
 	}
 	public function ACTION_login() {
-		iCMS::$config['user']['login']['enable'] OR iUI::code(0, 'user:login:forbidden', 'uname', 'json');
+		$this->config['login']['enable'] OR iUI::code(0, 'user:login:forbidden', 'uname', 'json');
 
 		$uname = iSecurity::escapeStr($_POST['uname']);
 		$pass = md5(trim($_POST['pass']));
@@ -622,24 +620,25 @@ class userApp {
 		$openid = iSecurity::escapeStr($_POST['openid']);
 		$platform = iSecurity::escapeStr($_POST['platform']);
 
-		if (iCMS::$config['user']['login']['seccode']) {
+		if ($this->config['login']['seccode']) {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 
-		// if (iCMS::$config['user']['login']['interval']) {
-		// 	$ip = iSecurity::escapeStr(iPHP::get_ip());
-		// 	$logintime = time();
-		// 	$lastlogintime = iDB::value("
-  //               SELECT `lastlogintime`
-  //               FROM `#iCMS@__user`
-  //               WHERE `lastloginip`='$ip'
-  //               ORDER BY uid DESC LIMIT 1;");
+		if ($this->config['login']['interval']) {
+			$lastloginip   = iPHP::get_ip();
+			$logintime     = time();
+			$lastlogintime = iDB::value("
+                SELECT `lastlogintime`
+                FROM `#iCMS@__user`
+                WHERE `lastloginip`='$lastloginip'
+                ORDER BY uid DESC LIMIT 1;"
+            );
 
-		// 	if ($lastlogintime - $logintime > iCMS::$config['user']['login']['interval']) {
-		// 		iUI::code(0, 'user:login:interval', 'username', 'json');
-		// 	}
-		// }
+			if ($lastlogintime - $logintime > $this->config['login']['interval']) {
+				iUI::code(0, 'user:login:interval', 'username', 'json');
+			}
+		}
 
 		$remember && user::$cookietime = 14 * 86400;
 		$user = user::login($uname, $pass, (strpos($uname, '@') === false ? 'nk' : 'un'));
@@ -653,7 +652,7 @@ class userApp {
 			}
 			iUI::code(1, 0, $this->forward, 'json');
 		} else {
-			if (iCMS::$config['user']['login']['interval']) {
+			if ($this->config['login']['interval']) {
 				$cache_name = "iCMS/error/login." . md5($uname);
 				$login_error = iCache::get($cache_name);
 				if ($login_error) {
@@ -667,7 +666,7 @@ class userApp {
 				} else {
 					$login_error = array($uname, 1);
 				}
-				iCache::set($cache_name, $login_error, iCMS::$config['user']['login']['interval']);
+				iCache::set($cache_name, $login_error, $this->config['login']['interval']);
 			}
 			// $lang = 'user:login:error';
 			// $user && $lang.='_status_'.$user;
@@ -676,17 +675,17 @@ class userApp {
 	}
 
 	public function ACTION_register() {
-		iCMS::$config['user']['register']['enable'] OR exit(iUI::lang('user:register:forbidden'));
+		$this->config['register']['enable'] OR exit(iUI::lang('user:register:forbidden'));
 
-		if (iCMS::$config['user']['register']['seccode']) {
+		if ($this->config['register']['seccode']) {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
 
-		$regip = iSecurity::escapeStr(iPHP::get_ip());
+		$regip = iPHP::get_ip();
 		$regdate = time();
 
-		if (iCMS::$config['user']['register']['interval']) {
+		if ($this->config['register']['interval']) {
 			$ip_regdate = iDB::value("
                 SELECT `regdate`
                 FROM `#iCMS@__user`
@@ -694,7 +693,7 @@ class userApp {
                 ORDER BY uid DESC LIMIT 1;
             ");
 
-			if ($ip_regdate - $regdate > iCMS::$config['user']['register']['interval']) {
+			if ($ip_regdate - $regdate > $this->config['register']['interval']) {
 				iUI::code(0, 'user:register:interval', 'username', 'json');
 			}
 		}
@@ -779,7 +778,7 @@ class userApp {
 		}
 
 		//user::set_cache($uid);
-		iPHP::set_cookie('forward', '', -31536000);
+		$this->forward('CLEAR');
 		iUI::json(array('code' => 1, 'forward' => $this->forward));
 	}
 	public function ACTION_add_category() {
@@ -907,8 +906,8 @@ class userApp {
 	}
 
 	public function API_register() {
-		if (iCMS::$config['user']['register']['enable']) {
-			iPHP::set_cookie('forward', $this->forward);
+		if ($this->config['register']['enable']) {
+			$this->forward('REF');
 			user::status($this->forward, "login");
 			iView::display('iCMS://user/register.htm');
 		} else {
@@ -966,9 +965,9 @@ class userApp {
 		}
 	}
 	public function API_login() {
-		if (iCMS::$config['user']['login']['enable']) {
+		if ($this->config['login']['enable']) {
 			$this->openid();
-			iPHP::set_cookie('forward', $this->forward);
+			$this->forward('REF');
 			user::status($this->forward, "login");
 			iView::display('iCMS://user/login.htm');
 		} else {
@@ -1086,9 +1085,9 @@ class userApp {
 		if ($platform) {
 			$class_name   = 'user_'.$sign;
 			$open = new $class_name;
-			$open->appid = iCMS::$config['user']['open'][$sign]['appid'];
-			$open->appkey = iCMS::$config['user']['open'][$sign]['appkey'];
-			$redirect_uri = rtrim(iCMS::$config['user']['open'][$sign]['redirect'], '/');
+			$open->appid = $this->config['open'][$sign]['appid'];
+			$open->appkey = $this->config['open'][$sign]['appkey'];
+			$redirect_uri = rtrim($this->config['open'][$sign]['redirect'], '/');
 			$open->url = user::login_uri($redirect_uri) . 'sign=' . $sign;
 
 			if (isset($_GET['bind']) && $_GET['bind'] == $sign) {
@@ -1130,6 +1129,24 @@ class userApp {
 				exit;
 			}
 		}
+	}
+	public function forward($url=null) {
+		switch ($url) {
+			case 'CLEAR':
+				iPHP::set_cookie('forward', '', -31536000);
+				return;
+			break;
+			case 'REF':
+				$this->forward = $_SERVER['HTTP_REFERER'];
+				iPHP::set_cookie('forward', $this->forward);
+			break;
+			default:
+				$this->forward = iPHP::PG('forward');
+				$this->forward OR $this->forward = iPHP::get_cookie('forward');
+				$this->forward OR $this->forward = iCMS_URL;
+			break;
+		}
+		iView::assign('forward', $this->forward);
 	}
 	public static function at_user_list($content) {
 		return self::at($content);

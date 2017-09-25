@@ -63,6 +63,8 @@ class apps_meta {
             $a   = apps::get($app);
             $app = $a['app'];
         }
+        empty($app) && trigger_error('META name is empty!',E_USER_ERROR);
+
         $table = $app.'_meta';
         self::$CREATE_TABLE && self::create($table);
         return $table;

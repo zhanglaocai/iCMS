@@ -213,6 +213,16 @@ class user {
 		if((int)$user->status!=1){
 			return $user->status;
 		}
+		$lastloginip = iPHP::get_ip();
+
+		iDB::update('user',
+			array(
+				'lastloginip'   => $lastloginip,
+				'lastlogintime' => time(),
+			),
+			array('uid' => $user->uid)
+		);
+
 		self::set_cookie($user->username,$user->password,(array)$user);
 		self::$userid   = $user->uid;
 		self::$nickname = $user->nickname;

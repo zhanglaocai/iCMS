@@ -176,11 +176,18 @@ $(function(){
               <label class="radio">
                 <input type="radio" name="rule[mode]" id="mode1" value="1"<?php if($rule['mode']=="1"){ echo ' checked="true"';};?>>
                 正则 </label>
-              </span><span class="add-on">
+              </span>
+              <span class="add-on">
               <label class="radio">
                 <input type="radio" name="rule[mode]" id="mode2" value="2"<?php if($rule['mode']=="2"){ echo ' checked="true"';};?>>
                 phpQuery </label>
-              </span></div>
+              </span>
+              <span class="add-on">
+              <label class="radio">
+                <input type="radio" name="rule[mode]" id="mode3" value="3"<?php if($rule['mode']=="3"){ echo ' checked="true"';};?>>
+                JSON解析 </label>
+              </span>
+            </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-sp"><span class="add-on">列表网址</span>
               <textarea name="rule[list_urls]" id="list_urls" class="span6"><?php echo $rule['list_urls'] ; ?></textarea>
