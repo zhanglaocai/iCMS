@@ -397,7 +397,7 @@ class filesAdmincp{
             return $output;
         }
     }
-    public static function picdata($pic='',$mpic='',$spic=''){
+    public static function picdata($pic='',$bpic='',$mpic='',$spic=''){
         if(is_array($pic)){
             is_array($mpic) && $pic+=$mpic;
             return addslashes(json_encode($pic));
@@ -405,6 +405,10 @@ class filesAdmincp{
         $picdata = array();
         if($pic){
             list($width, $height, $type, $attr) = @getimagesize(iFS::fp($pic,'+iPATH'));
+            $picdata['p'] = array('w'=>$width,'h'=>$height);
+        }
+        if($bpic){
+            list($width, $height, $type, $attr) = @getimagesize(iFS::fp($bpic,'+iPATH'));
             $picdata['b'] = array('w'=>$width,'h'=>$height);
         }
         if($mpic){

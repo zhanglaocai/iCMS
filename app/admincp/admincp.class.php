@@ -184,6 +184,10 @@ class admincp {
 		$navbar === false && $body_class = 'iframe ';
 
 		include self::view("admincp.header",'admincp');
+
+		if(isset($_GET['navbar']) && $_GET['navbar']=='no'){
+			$navbar = false;
+		}
 		$navbar === true && include self::view("admincp.navbar",'admincp');
 	}
 

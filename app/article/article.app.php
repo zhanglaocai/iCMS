@@ -7,78 +7,13 @@
 * @site https://www.icmsdev.com
 * @licence https://www.icmsdev.com/LICENSE.html
 */
-class articleApp {
-	public $methods = array('iCMS', 'article', 'clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
-	public static $config  = null;
+class articleApp extends appsApp {
+	public $methods = array('iCMS','clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
+    public static $config  = null;
 	public function __construct() {
-		self::$config = iCMS::$config['article'];
+		parent::__construct('article');
+		self::$config = iCMS::$config[$this->app];
 	}
-
-	public function do_iCMS($a = null) {
-		$v = (int) $_GET['id'];
-		$p = isset($_GET['p']) ? (int) $_GET['p'] : 1;
-		$f = 'id';
-		if(isset($_GET['clink'])){
-			$v = iSecurity::escapeStr($_GET['clink']);
-			$f = 'clink';
-		}
-		return $this->article($v,$p,$f);
-	}
-
-	public function do_clink($a = null) {
-		return $this->do_iCMS($a);
-	}
-	public function API_iCMS() {
-		return $this->do_iCMS();
-	}
-	public function API_clink() {
-		return $this->do_clink();
-	}
-	public function API_hits($id = null) {
-		$id === null && $id = (int) $_GET['id'];
-		if ($id) {
-			$sql = iSQL::update_hits();
-			iDB::query("UPDATE `#iCMS@__article` SET {$sql} WHERE `id` ='$id'");
-		}
-	}
-	public function ACTION_vote() {
-		$type = $_POST['type'];
-		$this->__vote($type);
-		// $type=='up' && $this->vote('good');
-		// $type=='down' && $this->vote('bad');
-	}
-	public function API_comment() {
-		$appid = (int) $_GET['appid'];
-		$cid = (int) $_GET['cid'];
-		$iid = (int) $_GET['iid'];
-		$this->article($iid,1,'id','{iTPL}/article.comment.htm');
-	}
-	private function __vote($type) {
-		// user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
-
-		$aid = (int) $_POST['iid'];
-		$aid OR iUI::code(0, 'iCMS:article:empty_id', 0, 'json');
-
-		$ackey = 'article_' . $type . '_' . $aid;
-		$vote = iPHP::get_cookie($ackey);
-		$vote && iUI::code(0, 'iCMS:article:!' . $type, 0, 'json');
-
-		if ($type == 'good') {
-			$sql = '`good`=good+1';
-		} else {
-			$sql = '`bad`=bad+1';
-		}
-		iDB::query("UPDATE `#iCMS@__article` SET {$sql} WHERE `id` ='{$aid}' limit 1");
-		iPHP::set_cookie($ackey, time(), 86400);
-		iUI::code(1, 'iCMS:article:' . $type, 0, 'json');
-	}
-	/**
-	 * [hooked 钩子]
-	 * @param  [type] $data [description]
-	 */
-    public static function hooked(&$data){
-    	iPHP::hook('article',$data,iCMS::$config['hooks']['article']);
-    }
 	public function article($fvar,$page = 1,$field='id', $tpl = true) {
 		$article = iDB::row("
 			SELECT * FROM `#iCMS@__article`
@@ -123,24 +58,10 @@ class articleApp {
         $app['fields'] && formerApp::data($article['id'],$app,'article',$article,$vars,$article['category']);
 
 		unset($article_data);
-
 		self::hooked($article);
-
-		if ($tpl) {
-			iView::set_iVARS($article['iurl'],'iURL');
-			$article_tpl = empty($article['tpl']) ? $article['category']['template']['article'] : $article['tpl'];
-			strstr($tpl, '.htm') && $article_tpl = $tpl;
-			iView::assign('category', $article['category']);unset($article['category']);
-			iView::assign('article', $article);
-
-			$view = iView::render($article_tpl, 'article');
-			if($view) return array($view,$article);
-
-		} else {
-			return $article;
-		}
+		return apps_common::render($article,'article',$tpl);
 	}
-	public static function value($article, $art_data = "", $vars = array(), $page = 1, $tpl = false) {
+	public static function value($article, $data = "", $vars = array(), $page = 1, $tpl = false) {
 
 		$article['appid'] = iCMS_APP_ARTICLE;
 
@@ -158,42 +79,40 @@ class articleApp {
 		if ($category['status'] == 0) {
 			return false;
 		}
-
-		if (iView::$gateway == "html" && $tpl && (strstr($category['rule']['article'], '{PHP}') || $category['outurl'] || $category['mode'] == "0")) {
-			return false;
-		}
+        if(iCMS::check_view_html($tpl,$category,'article')){
+            return false;
+        }
 
 		$article['iurl'] = (array)iURL::get('article', array($article, $category));
 		$article['url'] = $article['iurl']['href'];
-		$article['link'] = "<a href='{$article['url']}'>{$article['title']}</a>";
 
-		($tpl && $category['mode'] == '1') && iCMS::redirect_html($article['iurl']['path'], $article['iurl']['href']);
+		($tpl && $category['mode'] == '1') && iCMS::redirect_html($article['iurl']);
 
 		$article['category'] = categoryApp::get_lite($category);
 
-		if ($art_data) {
+		if ($data) {
 			$pkey = intval($page - 1);
 			if ($article['chapter']) {
-				$chapterArray = $art_data;
+				$chapterArray = $data;
 				$count = count($chapterArray);
 				$adid = $chapterArray[$pkey]['id'];
-				$art_data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $article['id'] . "' AND id='" . (int) $adid . "' LIMIT 1;", ARRAY_A);
+				$data = iDB::row("SELECT body,subtitle FROM `#iCMS@__article_data` WHERE aid='" . (int) $article['id'] . "' AND id='" . (int) $adid . "' LIMIT 1;", ARRAY_A);
 			}
 
 
-			$article['pics'] = filesApp::get_content_pics($art_data['body'],$pic_array);
+			$article['pics'] = filesApp::get_content_pics($data['body'],$pic_array);
 
 			if ($article['chapter']) {
-				$article['body'] = $art_data['body'];
+				$article['body'] = $data['body'];
 			} else {
-				$body = explode('#--iCMS.PageBreak--#', $art_data['body']);
+				$body = explode('#--iCMS.PageBreak--#', $data['body']);
 				$count = count($body);
 				$article['body'] = $body[$pkey];
 				unset($body);
 			}
 
-			$article['subtitle'] = $art_data['subtitle'];
-			unset($art_data);
+			$article['subtitle'] = $data['subtitle'];
+			unset($data);
 			$total = $count + intval(self::$config['pageno_incr']);
 			$article['page'] = iUI::page_content($article,$page,$total,$count,$category['mode'],$chapterArray);
 			$article['PAGES'] = $article['page']['PAGES'];unset($article['page']['PAGES']);
@@ -203,43 +122,15 @@ class articleApp {
 
 		$vars['tag'] && tagApp::get_array($article,$category['name'],'tags');
 
-		if ($vars['user']) {
-			if ($article['postype']) {
-				$article['user'] = user::empty_info($article['userid'], '#' . $article['editor']);
-			} else {
-				$article['user'] = user::info($article['userid'], $article['author']);
-			}
-		}
-		$article['source'] = text2link($article['source']);
-		$article['author'] = text2link($article['author']);
+        apps_common::init($article,'article',$vars);
+        apps_common::link();
+        apps_common::text2link();
+        apps_common::user();
+        apps_common::comment();
+        apps_common::pic();
+        apps_common::hits();
+        apps_common::param();
 
-		$article['hits'] = array(
-			'script' => iCMS_API . '?app=article&do=hits&cid=' . $article['cid'] . '&id=' . $article['id'],
-			'count' => $article['hits'],
-			'today' => $article['hits_today'],
-			'yday' => $article['hits_yday'],
-			'week' => $article['hits_week'],
-			'month' => $article['hits_month'],
-		);
-		$article['comment'] = array(
-			'url' => iCMS_API . "?app=article&do=comment&appid={$article['appid']}&iid={$article['id']}&cid={$article['cid']}",
-			'count' => $article['comments'],
-		);
-		$picArray = array();
-		$article['picdata'] && $picArray = filesApp::get_picdata($article['picdata']);
-		$article['pic']  = filesApp::get_pic($article['pic'], $picArray['b'], filesApp::get_twh($vars['btw'], $vars['bth']));
-		$article['mpic'] = filesApp::get_pic($article['mpic'], $picArray['m'], filesApp::get_twh($vars['mtw'], $vars['mth']));
-		$article['spic'] = filesApp::get_pic($article['spic'], $picArray['s'], filesApp::get_twh($vars['stw'], $vars['sth']));
-		unset($article['picdata'],$picArray);
-
-		$article['param'] = array(
-			"appid" => $article['appid'],
-			"iid"   => $article['id'],
-			"cid"   => $article['cid'],
-			"suid"  => $article['userid'],
-			"title" => $article['title'],
-			"url"   => $article['url'],
-		);
 		return $article;
 	}
 
@@ -277,7 +168,7 @@ class articleApp {
 				$img_replace[$key] = $img;
 			}
             if(self::$config['pic_next'] && $total>1){
-                $clicknext = '<a href="'.$next_url.'"><b>'.iUI::lang('iCMS:article:clicknext').' ('.$page.'/'.$total.')</b></a>';
+                $clicknext = '<a href="'.$next_url.'"><b>'.iUI::lang('article:clicknext').' ('.$page.'/'.$total.')</b></a>';
 				$clickimg = '<a href="' . $next_url . '" title="' . $article['title'] . '" class="img">' . $img . '</a>';
 				if (self::$config['pic_center']) {
                     $img_replace[$key] = '<p class="click2next">'.$clicknext.'</p>';

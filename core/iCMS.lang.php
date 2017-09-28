@@ -27,16 +27,6 @@ return array(
 		'format_right' =>'',
 		'di'           =>'第',
 	),
-	'article'=>array(
-		'first'     =>'已经是第一篇',
-		'last'      =>'已经是最后一篇',
-		'clicknext' =>'点击图片进入下一页',
-		'empty_id'  =>'文章ID不能为空',
-		'!good'     =>'您已经点过赞了啦 ！',
-		'good'      =>'谢谢您的赞，我会更加努力的',
-		'!bad'      =>'您已经过踩了啦！',
-		'bad'       =>'您已经过踩了啦！',
-	),
 	'content'=>array(
 		'first'     =>'已经是第一篇',
 		'last'      =>'已经是最后一篇',
@@ -69,6 +59,7 @@ return array(
 		'error' =>'收藏失败！',
 	),
 	'comment'=> array(
+		'empty_id'=>'ID不能为空',
 		'close'   =>'评论已关闭！',
 		'empty'   =>'请输入内容！',
 		'success' =>'感谢您的评论！',

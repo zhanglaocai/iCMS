@@ -26,7 +26,7 @@ class searchApp {
         $search['title']   = stripslashes($q);
         $search['keyword'] = $q;
         $tpl===false && $tpl = '{iTPL}/search.htm';
-        $q && $this->__slog($q);
+        $q && $this->search_log($q);
         $iurl =  new stdClass();
         $iurl->href = iURL::router('api');
         $iurl->href.= '?app=search&q='.$q;
@@ -36,7 +36,7 @@ class searchApp {
         iView::assign("search",$search);
         iView::display($tpl,'search');
     }
-    private function __slog($search){
+    private function search_log($search){
         $sid    = iDB::value("SELECT `id` FROM `#iCMS@__search_log` WHERE `search` = '$search' LIMIT 1");
         if($sid){
             iDB::query("UPDATE `#iCMS@__search_log` SET `times` = times+1 WHERE `id` = '$sid';");

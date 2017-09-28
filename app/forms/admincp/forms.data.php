@@ -12,7 +12,9 @@ admincp::head();
 ?>
 <script type="text/javascript">
 $(function(){
-$("#<?php echo APP_FORMID;?>").batch();
+  iCMS.select('sfield',"<?php echo $_GET['sfield']; ?>");
+  iCMS.select('pattern',"<?php echo $_GET['pattern']; ?>");
+  $("#<?php echo APP_FORMID;?>").batch();
 });
 </script>
 <div class="iCMS-container">
@@ -39,6 +41,17 @@ $("#<?php echo APP_FORMID;?>").batch();
             <?php } ?>
           </select>
         </div>
+        <div class="input-prepend">
+          <span class="add-on">查找方式</span>
+          <select name="pattern" id="pattern" class="chosen-select" style="width:120px;">
+            <option></option>
+            <option value="=">等于</option>
+            <option value="!=">不等于</option>
+            <option value=">">大于</option>
+            <option value="<">小于</option>
+            <option value="like">like</option>
+          </select>
+        </div>
         <div class="input-prepend input-append">
           <span class="add-on">关键字</span>
           <input type="text" name="keywords" class="span2" id="keywords" value="<?php echo $_GET['keywords'] ; ?>" />
@@ -62,7 +75,7 @@ $("#<?php echo APP_FORMID;?>").batch();
           <thead>
             <tr>
               <th><i class="fa fa-arrows-v"></i></th>
-              <th style="width:20px;"><?php echo strtoupper($primary); ?></th>
+              <th class="span1"><?php echo strtoupper($primary); ?></th>
               <th>表单内容</th>
             </tr>
           </thead>
@@ -70,6 +83,7 @@ $("#<?php echo APP_FORMID;?>").batch();
           <?php
             foreach ((array)$rs as $key => $value) {
               $id = $value[$primary];
+              $value+=$b[$id];
           ?>
             <tr id="tr<?php echo $id; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $id ; ?>" /></td>

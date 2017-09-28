@@ -25,35 +25,15 @@ class contentApp {
     public function API_iCMS(){
         return $this->do_iCMS();
     }
+    public function API_search($a = null) {
+        $app = iPHP::app("search");
+        return $app->search("{iTPL}/{$this->app}.search.htm");
+    }
     public function API_hits($id = null) {
-        $id === null && $id = $this->id;
-        if ($id) {
-            $sql = iSQL::update_hits();
-            iDB::query("UPDATE `".$this->table['table']."` SET {$sql} WHERE `".$this->primary."` ='$id'");
-        }
+        apps_common::api_hits('content',$id,$this->primary,$this->table['table']);
     }
     public function ACTION_vote() {
-        $type = $_POST['type'];
-        $this->__vote($type);
-    }
-    private function __vote($type) {
-        // user::get_cookie() OR iUI::code(0,'iCMS:!login',0,'json');
-
-        $id = (int) $_POST['iid'];
-        $id OR iUI::code(0, 'iCMS:content:empty_id', 0, 'json');
-
-        $ackey = $this->app.'_' . $type . '_' . $id;
-        $vote = iPHP::get_cookie($ackey);
-        $vote && iUI::code(0, 'iCMS:content:!' . $type, 0, 'json');
-
-        if ($type == 'good') {
-            $sql = '`good`=good+1';
-        } else {
-            $sql = '`bad`=bad+1';
-        }
-        iDB::query("UPDATE `".$this->table['table']."` SET {$sql} WHERE `".$this->primary."` ='{$id}' limit 1");
-        iPHP::set_cookie($ackey, time(), 86400);
-        iUI::code(1, 'iCMS:content:' . $type, 0, 'json');
+        apps_common::action_vote('content',$this->primary,$this->table['table']);
     }
     public function do_iCMS($a = null) {
         return $this->content($this->id, isset($_GET['p']) ? (int) $_GET['p'] : 1);;
@@ -77,26 +57,22 @@ class contentApp {
             'user' => true,
         );
         $rs = $this->value($rs,$vars,$page,$tpl);
+        if ($rs === false) {
+            return false;
+        }
         $rs+=(array)apps_meta::data($this->app,$id);
         $this->hooked($rs);
 
         if ($tpl) {
-            iView::set_iVARS($rs['iurl'],'iURL');
-            $app_tpl = empty($rs['tpl']) ? $rs['category']['template'][$this->app] : $rs['tpl'];
-            strstr($tpl, '.htm') && $article_tpl = $tpl;
             $apps = apps::get_app_lite($this->data);
             //自定义应用模板信息
             $apps['type']=="2" && iPHP::callback(array("contentFunc","__set_apps"),array($apps));
-
-            iView::assign('category', $rs['category']);unset($rs['category']);
             iView::assign('apps', $apps);
-            iView::assign($this->app, $rs);
-            iView::assign('content', $rs);
-            $view = iView::render($app_tpl, $this->app);
-            if($view) return array($view,$rs);
-        } else {
-            return $rs;
+            $content = $rs;unset($content['category']);
+            iView::assign('content', $content);unset($content);
         }
+
+        return apps_common::render($rs,$this->app,$tpl);
     }
 
     public function value($rs, $vars = array(),$page = 1, $tpl = false) {
@@ -115,8 +91,7 @@ class contentApp {
         if ($category['status'] == 0) {
             return false;
         }
-
-        if (iView::$gateway == "html" && $tpl && (strstr($category['rule'][$this->app], '{PHP}') || $category['outurl'] || $category['mode'] == "0")) {
+        if(iCMS::check_view_html($tpl,$category,$this->app)){
             return false;
         }
 
@@ -124,41 +99,23 @@ class contentApp {
 
         $rs['iurl'] = (array)iURL::get($this->app, array($rs, $category));
         $rs['url'] OR $rs['url'] = $rs['iurl']['href'];
-        $rs['link'] = '<a href="'.$rs['url'].'" class="'.$this->app.'">'.$rs['title'].'</a>';
 
-        ($tpl && $category['mode'] == '1') && iCMS::redirect_html($rs['iurl']['path'], $rs['iurl']['href']);
+        ($tpl && $category['mode'] == '1') && iCMS::redirect_html($rs['iurl']);
 
         if($category['mode'] && stripos($rs['url'], '.php?')===false){
             iURL::page_url($rs['iurl']);
         }
-        if($vars['user']){
-            if ($rs['postype']) {
-                $rs['user'] = user::empty_info($rs['userid'], '#' . $rs['editor']);
-            } else {
-                $rs['user'] = user::info($rs['userid'], $rs['editor']);
-            }
-        }
 
-        $rs['hits'] = array(
-            'script' => iCMS_API . '?app='.$this->app.'&do=hits&cid=' . $rs['cid'] . '&id=' . $rs[$this->primary],
-            'count'  => $rs['hits'],
-            'today'  => $rs['hits_today'],
-            'yday'   => $rs['hits_yday'],
-            'week'   => $rs['hits_week'],
-            'month'  => $rs['hits_month'],
-        );
-        $rs['comment'] = array(
-            'url'   => iCMS_API . '?app='.$this->app.'&do=comment&appid='.$rs['appid'].'&iid='.$rs[$this->primary].'&cid='.$rs['cid'].'',
-            'count' => $rs['comments'],
-        );
-        $rs['param'] = array(
-            "appid" => $rs['appid'],
-            "iid"   => $rs['id'],
-            "cid"   => $rs['cid'],
-            "suid"  => $rs['userid'],
-            "title" => $rs['title'],
-            "url"   => $rs['url'],
-        );
+        $vars['tag'] && tagApp::get_array($rs,$category['name'],'tags');
+
+        apps_common::init($rs,$this->app,$vars,$this->primary);
+        apps_common::link();
+        apps_common::text2link();
+        apps_common::user();
+        apps_common::comment();
+        apps_common::pic();
+        apps_common::hits();
+        apps_common::param();
 
         $fields = array();
         if($this->data['fields']){

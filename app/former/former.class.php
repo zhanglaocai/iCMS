@@ -625,9 +625,14 @@ class former {
         list($type,$_type) = explode(':', $fields['type']);
 
         //时间转换
-        if(in_array($type, array('date','datetime'))){
-          $value = get_date($value,'Y-m-d H:i:s');
+        if($type=='date'){
+          $value && $value = get_date($value,'Y-m-d');
         }
+
+        if($type=='datetime'){
+          $value && $value = get_date($value,'Y-m-d H:i:s');
+        }
+
         if(in_array($type, array('category','multi_category'))){
             $variable = self::$variable[$fields['name']];
             $valArray = explode(",", $value);

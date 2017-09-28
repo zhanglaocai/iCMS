@@ -52,7 +52,7 @@ window.iCMS.init({
 });
 $(function(){
 	<?php if($_GET['tab']){?>
-	var $itab = $("#<?php echo admincp::$APP_NAME; ?>-tab");
+	var $itab = $("#<?php echo admincp::$APP_NAME; ?><?php echo ($_GET['do']?'-'.$_GET['do']:''); ?>-tab");
 	$("li",$itab).removeClass("active");
 	$(".tab-pane").removeClass("active").addClass("hide");
 	$("a[href ='#<?php echo admincp::$APP_NAME; ?>-<?php echo $_GET['tab']; ?>']",$itab).parent().addClass("active");

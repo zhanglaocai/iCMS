@@ -551,11 +551,6 @@ function _modal_dialog(cancel_text){
             <?php echo former::layout();?>
           </div>
           <div id="apps-metadata" class="tab-pane hide">
-            <script>
-            $("#cid").on('change', function() {
-              get_category_meta(this.value,"#apps-metadata");
-            });
-            </script>
             <?php include admincp::view("apps.meta","apps");?>
           </div>
         </div>

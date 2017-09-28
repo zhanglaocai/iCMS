@@ -54,7 +54,7 @@ class categoryApp{
                 }
             }
             $category['outurl'] && iPHP::redirect($category['outurl']);
-            $category['mode']=='1' && iCMS::redirect_html($category['iurl']['path'],$category['iurl']['href']);
+            $category['mode']=='1' && iCMS::redirect_html($category['iurl']);
         }
         self::router($category);
         $category['param'] = array(

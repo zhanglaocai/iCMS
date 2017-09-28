@@ -47,7 +47,7 @@ class commentApp {
 		}
 		empty($this->config['like']['time']) && $this->config['like']['time'] = 86400;
 
-		$this->id OR iUI::code(0, 'iCMS:article:empty_id', 0, 'json');
+		$this->id OR iUI::code(0, 'iCMS:comment:empty_id', 0, 'json');
 		if ($this->config['like']['time']){
 			$lckey = 'like_comment_' . $this->id;
 			$like = iPHP::get_cookie($lckey);
@@ -73,10 +73,7 @@ class commentApp {
 		iView::assign('vars',$vars);
 		iView::display('iCMS://comment/api.json.htm');
 	}
-	public static function redirect_url($var) {
-		$url = iCMS_API.'?app=comment&do=redirect&iid='.$var['iid'].'&appid='.$var['appid'].'&cid='.$var['cid'];
-		return $url;
-	}
+
 	public function ACTION_add() {
 		if (!$this->config['enable']) {
 			iUI::code(0, 'iCMS:comment:close', 0, 'json');
@@ -98,7 +95,7 @@ class commentApp {
 		$reply_name = iSecurity::escapeStr($_POST['name']);
 		$title = iSecurity::escapeStr($_POST['title']);
 		$content = iSecurity::escapeStr($_POST['content']);
-		$iid OR iUI::code(0, 'iCMS:article:empty_id', 0, 'json');
+		$iid OR iUI::code(0, 'iCMS:comment:empty_id', 0, 'json');
 		$content OR iUI::code(0, 'iCMS:comment:empty', 0, 'json');
 
 		$fwd = iPHP::callback(array("filterApp","run"),array(&$content),false);
@@ -130,5 +127,8 @@ class commentApp {
 		}
 		iUI::code(1, 'iCMS:comment:success', $id, 'json');
 	}
-
+	public static function redirect_url($var) {
+		$url = iCMS_API.'?app=comment&do=redirect&iid='.$var['iid'].'&appid='.$var['appid'].'&cid='.$var['cid'];
+		return $url;
+	}
 }

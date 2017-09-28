@@ -81,9 +81,17 @@ class formsAdmincp{
             foreach ((array)$fields as $fi => $field) {
               $field['field']=='VARCHAR' && $search[] = $field['id'];
             }
-            $search && $sql.=" AND CONCAT(".implode(',', $search).") REGEXP '{$_GET['keywords']}'";
+            $search && $sql.=" AND CONCAT(`".implode('`,`', $search)."`) REGEXP '{$_GET['keywords']}'";
           }else{
-            $sql.=" AND ".$_GET['sfield']." REGEXP '{$_GET['keywords']}'";
+            if($_GET['pattern']){
+              $sql.=" AND ".$_GET['sfield']." {$_GET['pattern']} '{$_GET['keywords']}'";
+            }else{
+              $sql.=" AND ".$_GET['sfield']." REGEXP '{$_GET['keywords']}'";
+            }
+          }
+        }else{
+          if($_GET['pattern']){
+            $sql.=" AND ".$_GET['sfield']." {$_GET['pattern']} '{$_GET['keywords']}'";
           }
         }
 
@@ -95,6 +103,18 @@ class formsAdmincp{
         iUI::pagenav($total,$maxperpage,"条记录");
 
         $rs = iDB::all("SELECT * FROM `{$table}` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
+
+        $idArray = iSQL::values($rs,$primary,'array',null,'id');
+        foreach ($this->form['table'] as $key => $value) {
+            if($value['union'] && $idArray){
+              $pkey = $value['union'];
+                $a = iDB::all("SELECT * FROM `{$value['table']}` WHERE `{$pkey}` in (".implode(',', $idArray).")");
+                foreach ((array)$a as $k => $v) {
+                  $b[$v[$pkey]] = $v;
+                }
+            }
+        }
+
         $_count = count($rs);
         include admincp::view('forms.data');
     }

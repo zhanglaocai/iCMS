@@ -150,7 +150,7 @@ $(function(){
             <div class="input-prepend input-append"> <span class="add-on">标签模板</span>
               <input type="text" name="tpl" class="span3" id="tpl" value="<?php echo $rs['tpl'] ; ?>"/>
               <?php echo filesAdmincp::modal_btn('模板','tpl');?>
-          </div>
+            </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">标签权重</span>
               <input type="text" name="weight" class="span3" id="weight" value="<?php echo $rs['weight']?$rs['weight']:time() ; ?>"/>
@@ -170,11 +170,6 @@ $(function(){
           <?php echo former::layout();?>
           </div>
           <div id="apps-metadata" class="tab-pane hide">
-            <script>
-            $("#cid").on('change', function() {
-              get_category_meta(this.value,"#apps-metadata");
-            });
-            </script>
             <?php include admincp::view("apps.meta","apps");?>
           </div>
         </div>

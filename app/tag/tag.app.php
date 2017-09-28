@@ -7,12 +7,14 @@
 * @site https://www.icmsdev.com
 * @licence https://www.icmsdev.com/LICENSE.html
 */
-class tagApp {
+class tagApp extends appsApp {
     public $methods = array('iCMS');
-    public function __construct() {}
-    public function API_iCMS(){
-        return $this->do_iCMS();
+    public static $config  = null;
+    public function __construct() {
+        parent::__construct('tag');
+        self::$config = iCMS::$config[$this->app];
     }
+
     public function do_iCMS($a = null) {
         if ($_GET['name']) {
             $name  = iSecurity::encoding($_GET['name']);
@@ -29,9 +31,7 @@ class tagApp {
         }
         return $this->tag($val, $field);
     }
-    public static function hooked(&$data){
-        iPHP::hook('tag',$data,iCMS::$config['hooks']['tag']);
-    }
+
     public function tag($val, $field = 'name', $tpl = 'tag') {
         $val OR iPHP::error_404('TAG不能为空', 30002);
         is_array($val) OR $tag = iDB::row("SELECT * FROM `#iCMS@__tag` where `$field`='$val' AND `status`='1'  LIMIT 1;", ARRAY_A);
@@ -44,49 +44,41 @@ class tagApp {
             }
         }
         $tag = $this->value($tag);
-        $tag+=(array)apps_meta::data('tag',$tag['id']);
+        if ($tag === false) {
+            return false;
+        }
 
+        $tag+=(array)apps_meta::data('tag',$tag['id']);
         $app = apps::get_app('tag');
         $app['fields'] && formerApp::data($tag['id'],$app,'tag',$tag,$vars,$tag['category']);
 
         self::hooked($tag);
 
-        $tag['param'] = array(
-            "appid" => $tag['appid'],
-            "iid"   => $tag['id'],
-            "cid"   => $tag['cid'],
-            "suid"  => $tag['uid'],
-            "title" => $tag['name'],
-            "url"   => $tag['url']
-        );
-
-        iView::set_iVARS($tag['iurl'],'iURL');
+        $view_tpl = $tpl;
+        $view_app = "tag";
 
         if ($tpl) {
-            $tag_tpl = $tag['tpl'];
-            $tag_tpl OR $tag_tpl = $tag['tag_category']['template']['tag'];
-            $tag_tpl OR $tag_tpl = $tag['category']['template']['tag'];
-            $tag_tpl OR $tag_tpl = iCMS::$config['tag']['tpl'];
-            $tag_tpl OR $tag_tpl = '{iTPL}/tag.htm';
-            $view_app = "tag";
-            $tag['category']['apps']['app'] && $view_app = $tag['category']['apps']['app'];
+            $view_tpl = $tag['tpl'];
+            $view_tpl OR $view_tpl = $tag['tag_category']['template']['tag'];
+            $view_tpl OR $view_tpl = $tag['category']['template']['tag'];
+            $view_tpl OR $view_tpl = self::$config['tpl'];
+            $view_tpl OR $view_tpl = '{iTPL}/tag.htm';
+            strstr($tpl, '.htm') && $view_tpl = $tpl;
+
+            if($tag['category']['apps']['app']){
+                $view_app = $tag['category']['apps']['app'];
+            }
 
             iView::assign('apps', $tag['category']['apps']); //绑定的应用信息
             iView::assign('app', apps::get_app_lite($app));
-            iView::assign('category',$tag['category']);
             iView::assign('tag_category',$tag['tag_category']);
-            unset($tag['category'],$tag['tag_category']);
-            iView::assign("tag", $tag);
-            if (strstr($tpl, '.htm')) {
-                return iView::render($tpl, $view_app);
-            }
-            $view = iView::render($tag_tpl,$view_app);
-            if($view) return array($view,$tag);
-        }else{
-            return $tag;
+            unset($tag['tag_category']);
         }
+        return apps_common::render($tag,'tag',$view_tpl,$view_app);
     }
     public static function value($tag,$vars=null) {
+        $tag['appid'] = iCMS_APP_TAG;
+
         if($tag['cid']){
             $category        = categoryApp::category($tag['cid'],false);
             $tag['category'] = categoryApp::get_lite($category);
@@ -108,17 +100,19 @@ class tagApp {
             }
         }
         $tag['url'] OR $tag['url'] = $tag['iurl']['href'];
-        $tag['link']  = '<a href="'.$tag['url'].'" class="tag" target="_blank">'.$tag['name'].'</a>';
 
         if($category['mode'] && stripos($tag['url'], '.php?')===false){
             iURL::page_url($tag['iurl']);
         }
         $tag['related']  && $tag['relArray'] = explode(',', $tag['related']);
-        $tag['appid'] = iCMS_APP_TAG;
-        $tag['pic']  = filesApp::get_pic($tag['pic']);
-        $tag['bpic'] = filesApp::get_pic($tag['bpic']);
-        $tag['mpic'] = filesApp::get_pic($tag['mpic']);
-        $tag['spic'] = filesApp::get_pic($tag['spic']);
+
+        apps_common::init($tag,'tag',$vars);
+        apps_common::link($tag['name']);
+        apps_common::comment();
+        apps_common::pic();
+        apps_common::hits();
+        apps_common::param();
+
         return $tag;
     }
     public static function get_array(&$rs=array(),$fname=null,$key='tags',$value=null,$id='id') {
@@ -135,7 +129,6 @@ class tagApp {
             }
             unset($multi_tag, $tags_fname);
     }
-
     public static function all($array) {
         if(empty($array)){
             return;
