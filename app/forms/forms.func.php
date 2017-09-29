@@ -23,7 +23,7 @@ class formsFunc{
         if(empty($form)||empty($form['status'])){
             return false;
         }
-        if(empty($forms['config']['enable'])){
+        if(empty($form['config']['enable'])){
             iUI::warning('该表单设置不允许用户提交.');
             return false;
         }

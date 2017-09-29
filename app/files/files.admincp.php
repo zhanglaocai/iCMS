@@ -435,6 +435,7 @@ class filesAdmincp{
                 $filepath = iFS::http($value);
                 $rootfilpath = iFS::fp($filepath, '+iPATH');
                 list($owidth, $oheight, $otype) = @getimagesize($rootfilpath);
+                empty($otype) && $otype = iFS::check_image_bin($rootfilpath);
 
                 if($filepath && !iFS::checkHttp($filepath) && $otype){
                     $value = iFS::fp($filepath,'+http');
@@ -450,6 +451,8 @@ class filesAdmincp{
                 unset($array[$key]);
                 $rootfilpath = iFS::fp($value, 'http2iPATH');
                 list($owidth, $oheight, $otype) = @getimagesize($rootfilpath);
+                empty($otype) && $otype = iFS::check_image_bin($rootfilpath);
+
                 if(self::$DELETE_ERROR_PIC && empty($otype)){
                     iFS::del($rootfilpath);
                     $array[$key]  = $match[0][$key];

@@ -439,9 +439,9 @@ class former {
     }
     public static function js_test($id,$label,$msg,$pattern) {
         $script = '
-            var '.$id.'_msg = "'.$msg.'",pattern = "'.$pattern.'";
+            var '.$id.'_msg = "'.$msg.'",pattern = '.$pattern.';
             if(!pattern.test('.$id.'_value)){
-                iCMS.UI.alert('.$id.'_error||"['.$label.'],"+'.$id.'_msg+",请重新填写!");
+                iCMS.UI.alert('.$id.'_error||"['.$label.']"+'.$id.'_msg+",请重新填写!");
                 '.$id.'.focus();
                 return false;
             }';
@@ -500,9 +500,13 @@ class former {
                     $msg = "固定电话号码有误";
                     $pattern = "/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/";
                 break;
-                case 'phone':
+                case 'mobphone':
                     $msg = "手机号码有误";
                     $pattern = "/^1[34578]\d{9}$/";
+                break;
+                case 'phone':
+                    $msg = "电话或手机号码有误";
+                    $pattern = "/(^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$)|(^1[34578]\d{9}$)/";
                 break;
                 case 'url':
                     $msg = "网址有误";

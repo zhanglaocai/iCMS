@@ -500,7 +500,40 @@ class iFS {
 			return false;
 		}
 	}
+	public static function check_image_bin($path){
+		if(empty($path)){
+			return false;
+		}
+	    $fh = fopen($path, "rb");
+	    //必须使用rb来读取文件，这样能保证跨平台二进制数据的读取安全
+	    //仅读取前面的8个字节
+	    $head = fread($fh, 16);
+	    fclose($fh);
+	    $arr = unpack("C*", $head);
+	    $string = null;
+	    foreach ($arr as $k => $C) {
+	        if($C>=48 && $C<=127){
+	            $string.=chr($C);
+	        }
+	    }
+		if(empty($string)){
+			return false;
+		}
 
+	    $string = strtoupper($string);
+	    $format = array(
+	        'JFIF','TIFF','RIFF',
+	        'PNG','GIF89A','GIF87A','JPEG',
+	        'BMP','WEBP',
+	        'JPEG 2000','EXIF','BPG','SVG'
+	    );
+	    foreach ($format as $key => $f) {
+	       if(strpos($string, $f)!==false){
+	            return $f;
+	       }
+	    }
+	    return false;
+	}
 	public static function allow_files($exts) {
 		$files = array(
 			"png", "jpg", "jpeg", "gif", "bmp", "webp", "psd", "tif",

@@ -83,7 +83,9 @@ $(function(){
           <?php
             foreach ((array)$rs as $key => $value) {
               $id = $value[$primary];
-              $value+=$b[$id];
+              if($b[$id] && is_array($b[$id])){
+                $value+=$b[$id];
+              }
           ?>
             <tr id="tr<?php echo $id; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $id ; ?>" /></td>

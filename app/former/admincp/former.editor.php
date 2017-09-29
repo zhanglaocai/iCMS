@@ -146,9 +146,10 @@
               <option value='count'>字数检测</option>
               <option value='email'>E-Mail地址</option>
               <option value='url'>网址</option>
-              <option value='phone'>手机号码</option>
-              <option value='telphone'>联系电话</option>
-              <option value='idcard'>身份证</option>
+              <option value='mobphone'>手机号码</option>
+              <option value='telphone'>固定电话</option>
+              <option value='phone'>电话/手机</option>
+              <option value='idcard'>身份证号码</option>
               <option value='zipcode'>邮政编码</option>
               <option value='defined'>自定义</option>
             </select>
