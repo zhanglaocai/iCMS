@@ -11,22 +11,22 @@
 class formsApp {
     public $methods = array('iCMS','save');
     public function do_iCMS(){
-        $formid = (int) $_GET['id'];
-        $this->forms($formid);
+        $fid = (int) $_GET['id'];
+        $this->forms($fid);
     }
     public function API_iCMS(){
         $this->do_iCMS();
     }
     public function ACTION_save(){
-        $formid = (int) $_POST['form_id'];
+        $fid = (int) $_POST['fid'];
         $time   = iPHP::get_cookie('token_time');
         $token  = $_POST['token'];
-        list($_formid,$_time) = explode("#", authcode($token));
-        if($_formid==$formid && $_time==$time){
+        list($_fid,$_time) = explode("#", authcode($token));
+        if($_fid==$fid && $_time==$time){
             $active = true;
-            $forms  = forms::get($formid);
+            $forms  = forms::get($fid);
             if(empty($forms)||empty($forms['status'])){
-                $array = array('code'=>0,'msg'=>'找不到相关表单<b>ID:' . $formid . '</b>');
+                $array = array('code'=>0,'msg'=>'找不到相关表单<b>ID:' . $fid . '</b>');
                 $active = false;
             }
             if(empty($forms['config']['enable'])){
@@ -54,11 +54,11 @@ class formsApp {
         }
     }
 
-    public function forms($formid,$tpl = true){
-        $forms = forms::get($formid);
+    public function forms($fid,$tpl = true){
+        $forms = forms::get($fid);
 
         if(empty($forms)||empty($forms['status'])){
-            iPHP::error_404('找不到相关表单<b>ID:' . $formid . '</b>', 10001);
+            iPHP::error_404('找不到相关表单<b>ID:' . $fid . '</b>', 10001);
         }
         // if(empty($forms['config']['enable'])){
         //     iPHP::error_404('该表单设置不允许用户提交', 10002);
@@ -73,7 +73,7 @@ class formsApp {
         $forms['link']   = '<a href="'.$forms['url'].'" class="forms" target="_blank">'.$forms['title'].'</a>';
         $forms['pic']    = filesApp::get_pic($forms['pic']);
         $forms['time']   = time();
-        $forms['token']  = authcode($formid.'#'.$forms['time'],'decode');
+        $forms['token']  = authcode($fid.'#'.$forms['time'],'decode');
         $forms['layout_id']  = "former_".$forms['id'];
 
         iPHP::set_cookie('token_time', $forms['time'], 600);

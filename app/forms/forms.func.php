@@ -9,8 +9,9 @@
 */
 class formsFunc{
     public static function forms_array($vars){
-        if(isset($vars['formid'])){
+        if(isset($vars['formid'])||isset($vars['fid'])){
             $formid = $vars['formid'];
+            isset($vars['fid']) && $formid = $vars['fid'];
             $form   = forms::get($formid);
         }else if(isset($vars['form'])){
             is_array($vars['form']) && $form = $vars['form'];
@@ -55,14 +56,11 @@ class formsFunc{
         $maxperpage = isset($vars['row'])?(int)$vars['row']:"10";
         $cache_time = isset($vars['time'])?(int)$vars['time']:"-1";
 
-
         $table_array = apps::get_table($form);
         $table       = $table_array['table'];
         $primary     = $table_array['primary'];
 
-        if($form['fields']){
-            $fields = former::fields($form['fields']);
-        }
+        $form['fields'] && $fields = former::fields($form['fields']);
 
         $where_sql = "WHERE 1=1";
 
@@ -74,7 +72,16 @@ class formsFunc{
             }
             $search && $where_sql.=" AND CONCAT(".implode(',', $search).") REGEXP '{$vars['keywords']}'";
           }else{
-            $where_sql.=" AND ".$vars['sfield']." REGEXP '{$vars['keywords']}'";
+            if($vars['pattern']){
+              $where_sql.=" AND ".$vars['sfield']." {$vars['pattern']} '{$vars['keywords']}'";
+            }else{
+              $sql.=" AND ".$_GET['sfield']." REGEXP '{$_GET['keywords']}'";
+                $where_sql.=" AND ".$vars['sfield']." REGEXP '{$vars['keywords']}'";
+            }
+          }
+        }else{
+          if($vars['pattern']){
+            $where_sql.=" AND ".$vars['sfield']." {$vars['pattern']} '{$vars['keywords']}'";
           }
         }
         isset($vars['where']) && $where_sql .= $vars['where'];
@@ -120,10 +127,28 @@ class formsFunc{
         }
 
         $rs = iDB::all("SELECT * FROM `{$table}` {$where_sql} {$order_sql} {$limit}");
+
         if($rs){
+            if($vars['data']){
+                $data = array();
+                $idArray = iSQL::values($rs,$primary,'array',null,'id');
+                foreach ($form['table'] as $tkey => $tvalue) {
+                    if($tvalue['union'] && $idArray){
+                      $pkey = $tvalue['union'];
+                        $a = iDB::all("SELECT * FROM `{$tvalue['table']}` WHERE `{$pkey}` in (".implode(',', $idArray).")");
+                        foreach ((array)$a as $k => $v) {
+                          $data[$v[$pkey]] = $v;
+                        }
+                    }
+                }
+            }
             $resource = array();
             foreach ((array)$rs as $key => $value) {
                 foreach ($fields as $fi => $field) {
+                    $id = $value[$primary];
+                    if($data[$id] && is_array($data[$id])){
+                        $value+=$data[$id];
+                    }
                     $resource[$key][$fi] = array(
                         'name'=>$field['label'],
                         'value'=>$value[$field['id']]

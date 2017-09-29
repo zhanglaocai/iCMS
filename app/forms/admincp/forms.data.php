@@ -21,13 +21,26 @@ $(function(){
   <div class="widget-box">
     <div class="widget-title">
       <span class="icon"> <i class="fa fa-search"></i> </span>
-      <h5>搜索</h5>
+      <h5 class="brs">搜索</h5>
+      <div class="input-prepend" style="margin-top: 3px; margin-left: 5px;">
+        <span class="add-on">表单</span>
+        <select name="sssfid" id="sssfid" class="chosen-select span4"
+        onchange="window.location.href='<?php echo APP_DOURI; ?>&fid='+this.value"
+        data-placeholder="== 请选择表单 ==">
+          <?php echo $this->select();?>
+        </select>
+        <script>
+        $(function(){
+         iCMS.select('sssfid',"<?php echo (int)$_GET['fid'] ; ?>");
+        })
+        </script>
+      </div>
     </div>
     <div class="widget-content">
       <form action="<?php echo iPHP_SELF ; ?>" method="get" class="form-inline">
         <input type="hidden" name="app" value="<?php echo admincp::$APP_NAME;?>" />
         <input type="hidden" name="do" value="data" />
-        <input type="hidden" name="form_id" value="<?php echo $this->form_id;?>" />
+        <input type="hidden" name="fid" value="<?php echo $this->fid;?>" />
         <div class="input-prepend input-append">
           <span class="add-on">每页</span>
           <input type="text" name="perpage" id="perpage" value="<?php echo $maxperpage ; ?>" style="width:36px;"/>
@@ -36,7 +49,7 @@ $(function(){
         <div class="input-prepend"> <span class="add-on">查找字段</span>
           <select name="sfield" id="sfield" class="span3 chosen-select">
             <option value="">所有字段</option>
-            <?php foreach ($fields as $fi => $field) {?>
+            <?php foreach ((array)$fields as $fi => $field) {?>
             <option value="<?php echo $field['id']; ?>"><?php echo $field['label']; ?>[<?php echo $field['field']; ?>]</option>
             <?php } ?>
           </select>
@@ -70,7 +83,7 @@ $(function(){
     </div>
     <div class="widget-content nopadding">
       <form action="<?php echo APP_FURI; ?>&do=batch" method="post" class="form-inline" id="<?php echo APP_FORMID;?>" target="iPHP_FRAME">
-        <input type="hidden" name="form_id" value="<?php echo $this->form_id;?>" />
+        <input type="hidden" name="fid" value="<?php echo $this->fid;?>" />
         <table class="table table-bordered table-condensed table-hover">
           <thead>
             <tr>
@@ -108,8 +121,8 @@ $(function(){
                   </tbody>
                 </table>
                 <div class="clearfloat mb5"></div>
-                <a href="<?php echo APP_URI; ?>&do=submit&form_id=<?php echo $this->form_id ; ?>&id=<?php echo $id ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
-                <a href="<?php echo APP_FURI; ?>&do=delete&form_id=<?php echo $this->form_id ; ?>&id=<?php echo $id ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>
+                <a href="<?php echo APP_URI; ?>&do=submit&fid=<?php echo $this->fid ; ?>&id=<?php echo $id ; ?>" class="btn btn-small"><i class="fa fa-edit"></i> 编辑</a>
+                <a href="<?php echo APP_FURI; ?>&do=delete&fid=<?php echo $this->fid ; ?>&id=<?php echo $id ; ?>" target="iPHP_FRAME" class="del btn btn-small btn-danger" title='永久删除'  onclick="return confirm('确定要删除?');"/><i class="fa fa-trash-o"></i> 删除</a>
               </td>
             </tr>
             <?php }  ?>

@@ -88,8 +88,8 @@ $(function(){
                   <?php }?>
                     <div class="solid clearfix mt5"></div>
                     <a href="<?php echo $data['url'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 表单</a>
-                    <a href="<?php echo APP_URI; ?>&do=data&form_id=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 数据</a>
-                    <a href="<?php echo APP_URI; ?>&do=submit&form_id=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-edit"></i> 添加</a>
+                    <a href="<?php echo APP_URI; ?>&do=data&fid=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-dashboard"></i> 数据</a>
+                    <a href="<?php echo APP_URI; ?>&do=submit&fid=<?php echo $data['id'] ; ?>" class="btn btn-small" target="_blank"><i class="fa fa-edit"></i> 添加</a>
                 </td>
                 <td>
                   <?php if(is_array($table)){ ?>

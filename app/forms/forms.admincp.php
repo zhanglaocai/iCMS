@@ -10,24 +10,25 @@
 defined('iPHP') OR exit('What are you doing?');
 
 class formsAdmincp{
-    public function __construct($formid=null) {
+    public function __construct($fid=null) {
       $this->appid = iCMS_APP_FORMS;
       $this->id = (int)$_GET['id'];
-      $formid===null && $formid = iSecurity::getGP('form_id');
-      $this->form_id = (int)$formid;
+      $fid===null && $fid = iSecurity::getGP('fid');
+      $this->fid = (int)$fid;
     }
     public function form_init(){
-      $this->form = forms::get($this->form_id);
+      $this->form = forms::get($this->fid);
     }
     /**
      * [添加表单内容]
      * @return [type] [description]
      */
     public function do_submit(){
-      empty($this->form_id) && admincp::error_page("请选择要添加的表单");
-      $this->form_init();
-      $rs = forms::get_data($this->form,$this->id);
-      iPHP::callback(array("formerApp","add"),array($this->form,$rs));
+      if($this->fid){
+        $this->form_init();
+        $rs = forms::get_data($this->form,$this->id);
+        iPHP::callback(array("formerApp","add"),array($this->form,$rs));
+      }
       include admincp::view('forms.submit');
     }
     /**
@@ -35,7 +36,7 @@ class formsAdmincp{
      * @return [type] [description]
      */
     public function do_savedata($dialog=true){
-      $this->form_id = (int)$_POST['form_id'];
+      $this->fid = (int)$_POST['fid'];
       $this->form_init();
       $update = iPHP::callback(array("formerApp","save"),array($this->form));
       iPHP::callback(array("spider","callback"),array($this,formerApp::$primary_id));
@@ -45,7 +46,7 @@ class formsAdmincp{
       }
       $REFERER_URL = $_POST['REFERER'];
       if(empty($REFERER_URL)||strstr($REFERER_URL, '=form_save')){
-          $REFERER_URL= APP_URI.'&do=form_manage&form_id='.$this->form_id;
+          $REFERER_URL= APP_URI.'&do=form_manage&fid='.$this->fid;
       }
       if($dialog){
         if($update){
@@ -63,15 +64,13 @@ class formsAdmincp{
      * @return [type]        [description]
      */
     public function do_data($stype='normal') {
-        empty($this->form_id) && admincp::error_page("请选择要查看的表单数据");
+      if($this->fid){
         $this->form_init();
         $table_array = apps::get_table($this->form);
         $table       = $table_array['table'];
         $primary     = $table_array['primary'];
 
-        if($this->form['fields']){
-            $fields = former::fields($this->form['fields']);
-        }
+        $this->form['fields'] && $fields = former::fields($this->form['fields']);
 
         $sql = "WHERE 1=1";
 
@@ -116,6 +115,7 @@ class formsAdmincp{
         }
 
         $_count = count($rs);
+      }
         include admincp::view('forms.data');
     }
     /**
@@ -127,7 +127,7 @@ class formsAdmincp{
     public function do_delete($id = null,$dialog=true){
       $id===null && $id=$this->id;
       $id OR iUI::alert("请选择要删除的{$this->form['name']}数据");
-      // $this->form_id = (int)$_POST['form_id'];
+      // $this->fid = (int)$_POST['fid'];
       $this->form_init();
 
       $tables = $this->form['table'];
@@ -349,7 +349,6 @@ class formsAdmincp{
       $rs     = iDB::all("SELECT * FROM `#iCMS@__forms` {$sql} order by {$orderby} LIMIT ".iUI::$offset." , {$maxperpage}");
     	include admincp::view("forms.manage");
     }
-
     public function do_batch(){
         $idArray = (array)$_POST['id'];
         $idArray OR iUI::alert("请选择要操作的表单");
@@ -448,5 +447,12 @@ class formsAdmincp{
       iFS::rm($app_data_file);
       $app_table_file && iFS::rm($app_table_file);
       iFS::rmdir($remove_path);
+    }
+    public function select(){
+      $variable = iDB::all("SELECT * FROM `#iCMS@__forms` WHERE `status`='1' order by `id`");
+      foreach ($variable as $key => $value) {
+        $option.="<option value='".$value['id']."'>".forms::short_app($value['app'])."/".$value['name']."</option>";
+      }
+      return $option;
     }
 }
