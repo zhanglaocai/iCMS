@@ -79,7 +79,10 @@ class apps_common {
         strstr($tpl, '.htm') && $view_tpl = $tpl;
 
         iView::set_iVARS($data['iurl'],'iURL');
-        iView::assign('category', $data['category']);unset($data['category']);
+        if($data['category']){
+            iView::assign('category', $data['category']);
+	    unset($data['category']);
+        }
         iView::assign($name, $data);
         $view = iView::render($view_tpl,$p);
         if($view) return array($view,$data);

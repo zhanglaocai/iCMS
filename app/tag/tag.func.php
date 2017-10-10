@@ -170,6 +170,7 @@ class tagFunc{
                 }
         		$resource[$key] = tagApp::value($value,$vars);
             }
+            $vars['keys'] && iSQL::pickup_keys($resource,$vars['keys'],$vars['is_remove_keys']);
         }
         return $resource;
     }

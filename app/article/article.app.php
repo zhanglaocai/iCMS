@@ -8,7 +8,7 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class articleApp extends appsApp {
-	public $methods = array('iCMS','clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
+	public $methods = array('iCMS','article','clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
     public static $config  = null;
 	public function __construct() {
 		parent::__construct('article');

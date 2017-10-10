@@ -498,6 +498,16 @@ class iPHP {
 		$html .= "</pre>";
 		$html = str_replace('\\', '/', $html);
 		$html = str_replace(iPATH, 'iPHP://', $html);
+
+		if(strpos($_SERVER['HTTP_REFERER'],'servicewechat.com') !== false &&(
+		   strpos($_SERVER['HTTP_USER_AGENT'],'MicroMessenger') !== false ||
+		   strpos($_SERVER['HTTP_USER_AGENT'],'wechatdevtools') !== false ))
+		{
+	        $html = str_replace(array("\r", "\\", "\"", "\n", "<b>", "</b>", "<pre style='font-size: 14px;'>", "</pre>"), array(' ', "\\\\", "\\\"","\n", ''), $html);
+            $array = array('code'=>0,'msg'=>$html);
+            echo json_encode($array);
+            exit;
+		}
 	    if(iPHP_SHELL){
 	        $html = str_replace(array("<b>", "</b>", "<pre style='font-size: 14px;'>", "</pre>"), array("\033[31m","\033[0m",''), $html);
 	        echo $html."\n";

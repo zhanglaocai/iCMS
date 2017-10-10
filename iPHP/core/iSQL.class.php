@@ -218,4 +218,16 @@ class iSQL {
         }
         return $array;
     }
+    public static function pickup_keys(&$resource,$keys,$remove=false) {
+        is_array($keys) OR $keys = explode(',', $keys);
+        foreach ((array)$resource as $key => $value) {
+            foreach ($value as $k => $v) {
+                if(in_array($k, $keys)){
+                    if($remove)unset($resource[$key][$k]);
+                }else{
+                    if(!$remove)unset($resource[$key][$k]);
+                }
+            }
+        }
+    }
 }

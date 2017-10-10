@@ -307,9 +307,10 @@ class articleFunc{
 			if ($rs) {
 				$category = categoryApp::get_cahce_cid($rs->cid);
 				$array = array(
+					'id'    => $rs->id,
 					'title' => $rs->title,
-					'pic' => filesApp::get_pic($rs->pic),
-					'url' => iURL::get('article', array((array) $rs, $category))->href,
+					'pic'   => filesApp::get_pic($rs->pic),
+					'url'   => iURL::get('article', array((array) $rs, $category))->href,
 				);
 			}
 			$vars['cache'] && iCache::set($cache, $array, $cache_time);
@@ -372,6 +373,7 @@ class articleFunc{
 				}
 				unset($variable[$key]);
 			}
+			$vars['keys'] && iSQL::pickup_keys($resource,$vars['keys'],$vars['is_remove_keys']);
 		}
 		return $resource;
 	}

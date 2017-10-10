@@ -256,11 +256,18 @@ class weixin {
             return false;
         }
     }
-    public static  function input($input=null){
+    public static  function input($input=null,$json=false){
         $input===null && $input = file_get_contents("php://input");
         if ($input){
-            libxml_disable_entity_loader(true);
-            return simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
+            if($json){
+                $data = json_decode($input,true);
+            }else{
+                libxml_disable_entity_loader(true);
+                $data = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
+            }
+            iSecurity::_addslashes($data);
+            iWAF::check_data($data);
+            return $data;
         }else{
             return false;
         }

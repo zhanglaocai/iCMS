@@ -17,6 +17,7 @@ class user {
 	public static $nickname   = '';
 	public static $cookietime = 0;
 	public static $format     = false;
+	public static $COOKIE     = null;//接口类cookie设置
 	private static $AUTH      = 'USER_AUTH';
 
 	public static function login_uri($uri=null){
@@ -230,6 +231,12 @@ class user {
 		return true;
 	}
 	public static function get_cookie($unpw=false) {
+		if(self::$COOKIE){
+			if(!$unpw){
+				unset(self::$COOKIE['username'],self::$COOKIE['password']);
+			}
+			return self::$COOKIE;
+		}
 		$auth     = authcode(iPHP::get_cookie(self::$AUTH));
 		$userid   = authcode(iPHP::get_cookie('userid'));
 		$nickname = authcode(iPHP::get_cookie('nickname'));

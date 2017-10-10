@@ -19,29 +19,32 @@ class iWAF {
 		$referer      = empty($_SERVER['HTTP_REFERER']) ? array() : array($_SERVER['HTTP_REFERER']);
 		$query_string = empty($_SERVER["QUERY_STRING"]) ? array() : array($_SERVER["QUERY_STRING"]);
 		self::check_data($query_string,self::$URL_ARRAY);
-		self::check_data($_GET,self::$ARGS_ARRAY);
-		iPHP_WAF_POST && self::check_data($_POST,self::$ARGS_ARRAY);
-		self::check_data($_COOKIE,self::$ARGS_ARRAY);
-		self::check_data($referer,self::$ARGS_ARRAY);
+
+		self::check_data($_GET);
+		iPHP_WAF_POST && self::check_data($_POST);
+		self::check_data($_COOKIE);
+		self::check_data($referer);
 	}
 
-	public static function check_data($arr,$v) {
+	public static function check_data($arr,$waf=null) {
+		$waf===null && $waf = self::$ARGS_ARRAY;
 		foreach($arr as $key=>$value){
-			if(!is_array($key)){
-				self::check($key,$v);
+			if(is_array($key)||is_object($key)){
+				self::check_data($key,$waf);
 			}else{
-				self::check_data($key,$v);
+				self::check($key,$waf);
 			}
 
-			if(!is_array($value)){
-				self::check($value,$v);
+			if(is_array($value)||is_object($value)){
+				self::check_data($value,$waf);
 			}else{
-				self::check_data($value,$v);
+				self::check($value,$waf);
 			}
 		}
 	}
-	public static function check($str,$v){
-		foreach($v as $key=>$value){
+	public static function check($str,$waf=null){
+		$waf===null && $waf = self::$ARGS_ARRAY;
+		foreach($waf as $key=>$value){
 			if (preg_match("/".$value."/is",$str)==1||preg_match("/".$value."/is",urlencode($str))==1){
 				trigger_error('iWAF安全提示:当前操作可能存在某种危险代码',E_USER_ERROR);
 			}

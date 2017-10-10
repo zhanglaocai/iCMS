@@ -109,8 +109,8 @@ class categoryFunc{
 				$cate && $resource[$key] = categoryApp::get_lite($cate);
 			}
 		}
+		$vars['keys'] && iSQL::pickup_keys($resource,$vars['keys'],$vars['is_remove_keys']);
 		$vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
-
 		return $resource;
 	}
 }

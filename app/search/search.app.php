@@ -25,23 +25,33 @@ class searchApp {
 
         $search['title']   = stripslashes($q);
         $search['keyword'] = $q;
-        $tpl===false && $tpl = '{iTPL}/search.htm';
+
         $q && $this->search_log($q);
-        $iurl =  new stdClass();
-        $iurl->href = iURL::router('api');
-        $iurl->href.= '?app=search&q='.$q;
-        $iurl->pageurl = $iurl->href.'&page={P}';
-        iURL::page_url($iurl);
-        iView::set_iVARS($iurl,'iURL');
-        iView::assign("search",$search);
-        iView::display($tpl,'search');
+
+        $iURL           =  new stdClass();
+        $iURL->url      = iURL::router('api');
+        $iURL->url     .= '?app=search&q='.$q;
+        $iURL->pageurl  = $iURL->url.'&page={P}';
+        $iURL->href     = $iURL->url;
+        $search['iurl'] = $iURL;
+
+        iURL::page_url($iURL);
+        $tpl===false && $tpl = '{iTPL}/search.htm';
+        apps_common::render($search,'search',$tpl);
     }
     private function search_log($search){
-        $sid    = iDB::value("SELECT `id` FROM `#iCMS@__search_log` WHERE `search` = '$search' LIMIT 1");
+        $sid = iDB::value("SELECT `id` FROM `#iCMS@__search_log` WHERE `search` = '$search' LIMIT 1");
         if($sid){
-            iDB::query("UPDATE `#iCMS@__search_log` SET `times` = times+1 WHERE `id` = '$sid';");
+            iDB::query("
+                UPDATE `#iCMS@__search_log`
+                SET `times` = times+1
+                WHERE `id` = '$sid';
+            ");
         }else{
-            iDB::query("INSERT INTO `#iCMS@__search_log` (`search`, `times`, `addtime`) VALUES ('$search', '1', '".time()."');");
+            iDB::query("
+                INSERT INTO `#iCMS@__search_log` (`search`, `times`, `addtime`)
+                VALUES ('$search', '1', '".time()."');
+            ");
         }
     }
 }
