@@ -429,7 +429,17 @@ class iPHP {
     public static function check_priv($p,$priv){
         return is_array($p)?array_intersect((string)$p,(array)$priv):in_array((string)$p,(array)$priv);
     }
-	public static function redirect($url = '') {
+	public static function redirect($url = '',$flag=null) {
+		if($flag){
+			//防止从重复跳转
+			$redirect_num = (int)iPHP::get_cookie('redirect_num');
+			if($redirect_num){
+				$url = iCMS_URL;
+				iPHP::set_cookie('redirect_num', '',-31536000);
+			}else{
+				iPHP::set_cookie('redirect_num', ++$redirect_num);
+			}
+		}
 		$url OR $url = iPHP_REFERER;
 		if (@headers_sent()) {
 			echo '<meta http-equiv=\'refresh\' content=\'0;url=' . $url . '\'><script type="text/javascript">window.location.replace(\'' . $url . '\');</script>';

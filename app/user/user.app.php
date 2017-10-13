@@ -1135,15 +1135,15 @@ class userApp {
 			$this->forward = iPHP::get_cookie('forward');
 			if(empty($this->forward)){
 				$this->forward = $_SERVER['HTTP_REFERER'];
-				if(strpos($this->forward, 'forward=') !== false){
-			        $parse  = parse_url($this->forward);
-			        parse_str($parse['query'], $qs);
-			        $qs['forward'] && $this->forward = $qs['forward'];
-				}
 				$this->forward OR $this->forward = iCMS_URL;
-				$flag=='c' && iPHP::set_cookie('forward', $this->forward);
 			}
-			if($flag=='r' && $this->config['forward']){
+			if(strpos($this->forward, 'forward=') !== false){
+		        $parse  = parse_url($this->forward);
+		        parse_str($parse['query'], $qs);
+		        $qs['forward'] && $this->forward = $qs['forward'];
+			}
+			$flag==='c' && iPHP::set_cookie('forward', $this->forward);
+			if($flag==='r' && $this->config['forward']){
 				$url = iURL::make('forward='.$this->forward);
 				iPHP::redirect($url);
 			}

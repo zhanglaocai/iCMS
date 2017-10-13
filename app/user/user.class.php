@@ -276,20 +276,16 @@ class user {
 		unset($auth);
 
 		if($url && $st){
-			$code = $status?1:0;
-			if(self::$format=='json'){
-				return iUI::code($code,0,$url,'json');
-			}
 			if($status){
-				//防止从重复跳转
-				$redirect_num = (int)iPHP::get_cookie('redirect_num');
-				if($redirect_num){
-					$url = iCMS_URL;
-					iPHP::set_cookie('redirect_num', '',-31536000);
-				}else{
-					iPHP::set_cookie('redirect_num', ++$redirect_num);
+				$st=="login" && $code = 1;
+			}else{
+				$st=="nologin" && $code = 0;
+			}
+			if(isset($code)){
+				if(self::$format=='json'){
+					return iUI::code($code,0,$url,'json');
 				}
-				iPHP::redirect($url);
+				iPHP::redirect($url,true);
 			}
 		}
 		return $status?$user:false;
