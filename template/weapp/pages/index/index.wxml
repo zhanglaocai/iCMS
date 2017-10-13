@@ -1,52 +1,20 @@
+<import src="../common/article.wxml" />
+
 <view class="container" hidden="{{!hidden}}">
-  <scroll-view
-    scroll-y="true"
-    style="height:{{scrollH}}px"
-    bindscrolltoupper="refresh"
-    bindscrolltolower="loadMore">
-    <swiper class="banners"
-      autoplay="{{autoplay}}"
-      indicator-dots="{{indicatorDots}}"
-      interval="{{interval}}"
-      duration="{{duration}}"
-      indicator-color="#FFF">
-      <block wx:for="{{hots}}" wx:key="key">
-        <navigator wx:if="{{item.id}}" url="../article/article?id={{item.id}}">
-          <swiper-item class="banner">
-              <image mode="aspectFill" src="{{item.pic}}" class="banner-image" width="100%" height="100%"/>
-              <view class="banner-title">
-                <text>{{item.title}}</text>
-              </view>
-          </swiper-item>
-        </navigator>
-      </block>
-    </swiper>
-    <view class="news-item-container">
-      <view hidden="{{!hidden}}" class="sub-title">
-        <text>{{subTitle}}</text>
-      </view>
-      <block wx:for="{{news}}" wx:key="key">
-        <navigator wx:if="{{item.id}}" url="../article/article?id={{item.id}}">
-          <view class="news-item">
-            <view class="news-item-left" wx:if="{{item.pic}}">
-              <image mode="aspectFill" src="{{item.pic}}" class="news-image"/>
+    <scroll-view scroll-y="true" style="height:{{scrollH}}px" bindscrolltoupper="refresh" bindscrolltolower="loadMore">
+        <navigator class="search-bar" url="../search/index" hover-class="navigator-hover000">
+            <view class="weui-search-bar__box">
+                <icon class="weui-icon-search_in-box" type="search" size="14" color="rgb(255,255,255)"></icon>
+                <text class="weui-search-bar__input">搜索您的内容</text>
             </view>
-            <view class="news-item-right">
-              <text class="news-item-title">{{item.title}}</text>
-              <text class="news-item-description">{{item.description}}</text>
-              <view class="news-item-info">
-                <text class="news-item-category">{{item.category.name}}</text>
-                <text class="news-item-pubdate">{{item.pubdate}}</text>
-              </view>
-            </view>
-          </view>
         </navigator>
-      </block>
+        <template is="article_hot" data="{{article_hot}}"/>
+        <view class="sub-title">{{subTitle}}</view>
+        <template is="article_list" data="{{article_list}}"/>
+    </scroll-view>
+    <view class="weui-loadmore" hidden="{{loading}}">
+        <view class="weui-loading"></view>
+        <view class="weui-loadmore__tips">数据加载中...</view>
     </view>
-  </scroll-view>
-  <view class="weui-loadmore" hidden="{{loading}}">
-      <view class="weui-loading"></view>
-      <view class="weui-loadmore__tips">数据加载中...</view>
-  </view>
 </view>
 <loading class="loading" hidden="{{hidden}}">加载中...</loading>

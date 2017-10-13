@@ -1,33 +1,26 @@
 {
-"site":<!--{$site|json_encode}-->,
-"category":<!--{$category|json_encode}-->,
-"news":[
-<!--{iCMS:article:list loop="true" page="true" row="5" sub="all" sub="true" cid="$category.cid"}-->
-<!--{&$article_list.pubdate|date:"Y-m-d H:i"}-->
-{
-    "id":"<!--{$article_list.id}-->",
-    "title":<!--{$article_list.title|json_encode}-->,
-    "description":<!--{$article_list.description|json_encode}-->,
-    "pic":<!--{$article_list.pic.url|json_encode}-->,
-    "pubdate":<!--{$article_list.pubdate|json_encode}-->,
-    "category":<!--{$article_list.category|json_encode}-->
-}
-<!--{if !$article_list.last}-->,<!--{/if}-->
+"category":<!--{$category|keys:"cid,name,title,description"|json_encode}-->,
+"article_list":[
+<!--{iCMS:article:list
+    sub="true" cid="$category.cid"
+    keys="id,title,description,pic,pubdate,category" loop="true" row="5"
+    page="true"
+}-->
+<!--{include file="./article_list.json.htm"}-->
 <!--{/iCMS}-->
 ]
 ,"PAGE":<!--{$iCMS.PAGE|keys:"NAV,NEXT,PREV":true|json_encode}-->
-,"hots":[
-<!--{iCMS:article:list loop="true" pic="true" row="8" sub="all" sub="true" cid="$category.cid"}-->
-{
-    "id":"<!--{$article_list.id}-->",
-    "title":<!--{$article_list.title|json_encode}-->,
-    "description":<!--{$article_list.description|json_encode}-->,
-    "pic":<!--{$article_list.pic.url|json_encode}-->
+<!--{if $iCMS.PAGE.CURRENT<2}-->
+,"article_hot":{
+<!--{iCMS:article:list
+    sub="true" cid="$category.cid"
+    as="article_hot"
+    keys="id,title,description,pic"
+    pic="true" row="8"
+}-->
+"data":<!--{$article_hot|json_encode}-->,
+"count":<!--{$article_hot|count}-->
 }
-<!--{if !$article_list.last}-->,<!--{/if}-->
-<!--{/iCMS}-->
-]
-
+<!--{/if}-->
 }
-
 <!--{clean}-->
