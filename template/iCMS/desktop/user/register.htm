@@ -57,7 +57,7 @@
                 //注册成功 事件绑定
                 $PASSPORT.SUCCESS = function(s) {
                     // console.log('****',s);
-                    window.top.location.href = s.forward;
+                    window.top.location.href = "<!--{$forward}-->";
                 }
                 //注册失败 事件绑定
                 $PASSPORT.FAIL = function(f) {

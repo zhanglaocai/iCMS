@@ -62,7 +62,7 @@
             iCMS.run('passport', function($PASSPORT) {
                 //登录成功 事件绑定
                 $PASSPORT.SUCCESS = function(s) {
-                    window.top.location.href = s.forward;
+                    window.top.location.href = "<!--{$forward}-->";
                 }
                 //登录失败 事件绑定
                 $PASSPORT.FAIL = function(f) {

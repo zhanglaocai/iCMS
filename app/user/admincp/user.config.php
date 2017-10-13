@@ -65,6 +65,14 @@ configAdmincp::head("用户系统设置");
 </div>
 <div class="clearfloat mb10"></div>
 <div class="input-prepend">
+    <span class="add-on">来路跟随</span>
+    <div class="switch">
+        <input type="checkbox" data-type="switch" name="config[forward]" id="user_forward" <?php echo $config['forward']?'checked':''; ?>/>
+    </div>
+</div>
+<span class="help-inline">开启后注册、登陆的URL中将保留来路数据</span>
+<div class="clearfloat mb10"></div>
+<div class="input-prepend">
     <span class="add-on">注册条款</span>
     <textarea name="config[agreement]" id="user_agreement" class="span6" style="height: 150px;"><?php echo $config['agreement'] ; ?></textarea>
 </div>

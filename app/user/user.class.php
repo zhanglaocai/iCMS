@@ -261,6 +261,7 @@ class user {
 		iPHP::set_cookie('userid',    authcode($user['uid'],'ENCODE'),self::$cookietime);
 		iPHP::set_cookie('nickname',  authcode($user['nickname'],'ENCODE'),self::$cookietime);
 	}
+
 	public static function status($url=null,$st=null) {
 		$status = false;
 		$auth   = self::get_cookie(true);
@@ -274,23 +275,24 @@ class user {
 		}
 		unset($auth);
 
-		if($status){
-			if($url && $st=="login"){
-				if(self::$format=='json'){
-					return iUI::code(1,0,$url,'json');
+		if($url && $st){
+			$code = $status?1:0;
+			if(self::$format=='json'){
+				return iUI::code($code,0,$url,'json');
+			}
+			if($status){
+				//防止从重复跳转
+				$redirect_num = (int)iPHP::get_cookie('redirect_num');
+				if($redirect_num){
+					$url = iCMS_URL;
+					iPHP::set_cookie('redirect_num', '',-31536000);
+				}else{
+					iPHP::set_cookie('redirect_num', ++$redirect_num);
 				}
 				iPHP::redirect($url);
 			}
-			return $user;
-		}else{
-			if($url && $st=="nologin"){
-				if(self::$format=='json'){
-					return iUI::code(0,0,$url,'json');
-				}
-				iPHP::redirect($url);
-			}
-			return false;
 		}
+		return $status?$user:false;
 	}
 	public static function logout(){
 		iPHP::set_cookie(self::$AUTH, '',-31536000);

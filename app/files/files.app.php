@@ -115,6 +115,7 @@ class filesApp {
     }
     public static function get_pic($src,$size=0,$thumb=0){
         if(empty($src)) return array();
+        if(is_array($src)) return $src;
 
         if(stripos($src, '://')!== false){
             return array(

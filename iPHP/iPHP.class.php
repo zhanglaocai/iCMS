@@ -24,6 +24,7 @@ class iPHP {
 
 	public static $mobile     = false;
 	public static $time_start = false;
+	public static $callback   = array();
 
     /**
      * Autoload function for HTML Purifier
@@ -145,9 +146,11 @@ class iPHP {
 			$fi = iFS::name(iPHP_SELF);
 			$app = $fi['name'];
 		}
-
+		if (empty(self::$apps)) {
+			iPHP::error_404('Please update the application cache');
+		}
 		if (!self::$apps[$app] && iPHP_DEBUG) {
-			iPHP::error_404('Unable to find application <b>' . $app . '</b>', '0001');
+			iPHP::error_404('Unable to find application <b>' . var_export($app,true) . '</b>', '0001');
 		}
 		self::$app_path = iPHP_APP_DIR . '/' . $app;
 		self::$app_file = self::$app_path . '/' . $app . '.app.php';
@@ -184,13 +187,16 @@ class iPHP {
 		iView::$handle->_iVARS['SAPI'].= self::$app_name;
 		iView::$handle->_iVARS += $app_vars;
 
+		self::callback(self::$callback['run']['begin']);
 		if(self::$app===null){
 			$obj_name = $app.'App';
 			self::$app = new $obj_name();
+			self::callback(self::$callback['run']['init'],array(self::$app));
 		}
 
 		if (self::$app_do && self::$app->methods) {
 			in_array(self::$app_do, self::$app->methods) OR iPHP::error_404('Call to undefined method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0003');
+			method_exists(self::$app, self::$app_method) OR iPHP::error_404('Call to undefined method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0004');
 			$method = self::$app_method;
 			$args === null && $args = self::$app_args;
 			if ($args) {
@@ -199,11 +205,10 @@ class iPHP {
 				}
 				return call_user_func_array(array(self::$app, $method), (array) $args);
 			} else {
-				method_exists(self::$app, self::$app_method) OR iPHP::error_404('Call to undefined method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0004');
 				return self::$app->$method();
 			}
 		} else {
-			iPHP::error_404('Call to undefined method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0005');
+			iPHP::error_404('Unable to find method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0005');
 		}
 	}
 
@@ -342,6 +347,8 @@ class iPHP {
      * @return [type]           [description]
      */
     public static function callback($callback,$value=null,$return=null){
+    	if(empty($callback)) return;
+
     	$reference = false;
     	if(is_array($callback)){
 	    	if (stripos($callback[1], '_FALSE') !== false) {

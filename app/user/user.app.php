@@ -18,13 +18,13 @@ class userApp {
 	private $auth  = false;
 
 	public function __construct() {
-		$this->forward();
-		$this->auth = user::get_cookie();
-		$this->uid = (int) $_GET['uid'];
-		$this->ajax = (bool) $_GET['ajax'];
+		$this->config    = iCMS::$config['user'];
+		$this->uid       = (int) $_GET['uid'];
+		$this->ajax      = (bool) $_GET['ajax'];
+		$this->auth      = user::get_cookie();
 		$this->login_uri = user::login_uri();
 		files::init(array('userid'=> user::$userid));
-		$this->config = iCMS::$config['user'];
+		$this->forward();
 	}
 	private function __user($userdata = false) {
 		$status = array('logined' => false, 'followed' => false, 'isme' => false);
@@ -38,7 +38,7 @@ class userApp {
 		}
 		$this->me = user::status(); //判断是否登陆
 		if (empty($this->me) && empty($this->user)) {
-			$this->forward('CLEAR');
+			// $this->forward('C');
 			iPHP::redirect($this->login_uri);
 		}
 
@@ -778,7 +778,6 @@ class userApp {
 		}
 
 		//user::set_cache($uid);
-		$this->forward('CLEAR');
 		iUI::json(array('code' => 1, 'forward' => $this->forward));
 	}
 	public function ACTION_add_category() {
@@ -907,7 +906,7 @@ class userApp {
 
 	public function API_register() {
 		if ($this->config['register']['enable']) {
-			$this->forward('REF');
+			$this->forward('r');
 			user::status($this->forward, "login");
 			iView::display('iCMS://user/register.htm');
 		} else {
@@ -967,7 +966,7 @@ class userApp {
 	public function API_login() {
 		if ($this->config['login']['enable']) {
 			$this->openid();
-			$this->forward('REF');
+			$this->forward('r');
 			user::status($this->forward, "login");
 			iView::display('iCMS://user/login.htm');
 		} else {
@@ -1130,21 +1129,24 @@ class userApp {
 			}
 		}
 	}
-	public function forward($url=null) {
-		switch ($url) {
-			case 'CLEAR':
-				iPHP::set_cookie('forward', '', -31536000);
-				return;
-			break;
-			case 'REF':
+	public function forward($flag=null) {
+		$this->forward = iPHP::PG('forward');
+		if(empty($this->forward)){
+			$this->forward = iPHP::get_cookie('forward');
+			if(empty($this->forward)){
 				$this->forward = $_SERVER['HTTP_REFERER'];
-				iPHP::set_cookie('forward', $this->forward);
-			break;
-			default:
-				$this->forward = iPHP::PG('forward');
-				$this->forward OR $this->forward = iPHP::get_cookie('forward');
+				if(strpos($this->forward, 'forward=') !== false){
+			        $parse  = parse_url($this->forward);
+			        parse_str($parse['query'], $qs);
+			        $qs['forward'] && $this->forward = $qs['forward'];
+				}
 				$this->forward OR $this->forward = iCMS_URL;
-			break;
+				$flag=='c' && iPHP::set_cookie('forward', $this->forward);
+			}
+			if($flag=='r' && $this->config['forward']){
+				$url = iURL::make('forward='.$this->forward);
+				iPHP::redirect($url);
+			}
 		}
 		iView::assign('forward', $this->forward);
 	}

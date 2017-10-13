@@ -16,7 +16,7 @@ if(iPHP_DEBUG){
 }
 
 class weixinApp {
-    public $methods = array('interface');
+    public $methods = array('interface','wxapp');
     public $FromUserName = null;
     public $ToUserName   = null;
     public $encrypt_type = null;
@@ -25,7 +25,13 @@ class weixinApp {
         $config===null && $config = iCMS::$config['weixin'];
         weixin::$config = $config;
     }
-
+    public function API_wxapp(){
+        $method = $_GET['method'];
+        if (method_exists("weixin_wxapp", $method)) {
+            weixin_wxapp::init(weixin::$config['wxapp']);
+            weixin_wxapp::$method();
+        }
+    }
     public function API_interface(){
         if(iPHP_DEBUG){
             ob_start();
@@ -219,9 +225,9 @@ class weixinApp {
     }
     public function api_log(){
         $data = array(
-            'ToUserName'   => addslashes($this->XML->ToUserName),
-            'FromUserName' => addslashes($this->XML->FromUserName),
-            'CreateTime'   => addslashes($this->XML->CreateTime),
+            'ToUserName'   => $this->XML->ToUserName,
+            'FromUserName' => $this->XML->FromUserName,
+            'CreateTime'   => $this->XML->CreateTime,
             'content'      => $this->XML->Content,
             'dayline'      => get_date(null,'Y-m-d H:i:s'),
         );
