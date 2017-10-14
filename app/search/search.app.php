@@ -29,9 +29,8 @@ class searchApp {
         $q && $this->search_log($q);
 
         $iURL           =  new stdClass();
-        $iURL->url      = iURL::router('api');
-        $iURL->url     .= '?app=search&q='.$q;
-        $iURL->pageurl  = $iURL->url.'&page={P}';
+        $iURL->url      = iURL::make('app=search&q='.$q,'router::api');
+        $iURL->pageurl  = iURL::make('page={P}',$iURL->url);
         $iURL->href     = $iURL->url;
         $search['iurl'] = $iURL;
 

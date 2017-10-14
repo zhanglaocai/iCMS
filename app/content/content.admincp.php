@@ -16,7 +16,11 @@ class contentAdmincp{
     public $union_key = null;
     public $config    = null;
 
-    public function __construct($data=null) {
+    protected $_view_add     = 'content.add';
+    protected $_view_manage  = 'content.manage';
+    protected $_view_tpl_dir = null;
+
+    public function __construct($data=null,$dir=null) {
         if($data===null){
             $id = iSecurity::getGP('appid');
             $data = apps::get_app($id);
@@ -38,8 +42,8 @@ class contentAdmincp{
         $this->_postype  = '1';
         $this->_status   = '1';
         $this->config    = iCMS::$config[$this->app['app']];
-
-        category::$appid     = $this->appid;
+        category::$appid = $this->appid;
+        $this->_view_tpl_dir = $dir;
     }
     public function do_config(){
         configAdmincp::app($this->appid);
@@ -52,7 +56,7 @@ class contentAdmincp{
       isset($rs['status']) OR $rs['status'] = '1';
       iPHP::callback(array("apps_meta","get"),array($this->appid,$this->id));
       iPHP::callback(array("formerApp","add"),array($this->app,$rs));
-      include admincp::view('content.add');
+      include admincp::view($this->_view_add,$this->_view_tpl_dir);
     }
     public function do_update(){
         $data = iSQL::update_args($_GET['_args']);
@@ -364,7 +368,7 @@ class contentAdmincp{
         $rs = iDB::all("SELECT * FROM `".content::$table."` {$sql} ORDER BY {$orderby} {$limit}");
         $_count = count($rs);
         $propArray = propAdmincp::get("pid",null,'array');
-        include admincp::view('content.manage');
+        include admincp::view($this->_view_manage,$this->_view_tpl_dir);
     }
     public function do_save(){
         $update = iPHP::callback(array("formerApp","save"),array($this->app));

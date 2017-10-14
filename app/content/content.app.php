@@ -117,13 +117,11 @@ class contentApp {
         apps_common::hits();
         apps_common::param();
 
-        $fields = array();
         if($this->data['fields']){
             $fields = former::fields($this->data['fields']);
-        }
-        $option_array = array();
-        foreach ($fields as $key => $field) {
-            formerApp::vars($field,$key,$rs,$vars,$category,$this->app);
+            foreach ((array)$fields as $key => $field) {
+                formerApp::vars($field,$key,$rs,$vars,$category,$this->app);
+            }
         }
         return $rs;
     }

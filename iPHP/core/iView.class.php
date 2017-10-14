@@ -40,6 +40,7 @@ class iView {
             "resource" => array("iView","callback_resource"),
             "func"     => array("iView","callback_func"),
             "plugin"   => array("iView","callback_plugin"),
+            // "output"   => array("iView","callback_output"),
         );
         self::$handle->assign('_GET', $_GET);
         self::$handle->assign('_POST', $_POST);
@@ -53,6 +54,11 @@ class iView {
         $path = iPHP_APP_DIR . '/' . $app . '/' . $app . '.func.php';
         return is_file($path);
     }
+    // public static function callback_output(&$content,$obj) {
+    //     if(!self::$config['callback']['output']){
+    //         $content.= publicFunc::public_crontab(true);
+    //     }
+    // }
     /**
      * iCMS:app:method
      * iCMS:func
@@ -278,7 +284,7 @@ class iView {
     }
     public static function display($tpl) {
         self::$handle OR self::init();
-        self::$handle->display($tpl);
+        self::$handle->fetch($tpl,true);
     }
     public static function fetch($tpl) {
         self::$handle OR self::init();
@@ -291,7 +297,7 @@ class iView {
         if (self::$gateway == 'html') {
             return self::$handle->fetch($tpl);
         } else {
-            self::$handle->display($tpl);
+            self::$handle->fetch($tpl,true);
             iPHP::debug_info($tpl);
         }
     }

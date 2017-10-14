@@ -97,7 +97,7 @@ class iSecurity {
 				$GLOBALS[$key] = $_POST[$key];
 			}
 			if (isset($GLOBALS[$key]) && !empty($cvtype) || $cvtype == 2) {
-				$GLOBALS[$key] = iSecurity::escapeChar($GLOBALS[$key], $cvtype == 2, $istrim);
+				$GLOBALS[$key] = self::escapeChar($GLOBALS[$key], $cvtype == 2, $istrim);
 			}
 		}
 	}
@@ -124,11 +124,11 @@ class iSecurity {
 		}
 
 		if (!get_magic_quotes_gpc()) {
-			iSecurity::_addslashes($_POST);
-			iSecurity::_addslashes($_GET);
-			iSecurity::_addslashes($_COOKIE);
+			self::_addslashes($_POST);
+			self::_addslashes($_GET);
+			self::_addslashes($_COOKIE);
 		}
-		iSecurity::getServer(array(
+		self::getServer(array(
 			'HTTP_REFERER','HTTP_HOST','HTTP_X_FORWARDED_FOR','HTTP_USER_AGENT',
 			'HTTP_CLIENT_IP','HTTP_SCHEME','HTTPS','PHP_SELF','REMOTE_ADDR',
 			'REQUEST_URI','REQUEST_METHOD','SCRIPT_NAME','REQUEST_TIME',
@@ -146,7 +146,7 @@ class iSecurity {
 	 * @return string
 	 */
 	public static function escapePath($fileName, $ifCheck = true) {
-		if (!iSecurity::_escapePath($fileName, $ifCheck)) {
+		if (!self::_escapePath($fileName, $ifCheck)) {
 			trigger_error('What are you doing?',E_USER_ERROR);
 		}
 		return $fileName;
@@ -185,12 +185,12 @@ class iSecurity {
 	public static function escapeChar($mixed, $isint = false, $istrim = false) {
 		if (is_array($mixed)) {
 			foreach ($mixed as $key => $value) {
-				$mixed[$key] = iSecurity::escapeChar($value, $isint, $istrim);
+				$mixed[$key] = self::escapeChar($value, $isint, $istrim);
 			}
 		} elseif ($isint) {
 			$mixed = (int) $mixed;
 		} elseif (!is_numeric($mixed) && ($istrim ? $mixed = trim($mixed) : $mixed) && $mixed) {
-			$mixed = iSecurity::escapeStr($mixed);
+			$mixed = self::escapeStr($mixed);
 		}
 		return $mixed;
 	}
@@ -202,7 +202,7 @@ class iSecurity {
 	public static function escapeStr($string) {
 	    if(is_array($string)) {
 	        foreach($string as $key => $val) {
-	            $string[$key] = iSecurity::escapeStr($val);
+	            $string[$key] = self::escapeStr($val);
 	        }
 	    } else {
 	        $string = str_replace(array("\0","\x0B", "%00"), '', $string);
@@ -226,7 +226,7 @@ class iSecurity {
 	public static function checkVar(&$var) {
 		if (is_array($var)) {
 			foreach ($var as $key => $value) {
-				iSecurity::checkVar($var[$key]);
+				self::checkVar($var[$key]);
 			}
 		} elseif (str_replace(array('<iframe','<meta','<script'), '', $var) != $var) {
 			trigger_error('XXS',E_USER_ERROR);
@@ -243,7 +243,7 @@ class iSecurity {
 		if (is_object($array)) {
 			foreach ($array as $key => $value) {
 				if (is_object($value)) {
-					iSecurity::_addslashes($array->$key);
+					self::_addslashes($array->$key);
 				} else {
 					$array->$key = addslashes($value);
 				}
@@ -251,7 +251,7 @@ class iSecurity {
 		}elseif (is_array($array)) {
 			foreach ($array as $key => $value) {
 				if (is_array($value)) {
-					iSecurity::_addslashes($array[$key]);
+					self::_addslashes($array[$key]);
 				} else {
 					$array[$key] = addslashes($value);
 				}

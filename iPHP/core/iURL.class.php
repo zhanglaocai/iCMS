@@ -100,14 +100,15 @@ class iURL {
             return $C['rule'][$key];
         }
     }
-   public static function get($uri,$a=array()) {
+   public static function get($uri,$a=array(),$type=null) {
         $i          = new stdClass();
         $default    = array();
         $category   = array();
         $array      = (array)$a;
         $app_conf   = self::$CONFIG['iurl'][$uri];
+        $type === null && $type = $app_conf['rule'];
 
-        switch($app_conf['rule']) {
+        switch($type) {
             case '0':
                 $i->href = $array['url'];
                 $url     = $array['rule'];
@@ -270,6 +271,10 @@ class iURL {
     }
     public static function make($QS=null,$url=null) {
         $url OR $url = $_SERVER["REQUEST_URI"];
+        if(strpos($url,'router::')!==false) {
+            $rkey = substr($url, 8);
+            $url  = iURL::router($rkey);
+        }
         $parse  = parse_url($url);
         parse_str($parse['query'], $query);
 

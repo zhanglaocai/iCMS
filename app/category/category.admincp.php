@@ -25,7 +25,7 @@ class categoryAdmincp {
      *  URL规则
      */
     protected $category_rule = array(
-        'index'   => array('首页','/{CDIR}/index{EXT}','{CID},{0xCID},{CDIR}'),
+        'index'   => array('首页','/{CDIR}/','{CID},{0xCID},{CDIR}'),
         'list'    => array('列表','/{CDIR}/index_{P}{EXT}','{CID},{0xCID},{CDIR}'),
     );
     /**
@@ -39,6 +39,7 @@ class categoryAdmincp {
     protected $_app_cid     = 'cid';
     protected $_view_add    = 'category.add';
     protected $_view_manage = 'category.manage';
+    protected $_view_tpl_dir = null;
     public static $sappid = null;
 
     public function __construct($appid = null,$dir=null) {

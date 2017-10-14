@@ -15,14 +15,18 @@ class publicFunc{
 	public static function public_seccode($vars=null){
 		echo publicApp::seccode();
 	}
-	public static function public_crontab(){
-		echo '<img src="'.iCMS_API.'?app=public&do=crontab&'.$_SERVER['REQUEST_TIME'].'" id="iCMS_public_crontab"/>';
+	public static function public_crontab($vars=null){
+		$url = iURL::make('app=public&do=crontab','router::api');
+		$html = '<img src="'.$url.'" width="0" height="0" />';
+		if($vars===true){
+			return $html;
+		}
+		echo $html;
 	}
 	public static function public_qrcode($vars=null){
 		$data  = $vars['data'];
 		$query = array('app'=>'public','do'=>'qrcode','url'=>$data);
 		isset($vars['cache']) && $query['cache'] = true;
-		$url = iURL::router('api');
-		echo iURL::make($query,$url);
+		echo iURL::make($query,'router::api');
 	}
 }

@@ -60,8 +60,10 @@ class formsFunc{
         $table       = $table_array['table'];
         $primary     = $table_array['primary'];
 
-        $form['fields'] && $fields = former::fields($form['fields']);
-
+        if($form['fields']){
+            $fields = former::fields($form['fields']);
+            iView::assign("forms_fields",$fields);
+        }
         $where_sql = "WHERE 1=1";
 
         if($vars['keywords']) {
@@ -149,10 +151,12 @@ class formsFunc{
                     if($data[$id] && is_array($data[$id])){
                         $value+=$data[$id];
                     }
-                    $resource[$key][$fi] = array(
-                        'name'=>$field['label'],
-                        'value'=>$value[$field['id']]
-                    );
+                    formerApp::vars($field,$fi,$value,$vars);
+                    $resource[$key] = $value;
+                    // $resource[$key][$fi] = array(
+                    //     'name'=>$field['label'],
+                    //     'value'=>$value[$field['id']]
+                    // );
                 }
             }
             $vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
