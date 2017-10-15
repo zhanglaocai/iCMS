@@ -9,12 +9,12 @@
  * @version 2.0.0
  */
 class iPicture {
-    protected static $config        = null;
-    protected static $watermark_dir = null;
+    protected static $config = null;
+    protected static $DIR    = null;
 
     public static function init($config) {
-		self::$config    = $config;
-		self::$watermark_dir = iPHP_APP_CONF;
+        self::$config = $config;
+        self::$DIR    = iPHP_APP_CONF;
     }
     /** 图片局部打马赛克
     * @param  String  $source 原图
@@ -91,14 +91,14 @@ class iPicture {
             return false;
         }
         //读取水印文件
-        $waterImgPath = self::$watermark_dir.'/'.self::$config['img'];
+        $waterImgPath = self::$DIR.'/'.self::$config['img'];
         $water_info   = self::getinfo($waterImgPath);
         if($water_info){
             list($water_w, $water_h,$water_type,$water_im) = $water_info;
-            $isWaterImage = TRUE;
+            $isWaterImage = true;
         }else{
-            $isWaterImage = FALSE;
-            $fontfile     = self::$watermark_dir.'/'.self::$config['font'];
+            $isWaterImage = false;
+            $fontfile     = self::$DIR.'/'.self::$config['font'];
         }
 
         //水印位置
@@ -106,12 +106,14 @@ class iPicture {
             $w = $water_w;
             $h = $water_h;
         }else { //文字水印
-            if($fontfile && file_exists($fontfile)) {
+            if($fontfile && is_file($fontfile)) {
+                $isWaterFont = true;
                 $temp = imagettfbbox(self::$config['fontsize'],0,$fontfile,self::$config['text']);//取得使用 TrueType 字体的文本的范围
                 $w = $temp[2] - $temp[6];
                 $h = $temp[3] - $temp[7];
                 unset($temp);
             }else {
+                $isWaterFont = false;
                 $w = self::$config['fontsize']*cstrlen(self::$config['text']);
                 $h = self::$config['fontsize']+5;
             }
@@ -126,24 +128,23 @@ class iPicture {
         //设定图像的混色模式
         imagealphablending($source_im, true);
 
-        if($isWaterImage) { //图片水印
+        if($isWaterImage) {
+            //图片水印
         	if(strtolower(substr(strrchr($waterImgPath, "."),1))=='png'){
 	            imagecopy ($source_im,$water_im,$posX, $posY, 0,0,$water_w,$water_h);
         	}else{
 				imagecopymerge($source_im, $water_im, $posX, $posY, 0, 0, $water_w,$water_h,self::$config['transparent']);//拷贝水印到目标文件
         	}
-        }else{//文字水印
-            self::$config['color'] OR self::$config['color']="#FFFFFF";
-            if(!empty(self::$config['color']) && (strlen(self::$config['color'])==7) ) {
-                $R = hexdec(substr(self::$config['color'],1,2));
-                $G = hexdec(substr(self::$config['color'],3,2));
-                $B = hexdec(substr(self::$config['color'],5));
-                $textcolor = imagecolorallocate($source_im, $R, $G, $B);
-            }else {
-                // die("水印文字颜色格式不正确！");
-                return false;
+        }else{
+            //文字水印
+            if(empty(self::$config['color'])||strlen(self::$config['color'])!=7) {
+                self::$config['color']="#FFFFFF";
             }
-            if(self::$config['font']) {
+            $R = hexdec(substr(self::$config['color'],1,2));
+            $G = hexdec(substr(self::$config['color'],3,2));
+            $B = hexdec(substr(self::$config['color'],5));
+            $textcolor = imagecolorallocate($source_im, $R, $G, $B);
+            if($isWaterFont) {
                 imagettftext($source_im,self::$config['fontsize'], 0, $posX, $posY, $textcolor,$fontfile, self::$config['text']);
             }else {
                 imagestring ($source_im, self::$config['fontsize'], $posX, $posY, self::$config['text'],$textcolor);

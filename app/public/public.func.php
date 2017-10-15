@@ -17,7 +17,7 @@ class publicFunc{
 	}
 	public static function public_crontab($vars=null){
 		$url = iURL::make('app=public&do=crontab','router::api');
-		$html = '<img src="'.$url.'" width="0" height="0" />';
+		$html = '<img src="'.$url.'" style="display: none;" />';
 		if($vars===true){
 			return $html;
 		}
