@@ -235,13 +235,7 @@ $lock_file = iPATH.'cache/install.lock';
 					<li>iCMS 不对使用本软件构建的网站中的文章或信息承担责任。</li>
 				</ol>
 				<h2>商业授权</h2>
-				<p>您享有的权利</p>
-				<ul>
-					<li>您可以将 iCMS 程序直接使用在自己的商业或者非商业网站或者软件产品中。</li>
-					<li>您可以对 iCMS 进行修改和美化，可以去除 iCMS 版权注释或改变程序名称，无需公开您修改或美化过的 iCMS 程序与界面。</li>
-					<li>商业授权每个公司只需要购买一次，而不限制产品域名。适用于 iCMS 现有版本和所有后续版本，永久有效。</li>
-					<li>您享有反映和提出意见的优先权，相关意见将被作为首要考虑。</li>
-				</ul>
+				<p>详情请查看 <a href="https://www.icmsdev.com/docs/service.html" target="_blank">iCMS 商业授权细则</a></p>
 				<hr />
 				<p>电子文本形式的授权协议如同双方书面签署的协议一样，具有完全的和等同的法律效力。</p>
 				<div class="alert alert-error">您一旦开始安装 iCMS，即被视为完全理解并接受本协议的各项条款，在享有上述条款授予的权力的同时，受到相关的约束和限制。违反本授权协议并构成侵权，我们有权随时终止授权，责令停止损害，并保留追究相关责任的权力。</div>
@@ -358,24 +352,18 @@ $lock_file = iPATH.'cache/install.lock';
 				$incorrect  = '<span class="chk" style="color:red;">× 777属性检测不通过</span>';
 				$uncorrect  = '<span class="chk" style="color:red;">× 文件不存在请上传此文件</span>';
 				$check_list = array(
+					array('/','网站根目录'),
 					array('config.php','系统配置文件'),
-					array('cache','缓存目录'),
+					array('cache','系统缓存目录'),
 					array('cache/conf','网站配置目录'),
 					array('cache/conf/iCMS','网站配置目录'),
 					array('cache/conf/iCMS/config.php','网站配置文件'),
 					array('cache/iCMS','系统缓存目录'),
 					array('cache/template','模板缓存目录'),
 					array('res','资源上传目录'),
-					// array('html','静态生成目录'),
 				);
-				if($fp=@fopen(iPATH.'iCMS.txt',"wb")) {
-					$state = $correct;
-					fclose($fp);
-				} else {
-					$state = $incorrect.'程序根目录没有写权限,请将根目录属性设置为777';
-				}
 				foreach ($check_list as $key => $value) {
-					$file = iPATH.$value[0];
+					$file = iPATH.ltrim($value[0],'/');
 					if(!file_exists($file)) {
 						$check_list[$key][2]= $uncorrect;
 						$check = 0;
@@ -386,7 +374,6 @@ $lock_file = iPATH.'cache/install.lock';
 						$check = 0;
 					}
 				}
-				$check && @unlink(iPATH.'iCMS.txt');
 				?>
 				<table class="table">
 					<thead>
@@ -398,12 +385,6 @@ $lock_file = iPATH.'cache/install.lock';
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>0</td>
-							<td>程序根目录</td>
-							<td><?php echo $_DIR; ?></td>
-							<td><?php echo $state; ?></td>
-						</tr>
 						<?php foreach($check_list as $key=>$value) { ?>
 						<tr>
 							<td><?php echo $key+1 ; ?></td>
@@ -464,6 +445,16 @@ $lock_file = iPATH.'cache/install.lock';
 						<div class="controls">
 							<input type="text" class="span4" id="DB_PREFIX" name="DB_PREFIX" value="icms_">
 							<span class="help-block">数据表名前缀，同一数据库安装多个请修改此处。<span class="label label-important">如果存在同名数据表，程序将自动删除</span></span>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="DB_CHARSET">数据字符集</label>
+						<div class="controls">
+							<select id="DB_CHARSET" name="DB_CHARSET" class="form-control">
+							  <option value="utf8" selected="selected">默认 utf8</option>
+							  <option value="utf8mb4">utf8mb4 支持emoji</option>
+							</select>
+							<span class="help-block">默认utf8,如果有emoji表情的话请选择utf8mb4。<span class="label label-important">MySQL 5.5.3及以上版本才支持utf8mb4</span></span>
 						</div>
 					</div>
 					<h2>设置超级管理员</h2>

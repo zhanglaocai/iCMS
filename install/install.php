@@ -12,7 +12,8 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 define('iPHP',TRUE);
 define('iPHP_APP','iCMS'); //应用名
-define('iPHP_APP_MAIL','master@icmsdev.com');
+define('iPHP_DEBUG', true);
+define('iPHP_APP_MAIL','support@iCMSdev.com');
 define('iPATH',real_path(dirname(strtr(__FILE__,'\\','/'))."/../"));
 
 if($_POST['action']=='install'){
@@ -22,18 +23,24 @@ if($_POST['action']=='install'){
     $db_name     = trim($_POST['DB_NAME']);
     $db_prefix   = trim($_POST['DB_PREFIX']);
     $db_port     = trim($_POST['DB_PORT']);
+    $db_charset  = trim($_POST['DB_CHARSET']);
 
 	define('iPHP_DB_HOST',$db_host);	// 服务器名或服务器ip,一般为localhost
     define('iPHP_DB_PORT', $db_port);   //数据库端口
 	define('iPHP_DB_USER',$db_user);		// 数据库用户
 	define('iPHP_DB_PASSWORD',$db_password);//数据库密码
 	define('iPHP_DB_NAME',$db_name);		// 数据库名
-	define('iPHP_DB_PREFIX',$db_prefix);	// 表名前缀, 同一数据库安装多个请修改此处
+    define('iPHP_DB_PREFIX',$db_prefix);    // 表名前缀, 同一数据库安装多个请修改此处
+    define('iPHP_DB_CHARSET',$db_charset);    // MYSQL编码设置
     define('iPHP_DB_PREFIX_TAG','#iCMS@__');
 
     require_once iPATH.'iPHP/iPHP.php';
     require_once iPHP_CORE.'/iUI.class.php';
     require_once iPHP_APP_CORE.'/iCMS.class.php';
+
+    iDB::$show_errors     = true;
+    iDB::$show_trace      = false;
+    iDB::$show_explain    = false;
 
     iPHP::$apps = iCMS::default_apps();
 
@@ -54,6 +61,11 @@ if($_POST['action']=='install'){
 	$admin_name OR iUI::alert("请填写超级管理员账号",'js:top.callback("#ADMIN_NAME");');
 	$admin_password OR iUI::alert("请填写超级管理员密码",'js:top.callback("#ADMIN_PASSWORD");');
 	strlen($admin_password)<6 && iUI::alert("请填写超级管理员密码",'js:top.callback("#ADMIN_PASSWORD");');
+    //检测数据库文件
+    $sql_file      = dirname(strtr(__FILE__,'\\','/')).'/iCMS.sql';
+    $data_sql_file = dirname(strtr(__FILE__,'\\','/')).'/iCMS-data.sql';
+    is_readable($sql_file) OR iUI::alert('数据库文件[iCMS.sql]不存在或者读取失败','js:top.callback();');
+    is_readable($data_sql_file) OR iUI::alert('数据库文件[iCMS-data.sql]不存在或者读取失败','js:top.callback();');
 
     $mysql_link = iDB::connect('link');
 	// $mysql_link = @mysql_connect($db_host,$db_user,$db_password);
@@ -64,7 +76,7 @@ if($_POST['action']=='install'){
     if(isset($_POST['CREATE_DATABASE'])){
         iDB::connect('!select_db');
         // iDB::query("DROP DATABASE `".iPHP_DB_NAME."`; ");
-        iDB::query("CREATE DATABASE `".iPHP_DB_NAME."`CHARACTER SET utf8 COLLATE utf8_general_ci",'get')
+        iDB::query("CREATE DATABASE `".iPHP_DB_NAME."`CHARACTER SET ".iPHP_DB_CHARSET." COLLATE ".iPHP_DB_CHARSET."_general_ci",'get')
         OR
         iUI::alert('数据库创建失败,请确认数据库是否已存在或该用户是否有权限创建数据库','js:top.callback();');
     }else{
@@ -80,18 +92,17 @@ if($_POST['action']=='install'){
 	$content = preg_replace("/define\('iPHP_DB_USER',\s*'.*?'\)/is", 		"define('iPHP_DB_USER','".iPHP_DB_USER."')", $content);
 	$content = preg_replace("/define\('iPHP_DB_PASSWORD',\s*'.*?'\)/is", 	"define('iPHP_DB_PASSWORD','".iPHP_DB_PASSWORD."')", $content);
 	$content = preg_replace("/define\('iPHP_DB_NAME',\s*'.*?'\)/is", 		"define('iPHP_DB_NAME','".iPHP_DB_NAME."')", $content);
-	$content = preg_replace("/define\('iPHP_DB_PREFIX',\s*'.*?'\)/is", 	    "define('iPHP_DB_PREFIX','".iPHP_DB_PREFIX."')", $content);
+    $content = preg_replace("/define\('iPHP_DB_PREFIX',\s*'.*?'\)/is",      "define('iPHP_DB_PREFIX','".iPHP_DB_PREFIX."')", $content);
+    $content = preg_replace("/define\('iPHP_DB_CHARSET',\s*'.*?'\)/is",     "define('iPHP_DB_CHARSET','".iPHP_DB_CHARSET."')", $content);
 	$content = preg_replace("/define\('iPHP_KEY',\s*'.*?'\)/is", 			"define('iPHP_KEY','".random(64)."')",$content);
 
 	iFS::write($config_file,$content,false);
 //开始安装 数据库 结构
-	$sql_file = dirname(strtr(__FILE__,'\\','/')).'/iCMS.sql';
-	is_readable($sql_file) OR iUI::alert('数据库文件不存在或者读取失败','js:top.callback();');
-	$sql = iFS::read($sql_file);
+    $sql = iFS::read($sql_file);
+    iPHP_DB_CHARSET=="utf8mb4" && utf8mb4_sql($sql);
+
 	run_query($sql);
 //导入默认数据
-    $data_sql_file = dirname(strtr(__FILE__,'\\','/')).'/iCMS-data.sql';
-    is_readable($data_sql_file) OR iUI::alert('数据库文件不存在或者读取失败','js:top.callback();');
     $data_sql = iFS::read($data_sql_file);
     run_query($data_sql);
 
@@ -186,6 +197,30 @@ function real_path($p = '') {
         }
     }
     $o[0] == 'http:' && $o[0] = 'http:/';
+    $o[0] == 'https:' && $o[0] = 'https:/';
 
     return ($p[0] == '/' ? '/' : '') . implode('/', $o) . ($end == '/' ? '/' : '');
+}
+function utf8mb4_sql(&$sql){
+    $sql = str_replace('SET NAMES utf8', 'SET NAMES '.iPHP_DB_CHARSET, $sql);
+    $sql = str_replace('CHARSET=utf8', 'CHARSET='.iPHP_DB_CHARSET, $sql);
+    utf8mb4_replace_varchar($sql,'config','name');
+    utf8mb4_replace_varchar($sql,'files','path');
+    utf8mb4_replace_varchar($sql,'files','ofilename');
+    utf8mb4_replace_varchar($sql,'files','filename');
+    utf8mb4_replace_varchar($sql,'keywords','keyword');
+    utf8mb4_replace_varchar($sql,'prop_map','node',200);
+    utf8mb4_replace_varchar($sql,'tag','pid');
+    utf8mb4_replace_varchar($sql,'tag','name');
+    utf8mb4_replace_varchar($sql,'tag','tkey');
+    utf8mb4_replace_varchar($sql,'tag_map','field',200);
+    utf8mb4_replace_varchar($sql,'user','username');
+    utf8mb4_replace_varchar($sql,'user','nickname');
+}
+//Specified key was too long; max key length is 1000 bytes
+function utf8mb4_replace_varchar(&$sql,$table,$field,$_varchar=240,$varchar=255){
+    $sql = preg_replace(
+        "/CREATE TABLE `icms_".$table."`(.*?)`".$field."` varchar\(".$varchar."\)/is",
+        "CREATE TABLE `icms_".$table."`$1`".$field."` varchar(".$_varchar.")",
+    $sql);
 }
