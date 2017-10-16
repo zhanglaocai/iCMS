@@ -196,7 +196,7 @@ class apps_db {
         $indexs && $fields_sql = array_merge($fields_sql,$indexs);
         $sql= "CREATE TABLE `#iCMS@__{$name}` ("
             .implode(",\n", $fields_sql).
-        ') ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;';
+        ') ENGINE=MYISAM AUTO_INCREMENT=0 DEFAULT CHARSET='.iPHP_DB_CHARSET.';';
 
          if($query==='sql'){
             return $sql;
