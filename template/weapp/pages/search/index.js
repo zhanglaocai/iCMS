@@ -1,37 +1,36 @@
-var $APP = getApp();
-var $wxaCMS = $APP.util.extend({}, $APP.iCMS);
+let $APP = getApp();
+let $wxaCMS = $APP.util.extend(true,{},$APP.iCMS);
 
 $wxaCMS.data.inputShowed = false;
 $wxaCMS.data.inputVal = null;
 
-var inputAction = {
-    showInput: function () {
-        this.setData({
-            inputShowed: true
-        });
-    },
-    hideInput: function () {
-        this.setData({
-            inputVal: "",
-            inputShowed: false
-        });
-    },
-    clearInput: function () {
-        this.setData({
-            inputVal: ""
-        });
-    },
-    searchAction: function (e) {
-        this.setData({
-            inputVal: e.detail.value
-        });
-        wx.navigateTo({
-            url: '../search/search?q=' + e.detail.value
-        })
-    }
-};
+$wxaCMS.showInput = function () {
+    this.setData({
+        inputShowed: true
+    });
+}
+$wxaCMS.hideInput = function () {
+    this.setData({
+        inputVal: "",
+        inputShowed: false
+    });
+}
+$wxaCMS.clearInput = function () {
+    this.setData({
+        inputVal: ""
+    });
+}
+$wxaCMS.searchAction = function (e) {
+    this.setData({
+        inputVal: e.detail.value
+    });
+    wx.navigateTo({
+        url: '../search/search?q=' + e.detail.value
+    })
+}
 
-var $wxaCMS = $APP.util.extend($wxaCMS, inputAction);
+
+// let $wxaCMS = $APP.util.extend($wxaCMS, inputAction);
 
 $wxaCMS.onLoad = function (options) {
     wx.setNavigationBarTitle({

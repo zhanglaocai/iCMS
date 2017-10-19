@@ -1,5 +1,5 @@
-var $APP = getApp();
-var $wxaCMS = $APP.util.extend({}, $APP.iCMS);
+let $APP = getApp();
+let $wxaCMS = $APP.util.extend(true,{},$APP.iCMS);
 
 $wxaCMS.data.cid = 0;
 
