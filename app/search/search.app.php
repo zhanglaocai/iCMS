@@ -32,7 +32,7 @@ class searchApp {
         $iURL->url      = iURL::make('app=search&q='.$q,'router::api');
         $iURL->pageurl  = iURL::make('page={P}',$iURL->url);
         $iURL->href     = $iURL->url;
-        $search['iurl'] = $iURL;
+        $search['iurl'] = (array)$iURL;
 
         iURL::page_url($iURL);
         $tpl===false && $tpl = '{iTPL}/search.htm';

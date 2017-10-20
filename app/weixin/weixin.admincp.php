@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
 * iCMS - i Content Management System
 * Copyright (c) 2007-2017 iCMSdev.com. All rights reserved.

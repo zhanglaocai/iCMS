@@ -236,6 +236,7 @@ class files {
     public static function set_file_iid($content,$iid,$appid) {
         if(empty($content)) return;
 
+        is_array($content) && $content = implode('', $content);
         $content = stripslashes($content);
         $array   = self::preg_img($content,$match);
         foreach ($array as $key => $value) {
@@ -275,6 +276,7 @@ class files {
         if(stripos($sfp,$uri['host']) === false){
             return $sfp;
         }
+        $size = $w.'x'.$h;
 
         if(empty(iCMS::$config['thumb']['size'])){
             return $sfp;
@@ -283,7 +285,6 @@ class files {
         $size_map = explode("\n", iCMS::$config['thumb']['size']);
         $size_map = array_map('trim', $size_map);
         $size_map = array_flip($size_map);
-        $size     = $w.'x'.$h;
         if(!isset($size_map[$size])){
             return $sfp;
         }

@@ -82,6 +82,16 @@ class propAdmincp{
                     }
                 }
             }else{
+
+                if(strpos($data['name'],':')!==false){
+                    list($data['name'],$data['val']) = explode(':', $data['name']);
+                    empty($data['val']) && $data['val'] = 1;
+                }else{
+                    $data['name'] = $data['val'] = $data['name'];
+                }
+                if ($field=='pid'&& !is_numeric($data['val'])){
+                    iUI::alert('pid字段的值只能用数字');
+                }
                 iDB::value("
                     SELECT `pid` FROM `#iCMS@__prop`
                     WHERE `app` ='$app'

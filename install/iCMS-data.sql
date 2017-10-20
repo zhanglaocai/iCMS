@@ -77,7 +77,7 @@ insert  into `icms_config`(`appid`,`name`,`value`) values
     (0,'mail','{\"host\":\"\",\"secure\":\"\",\"port\":\"25\",\"username\":\"\",\"password\":\"\",\"setfrom\":\"\",\"replyto\":\"\"}'),
     (1,'article','{\"pic_center\":\"1\",\"pic_next\":\"0\",\"pageno_incr\":\"\",\"markdown\":\"0\",\"autoformat\":\"0\",\"catch_remote\":\"0\",\"remote\":\"0\",\"autopic\":\"1\",\"autodesc\":\"1\",\"descLen\":\"100\",\"autoPage\":\"0\",\"AutoPageLen\":\"\",\"repeatitle\":\"0\",\"showpic\":\"0\",\"filter\":\"0\",\"clink\":\"-\"}'),
     (2,'category','{\"domain\":null}'),
-    (3,'tag','{\"url\":\"https:\\/\\/www.icmsdev.com\",\"rule\":\"{PHP}\",\"dir\":\"\\/\",\"tpl\":\"{iTPL}\\/tag.htm\",\"tkey\":\"-\"}'),
+    (3,'tag','{\"rule\":\"{PHP}\",\"dir\":\"\\/\",\"tpl\":\"{iTPL}\\/tag.htm\",\"tkey\":\"-\"}'),
     (5,'comment','{\"enable\":\"1\",\"examine\":\"0\",\"seccode\":\"1\",\"plugin\":{\"changyan\":{\"enable\":\"0\",\"appid\":\"\",\"appkey\":\"\"}}}'),
     (9,'user','{\"register\":{\"enable\":\"1\",\"seccode\":\"1\",\"interval\":\"86400\"},\"login\":{\"enable\":\"1\",\"seccode\":\"1\",\"interval\":\"3600\"},\"post\":{\"seccode\":\"1\",\"interval\":\"10\"},\"agreement\":\"\",\"coverpic\":\"\\/ui\\/coverpic.jpg\",\"open\":{\"WX\":{\"appid\":\"\",\"appkey\":\"\",\"redirect\":\"\"},\"QQ\":{\"appid\":\"\",\"appkey\":\"\",\"redirect\":\"\"},\"WB\":{\"appid\":\"\",\"appkey\":\"\",\"redirect\":\"\"},\"TB\":{\"appid\":\"\",\"appkey\":\"\",\"redirect\":\"\"}}}'),
     (12,'cloud','[]'),
