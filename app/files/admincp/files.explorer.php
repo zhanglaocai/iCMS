@@ -187,7 +187,7 @@ $(function(){
             ?>
             <tr id="<?php echo md5($fileRs[$i]['path']) ; ?>">
               <td><input type="checkbox" value="<?php echo $fileRs[$i]['path'] ; ?>" url="<?php echo $fileRs[$i]['url'] ; ?>"  data-click="file"/></td>
-              <td><?php if (in_array(strtolower($fileRs[$i]['ext']),array('jpg','png','gif','jpeg'))){?>
+              <td><?php if (in_array(strtolower($fileRs[$i]['ext']),array('jpg','png','gif','jpeg','webp'))){?>
                 <a href="###" class="tip-right" title="<img src='<?php echo $fileRs[$i]['url'] ; ?>' width='120px'/>"><?php echo $icon ; ?> <?php echo $fileRs[$i]['name'] ; ?></a>
                 <?php }else{?>
                 <?php echo $icon ; ?> <?php echo $fileRs[$i]['name'] ; ?>

@@ -33,12 +33,20 @@ $unid = uniqid();
     <?php }?>
     <li><a href="<?php echo __ADMINCP__;?>=files&do=preview&from=modal&callback=<?php echo $callback;?>" data-toggle="modal" data-check="1" title="预览" class="modal_photo_<?php echo $unid;?>"><i class="fa fa-eye"></i> 预览</a></li>
   </ul>
+  <?php if(self::$no_http){ ?>
+      <span class="add-on tip brr" title="选中不执行远程文件本地化">
+        <input type="checkbox" name="<?php echo $callback;?>_http"/>
+        <i class="fa fa-cog"></i>
+      </span>
+  <?php } ?>
 </div>
 <script type="text/javascript">
 $(function(){
+<?php if(self::$no_http && iFS::checkHttp(self::$pic_value)){ ?>
+    $('[name="<?php echo $callback;?>_http"]').prop('checked','checked');
+<?php } ?>
     window.modal_<?php echo $callback;?> = function(el,a,c){
         // console.log(el,a,c,'11111111111111');
-
         var e = $("#<?php echo $callback;?>");
         var name = e.get(0).tagName;
         if(name=='TEXTAREA'){

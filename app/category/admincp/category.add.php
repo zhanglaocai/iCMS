@@ -126,17 +126,17 @@ $(function(){
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图</span>
               <input type="text" name="pic" class="span6" id="pic" value="<?php echo $rs['pic'] ; ?>"/>
-              <?php filesAdmincp::pic_btn("pic");?>
+              <?php filesAdmincp::set_opt($rs['pic'])->pic_btn("pic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图2</span>
               <input type="text" name="mpic" class="span6" id="mpic" value="<?php echo $rs['mpic'] ; ?>"/>
-              <?php filesAdmincp::pic_btn("mpic");?>
+              <?php filesAdmincp::set_opt($rs['mpic'])->pic_btn("mpic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">缩略图3</span>
               <input type="text" name="spic" class="span6" id="spic" value="<?php echo $rs['spic'] ; ?>"/>
-              <?php filesAdmincp::pic_btn("spic");?>
+              <?php filesAdmincp::set_opt($rs['spic'])->pic_btn("spic");?>
             </div>
             <div class="clearfloat mb10"></div>
             <div class="input-prepend"> <span class="add-on">SEO 标题</span>

@@ -26,7 +26,6 @@ class plugin_download{
     }
     public static function markdown($content) {
         preg_match_all('/!\[.*?\]\((.+)\)/', $content, $matches);
-        $img_ext = array('jpg', 'jpeg', 'png', 'webp', 'gif');
 
         foreach ((array)$matches[1] as $key => $url) {
             $path = iFS::fp($url,'-http');
@@ -34,7 +33,7 @@ class plugin_download{
             // list($w,$h,$type) = @getimagesize($rootpath);
             // if(empty($type)){
             $ext = iFS::get_ext($path);
-            if (!in_array($ext, $img_ext)) {
+            if (!in_array($ext, files::$IMG_EXT)) {
                 $name = basename($path);
                 $durl = filesApp::get_url($name);
                 $replace[$key] = '<a class="attachment" href="'.$durl.'" target="_blank" title="点击下载">'.$name.'</a>';

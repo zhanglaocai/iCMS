@@ -8,7 +8,9 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class filesAdmincp{
-    public static $appid = null;
+    public static $appid            = null;
+    public static $no_http          = false;
+    public static $pic_value        = null;
     public static $DELETE_ERROR_PIC = false;
 
     public function __construct() {
@@ -131,7 +133,7 @@ class filesAdmincp{
             "url"      => iFS::fp($F['path'],'+http'),
             "fid"      => $F["fid"],
             "fileType" => $F["ext"],
-            "image"    => in_array($F["ext"],array('gif','jpg','jpeg','png'))?1:0,
+            "image"    => in_array($F["ext"],files::$IMG_EXT)?1:0,
             "original" => $F["oname"],
             "state"    => ($F['code']?'SUCCESS':$F['state'])
         ));
@@ -158,7 +160,7 @@ class filesAdmincp{
             "url"      => iFS::fp($F['path'],'+http'),
             "fid"      => $F["fid"],
             "fileType" => $F["ext"],
-            "image"    => in_array($F["ext"],array('gif','jpg','jpeg','png'))?1:0,
+            "image"    => in_array($F["ext"],files::$IMG_EXT)?1:0,
             "original" => $F["oname"],
             "state"    => ($F['code']?'SUCCESS':$F['state'])
         );
@@ -265,7 +267,7 @@ class filesAdmincp{
      * @return [type] [description]
      */
     public function do_picture(){
-    	$this->explorer(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
+    	$this->explorer(iCMS::$config['FS']['dir'],files::$IMG_EXT);
     }
     /**
      * [图片编辑器]
@@ -387,7 +389,12 @@ class filesAdmincp{
         $click=='dir' && $_title=$title.'目录';
         return '<a href="'.$href.'" class="btn files_modal" data-toggle="modal" title="选择'.$_title.'"><i class="fa fa-search"></i> 选择</a>';
     }
-
+    public static function set_opt($pic_value=null) {
+        self::$no_http = true;
+        self::$pic_value = $pic_value;
+        $self = new self();
+        return $self;
+    }
     public static function pic_btn($callback, $indexid = 0, $title="图片",$ret=false,$multi=false) {
         $ret && ob_start();
         include admincp::view("files.picbtn","files");

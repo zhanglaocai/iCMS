@@ -88,7 +88,7 @@ class filesApp {
         $this->do_download();
     }
     public static function get_content_pics($content,&$pic_array=array()){
-        $PREG_PIC = "/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is";
+        $PREG_PIC = "/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(".implode('|', files::$IMG_EXT).")).*?>/is";
         preg_match_all($PREG_PIC, $content, $pic_array);
         $array = array_unique($pic_array[1]);
         $pics  = array();

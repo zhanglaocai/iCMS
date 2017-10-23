@@ -224,10 +224,11 @@ class tagAdmincp{
 		$tkey OR $tkey = strtolower(iPinyin::get($name));
 
         iFS::$force_ext = "jpg";
-        iFS::checkHttp($pic) && $pic = iFS::http($pic);
-        iFS::checkHttp($bpic)&& $bpic = iFS::http($bpic);
-        iFS::checkHttp($mpic)&& $mpic = iFS::http($mpic);
-        iFS::checkHttp($spic)&& $spic = iFS::http($spic);
+        (iFS::checkHttp($pic)  && !isset($_POST['pic_http']))  && $pic  = iFS::http($pic);
+        (iFS::checkHttp($bpic) && !isset($_POST['bpic_http'])) && $bpic = iFS::http($bpic);
+        (iFS::checkHttp($mpic) && !isset($_POST['mpic_http'])) && $mpic = iFS::http($mpic);
+        (iFS::checkHttp($spic) && !isset($_POST['spic_http'])) && $spic = iFS::http($spic);
+
 
         $fields = array('uid','rootid', 'cid', 'tcid', 'pid',
             'tkey', 'name', 'seotitle', 'subtitle', 'keywords',

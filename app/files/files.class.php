@@ -50,6 +50,7 @@ class files {
     public static $_MAP_TABLE      = null;
 
     public static $PREG_IMG        = '@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is';
+    public static $IMG_EXT         = array('jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp');
 
     public static function config($table = array()) {
         empty($table) && $table = array('files','files_map');
@@ -85,7 +86,7 @@ class files {
         if(!self::$watermark_config['enable']) return;
 
         $config = self::$watermark_config;
-        $allow_ext = array('jpg', 'jpeg', 'png');
+        $allow_ext = self::$IMG_EXT;
         $config['allow_ext'] && $allow_ext = explode(',', $config['allow_ext']);
         $ext OR $ext = iFS::get_ext($fp);
         if (in_array($ext, $allow_ext)) {

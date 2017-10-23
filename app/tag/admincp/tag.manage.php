@@ -174,7 +174,7 @@ $(function(){
             <td><?php echo $rs[$i]['id'] ; ?></td>
             <td class="sortnum"><input type="text" name="sortnum[<?php echo $rs[$i]['id'] ; ?>]" value="<?php echo $rs[$i]['sortnum'] ; ?>" tid="<?php echo $rs[$i]['id'] ; ?>"/></td>
             <td><?php if($rs[$i]['haspic'])echo '<img src="./app/admincp/ui/img/image.gif" align="absmiddle">';?>
-              <a href="<?php echo $rs[$i]['url'] ; ?>" class="noneline" target="_blank"><?php echo $rs[$i]['name'] ; ?></a>
+              <a href="<?php echo $rs[$i]['url'] ; ?>" class="aTitle" target="_blank"><?php echo $rs[$i]['name'] ; ?></a>
           </div>
 
         <?php if($rs[$i]['haspic']){ ?>

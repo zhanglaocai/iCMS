@@ -510,7 +510,7 @@ class spider_tools {
     public static function checkpage(&$newbody, $bodyA, $_count = 1, $nbody = "", $i = 0, $k = 0) {
         $ac = count($bodyA);
         $nbody.= $bodyA[$i];
-        preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is", $nbody, $picArray);
+        preg_match_all("/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(".implode('|', files::$IMG_EXT).")).*?>/is", $nbody, $picArray);
         $pA = array_unique($picArray[1]);
         $pA = array_filter($pA);
         $_pcount = count($pA);
@@ -533,7 +533,7 @@ class spider_tools {
     }
     public static function mergePage($content){
         $_content = $content;
-        preg_match_all("/<img.*?src\s*=[\"|'|\s]*(http:\/\/.*?\.(gif|jpg|jpeg|bmp|png)).*?>/is", $_content, $picArray);
+        preg_match_all("/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(".implode('|', files::$IMG_EXT).")).*?>/is", $_content, $picArray);
         $pA = array_unique($picArray[1]);
         $pA = array_filter($pA);
         $_pcount = count($pA);
