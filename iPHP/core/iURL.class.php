@@ -157,7 +157,11 @@ class iURL {
         }
         empty($router_url) && $router_url = self::$CONFIG['url'];
         empty($router_dir) && $router_dir = self::$CONFIG['dir'];
-
+        //[xxxxx]类自定链接优先
+        if($array['clink']){
+            preg_match('/\[(.+)\]/', $array['clink'], $match);
+            isset($match[1]) && $url = $match[1];
+        }
         if($url=='{PHP}'){
             $primary = $app_conf['primary'];
             empty($href) && $href = $uri.'.php';

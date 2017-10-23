@@ -196,7 +196,6 @@ class iPHP {
 
 		if (self::$app_do && self::$app->methods) {
 			in_array(self::$app_do, self::$app->methods) OR iPHP::error_404('Call to undefined method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0003');
-			method_exists(self::$app, self::$app_method) OR iPHP::error_404('Call to undefined method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0004');
 			$method = self::$app_method;
 			$args === null && $args = self::$app_args;
 			if ($args) {
@@ -205,6 +204,7 @@ class iPHP {
 				}
 				return call_user_func_array(array(self::$app, $method), (array) $args);
 			} else {
+				method_exists(self::$app, $method) OR iPHP::error_404('Call to undefined method <b>' . $obj_name . '::'.self::$app_method.'</b>', '0004');
 				return self::$app->$method();
 			}
 		} else {
