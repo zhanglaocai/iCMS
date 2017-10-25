@@ -245,7 +245,8 @@ class files {
         }
     }
     public static function preg_img($content,&$match) {
-        $match = (array)$match;
+        $match   = (array)$match;
+        $content = str_replace("<img", "\n\n<img", $content);
         preg_match_all(self::$PREG_IMG, $content, $match);
         return array_unique($match[2]);
     }

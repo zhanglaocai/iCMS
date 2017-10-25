@@ -222,8 +222,7 @@ class spider_tools {
                 }
             }else if(strpos($rule, 'IMG::')!==false){
                 $img_count = str_replace('IMG::','', $rule);
-                preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
-                $img_array  = array_unique($match[1]);
+                $img_array = files::preg_img($content);
                 if(count($img_array)<$img_count){
                     return null;
                 }
@@ -510,10 +509,8 @@ class spider_tools {
     public static function checkpage(&$newbody, $bodyA, $_count = 1, $nbody = "", $i = 0, $k = 0) {
         $ac = count($bodyA);
         $nbody.= $bodyA[$i];
-        preg_match_all("/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(".implode('|', files::$IMG_EXT).")).*?>/is", $nbody, $picArray);
-        $pA = array_unique($picArray[1]);
-        $pA = array_filter($pA);
-        $_pcount = count($pA);
+        $pics    = filesApp::get_content_pics($nbody);
+        $_pcount = count($pics);
         //	print_r($_pcount);
         //	echo "\n";
         //	print_r('_count:'.$_count);
@@ -533,10 +530,8 @@ class spider_tools {
     }
     public static function mergePage($content){
         $_content = $content;
-        preg_match_all("/<img.*?src\s*=[\"|'|\s]*((http|https):\/\/.*?\.(".implode('|', files::$IMG_EXT).")).*?>/is", $_content, $picArray);
-        $pA = array_unique($picArray[1]);
-        $pA = array_filter($pA);
-        $_pcount = count($pA);
+        $pics     = filesApp::get_content_pics($_content);
+        $_pcount  = count($pics);
         if ($_pcount < 4) {
             $content = str_replace('#--iCMS.PageBreak--#', "", $content);
         } else {

@@ -164,8 +164,6 @@ $lock_file = iPATH.'cache/install.lock';
 					<li>
 						<a href="https://www.icmsdev.com" target="_blank">官网</a>
 					</li>
-					<li><a href="https://www.linode.com/?r=35103ee1524aaff9b3edcca8cf7de8fab6e5cf9e" target="_blank">VPS推荐</a></li>
-					<li><a href="http://s.click.taobao.com/t?e=m%3D2%26s%3D7JZW1mRrlBccQipKwQzePCperVdZeJviEViQ0P1Vf2kguMN8XjClAmpVu972RyTOt3h8CUvoNV%2Fh102VLn%2Bh5EqjLczoYHWIfyEaJ8bL%2F82Uatkzf5yweOdn1BbglxZYxUhy8exlzcq9AmARIwX9K%2BnbtOD3UdznPV1H2z0iQv9NkKVMHClW0QbMqOpFMIvnvjQXzzpXdTHGJe8N%2FwNpGw%3D%3D" target="_blank">阿里云</a></li>
 				</ul>
 			</div>
 		</div>

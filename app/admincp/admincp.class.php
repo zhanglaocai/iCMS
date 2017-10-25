@@ -20,6 +20,7 @@ file_exists($git_ver_file) && require_once $git_ver_file;
 class admincp {
 	public static $apps       = NULL;
 	public static $callback   = NULL;
+	public static $view       = NULL;
 	public static $APP_OBJ    = NULL;
 	public static $APP_NAME   = NULL;
 	public static $APP_DO     = NULL;
@@ -71,13 +72,16 @@ class admincp {
 		}
 	}
 
-	public static function run($args = NULL, $prefix = "do_") {
+	public static function run($app = NULL, $do = NULL, $args = NULL, $prefix = "do_") {
 		self::init();
-		$app = $_GET['app'];
+
+		$app OR $app = iSecurity::escapeStr(iSecurity::getGP('app'));
 		$app OR $app = 'admincp';
-		$do OR $do = $_GET['do'] ? (string) $_GET['do'] : 'iCMS';
+		$do OR $do = iSecurity::escapeStr($_GET['do']);
+		$do OR $do = 'iCMS';
+
 		if ($_POST['action']) {
-			$do = $_POST['action'];
+			$do = iSecurity::escapeStr($_POST['action']);
 			$prefix = 'ACTION_';
 		}
 
@@ -152,24 +156,28 @@ class admincp {
 		}
 	}
 
-	public static function view($p = NULL, $app=null) {
-		if ($p === NULL && self::$APP_NAME) {
-			$p = self::$APP_NAME;
-			self::$APP_DO && $p .= '.' . self::$APP_DO;
+	public static function view($name = NULL, $dir=null) {
+		self::$view['name']&& $name = self::$view['name'];
+		if($dir===null && self::$view['dir']){
+			$dir = self::$view['dir'];
 		}
-		$APP_TPL = self::$APP_TPL;
-		if($app){
-			if($app=='admincp'){
-				$APP_TPL = ACP_PATH . '/template';
+		if ($name === NULL && self::$APP_NAME) {
+			$name = self::$APP_NAME;
+			self::$APP_DO && $name.= '.' . self::$APP_DO;
+		}
+		$tpl = self::$APP_TPL;
+		if($dir){
+			if($dir=='admincp'){
+				$tpl = ACP_PATH . '/template';
 			}else{
-				$APP_TPL = iPHP_APP_DIR.'/'.$app.'/admincp';
+				$tpl = iPHP_APP_DIR.'/'.$dir.'/admincp';
 			}
 		}
-		$_path = $APP_TPL . '/' . $p . '.def.php';
-		if(file_exists($_path)){
-			return $_path;
+		$def = $tpl . '/' . $name . '.def.php';
+		if(file_exists($def)){
+			return $def;
 		}
-		$path = $APP_TPL . '/' . $p . '.php';
+		$path = $tpl . '/' . $name . '.php';
 		return $path;
 	}
 
@@ -181,29 +189,32 @@ class admincp {
 		} else {
 			$body_class = 'sidebar-display';
 		}
+		isset(self::$view['navbar']) && $navbar = self::$view['navbar'];
+		// var_dump(self::$view);
 		$navbar === false && $body_class = 'iframe ';
-
-		include self::view("admincp.header",'admincp');
-
-		if(isset($_GET['navbar']) && $_GET['navbar']=='no'){
-			$navbar = false;
+		if(self::$view['head:begin']){
+			include self::view("head.begin",self::$view['head:begin']);
 		}
-		$navbar === true && include self::view("admincp.navbar",'admincp');
+		include self::view("admincp.header",'admincp');
+		if(self::$view['head:after']){
+			include self::view("head.after",self::$view['head:after']);
+		}
+		if($navbar === true){
+			include self::view("admincp.navbar",'admincp');
+		}
 	}
 
 	public static function foot() {
+		if(self::$view['foot:begin']){
+			include self::view("footer.begin",self::$view['foot:begin']);
+		}
 		include self::view("admincp.footer",'admincp');
+
+		if(self::$view['foot:after']){
+			include self::view("footer.after",self::$view['foot:after']);
+		}
 	}
-	public static function error_page($msg) {
-		admincp::head();
-		echo '
-		<div class="alert">
-		  <button type="button" class="close" data-dismiss="alert">&times;</button>
-		  <strong>Warning!</strong> '.$msg.'
-		</div>';
-		admincp::foot();
-		exit();
-	}
+
 	public static function access_log() {
 		$access = array(
 			'uid'       => members::$userid,

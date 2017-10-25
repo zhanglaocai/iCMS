@@ -504,6 +504,9 @@ class iFS {
 		if(empty($path)){
 			return false;
 		}
+		if(!is_file($path)){
+			return false;
+		}
 	    $fh = fopen($path, "rb");
 	    //必须使用rb来读取文件，这样能保证跨平台二进制数据的读取安全
 	    //仅读取前面的8个字节

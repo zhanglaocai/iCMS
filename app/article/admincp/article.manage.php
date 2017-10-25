@@ -21,12 +21,19 @@ $(function(){
 	<?php } ?>
 
   iCMS.select('status',"<?php echo isset($_GET['status'])?$_GET['status']:$this->_status ; ?>");
-  iCMS.select('pt',"<?php echo isset($_GET['pt'])?$_GET['pt']:$this->_postype ; ?>");
+  iCMS.select('postype',"<?php echo isset($_GET['postype'])?$_GET['postype']:$this->_postype ; ?>");
+
 	<?php if($_GET['orderby']){ ?>
 	iCMS.select('orderby',"<?php echo $_GET['orderby'] ; ?>");
 	<?php } ?>
+  <?php if($_GET['st']){ ?>
+  iCMS.select('st',"<?php echo $_GET['st'] ; ?>");
+  <?php } ?>
   <?php if($_GET['sub']=="on"){ ?>
   iCMS.checked('#sub');
+  <?php } ?>
+  <?php if($_GET['hidden']=="on"){ ?>
+  iCMS.checked('#hidden');
   <?php } ?>
   <?php if($_GET['scid']=="on"){ ?>
     iCMS.checked('#search_scid');
@@ -119,11 +126,14 @@ $(function(){
             <?php echo $category_select = category::priv('cs')->select() ; ?>
           </select>
           <span class="add-on tip" title="选中查询所有关联到此栏目的文章">
-          <input type="checkbox" name="scid" id="search_scid"/>
-          副栏目 </span>
+            <input type="checkbox" name="scid" id="search_scid"/>副栏目
+          </span>
           <span class="add-on tip" title="选中查询此栏目下面所有的子栏目,包含本栏目">
-          <input type="checkbox" name="sub" id="sub"/>
-          子栏目 </span>
+            <input type="checkbox" name="sub" id="sub"/>子栏目
+          </span>
+          <span class="add-on tip" title="不显示隐藏栏目">
+            <input type="checkbox" name="hidden" id="hidden"/>隐藏栏目
+          </span>
         </div>
         <div class="input-prepend input-append">
           <span class="add-on">无缩略图
@@ -148,8 +158,9 @@ $(function(){
         <div class="clearfloat mb10"></div>
         <div class="input-prepend">
           <span class="add-on">发布类型</span>
-          <select name="pt" id="pt" class="chosen-select span3">
+          <select name="postype" id="postype" class="chosen-select span3">
             <option value=""></option>
+            <option value="all">所有类型</option>
             <option value="0"> 用户 [postype='0']</option>
             <option value="1"selected='selected'> 管理 [postype='1']</option>
             <?php echo propAdmincp::get("postype") ; ?>
@@ -158,6 +169,8 @@ $(function(){
         <div class="input-prepend">
           <span class="add-on">状 态</span>
           <select name="status" id="status" class="chosen-select span3">
+            <option value=""></option>
+            <option value="all">所有状态</option>
             <option value="0"> 草稿 [status='0']</option>
             <option value="1"selected='selected'> 正常 [status='1']</option>
             <option value="2"> 回收站 [status='2']</option>
@@ -293,7 +306,7 @@ $(function(){
                   <a href="<?php echo APP_FURI; ?>&do=update&id=<?php echo $value['id'] ; ?>&_args=status:1" target="iPHP_FRAME" class="tip-bottom" title="从回收站恢复"/><i class="fa fa-reply-all"></i></a>
                   <?php } ?>
                   <!-- <a href="<?php echo APP_URI; ?>&do=purge&id=<?php echo $value['id'] ; ?>&url=<?php echo $value['url'] ; ?>" class="tip-bottom" data-toggle="modal" title="清除nginx缓存"><i class="fa fa-recycle"></i></a> -->
-                  <?php if ($C['mode'] && strstr($C['rule']['article'],'{PHP}')===false && $value['status']=="1" && empty($ourl) && members::$data->gid==1){  ?>
+                  <?php if (($C['mode'] && strstr($C['rule']['article'],'{PHP}')===false && $value['status']=="1" && empty($ourl) && members::$data->gid==1)||preg_match('/\[(.+)\]/', $value['clink'])){  ?>
                   <a href="<?php echo __ADMINCP__; ?>=html&do=createArticle&aid=<?php echo $value['id'] ; ?>&frame=iPHP" class="tip-bottom" target="iPHP_FRAME" title="生成静态文件"><i class="fa fa-file"></i></a>
                   <?php } ?>
                   <?php if($value['chapter']){?>
@@ -335,8 +348,9 @@ $(function(){
                   <?php echo $value['hits']; ?>/<?php echo $value['comments']; ?>
                 </a>
               </td>
-              <td><?php if($value['status']=="1"){ ?>
+              <td>
                 <a href="<?php echo $value['url']; ?>" class="btn btn-success btn-mini" target="_blank">查看</a>
+                <?php if($value['status']=="1"){ ?>
                 <?php } ?>
                 <!-- <a href="<?php echo APP_URI; ?>&do=add&id=<?php echo $value['id'] ; ?>" class="btn btn-primary btn-mini">+章节</a> -->
                 <?php if(category::check_priv($value['cid'],'ce')){ ?>
@@ -376,6 +390,8 @@ $(function(){
                       <li><a data-toggle="batch" data-action="keyword"><i class="fa fa-star"></i> 设置关键字</a></li>
                       <li><a data-toggle="batch" data-action="tag"><i class="fa fa-tags"></i> 设置标签</a></li>
                       <li><a data-toggle="batch" data-action="meta"><i class="fa fa-sitemap"></i> 设置动态属性</a></li>
+                      <li><a data-toggle="batch" data-action="status"><i class="fa fa-cog"></i> 设置状态</a></li>
+                      <li><a data-toggle="batch" data-action="postype"><i class="fa fa-cog"></i> 设置发布类型</a></li>
                       <li class="divider"></li>
                       <?php if(iCMS::$config['api']['baidu']['sitemap']['site'] && iCMS::$config['api']['baidu']['sitemap']['access_token']){ ?>
                       <li><a data-toggle="batch" data-action="baiduping" title="百度站长平台主动推送"><i class="fa fa-send"></i> 百度主动推送</a></li>
@@ -420,8 +436,33 @@ $(function(){
 <div class='iCMS-batch'>
   <div id="scidBatch">
     <div class="input-prepend">
+      <span class="add-on">副栏目</span>
       <select name="scid[]" id="scid" class="span3" multiple="multiple"  data-placeholder="请选择副栏目(可多选)...">
         <?php echo $category_select;?>
+      </select>
+    </div>
+  </div>
+  <div id="statusBatch">
+    <div class="input-prepend">
+      <span class="add-on">状态</span>
+      <select name="mstatus" id="mstatus" class="span3" data-placeholder="请选择状态">
+        <option value="0"> 草稿 [status='0']</option>
+        <option value="1"selected='selected'> 正常 [status='1']</option>
+        <option value="2"> 回收站 [status='2']</option>
+        <option value="3"> 待审核 [status='3']</option>
+        <option value="4"> 未通过 [status='4']</option>
+        <?php echo propAdmincp::get("status") ; ?>
+      </select>
+    </div>
+  </div>
+  <div id="postypeBatch">
+    <div class="input-prepend">
+      <span class="add-on">发布类型</span>
+      <select name="mpostype" id="mpostype" class="span3" data-placeholder="请选择发布类型">
+        <option value=""></option>
+        <option value="0"> 用户 [postype='0']</option>
+        <option value="1"selected='selected'> 管理 [postype='1']</option>
+        <?php echo propAdmincp::get("postype") ; ?>
       </select>
     </div>
   </div>

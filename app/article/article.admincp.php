@@ -159,6 +159,13 @@ class articleAdmincp{
     		case 'weight':
                 $data = array('weight'=>$_POST['mweight']);
     		break;
+            case 'status':
+                $data = array('status'=>$_POST['mstatus']);
+            break;
+            case 'postype':
+                $data = array('postype'=>$_POST['mpostype']);
+            break;
+
     		case 'keyword':
     			if($_POST['pattern']=='replace') {
                     $data = array('keywords'=>iSecurity::escapeStr($_POST['mkeyword']));
@@ -295,10 +302,9 @@ class articleAdmincp{
         $content = article::body($this->id);
         if($content){
             $content = stripslashes($content);
-            preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
-            $array  = array_unique($match[1]);
-            $uri    = parse_url(iCMS_FS_URL);
-            $fArray = array();
+            $array   = files::preg_img($content);
+            $uri     = parse_url(iCMS_FS_URL);
+            $fArray  = array();
             foreach ($array as $key => $value) {
                 $value = trim($value);
                 // echo $value.PHP_EOL;
@@ -369,14 +375,16 @@ class articleAdmincp{
         //status:[0:草稿][1:正常][2:回收][3:待审核][4:不合格]
         //postype: [0:用户][1:管理员]
         $stype && $this->_status = $stype_map[$stype];
-        if(isset($_GET['pt']) && $_GET['pt']!=''){
-            $this->_postype = (int)$_GET['pt'];
+
+        $sql = 'WHERE 1=1';
+        if(is_numeric($_GET['postype'])){
+            $this->_postype = (int)$_GET['postype'];
         }
-        if(isset($_GET['status'])){
+        if(is_numeric($_GET['status'])){
             $this->_status = (int)$_GET['status'];
         }
-        $sql = "WHERE `status`='{$this->_status}'";
-        $this->_postype==='all' OR $sql.= " AND `postype`='{$this->_postype}'";
+        is_numeric($this->_postype) && $sql.=" AND `postype` ='".$this->_postype."'";
+        is_numeric($this->_status) && $sql.=" AND `status` ='".$this->_status."'";
 
         if(members::check_priv("article.VIEW")){
             $_GET['userid'] && $sql.= iSQL::in($_GET['userid'],'userid');
@@ -419,7 +427,10 @@ class articleAdmincp{
         }else{
             $sql.= iSQL::in('-1','cid');
         }
-
+        if($_GET['hidden']) {
+            $hidden = categoryApp::get_cahce('hidden');
+            $hidden && $sql.= iSQL::in($hidden, 'cid', 'not');
+        }
         if($_GET['keywords']) {
             $kws = $_GET['keywords'];
             switch ($_GET['st']) {
@@ -446,7 +457,7 @@ class articleAdmincp{
         isset($_GET['userid']) && $uriArray['userid']  = (int)$_GET['userid'];
         isset($_GET['keyword'])&& $uriArray['keyword'] = $_GET['keyword'];
         isset($_GET['tag'])    && $uriArray['tag']     = $_GET['tag'];
-        isset($_GET['pt'])     && $uriArray['pt']      = $_GET['pt'];
+        isset($_GET['postype'])&& $uriArray['postype'] = $_GET['postype'];
         isset($_GET['cid'])    && $uriArray['cid']     = $_GET['cid'];
 
         $orderby    = $_GET['orderby']?$_GET['orderby']:"id DESC";
@@ -592,6 +603,7 @@ class articleAdmincp{
         }
 
         (iFS::checkHttp($pic)  && !isset($_POST['pic_http']))  && $pic  = iFS::http($pic);
+        (iFS::checkHttp($bpic) && !isset($_POST['bpic_http'])) && $bpic = iFS::http($bpic);
         (iFS::checkHttp($mpic) && !isset($_POST['mpic_http'])) && $mpic = iFS::http($mpic);
         (iFS::checkHttp($spic) && !isset($_POST['spic_http'])) && $spic = iFS::http($spic);
 
@@ -902,9 +914,7 @@ class articleAdmincp{
         // if($status!='1'){
         //     return;
         // }
-        $body = stripcslashes($body);
-        preg_match_all('@<img[^>]+src=(["\']?)(.*?)\\1[^>]*?>@is',$body,$pic_array);
-        $p_array = array_unique($pic_array[2]);
+        $p_array = files::preg_img($body);
 
         foreach((array)$p_array as $key =>$url) {
             $url = trim($url);

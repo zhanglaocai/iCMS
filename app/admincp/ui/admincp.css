@@ -47,9 +47,9 @@ body { background-color: #EDEDED; color: #000; }
 .modal .modal-body a.cancel:hover { text-decoration: underline; }
 .modal .modal-loading { margin: 10px }
 .modal .buttons { padding: 0 15px; margin-bottom: 15px; text-align: right; background: #fff }
-#modal-iframe { top: 0px; left: 0px; width: 100%; height: 100%; }
-#modal-iframeFix { top: 0px; left: 0px; width: 100%; height: 100%; background: #fff; position: absolute; opacity: 0.001; zIndex: 1000; display: none; }
-#modal-overlay { position: fixed; top: 0px; left: 0px; z-index: 100; width: 100%; height: 100%; background-color: #000; opacity: 0.75; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=75)"; filter: alpha(opacity=75); -moz-opacity: 0.75; }
+#modal-iframe { top: 0px; left: 0px; width: 100%; height: 100%;overflow: hidden; }
+#modal-iframeFix { top: 0px; left: 0px; width: 100%; height: 100%; background: #fff; position: absolute; opacity: 0.001; z-index: 1000; display: none; }
+#modal-overlay { position: fixed; top: 0px; left: 0px; z-index: 100; width: 100%; height: 100%; background-color: #000; z-index: 999;opacity: 0.75; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=75)"; filter: alpha(opacity=75); -moz-opacity: 0.75; }
 
 /* chosen */
 .chosen-container { min-width: 120px; }
@@ -118,7 +118,16 @@ body { background-color: #EDEDED; color: #000; }
 h3.title { display: inline-block; height: 35px; margin-bottom: 5px; background-color: #DFDFDF; margin-top: 5px; padding-left: 10px; font-weight: bold; color: #696969; text-shadow: 0 1px 0 #FFF; border-radius: 4px 4px 0px 0px; width: 350px; font-size: 16px; }
 .public_seccode { margin-left: 5px; }
 .public_seccode a.seccode-text { font-size: 14px; vertical-align: middle; margin-left: 5px; }
-
+.brr {
+    -webkit-border-radius: 0 4px 4px 0;
+    -moz-border-radius: 0 4px 4px 0;
+    border-radius: 0 4px 4px 0;
+}
+.brl {
+    -webkit-border-radius: 4px 0 0 4px;
+    -moz-border-radius: 4px 0 0 4px;
+    border-radius: 4px 0 0 4px;
+}
 /* category */
 td.sortnum input { width: 30px; text-align: center; padding: 2px; margin-bottom: 1px; }
 .status0 { font-style: italic; background-color: #EDEDED; -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; filter: alpha(opacity=50); -moz-opacity: 0.5; opacity: 0.5; }

@@ -132,9 +132,8 @@ class spider_content {
         }
 
         if ($data['img_absolute'] && $content) {
-            preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $img_match);
-            if($img_match[1]){
-                $_img_array = array_unique($img_match[1]);
+            $_img_array = files::preg_img($content);
+            if($_img_array){
                 $_img_urls  = array();
                 foreach ((array)$_img_array as $_img_key => $_img_src) {
                     $_img_urls[$_img_key] = spider_tools::url_complement($rule['__url__'],$_img_src);

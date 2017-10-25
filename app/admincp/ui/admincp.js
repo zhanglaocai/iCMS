@@ -41,6 +41,14 @@ $(function() {
     iCMS = $.extend(iCMS, _iCMS); //扩展 or 替换 iCMS属性
     var doc = $(document);
     //iCMS.modal();
+    doc.on("click",'[data-toggle=dropdown]',function (e) {
+        var t=$(this),o=t.offset();
+        var p= t.parent(),m=p.find('.dropdown-menu');
+        if(m.height()>o.top){
+            p.addClass('dropdown')
+            p.removeClass('dropup')
+        }
+    });
 
     $("[target='iPHP_FRAME']").each(function() {
         if (this.href && this.href.indexOf('.php') != "-1" && this.href.indexOf('&frame=iPHP') == "-1") {
@@ -258,7 +266,7 @@ function mini_tip() {
         });
 }
 
-function log(a) {
+function var_dump(a) {
     try {
         console.log(a);
     } catch (e) {
@@ -303,7 +311,10 @@ function modal_icms(el, a) {
             mBody.empty();
 
             if (opts.overflow) {
-                $("body").css({ "overflow-y": "hidden" });
+                $("body").css({
+                    "overflow": "hidden",
+                    "height": "100%"
+                });
             }
 
             if (opts.html) {
@@ -345,8 +356,8 @@ function modal_icms(el, a) {
             } else if (opts.href) {
                 var mFrame = $('<iframe id="modal-iframe" frameborder="no" allowtransparency="true" scrolling="auto" hidefocus="" src="' + opts.href + '"></iframe>');
                 mFrameFix = $('<div id="modal-iframeFix"></div>');
-                mFrame.appendTo(mBody);
                 mFrameFix.appendTo(mBody);
+                mFrame.appendTo(mBody);
             }
             moverlay.insertBefore(m).click(function() {
                 im.destroy();
@@ -380,6 +391,10 @@ function modal_icms(el, a) {
                     width: opts.width
                 });
                 mBody.height(opts.height);
+                $("#modal-iframe").height(opts.height);
+
+                var zIndex = (parseInt(m.css('z-index'))-1)||9998;
+                moverlay.css('z-index',zIndex);
             };
             im.close = function() {
                 m.hide().removeClass('in');
@@ -394,7 +409,10 @@ function modal_icms(el, a) {
                 }
                 m.find(".modal-title").html("iCMS 提示");
                 if (opts.overflow) {
-                    $("body").css({ "overflow-y": "auto" });
+                    $("body").css({
+                        "overflow": "",
+                        "height": ""
+                    });
                 }
                 window.stop ? window.stop() : document.execCommand("Stop");
             };
