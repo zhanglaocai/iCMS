@@ -211,12 +211,17 @@ class weixinApp {
 
     public function send($event){
         // var_dump($event);
-        if(is_array($event) &&isset($event['msgtype']) && $event['msgtype']=='tpl'){
-            iView::assign('weixin',self::object2array($this->XML));
-            iView::display($event['msg']['Tpl']);
-            exit;
+        if(is_array($event)){
+            if(isset($event['msgtype']) && $event['msgtype']=='tpl'){
+                iView::assign('weixin',self::object2array($this->XML));
+                iView::display($event['msg']['Tpl']);
+                exit;
+            }
+            $msg = $event['msg'];
+        }else{
+            $msg = $event;
         }
-        weixin::msg_xml($event['msg'],$this->XML->FromUserName,$this->XML->ToUserName);
+        weixin::msg_xml($msg,$this->XML->FromUserName,$this->XML->ToUserName);
         exit;
     }
     public function msg_decode($msg=null){
