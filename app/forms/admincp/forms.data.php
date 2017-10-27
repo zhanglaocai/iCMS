@@ -100,7 +100,7 @@ $(function(){
                 $value+=$b[$id];
               }
           ?>
-            <tr id="tr<?php echo $id; ?>">
+            <tr id="id<?php echo $id; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $id ; ?>" /></td>
               <td><?php echo $id ; ?></td>
               <td>

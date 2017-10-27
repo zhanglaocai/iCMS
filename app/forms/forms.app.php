@@ -18,10 +18,11 @@ class formsApp {
         $this->do_iCMS();
     }
     public function ACTION_save(){
-        $fid = (int) $_POST['fid'];
-        $time   = iPHP::get_cookie('token_time');
-        $token  = $_POST['token'];
+        $fid   = (int) $_POST['fid'];
+        $time  = iPHP::get_cookie('token_time');
+        $token = $_POST['token'];
         list($_fid,$_time) = explode("#", authcode($token));
+
         if($_fid==$fid && $_time==$time){
             $active = true;
             $forms  = forms::get($fid);
@@ -64,28 +65,16 @@ class formsApp {
         //     iPHP::error_404('该表单设置不允许用户提交', 10002);
         // }
 
-        $forms['fieldArray'] = former::fields($forms['fields']);
-        $forms['action'] = iURL::router(array('forms'));
-        $forms['url']    = iURL::router(array('forms:id',$forms['id']));
-        $forms['iurl']   = iDevice::urls(array('href'=>$forms['url']));
+        $forms['fieldArray']   = former::fields($forms['fields']);
+        $forms['action']       = iURL::router(array('forms'));
+        $forms['url']          = iURL::router(array('forms:id',$forms['id']));
+        $forms['iurl']         = iDevice::urls(array('href'=>$forms['url']));
         $forms['iurl']['href'] = $forms['url'];
-        $forms['result'] = iURL::router(array('forms:result',$forms['id']));
-        $forms['link']   = '<a href="'.$forms['url'].'" class="forms" target="_blank">'.$forms['title'].'</a>';
-        $forms['pic']    = filesApp::get_pic($forms['pic']);
-        $forms['time']   = time();
-        $forms['token']  = authcode($fid.'#'.$forms['time'],'decode');
-        $forms['layout_id']  = "former_".$forms['id'];
+        $forms['result']       = iURL::router(array('forms:result',$forms['id']));
+        $forms['link']         = '<a href="'.$forms['url'].'" class="forms" target="_blank">'.$forms['title'].'</a>';
+        $forms['pic']          = filesApp::get_pic($forms['pic']);
+        $forms['layout_id']    = "former_".$forms['id'];
 
-        iPHP::set_cookie('token_time', $forms['time'], 600);
-        if ($tpl) {
-            iView::set_iVARS($forms['iurl'],'iURL');
-            $forms_tpl = $forms['tpl'];
-            strstr($tpl, '.htm') && $forms_tpl = $tpl;
-            iView::assign('forms', $forms);
-            $view = iView::render($forms_tpl, 'article');
-            if($view) return array($view,$forms);
-        } else {
-            return $forms;
-        }
+        return apps_common::render($forms,'forms',$tpl);
     }
 }

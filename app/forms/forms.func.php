@@ -45,6 +45,15 @@ class formsFunc{
         former::$config['gateway'] = 'usercp';
         former::$config['option'] = $vars['option'];
         former::create($form);
+
+        $token = $form['token'];
+        if(empty($token)){
+            $token  = authcode($form['id'].'#'.$_SERVER['REQUEST_TIME'],'decode');
+            iPHP::set_cookie('token_time', $_SERVER['REQUEST_TIME'], 600);
+        }
+        echo '<input name="action" type="hidden" value="save" />';
+        echo '<input name="fid" type="hidden" value="'.$form['id'].'" />';
+        echo '<input name="token" type="hidden" value="'.$token.'" />';
         echo former::layout("#former_".$form['id']);
 	}
     public static function forms_data($vars){

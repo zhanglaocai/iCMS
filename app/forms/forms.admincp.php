@@ -136,7 +136,7 @@ class formsAdmincp{
           $value['union'] && $primary_key = $value['union'];
           iDB::query("DELETE FROM `{$value['table']}` WHERE `{$primary_key}`='$id'");
       }
-      $dialog && iUI::success("{$this->form['name']}数据删除完成",'js:parent.$("#tr'.$id.'").remove();');
+      $dialog && iUI::success("{$this->form['name']}数据删除完成",'js:parent.$("#id'.$id.'").remove();');
     }
 
     /**

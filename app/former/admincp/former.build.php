@@ -16,7 +16,7 @@
   <p>若需要无基础字段功能的简单应用请使用自定义表单</p>
   <p>预览前请先提交修改</p>
 </div>
-<?php if($this->id){?>
+<?php if($this->id && $_GET['app']=='apps'){?>
 <a href="<?php echo __ADMINCP__; ?>=<?php echo $rs['app'] ; ?>&do=add&appid=<?php echo $this->id ; ?>&preview"
     class="btn btn-success" data-toggle="modal" data-target="#iCMS-MODAL" data-meta='{"width":"85%","height":"640px"}'>
     <i class="fa fa-eye"></i> 预览表单

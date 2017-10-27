@@ -41,10 +41,6 @@
                         <!--自定义表单的表单-->
                         <form action="<!--{$forms.action}-->" id="<!--{$forms.layout_id}-->"
                              class="form-inline" method="post" target="iForms_FRAME">
-                            <!--以下三个hidden 是必需的 否则提交会出错 -->
-                            <input name="action" type="hidden" value="save" />
-                            <input name="form_id" type="hidden" value="<!--{$forms.id}-->" />
-                            <input name="token" type="hidden" value="<!--{$forms.token}-->" />
                             <!--表单结构-->
                             <!--{iCMS:forms:create form="$forms"}-->
                             <div class="mb10"></div>

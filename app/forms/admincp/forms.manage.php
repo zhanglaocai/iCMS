@@ -78,7 +78,7 @@ $(function(){
                 $config = json_decode($data['config'],true);
                 $data['url'] = iURL::router(array('forms:id',$data['id']));
               ?>
-              <tr id="tr<?php echo $data['id'] ; ?>">
+              <tr id="id<?php echo $data['id'] ; ?>">
                 <td><b><?php echo $data['id'] ; ?></b></td>
                 <td>
                   <b><?php echo forms::short_app($data['app']) ; ?></b>/<?php echo $data['name'] ; ?>
