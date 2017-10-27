@@ -172,6 +172,9 @@ class files {
         $data['time']   = time();
         $data['type']   = $type;
         $data['status'] = $status;
+        iSecurity::_addslashes($data);
+        $data = iSecurity::escapeStr($data);
+        iWAF::check_data($data);
         iDB::insert(self::$TABLE_DATA, $data);
         return iDB::$insert_id;
     }
@@ -183,6 +186,9 @@ class files {
         $userid = self::$userid === false ? 0 : self::$userid;
         $data['userid'] = $userid;
         $data['time'] = time();
+        iSecurity::_addslashes($data);
+        $data = iSecurity::escapeStr($data);
+        iWAF::check_data($data);
         iDB::update(self::$TABLE_DATA, $data, array('id' => $fid));
     }
     public static function get($f, $v,$s='*') {

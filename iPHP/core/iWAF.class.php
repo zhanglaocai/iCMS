@@ -23,6 +23,7 @@ class iWAF {
 		self::check_data($_GET);
 		iPHP_WAF_POST && self::check_data($_POST);
 		self::check_data($_COOKIE);
+		self::check_data($_FILES);
 		self::check_data($referer);
 	}
 

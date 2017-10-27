@@ -127,6 +127,7 @@ class iSecurity {
 			self::_addslashes($_POST);
 			self::_addslashes($_GET);
 			self::_addslashes($_COOKIE);
+			self::_addslashes($_FILES);
 		}
 		self::getServer(array(
 			'HTTP_REFERER','HTTP_HOST','HTTP_X_FORWARDED_FOR','HTTP_USER_AGENT',

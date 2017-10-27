@@ -23,7 +23,7 @@ $(function(){
       var pics = new Array();
       $.each(checkbox,function(key, val) {
         //fids[key] = $(val).val();
-        var id = "#tr"+$(val).val();
+        var id = "#id"+$(val).val();
         pics[key] = $("a:eq(0)",id).attr("href");
       });
       //console.log(pics);
@@ -112,7 +112,7 @@ $(function(){
               $filepath = $rs[$i]['path'].$rs[$i]['filename'].'.'.$rs[$i]['ext'];
               $href     = iFS::fp($filepath,"+http");
             ?>
-            <tr id="tr<?php echo $rs[$i]['id'] ; ?>">
+            <tr id="id<?php echo $rs[$i]['id'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id'] ; ?>" /></td>
               <?php if($widget['id']){?>
               <td><?php echo $rs[$i]['id'] ; ?></td>
@@ -122,7 +122,7 @@ $(function(){
               <?php }?>
               <td>
                 <a href="<?php echo $href; ?>" title="点击查看" target="_blank"><?php echo files::icon($filepath);?></a>
-                <a class="tip" title="<?php echo $filepath ; ?><hr />源文件名:<?php echo $rs[$i]['ofilename'] ; ?>"><?php echo $rs[$i]['filename'].'.'.$rs[$i]['ext']; ?></a>
+                <a class="tip" title="<?php echo $filepath ; ?><hr />源文件名:<?php echo htmlspecialchars($rs[$i]['ofilename']) ; ?>"><?php echo $rs[$i]['filename'].'.'.$rs[$i]['ext']; ?></a>
               </td>
               <td><?php echo iFS::sizeUnit($rs[$i]['size']);?></td>
               <td><?php echo get_date($rs[$i]['time'],'Y-m-d H:s');?></td>

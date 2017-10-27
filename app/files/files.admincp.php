@@ -228,7 +228,7 @@ class filesAdmincp{
              $msg = 'warning:#:warning:#:找不到相关文件,文件删除失败!<hr/>文件相关数据已清除';
              $_GET['ajax'] && iUI::json(array('code'=>0,'msg'=>$msg));
         }
-        iUI::dialog($msg,'js:parent.$("#tr'.$id.'").remove();');
+        iUI::dialog($msg,'js:parent.$("#id'.$id.'").remove();');
     }
     /**
      * [创建目录]
