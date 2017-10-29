@@ -250,7 +250,7 @@ class files {
             files::set_map($appid,$iid,$value,'path');
         }
     }
-    public static function preg_img($content,&$match) {
+    public static function preg_img($content,&$match=array()) {
         $match   = (array)$match;
         $content = str_replace("<img", "\n\n<img", $content);
         preg_match_all(self::$PREG_IMG, $content, $match);
