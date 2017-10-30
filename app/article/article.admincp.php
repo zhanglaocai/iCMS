@@ -69,7 +69,7 @@ class articleAdmincp{
         if(empty($this->id)){
             $rs['status']  = "1";
             $rs['postype'] = "1";
-            $rs['editor']  = empty(members::$data->nickname)?members::$data->username:members::$data->nickname;
+            $rs['editor']  = members::$nickname;
             $rs['userid']  = members::$userid;
 		}
 
@@ -614,7 +614,7 @@ class articleAdmincp{
         	$REFERER_URL= APP_URI.'&do=manage';
         }
 
-        $editor OR	$editor	= empty(members::$data->nickname)?members::$data->username:members::$data->nickname;
+        $editor OR  $editor = members::$nickname;
 
         $picdata = '';
         $fields  = article::fields($aid);
@@ -813,9 +813,8 @@ class articleAdmincp{
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
 
         if($_POST['markdown']){
-            $body = $body;
         }else{
-            self::$config['autoformat'] && $body = addslashes(autoformat($body));
+            self::$config['autoformat'] && $body = autoformat($body);
         }
         if(self::$config['emoji']=='unicode'){
             $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','\\\\\ud$1',json_encode($body));
@@ -826,6 +825,7 @@ class articleAdmincp{
             $body = json_decode($body);
         }
 
+        $body   = addslashes($body);
         $fields = article::data_fields($id);
         $data   = compact ($fields);
 

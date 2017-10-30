@@ -51,10 +51,17 @@ class formsFunc{
             $token  = authcode($form['id'].'#'.$_SERVER['REQUEST_TIME'],'decode');
             iPHP::set_cookie('token_time', $_SERVER['REQUEST_TIME'], 600);
         }
-        echo '<input name="action" type="hidden" value="save" />';
-        echo '<input name="fid" type="hidden" value="'.$form['id'].'" />';
-        echo '<input name="token" type="hidden" value="'.$token.'" />';
-        echo former::layout("#former_".$form['id']);
+
+        $layout = '<input name="action" type="hidden" value="save" />';
+        $layout.= '<input name="fid" type="hidden" value="'.$form['id'].'" />';
+        $layout.= '<input name="token" type="hidden" value="'.$token.'" />';
+        $layout.= former::layout("#former_".$form['id']);
+
+        if($vars['assign']){
+            iView::assign($vars['assign'],$layout);
+        }else{
+            echo $layout;
+        }
 	}
     public static function forms_data($vars){
         $form = self::forms_array($vars);

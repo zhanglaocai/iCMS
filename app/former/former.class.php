@@ -14,12 +14,14 @@ class former {
     public static $html     = array();
     public static $validate = null;
     public static $script   = null;
+    public static $error    = null;
 
     public static $prefix   = null;
     public static $config   = array();
 
     public static $callback   = array();
     public static $variable   = array();
+
     public static $template   = array(
         'widget'=>array(
             'text' => 'form-control',
@@ -133,7 +135,7 @@ class former {
 
             list($type,$_type) = explode(':', $field['type']);
             if($value!==null){
-                isset($value) OR $value = $default;
+                // isset($value) OR $value = $default;
                 if(!isset($value)){
                     if(in_array($field['field'], array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
                         $value ='0';
@@ -141,6 +143,9 @@ class former {
                         $value ='';
                     }
                 }
+            }
+            if($default && $value===null){
+                $value = $default;
             }
 
             $field['label']      && $label  = self::display($field['label'],'label');
@@ -621,7 +626,7 @@ class former {
         return $javascript;
     }
     //字段数据输出处理
-    public static function de_value($value,$fields,$vArray=null) {
+    public static function field_output($value,$fields,$vArray=null) {
         //字段数据类型
         $field = $fields['field'];
 
@@ -654,12 +659,13 @@ class former {
         return $value;
     }
     //字段数据输入处理
-    public static function en_value($value,$fields) {
+    public static function field_input($value,$fields) {
         //字段数据类型
         $field = $fields['field'];
 
         //字段类型
         list($type,$_type) = explode(':', $fields['type']);
+
 
         //时间转换
         if(in_array($type, array('date','datetime'))){
@@ -683,12 +689,20 @@ class former {
         if(in_array($field, array('BIGINT','INT','MEDIUMINT','SMALLINT','TINYINT'))){
           $value = (int)$value;
         }
-        //编辑器不处理
-        if($type=='editor'){
-          // $post[$key] = $value;
-        }else{
-          $value = iSecurity::escapeStr($value);
+        if($type=='seccode'){
+            $seccode = iSecurity::escapeStr($value);
+            if(!iSeccode::check($seccode, true)){
+                self::$error = iUI::code(0,'iCMS:seccode:error',$fields,'json');
+                return false;
+            }
         }
+        //编辑器
+        if($type=='editor'){
+            if(self::$config['gateway']=='usercp'){
+                $value = iPHP::vendor('CleanHtml', array($value));
+            }
+        }
+        $value = iSecurity::escapeStr($value);
         return $value;
     }
     /**
@@ -700,8 +714,8 @@ class former {
 
         if($post===null) $post = self::post();
         // if($post===null) $post = $_POST;
-
-        if(empty($post)) return array(false,false,false,false,false);
+        if(empty($post)||self::$error)
+            return array(false,false,false,false,false);
         // if(empty($_POST)) return array(false,false,false,false,false);
 
         $field_post  = array();
@@ -726,7 +740,7 @@ class former {
             //字段绑定的函数处理
             $fields['func'] && $value = self::func($fields['func'],$value);
             //字段数据处理
-            $value = self::en_value($value,$fields);
+            $value = self::field_input($value,$fields);
             //数据验证
             self::validate($fields,'php',$value);
 

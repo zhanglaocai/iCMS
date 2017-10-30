@@ -49,6 +49,7 @@ class members{
         self::$priv['category'] = self::merge_priv(self::$data->config->cpriv,self::$group->config->cpriv);
         return true;
     }
+
     //登陆验证
     public static function check_login() {
 //        self::$LOGIN_COUNT = (int)authcode(get_cookie('iCMS_LOGIN_COUNT'),'DECODE');
@@ -109,10 +110,10 @@ class members{
         return array_merge((array)$p1,(array)$p2);
 	}
     public static function is_superadmin() {
-        return (members::$data->gid === self::SUPERADMIN_GID);
+        return (self::$data->gid === self::SUPERADMIN_GID);
     }
     public static function check_priv($p=null, $ret = null) {
-        if (members::is_superadmin()) {
+        if (self::is_superadmin()) {
             return true;
         }
         if(is_array($p)){

@@ -7,7 +7,6 @@
 * @site https://www.icmsdev.com
 * @licence https://www.icmsdev.com/LICENSE.html
 */
-
 class formsApp {
     public $methods = array('iCMS','save');
     public function do_iCMS(){
@@ -27,21 +26,24 @@ class formsApp {
             $active = true;
             $forms  = forms::get($fid);
             if(empty($forms)||empty($forms['status'])){
-                $array = array('code'=>0,'msg'=>'找不到相关表单<b>ID:' . $fid . '</b>');
+                $array = iUI::code(0,array('forms:not_found_fid',$fid));
                 $active = false;
             }
             if(empty($forms['config']['enable'])){
-                $array = array('code'=>0,'msg'=>'该表单设置不允许用户提交!');
+                $array = iUI::code(0,'forms:!enable');
                 $active = false;
             }
             if($active){
                 $formsAdmincp = new formsAdmincp();
-                $ret   = $formsAdmincp->do_savedata(false);
-                iPHP::set_cookie('token_time','',-31536000);
-                $array = array('code'=>1,'msg'=>$forms['config']['success']);
+                $ret = $formsAdmincp->do_savedata(false);
+                if($ret){
+                    $array = iUI::code(1,$forms['config']['success']);
+                }else{
+                    $array = former::$error;
+                }
             }
         }else{
-            $array = array('code'=>0,'msg'=>'提交出错!');
+            $array = iUI::code(0,'forms:error');
         }
 
         if(iPHP::is_ajax()){
@@ -59,11 +61,8 @@ class formsApp {
         $forms = forms::get($fid);
 
         if(empty($forms)||empty($forms['status'])){
-            iPHP::error_404('找不到相关表单<b>ID:' . $fid . '</b>', 10001);
+            iPHP::error_404(array('forms:not_found_fid',$fid), 10001);
         }
-        // if(empty($forms['config']['enable'])){
-        //     iPHP::error_404('该表单设置不允许用户提交', 10002);
-        // }
 
         $forms['fieldArray']   = former::fields($forms['fields']);
         $forms['action']       = iURL::router(array('forms'));

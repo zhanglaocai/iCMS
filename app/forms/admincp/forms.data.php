@@ -111,7 +111,7 @@ $(function(){
                       <td class="span3"><?php echo $field['label'] ; ?></td>
                       <td>
                         <?php
-                          $vars = former::de_value($value[$field['id']],$field);
+                          $vars = former::field_output($value[$field['id']],$field);
                           // is_array($vars) && $vars = implode(',', $vars);
                           print_r($vars);
                         ?>

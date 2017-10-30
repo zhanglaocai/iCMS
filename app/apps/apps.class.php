@@ -344,7 +344,15 @@ class apps {
     }
 	public static function get_app($appid=1){
 		$rs	= iCache::get('app/'.$appid);
-       	$rs OR iPHP::error_throw('application no exist', '0005');
+        if(defined(ADMINCP) && empty($rs)){
+            if(is_numeric($appid)){
+                $rs = self::get($appid);
+            }else{
+                $rs = self::get($appid,'app');
+            }
+            iCache::set('app/'.$appid,$rs,0);
+        }
+        empty($rs) &&iPHP::error_throw('[appid:'.$appid.'] application no exist', '0005');
        	return $rs;
 	}
 
@@ -418,6 +426,14 @@ class apps {
                 ");
             }
         }
+    }
+    public static function update_field_count($id,$table,$primary='id',$field='count',$math='+',$count=1){
+        $math=='-' && $sql = " AND `{$field}`>0";
+        iDB::query("
+            UPDATE `#iCMS@__{$table}`
+            SET `{$field}` = {$field}{$math}{$count}
+            WHERE `{$primary}` = '$id' {$sql}
+        ");
     }
     public static function update_config($appid,$values=null){
         $rs = apps::get($appid);

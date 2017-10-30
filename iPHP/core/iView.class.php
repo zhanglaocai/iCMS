@@ -166,7 +166,7 @@ class iView {
      */
     public static function callback_resource($tpl,$obj){
         $tpl = ltrim($tpl,'/');
-        strpos($tpl,'..') && iPHP::error_404("The template file path has a '..'");
+        strpos($tpl,'..') && iPHP::error_404("The template path contains'..'");
 
         if(strpos($tpl, 'file::')!==false){
             list($_dir,$tpl)   = explode('||',str_replace('file::','',$tpl));

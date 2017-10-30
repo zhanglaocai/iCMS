@@ -10,6 +10,7 @@
  */
 defined('iPHP') OR exit('What are you doing?');
 
+define('ADMINCP', true);
 define('__ADMINCP__', iPHP_SELF . '?app');
 define('ACP_PATH', iPHP_APP_DIR . '/admincp');
 define('ACP_HOST', (($_SERVER['SERVER_PORT'] == 443)?'https':'http')."://" . $_SERVER['HTTP_HOST']);
