@@ -171,7 +171,7 @@
                         <div class="mod-title">
                             <ul>
                                 <li class="active"><a href="javascript:void(0);" date-target="#rank-week" data-toggle="tab">周点击榜</a></li>
-                                <li><a href="javascript:void(0);" date-target="#rank-momth" data-toggle="tab">周热评榜</a></li>
+                                <li><a href="javascript:void(0);" date-target="#rank-month" data-toggle="tab">周热评榜</a></li>
                             </ul>
                         </div>
                         <div class="mod-content">
@@ -185,7 +185,7 @@
                                 </li>
                                 <!--{/iCMS}-->
                             </ul>
-                            <ul class="rank-list hide" id="rank-momth">
+                            <ul class="rank-list hide" id="rank-month">
                                 <!--{iCMS:article:list loop="true" row="10" orderby="comment" startdate="-7 day"}-->
                                 <li>
                                     <em class="no<!--{$article_list.rownum}-->"><!--{$article_list.rownum}--></em>
@@ -241,13 +241,10 @@
                     <div class="clearfix"></div>
                     <div class="mod-box pictxt">
                         <div class="mod-title">
-                            <span class="txt green">编辑推荐</span>
-                            <div class="more-link fr">
-                                <a href="javascript:void(0);">+ 更多</a>
-                            </div>
+                            <h3 class="mod-txt">图文推荐</h3>
                         </div>
                         <div class="mod-content">
-                            <!--{iCMS:article:list loop="true" pic="true" row="8"}-->
+                            <!--{iCMS:article:list loop="true" pic="true" row="8" orderby="month"}-->
                             <div class="pictxt-list <!--{cycle values='fl,fr'}-->">
                                 <a href="<!--{$article_list.url}-->" target="_blank">
                                     <span class="pictxt-img">

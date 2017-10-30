@@ -19,6 +19,7 @@ body { background: #e6e6e6; }
 .top-wrap ul.ul li.last { border: 0; }
 .top-wrap ul.ul li>a { display: block; padding-right: 15px; height: 18px; }
 .top-wrap span.profile { float: left; }
+.icon-search{background: url("../img/search.png") no-repeat;width: 36px;height: 36px;}
 
 /* profile */
 .profile-wrap .user-home { text-decoration: none; line-height: 1; }
@@ -36,17 +37,18 @@ body { background: #e6e6e6; }
 #header .navbar-brand { padding: 0px; text-align: center; width: auto; display: table-cell; vertical-align: middle; }
 #header .navbar-brand img { margin: 5px 0px; max-height: 40px; width: auto; }
 #header .navbar-menu { height: 35px; line-height: 35px; display: block; background: #fff; overflow-y: hidden; overflow-x: scroll; white-space: nowrap; }
+#header .navbar-menu::-webkit-scrollbar {display: none;}
 #header .navbar-menu a { color: #333; display: inline-block; font-size: 14px; line-height: 35px; padding: 0 14px; vertical-align: middle; cursor: pointer; }
 #header .navbar-menu a:hover { color: #079CF1; }
 
 /*rotator*/
-.rotator { width: 100%; max-width: 640px; max-height: 300px; overflow: hidden; position: relative; margin: 0 auto }
+.rotator { width: 100%; height: 240px; overflow: hidden; position: relative; margin: 0 auto }
 .rotator .swiper-wrapper { width: 500% }
 .swiper-pic { width: 20%; float: left }
 .swiper-pic a, .swiper-pic { display: block; position: relative; overflow: hidden }
 .swiper-pic a { width: 100% }
 .swiper-pic { width: 100%; float: left }
-.rotator-img { width: 100%; height: auto; z-index: -1; vertical-align: bottom }
+.rotator-img { width: 100%; height: 240px; z-index: -1; vertical-align: bottom }
 .swiper-pic span { display: block; width: 85%; height: 30px; line-height: 30px; text-indent: 1.7%; overflow: hidden; position: absolute; left: 0; bottom: 0; font-size: .9rem; color: #fff; z-index: 99 }
 .swiper-pic em { height: 20px; line-height: 20px; border-radius: 2px; padding: 0 2px; position: absolute; left: 85%; bottom: 3px; font-size: .8rem; color: #fff; z-index: 99; background-color: #00c0ff }
 .swiper-pic:after { content: ''; display: block; width: 100%; height: 30px; position: absolute; left: 0; bottom: 0; background-color: #000; opacity: .3 }
