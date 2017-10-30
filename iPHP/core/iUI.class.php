@@ -17,12 +17,16 @@ class iUI {
 	public static $break      = true;
 	public static $dialog     = array();
 
-	public static function lang($string = '', $throw = true) {
-		if (empty($string)) {
+	public static function lang($keys = '', $throw = true) {
+		if (empty($keys)) {
 			return false;
 		}
+        if(is_array($keys)){
+            $args = $keys;
+            $keys = $args[0];
+        }
 
-		$keyArray = explode(':', $string);
+		$keyArray = explode(':', $keys);
 		$count = count($keyArray);
 		list($app, $do, $key, $msg) = $keyArray;
 
@@ -34,18 +38,23 @@ class iUI {
 			if ($throw) {
 				iPHP::error_throw($app . ' language file ('.$fname.') not exist', 0015);
 			} else {
-				return $string;
+				return $keys;
 			}
 		}
 
 		$langArray = iPHP::import($path, true);
 
 		switch ($count) {
-		case 1:return $langArray;
-		case 2:return $langArray[$do];
-		case 3:return $langArray[$do][$key];
-		case 4:return $langArray[$do][$key][$msg];
+    		case 1:$msg = $langArray;break;
+    		case 2:$msg = $langArray[$do];break;
+    		case 3:$msg = $langArray[$do][$key];break;
+    		case 4:$msg = $langArray[$do][$key][$msg];break;
 		}
+        if($args){
+          $args[0] = $msg;
+          $msg = call_user_func_array("sprintf", $args);
+        }
+        return $msg;
 	}
 	public static function json($a, $break = true, $ret = false) {
 		$json = json_encode($a);
@@ -65,7 +74,9 @@ class iUI {
 		exit;
 	}
 	public static function code($code = 0, $msg = '', $forward = '', $format = '') {
-		strstr($msg, ':') && $msg = iUI::lang($msg, false);
+        if(is_array($msg)||@strstr($msg, ':')){
+            $msg = iUI::lang($msg, false);
+        }
 		$a = array('code' => $code, 'msg' => $msg, 'forward' => $forward);
 		if ($format == 'json') {
 			iUI::json($a);

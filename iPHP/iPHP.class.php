@@ -473,6 +473,9 @@ class iPHP {
 		trigger_error($msg.($code?"($code)":null), E_USER_ERROR);
 	}
 	public static function error_404($msg = "", $code = "") {
+        if(is_array($msg)||@strstr($msg, ':')){
+            $msg = iUI::lang($msg, false);
+        }
 		iPHP_DEBUG && self::error_throw($msg, $code);
 		self::http_status(404, $code);
 		if (defined('iPHP_URL_404')) {
