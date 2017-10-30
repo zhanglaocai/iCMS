@@ -89,7 +89,7 @@ $(function(){
                     }
                   }
               ?>
-              <tr id="tr<?php echo $data['appid'] ; ?>">
+              <tr id="id<?php echo $data['appid'] ; ?>">
                 <td><?php echo $data['appid'] ; ?></td>
                 <td><?php echo $data['title'] ; ?></td>
                 <td><?php echo $data['app'] ; ?></td>

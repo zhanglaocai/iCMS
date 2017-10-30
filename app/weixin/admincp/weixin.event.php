@@ -68,7 +68,7 @@ hr { border-bottom:none; margin:4px 0px; }
             for($i=0;$i<$_count;$i++){
               // $msg = json_decode($rs[$i]['msg'],true);
             ?>
-            <tr id="tr<?php echo $rs[$i]['id'] ; ?>">
+            <tr id="id<?php echo $rs[$i]['id'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id'] ; ?>" /></td>
               <td><?php echo $rs[$i]['id'] ; ?></a></td>
               <td><?php echo $rs[$i]['name'] ; ?></a></td>

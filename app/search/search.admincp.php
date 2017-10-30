@@ -29,7 +29,7 @@ class searchAdmincp{
     	$id===null && $id=$this->id;
 		$id OR iUI::alert('请选择要删除的记录!');
 		iDB::query("DELETE FROM `#iCMS@__search_log` WHERE `id` = '$id'");
-		$dialog && iUI::success('记录已经删除','js:parent.$("#tr'.$id.'").remove();');
+		$dialog && iUI::success('记录已经删除','js:parent.$("#id'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];

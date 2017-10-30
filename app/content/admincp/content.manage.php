@@ -187,7 +187,7 @@ $(function(){
               $iurl         = iURL::get($this->app['app'],array($value,$C));
               $value['url'] = $iurl->href;
           ?>
-            <tr id="tr<?php echo $id; ?>">
+            <tr id="id<?php echo $id; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $id ; ?>" /></td>
               <td><?php echo $id ; ?></td>
               <td><div class="edit" aid="<?php echo $id ; ?>">

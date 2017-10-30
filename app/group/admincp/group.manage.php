@@ -54,7 +54,7 @@ $(function(){
           </thead>
           <tbody>
             <?php for($i=0;$i<$_count;$i++){?>
-            <tr id="tr<?php echo $rs[$i]['gid'] ; ?>">
+            <tr id="id<?php echo $rs[$i]['gid'] ; ?>">
               <td><?php if($rs[$i]['gid']!='1'){  ?><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['gid'] ; ?>" /><?php } ?></td>
               <td><?php echo $rs[$i]['gid'] ; ?></td>
               <td><?php echo $rs[$i]['name'] ; ?></td>

@@ -46,7 +46,7 @@ class groupAdmincp{
 		$gid OR iUI::alert('请选择要删除的用户组');
 		$gid=="1" && iUI::alert('不能删除超级管理员组');
 		iDB::query("DELETE FROM `#iCMS@__group` WHERE `gid` = '$gid'");
-		$dialog && iUI::success('用户组删除完成','js:parent.$("#tr'.$gid.'").remove();');
+		$dialog && iUI::success('用户组删除完成','js:parent.$("#id'.$gid.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];

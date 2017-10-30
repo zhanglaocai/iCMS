@@ -76,7 +76,7 @@ class keywordsAdmincp{
 		$id OR iUI::alert('请选择要删除的关键词!');
 		iDB::query("DELETE FROM `#iCMS@__keywords` WHERE `id` = '$id'");
 		$this->cache();
-		$dialog && iUI::success('关键词已经删除','js:parent.$("#tr'.$id.'").remove();');
+		$dialog && iUI::success('关键词已经删除','js:parent.$("#id'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];

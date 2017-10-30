@@ -54,7 +54,7 @@ $(function(){
           </thead>
           <tbody>
             <?php for($i=0;$i<$_count;$i++){?>
-            <tr id="tr<?php echo $rs[$i]['id'] ; ?>">
+            <tr id="id<?php echo $rs[$i]['id'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id'] ; ?>" /></td>
               <td><a href="<?php echo APP_URI; ?>&cid=<?php echo $rs[$i]['cid'] ; ?>"><?php echo $rs[$i]['cid'] ; ?></a></td>
               <td><?php echo $rs[$i]['name'] ; ?></td>

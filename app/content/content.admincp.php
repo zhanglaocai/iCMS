@@ -399,7 +399,7 @@ class contentAdmincp{
             $value['union'] && $primary_key = $value['union'];
             iDB::query("DELETE FROM `{$value['table']}` WHERE `{$primary_key}`='$id'");
         }
-		$dialog && iUI::success("{$this->app['title']}删除完成",'js:parent.$("#tr'.$id.'").remove();');
+		$dialog && iUI::success("{$this->app['title']}删除完成",'js:parent.$("#id'.$id.'").remove();');
     }
 
     // public static function menu($menu){

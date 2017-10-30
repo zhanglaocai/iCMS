@@ -71,7 +71,7 @@ class linksAdmincp{
     	$id===null && $id=$this->id;
 		$id OR iUI::alert('请选择要删除的网站!');
 		iDB::query("DELETE FROM `#iCMS@__links` WHERE `id` = '$id'");
-		$dialog && iUI::success('网站已经删除','js:parent.$("#tr'.$id.'").remove();');
+		$dialog && iUI::success('网站已经删除','js:parent.$("#id'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];

@@ -169,7 +169,7 @@ $(function(){
               $iurl          = iURL::get('tag',array($rs[$i],$C,$TC));
               $rs[$i]['url'] = $iurl->href;
     	   ?>
-          <tr id="tr<?php echo $rs[$i]['id'] ; ?>">
+          <tr id="id<?php echo $rs[$i]['id'] ; ?>">
             <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id'] ; ?>" /></td>
             <td><?php echo $rs[$i]['id'] ; ?></td>
             <td class="sortnum"><input type="text" name="sortnum[<?php echo $rs[$i]['id'] ; ?>]" value="<?php echo $rs[$i]['sortnum'] ; ?>" tid="<?php echo $rs[$i]['id'] ; ?>"/></td>

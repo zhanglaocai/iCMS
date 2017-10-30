@@ -134,6 +134,6 @@ class membersAdmincp{
 		$uid OR iUI::alert('请选择要删除的用户');
 		$uid=="1" && iUI::alert('不能删除超级管理员');
 		iDB::query("DELETE FROM `#iCMS@__members` WHERE `uid` = '$uid'");
-		$dialog && iUI::success('用户删除完成','js:parent.$("#tr'.$uid.'").remove();');
+		$dialog && iUI::success('用户删除完成','js:parent.$("#id'.$uid.'").remove();');
     }
 }

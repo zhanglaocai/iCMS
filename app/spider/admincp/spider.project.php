@@ -135,7 +135,7 @@ $(function(){
             for($i=0;$i<$_count;$i++){
               $C = (array)$categoryArray[$rs[$i]['cid']];
             ?>
-            <tr id="tr<?php echo $rs[$i]['id']; ?>">
+            <tr id="id<?php echo $rs[$i]['id']; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['id']; ?>" /></td>
               <td><?php echo $rs[$i]['id']; ?></td>
               <td>

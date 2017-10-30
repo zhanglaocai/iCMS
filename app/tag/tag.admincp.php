@@ -310,7 +310,7 @@ class tagAdmincp{
         iMap::del_data($id,$this->appid,'category');
         iMap::del_data($id,$this->appid,'prop');
     	tag::del($id,'id');
-    	$dialog && iUI::success("标签删除成功",'js:parent.$("#tr'.$id.'").remove();');
+    	$dialog && iUI::success("标签删除成功",'js:parent.$("#id'.$id.'").remove();');
     }
     public function do_batch(){
         $idArray = (array)$_POST['id'];

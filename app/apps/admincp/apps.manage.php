@@ -84,7 +84,7 @@ $(function(){
                 $table  = apps::table_item($data['table']);
                 $config = json_decode($data['config'],true);
               ?>
-              <tr id="tr<?php echo $data['id'] ; ?>">
+              <tr id="id<?php echo $data['id'] ; ?>">
                 <td><b><?php echo $data['id'] ; ?></b></td>
                 <td>
                   <b><?php echo $data['app'] ; ?></b><br />

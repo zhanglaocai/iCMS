@@ -73,7 +73,7 @@ $(function(){
         for($i=0;$i<$_count;$i++){
           $C = (array)$categoryArray[$rs[$i]['cid']];
         ?>
-            <tr id="tr<?php echo $rs[$i]['pid'] ; ?>">
+            <tr id="id<?php echo $rs[$i]['pid'] ; ?>">
               <td><input type="checkbox" name="id[]" value="<?php echo $rs[$i]['pid'] ; ?>" /></td>
               <td><?php echo $rs[$i]['pid'] ; ?></td>
               <td class="sortnum"><input type="text" name="sortnum[<?php echo $rs[$i]['pid'] ; ?>]" value="<?php echo $rs[$i]['sortnum'] ; ?>" tid="<?php echo $rs[$i]['pid'] ; ?>"/></td>
