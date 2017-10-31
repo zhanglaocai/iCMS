@@ -46,6 +46,10 @@ class iURL {
         }
         if(!iPHP_ROUTER_REWRITE){
             $url = self::$CONFIG['api_url'].'/'.$url;
+        }else{
+            if(!iFS::checkHttp($url)){
+                $url = rtrim(iCMS_URL,'/').$url;
+            }
         }
         return $url;
     }

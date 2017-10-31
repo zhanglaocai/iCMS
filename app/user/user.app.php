@@ -26,15 +26,13 @@ class userApp {
 		files::init(array('userid'=> user::$userid));
 		$this->forward();
 	}
+
 	private function __user($userdata = false) {
 		$status = array('logined' => false, 'followed' => false, 'isme' => false);
 		if ($this->uid) {
 			// &uid=
 			$this->user = user::get($this->uid);
-			empty($this->user) && iPHP::error_404(
-				'找不到该用户',
-				"user:" . $this->uid
-			);
+			empty($this->user) && iPHP::error_404(array('user:not_found',$this->uid), 'U10001');
 		}
 		$this->me = user::status(); //判断是否登陆
 		if (empty($this->me) && empty($this->user)) {
@@ -227,9 +225,9 @@ class userApp {
 			$_POST['body'] = trim($_POST['body']);
 		}
 		$body = iPHP::vendor('CleanHtml', array($_POST['body']));
-		empty($title) && iUI::alert('标题不能为空！');
-		empty($cid) && iUI::alert('请选择所属栏目！');
-		empty($body) && iUI::alert('文章内容不能为空！');
+		empty($title) && iUI::alert('user:publish:empty:title');
+		empty($cid) && iUI::alert('user:publish:empty:cid');
+		empty($body) && iUI::alert('user:publish:empty:body');
 
 		$fwd = iPHP::callback(array("filterApp","run"),array(&$title),false);
 		$fwd && iUI::alert('user:publish:filter_title');
@@ -580,24 +578,14 @@ class userApp {
 			$authcode = base64_encode($authcode);
 			$authcode = rawurlencode($authcode);
 			$find_url = iURL::router('user:findpwd', '?&');
-			if (iPHP_ROUTER_REWRITE) {
-				$find_url = iFS::fp($find_url, '+http');
-			}
-			$find_url .= 'auth=' . $authcode;
+			$find_url.= 'auth=' . $authcode;
 			$config = iCMS::$config['mail'];
 			$config['title'] = iCMS::$config['site']['name'];
-			$config['subject'] = '[' . $config['title'] . '] 找回密码（重要）！';
-			$config['body'] = '
-            <p>尊敬的' . $user->nickname . '，您好：</p>
-            <br />
-            <p>您在' . $config['title'] . '申请找回密码，重设密码地址：</p>
-            <a href="' . $find_url . '" target="_blank">' . $find_url . '</a>
-            <p>本链接将在24小时后失效！</p>
-            <p>如果上面的链接无法点击，您也可以复制链接，粘贴到您浏览器的地址栏内，然后按“回车”打开重置密码页面。</p>
-            <p>如果您有其他问题，请联系我们：' . $config['replyto'] . '。</p>
-            <p>如果您没有进行过找回密码的操作，请不要点击上述链接，并删除此邮件。</p>
-            <p>谢谢！</p>
-            ';
+			$config['subject'] = iUI::lang(array('user:findpwd:subject',$config['title']));
+			$config['body'] = iUI::lang(array(
+				'user:findpwd:body',
+				$user->nickname,$config['title'],$find_url,$find_url,$config['replyto']
+			));
 			$config['address'] = array(
 				array($user->username, $user->nickname),
 			);
@@ -1047,10 +1035,10 @@ class userApp {
 			return;
 		}
 		$_count = count($links);
-		$text = ' 也关注Ta';
+		$text = iUI::lang('user:follow:text1');
 		if ($_count > 3) {
 			$links = array_slice($links, 0, 3);
-			$text = ' 等 ' . $_count . ' 人也关注Ta';
+			$text = iUI::lang(array('user:follow:text2',$_count));
 		}
 		return implode('、', $links) . $text;
 	}

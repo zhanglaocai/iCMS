@@ -22,9 +22,6 @@ class user {
 
 	public static function login_uri($uri=null){
 		$login_uri = iURL::router('user:login','?&');
-		if(!iFS::checkHttp($login_uri) && iPHP_ROUTER_REWRITE){
-			$login_uri = rtrim(iCMS_URL,'/').$login_uri;
-		}
 		$uri && $login_uri = str_replace(rtrim(iCMS_URL,'/'),$uri,$login_uri);
 		return $login_uri;
 	}

@@ -11,6 +11,7 @@ defined('iPHP') OR exit('What are you doing?');
 
 return array(
 	'empty_id'=>'用户ID不能为空！',
+	'not_found'=>'找不到该用户[uid:%d]',
 	'profile'=>array(
 		'success'     =>'修改完成！',
 		'avatar'      =>'头像上传成功！',
@@ -26,6 +27,8 @@ return array(
 		'success' =>'已关注！',
 		'failure' =>'关注失败！',
 		'self'    =>'不能关注自己！',
+		'text1'   =>' 也关注Ta',
+		'text2'   =>' 等 %d 人也关注Ta',
 	),
 	'login'=>array(
 		'def_uname' =>'邮箱 或 昵称',
@@ -47,12 +50,28 @@ return array(
 		'update_examine' =>'文章更新完成！<br />本栏目需要审核后才能正常显示。',
 	),
 	'publish'=>array(
+		'empty'    => array(
+			'title' =>'标题不能为空！',
+			'cid'   =>'请选择所属栏目！',
+			'body'  =>'文章内容不能为空！',
+		),
 		'filter_title' =>'标题中包含被系统屏蔽的字符，请重新填写。',
 		'filter_desc'  =>'简介中包含被系统屏蔽的字符，请重新填写。',
 		'filter_body'  =>'内容中包含被系统屏蔽的字符，请重新填写。',
 		'interval'     =>'您发贴的速度太快了，请休息下吧。',
 	),
 	'findpwd'=>array(
+		'subject' =>'[%s] 找回密码（重要）！',
+		'body' =>'
+            <p>尊敬的%s，您好：</p>
+            <br />
+            <p>您在%s申请找回密码，重设密码地址：</p>
+            <a href="%s" target="_blank">%s</a>
+            <p>本链接将在24小时后失效！</p>
+            <p>如果上面的链接无法点击，您也可以复制链接，粘贴到您浏览器的地址栏内，然后按“回车”打开重置密码页面。</p>
+            <p>如果您有其他问题，请联系我们：%s。</p>
+            <p>如果您没有进行过找回密码的操作，请不要点击上述链接，并删除此邮件。</p>
+            <p>谢谢！</p>',
 		'success' =>'您的密码已经修改成功！请重新登陆。',
 		'error'   =>'您的链接已经过时，请重新申请找回密码。',
 		'same'    =>'您的新密码与旧密码一样。请重新设置新密码。',
