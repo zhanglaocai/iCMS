@@ -155,7 +155,7 @@ $(function() {
 
         function show(that) {
             var a = $(that)
-              , target = a.attr('date-target');
+              , target = a.attr('data-target');
             $(options.item, container).hide();
             $(target, container).show();
             $('[data-toggle="tab"]', container).parent().removeClass('active');

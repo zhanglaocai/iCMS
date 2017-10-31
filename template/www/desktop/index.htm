@@ -67,13 +67,13 @@
                     <div class="tabs-wrap">
                         <div class="tabs-head">
                             <p class="tabs-title">
-                                <a href="<!--{$site.url}-->" date-target="#tabs_c0" data-toggle="tab">全部资讯</a>
+                                <a href="<!--{$site.url}-->" data-target="#tabs_c0" data-toggle="tab">全部资讯</a>
                             </p>
                             <!--{iCMS:category:list stype='top' row="8"}-->
                             <ul class="tabs-nav">
                                 <!--{foreach key="catkey" value="catlist" from="$category_list"}-->
                                 <li>
-                                    <a href="<!--{$catlist.url}-->" target="_blank" date-target="#tabs_c<!--{$catlist.cid}-->" data-toggle="tab">
+                                    <a href="<!--{$catlist.url}-->" target="_blank" data-target="#tabs_c<!--{$catlist.cid}-->" data-toggle="tab">
                                         <!--{$catlist.name}-->
                                     </a>
                                 </li>
@@ -170,8 +170,8 @@
                     <div class="mod-box rank">
                         <div class="mod-title">
                             <ul>
-                                <li class="active"><a href="javascript:void(0);" date-target="#rank-week" data-toggle="tab">周点击榜</a></li>
-                                <li><a href="javascript:void(0);" date-target="#rank-month" data-toggle="tab">周热评榜</a></li>
+                                <li class="active"><a href="javascript:void(0);" data-target="#rank-week" data-toggle="tab">周点击榜</a></li>
+                                <li><a href="javascript:void(0);" data-target="#rank-month" data-toggle="tab">周热评榜</a></li>
                             </ul>
                         </div>
                         <div class="mod-content">
