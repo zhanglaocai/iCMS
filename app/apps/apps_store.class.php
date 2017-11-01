@@ -7,8 +7,8 @@
 * @site https://www.icmsdev.com
 * @licence https://www.icmsdev.com/LICENSE.html
 */
-
-define('STORE_DIR', iPATH . 'cache/iCMS/store/');//临时文件夹
+defined('iPHP') OR exit('What are you doing?');
+define('__STORE_DIR__', iPATH . 'cache/iCMS/store/');//临时文件夹
 
 class apps_store {
     const STORE_URL = "https://store.icmsdev.com";
@@ -26,9 +26,9 @@ class apps_store {
     public static function download($url=null,$name,$zip_name=null) {
         strpos($url, '/git/')!==false && self::$is_git = true;
 
-        iFS::mkdir(STORE_DIR);
+        iFS::mkdir(__STORE_DIR__);
         $zip_name===null && $zip_name = basename($url);
-        self::$zip_file = STORE_DIR . $zip_name; //临时文件
+        self::$zip_file = __STORE_DIR__ . $zip_name; //临时文件
 
         $msg = self::msg('正在下载 [' . $name . '] 安装包',true);
         if (iFS::ex(self::$zip_file) && (filemtime(self::$zip_file)-time()<3600)) {
@@ -45,7 +45,7 @@ class apps_store {
             }
             self::$status = false;
         }else if ($data) {
-            iFS::mkdir(STORE_DIR);
+            iFS::mkdir(__STORE_DIR__);
             iFS::write(self::$zip_file, $data); //下载更新包
             $msg.= self::msg('安装包下载完成',true);
         }

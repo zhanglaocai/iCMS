@@ -8,8 +8,6 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 
-define('STORE_DIR', iPATH . 'cache/iCMS/store/');//临时文件夹
-
 class forms_zip {
     public static $zipName = null;
     public static $zipFile = null;
