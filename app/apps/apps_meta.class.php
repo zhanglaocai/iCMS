@@ -33,23 +33,27 @@ class apps_meta {
         }
         return $data;
     }
-    public static function post($pkey='metadata'){
+    public static function post($pkey='metadata',$out='json'){
         $metadata = iSecurity::escapeStr($_POST[$pkey]);
         if($metadata){
             $_metadata = array();
             foreach($metadata AS $mdk=>$md){
                 if(is_array($md)){
-                    if($md['name']){
-                        $md['key'] OR $md['key'] = strtolower(iPinyin::get($md['name']));
-                        preg_match("/[a-zA-Z0-9_\-]/",$md['key']) OR iUI::alert('只能由英文字母、数字或_-组成,不支持中文');
-                        $md['key'] = trim($md['key']);
+                    if($md['name'] && empty($md['key'])){
+                        $md['key'] = strtolower(iPinyin::get($md['name']));
                     }
+                    preg_match("/[a-zA-Z0-9_\-]/",$md['key']) OR iUI::alert('字段名不能为空,只能由英文字母、数字或_-组成,不支持中文');
+                    $md['key'] = trim($md['key']);
                     $_metadata[$md['key']] = $md;
                 }else{
                     $_metadata[$mdk] = array('name'=>$mdk,'key'=>$mdk,'value'=>$md);
                 }
             }
-            $metadata = addslashes(json_encode($_metadata));
+            if($out=='json'){
+                $metadata = addslashes(cnjson_encode($_metadata));
+            }else{
+                $metadata = $_metadata;
+            }
         }
         return $metadata;
     }

@@ -117,7 +117,7 @@ class editorAdmincp{
      * @return [type] [description]
      */
     public function do_imageManager(){
-		$res = iFS::folder(iCMS::$config['FS']['dir'],array('jpg','png','gif','jpeg'));
+		$res = iFS::folder(iCMS::$config['FS']['dir'],files::$IMG_EXT);
 		$res['public'] = iCMS_PUBLIC_URL;
 		iUI::json($res);
     }

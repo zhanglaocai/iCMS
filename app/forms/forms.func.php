@@ -104,6 +104,8 @@ class formsFunc{
         }
         isset($vars['where']) && $where_sql .= $vars['where'];
 
+        $vars['id'] && $where_sql .= iSQL::in($vars['id'], 'id');
+        $vars['id!'] && $where_sql .= iSQL::in($vars['id!'], 'id', 'not');
         $by = $vars['by']=="ASC"?"ASC":"DESC";
         $order_sql = 'ORDER BY '.($vars['orderby']?$vars['orderby']:$primary).' '.$by;
 

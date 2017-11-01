@@ -65,7 +65,7 @@ class formsApp {
         }
 
         $forms['fieldArray']   = former::fields($forms['fields']);
-        $forms['action']       = iURL::router(array('forms'));
+        $forms['action']       = iURL::router('forms');
         $forms['url']          = iURL::router(array('forms:id',$forms['id']));
         $forms['iurl']         = iDevice::urls(array('href'=>$forms['url']));
         $forms['iurl']['href'] = $forms['url'];

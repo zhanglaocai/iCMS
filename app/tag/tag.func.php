@@ -82,6 +82,8 @@ class tagFunc{
                 $where_sql.= " AND CONCAT(tkey,name,seotitle,keywords) REGEXP '$keywords' ";
             }
         }
+        $vars['id'] && $where_sql .= iSQL::in($vars['id'], 'id');
+        $vars['id!'] && $where_sql .= iSQL::in($vars['id!'], 'id', 'not');
         $maxperpage	= isset($vars['row'])?(int)$vars['row']:"10";
     	$cache_time	= isset($vars['time'])?(int)$vars['time']:-1;
     	$by			= $vars['by']=='ASC'?"ASC":"DESC";

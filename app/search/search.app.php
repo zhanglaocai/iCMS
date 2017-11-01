@@ -9,34 +9,35 @@
 */
 class searchApp {
 	public $methods	= array('iCMS');
-	public function API_iCMS(){
+	public function do_iCMS(){
         return $this->search();
 	}
-    // public function hooked(&$data){
-    //     iPHP::hook('search',$data,iCMS::$config['hooks']['search']);
-    // }
+    public function API_iCMS(){
+        return $this->search();
+    }
     public function search($tpl=false) {
-        $q  = htmlspecialchars(rawurldecode($_GET['q']));
+        $q  = rawurldecode($_GET['q']);
         $q  = iSecurity::encoding($q);
         $q  = iSecurity::escapeStr($q);
 
         $fwd = iPHP::callback(array("filterApp","run"),array(&$q),false);
         $fwd && iPHP::error_404('非法搜索词!', 60002);
 
-        $search['title']   = stripslashes($q);
         $search['keyword'] = $q;
-
+        $search['title']   = stripslashes($q);
+        $search['iurl']    = (array)self::iurl($q);
         $q && $this->search_log($q);
-
-        $iURL           =  new stdClass();
-        $iURL->url      = iURL::make('app=search&q='.$q,'router::api');
-        $iURL->pageurl  = iURL::make('page={P}',$iURL->url);
-        $iURL->href     = $iURL->url;
-        $search['iurl'] = (array)$iURL;
-
-        iURL::page_url($iURL);
         $tpl===false && $tpl = '{iTPL}/search.htm';
         apps_common::render($search,'search',$tpl);
+    }
+    public function iurl($q,$query=null,$page=true) {
+        $query===null && $query = array('app'=>'search','q'=>$q);
+        $iURL           =  new stdClass();
+        $iURL->url      = iURL::make($query,'router::api');
+        $iURL->pageurl  = iURL::make('page={P}',$iURL->url);
+        $iURL->href     = $iURL->url;
+        $page && iURL::page_url($iURL);
+        return $iURL;
     }
     private function search_log($search){
         $sid = iDB::value("SELECT `id` FROM `#iCMS@__search_log` WHERE `search` = '$search' LIMIT 1");

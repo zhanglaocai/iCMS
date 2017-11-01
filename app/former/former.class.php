@@ -701,8 +701,10 @@ class former {
             if(self::$config['gateway']=='usercp'){
                 $value = iPHP::vendor('CleanHtml', array($value));
             }
+        }else{
+            $value = iSecurity::escapeStr($value);
         }
-        $value = iSecurity::escapeStr($value);
+
         return $value;
     }
     /**

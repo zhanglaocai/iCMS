@@ -13,6 +13,8 @@ class searchFunc{
     	$cache_time	= isset($vars['time'])?(int)$vars['time']:"-1";
         $where_sql  = '';
 
+        $vars['id'] && $where_sql .= iSQL::in($vars['id'], 'id');
+        $vars['id!'] && $where_sql .= iSQL::in($vars['id!'], 'id', 'not');
     	$by=$vars['by']=="ASC"?"ASC":"DESC";
         switch ($vars['orderby']) {
             case "id":      $order_sql = " ORDER BY `id` $by";      break;
@@ -40,16 +42,15 @@ class searchFunc{
         if(empty($q)){
             return;
         }
-        $query['app'] = 'search';
+        $query = array('app'=>'search','q'=>$q);
         if(isset($vars['_app'])){
             $query['app'] = $vars['_app'];
             $query['do']  = 'search';
         }
-        $query['q'] = $q;
-        $url = iURL::make($query,'router::api');
+        $iURL = searchApp::iurl($q,$query,false);
         if($vars['ret']){
-            return $url;
+            return $iURL->url;
         }
-        echo $url;
+        echo $iURL->url;
     }
 }

@@ -95,6 +95,8 @@ class commentFunc{
 			$vars['page'] = false;
 		}
 
+        $vars['id'] && $where_sql .= iSQL::in($vars['id'], 'id');
+        $vars['id!'] && $where_sql .= iSQL::in($vars['id!'], 'id', 'not');
 		$maxperpage	= isset($vars['row'])?(int)$vars['row']:"10";
 		$cache_time	= isset($vars['time'])?(int)$vars['time']:-1;
 		$by			= $vars['by']=='ASC'?"ASC":"DESC";

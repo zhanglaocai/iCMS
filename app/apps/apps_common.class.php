@@ -81,7 +81,7 @@ class apps_common {
         iView::set_iVARS($data['iurl'],'iURL');
         if($data['category']){
             iView::assign('category', $data['category']);
-	    unset($data['category']);
+            unset($data['category']);
         }
         iView::assign($name, $data);
         $view = iView::render($view_tpl,$p);

@@ -37,6 +37,8 @@ class propFunc{
             $where_sql.= iSQL::in($ncids,'cid','not');
         }
 
+        $vars['id'] && $where_sql .= iSQL::in($vars['id'], 'pid');
+        $vars['id!'] && $where_sql .= iSQL::in($vars['id!'], 'pid', 'not');
         $maxperpage = isset($vars['row'])?(int)$vars['row']:"10";
         $cache_time = isset($vars['time'])?(int)$vars['time']:-1;
         $by = $vars['by']=='DESC'?"DESC":"ASC";

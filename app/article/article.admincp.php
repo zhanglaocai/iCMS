@@ -808,8 +808,7 @@ class articleAdmincp{
         iPHP::callback(array("spider","callback"),array($this,$aid,'data'));
     }
     public function body($body,$subtitle,$aid=0,$id=0,&$haspic=0){
-
-        $body = preg_replace(array('/<script.+?<\/script>/is','/<form.+?<\/form>/is'),'',$body);
+        // $body = preg_replace(array('/<script.+?<\/script>/is','/<form.+?<\/form>/is'),'',$body);
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
 
         if($_POST['markdown']){
