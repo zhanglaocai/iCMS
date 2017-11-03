@@ -222,7 +222,8 @@ class spider_tools {
                 }
             }else if(strpos($rule, 'IMG::')!==false){
                 $img_count = str_replace('IMG::','', $rule);
-                $img_array = files::preg_img($content);
+                preg_match_all("/<img.*?src\s*=[\"|'](.*?)[\"|']/is", $content, $match);
+                $img_array  = array_unique($match[1]);
                 if(count($img_array)<$img_count){
                     return null;
                 }
