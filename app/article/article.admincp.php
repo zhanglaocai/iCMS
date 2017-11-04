@@ -812,8 +812,9 @@ class articleAdmincp{
         isset($_POST['dellink']) && $body = preg_replace("/<a[^>].*?>(.*?)<\/a>/si", "\\1",$body);
 
         if($_POST['markdown']){
+            $body = addslashes($body);
         }else{
-            self::$config['autoformat'] && $body = autoformat($body);
+            self::$config['autoformat'] && $body = addslashes(autoformat($body));
         }
         if(self::$config['emoji']=='unicode'){
             $body = preg_replace('/\\\ud([8-9a-f][0-9a-z]{2})/i','\\\\\ud$1',json_encode($body));
@@ -824,7 +825,6 @@ class articleAdmincp{
             $body = json_decode($body);
         }
 
-        $body   = addslashes($body);
         $fields = article::data_fields($id);
         $data   = compact ($fields);
 
