@@ -187,7 +187,7 @@
           <p>来路</p>
         </li>
 
-        <li i="field" tag="seccode" type="seccode" label="验证码">
+        <li i="field" tag="seccode" type="seccode" len="8" label="验证码">
           <span class="fb-icon fb-icon-url"></span>
           <p>验证码</p>
         </li>

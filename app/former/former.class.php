@@ -275,8 +275,8 @@ class former {
                 case 'text':break;
                 case 'seccode':
                     $input->addClass('seccode')->attr('maxlength',"4")->attr('type','text');
-                    $seccode = publicApp::seccode();
-                    $input.= $seccode;
+                    $help = publicApp::seccode();
+                    // $input.= $seccode;
                 break;
                 case 'editor':
                     if(self::$config['gateway']=='admincp'){
@@ -620,6 +620,7 @@ class former {
                 $javascript.= $code;
             }
         }
+        $javascript = preg_replace('/\s{3,}/is', '', $javascript);
         self::$validate.= $javascript;
         self::$script.= self::script(stripcslashes($field_array['javascript']));
 

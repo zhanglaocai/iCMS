@@ -142,9 +142,11 @@ var iFormer = {
                 break;
                 case 'seccode':
                     $elem.addClass('seccode').attr('maxlength',"4");
+                    obj['validate'] = ["empty"];
                     var div_after = function () {
                         var span = iFormer.widget('span').addClass('add-on');
-                        span.append('<img src="'+iCMS.config.API+'?do=seccode" alt="验证码" class="seccode-img r3">'+
+                        span.append(
+                            '<img src="'+iCMS.config.API+'?do=seccode" alt="验证码" class="seccode-img r3">'+
                             '<a href="javascript:;" class="seccode-text">换一张</a>'
                         );
                         $div.addClass('input-append');
@@ -338,6 +340,7 @@ var iFormer = {
             });
             $container.append($origin);
         }
+
         data = data||this.url_encode(obj);
 
         iFormer.fields(data,$container);

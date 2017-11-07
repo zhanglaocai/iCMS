@@ -35,12 +35,9 @@ class formsApp {
             }
             if($active){
                 $formsAdmincp = new formsAdmincp();
-                $ret = $formsAdmincp->do_savedata(false);
-                if($ret){
-                    $array = iUI::code(1,$forms['config']['success']);
-                }else{
-                    $array = former::$error;
-                }
+                $formsAdmincp->do_savedata(false);
+                $array = iUI::code(1,$forms['config']['success']);
+                former::$error && $array = former::$error;
             }
         }else{
             $array = iUI::code(0,'forms:error');
