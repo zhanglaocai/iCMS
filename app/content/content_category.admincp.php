@@ -42,6 +42,7 @@ class content_categoryAdmincp extends categoryAdmincp {
                 array('----'),
                 array('{ID}',$app['title'].'ID'),
                 array('{0xID}','8位ID'),
+                array('{LINK}','自定义链接'),
                 array('{0x3ID}','8位ID(前3位)',fasle),
                 array('{0x3,2ID}','8位ID',fasle),
                 array('{TITLE}','标题',fasle),

@@ -232,11 +232,11 @@ class contentFunc {
         $resource = array();
         if ($variable) {
             $contentApp = new contentApp(self::$app);
-            // if($vars['data']){
-            //     $idArray = iSQL::values($variable,'id','array',null);
-            //     $idArray && $content_data = (array)$contentApp->data($idArray);
-            //     unset($idArray);
-            // }
+            if($vars['data']){
+                $idArray = iSQL::values($variable,'id','array',null);
+                $idArray && $content_data = (array)$contentApp->data($idArray);
+                unset($idArray);
+            }
             if($vars['meta']){
                 $idArray = iSQL::values($variable,'id','array',null);
                 $idArray && $meta_data = (array)apps_meta::data(self::$app['app'],$idArray);

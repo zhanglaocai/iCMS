@@ -48,6 +48,7 @@ class apps_mod {
             'userid'     =>"`userid` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID'",
             'pubdate'    =>"`pubdate` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发布时间'",
             'postime'    =>"`postime` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '提交时间'",
+            'clink'      =>"`clink` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '自定义链接'",
             'tpl'        =>"`tpl` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '模板'",
             'hits'       =>"`hits` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总点击数'",
             'hits_today' =>"`hits_today` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '当天点击数'",
@@ -78,11 +79,13 @@ class apps_mod {
     }
     public static function base_fields_key($key=null){
         if(self::$base_fields_key===null){
-          $array = array('id','cid','ucid','pid','sortnum',
-              'title','editor','userid','pubdate','postime','tpl','hits',
-              'hits_today','hits_yday','hits_week','hits_month',
-              'favorite','comments','good','bad','creative',
-              'weight','mobile','postype','status'
+          $array = array(
+              'id','cid','ucid','pid',
+              'title','editor','userid','pubdate','postime','clink','tpl',
+              'hits','hits_today','hits_yday','hits_week','hits_month',
+              'favorite','comments','good','bad',
+              'sortnum','weight',
+              'creative','mobile','postype','status'
           );
         }else{
           $array = self::$base_fields_key;

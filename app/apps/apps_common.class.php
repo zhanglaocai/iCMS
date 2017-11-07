@@ -21,10 +21,10 @@ class apps_common {
         self::$vars    = $vars;
         self::$primary = $primary;
     }
-    public static function getting() {
-        $v = (int) $_GET['id'];
+    public static function getting($idkey='id') {
+        $v = (int) $_GET[$idkey];
         $p = isset($_GET['p']) ? (int) $_GET['p'] : 1;
-        $f = 'id';
+        $f = $idkey;
         if(isset($_GET['clink'])){
             $v = iSecurity::escapeStr($_GET['clink']);
             $f = 'clink';

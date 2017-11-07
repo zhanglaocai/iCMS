@@ -301,15 +301,20 @@ class appsAdmincp{
     public function do_uninstall($id = null,$dialog=true){
       $id===null && $id=$this->id;
       $app = apps::get($id);
+
       if($app['type'] && $app['apptype']){
         apps::uninstall($app);
         apps::cache();
         menu::cache();
-        isset($_GET['sid']) && apps_store::config('delete',$_GET['sid']);
-        $dialog && iUI::alert('应用已经删除','js:1');
+        apps_store::config('delete','appid:'.$id);
+        $msg = '应用已经删除';
       }else{
-        $dialog && iUI::alert('应用已被禁止删除');
+        $msg = '应用已被禁止删除';
       }
+      if(empty($app)){
+        apps_store::config('delete','appid:'.$id);
+      }
+      $dialog && iUI::alert($msg,'js:1');
     }
     /**
      * [本地安装应用]

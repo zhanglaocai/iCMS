@@ -8,22 +8,34 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class contentApp {
-    public $methods = array('iCMS', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
+    public $methods = array('iCMS','clink','hits','vote', 'good', 'bad', 'like_comment', 'comment');
     public $appid   = null;
     public $app     = null; //应用名
+    public $tables  = null;
     public $table   = null;
 
     public function __construct($data) {
         $this->data    = $data;
         $this->appid   = $data['id'];
         $this->app     = $data['app'];
-        $this->table   = apps::get_table($data);
+        $this->tables  = apps::get_table($data,false);
+        $this->table   = reset($this->tables);
         $this->primary = $this->table['primary'];
         $this->id      = (int)$_GET[$this->primary];
         unset($data);
     }
+    public function do_iCMS($a = null) {
+        list($v,$p,$f) = apps_common::getting($this->primary);
+        return $this->content($v,$p,$f);
+    }
     public function API_iCMS(){
         return $this->do_iCMS();
+    }
+    public function do_clink($a = null) {
+        return $this->do_iCMS($a);
+    }
+    public function API_clink() {
+        return $this->do_clink();
     }
     public function API_search($a = null) {
         $app = iPHP::app("search");
@@ -35,15 +47,19 @@ class contentApp {
     public function ACTION_vote() {
         apps_common::action_vote('content',$this->primary,$this->table['table']);
     }
-    public function do_iCMS($a = null) {
-        return $this->content($this->id, isset($_GET['p']) ? (int) $_GET['p'] : 1);;
-    }
     public function hooked(&$data){
         iPHP::hook($this->app,$data,iCMS::$config['hooks'][$this->app]);
     }
-    public function content($id, $page = 1, $tpl = true) {
-        $rs = apps_mod::get_data($this->data,$id);
-        $rs OR iPHP::error_404('找不到'.$this->data['title'].': <b>'.$this->primary.':' . $id . '</b>', 10001);
+    public function content($fvar, $page = 1,$field='id',$tpl = true) {
+        $rs = iDB::row("
+            SELECT * FROM `".$this->table['table']."`
+            WHERE `".$field."`='".$fvar. "'
+            AND `status` ='1' LIMIT 1;",
+        ARRAY_A);
+
+        $rs OR iPHP::error_404('找不到'.$this->data['title'].': <b>'.$field.':' . $fvar . '</b>', 10001);
+        $id = $rs[$this->primary];
+
         if ($rs['url']) {
             if (iView::$gateway == "html") {
                 return false;
@@ -52,11 +68,13 @@ class contentApp {
                 iPHP::redirect($rs['url']);
             }
         }
+
         $vars = array(
             'tag'  => true,
             'user' => true,
         );
-        $rs = $this->value($rs,$vars,$page,$tpl);
+        $rs+= $this->data($id);
+        $rs = $this->value($rs,$cdata,$vars,$page,$tpl);
         if ($rs === false) {
             return false;
         }
@@ -125,25 +143,33 @@ class contentApp {
         }
         return $rs;
     }
-    // public static function data($aids=0){
-    //     if(empty($aids)) return array();
+    public function data($ids=0){
+        if(empty($ids)) return array();
 
-    //     list($aids,$is_multi)  = iSQL::multi_var($aids);
-    //     $sql  = iSQL::in($aids,'aid',false,true);
-    //     $data = array();
-    //     $rs   = iDB::all("SELECT * FROM `#iCMS@__article_data` where {$sql}");
-    //     if($rs){
-    //         $_count = count($rs);
-    //         for ($i=0; $i < $_count; $i++) {
-    //             $data[$rs[$i]['aid']]= $rs[$i];
-    //         }
-    //         $is_multi OR $data = $data[$aids];
-    //     }
-    //     if(empty($data)){
-    //         return;
-    //     }
-    //     return $data;
-    // }
+        $dtn = apps_mod::data_table_name($this->app);
+        $cdata_table = $this->tables[$dtn];
+        if(empty($cdata_table)){
+            return array();
+        }
+        $union_key   = $cdata_table['union'];
+        $table_name  = $cdata_table['name'];
+
+        list($ids,$is_multi)  = iSQL::multi_var($ids);
+        $sql  = iSQL::in($ids,$union_key,false,true);
+        $data = array();
+        $rs   = iDB::all("SELECT * FROM `#iCMS@__{$table_name}` where {$sql}");
+        if($rs){
+            $_count = count($rs);
+            for ($i=0; $i < $_count; $i++) {
+                $data[$rs[$i][$union_key]]= $rs[$i];
+            }
+            $is_multi OR $data = $data[$ids];
+        }
+        if(empty($data)){
+            return array();
+        }
+        return $data;
+    }
     /**
      * [iPHP::run回调]
      * @param  [type] $app [description]

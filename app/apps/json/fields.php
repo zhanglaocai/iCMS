@@ -16,6 +16,8 @@
     "pubdate": "id=pubdate&label=发布时间&field=INT&name=pubdate&default=&type=datetime&len=10&class=span3",
     "postime": "id=postime&label=提交时间&field=INT&name=postime&default=&type=datetime:hidden&len=10&class=span3",
     "15": "UI:BR",
+    "clink": "id=clink&label=自定义链接&field=VARCHAR&name=clink&type=text&default=&len=255&class=span6",
+    "16": "UI:BR",
     "tpl": "id=tpl&label=模板&field=VARCHAR&name=tpl&type=tplfile&default=&len=255&class=span6",
     "17": "UI:BR",
     "hits": "id=hits&label=总点击数&field=INT&name=hits&default=&type=number&len=10&class=span2",

@@ -499,6 +499,21 @@ class apps_store {
         $array = array();
         $sid===null && $sid = self::$sid;
         if($data==='delete'){
+            if(strpos($sid, ':') !== false){
+                list($stype,$svalue) = explode(';', $sid);
+                if($stype && $svalue){
+                    foreach ((array)$config as $key => $value) {
+                        if($stype=='appid' && $value['appid']==$svalue){
+                            $sid = $key;
+                            break;
+                        }
+                        if($stype=='app' && $value['app']==$svalue){
+                            $sid = $key;
+                            break;
+                        }
+                    }
+                }
+            }
             unset($config[$sid]);
         }else{
             $cacheid = 'store/'.$sid;
