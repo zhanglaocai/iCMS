@@ -234,7 +234,7 @@ class iPHP {
 			$_SERVER["X-Requested-With"] == "XMLHttpRequest"||
 			isset($_GET['ajax'])||
 			isset($_GET['is_ajax'])||
-			($_GET['format']=='json')
+			$_GET['format']=='json'
 		);
 	}
 	public static function PG($key) {

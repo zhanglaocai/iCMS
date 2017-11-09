@@ -494,6 +494,11 @@ class apps_store {
       $sid===null && $sid = self::$sid;
       return $storeArray[$sid];
     }
+    public static function del_config($sid=null){
+        $sid = 'appid:'.$sid;
+        isset($_GET['sid']) && $sid = $_GET['sid'];
+        self::config('delete',$sid);
+    }
     public static function config($data,$sid=null){
         $config = configAdmincp::get('999999','store');
         $array = array();

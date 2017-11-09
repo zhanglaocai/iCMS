@@ -807,7 +807,8 @@ class former {
         return $value;
     }
     public static function layout($id=null,$func='submit') {
-        $pieces[] = implode('',self::$html);
+        $pieces = array();
+        self::$html && $pieces[] = implode('',self::$html);
         if(self::$validate||self::$script){
             $pieces[]= '<script type="text/javascript">';
             $pieces[]= '$(function(){';
@@ -822,6 +823,9 @@ class former {
             $pieces[]= self::$script;
             $pieces[]= '});';
             $pieces[]= '</script>';
+        }
+        if(empty($pieces)){
+            $pieces[] = '<a href="https://www.icmsdev.com/docs/add-custom-fields.html" target="_blank">查看如何增加自定义字段</a>';
         }
         return implode(PHP_EOL, $pieces);
     }

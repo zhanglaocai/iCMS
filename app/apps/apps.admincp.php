@@ -306,14 +306,13 @@ class appsAdmincp{
         apps::uninstall($app);
         apps::cache();
         menu::cache();
-        apps_store::config('delete','appid:'.$id);
+        apps_store::del_config($id);
         $msg = '应用已经删除';
       }else{
         $msg = '应用已被禁止删除';
       }
-      if(empty($app)){
-        apps_store::config('delete','appid:'.$id);
-      }
+      empty($app) && apps_store::del_config($id);
+
       $dialog && iUI::alert($msg,'js:1');
     }
     /**
