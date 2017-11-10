@@ -19,6 +19,9 @@ class favoriteFunc{
 		isset($vars['appid']) && $where_sql .= " AND `appid`='".(int)$vars['appid']."' ";
 
 		$cache_time	= isset($vars['time'])?(int)$vars['time']:-1;
+
+		$vars['id'] && $where_sql .= iSQL::in($vars['id'], 'id');
+		$vars['id!'] && $where_sql .= iSQL::in($vars['id!'], 'id', 'not');
 		$by=$vars['by']=="ASC"?"ASC":"DESC";
 		switch ($vars['orderby']) {
 			case 'hot':
@@ -63,6 +66,9 @@ class favoriteFunc{
 		isset($vars['appid']) && $where_sql .= " AND `appid`='".(int)$vars['appid']."' ";
 
 		$cache_time	= isset($vars['time'])?(int)$vars['time']:-1;
+
+		$vars['id'] && $where_sql .= iSQL::in($vars['id'], 'id');
+		$vars['id!'] && $where_sql .= iSQL::in($vars['id!'], 'id', 'not');
 		$by=$vars['by']=="ASC"?"ASC":"DESC";
 		switch ($vars['orderby']) {
 			default: $order_sql = " ORDER BY `id` $by";

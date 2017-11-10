@@ -62,13 +62,9 @@ class favoriteApp {
                 AND `id`='$id'
             ");
         }
-
-        iDB::query("
-            UPDATE `#iCMS@__favorite`
-            SET `count` = count-1
-            WHERE `id` = '$fid' AND `count`>0;
-        ");
         iPHP::callback(array('apps','update_count'),array($iid,$appid,'favorite','-'));
+        iPHP::callback(array('user','update_count'),array($uid,'favorite','-'));
+        iPHP::callback(array('favorite','update_count'),array($uid,'count','-'));
         iUI::code(1,0,0,'json');
     }
     /**
@@ -101,12 +97,9 @@ class favoriteApp {
         $data   = compact ($fields);
         $fdid   = iDB::insert('favorite_data',$data);
         if($fdid){
-            iDB::query("
-                UPDATE `#iCMS@__favorite`
-                SET `count` = count+1
-                WHERE `id` = '$fid';
-            ");
             iPHP::callback(array('apps','update_count'),array($iid,$appid,'favorite','+'));
+            iPHP::callback(array('user','update_count'),array($fid,'favorite','+'));
+            iPHP::callback(array('favorite','update_count'),array($uid,'count','+'));
             iUI::code(1,'iCMS:favorite:success',$fdid,'json');
         }
         iUI::code(0,'iCMS:favorite:error',0,'json');
@@ -142,5 +135,4 @@ class favoriteApp {
         $cid && iUI::code(1,'iCMS:favorite:create_success',$cid,'json');
         iUI::code(0,'iCMS:favorite:create_failure',0,'json');
     }
-
 }
