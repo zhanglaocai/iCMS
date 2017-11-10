@@ -8,7 +8,7 @@
 * @licence https://www.icmsdev.com/LICENSE.html
 */
 class tagApp extends appsApp {
-    public $methods = array('iCMS');
+    public $methods = array('iCMS','tag','clink', 'hits','vote', 'good', 'bad', 'like_comment', 'comment');
     public static $config  = null;
     public function __construct() {
         parent::__construct('tag');
@@ -129,28 +129,14 @@ class tagApp extends appsApp {
             }
             unset($multi_tag, $tags_fname);
     }
-    public static function all($array) {
-        if(empty($array)){
-            return;
-        }
-        $sql  = iSQL::in($array,'name',false,true);
 
-        if(empty($sql)){
-            return;
-        }
-        $rs = iDB::all("SELECT * FROM `#iCMS@__tag` where {$sql} AND `status`='1'", ARRAY_A);
-        foreach ((array)$rs as $key => $tag) {
-            $tag && $tagArray[$tag['id']] = self::value($tag);
-        }
-        return $tagArray;
-    }
     public static function multi_tag($tags=null,$tkey='tags'){
         if(empty($tags)) return array();
 
         if(!is_array($tags) && strpos($tags, ',') !== false){
             $tags = explode(',', $tags);
         }
-        $multi = array();
+
         foreach ($tags as $id => $value) {
             if($value){
                 $a = explode(',', $value);
@@ -161,13 +147,14 @@ class tagApp extends appsApp {
             }
         }
         if($tArray){
-            $tagArray = self::all($tArray);
+            $tagArray = tag::get($tArray,'name',array("tagApp","value"));
             $tagArray = self::map($tagArray,$tMap);
             $tagArray = self::tpl_var($tagArray,$tkey);
             return $tagArray;
         }
         return false;
     }
+
     private static function tpl_var($array,$tkey){
         $tArray = array();
         foreach ((array) $array AS $iid => $tag) {
@@ -179,10 +166,10 @@ class tagApp extends appsApp {
         }
         return $tArray;
     }
-    private static function map($tagArray,$tMap){
+    private static function map($tagArray,$tMap,$field='name'){
         $array = array();
         foreach ((array)$tagArray as $tid => $tag) {
-            $iidArray = $tMap[$tag['name']];
+            $iidArray = $tMap[$tag[$field]];
             if(is_array($iidArray)){
                 $a = array_fill_keys($iidArray,array($tid=>$tag));
                 $array = array_merge_recursive($array,$a);

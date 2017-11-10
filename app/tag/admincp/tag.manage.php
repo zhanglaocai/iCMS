@@ -152,8 +152,8 @@ $(function(){
             <th>栏目</th>
             <th>分类</th>
             <th>属性</th>
-            <th style="width:48px;">使用</th>
-            <th class="span2">最后更新时间</th>
+            <th style="width:48px;">统计</th>
+            <th class="span2"><a class="fa fa-clock-o tip-top" title="更新时间/创建时间"></a></th>
             <th>操作</th>
           </tr>
         </thead>
@@ -193,7 +193,20 @@ $(function(){
             <?php } ?>
           </td>
           <td><?php $rs[$i]['pid'] && propAdmincp::flag($rs[$i]['pid'],$propArray,APP_DOURI.'&pid={PID}&'.$uri);?></td>
-          <td><?php echo $rs[$i]['count']; ?></td>
+          <td>
+                <a class="tip" href="javascript:;" title="
+                总点击:<?php echo $rs[$i]['hits'] ; ?><br />
+                今日点击:<?php echo $rs[$i]['hits_today'] ; ?><br />
+                昨日点击:<?php echo $rs[$i]['hits_yday'] ; ?><br />
+                周点击:<?php echo $rs[$i]['hits_week'] ; ?><br />
+                收藏:<?php echo $rs[$i]['favorite'] ; ?><br />
+                评论:<?php echo $rs[$i]['comments'] ; ?><br />
+                赞:<?php echo $rs[$i]['good'] ; ?><br />
+                使用数:<?php echo $rs[$i]['count'] ; ?><br />
+                ">
+                  <?php echo $rs[$i]['hits']; ?>/<?php echo $rs[$i]['count']; ?>
+                </a>
+        </td>
           <td><?php echo get_date($rs[$i]['pubdate'],'Y-m-d H:i');?><br /><?php echo get_date($rs[$i]['postime'],'Y-m-d H:i');?></td>
           <td>
           	<?php if($rs[$i]['status']=="1"){ ?>

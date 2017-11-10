@@ -16,7 +16,7 @@
     <link rel="alternate" media="only screen and(max-width: 640px)" href="<!--{$tag.iurl.mobile.url}-->">
     <!--{iCMS:public:ui}-->
 </head>
-
+<!--{$tag|var_dump}-->
 <body class="tagApp" i="<!--{$iCMS.APP.NAME}-->">
     <!--{include file="./header.htm"}-->
     <div class="body clearfix ">
@@ -170,6 +170,7 @@
         <div class="clearfix mb20"></div>
     </div>
     <!--{include file="./footer.htm"}-->
+    <script src="<!--{$tag.hits.script}-->"></script>
 </body>
 
 </html>

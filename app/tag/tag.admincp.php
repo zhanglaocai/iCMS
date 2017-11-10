@@ -20,8 +20,6 @@ class tagAdmincp{
         configAdmincp::app($this->appid);
     }
     public function do_save_config(){
-        $_POST['config']['url'] = trim($_POST['config']['url'],'/');
-        $_POST['config']['dir'] = rtrim($_POST['config']['dir'],'/').'/';
         configAdmincp::save($this->appid);
     }
 
@@ -125,30 +123,26 @@ class tagAdmincp{
             $contents = file_get_contents($path);
             $contents = iSecurity::encoding($contents);
             if($contents){
-                $fields   = array('uid', 'cid', 'tcid', 'pid', 'tkey',
-                    'name', 'seotitle', 'subtitle', 'keywords', 'description',
-                    'haspic', 'pic', 'url', 'related', 'count', 'weight', 'tpl',
-                    'sortnum', 'pubdate', 'status'
-                );
+                $fields   = tag::fields();
                 $cid      = implode(',', (array)$_POST['cid']);
                 $tcid     = implode(',', (array)$_POST['tcid']);
                 $pid      = implode(',', (array)$_POST['pid']);
                 $variable = explode("\n", $contents);
                 $msg = array();
                 foreach ($variable as $key => $name) {
-                    $name = trim($name);
+                    $name = tag::name($name);
                     if(empty($name)){
                         $msg['empty']++;
                         continue;
                     }
-                    $name = preg_replace('/<[\/\!]*?[^<>]*?>/is','',$name);
                     $name = addslashes($name);
                     if(iDB::value("SELECT `id` FROM `#iCMS@__tag` where `name` = '$name'")){
                         $msg['has']++;
                         continue;
                     }
+
                     $tkey    = strtolower(iPinyin::get($name));
-                    $uid     = members::$userid;
+                    $userid  = members::$userid;
                     $haspic  = '0';
                     $status  = '1';
                     $pubdate = time();
@@ -168,40 +162,59 @@ class tagAdmincp{
     }
     public function do_save(){
         $id          = (int)$_POST['id'];
-        $uid         = (int)$_POST['uid'];
-        $rootid      = (int)$_POST['rootid'];
-        $cid         = implode(',', (array)$_POST['cid']);
-        $tcid        = implode(',', (array)$_POST['tcid']);
-        $pid         = implode(',', (array)$_POST['pid']);
+
+        $cid         = (int)$_POST['cid'];
         $_cid        = iSecurity::escapeStr($_POST['_cid']);
+        category::check_priv($cid,($tid?'ce':'ca'),'alert');
+
+        $tcid        = (int)$_POST['tcid'];
         $_tcid       = iSecurity::escapeStr($_POST['_tcid']);
+
+        $pid         = implode(',', (array)$_POST['pid']);
         $_pid        = iSecurity::escapeStr($_POST['_pid']);
-        $name        = iSecurity::escapeStr($_POST['name']);
-        $subtitle    = iSecurity::escapeStr($_POST['subtitle']);
-        $tkey        = iSecurity::escapeStr($_POST['tkey']);
-        $seotitle    = iSecurity::escapeStr($_POST['seotitle']);
+
+        $userid      = (int)$_POST['userid'];
+        $status      = (int)$_POST['status'];
+        $sortnum     = (int)$_POST['sortnum'];
+        $weight      = (int)$_POST['weight'];
+        $hits        = (int)$_POST['hits'];
+        $hits_today  = (int)$_POST['hits_today'];
+        $hits_yday   = (int)$_POST['hits_yday'];
+        $hits_week   = (int)$_POST['hits_week'];
+        $hits_month  = (int)$_POST['hits_month'];
+        $favorite    = (int)$_POST['favorite'];
+        $comments    = (int)$_POST['comments'];
+        $good        = (int)$_POST['good'];
+        $bad         = (int)$_POST['bad'];
+        $creative    = (int)$_POST['creative'];
+
+        $editor      = iSecurity::escapeStr($_POST['editor']);
+        $description = iSecurity::escapeStr($_POST['description']);
         $keywords    = iSecurity::escapeStr($_POST['keywords']);
+        $clink       = iSecurity::escapeStr($_POST['clink']);
+        $url         = iSecurity::escapeStr($_POST['url']);
+        $tpl         = iSecurity::escapeStr($_POST['tpl']);
         $pic         = iSecurity::escapeStr($_POST['pic']);
         $bpic        = iSecurity::escapeStr($_POST['bpic']);
         $mpic        = iSecurity::escapeStr($_POST['mpic']);
         $spic        = iSecurity::escapeStr($_POST['spic']);
-        $description = iSecurity::escapeStr($_POST['description']);
-        $url         = iSecurity::escapeStr($_POST['url']);
-        $related     = iSecurity::escapeStr($_POST['related']);
-        $tpl         = iSecurity::escapeStr($_POST['tpl']);
-        $weight      = (int)$_POST['weight'];
-        $sortnum    = (int)$_POST['sortnum'];
-        $status      = (int)$_POST['status'];
-        $haspic      = $pic?'1':'0';
-        $pubdate     = time();
 
-        $uid OR $uid= members::$userid;
+        $rootid      = (int)$_POST['rootid'];
+        $name        = iSecurity::escapeStr($_POST['name']);
+        $subtitle    = iSecurity::escapeStr($_POST['subtitle']);
+        $tkey        = iSecurity::escapeStr($_POST['tkey']);
+        $seotitle    = iSecurity::escapeStr($_POST['seotitle']);
+        $related     = iSecurity::escapeStr($_POST['related']);
 
         if(empty($name)){
             return iUI::alert('标签名称不能为空！');
         }
+        $title = $name;
 
-        // $cid OR iUI::alert('请选择标签所属栏目！');
+        $pubdate   = str2time($_POST['pubdate']);
+        $postype   = $_POST['postype']?$_POST['postype']:0;
+        $userid OR $userid = members::$userid;
+        $editor OR $editor = members::$nickname;
 
 		if(empty($id)) {
             $hasNameId = iDB::value("SELECT `id` FROM `#iCMS@__tag` where `name` = '$name'");
@@ -213,30 +226,28 @@ class tagAdmincp{
                 }
             }
 		}
-		if(empty($tkey) && $url){
-			$tkey = substr(md5($url),8,16);
-			$hasTkey = iDB::value("SELECT `id` FROM `#iCMS@__tag` where `tkey` = '$tkey'");
-            if($hasTkey){
-                return iUI::alert('该自定义链接已经存在!请检查是否重复');
-            }
-		}
 
-		$tkey OR $tkey = strtolower(iPinyin::get($name));
+        $category = category::get($cid);
+        if(strstr($category->rule['topic'],'{LINK}')!==false && empty($clink)){
+            $clink = iPinyin::get($title,self::$config['clink']);
+        }
+
+        if($clink && tag::check($clink,$id,'clink')){
+            return iUI::alert('该标签自定义链接已经存在!请检查是否重复');
+        }
 
         iFS::$force_ext = "jpg";
         (iFS::checkHttp($pic)  && !isset($_POST['pic_http']))  && $pic  = iFS::http($pic);
         (iFS::checkHttp($bpic) && !isset($_POST['bpic_http'])) && $bpic = iFS::http($bpic);
         (iFS::checkHttp($mpic) && !isset($_POST['mpic_http'])) && $mpic = iFS::http($mpic);
         (iFS::checkHttp($spic) && !isset($_POST['spic_http'])) && $spic = iFS::http($spic);
+        $picdata = filesAdmincp::picdata($pic,$bpic,$mpic,$spic);
+        $haspic  = empty($pic)?0:1;
 
+        $tkey OR $tkey = strtolower(iPinyin::get($name));
 
-        $fields = array('uid','rootid', 'cid', 'tcid', 'pid',
-            'tkey', 'name', 'seotitle', 'subtitle', 'keywords',
-            'description', 'haspic', 'pic','bpic','mpic','spic', 'url',
-            'related', 'count', 'weight', 'tpl',
-            'sortnum', 'pubdate', 'status'
-        );
-        $data   = compact ($fields);
+        $fields = tag::fields($id);
+        $data   = compact($fields);
 
 		if(empty($id)){
             $this->check_tkey($tkey);
@@ -245,7 +256,6 @@ class tagAdmincp{
             $data['count']    = '0';
             $data['comments'] = '0';
             $id = iDB::insert('tag',$data);
-			tag::cache($id,'id');
 
             iMap::init('prop',$this->appid,'pid');
             $pid && iMap::add($pid,$id);
@@ -254,7 +264,10 @@ class tagAdmincp{
             iMap::add($cid,$id);
             $tcid && iMap::add($tcid,$id);
 
-            $msg ='标签添加完成';
+            categoryAdmincp::update_count($cid);
+            $tcid && categoryAdmincp::update_count($tcid);
+
+            $msg = '标签添加完成';
 		}else{
 
             $this->check_tkey($tkey,$id);
@@ -262,14 +275,23 @@ class tagAdmincp{
 
             unset($data['count'],$data['comments']);
             iDB::update('tag', $data, array('id'=>$id));
-			tag::cache($id,'id');
 
             iMap::init('prop',$this->appid,'pid');
             iMap::diff($pid,$_pid,$id);
 
             iMap::init('category',$this->appid,'cid');
             iMap::diff($cid,$_cid,$id);
-            iMap::diff($tcid,$_tcid,$id);
+            $tcid && iMap::diff($tcid,$_tcid,$id);
+
+            if($_cid!=$cid) {
+                categoryAdmincp::update_count($_cid,'-');
+                categoryAdmincp::update_count($cid);
+            }
+            if($_tcid!=$tcid) {
+                categoryAdmincp::update_count($_tcid,'-');
+                categoryAdmincp::update_count($tcid);
+            }
+
             $msg = '标签更新完成';
 		}
         iPHP::callback(array("apps_meta","save"),array($this->appid,$id));
@@ -301,10 +323,7 @@ class tagAdmincp{
             }
         }
     }
-    public function do_cache(){
-    	tag::cache($this->id,'id');
-    	iUI::success("标签缓存更新成功");
-    }
+
     public function do_del($id = null,$dialog=true){
     	$id===null && $id=$this->id;
         iMap::del_data($id,$this->appid,'category');
