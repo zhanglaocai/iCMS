@@ -53,7 +53,7 @@ $(function(){
           <div id="tag-add-base" class="tab-pane active">
             <div class="input-prepend">
               <span class="add-on">标签分类</span>
-              <select name="tcid[]" id="tcid" class="chosen-select span6" multiple="multiple" data-placeholder="请选择标签分类(可多选)...">
+              <select name="tcid" id="tcid" class="chosen-select span6" data-placeholder="请选择标签分类...">
                 <option value="0"> ==== 默认分类 ==== </option>
                 <?php echo category::appid($this->appid,'ca')->select($rs['tcid'],0,1,true);?>
               </select>
