@@ -80,6 +80,12 @@ class tagApp extends appsApp {
         $tag['appid'] = iCMS_APP_TAG;
 
         if($tag['cid']){
+            //多选只用第一个
+            if(strpos($tag['cid'], ',')!==false){
+                $cidArray = explode(',', $tag['cid']);
+                $tag['cid'] = $cidArray[0];
+            }
+
             $category        = categoryApp::category($tag['cid'],false);
             $tag['category'] = categoryApp::get_lite($category);
         }
@@ -104,7 +110,6 @@ class tagApp extends appsApp {
         if($category['mode'] && stripos($tag['url'], '.php?')===false){
             iURL::page_url($tag['iurl']);
         }
-        $tag['related']  && $tag['relArray'] = explode(',', $tag['related']);
 
         apps_common::init($tag,'tag',$vars);
         apps_common::link($tag['name']);
