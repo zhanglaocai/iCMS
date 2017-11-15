@@ -102,8 +102,8 @@ $(function(){
               <input type="text" name="user[comments]" class="span1" id="comments" value="<?php echo $rs->comments ; ?>"/>
               <span class="add-on">文章数</span>
               <input type="text" name="user[article]" class="span1" id="article" value="<?php echo $rs->article ; ?>"/>
-              <span class="add-on">分享数</span>
-              <input type="text" name="user[share]" class="span1" id="share" value="<?php echo $rs->share ; ?>"/>
+              <span class="add-on">收藏数</span>
+              <input type="text" name="user[favorite]" class="span1" id="favorite" value="<?php echo $rs->favorite ; ?>"/>
             </div>
             <div class="clearfix mb10"></div>
             <div class="input-prepend"> <span class="add-on">注册IP</span>

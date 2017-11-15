@@ -78,7 +78,7 @@ class userApp {
 		$this->API_home();
 	}
 	public function API_manage() {
-		$pgArray = array('publish', 'category', 'article', 'comment', 'inbox', 'favorite', 'share', 'follow', 'fans');
+		$pgArray = array('publish', 'category', 'article', 'comment', 'inbox', 'favorite', 'follow', 'fans');
 		$pg = iSecurity::escapeStr($_GET['pg']);
 		$pg OR $pg = 'article';
 		if (in_array($pg, $pgArray)) {
@@ -133,7 +133,7 @@ class userApp {
 	public function ACTION_manage() {
 		$this->me = user::status($this->login_uri, "nologin");
 
-		$pgArray = array('publish', 'category', 'article', 'comment', 'message', 'favorite', 'share', 'follow', 'fans');
+		$pgArray = array('publish', 'category', 'article', 'comment', 'message', 'favorite', 'follow', 'fans');
 		$pg = iSecurity::escapeStr($_POST['pg']);
 		$funname = '__ACTION_manage_' . $pg;
 		//print_r($funname);
@@ -723,14 +723,14 @@ class userApp {
 
 		$gid = 0;
 		$pid = 0;
-		$fans = $follow = $article = $comments = $share = $credit = 0;
+		$fans = $follow = $article = $comments = $favorite = $credit = 0;
 		$hits = $hits_today = $hits_yday = $hits_week = $hits_month = 0;
 		$lastloginip = $lastlogintime = '';
 		$status = 1;
 		$fields = array(
 			'gid', 'pid', 'username', 'nickname', 'password',
-			'gender', 'fans', 'follow', 'article', 'comments',
-			'share', 'credit', 'regip', 'regdate', 'lastloginip',
+			'gender', 'fans', 'follow', 'article', 'comments','favorite', 'credit',
+			'regip', 'regdate', 'lastloginip',
 			'lastlogintime', 'hits', 'hits_today', 'hits_yday', 'hits_week',
 			'setting',
 			'hits_month', 'type', 'status',
