@@ -32,6 +32,12 @@ function patch_db_2017111012(){
                 ADD KEY `pubdate`(`status`,`pubdate`);
         ");
     }
+    if(empty($fields['related'])){
+        iDB::query("
+          ALTER TABLE `#iCMS@__tag`
+            ADD COLUMN `related` VARCHAR(1024) CHARSET utf8 COLLATE utf8_general_ci DEFAULT '' NOT NULL;
+        ");
+    }
     iDB::query("
         ALTER TABLE `#iCMS@__tag`
           CHANGE `tpl` `tpl` VARCHAR(255) CHARSET utf8 COLLATE utf8_general_ci DEFAULT '' NOT NULL  AFTER `url`,
@@ -39,7 +45,6 @@ function patch_db_2017111012(){
           CHANGE `title` `title` VARCHAR(255) CHARSET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '标题'  AFTER `tkey`,
           CHANGE `editor` `editor` VARCHAR(255) CHARSET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '编辑或用户名'  AFTER `description`,
           CHANGE `userid` `userid` INT(10) UNSIGNED NOT NULL COMMENT '栏目'  AFTER `editor`,
-          CHANGE `related` `related` VARCHAR(1024) CHARSET utf8 COLLATE utf8_general_ci DEFAULT '' NOT NULL,
           CHANGE `count` `count` INT(10) UNSIGNED DEFAULT 0 NOT NULL  AFTER `hits_month`,
           CHANGE `comments` `comments` INT(10) UNSIGNED DEFAULT 0 NOT NULL  AFTER `count`,
           CHANGE `rootid` `rootid` INT(10) UNSIGNED DEFAULT 0 NOT NULL  AFTER `field`,
