@@ -518,32 +518,45 @@ CREATE TABLE `icms_spider_url` (
 
 CREATE TABLE `icms_tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uid` int(10) unsigned NOT NULL DEFAULT '0',
-  `rootid` int(10) unsigned NOT NULL DEFAULT '0',
   `cid` int(10) unsigned NOT NULL DEFAULT '0',
   `tcid` varchar(255) NOT NULL DEFAULT '',
   `pid` varchar(255) NOT NULL DEFAULT '',
   `tkey` varchar(255) NOT NULL DEFAULT '',
+  `title` varchar(255) NOT NULL COMMENT '标题',
   `name` varchar(255) NOT NULL DEFAULT '',
   `field` varchar(255) NOT NULL DEFAULT '',
+  `rootid` int(10) unsigned NOT NULL DEFAULT '0',
   `seotitle` varchar(255) NOT NULL DEFAULT '',
   `subtitle` varchar(255) NOT NULL DEFAULT '',
   `keywords` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL,
+  `related` varchar(1024) NOT NULL DEFAULT '',
+  `editor` varchar(255) NOT NULL COMMENT '编辑或用户名',
+  `userid` int(10) unsigned NOT NULL COMMENT '栏目',
   `haspic` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `pic` varchar(255) NOT NULL DEFAULT '',
   `bpic` varchar(255) NOT NULL DEFAULT '',
   `mpic` varchar(255) NOT NULL DEFAULT '',
   `spic` varchar(255) NOT NULL DEFAULT '',
   `url` varchar(255) NOT NULL DEFAULT '',
-  `related` varchar(255) NOT NULL DEFAULT '',
-  `comments` int(10) unsigned NOT NULL DEFAULT '0',
-  `count` int(10) unsigned NOT NULL DEFAULT '0',
-  `weight` smallint(6) NOT NULL DEFAULT '0',
   `tpl` varchar(255) NOT NULL DEFAULT '',
+  `weight` int(10) NOT NULL DEFAULT '0',
+  `clink` varchar(255) NOT NULL DEFAULT '',
   `sortnum` int(10) unsigned NOT NULL DEFAULT '0',
   `pubdate` int(10) unsigned NOT NULL DEFAULT '0',
   `postime` int(10) unsigned NOT NULL DEFAULT '0',
+  `hits` int(10) unsigned NOT NULL COMMENT '总点击数',
+  `hits_today` int(10) unsigned NOT NULL COMMENT '当天点击数',
+  `hits_yday` int(10) unsigned NOT NULL COMMENT '昨天点击数',
+  `hits_week` int(10) unsigned NOT NULL COMMENT '周点击',
+  `hits_month` int(10) unsigned NOT NULL COMMENT '月点击',
+  `count` int(10) unsigned NOT NULL DEFAULT '0',
+  `comments` int(10) unsigned NOT NULL DEFAULT '0',
+  `favorite` int(10) unsigned NOT NULL COMMENT '收藏数',
+  `good` int(10) unsigned NOT NULL COMMENT '顶',
+  `bad` int(10) unsigned NOT NULL COMMENT '踩',
+  `creative` tinyint(1) unsigned NOT NULL COMMENT '0:转载;1:原创',
+  `postype` tinyint(1) unsigned NOT NULL COMMENT '0:用户;1:管理员',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `idx_status` (`status`,`id`),
@@ -555,8 +568,23 @@ CREATE TABLE `icms_tag` (
   KEY `cid_count` (`cid`,`count`),
   KEY `pid_id` (`pid`,`id`),
   KEY `cid_id` (`cid`,`id`),
-  KEY `rootid` (`rootid`)
+  KEY `rootid` (`rootid`),
+  KEY `cid_hits` (`status`,`cid`,`hits`),
+  KEY `hits` (`status`,`hits`),
+  KEY `hits_month` (`status`,`hits_month`),
+  KEY `hits_week` (`status`,`hits_week`),
+  KEY `id` (`status`,`id`),
+  KEY `pubdate` (`status`,`pubdate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Table structure for table `icms_tag_cdata` */
+
+CREATE TABLE `icms_tag_cdata` (
+  `cdata_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键 自增ID',
+  `tag_id` int(10) NOT NULL COMMENT '内容ID 关联tag表',
+  PRIMARY KEY (`cdata_id`),
+  KEY `tag_id` (`tag_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Table structure for table `icms_tag_map` */
 
@@ -592,7 +620,7 @@ CREATE TABLE `icms_user` (
   `follow` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '关注数',
   `comments` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '评论数',
   `article` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '文章数',
-  `share` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '分享数',
+  `favorite` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '收藏数',
   `credit` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '积分',
   `regip` varchar(20) NOT NULL DEFAULT '' COMMENT '注册IP',
   `regdate` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '注册日期',
