@@ -65,6 +65,7 @@ class iView {
      * iCMS:aaaApp:method
      */
     public static function callback_func($args,$tpl) {
+        is_array($args['app']) && $args['app'] = $args['app']['app'];
         $keys = isset($args['as'])?$args['as']:$args['app'].($args['method']?'_'.$args['method']:'');
         //iCMS:app:method >> appFunc::app_method
         if($args['method']){
@@ -176,12 +177,13 @@ class iView {
 
         strpos($tpl,'./') !==false && $tpl = str_replace('./',dirname($obj->_file).'/',$tpl);
 
-        $rtpl = self::tpl_exists($tpl);
-        $rtpl === false && iPHP::error_404('Unable to find the template file <b>iPHP:://template/' . $tpl . '</b>', '002', 'TPL');
+        $rtpl = self::tpl_exists($tpl,$_tpl);
+        $rtpl === false && iPHP::error_404('Unable to find the template file <b>iPHP:://template/' . $_tpl . '</b>', '002', 'TPL');
         return $rtpl;
     }
-    public static function tpl_exists($tpl) {
+    public static function tpl_exists($tpl,&$_tpl) {
         $flag = iPHP_APP . ':/';
+        $_tpl = $tpl;
         if (strpos($tpl, $flag) !== false) {
             // 模板名/$tpl
             if ($_tpl = self::check_tpl($tpl, iPHP_DEFAULT_TPL)){
@@ -208,7 +210,7 @@ class iView {
             //         return $_tpl;
             //     }
             // }
-            $tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
+            $_tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
             // return self::check_tpl($tpl, iPHP_DEFAULT_TPL);
         } elseif (strpos($tpl, '{iTPL}') !== false) {
             $flag = '{iTPL}';
@@ -218,11 +220,11 @@ class iView {
                     return $_tpl;
                 }
             }
-            $tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
+            $_tpl = str_replace($flag, iPHP_DEFAULT_TPL, $tpl);
         }
 
-        if (is_file(iPHP_TPL_DIR . "/" . $tpl)) {
-            return $tpl;
+        if (is_file(iPHP_TPL_DIR . "/" . $_tpl)) {
+            return $_tpl;
         } else {
             return false;
         }

@@ -69,7 +69,7 @@ class iSQL {
         }
     }
 
-    public static function in($vars, $field, $not = false, $noand = false, $table = '') {
+    public static function in($vars, $field, $flag = false, $noand = false, $table = '') {
         if (is_bool($vars) || empty($vars)) {
             if(self::$check_numeric){
                 if(!is_numeric($vars)){
@@ -95,10 +95,15 @@ class iSQL {
             }
             is_array($vas) && $vas  = array_unique($vas);
             $vars = implode(',', $vas);
-            $sql  = $not ? " NOT IN ($vars)" : " IN ($vars) ";
+            $sql  = " IN ({$vars}) ";
+            $flag=='not' && $sql  = " NOT IN ({$vars})";
         } else {
             $vars = addslashes($vars);
-            $sql = $not ? "<>'$vars' " : "='$vars' ";
+            $sql = " ='{$vars}' ";
+            if($flag){
+                $sql = " {$flag}'{$vars}' ";
+                $flag=='not' && $sql = "<>'{$vars}' ";
+            }
         }
         $table && $table .= '.';
         $sql = "{$table}`{$field}`" . $sql;

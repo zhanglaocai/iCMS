@@ -247,6 +247,10 @@ class iPHP {
 			$onlineip = getenv('HTTP_CLIENT_IP');
 		} elseif (getenv('HTTP_X_FORWARDED_FOR') && strcasecmp(getenv('HTTP_X_FORWARDED_FOR'), 'unknown')) {
 			$onlineip = getenv('HTTP_X_FORWARDED_FOR');
+			$ipArray  = explode(',', $onlineip);
+			$key = array_search('unknown', $ipArray);
+			if($key!==false) unset($ipArray[$key]);
+			$onlineip = end($ipArray);
 		} elseif (getenv('REMOTE_ADDR') && strcasecmp(getenv('REMOTE_ADDR'), 'unknown')) {
 			$onlineip = getenv('REMOTE_ADDR');
 		} elseif (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], 'unknown')) {

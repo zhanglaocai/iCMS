@@ -164,7 +164,7 @@ class apps_mod {
           ),
           $query
         );
-        array_push ($table,$union_id,'正文');
+        array_push ($table,$union_id,'附加');
         return array($name=>$table);
     }
     /**

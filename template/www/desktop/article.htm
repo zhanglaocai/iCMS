@@ -55,18 +55,18 @@
                     <!--{/if}-->
                     <div class="clearfix"></div>
                     <!--{if $article.tags}-->
-                    <div class="article-tags">
+                    <div class="tags-link">
                         <b>相关专题：</b>
                         <!--{$article.tags_link}-->
                     </div>
                     <!--{/if}-->
-                    <div class="article-body">
+                    <article class="text-body">
                         <div class="<!--{if $article.markdown}-->markdown<!--{/if}-->">
                             <!--{$article.body}-->
                         </div>
                         <!--{if $article.page.end}-->
                         <!--{/if}-->
-                    </div>
+                    </article>
                     <!--{if $article.taoke}-->
                     <!-- taoke code -->
                     <!--{/if}-->
@@ -91,7 +91,7 @@
                         <div class="clearfix"></div>
                       </div>
                     <!--{else}-->
-                    <div class="article-pagenav">
+                    <div class="pagenav">
                         <div class="pagination">
                         <!--{$article.page.nav}-->
                         </div>
@@ -102,9 +102,6 @@
                     <!--{/if}-->
                     <script>
                     $(function() {
-                        $("img", ".article-body").each(function(i) {
-                            imgFix(this,500,600);
-                        });
                         $(window).keydown(function(event) {
                             switch (event.keyCode) {
                                 case 37:

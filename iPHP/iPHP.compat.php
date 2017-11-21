@@ -319,8 +319,8 @@ function get_user_pic($uid,$size=0,$dir='avatar') {
 	return $path;
 }
 
-function auth_encode($string){
-    return authcode($string,"ENCODE");
+function auth_encode($string,$expiry = 0){
+    return authcode($string,"ENCODE",null,$expiry);
 }
 function auth_decode($string){
     return authcode($string);
