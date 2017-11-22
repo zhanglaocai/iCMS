@@ -52,6 +52,17 @@ $(function(){
             </div>
             <?php }?>
             <div class="clearfix mb10"></div>
+            <div class="input-prepend input-append"> <span class="add-on">状 态</span>
+              <select name="user[status]" id="status" class="chosen-select">
+                <option value="0">禁用</option>
+                <option value="1">正常</option>
+                <option value="2">黑名单</option>
+                <option value="3">登陆封禁</option>
+                <?php echo propAdmincp::get("status") ; ?>
+              </select>
+              <?php echo propAdmincp::btn_add('添加状态');?>
+            </div>
+            <div class="clearfix mb10"></div>
             <div class="input-prepend input-append"> <span class="add-on">属 性</span>
               <select name="pid[]" id="pid" class="chosen-select span6" multiple="multiple">
                 <option value="0">普通用户[pid='0']</option>
@@ -134,15 +145,6 @@ $(function(){
               <input type="text" name="user[hits_week]" class="span1" id="hits_week" value="<?php echo $rs->hits_week ; ?>"/>
               <span class="add-on">月点击</span>
               <input type="text" name="user[hits_month]" class="span1" id="hits_month" value="<?php echo $rs->hits_month ; ?>"/>
-            </div>
-
-            <div class="clearfix mb10"></div>
-            <div class="input-prepend"> <span class="add-on">账号状态</span>
-              <select name="user[status]" id="status" class="chosen-select">
-                <option value="0">禁用</option>
-                <option value="1">正常</option>
-                <option value="2">黑名单</option>
-              </select>
             </div>
           </div>
           <div id="user-data" class="tab-pane hide">

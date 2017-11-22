@@ -113,4 +113,45 @@ class categoryFunc{
 		$vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
 		return $resource;
 	}
+	public static function category_select($vars){
+		$selected  = $vars['selected'];
+		$cid   = (int)$vars['cid'];
+		$level = $vars['level'];
+		empty($level) && $level =1;
+		$rootid = categoryApp::get_cahce('rootid');
+		$html = null;
+		foreach ((array) $rootid[$cid] AS $root => $_cid) {
+			$C = categoryApp::get_cahce_cid($_cid);
+			if($C['status']=='2'){
+				continue;
+			}
+			if ($C['status'] && $C['config']['ucshow'] && $C['config']['send'] && empty($C['outurl'])) {
+				$tag = ($level == '1' ? "" : "├ ");
+				$selected = ($selected == $C['cid']) ? "selected" : "";
+				$text = str_repeat("│　", $level - 1) . $tag . $C['name'] . "[cid:{$C['cid']}]" . ($C['outurl'] ? "[∞]" : "");
+				$C['config']['examine'] && $text .= '[审核]';
+				$option = "<option value='{$C['cid']}' $selected>{$text}</option>";
+				if(isset($vars['echo'])){
+					echo $option;
+				}else{
+					 $html.= $option;
+				}
+			}
+			if($rootid[$C['cid']]){
+				$option = self::category_select(array(
+					'selected'  => $selected,
+					'cid'   => $C['cid'],
+					'level' => $level+1,
+				));
+				if(isset($vars['echo'])){
+					echo $option;
+				}else{
+					 $html.= $option;
+				}
+			}
+		}
+		if(!isset($vars['echo'])){
+			return $html;
+		}
+	}
 }

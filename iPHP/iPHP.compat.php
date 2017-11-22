@@ -82,6 +82,43 @@ function num10K($num){
         return round($num/10000,1) . 'K';
     }
 }
+function format_time($time, $flag = 0){
+    $value = array(
+        "years" => 0, "days" => 0, "hours" => 0,
+        "minutes" => 0, "seconds" => 0,
+    );
+    if($time >= 31556926){
+        $value["years"] = floor($time/31556926);
+        $time = ($time%31556926);
+    }
+    if($time >= 86400){
+        $value["days"] = floor($time/86400);
+        $time = ($time%86400);
+    }
+    if($time >= 3600){
+        $value["hours"] = floor($time/3600);
+        $time = ($time%3600);
+    }
+    if($time >= 60){
+        $value["minutes"] = floor($time/60);
+        $time = ($time%60);
+    }
+    $value["seconds"] = floor($time);
+
+    $unit_map = array(
+        's'=>array('d','h','m','s'),
+        'l'=>array('days','hours','minutes','seconds'),
+        'cn'=>array('天','小时','分钟','秒'),
+    );
+    $t = '';
+    $unit = $unit_map[$flag];
+    $value["days"]   && $t.= $value["days"] .$unit[0].' ';
+    $value["hours"]  && $t.= $value["hours"] .$unit[1].' ';
+    $value["minutes"]&& $t.= $value["minutes"] .$unit[2].' ';
+    $value["seconds"]&& $t.= $value["seconds"] .$unit[3];
+
+    return $t;
+}
 function format_date($date,$isShowDate=true){
     $limit = time() - $date;
     if($limit < 60){

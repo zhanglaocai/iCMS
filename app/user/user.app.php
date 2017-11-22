@@ -125,7 +125,6 @@ class userApp {
 
 		iView::assign('article', $article);
 		iView::assign('article_data', $article_data);
-		iView::assign('option', $this->category('', $cid));
 	}
 	/**
 	 * [ACTION_manage description]
@@ -612,6 +611,7 @@ class userApp {
 			$seccode = iSecurity::escapeStr($_POST['seccode']);
 			iSeccode::check($seccode, true) OR iUI::code(0, 'iCMS:seccode:error', 'seccode', 'json');
 		}
+		$u_field = user::check_uname_type($uname);
 
 		if ($this->config['login']['interval']) {
 			$lastloginip   = iPHP::get_ip();
@@ -620,16 +620,36 @@ class userApp {
                 SELECT `lastlogintime`
                 FROM `#iCMS@__user`
                 WHERE `lastloginip`='$lastloginip'
+                AND `$u_field`!='$uname'
                 ORDER BY uid DESC LIMIT 1;"
             );
-
-			if ($lastlogintime - $logintime > $this->config['login']['interval']) {
-				iUI::code(0, 'user:login:interval', 'username', 'json');
+			//判断同IP不同账号 登陆间隔
+			$interval = $logintime - (int)$lastlogintime;
+			if ($interval < $this->config['login']['interval']) {
+				iUI::code(0, array(
+					'user:login:same_ip',
+					format_time($this->config['login']['interval']-$interval,'cn')
+				), 'username', 'json');
+			}
+			//5次登陆错误
+			$cache_name = "error/login." . md5($uname);
+			$login_error = iCache::get($cache_name);
+			if ($login_error) {
+				$interval = $logintime - (int)$login_error[2];
+				if ($login_error[1] >= 5 && $interval < $this->config['login']['interval']) {
+					iUI::code(0,array(
+							'user:login:interval',
+							format_time($this->config['login']['interval']-$interval,'cn')
+						),
+						'uname', 'json'
+					);
+				}
 			}
 		}
 
 		$remember && user::$cookietime = 14 * 86400;
-		$user = user::login($uname, $pass, (strpos($uname, '@') === false ? 'nk' : 'un'));
+
+		$user = user::login($uname, $pass);
 		if ($user === true) {
 			if ($openid) {
 				iDB::insert('user_openid',array(
@@ -641,23 +661,14 @@ class userApp {
 			iUI::code(1, 0, $this->forward, 'json');
 		} else {
 			if ($this->config['login']['interval']) {
-				$cache_name = "iCMS/error/login." . md5($uname);
-				$login_error = iCache::get($cache_name);
 				if ($login_error) {
-					if ($login_error[1] >= 5) {
-						$_field = (strpos($uname, '@') === false ? 'nickname' : 'username');
-						iDB::update('user', array('status' => '3'), array($_field => $uname));
-						iUI::code(0, 'user:login:interval', 'uname', 'json');
-					} else {
-						$login_error[1]++;
-					}
+					++$login_error[1];
+					$login_error[2] = $logintime;
 				} else {
-					$login_error = array($uname, 1);
+					$login_error = array($uname, 1,$logintime);
 				}
 				iCache::set($cache_name, $login_error, $this->config['login']['interval']);
 			}
-			// $lang = 'user:login:error';
-			// $user && $lang.='_status_'.$user;
 			iUI::code(0, 'user:login:error', 'uname', 'json');
 		}
 	}
@@ -725,15 +736,15 @@ class userApp {
 		$pid = 0;
 		$fans = $follow = $article = $comments = $favorite = $credit = 0;
 		$hits = $hits_today = $hits_yday = $hits_week = $hits_month = 0;
-		$lastloginip = $lastlogintime = '';
+		$lastloginip   = $regip;
+		$lastlogintime = $regdate;
 		$status = 1;
 		$fields = array(
 			'gid', 'pid', 'username', 'nickname', 'password',
 			'gender', 'fans', 'follow', 'article', 'comments','favorite', 'credit',
-			'regip', 'regdate', 'lastloginip',
-			'lastlogintime', 'hits', 'hits_today', 'hits_yday', 'hits_week',
-			'setting',
-			'hits_month', 'type', 'status',
+			'regip', 'regdate', 'lastloginip','lastlogintime',
+			'hits', 'hits_today', 'hits_yday', 'hits_week','hits_month',
+			'setting','type', 'status',
 		);
 		$data = compact($fields);
 		$uid = iDB::insert('user', $data);
@@ -748,11 +759,10 @@ class userApp {
 		);
 
 		if ($openid) {
-			$platform = $type;
 			iDB::insert('user_openid',array(
 				'uid'      => $uid,
 				'openid'   => $openid,
-				'platform' => $platform,
+				'platform' => $type,
 			));
 		}
 		if ($avatar) {
@@ -1043,21 +1053,6 @@ class userApp {
 		return implode('、', $links) . $text;
 	}
 
-	public function category($priv = '', $_cid = "0", $cid = "0", $level = 1) {
-		$rootid = categoryApp::get_cahce('rootid');
-		foreach ((array) $rootid[$cid] AS $root => $_cid) {
-			$C = categoryApp::get_cahce_cid($_cid);
-			if ($C['status'] && $C['config']['ucshow'] && $C['config']['send'] && empty($C['outurl'])) {
-				$tag = ($level == '1' ? "" : "├ ");
-				$selected = ($_cid == $C['cid']) ? "selected" : "";
-				$text = str_repeat("│　", $level - 1) . $tag . $C['name'] . "[cid:{$C['cid']}]" . ($C['outurl'] ? "[∞]" : "");
-				$C['config']['examine'] && $text .= '[审核]';
-				$option .= "<option value='{$C['cid']}' $selected>{$text}</option>";
-			}
-			$rootid[$C['cid']] && $option .= $this->category($priv, $_cid, $C['cid'], $level + 1, $url);
-		}
-		return $option;
-	}
 	public function openid() {
 		if (!isset($_GET['sign'])) {
 			return;

@@ -45,6 +45,8 @@ $(function(){
             <option value="0">禁用</option>
             <option value="1">正常</option>
             <option value="2">黑名单</option>
+            <option value="3">登陆封禁</option>
+            <?php echo propAdmincp::get("status") ; ?>
           </select>
         </div>
         <div class="input-prepend"> <span class="add-on">注册IP</span>

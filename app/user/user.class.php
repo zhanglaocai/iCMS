@@ -194,16 +194,24 @@ class user {
     	}
     	return $rs;
     }
-	public static function login($val,$pass='',$fm='un'){
-		$field_map = array(
-			'id' =>'uid',
-			'nk' =>'nickname',
-			'un' =>'username',
-		);
-		$field = $field_map[$fm];
-		$field OR $field = 'username';
+    public static function check_uname_type($uname){
+    	return (strpos($uname, '@') === false ? 'nickname' : 'username');
+    }
+	public static function login($val,$pass='',$field=null){
+		$field_map = array('uid','nickname','username');
 
-		$user = iDB::row("SELECT `uid`,`nickname`,`password`,`username`,`status` FROM `#iCMS@__user` where `{$field}`='{$val}' and `password`='$pass' limit 1");
+		$field===null && $field = self::check_uname_type($val);
+
+		if(!in_array($field, $field_map)||empty($field)){
+			$field = 'username';
+		}
+
+		$user = iDB::row("
+			SELECT `uid`,`nickname`,`password`,`username`,`status`
+			FROM `#iCMS@__user`
+			WHERE `{$field}`='{$val}' AND `password`='$pass'
+		");
+
 		if(empty($user)){
 			return false;
 		}
