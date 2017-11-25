@@ -84,10 +84,10 @@ class apps {
         $menu = json_decode($json,true);
     }
     public static function menu($app){
-        $array = $app['menu'];
-        $array && self::menu_replace($array,$app);
-
+        $array = array();
         if($app['config']['menu']){
+            $array = $app['menu'];
+            $array && self::menu_replace($array,$app);
             if($app['config']['menu']!='main'){
                 $json = '[{"id": "'.$app['config']['menu'].'","children":[]}]';
                 $_array = json_decode($json,true);
@@ -332,7 +332,7 @@ class apps {
             $class_methods = get_class_methods($obj_name);
             if($tag){
                 foreach ((array)$class_methods as $key => $value) {
-                    if(strpos($value, '__') === false){
+                    if(strpos($value, '__') === false && strpos($value, $app.'_') !== false){
                         $tag_array[]= iPHP_APP.':'.str_replace('_', ':', $value);
                     }
                 }

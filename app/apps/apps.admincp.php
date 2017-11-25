@@ -30,6 +30,7 @@ class appsAdmincp{
           if($rs['type']=="2"){
             $rs['apptype'] = "2";
             $rs['config']['iFormer'] = '1';
+            $rs['config']['menu']    = 'main';
             $base_fields  = apps_mod::base_fields_array();
             $rs['fields'] = get_php_file(iPHP_APP_DIR.'/apps/json/fields.php');
             $rs['fields'] = json_decode($rs['fields'],true);

@@ -926,7 +926,6 @@ class userApp {
 			iView::display('iCMS://user/api.data.htm');
 			// iUI::json($array);
 		} else {
-			user::logout();
 			iUI::code(0, 0, $this->forward, 'json');
 		}
 	}
