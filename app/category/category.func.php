@@ -122,6 +122,9 @@ class categoryFunc{
 		$html = null;
 		foreach ((array) $rootid[$cid] AS $root => $_cid) {
 			$C = categoryApp::get_cahce_cid($_cid);
+			if(isset($vars['appid']) && $C['appid']!=$vars['appid']){
+				continue;
+			}
 			if($C['status']=='2'){
 				continue;
 			}

@@ -251,7 +251,7 @@ body.articleApp { }
 
 /* ==footer== */
 .footer { background-color: #333; color: #FFF; }
-.footer .footer-wrap { min-height: 90px; margin: 0 auto; text-align: center; padding-top: 10px; }
+.footer .footer-wrap {width: 1200px; min-height: 90px; margin: 0 auto; text-align: center; padding-top: 10px; }
 .footer-wrap p { margin: 5px auto; }
 .footer-wrap p a { color: #FFF; font-weight: bold; }
 
