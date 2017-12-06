@@ -110,22 +110,7 @@ class iCMS {
         iView::assign('site',$site);
         iUI::$dialog['title']  = $site['name'];
     }
-    public static function check_view_html($tpl,$C,$key) {
-        if (iView::$gateway == "html" && $tpl && (strstr($C['rule'][$key], '{PHP}') || $C['outurl'] || $C['mode'] == "0")) {
-            return true;
-        }
-        return false;
-    }
-    public static function redirect_html($iurl) {
-        $fp  = $iurl['path'];
-        $url = $iurl['href'];
 
-        if(iView::$gateway=='html'||empty($url)||stristr($url, '.php?')||iPHP_DEVICE!='desktop'){
-            return false ;
-        }
-
-        is_file($fp) && iPHP::redirect($url);
-    }
     //分页数缓存
     public static function page_total_cache($sql, $type = null,$cachetime=3600) {
         $total = (int) $_GET['total_num'];

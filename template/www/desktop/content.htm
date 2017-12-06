@@ -16,7 +16,7 @@
     <!--{iCMS:public:ui}-->
 </head>
 
-<body class="articleApp" i="<!--{$iCMS.APP.NAME}-->">
+<body class="contentApp" i="<!--{$iCMS.APP.NAME}-->">
     <!--{include file="./header.htm"}-->
     <div class="body clearfix">
         <div class="body-wrap r5">
@@ -49,7 +49,7 @@
                         <span id="cmt_count" class="cmt_count"></span>
                     </div>
                     <div class="clearfix"></div>
-                    <div class="article-body">
+                    <article class="text-body">
                         所有可调用变量,具体调用请自行修改
                                 <!--{foreach value="cvalue" key="ckey" from="$content"}-->
                                 <p>
@@ -57,7 +57,7 @@
                                     <!--{$cvalue|print_R}-->
                                 </p>
                                 <!--{/foreach}-->
-                    </div>
+                    </article>
 
                     <div class="clearfix mb10"></div>
                     <div class="share">
@@ -88,12 +88,12 @@
                         </script>
                     </div>
                     <div class="article-like" data-param='<!--{$content.param|json_encode}-->'>
-                        <a i="vote:<!--{$apps.app}-->:good" class="like-btn">
+                        <a i="vote:<!--{$APP.app}-->:good" class="like-btn">
                             <i class="like-icon up"></i>
                             <span i="vote_good_num" class="like-num"><!--{$content.good}--></span>
                             <span class="like-txt">赞</span>
                         </a>
-                        <a i="vote:<!--{$apps.app}-->:bad" class="like-btn">
+                        <a i="vote:<!--{$APP.app}-->:bad" class="like-btn">
                             <i class="like-icon down"></i>
                             <span i="vote_bad_num" class="like-num"><!--{$content.bad}--></span>
                             <span class="like-txt">踩</span>
@@ -116,7 +116,7 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="related">
-                    <h3><i class="line"></i>更多 <b><!--{$category.link}--></b> 相关<!--{$apps.name}-->：</h3>
+                    <h3><i class="line"></i>更多 <b><!--{$category.link}--></b> 相关<!--{$APP.name}-->：</h3>
                     <div class="related-left">
                         <ul>
                             <!--{iCMS:content:list loop='true' row='9' cid="$category.cid"}-->

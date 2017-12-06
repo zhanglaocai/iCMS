@@ -215,13 +215,10 @@ class propAdmincp{
                     data-target="#' . $target . '"
                     data-value="' . $prop['val'] . '">' . $prop['name'] . '</a>
                     </li>';
+        }else{
+            $div.= '<li class="disabled"><a tabindex="-1" href="#">暂无选项,请添加</a></li>';
         }
-        $div.= '<li class="divider"></li>';
-        $div.= '<li>';
-        $div.= self::btn_add('添加常用属性',$field,$app,null);
-        // $div.= '<a class="btn tip-right" href="'.__ADMINCP__.'=prop&do=add&_app='.$app.'&field='.$field.'" target="_blank" title="添加常用属性"><i class="fa fa-plus"></i>常用属性</a>';
-        $div.= '</li></ul>';
-        $div.= '</div>';
+        $div.= '</ul></div>';
         return $div;
     }
     public static function select($field,$target = null,$class='span3',$title='请选择或填写',$app = null){

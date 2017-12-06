@@ -106,7 +106,7 @@ class forms_zip {
         if(self::$msg_mode=='alert'){
             $s OR iUI::alert($text);
         }else{
-            return $text.'......'.iUI::check($s).'<iCMS>';
+            return str_pad($text,80,'.').iUI::check($s).'<iCMS>';
         }
     }
 }

@@ -41,78 +41,28 @@ class userFunc{
     }
 
     public static function user_list($vars=null){
-        iMap::reset();
+        $vars['default:rows'] = 100;
 
-    	$maxperpage = isset($vars['row'])?(int)$vars['row']:"100";
-    	$cache_time	= isset($vars['time'])?(int)$vars['time']:"-1";
-        $where_sql	= "WHERE `status`='1'";
+        $appsFunc = new appsFunc($vars,'user','uid');
+        $appsFunc->process_sql_status();
+        $appsFunc->process_sql_id();
+        $appsFunc->process_sql_pid();
 
-    	isset($vars['userid'])&& $where_sql.=" AND `uid`='{$vars['userid']}'";
-    	isset($vars['gid'])   && $where_sql.= " AND `gid` ='{$vars['gid']}'";
+        isset($vars['userid'])&& $appsFunc->add_sql_and('uid',$vars['userid']);
+        isset($vars['gid'])   && $appsFunc->add_sql_and('gid');
+        isset($vars['type'])  && $appsFunc->add_sql_and('type');
 
-    	isset($vars['type'])  && $where_sql.= " AND `type` ='{$vars['type']}'";
-        if (isset($vars['pid']) && !isset($vars['pids'])) {
-            iSQL::$check_numeric = true;
-            $where_sql .= iSQL::in($vars['pid'], 'pid');
-        }
-        if(isset($vars['pid!'])){
-            iSQL::$check_numeric = true;
-            $where_sql.= iSQL::in($vars['pid!'],'pid','not');
-        }
+        $appsFunc->process_sql_orderby(array('article','follow','fans'));
+        isset($vars['where'])&& $appsFunc->add_sql_where();
 
-        if(isset($vars['pids']) && !isset($vars['pid'])){
-            iMap::init('prop',iCMS_APP_USER,'pid');
-            //$where_sql.= iMap::exists($vars['pid'],'`#iCMS@__user`.uid'); //map 表大的用exists
-            $map_where = iMap::where($vars['pids']);
-        }
+        $map_order_sql = $appsFunc->process_map_where();
+        isset($vars['page']) && list($total,$multi) = $appsFunc->process_page();
+        $appsFunc->process_ids_array($total,$map_order_sql);
 
-    	$by=$vars['by']=="ASC"?"ASC":"DESC";
-        switch ($vars['orderby']) {
-            case "id":		$order_sql =" ORDER BY `uid` $by";      break;
-            case "article":	$order_sql =" ORDER BY `article` $by";  break;
-            case "comments":$order_sql =" ORDER BY `comments` $by"; break;
-            case "follow":  $order_sql =" ORDER BY `follow` $by";   break;
-            case "fans":    $order_sql =" ORDER BY `fans` $by";     break;
-            case "hits":    $order_sql =" ORDER BY `hits` $by";     break;
-            case "hot":     $order_sql =" ORDER BY `hits` $by";     break;
-            case "week":    $order_sql =" ORDER BY `hits_week` $by";break;
-            case "month":   $order_sql =" ORDER BY `hits_month` $by";break;
-            default:$order_sql=" ORDER BY `uid` $by";
-        }
-        if($map_where){
-            $map_sql   = iSQL::select_map($map_where);
-            $where_sql = ",({$map_sql}) map {$where_sql} AND `uid` = map.`iid`";
-        }
-    	$offset	= 0;
-    	$limit  = "LIMIT {$maxperpage}";
-    	if($vars['page']){
-    		$total	= iCMS::page_total_cache("SELECT count(*) FROM `#iCMS@__user` {$where_sql}",null,iCMS::$config['cache']['page_total']);
-    		$multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:sql'),'nowindex'=>$GLOBALS['page']));
-    		$offset = $multi->offset;
-    		$limit  = "LIMIT {$offset},{$maxperpage}";
-            iView::assign("user_list_total",$total);
-    	}
-        $hash = md5($where_sql.$order_sql.$limit);
+        $resource = $appsFunc->process_get_cache();
 
-        if($map_sql || $offset){
-            if($vars['cache']){
-    			$map_cache_name = iPHP_DEVICE.'/user_map/'.$hash;
-    			$ids_array      = iCache::get($map_cache_name);
-            }
-            if(empty($ids_array)){
-                $ids_array = iDB::all("SELECT `id` FROM `#iCMS@__user` {$where_sql} {$order_sql} {$limit}");
-                $vars['cache'] && iCache::set($map_cache_name,$ids_array,$cache_time);
-            }
-            $ids       = iSQL::values($ids_array,'uid');
-            $ids       = $ids?$ids:'0';
-            $where_sql = "WHERE `uid` IN({$ids})";
-        }
-        if($vars['cache']){
-    		$cache_name = iPHP_DEVICE.'/user_list/'.$hash;
-    		$resource   = iCache::get($cache_name);
-        }
     	if(empty($resource)){
-            $resource = iDB::all("SELECT * FROM `#iCMS@__user` {$where_sql} {$order_sql} {$limit}");
+            $resource = $appsFunc->get_resource();
             if($vars['data']){
                 $uidArray = iSQL::values($resource,'uid','array',null);
                 $uidArray && $user_data = (array) user::data($uidArray);
@@ -128,7 +78,8 @@ class userFunc{
                 }
     			$resource[$key]  = $value;
             }
-    		$vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
+            $appsFunc->process_keys($resource);
+    		$appsFunc->process_set_cache($resource);
     	}
     	return $resource;
     }

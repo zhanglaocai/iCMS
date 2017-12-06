@@ -11,7 +11,7 @@ class formsFunc{
     public static function forms_array($vars){
         if(isset($vars['formid'])||isset($vars['fid'])){
             $formid = $vars['formid'];
-            isset($vars['fid']) && $formid = $vars['fid'];
+            $vars['fid'] && $formid = $vars['fid'];
             $form   = forms::get($formid);
         }else if(isset($vars['form'])){
             is_array($vars['form']) && $form = $vars['form'];
@@ -69,8 +69,6 @@ class formsFunc{
         if(empty($form)||empty($form['status'])){
             return false;
         }
-        $maxperpage = isset($vars['row'])?(int)$vars['row']:"10";
-        $cache_time = isset($vars['time'])?(int)$vars['time']:"-1";
 
         $table_array = apps::get_table($form);
         $table       = $table_array['table'];
@@ -80,7 +78,9 @@ class formsFunc{
             $fields = former::fields($form['fields']);
             iView::assign("forms_fields",$fields);
         }
-        $where_sql = "WHERE 1=1";
+        $appsFunc = new appsFunc($vars,'forms_data',$primary,iCMS_APP_FORMS,$table);
+        $appsFunc->process_sql_status(false);
+        $appsFunc->process_sql_id();
 
         if($vars['keywords']) {
           $search = array();
@@ -88,131 +88,85 @@ class formsFunc{
             foreach ((array)$fields as $fi => $field) {
               $field['field']=='VARCHAR' && $search[] = $field['id'];
             }
-            $search && $where_sql.=" AND CONCAT(".implode(',', $search).") REGEXP '{$vars['keywords']}'";
+            $search && $appsFunc->where_sql.=" AND CONCAT(".implode(',', $search).") REGEXP '{$vars['keywords']}'";
           }else{
             if($vars['pattern']){
-              $where_sql.=" AND ".$vars['sfield']." {$vars['pattern']} '{$vars['keywords']}'";
+                $appsFunc->where_sql.=" AND ".$vars['sfield']." {$vars['pattern']} '{$vars['keywords']}'";
             }else{
-              $sql.=" AND ".$_GET['sfield']." REGEXP '{$_GET['keywords']}'";
-                $where_sql.=" AND ".$vars['sfield']." REGEXP '{$vars['keywords']}'";
+                $appsFunc->where_sql.=" AND ".$vars['sfield']." REGEXP '{$vars['keywords']}'";
             }
           }
         }else{
           if($vars['pattern']){
-            $where_sql.=" AND ".$vars['sfield']." {$vars['pattern']} '{$vars['keywords']}'";
+            $appsFunc->where_sql.=" AND ".$vars['sfield']." {$vars['pattern']} '{$vars['keywords']}'";
           }
         }
-        isset($vars['where']) && $where_sql .= $vars['where'];
 
-        $vars['id'] && $where_sql .= iSQL::in($vars['id'], 'id');
-        $vars['id!'] && $where_sql .= iSQL::in($vars['id!'], 'id', 'not');
-        $by = $vars['by']=="ASC"?"ASC":"DESC";
-        $order_sql = 'ORDER BY '.($vars['orderby']?$vars['orderby']:$primary).' '.$by;
+        isset($vars['where'])  && $appsFunc->add_sql_where();
+        isset($vars['page'])   && $appsFunc->process_page();
+        isset($vars['orderby'])&& $appsFunc->process_sql_orderby();
+        $resource = $appsFunc->process_get_cache();
 
-        $offset = 0;
-        $limit  = "LIMIT {$maxperpage}";
-        if($vars['page']){
-            $total  = iCMS::page_total_cache("SELECT count(*) FROM `{$table}` {$where_sql}",null,iCMS::$config['cache']['page_total']);
-            $multi  = iUI::page(array('total'=>$total,'perpage'=>$maxperpage,'unit'=>iUI::lang('iCMS:page:list'),'nowindex'=>$GLOBALS['page']));
-            $offset = $multi->offset;
-            $limit  = "LIMIT {$offset},{$maxperpage}";
-            iView::assign("forms_list_total",$total);
-        }
-        if($vars['orderby']=='rand'){
-            $ids_array = iSQL::get_rand_ids($table,$where_sql,$maxperpage,$primary);
-        }
-
-        $hash = md5($where_sql.$order_sql.$limit);
-
-        if($vars['cache']){
-            $cache_name = iPHP_DEVICE.'/forms_dlist/'.$hash;
-            $vars['page'] && $cache_name.= "/".(int)$GLOBALS['page'];
-            $resource = iCache::get($cache_name);
-            if($resource){
-                return $resource;
-            }
-        }
-        if($offset){
-            if(empty($ids_array)){
-                $ids_array = iDB::all("SELECT `{$primary}` FROM `{$table}` {$where_sql} {$order_sql} {$limit}");
-                // $vars['cache'] && iCache::set($map_cache_name,$ids_array,$cache_time);
-            }
-        }
-
-        if($ids_array){
-            $ids       = iSQL::values($ids_array);
-            $ids       = $ids?$ids:'0';
-            $where_sql = "WHERE `{$table}`.`{$primary}` IN({$ids})";
-            $limit     = '';
-        }
-
-        $rs = iDB::all("SELECT * FROM `{$table}` {$where_sql} {$order_sql} {$limit}");
-
-        if($rs){
-            if($vars['data']){
-                $data = array();
-                $idArray = iSQL::values($rs,$primary,'array',null,'id');
-                foreach ($form['table'] as $tkey => $tvalue) {
-                    if($tvalue['union'] && $idArray){
-                      $pkey = $tvalue['union'];
-                        $a = iDB::all("SELECT * FROM `{$tvalue['table']}` WHERE `{$pkey}` in (".implode(',', $idArray).")");
-                        foreach ((array)$a as $k => $v) {
-                          $data[$v[$pkey]] = $v;
+        if(empty($resource)){
+            $rs = $appsFunc->get_resource();
+            if($rs){
+                if($vars['data']){
+                    $data = array();
+                    $idArray = iSQL::values($rs,$primary,'array',null,'id');
+                    foreach ($form['table'] as $tkey => $tvalue) {
+                        if($tvalue['union'] && $idArray){
+                          $pkey = $tvalue['union'];
+                            $a = iDB::all("SELECT * FROM `{$tvalue['table']}` WHERE `{$pkey}` in (".implode(',', $idArray).")");
+                            foreach ((array)$a as $k => $v) {
+                              $data[$v[$pkey]] = $v;
+                            }
                         }
                     }
                 }
-            }
-            $resource = array();
-            foreach ((array)$rs as $key => $value) {
-                foreach ($fields as $fi => $field) {
-                    $id = $value[$primary];
-                    if($data[$id] && is_array($data[$id])){
-                        $value+=$data[$id];
+                $resource = array();
+                foreach ((array)$rs as $key => $value) {
+                    foreach ($fields as $fi => $field) {
+                        $id = $value[$primary];
+                        if($data[$id] && is_array($data[$id])){
+                            $value+=$data[$id];
+                        }
+                        formerApp::vars($field,$fi,$value,$vars);
+                        $resource[$key] = $value;
+                        // $resource[$key][$fi] = array(
+                        //     'name'=>$field['label'],
+                        //     'value'=>$value[$field['id']]
+                        // );
                     }
-                    formerApp::vars($field,$fi,$value,$vars);
-                    $resource[$key] = $value;
-                    // $resource[$key][$fi] = array(
-                    //     'name'=>$field['label'],
-                    //     'value'=>$value[$field['id']]
-                    // );
                 }
+                $appsFunc->process_keys($resource);
+                $appsFunc->process_set_cache($resource);
             }
-            $vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
         }
         return $resource;
     }
     public static function forms_list($vars){
-        $maxperpage = isset($vars['row'])?(int)$vars['row']:"100";
-        $cache_time = isset($vars['time'])?(int)$vars['time']:"-1";
+        $vars['default:rows'] = 100;
 
-        $where_sql  = "WHERE `status`='1'";
+        $appsFunc = new appsFunc($vars,'forms');
+        $appsFunc->process_sql_status();
+        $appsFunc->process_sql_id();
 
-        isset($vars['type'])  && $where_sql.= " AND `type`='".$vars['type']."'";
-        isset($vars['pic'])  && $where_sql.= " AND `pic`!=''";
-        isset($vars['nopic'])&& $where_sql.= " AND `pic`=''";
+        isset($vars['type']) && $appsFunc->add_sql_and('type');
+        isset($vars['pic'])  && $appsFunc->add_sql_and('pic','','!=');
+        isset($vars['nopic'])&& $appsFunc->add_sql_and('pic','');
 
-        isset($vars['startdate'])    && $where_sql.=" AND `addtime`>='".strtotime($vars['startdate'])."'";
-        isset($vars['enddate'])     && $where_sql.=" AND `addtime`<='".strtotime($vars['enddate'])."'";
+        isset($vars['starttime'])&& $this->add_sql_and('addtime',strtotime($vars['starttime']),'>=');
+        isset($vars['endtime'])  && $this->add_sql_and('addtime',strtotime($vars['endtime']),'<=');
+        $appsFunc->process_sql_orderby(array('app','addtime'));
+        $resource = $appsFunc->process_get_cache();
 
-        $by=$vars['by']=="ASC"?"ASC":"DESC";
-        switch ($vars['orderby']) {
-            case "id":      $order_sql=" ORDER BY `id` $by";            break;
-            case "app":      $order_sql=" ORDER BY `app` $by";            break;
-            case "addtime": $order_sql=" ORDER BY `addtime` $by";    break;
-            default:        $order_sql=" ORDER BY `id` DESC";
-        }
-        if($vars['cache']){
-            $cache_name = iPHP_DEVICE.'/forms_list/'.md5($where_sql);
-            $resource   = iCache::get($cache_name);
-        }
         if(empty($resource)){
-            $resource = iDB::all("SELECT * FROM `#iCMS@__forms` {$where_sql} {$order_sql} LIMIT $maxperpage");
-            if($resource)foreach ($resource as $key => $value) {
-                $value['pic'] && $value['pic']  = iFS::fp($value['pic'],'+http');
-                $value['url'] = iURL::router(array('forms:id',$value['id']));
-                $resource[$key] = $value;
+            $resource = $appsFunc->get_resource();
+            foreach ($resource as $key => $value) {
+                $resource[$key] = formsApp::value($value,true);
             }
-            $vars['cache'] && iCache::set($cache_name,$resource,$cache_time);
+            $appsFunc->process_keys($resource);
+            $appsFunc->process_set_cache($resource);
         }
         return $resource;
     }

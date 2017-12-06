@@ -295,10 +295,7 @@ class apps_store {
         if(self::$msg_mode=='alert'){
             $s OR iUI::alert($text);
         }else{
-            $a = 80;
-            $c = $a-strlen($text);
-            $c<1 && $c = 3;
-            return $text.str_repeat('.',$c).iUI::check($s).'<br />';
+            return str_pad($text,80,'.').iUI::check($s).'<br />';
         }
     }
     public static function create_bakdir($a,&$msg){
