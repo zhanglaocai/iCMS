@@ -27,9 +27,7 @@ class iPHP {
 	public static $callback   = array();
 
     /**
-     * Autoload function for HTML Purifier
-     * @param string $class Class to load
-     * @return bool
+     * Autoload
      */
 	public static function loader($name,$core=null){
 		//app_mo.class.php

@@ -191,7 +191,7 @@ class category {
         gc_collect_cycles();
     }
     public static function cache_common() {
-        $rs  = iDB::all("SELECT `cid`,`rootid`,`dir`,`status`,`domain` FROM `#iCMS@__category`");
+        $rs  = iDB::all("SELECT `cid`,`rootid`,`dir`,`status`,`domain` FROM `#iCMS@__category` ORDER BY `sortnum`  ASC");
         $hidden = array();
         foreach((array)$rs AS $C) {
             $C['status'] OR $hidden[]        = $C['cid'];

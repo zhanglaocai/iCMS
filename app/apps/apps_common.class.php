@@ -37,7 +37,7 @@ class apps_common {
     }
     public static function pic(){
         $picArray = array();
-        isset(self::$data['picdata']) && $picArray = filesApp::get_picdata(self::$data['picdata']);
+        self::$data['picdata'] && $picArray = filesApp::get_picdata(self::$data['picdata']);
 
         if(isset(self::$data['pic'])){
             self::$data['pic']  = filesApp::get_pic(

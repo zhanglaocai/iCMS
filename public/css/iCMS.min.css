@@ -389,7 +389,7 @@ a:hover>.ui-report-icon { background-position: -71px -170px }
 .commentApp-form .profile { display: none }
 .commentApp-form .passport { margin: 10px 0px }
 .commentApp-form .comment-editor { }
-.commentApp-form .comment_content { width: 100%; height: 120px; background: url(../img/iCMS.logo.bg.png) no-repeat center center; font-size: 14px; }
+.commentApp-form .comment_content { width: 100%; height: 120px; font-size: 14px; }
 .commentApp-form .comment-seccode { float: left; overflow: hidden; margin-top: 8px; line-height: 30px; }
 .commentApp-form .comment-seccode label, .commentApp-form .comment-seccode input, .commentApp-form .comment-seccode img, .commentApp-form .comment-seccode a { float: left; display: inline-block; vertical-align: middle; }
 .commentApp-form .comment-seccode .seccode-img { margin-top: 2px; }

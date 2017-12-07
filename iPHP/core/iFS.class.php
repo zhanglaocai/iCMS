@@ -28,15 +28,6 @@ class iFS {
 	public static function url($urls=null) {
 		$urls===null && $urls = self::$config['url'];
 		return trim($urls);
-		//
-		$urlArray = explode("\n", $urls);
-		$_count = count($urlArray);
-		if($_count==1){
-			return trim($urls);
-		}else{
-			$key = array_rand($urlArray,1);
-			return trim($urlArray[$key]);
-		}
 	}
 	public static function ex($f) {
 		return @stat($f) === false ? false : true;
@@ -584,7 +575,7 @@ class iFS {
 
 	public static function fp($f, $m = '+http', $_config = null) {
 		$config = $_config ? $_config : self::$config;
-		$url = self::url();
+		$url = self::$config['url'];
 		switch ($m) {
 			case '+http':
 				$fp = rtrim($url, '/') . '/' . ltrim($f, '/');
