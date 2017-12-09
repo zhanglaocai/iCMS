@@ -1,11 +1,8 @@
 <?php
 @set_time_limit(0);
-if(!defined('iPHP')){
-    require (dirname(__file__).'/iCMS.php');
-    echo patch_db_2017111000();
-}
+defined('iPHP') OR require (dirname(__FILE__).'/../../../iCMS.php');
 
-function patch_db_2017111000(){
+return patch::upgrade(function(){
     $fields  = apps_db::fields('#iCMS@__user');
     if(empty($fields['favorite'])){
         iDB::query("
@@ -16,5 +13,5 @@ function patch_db_2017111000(){
     $msg.='升级[user]表结构<iCMS>';
 
     return $msg;
-}
+});
 

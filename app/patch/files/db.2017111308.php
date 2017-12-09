@@ -1,11 +1,8 @@
 <?php
 @set_time_limit(0);
-if(!defined('iPHP')){
-    require (dirname(__file__).'/iCMS.php');
-    echo patch_db_2017111308();
-}
+defined('iPHP') OR require (dirname(__FILE__).'/../../../iCMS.php');
 
-function patch_db_2017111308(){
+return patch::upgrade(function(){
     $fields  = apps_db::fields('#iCMS@__tag');
     if(empty($fields['related'])){
         iDB::query("
@@ -30,5 +27,5 @@ function patch_db_2017111308(){
     $msg.='升级[tag]表结构<iCMS>';
 
     return $msg;
-}
+});
 

@@ -1,10 +1,8 @@
 <?php
 @set_time_limit(0);
-if(!defined('iPHP')){
-    require (dirname(__file__).'/iCMS.php');
-    echo patch_db_2017043023();
-}
-function patch_db_2017043023(){
+defined('iPHP') OR require (dirname(__FILE__).'/../../../iCMS.php');
+
+return patch::upgrade(function(){
 
     if(iDB::check_table('tags')){
         iDB::query("RENAME TABLE `#iCMS@__tags` TO `#iCMS@__tag`; ");
@@ -37,5 +35,5 @@ function patch_db_2017043023(){
     menu::cache();
     $msg.='升级表数据<iCMS>';
     return $msg;
-}
+});
 

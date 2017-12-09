@@ -1,9 +1,8 @@
 <?php
-if(!defined('iPHP')){
-	require (dirname(__file__).'/iCMS.php');
-	echo patch_db_2017042401();
-}
-function patch_db_2017042401(){
+@set_time_limit(0);
+defined('iPHP') OR require (dirname(__FILE__).'/../../../iCMS.php');
+
+return patch::upgrade(function(){
     $fields  = iDB::col("SHOW COLUMNS FROM `#iCMS@__keywords`");
     if($fields){
         if(!array_search ('replace',$fields) && array_search ('url',$fields)){
@@ -40,5 +39,5 @@ function patch_db_2017042401(){
     $msg.='升级[应用管理]菜单信息<iCMS>';
 
     return $msg;
-}
+});
 
