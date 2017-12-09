@@ -336,13 +336,9 @@ class apps_store {
             }
             if (!$file['folder']) {
                 $fp = $ROOTPATH .'/'. $file['filename'];
-                if (iFS::ex($fp)) {
-                    if($bakdir){
-                        $bfp = $bakdir . '/' . $file['filename'];
-                        iFS::mkdir(dirname($bfp));
-                        @rename($fp, $bfp); //备份旧文件
-                        $msg.= self::msg('备份 [' . $fp . '] 文件 到 [' . $bfp . ']',true);
-                    }
+                if($bakdir){
+                    $bfp = $bakdir . '/' . $file['filename'];
+                    iFS::backup($fp,$bfp) && $msg.= self::msg('备份 [' . $fp . '] 文件 到 [' . $bfp . ']',true);
                 }
                 self::$test OR iFS::write($fp, $file['content']);
                 $msg.= self::msg('安装文件 [' . $fp . ']',true);
