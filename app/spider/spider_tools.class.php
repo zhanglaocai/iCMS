@@ -20,7 +20,7 @@ class spider_tools {
         preg_match_all('#\[DATA@(.*?)\]#is', $content,$data_match);
         $_data_replace = array();
         if(strpos($content, 'DATA@list:')!==false){
-            $listData = spider_tools::listItemCache($responses['reurl']);
+            $listData = self::listItemCache($responses['reurl']);
         }
         foreach ((array)$data_match[1] as $_key => $_name) {
             $_nameKeys = explode('.', $_name);
@@ -109,7 +109,7 @@ class spider_tools {
                 }
                 $content  = '';
                 if(strpos($dom_rule, 'DOM::')!==false){
-                    $content = spider_tools::domAttr($DOM,$dom_rule);
+                    $content = self::domAttr($DOM,$dom_rule);
                     empty($dom_key) && $dom_key  = $dom_key_map[$key];
                 }else{
                     if($dom_rule=='url'||$dom_rule=='href'){
@@ -140,13 +140,13 @@ class spider_tools {
         $url   = str_replace('<%url%>',$url, $rule['list_url']);
         if(strpos($url, 'AUTO::')!==false && $baseUrl){
             $url = str_replace('AUTO::','',$url);
-            $url = spider_tools::url_complement($baseUrl,$url);
+            $url = self::url_complement($baseUrl,$url);
         }
 
-        iFS::checkHttp($url) OR $url = spider_tools::url_complement($baseUrl,$url);
+        iFS::checkHttp($url) OR $url = self::url_complement($baseUrl,$url);
 
         if($rule['list_url_clean']){
-            $url = spider_tools::dataClean($rule['list_url_clean'],$url);
+            $url = self::dataClean($rule['list_url_clean'],$url);
             if($url===null){
                 return array();
             }
@@ -339,9 +339,7 @@ class spider_tools {
          */
         if($content_charset){
             $content_charset = rtrim($content_charset,';');
-            if(empty($encode)){
-                $encode = $content_charset;
-            }else if(strtoupper($encode)!=strtoupper($content_charset)){
+            if(empty($encode)||strtoupper($encode)!=strtoupper($content_charset)){
                 $encode = $content_charset;
             }
             if (spider::$dataTest || spider::$ruleTest) {
@@ -354,18 +352,23 @@ class spider_tools {
         /**
          * 检测页面编码
          */
+        preg_match('/<meta[^>]*?charset=(["\']?)([a-zA-z0-9\-\_]+)(\1)[^>]*?>/is', $html, $charset);
+        $meta_encode = str_replace(array('"',"'"),'', trim($charset[2]));
         if(empty($encode)){
-            preg_match('/<meta[^>]*?charset=(["\']?)([a-zA-z0-9\-\_]+)(\1)[^>]*?>/is', $html, $charset);
-            $encode = str_replace(array('"',"'"),'', trim($charset[2]));
+            $meta_encode && $encode = $meta_encode;
             if (spider::$dataTest || spider::$ruleTest) {
-                echo '<b>检测页面编码:</b>'.$encode . '<br />';
+                echo '<b>检测页面编码:</b>'.$meta_encode . '<br />';
+            }
+        }
+        if($content_charset && $meta_encode && strtoupper($meta_encode)!=strtoupper($content_charset)){
+            $encode = $meta_encode;
+            if (spider::$dataTest || spider::$ruleTest) {
+                echo '<b>检测到http编码与页面编码不一致:</b>'.$content_charset.','.$meta_encode.'<br />';
             }
         }
         if(function_exists('mb_detect_encoding') && empty($encode)) {
             $detect_encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
-            if($detect_encode){
-                $detect_encode = $encode;
-            }
+            $detect_encode && $encode = $detect_encode;
             if (spider::$dataTest || spider::$ruleTest) {
                 echo '<b>识别页面编码:</b>'.$detect_encode . '<br />';
             }
@@ -398,7 +401,7 @@ class spider_tools {
             phpQuery::unloadDocuments($doc->getDocumentID());
             unset($doc,$content);
         }else{
-            $_code = spider_tools::pregTag($code);
+            $_code = self::pregTag($code);
             if (preg_match('/(<\w+>|\.\*|\.\+|\\\d|\\\w)/i', $code)) {
                 preg_match('|' . $_code . '|is', $content, $_matches);
                 $matches = $_matches['content'];
@@ -601,8 +604,8 @@ class spider_tools {
         );
         spider::$cookie && $options[CURLOPT_COOKIE] = spider::$cookie;
         if(spider::$curl_proxy){
-            $proxy   = spider_tools::proxy_test();
-            $proxy && $options = iNetwork::proxy($options,$proxy);
+            $proxy   = self::proxy_test();
+            $proxy && $options = iHttp::proxy($options,$proxy);
         }
         if(spider::$PROXY_URL){
             $options[CURLOPT_URL] = spider::$PROXY_URL.urlencode($url);
@@ -639,7 +642,7 @@ class spider_tools {
 	        $newurl	= trim($newurl);
 			curl_close($ch);
 			unset($responses,$info);
-            return spider_tools::remote($newurl, $_count);
+            return self::remote($newurl, $_count);
         }
         if (in_array($info['http_code'],array(404,500))) {
 			curl_close($ch);
@@ -655,11 +658,11 @@ class spider_tools {
             }
 			curl_close($ch);
 			unset($responses,$info);
-            return spider_tools::remote($url, $_count);
+            return self::remote($url, $_count);
         }
         $pos = stripos($info['content_type'], 'charset=');
         $pos!==false && $content_charset = trim(substr($info['content_type'], $pos+8));
-        $responses = spider_tools::charsetTrans($responses,$content_charset,spider::$charset);
+        $responses = self::charsetTrans($responses,$content_charset,spider::$charset);
 		curl_close($ch);
 		unset($info);
         if (spider::$dataTest || spider::$ruleTest) {
@@ -698,7 +701,7 @@ class spider_tools {
                     return $value;
                 }else{
                     ++$level;
-                    return spider_tools::array_filter_key($value,$filter,$level);
+                    return self::array_filter_key($value,$filter,$level);
                 }
             }else{
 

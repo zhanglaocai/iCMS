@@ -23,13 +23,38 @@ defined('iPHP') OR exit('What are you doing?');
   <textarea name="config[cache][host]" id="cache_host" class="span6" style="height: 150px;"><?php echo $config['cache']['host'] ; ?></textarea>
 </div>
 <span class="help-inline">
-文件缓存目录:文件层级(data:1) 默认为空<hr />
-memcached服务器IP:每行一个,带端口. <br />
-例:127.0.0.1:11211<br />
-127.0.0.2:11211<hr />
-Redis UNIX SOCK<br />
-unix:///tmp/redis.sock@db:1 <br />
-127.0.0.1:6379@db:1</span>
+  <div class="file_help">
+  文件缓存(默认为空)<hr />
+  目录:文件层级<br />
+  例:<br />data:1
+  </div>
+  <div class="hide memcached_help">
+  memcached缓存<hr />
+  服务器IP:端口(每行一个) <br />
+  例:<br />127.0.0.1:11211<br />
+  192.168.0.1:11211
+  </div>
+  <div class="hide redis_help">
+  Redis缓存(每行一个)<hr />
+  例:<br />unix:///tmp/redis.sock@db:1 <br />
+  unix:///tmp/redis.sock@db:1@password<br />
+  127.0.0.1:6379@db:1<br />
+  127.0.0.1:6379@db:1@password
+  </div>
+</span>
+<script>
+$('.file_help,.memcached_help,.redis_help').hide();
+$('.<?php echo $config['cache']['engine'] ; ?>_help').show();
+
+$(function(){
+  $("#cache_engine").change(function(event) {
+    var a = '.'+this.value+'_help';
+    $('.file_help,.memcached_help,.redis_help').hide();
+    $(a).show();
+  });
+});
+</script>
+
 <div class="clearfloat mb10"></div>
 <div class="input-prepend input-append"> <span class="add-on">缓存时间</span>
   <input type="text" name="config[cache][time]" class="span1" id="cache_time" value="<?php echo $config['cache']['time'] ; ?>"/>

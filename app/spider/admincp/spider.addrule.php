@@ -138,7 +138,6 @@ $(function(){
             </div>
             <span class="help-inline"><span class="label label-important">CURL伪造来路页 默认为空,如果网站限制来路可填上相关来路</span></span>
             <div class="clearfloat mb10"></div>
-
             <div class="input-prepend input-append"> <span class="add-on">网页编码</span><span class="add-on">
               <label class="radio">
                 <input type="radio" name="rule[charset]" value="utf-8"<?php if($rule['charset']=="utf-8"){ echo ' checked="true"';};?>>
@@ -219,6 +218,26 @@ $(function(){
             <div class="clearfloat mb10"></div>
           </div>
           <div id="spider-data" class="tab-pane">
+            <div class="input-prepend input-append"> <span class="add-on">内容页编码</span><span class="add-on">
+              <label class="radio">
+                <input type="radio" name="rule[data_charset]" value="utf-8"<?php if($rule['data_charset']=="utf-8"){ echo ' checked="true"';};?>>
+                UTF-8 </label>
+              </span><span class="add-on">
+              <label class="radio">
+                <input type="radio" name="rule[data_charset]" value="gbk"<?php if($rule['data_charset']=="gbk"){ echo ' checked="true"';};?>>
+                GBK </label>
+              </span><span class="add-on">
+              <label class="radio">
+                <input type="radio" name="rule[data_charset]" value="gb2312"<?php if($rule['data_charset']=="gb2312"){ echo ' checked="true"';};?>>
+                gb2312 </label>
+              </span>
+              <span class="add-on">
+              <label class="radio">
+                <input type="radio" name="rule[data_charset]" value=""<?php if($rule['data_charset']==""){ echo ' checked="true"';};?>>
+                同列表编码 </label>
+              </span>
+            </div>
+            <div class="clearfloat mb10"></div>
             <table class="table table-hover">
               <thead>
                 <tr>

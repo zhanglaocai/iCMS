@@ -181,9 +181,11 @@ $(function(){
                       <li class="divider"></li>
                       <li><a data-toggle="batch" data-action="project#lastupdate:0"><i class="fa fa-calendar"></i> 重置最后采集时间</a></li>
                       <li class="divider"></li>
-                      <li><a data-toggle="batch" data-action="move"><i class="fa fa-fighter-jet"></i> 重设发布栏目</a></li>
+                      <li><a data-toggle="batch" data-action="move"><i class="fa fa-fighter-jet"></i> 设置发布栏目</a></li>
                       <li class="divider"></li>
-                      <li><a data-toggle="batch" data-action="poid"><i class="fa fa-magnet"></i> 重设发布规则</a></li>
+                      <li><a data-toggle="batch" data-action="poid"><i class="fa fa-magnet"></i> 设置发布规则</a></li>
+                      <li class="divider"></li>
+                      <li><a data-toggle="batch" data-action="rid"><i class="fa fa-magnet"></i> 设置采集规则</a></li>
                       <li class="divider"></li>
                       <li><a data-toggle="batch" data-action="delproject"><i class="fa fa-trash-o"></i> 删除</a></li>
                     </ul>
@@ -204,6 +206,17 @@ $(function(){
           <option value="0">无</option>
           <?php foreach ((array)$postArray as $poid => $poname) {
             echo '<option value="'.$poid.'">'.$poname.'</option>';
+          }?>
+        </select>
+    </div>
+  </div>
+  <div id="ridBatch" style="width: 330px;">
+    <div class="input-prepend">
+        <span class="add-on">采集规则</span>
+        <select name="rid" id="rid" class="span3 chosen-select">
+          <option value="0">无</option>
+          <?php foreach ((array)$ruleArray as $rid => $rname) {
+            echo '<option value="'.$rid.'">'.$rname.'</option>';
           }?>
         </select>
     </div>

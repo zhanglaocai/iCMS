@@ -37,14 +37,6 @@ class spider{
 
     public static $spider_url_ids = array();
 
-    // public static function loader() {
-    //     $dir  = dirname(strtr(__FILE__,'\\','/'));
-    //     require $dir.'/iSpider.Tools.php';
-    //     require $dir.'/iSpider.Content.php';
-    //     require $dir.'/iSpider.Urls.php';
-    //     require $dir.'/iSpider.Data.php';
-    // }
-    //
     public static function rule($id) {
         $rs = iDB::row("SELECT * FROM `#iCMS@__spider_rule` WHERE `id`='$id' LIMIT 1;", ARRAY_A);
         $rs['rule'] && $rs['rule'] = stripslashes_deep(unserialize($rs['rule']));
@@ -227,8 +219,6 @@ class spider{
         $appid = $_POST['appid']?:$postArgs->app;
         $app = apps::get_app($appid);
 
-
-
         if($_GET['indexid']){
             self::get_data_id((int)$_GET['indexid'],$app);
         }
@@ -255,7 +245,6 @@ class spider{
                 );
                 $suid = iDB::insert('spider_url',$spider_url_data);
             }else{
-
                 if($spider_url['indexid']){
                     self::get_data_id($spider_url['indexid'],$app);
                 }
@@ -285,24 +274,24 @@ class spider{
             }
         }else{
             $obj = $postArgs->app."Admincp";
-            $app = new $obj;
-            $app->callback['code'] = $return;
+            $acp = new $obj;
+            $acp->callback['code'] = $return;
             /**
              * 主表 回调 更新关联ID
              */
-            $app->callback['primary'] = array(
+            $acp->callback['primary'] = array(
                 array('spider','update_spider_url_indexid'),
                 array('suid'=>$suid)
             );
             /**
              * 数据表 回调 成功发布
              */
-            $app->callback['data'] = array(
+            $acp->callback['data'] = array(
                 array('spider','update_spider_url_publish'),
                 array('suid'=>$suid)
             );
 
-            $callback = $app->$fun();
+            $callback = $acp->$fun();
             if(!$callback){
                 echo spider::errorlog("发布失败\n",$_POST['reurl'],'publish.fail');
                 return false;
