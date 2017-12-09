@@ -1,9 +1,8 @@
 <?php
-if(!defined('iPHP')){
-	require (dirname(__file__).'/iCMS.php');
-	echo patch_db_2017042513();
-}
-function patch_db_2017042513(){
+@set_time_limit(0);
+defined('iPHP') OR require (dirname(__FILE__).'/../../../iCMS.php');
+
+return patch::upgrade(function(){
     iDB::query("
         CREATE TABLE IF NOT EXISTS `#iCMS@__apps` (
           `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '应用ID appid',
@@ -62,5 +61,5 @@ function patch_db_2017042513(){
     menu::cache();
     $msg.='升级[应用]表数据<iCMS>';
     return $msg;
-}
+});
 

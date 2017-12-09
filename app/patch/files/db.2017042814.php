@@ -1,9 +1,8 @@
 <?php
-if(!defined('iPHP')){
-	require (dirname(__file__).'/iCMS.php');
-	echo patch_db_2017042814();
-}
-function patch_db_2017042814(){
+@set_time_limit(0);
+defined('iPHP') OR require (dirname(__FILE__).'/../../../iCMS.php');
+
+return patch::upgrade(function(){
     iDB::query("DELETE FROM `#iCMS@__apps` WHERE `id` <='34'");
     iDB::query("
     insert  into `#iCMS@__apps` (`id`,`app`,`name`,`title`,`apptype`,`type`,`table`,`config`,`fields`,`menu`,`addtime`,`status`) values
@@ -44,5 +43,5 @@ function patch_db_2017042814(){
     menu::cache();
     $msg.='升级[应用]表数据<iCMS>';
     return $msg;
-}
+});
 

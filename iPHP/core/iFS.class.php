@@ -94,16 +94,22 @@ class iFS {
 
 	public static function write($fn, $data, $check = 1, $method = "wb+", $iflock = 1, $chmod = 0) {
 		$check && self::check($fn);
-		// @touch($fn);
+		@touch($fn);
 		$handle = fopen($fn, $method);
 		$iflock && flock($handle, LOCK_EX);
 		fwrite($handle, $data);
-		// $method == "rb+" && ftruncate($handle, strlen($data));
+		$method == "rb+" && ftruncate($handle, strlen($data));
 		fclose($handle);
 		$chmod && @chmod($fn, 0644);
 		self::hook('write',array($fn,$data));
 	}
-
+	public static function backup($path, $target) {
+		if (self::ex($path)) {
+			self::mkdir(dirname($target));
+			return @rename($path, $target);
+		}
+		return false;
+	}
 	public static function escape_dir($dir) {
 		$dir = str_replace(array("'", '#', '=', '`', '$', '%', '&', ';',"\0"), '', $dir);
 		return rtrim(preg_replace('/(\/){2,}|(\\\){1,}/', '/', $dir), '/');

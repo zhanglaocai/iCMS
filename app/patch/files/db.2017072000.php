@@ -1,9 +1,7 @@
 <?php
 @set_time_limit(0);
-if(!defined('iPHP')){
-    require (dirname(__file__).'/iCMS.php');
-    echo patch_db_2017072000();
-}
+defined('iPHP') OR require (dirname(__FILE__).'/../../../iCMS.php');
+
 if (!function_exists('cnjson_encode')) {
     function cnjson_encode(){
         $json = json_encode($array);
@@ -11,8 +9,7 @@ if (!function_exists('cnjson_encode')) {
         return $json;
     }
 }
-
-function patch_db_2017072000(){
+return patch::upgrade(function(){
     $variable = apps::get_array(array('status'=>'1'));
     $msg = '';
     foreach ($variable as $key => $value) {
@@ -72,5 +69,5 @@ function patch_db_2017072000(){
     }
 
     return $msg;
-}
+});
 

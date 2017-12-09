@@ -1,11 +1,8 @@
 <?php
 @set_time_limit(0);
-if(!defined('iPHP')){
-    require (dirname(__file__).'/iCMS.php');
-    echo patch_db_2017072700();
-}
+defined('iPHP') OR require (dirname(__FILE__).'/../../../iCMS.php');
 
-function patch_db_2017072700(){
+return patch::upgrade(function(){
     $fields  = apps_db::fields('#iCMS@__tag');
     if(empty($fields['field'])){
         iDB::query("
@@ -33,5 +30,5 @@ function patch_db_2017072700(){
 
     menu::cache();
     return $msg;
-}
+});
 

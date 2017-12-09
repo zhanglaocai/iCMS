@@ -196,39 +196,59 @@ class patch {
 		return $msg;
 	}
 	public static function run() {
-		foreach (glob(iPATH."patch.db.*.php") as $filename) {
-			$d = str_replace(array(iPATH,'patch.db.','.php'), '', $filename);
+		$patch_dir = iPHP_APP_DIR.'/patch/files/';
+		foreach (glob($patch_dir."*.php") as $file) {
+			$d = str_replace(array($patch_dir,'db.','fs.','.php'), '', $file);
 			$time = strtotime($d.'00');
 			$release = strtotime(iCMS_RELEASE);
 			if($time>$release){
 				if(defined('GIT_TIME')){
 					if($time>GIT_TIME){
-						$files[$d] = $filename;
+						$files[$d] = $file;
+					}else{
+						// iFS::del($file);
 					}
 				}else{
-					$files[$d] = $filename;
+					$files[$d] = $file;
 				}
+			}else{
+				// iFS::del($file);
 			}
 		}
 		// var_dump($files);
 		if($files){
+			self::$next = true;
 			ksort($files);
 			foreach ($files as $key => $file) {
-				require_once $file;
-				$patch_func = 'patch_db_'.$key;
-				if(function_exists($patch_func)){
-					$msg.= '执行[patch.db.'.$key.']升级程序<iCMS>';
-					self::$test OR $msg .= $patch_func();
-					$msg.= '升级顺利完成!<iCMS>删除升级程序!<iCMS>';
+				$fname = str_replace(array('.php','.'), array('','_'), basename($file));
+				$fn = 'patch_'.$fname;
+				$patch_func = require_once $file;
+				if($patch_func){
+					$msg.= '执行['.$fn.']升级程序<iCMS>';
+					try {
+					    self::$test OR $msg .= $patch_func();
+						$msg.= '升级顺利完成!<iCMS>删除升级程序!<iCMS>';
+					} catch ( Exception $e ) {
+					    $msg = '['.$fn.']升级出错!<iCMS>';
+					}
 				}else{
-					$msg = '[patch.db.'.$key.']升级出错!<iCMS>找不到升级程序<iCMS>';
+					$msg = '['.$fn.']升级出错!<iCMS>找不到升级程序<iCMS>';
 				}
-				iFS::del($file);
+				// iFS::del($file);
 			}
 		}else {
 			$msg = '升级顺利完成!';
 		}
-		// var_dump($msg);
 		return $msg;
+	}
+
+	public static function upgrade($func) {
+		if(self::$next){
+			return $func;
+		}
+		$output = $func();
+		$output = str_replace('<iCMS>','<br />',$output);
+		$output = str_replace(iPATH,'iPHP://',$output);
+		echo $output;
 	}
 }
