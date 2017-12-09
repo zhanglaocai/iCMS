@@ -206,13 +206,13 @@ class patch {
 					if($time>GIT_TIME){
 						$files[$d] = $file;
 					}else{
-						// iFS::del($file);
+						iFS::del($file);
 					}
 				}else{
 					$files[$d] = $file;
 				}
 			}else{
-				// iFS::del($file);
+				iFS::del($file);
 			}
 		}
 		// var_dump($files);
@@ -234,7 +234,7 @@ class patch {
 				}else{
 					$msg = '['.$fn.']升级出错!<iCMS>找不到升级程序<iCMS>';
 				}
-				// iFS::del($file);
+				iFS::del($file);
 			}
 		}else {
 			$msg = '升级顺利完成!';
