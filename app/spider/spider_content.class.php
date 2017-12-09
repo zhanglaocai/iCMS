@@ -321,7 +321,8 @@ class spider_content {
                 echo iSecurity::escapeStr(spider::$content_error_code);
                 echo "<hr />";
             }
-            spider::$curl_proxy = $rule['proxy'];
+            $rule['proxy'] && spider::$curl_proxy = $rule['proxy'];
+            $rule['data_charset'] && spider::$charset = $rule['data_charset'];
             $pageurl = array();
 
             foreach ($page_url_array AS $pukey => $purl) {

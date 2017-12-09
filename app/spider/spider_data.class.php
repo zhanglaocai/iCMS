@@ -53,7 +53,9 @@ class spider_data {
             echo "</pre><hr />";
         }
 
-        spider::$curl_proxy = $rule['proxy'];
+        $rule['proxy'] && spider::$curl_proxy = $rule['proxy'];
+        $rule['data_charset'] && spider::$charset = $rule['data_charset'];
+
         $responses = array();
         $html      = spider_tools::remote($url);
         if(empty($html)){
@@ -221,9 +223,17 @@ class spider_data {
             echo '<hr />';
             echo '使用内存:'.iFS::sizeUnit(memory_get_usage()).' 执行时间:'.iPHP::timer_stop().'s';
             echo "</pre>";
-
         }
 
+        self::set_watermark_config($rule);
+
+        if (spider::$callback['data'] && is_callable(spider::$callback['data'])) {
+            $responses = call_user_func_array(spider::$callback['data'],array($responses));
+        }
+
+        return $responses;
+    }
+    public static function set_watermark_config($rule){
         iHttp::$CURLOPT_ENCODING        = '';
         iHttp::$CURLOPT_REFERER         = '';
         files::$watermark_config['pos'] = iCMS::$config['watermark']['pos'];
@@ -243,12 +253,6 @@ class spider_data {
         if($rule['watermark_mode']=="2"){
             files::$watermark_enable = false;
         }
-
-        if (spider::$callback['data'] && is_callable(spider::$callback['data'])) {
-            $responses = call_user_func_array(spider::$callback['data'],array($responses));
-        }
-
-        return $responses;
     }
     public static function create_multi_array($string,$value=null){
         $a_array = explode('.', $string);

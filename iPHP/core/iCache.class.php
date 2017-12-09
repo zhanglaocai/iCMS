@@ -49,7 +49,7 @@ class iCache {
 				break;
 				case 'redis':
 					require_once iPHP_CORE . '/redis.class.php';
-					list($hosts, $db) = explode('@', trim(self::$config['host']));
+					list($hosts, $db, $passwd) = explode('@', trim(self::$config['host']));
 					list($host, $port) = explode(':', $hosts);
 					if (strstr($hosts, 'unix:')) {
 						$host = $hosts;
@@ -61,6 +61,7 @@ class iCache {
 						'host' => $host,
 						'port' => $port,
 						'db' => $db,
+						'passwd' => $passwd,
 						'compress' => self::$config['compress'],
 					));
 				break;
