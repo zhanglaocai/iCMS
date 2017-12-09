@@ -45,6 +45,11 @@ class spiderAdmincp {
                 iDB::query("update `#iCMS@__spider_project` set `poid`='$poid' where `id` IN($ids);");
                 iUI::success('操作成功!','js:1');
             break;
+            case 'rid':
+                $rid = $_POST['rid'];
+                iDB::query("update `#iCMS@__spider_project` set `rid`='$rid' where `id` IN($ids);");
+                iUI::success('操作成功!','js:1');
+            break;
             case 'move':
                 $cid = $_POST['cid'];
                 iDB::query("update `#iCMS@__spider_project` set `cid`='$cid' where `id` IN($ids);");
@@ -83,12 +88,29 @@ class spiderAdmincp {
 	 * [删除采集结果]
 	 * @return [type] [description]
 	 */
-	public function do_delspider() {
+	public function do_delspider($dialog=true) {
 		$this->sid OR iUI::alert("请选择要删除的项目");
 		iDB::query("delete from `#iCMS@__spider_url` where `id` = '$this->sid';");
-		iUI::success('删除完成', 'js:1');
+		$dialog && iUI::success('删除完成', 'js:1');
 	}
 
+	public function do_delcontent() {
+		$indexid = $_GET['indexid'];
+		$indexid OR iUI::alert("请选择要删除的项目");
+
+		$project  = spider::project($this->pid);
+		$postArgs = spider::postArgs($project['poid']);
+		$app      = apps::get_app($postArgs->app);
+		$obj = $postArgs->app."Admincp";
+		$acp = new $obj;
+		if(method_exists($acp, 'do_del')){
+			$acp->do_del($indexid,false);
+			$this->do_delspider(false);
+			iUI::success('删除完成');
+		}else{
+			iUI::success($obj.' 中没找到 do_del 方法', 'js:1');
+		}
+	}
 	public function do_iCMS($doType = null) {
 		$this->do_manage();
 	}
