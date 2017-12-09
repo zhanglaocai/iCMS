@@ -156,16 +156,10 @@ function get_date($timestamp=0,$format='') {
 }
 //中文长度
 function cstrlen($str) {
-    if(function_exists("mb_strlen")){
-        return mb_strlen($str);
-    }
     return csubstr($str,'strlen');
 }
 //中文截取
 function csubstr($str,$len,$end=''){
-    if(function_exists("mb_substr")){
-        return mb_substr($str,0,$len).$end;
-    }
 	$len!='strlen' && $len=$len*2;
     //获取总的字节数
     $ll = strlen($str);
