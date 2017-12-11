@@ -179,7 +179,8 @@ class spider_content {
         }
         if ($data['empty']) {
             $empty = $content;
-            is_array($content) OR $empty = self::real_empty($content);
+            is_array($content) && $empty = implode('', $content);
+            $empty = self::real_empty($empty);
             if(empty($empty)){
                 $emptyMsg = '['.$name.']规则设置了不允许为空.当前抓取结果为空!请检查,规则是否正确!';
                 if(spider::$dataTest){
@@ -387,7 +388,12 @@ class spider_content {
     }
     public static function real_empty($text){
         $text = str_replace(array('&nbsp;','　'), '', $text);
-        $text = preg_replace(array('/\s*/','/\r*/','/\n*/','@<p[^>]*>\s*<br[^>]*>\s*</p>@','@<(\w+)>\s*<\$1>@'), '', $text);
+        $text = preg_replace(array(
+            '/\s*/','/\r*/','/\n*/',
+            '@<p[^>]*>\s*<br[^>]*>\s*</p>@',
+            '@<(\w+)>\s*<\$1>@',
+            '@</*(p|strong|b|span)>@'
+        ), '', $text);
         $text = trim($text);
         return $text;
     }

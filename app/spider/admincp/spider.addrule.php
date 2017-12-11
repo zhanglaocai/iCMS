@@ -233,6 +233,11 @@ $(function(){
               </span>
               <span class="add-on">
               <label class="radio">
+                <input type="radio" name="rule[data_charset]" value="auto"<?php if($rule['data_charset']=="auto"){ echo ' checked="true"';};?>>
+                自动识别 </label>
+              </span>
+              <span class="add-on">
+              <label class="radio">
                 <input type="radio" name="rule[data_charset]" value=""<?php if($rule['data_charset']==""){ echo ' checked="true"';};?>>
                 同列表编码 </label>
               </span>
