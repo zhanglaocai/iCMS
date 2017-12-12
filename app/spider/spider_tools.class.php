@@ -360,17 +360,33 @@ class spider_tools {
                 echo '<b>检测页面编码:</b>'.$meta_encode . '<br />';
             }
         }
+        preg_match('/<meta[^>]*?http-equiv=(["\']?)content-language(\1)[^>]*?content=(["\']?)([a-zA-z0-9\-\_]+)(\3)[^>]*?>/is', $html, $language);
+        $lang_encode = str_replace(array('"',"'"),'', trim($language[4]));
+        if(empty($encode)){
+            $lang_encode && $encode = $lang_encode;
+            if (spider::$dataTest || spider::$ruleTest) {
+                echo '<b>检测页面meta编码声明:</b>'.$lang_encode . '<br />';
+            }
+        }
         if($content_charset && $meta_encode && strtoupper($meta_encode)!=strtoupper($content_charset)){
             $encode = $meta_encode;
             if (spider::$dataTest || spider::$ruleTest) {
                 echo '<b>检测到http编码与页面编码不一致:</b>'.$content_charset.','.$meta_encode.'<br />';
             }
         }
+
+        if($lang_encode && $meta_encode && strtoupper($meta_encode)!=strtoupper($lang_encode)){
+            $encode = null;
+            if (spider::$dataTest || spider::$ruleTest) {
+                echo '<b>检测到页面存在两种不一样的编码声明:</b>'.$lang_encode.','.$meta_encode.'<br />';
+            }
+        }
+
         if(function_exists('mb_detect_encoding') && empty($encode)) {
             $detect_encode = mb_detect_encoding($html, array("ASCII","UTF-8","GB2312","GBK","BIG5"));
             $detect_encode && $encode = $detect_encode;
             if (spider::$dataTest || spider::$ruleTest) {
-                echo '<b>识别页面编码:</b>'.$detect_encode . '<br />';
+                echo '<b>程序自动识别页面编码:</b>'.$detect_encode . '<br />';
             }
         }
 
@@ -384,6 +400,7 @@ class spider_tools {
             echo '<b>页面编码不一致,进行转码['.$encode.'=>'.$out.']</b><br />';
         }
         $html = preg_replace('/(<meta[^>]*?charset=(["\']?))[a-zA-z0-9\-\_]*(\2[^>]*?>)/is', "\\1$out\\3", $html,1);
+
         if (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($html,$out,$encode);
         } elseif (function_exists('iconv')) {
