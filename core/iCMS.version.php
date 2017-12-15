@@ -9,4 +9,4 @@
 * @version 6.0
 */
 define('iCMS_VER', 'V6.0.20');
-define('iCMS_RELEASE', '20170425');
+define('iCMS_RELEASE', '20171215');
