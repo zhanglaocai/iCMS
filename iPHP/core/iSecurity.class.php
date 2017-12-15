@@ -128,6 +128,7 @@ class iS {
 			iS::slashes($_POST);
 			iS::slashes($_GET);
 			iS::slashes($_COOKIE);
+			iS::slashes($_FILES);
 		}
 		iS::getServer(array(
 			'HTTP_REFERER','HTTP_HOST','HTTP_USER_AGENT',
@@ -203,13 +204,15 @@ class iS {
 	public static function escapeStr($string) {
 	    if(is_array($string)) {
 	        foreach($string as $key => $val) {
-	            $string[$key] = iS::escapeStr($val);
+	            $string[$key] = self::escapeStr($val);
 	        }
 	    } else {
-			$string = str_replace(array('%00','\\0'), '', $string); //modified@2010-7-5
-			$string = str_replace(array('&', '"',"'", '<', '>'), array('&amp;', '&quot;','&#039;', '&lt;', '&gt;'), $string);
-			$string = preg_replace('/&amp;((#(\d{3,5}|x[a-fA-F0-9]{4})|[a-zA-Z][a-z0-9]{2,5});)/', '&\\1',$string);
+	        $string = str_replace(array("\0","\x0B", "%00"), '', $string);
+			$string = str_replace(array('&', '"',"'"), array('&amp;', '&quot;','&#039;'), $string);
 	    	$string = str_replace('\\\\', '&#92;', $string);
+	        $string = str_replace(array("%3C", '<'), '&lt;', $string);
+	        $string = str_replace(array("%3E", '>'), '&gt;', $string);
+			$string = preg_replace('/&amp;((#(\d{3,5}|x[a-fA-F0-9]{4})|[a-zA-Z][a-z0-9]{2,5});)/', '&\\1',$string);
 	    }
 	    return $string;
 	}

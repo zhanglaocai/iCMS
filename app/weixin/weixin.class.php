@@ -203,7 +203,11 @@ class weixin {
     public static  function input(){
         $input = file_get_contents("php://input");
         if ($input){
-            return simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
+        	libxml_disable_entity_loader(true);
+            $data = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
+            iS::slashes($data);
+            waf::check_data($data);
+            return $data;
         }else{
             return false;
         }

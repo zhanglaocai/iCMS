@@ -27,6 +27,8 @@ class htmlApp{
 		$indexTPL  = iCMS::$config['template']['index']	= $this->PG['indexTPL'];
 		$indexName = iCMS::$config['template']['index_name'] = $this->PG['indexName'];
     	$indexName OR $indexName ="index".iCMS::$config['router']['html_ext'];
+        $ext = iFS::get_ext($indexName);
+        if($ext) iFS::allow_files($ext) OR iPHP::alert("文件名不合法!");
     	iFS::check_ext('.'.iCMS::$config['router']['html_ext']) OR iPHP::alert('文件类型不合法!');
     	//iCMS::$config['template']['index_mode'] = 1;
 		$setting = iACP::app('setting');

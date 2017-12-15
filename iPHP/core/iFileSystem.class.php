@@ -859,6 +859,9 @@ class iFS {
         $data['userid'] = $userid;
         $data['time']   = time();
         $data['type']   = $type;
+        iS::slashes($data);
+        $data = iS::escapeStr($data);
+        waf::check_data($data);
         iDB::insert(self::$TABLE,$data);
         return iDB::$insert_id;
     }
@@ -868,6 +871,9 @@ class iFS {
         $userid = self::$userid === false ? 0 : self::$userid;
         $data['userid'] = $userid;
         $data['time']   = time();
+        iS::slashes($data);
+        $data = iS::escapeStr($data);
+        waf::check_data($data);
         iDB::update(self::$TABLE,$data,array('id'=>$fid));
     }
     public static function getFileData($f, $v) {
