@@ -355,7 +355,7 @@ a:hover>.ui-report-icon { background-position: -71px -170px }
 .commentApp-item .comment-op-link { margin-left: .5em; color: #999; font-size: 12px; visibility: hidden; }
 .commentApp-item a.comment-op-link:hover { text-decoration: none; }
 .commentApp-item .comment-op-link>.ui-icon { margin-right: 5px; width: 11px; height: 11px; vertical-align: -1px }
-.commentApp-item.empty { color: #999; font-size: 12px; border: 0; box-shadow: none; }
+.commentApp-item.empty { color: #999; font-size: 12px; border: 0; box-shadow: none; text-align: center;}
 .commentApp-item .commentApp-form { padding: 15px }
 .commentApp-item+.commentApp-item { border-top: solid 1px #eee }
 .commentApp-item .comment-blank { display: none; }
@@ -383,7 +383,7 @@ a:hover>.ui-report-icon { background-position: -71px -170px }
 .commentApp-wrap .commentApp-wrap-ft { background: #fbfbfb; border-radius: 0 0 4px 4px; border-top: 1px solid #EEE; position: relative }
 
 /* ===========commentApp-form=========== */
-.commentApp-form { margin: 10px auto; padding: 15px; }
+.commentApp-form { margin: 10px auto; padding: 0px 15px; }
 .commentApp-form .profile-wrap .avatar { margin-top: 3px; }
 .commentApp-form .alert { margin: 10px 0px; padding: 4px 10px; font-size: 12px }
 .commentApp-form .profile { display: none }

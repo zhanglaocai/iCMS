@@ -43,7 +43,7 @@ class categoryAdmincp {
     public static $sappid = null;
 
     public function __construct($appid = null,$dir=null) {
-        // self::$sappid    = iPHP::appid(__CLASS__);
+        // self::$sappid    = apps::id(__CLASS__);
         $this->cid       = (int)$_GET['cid'];
         $this->appid     = null;
         $appid          && $this->appid = $appid;

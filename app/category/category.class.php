@@ -31,7 +31,7 @@ class category {
         self::$appid && $appid = self::$appid;
 
         if($appid && !is_numeric($appid)){
-            $appid = iPHP::appid($appid);
+            $appid = apps::id($appid);
          }
 
         if(empty($appid)){
