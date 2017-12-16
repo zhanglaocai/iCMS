@@ -30,30 +30,38 @@ class iUI {
 		$count = count($keyArray);
 		list($app, $do, $key, $msg) = $keyArray;
 
-		$fname = $app . '.lang.php';
-		$path = iPHP_APP_DIR.'/'.$app.'/'.$fname;
-		$app=="iCMS" && $path = iPHP_APP_CORE.'/'.$fname;
+        if($app!='iCMS'){
+            $path = iPHP_APP_DIR.'/'.$app.'/'.$app . '.lang.php';
+            if (is_file($path)) {
+                $langArray = iPHP::import($path, true);
+                switch ($count) {
+                    case 1:$msg = $langArray;break;
+                    case 2:$msg = $langArray[$do];break;
+                    case 3:$msg = $langArray[$do][$key];break;
+                    case 4:$msg = $langArray[$do][$key][$msg];break;
+                }
+            }
+        }
 
-		if (!is_file($path)) {
-			if ($throw) {
-				iPHP::error_throw($app . ' language file ('.$fname.') not exist', 0015);
-			} else {
-				return $keys;
-			}
-		}
+        if(empty($msg)){
+            $def_path = iPHP_APP_CORE.'/iCMS.lang.php';
+            $langArray = iPHP::import($def_path, true);
+            switch ($count) {
+                case 1:$msg = $langArray;break;
+                case 2:$msg = $langArray[$do];break;
+                case 3:$msg = $langArray[$do][$key];break;
+                case 4:$msg = $langArray[$do][$key][$msg];break;
+            }
+        }
 
-		$langArray = iPHP::import($path, true);
-
-		switch ($count) {
-    		case 1:$msg = $langArray;break;
-    		case 2:$msg = $langArray[$do];break;
-    		case 3:$msg = $langArray[$do][$key];break;
-    		case 4:$msg = $langArray[$do][$key][$msg];break;
-		}
+        if(empty($msg)){
+            return $keys;
+        }
         if($args){
           $args[0] = $msg;
           $msg = call_user_func_array("sprintf", $args);
         }
+
         return $msg;
 	}
 	public static function json($a, $break = true, $ret = false) {
@@ -97,7 +105,7 @@ class iUI {
 	        }else{
 	            $msg = '<div class="iPHP-msg"><span class="label label-'.$label.'">';
 				$icon && $msg .= '<i class="fa fa-' . $icon . '"></i> ';
-				if (strpos($content, ':') !== false) {
+				if (strpos($content, ':') !== false &&!preg_match("/<\/([^>]+?)>/is",$content)) {
 					$lang = iUI::lang($content, false);
 					$lang && $content = $lang;
 				}

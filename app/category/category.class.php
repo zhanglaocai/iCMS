@@ -31,7 +31,7 @@ class category {
         self::$appid && $appid = self::$appid;
 
         if($appid && !is_numeric($appid)){
-            $appid = iPHP::appid($appid);
+            $appid = apps::id($appid);
          }
 
         if(empty($appid)){
@@ -191,7 +191,7 @@ class category {
         gc_collect_cycles();
     }
     public static function cache_common() {
-        $rs  = iDB::all("SELECT `cid`,`rootid`,`dir`,`status`,`domain` FROM `#iCMS@__category`");
+        $rs  = iDB::all("SELECT `cid`,`rootid`,`dir`,`status`,`domain` FROM `#iCMS@__category` ORDER BY `sortnum`  ASC");
         $hidden = array();
         foreach((array)$rs AS $C) {
             $C['status'] OR $hidden[]        = $C['cid'];
@@ -280,8 +280,8 @@ class category {
 
         $app = apps::get_app('category');
         $app['fields'] && formerApp::data($C['cid'],$app,'category',$C,null,$C);
-        $C['app'] = apps::get_app_lite($app);
-        $C['appid'] && $C['apps'] = apps::get_app_lite($C['appid']);
+        $C['sapp'] = apps::get_app_lite($app);
+        $C['appid'] && $C['app'] = apps::get_app_lite($C['appid']);
 
         is_string($C['rule'])    && $C['rule']     = json_decode($C['rule'],true);
         is_string($C['template'])&& $C['template'] = json_decode($C['template'],true);

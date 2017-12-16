@@ -97,7 +97,7 @@ class iView {
                 $keys     = isset($args['as'])?$args['as']:$args['_app'].'_'.$args['method'];
                 $callback = array($args['_app'].'Func',$args['_app'].'_'.$args['method']);
             }
-            if(!@is_callable($callback) && strpos($callback[1], '__')===false){
+            if(!method_exists($callback[0],$callback[1]) && strpos($callback[1], '__')===false){
                 iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
             }
         }else{
@@ -129,7 +129,7 @@ class iView {
         $func = 'func';
         $vars['func'] && $func = $vars['func'];
         $callback = array($vars['app'].$vars['method'],$func);
-        if(@is_callable($callback)){
+        if(is_callable($callback)){
             call_user_func_array($callback, array($vars));
         }else{
             iPHP::error_throw("Unable to find method '{$callback[0]}::{$callback[1]}'");
@@ -181,7 +181,7 @@ class iView {
         $rtpl === false && iPHP::error_404('Unable to find the template file <b>iPHP:://template/' . $_tpl . '</b>', '002', 'TPL');
         return $rtpl;
     }
-    public static function tpl_exists($tpl,&$_tpl) {
+    public static function tpl_exists($tpl,&$_tpl=null) {
         $flag = iPHP_APP . ':/';
         $_tpl = $tpl;
         if (strpos($tpl, $flag) !== false) {
