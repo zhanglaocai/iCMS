@@ -7,9 +7,8 @@ return patch::upgrade(function(){
       UPDATE `#iCMS@__apps`
       SET `config`=REPLACE(`config`,'\"menu\":\"main\"','\"menu\":\"default\"')
     ");
-    menu::init();
-    menu::cache();
     $msg.='升级[apps]数据<iCMS>';
+    $msg.='请更新菜单缓存<iCMS>';
     return $msg;
 });
 
